@@ -148,6 +148,13 @@ function createOwnedCastItem(character) {
 >
   OUTFITS
 </a>
+<a
+  href="${SITE_BASE_PATH}image.html?id=${
+    encodeURIComponent(character.public_id)
+  }"
+>
+  IMAGE
+</a>
 </div>
 </div>
     </article>
