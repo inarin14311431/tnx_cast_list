@@ -141,6 +141,13 @@ function createOwnedCastItem(character) {
   >
     SKILLS
   </a>
+<a
+  href="${SITE_BASE_PATH}outfits.html?id=${
+    encodeURIComponent(character.public_id)
+  }"
+>
+  OUTFITS
+</a>
 </div>
 </div>
     </article>
