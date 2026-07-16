@@ -1,3 +1,4 @@
+import { SITE_BASE_PATH } from "./config.js";
 import { supabase } from "./supabase-client.js";
 
 /**
@@ -45,13 +46,13 @@ export async function requireAuth() {
       `${window.location.pathname}${window.location.search}`;
 
     const loginUrl = new URL(
-      "./login.html",
-      window.location.href
+      `${SITE_BASE_PATH}login.html`,
+      window.location.origin
     );
 
     loginUrl.searchParams.set("return", returnUrl);
 
-    window.location.href = loginUrl.toString();
+    window.location.replace(loginUrl.href);
     return null;
   }
 
@@ -68,7 +69,9 @@ export async function signOut() {
     throw error;
   }
 
-  window.location.href = "./index.html";
+  window.location.replace(
+    `${window.location.origin}${SITE_BASE_PATH}index.html`
+  );
 }
 
 /**

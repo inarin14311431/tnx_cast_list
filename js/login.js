@@ -1,3 +1,4 @@
+import { SITE_BASE_PATH } from "./config.js";
 import { supabase } from "./supabase-client.js";
 
 const loginForm = document.querySelector("#login-form");
@@ -82,10 +83,8 @@ async function handleSignup(event) {
     return;
   }
 
-  const redirectUrl = new URL(
-    "./account.html",
-    window.location.href
-  ).toString();
+  const redirectUrl =
+    `${window.location.origin}${SITE_BASE_PATH}account.html`;
 
   setMessage("REGISTERING NEW IDENTITY...", "loading");
   setFormsDisabled(true);
@@ -144,14 +143,18 @@ function redirectAfterLogin() {
 
   if (
     returnUrl &&
-    returnUrl.startsWith("/") &&
+    returnUrl.startsWith(SITE_BASE_PATH) &&
     !returnUrl.startsWith("//")
   ) {
-    window.location.href = returnUrl;
+    window.location.replace(
+      `${window.location.origin}${returnUrl}`
+    );
     return;
   }
 
-  window.location.href = "./account.html";
+  window.location.replace(
+    `${window.location.origin}${SITE_BASE_PATH}account.html`
+  );
 }
 
 function setupTabs() {
