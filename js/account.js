@@ -58,9 +58,7 @@ function createOwnedCastItem(character) {
         <span>${escapeHtml(character.visibility.toUpperCase())}</span>
         <div class="owned-cast__links">
           <a href="${SITE_BASE_PATH}cast.html?id=${id}">OPEN</a>
-          <a href="${SITE_BASE_PATH}edit.html?id=${id}">EDIT</a>
-          <a href="${SITE_BASE_PATH}skills.html?id=${id}">SKILLS</a>
-          <a href="${SITE_BASE_PATH}outfits.html?id=${id}">OUTFITS</a>
+          <a href="${SITE_BASE_PATH}sheet.html?id=${id}">EDIT SHEET</a>
           <a href="${SITE_BASE_PATH}image.html?id=${id}">IMAGE</a>
           <a href="${SITE_BASE_PATH}combos.html?id=${id}">COMBOS</a>
           <button type="button" data-duplicate="${escapeHtml(character.public_id)}">DUPLICATE</button>
@@ -131,7 +129,7 @@ async function duplicateCharacter(publicId) {
     if (insertError) return alert(insertError.message);
   }
 
-  window.location.href = `${SITE_BASE_PATH}edit.html?id=${encodeURIComponent(created.public_id)}`;
+  window.location.href = `${SITE_BASE_PATH}sheet.html?id=${encodeURIComponent(created.public_id)}`;
 }
 
 function formatDate(value) {
