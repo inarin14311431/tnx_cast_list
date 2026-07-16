@@ -288,3 +288,18 @@
     align-items: flex-start;
   }
 }
+
+.owned-cast__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.owned-cast__links a {
+  color: var(--line);
+  font-family: monospace;
+}
+
+.owned-cast__links a:hover {
+  text-shadow: 0 0 10px var(--line);
+}

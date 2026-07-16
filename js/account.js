@@ -109,21 +109,31 @@ function createOwnedCastItem(character) {
         </h3>
       </div>
 
-      <div class="owned-cast__meta">
-        <span>
-          ${escapeHtml(
-            character.visibility.toUpperCase()
-          )}
-        </span>
+<div class="owned-cast__meta">
+  <span>
+    ${escapeHtml(
+      character.visibility.toUpperCase()
+    )}
+  </span>
 
-        <a
-          href="./cast.html?id=${
-            encodeURIComponent(character.public_id)
-          }"
-        >
-          OPEN
-        </a>
-      </div>
+  <div class="owned-cast__links">
+    <a
+      href="${SITE_BASE_PATH}cast.html?id=${
+        encodeURIComponent(character.public_id)
+      }"
+    >
+      OPEN
+    </a>
+
+    <a
+      href="${SITE_BASE_PATH}edit.html?id=${
+        encodeURIComponent(character.public_id)
+      }"
+    >
+      EDIT
+    </a>
+  </div>
+</div>
     </article>
   `;
 }
