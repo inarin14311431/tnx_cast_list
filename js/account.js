@@ -1,3 +1,4 @@
+import { SITE_BASE_PATH } from "./config.js";
 import { supabase } from "./supabase-client.js";
 import {
   requireAuth,
