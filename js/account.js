@@ -19,7 +19,7 @@ async function initializeAccount() {
 }
 
 async function loadOwnedCharacters() {
-  ownedCastsContainer.textContent = "SCANNING ASSIGNED CASTS...";
+  ownedCastsContainer.textContent = "キャストデータを読み込み中…";
 
   const { data, error } = await supabase
     .from("characters")
@@ -34,7 +34,7 @@ async function loadOwnedCharacters() {
   }
 
   if (!data.length) {
-    ownedCastsContainer.innerHTML = `<p class="empty-data">NO ASSIGNED CAST</p>`;
+    ownedCastsContainer.innerHTML = `<p class="empty-data">登録済みキャストはありません。<small>NO ASSIGNED CAST</small></p>`;
     return;
   }
 
@@ -49,20 +49,28 @@ async function loadOwnedCharacters() {
   });
 }
 
+function actionLabel(japanese, english) {
+  return `<span class="action-label__jp">${japanese}</span><small class="action-label__en">${english}</small>`;
+}
+
 function createOwnedCastItem(character) {
   const id = encodeURIComponent(character.public_id);
   return `
     <article class="owned-cast">
-      <div><p class="owned-cast__id">${escapeHtml(character.public_id)}</p><p class="owned-cast__handle">${escapeHtml(character.handle ? `“${character.handle}”` : "NO HANDLE")}</p><h3>${escapeHtml(character.character_name)}</h3></div>
+      <div>
+        <p class="owned-cast__id">${escapeHtml(character.public_id)}</p>
+        <p class="owned-cast__handle">${escapeHtml(character.handle ? `“${character.handle}”` : "ハンドル未登録")}</p>
+        <h3>${escapeHtml(character.character_name)}</h3>
+      </div>
       <div class="owned-cast__meta">
         <span>${escapeHtml(character.visibility.toUpperCase())}</span>
-        <div class="owned-cast__links">
-          <a href="${SITE_BASE_PATH}cast.html?id=${id}">OPEN</a>
-          <a href="${SITE_BASE_PATH}sheet.html?id=${id}">EDIT SHEET</a>
-          <a href="${SITE_BASE_PATH}image.html?id=${id}">IMAGE</a>
-          <a href="${SITE_BASE_PATH}combos.html?id=${id}">COMBOS</a>
-          <button type="button" data-duplicate="${escapeHtml(character.public_id)}">DUPLICATE</button>
-          <button type="button" data-delete="${escapeHtml(character.public_id)}">DELETE</button>
+        <div class="owned-cast__links" aria-label="キャスト操作">
+          <a href="${SITE_BASE_PATH}cast.html?id=${id}">${actionLabel("閲覧", "OPEN")}</a>
+          <a href="${SITE_BASE_PATH}sheet.html?id=${id}">${actionLabel("シート編集", "EDIT SHEET")}</a>
+          <a href="${SITE_BASE_PATH}image.html?id=${id}">${actionLabel("画像", "IMAGE")}</a>
+          <a href="${SITE_BASE_PATH}combos.html?id=${id}">${actionLabel("コンボ", "COMBOS")}</a>
+          <button type="button" data-duplicate="${escapeHtml(character.public_id)}">${actionLabel("複製", "DUPLICATE")}</button>
+          <button type="button" data-delete="${escapeHtml(character.public_id)}">${actionLabel("削除", "DELETE")}</button>
         </div>
       </div>
     </article>
