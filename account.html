@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>ACCOUNT // N◎VA ARCHIVE</title>
+
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/auth.css">
+</head>
+
+<body>
+  <div class="background-grid"></div>
+  <div class="scanlines"></div>
+
+  <header class="auth-header">
+    <a href="./index.html">
+      &lt; RETURN TO ARCHIVE
+    </a>
+
+    <p>N◎VA MUNICIPAL DATABASE</p>
+    <h1>OPERATOR ACCOUNT</h1>
+  </header>
+
+  <main class="account-layout">
+    <section class="account-panel">
+      <p class="account-panel__label">
+        AUTHENTICATED OPERATOR
+      </p>
+
+      <h2 id="account-email">
+        LOADING...
+      </h2>
+
+      <dl class="account-data">
+        <div>
+          <dt>USER ID</dt>
+          <dd id="account-user-id"></dd>
+        </div>
+
+        <div>
+          <dt>LAST SIGN IN</dt>
+          <dd id="account-last-sign-in"></dd>
+        </div>
+      </dl>
+
+      <div class="account-actions">
+        <a href="./index.html">
+          VIEW ARCHIVE
+        </a>
+
+        <button
+          id="logout-button"
+          type="button"
+        >
+          TERMINATE SESSION
+        </button>
+      </div>
+    </section>
+
+    <section class="account-panel">
+      <header class="account-panel__header">
+        <h2>ASSIGNED CASTS</h2>
+      </header>
+
+      <div id="owned-casts">
+        SCANNING...
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="./js/account.js"></script>
+</body>
+</html>

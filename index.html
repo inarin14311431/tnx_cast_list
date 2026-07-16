@@ -1,17 +1,28 @@
 <!doctype html>
 <html lang="ja">
-<head>
-  <meta charset="utf-8">
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
+<header class="site-header">
+  <div class="site-header__top">
+    <div>
+      <p class="site-header__system">
+        N◎VA MUNICIPAL DATABASE
+      </p>
 
-  <title>N◎VA CAST ARCHIVE</title>
+      <h1>N◎VA CAST ARCHIVE</h1>
+    </div>
 
-  <link rel="stylesheet" href="./css/base.css">
-  <link rel="stylesheet" href="./css/archive.css">
-</head>
+    <nav
+      id="auth-navigation"
+      class="auth-navigation"
+      aria-label="アカウント"
+    >
+      CHECKING SESSION...
+    </nav>
+  </div>
+
+  <p id="status-text">
+    CONNECTING...
+  </p>
+</header>
 
 <body>
   <div class="background-grid"></div>

@@ -1,4 +1,5 @@
 import { supabase } from "./supabase-client.js";
+import { renderAuthNavigation} from "./auth-state.js";
 
 const castGrid = document.querySelector("#cast-grid");
 const statusText = document.querySelector("#status-text");
@@ -134,4 +135,6 @@ function escapeAttribute(value) {
   return escapeHtml(value);
 }
 
+loadCharacters();
+renderAuthNavigation();
 loadCharacters();
