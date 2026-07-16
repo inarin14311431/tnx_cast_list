@@ -5,6 +5,9 @@ const castGrid = document.querySelector("#cast-grid");
 const statusText = document.querySelector("#status-text");
 
 async function loadCharacters() {
+  castGrid.innerHTML = "";
+  statusText.textContent = "SCANNING CAST DATABASE...";
+
   try {
     statusText.textContent = "SCANNING CAST DATABASE...";
 
@@ -135,6 +138,11 @@ function escapeAttribute(value) {
   return escapeHtml(value);
 }
 
-loadCharacters();
+
 renderAuthNavigation();
 loadCharacters();
+
+supabase.auth.onAuthStateChange(() => {
+  renderAuthNavigation();
+  loadCharacters();
+});

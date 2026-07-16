@@ -1,0 +1,641 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
+
+  <title>REGISTER CAST // N◎VA ARCHIVE</title>
+
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/register.css">
+</head>
+
+<body>
+  <div class="background-grid"></div>
+  <div class="scanlines"></div>
+
+  <header class="auth-header">
+    <a href="./account.html">
+      &lt; RETURN TO ACCOUNT
+    </a>
+
+    <p>N◎VA MUNICIPAL DATABASE</p>
+    <h1>CAST REGISTRATION</h1>
+  </header>
+
+  <main class="register-layout">
+    <form id="register-form" class="register-form">
+      <nav class="register-progress">
+        <button
+          type="button"
+          class="register-progress__item is-active"
+          data-step-button="1"
+        >
+          01 IDENTITY
+        </button>
+
+        <button
+          type="button"
+          class="register-progress__item"
+          data-step-button="2"
+        >
+          02 STYLE
+        </button>
+
+        <button
+          type="button"
+          class="register-progress__item"
+          data-step-button="3"
+        >
+          03 ABILITY
+        </button>
+
+        <button
+          type="button"
+          class="register-progress__item"
+          data-step-button="4"
+        >
+          04 CONFIRM
+        </button>
+      </nav>
+
+      <section
+        class="register-step is-active"
+        data-step="1"
+      >
+        <header class="register-step__header">
+          <p>STEP 01</p>
+          <h2>IDENTITY DATA</h2>
+        </header>
+
+        <div class="form-grid">
+          <label class="form-field">
+            <span>キャスト名 *</span>
+
+            <input
+              id="character-name"
+              name="character_name"
+              type="text"
+              maxlength="100"
+              required
+            >
+          </label>
+
+          <label class="form-field">
+            <span>読み</span>
+
+            <input
+              id="character-kana"
+              name="character_kana"
+              type="text"
+              maxlength="100"
+            >
+          </label>
+
+          <label class="form-field">
+            <span>ハンドル</span>
+
+            <input
+              id="handle"
+              name="handle"
+              type="text"
+              maxlength="100"
+            >
+          </label>
+
+          <label class="form-field">
+            <span>プレイヤー名 *</span>
+
+            <input
+              id="player-name"
+              name="player_name"
+              type="text"
+              maxlength="100"
+              required
+            >
+          </label>
+
+          <label class="form-field">
+            <span>所属</span>
+
+            <input
+              id="affiliation"
+              name="affiliation"
+              type="text"
+              maxlength="100"
+            >
+          </label>
+
+          <label class="form-field">
+            <span>市民ランク</span>
+
+            <input
+              id="citizen-rank"
+              name="citizen_rank"
+              type="text"
+              maxlength="20"
+            >
+          </label>
+
+          <label class="form-field">
+            <span>消費経験点</span>
+
+            <input
+              id="experience-points"
+              name="experience_points"
+              type="number"
+              min="0"
+              step="1"
+              value="0"
+            >
+          </label>
+
+          <label class="form-field">
+            <span>年齢</span>
+
+            <input
+              id="age"
+              name="age"
+              type="text"
+              maxlength="30"
+            >
+          </label>
+
+          <label class="form-field">
+            <span>性別</span>
+
+            <input
+              id="gender"
+              name="gender"
+              type="text"
+              maxlength="30"
+            >
+          </label>
+
+          <label class="form-field">
+            <span>身長</span>
+
+            <input
+              id="height"
+              name="height"
+              type="text"
+              maxlength="30"
+            >
+          </label>
+
+          <label class="form-field">
+            <span>体重</span>
+
+            <input
+              id="weight"
+              name="weight"
+              type="text"
+              maxlength="30"
+            >
+          </label>
+
+          <label class="form-field">
+            <span>瞳</span>
+
+            <input
+              id="eyes"
+              name="eyes"
+              type="text"
+              maxlength="50"
+            >
+          </label>
+
+          <label class="form-field">
+            <span>髪</span>
+
+            <input
+              id="hair"
+              name="hair"
+              type="text"
+              maxlength="50"
+            >
+          </label>
+
+          <label class="form-field">
+            <span>肌</span>
+
+            <input
+              id="skin"
+              name="skin"
+              type="text"
+              maxlength="50"
+            >
+          </label>
+
+          <label class="form-field form-field--wide">
+            <span>キャスト概要</span>
+
+            <textarea
+              id="summary"
+              name="summary"
+              rows="4"
+              maxlength="500"
+            ></textarea>
+          </label>
+
+          <label class="form-field form-field--wide">
+            <span>プロフィール</span>
+
+            <textarea
+              id="profile"
+              name="profile"
+              rows="10"
+              maxlength="10000"
+            ></textarea>
+          </label>
+        </div>
+      </section>
+
+      <section
+        class="register-step"
+        data-step="2"
+      >
+        <header class="register-step__header">
+          <p>STEP 02</p>
+          <h2>STYLE DATA</h2>
+        </header>
+
+        <div id="style-fields" class="style-form-list">
+          <fieldset class="style-form-card">
+            <legend>STYLE 01</legend>
+
+            <label class="form-field">
+              <span>スタイル *</span>
+
+              <select
+                id="style-1"
+                name="style_1"
+                required
+              ></select>
+            </label>
+
+            <label class="form-field">
+              <span>指定</span>
+
+              <select
+                id="style-1-mark"
+                name="style_1_mark"
+              >
+                <option value="">無印</option>
+                <option value="◎">◎ ペルソナ</option>
+                <option value="●">● キー</option>
+                <option value="◎●">◎● ペルソナ／キー</option>
+              </select>
+            </label>
+
+            <label class="form-field">
+              <span>神業</span>
+
+              <input
+                id="divine-1"
+                name="divine_1"
+                type="text"
+                readonly
+              >
+            </label>
+          </fieldset>
+
+          <fieldset class="style-form-card">
+            <legend>STYLE 02</legend>
+
+            <label class="form-field">
+              <span>スタイル *</span>
+
+              <select
+                id="style-2"
+                name="style_2"
+                required
+              ></select>
+            </label>
+
+            <label class="form-field">
+              <span>指定</span>
+
+              <select
+                id="style-2-mark"
+                name="style_2_mark"
+              >
+                <option value="">無印</option>
+                <option value="◎">◎ ペルソナ</option>
+                <option value="●">● キー</option>
+                <option value="◎●">◎● ペルソナ／キー</option>
+              </select>
+            </label>
+
+            <label class="form-field">
+              <span>神業</span>
+
+              <input
+                id="divine-2"
+                name="divine_2"
+                type="text"
+                readonly
+              >
+            </label>
+          </fieldset>
+
+          <fieldset class="style-form-card">
+            <legend>STYLE 03</legend>
+
+            <label class="form-field">
+              <span>スタイル *</span>
+
+              <select
+                id="style-3"
+                name="style_3"
+                required
+              ></select>
+            </label>
+
+            <label class="form-field">
+              <span>指定</span>
+
+              <select
+                id="style-3-mark"
+                name="style_3_mark"
+              >
+                <option value="">無印</option>
+                <option value="◎">◎ ペルソナ</option>
+                <option value="●">● キー</option>
+                <option value="◎●">◎● ペルソナ／キー</option>
+              </select>
+            </label>
+
+            <label class="form-field">
+              <span>神業</span>
+
+              <input
+                id="divine-3"
+                name="divine_3"
+                type="text"
+                readonly
+              >
+            </label>
+          </fieldset>
+        </div>
+
+        <div
+          id="style-validation-message"
+          class="form-message"
+          aria-live="polite"
+        ></div>
+      </section>
+
+      <section
+        class="register-step"
+        data-step="3"
+      >
+        <header class="register-step__header">
+          <p>STEP 03</p>
+          <h2>ABILITY / CONTROL</h2>
+        </header>
+
+        <div class="ability-form-grid">
+          <fieldset class="ability-form-card">
+            <legend>♠ 理性</legend>
+
+            <label class="form-field">
+              <span>能力値</span>
+
+              <input
+                id="reason-value"
+                name="reason_value"
+                type="number"
+                min="0"
+                max="99"
+              >
+            </label>
+
+            <label class="form-field">
+              <span>制御値</span>
+
+              <input
+                id="reason-control"
+                name="reason_control"
+                type="number"
+                min="0"
+                max="99"
+              >
+            </label>
+          </fieldset>
+
+          <fieldset class="ability-form-card">
+            <legend>♣ 感情</legend>
+
+            <label class="form-field">
+              <span>能力値</span>
+
+              <input
+                id="passion-value"
+                name="passion_value"
+                type="number"
+                min="0"
+                max="99"
+              >
+            </label>
+
+            <label class="form-field">
+              <span>制御値</span>
+
+              <input
+                id="passion-control"
+                name="passion_control"
+                type="number"
+                min="0"
+                max="99"
+              >
+            </label>
+          </fieldset>
+
+          <fieldset class="ability-form-card">
+            <legend>♥ 生命</legend>
+
+            <label class="form-field">
+              <span>能力値</span>
+
+              <input
+                id="life-value"
+                name="life_value"
+                type="number"
+                min="0"
+                max="99"
+              >
+            </label>
+
+            <label class="form-field">
+              <span>制御値</span>
+
+              <input
+                id="life-control"
+                name="life_control"
+                type="number"
+                min="0"
+                max="99"
+              >
+            </label>
+          </fieldset>
+
+          <fieldset class="ability-form-card">
+            <legend>♦ 外界</legend>
+
+            <label class="form-field">
+              <span>能力値</span>
+
+              <input
+                id="mundane-value"
+                name="mundane_value"
+                type="number"
+                min="0"
+                max="99"
+              >
+            </label>
+
+            <label class="form-field">
+              <span>制御値</span>
+
+              <input
+                id="mundane-control"
+                name="mundane_control"
+                type="number"
+                min="0"
+                max="99"
+              >
+            </label>
+          </fieldset>
+
+          <fieldset class="ability-form-card">
+            <legend>CS</legend>
+
+            <label class="form-field">
+              <span>CS値</span>
+
+              <input
+                id="cs"
+                name="cs"
+                type="number"
+                min="0"
+                max="99"
+              >
+            </label>
+          </fieldset>
+        </div>
+
+        <section class="life-path-panel">
+          <h3>LIFE PATH</h3>
+
+          <div class="form-grid">
+            <label class="form-field">
+              <span>出自</span>
+
+              <input
+                id="life-path-origin"
+                name="life_path_origin"
+                type="text"
+                maxlength="100"
+              >
+            </label>
+
+            <label class="form-field">
+              <span>経験</span>
+
+              <input
+                id="life-path-experience"
+                name="life_path_experience"
+                type="text"
+                maxlength="100"
+              >
+            </label>
+
+            <label class="form-field">
+              <span>邂逅</span>
+
+              <input
+                id="life-path-encounter"
+                name="life_path_encounter"
+                type="text"
+                maxlength="100"
+              >
+            </label>
+          </div>
+        </section>
+      </section>
+
+      <section
+        class="register-step"
+        data-step="4"
+      >
+        <header class="register-step__header">
+          <p>STEP 04</p>
+          <h2>CONFIRM REGISTRATION</h2>
+        </header>
+
+        <div id="register-preview" class="register-preview"></div>
+
+        <label class="form-field">
+          <span>登録時の公開状態</span>
+
+          <select
+            id="visibility"
+            name="visibility"
+          >
+            <option value="draft">
+              DRAFT：所有者のみ
+            </option>
+
+            <option value="private">
+              PRIVATE：所有者のみ
+            </option>
+
+            <option value="public">
+              PUBLIC：一般公開
+            </option>
+          </select>
+        </label>
+      </section>
+
+      <footer class="register-actions">
+        <button
+          id="previous-button"
+          type="button"
+          hidden
+        >
+          PREVIOUS
+        </button>
+
+        <button
+          id="next-button"
+          type="button"
+        >
+          NEXT
+        </button>
+
+        <button
+          id="submit-button"
+          type="submit"
+          hidden
+        >
+          REGISTER CAST
+        </button>
+      </footer>
+
+      <div
+        id="register-message"
+        class="form-message"
+        aria-live="polite"
+      ></div>
+    </form>
+  </main>
+
+  <script type="module" src="./js/register.js"></script>
+</body>
+</html>
