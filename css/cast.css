@@ -482,6 +482,115 @@
   color: var(--line);
 }
 
+.combo-container {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+}
+
+.session-combo-card {
+  position: relative;
+  overflow: hidden;
+  padding: 18px;
+  border: 1px solid rgba(65, 232, 255, 0.22);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(65, 232, 255, 0.07),
+      transparent 48%
+    ),
+    rgba(0, 0, 0, 0.2);
+}
+
+.session-combo-card::before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--line);
+  content: "";
+}
+
+.session-combo-card__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.session-combo-card__header h3 {
+  margin: 4px 0 0;
+  font-size: 1.25rem;
+}
+
+.session-combo-card__ability {
+  margin: 0;
+  color: var(--line);
+  font-family: monospace;
+  font-size: 0.76rem;
+}
+
+.session-combo-card__values {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+}
+
+.session-combo-card__values div {
+  min-width: 90px;
+  padding: 8px 12px;
+  border-left: 2px solid var(--line-muted);
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.session-combo-card__values dt {
+  color: var(--text-muted);
+  font-family: monospace;
+  font-size: 0.65rem;
+}
+
+.session-combo-card__values dd {
+  margin: 4px 0 0;
+  font-family: monospace;
+  font-size: 1.25rem;
+}
+
+.session-combo-card__skills {
+  display: grid;
+  gap: 5px;
+  margin-top: 16px;
+  padding: 11px 13px;
+  border:
+    1px solid rgba(65, 232, 255, 0.16);
+  background: rgba(65, 232, 255, 0.04);
+}
+
+.session-combo-card__skills span {
+  color: var(--text-muted);
+  font-family: monospace;
+  font-size: 0.65rem;
+}
+
+.session-combo-card__skills strong {
+  color: var(--line);
+}
+
+.session-combo-card__conditions,
+.session-combo-card__description {
+  margin: 14px 0 0;
+}
+
+.session-combo-card__conditions {
+  color: var(--text-muted);
+  font-family: monospace;
+  font-size: 0.8rem;
+}
+
+.session-combo-card__description {
+  line-height: 1.8;
+  white-space: pre-wrap;
+}
+
 @keyframes cast-image-scan {
   from {
     transform: translateY(0);
@@ -550,5 +659,14 @@
   .profile-list div {
     grid-template-columns: 1fr;
     gap: 4px;
+  }
+}
+@media (max-width: 520px) {
+  .session-combo-card__header {
+    flex-direction: column;
+  }
+
+  .session-combo-card__values {
+    flex-wrap: wrap;
   }
 }

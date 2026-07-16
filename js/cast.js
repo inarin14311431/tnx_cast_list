@@ -48,40 +48,53 @@ async function loadCharacter() {
       throw new Error("指定されたキャストは存在しません。");
     }
 
-    const [
-      { data: skills, error: skillsError },
-      { data: outfits, error: outfitsError }
-    ] = await Promise.all([
-      supabase
-        .from("character_skills")
-        .select("*")
-        .eq("character_id", character.id)
-        .order("category")
-        .order("sort_order")
-        .order("name"),
+const [
+  { data: skills, error: skillsError },
+  { data: outfits, error: outfitsError },
+  { data: combos, error: combosError }
+] = await Promise.all([
+  supabase
+    .from("character_skills")
+    .select("*")
+    .eq("character_id", character.id)
+    .order("category")
+    .order("sort_order")
+    .order("name"),
 
-      supabase
-        .from("character_outfits")
-        .select("*")
-        .eq("character_id", character.id)
-        .order("category")
-        .order("sort_order")
-        .order("name")
-    ]);
+  supabase
+    .from("character_outfits")
+    .select("*")
+    .eq("character_id", character.id)
+    .order("category")
+    .order("sort_order")
+    .order("name"),
 
-    if (skillsError) {
-      throw skillsError;
-    }
+  supabase
+    .from("character_combos")
+    .select("*")
+    .eq("character_id", character.id)
+    .order("sort_order")
+    .order("name")
+]);
 
-    if (outfitsError) {
-      throw outfitsError;
-    }
+if (skillsError) {
+  throw skillsError;
+}
 
-    renderCharacter(
-      character,
-      skills ?? [],
-      outfits ?? []
-    );
+if (outfitsError) {
+  throw outfitsError;
+}
+
+if (combosError) {
+  throw combosError;
+}
+
+renderCharacter(
+  character,
+  skills ?? [],
+  outfits ?? [],
+  combos ?? []
+);
 
     statusText.textContent = "ACCESS GRANTED";
     content.hidden = false;
@@ -100,7 +113,12 @@ function getPublicId() {
   return params.get("id")?.trim() ?? "";
 }
 
-function renderCharacter(character, skills, outfits) {
+function renderCharacter(
+  character,
+  skills,
+  outfits,
+  combos
+) {
   document.title =
     `${character.character_name} // N◎VA CAST ARCHIVE`;
 
@@ -126,6 +144,7 @@ function renderCharacter(character, skills, outfits) {
   renderProfile(character);
   renderSkills(skills);
   renderOutfits(outfits);
+  renderCombos(combos);
 }
 
 function renderImage(character) {
@@ -476,6 +495,109 @@ function renderOutfits(outfits) {
       `;
     })
     .join("");
+}
+
+const COMBO_ABILITY_LABELS = {
+  reason: "♠ 理性",
+  passion: "♣ 感情",
+  life: "♥ 生命",
+  mundane: "♦ 外界"
+};
+
+function renderCombos(combos) {
+  const container =
+    document.querySelector("#combo-container");
+
+  if (!container) {
+    return;
+  }
+
+  if (!combos.length) {
+    container.innerHTML =
+      `<p class="empty-data">NO COMBO DATA</p>`;
+    return;
+  }
+
+  container.innerHTML = combos
+    .map(createComboCard)
+    .join("");
+}
+
+function createComboCard(combo) {
+  const ability =
+    COMBO_ABILITY_LABELS[combo.ability] ||
+    "ABILITY UNREGISTERED";
+
+  const conditions = [
+    combo.timing,
+    combo.target,
+    combo.range,
+    combo.cost
+  ]
+    .filter(Boolean)
+    .join(" / ");
+
+  return `
+    <article class="session-combo-card">
+      <header class="session-combo-card__header">
+        <div>
+          <p class="session-combo-card__ability">
+            ${escapeHtml(ability)}
+          </p>
+
+          <h3>
+            ${escapeHtml(combo.name)}
+          </h3>
+        </div>
+
+        <dl class="session-combo-card__values">
+          <div>
+            <dt>MODIFIER</dt>
+            <dd>
+              ${escapeHtml(combo.modifier || "—")}
+            </dd>
+          </div>
+
+          <div>
+            <dt>VALUE</dt>
+            <dd>
+              ${escapeHtml(combo.target_value || "—")}
+            </dd>
+          </div>
+        </dl>
+      </header>
+
+      <div class="session-combo-card__skills">
+        <span>COMBINATION</span>
+
+        <strong>
+          ${escapeHtml(
+            combo.skills || "NO SKILL COMBINATION"
+          )}
+        </strong>
+      </div>
+
+      ${
+        conditions
+          ? `
+            <p class="session-combo-card__conditions">
+              ${escapeHtml(conditions)}
+            </p>
+          `
+          : ""
+      }
+
+      ${
+        combo.description
+          ? `
+            <p class="session-combo-card__description">
+              ${escapeHtml(combo.description)}
+            </p>
+          `
+          : ""
+      }
+    </article>
+  `;
 }
 
 function createOutfitRow(item) {
