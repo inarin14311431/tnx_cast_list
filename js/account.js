@@ -155,6 +155,13 @@ function createOwnedCastItem(character) {
 >
   IMAGE
 </a>
+<a
+  href="${SITE_BASE_PATH}combos.html?id=${
+    encodeURIComponent(character.public_id)
+  }"
+>
+  COMBOS
+</a>
 </div>
 </div>
     </article>

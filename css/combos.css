@@ -1,0 +1,241 @@
+.combo-editor-layout {
+  width: min(1100px, calc(100% - 32px));
+  margin: 36px auto 80px;
+}
+
+.combo-editor-panel {
+  border: 1px solid var(--line-muted);
+  background: var(--panel);
+}
+
+.combo-editor-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 22px;
+  border-bottom: 1px solid var(--line-muted);
+}
+
+.combo-editor-panel__header p,
+.combo-editor-panel__header h2 {
+  margin: 0;
+}
+
+.combo-editor-panel__header p {
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.combo-editor-panel__header h2 {
+  margin-top: 4px;
+  color: var(--line);
+}
+
+.combo-editor-panel__header button,
+.combo-dialog__actions button,
+.combo-dialog__header button {
+  padding: 11px 16px;
+  border: 1px solid var(--line);
+  color: var(--line);
+  background: rgba(65, 232, 255, 0.06);
+  cursor: pointer;
+  font-family: monospace;
+}
+
+.combo-message {
+  min-height: 46px;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--line-muted);
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.combo-message--success {
+  color: var(--line);
+}
+
+.combo-message--error {
+  color: var(--alert);
+}
+
+.combo-list {
+  display: grid;
+  gap: 14px;
+  padding: 22px;
+}
+
+.combo-card {
+  width: 100%;
+  padding: 18px;
+  border: 1px solid rgba(65, 232, 255, 0.2);
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  text-align: left;
+}
+
+.combo-card:hover {
+  border-color: var(--line);
+  background: rgba(65, 232, 255, 0.06);
+}
+
+.combo-card__head {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.combo-card__head strong {
+  font-size: 1.15rem;
+}
+
+.combo-card__head span,
+.combo-card__skills,
+.combo-card__detail,
+.combo-card__description {
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.combo-card__skills {
+  color: var(--line);
+}
+
+.combo-card dl {
+  display: flex;
+  gap: 12px;
+  margin: 14px 0;
+}
+
+.combo-card dl div {
+  min-width: 110px;
+  padding: 9px 12px;
+  border-left: 2px solid var(--line-muted);
+}
+
+.combo-card dt {
+  color: var(--text-muted);
+  font-family: monospace;
+  font-size: 0.68rem;
+}
+
+.combo-card dd {
+  margin: 4px 0 0;
+}
+
+.combo-dialog {
+  width: min(900px, calc(100% - 24px));
+  padding: 0;
+  border: 1px solid var(--line);
+  color: var(--text);
+  background: #071015;
+}
+
+.combo-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(3px);
+}
+
+.combo-dialog__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px;
+  border-bottom: 1px solid var(--line-muted);
+}
+
+.combo-dialog__header p,
+.combo-dialog__header h2 {
+  margin: 0;
+}
+
+.combo-dialog__header p {
+  color: var(--text-muted);
+  font-family: monospace;
+  font-size: 0.75rem;
+}
+
+.combo-dialog__header h2 {
+  margin-top: 4px;
+  color: var(--line);
+}
+
+.combo-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.combo-form-grid label {
+  display: grid;
+  gap: 7px;
+}
+
+.combo-form-grid__wide {
+  grid-column: 1 / -1;
+}
+
+.combo-form-grid span {
+  color: var(--text-muted);
+  font-family: monospace;
+  font-size: 0.75rem;
+}
+
+.combo-form-grid input,
+.combo-form-grid select,
+.combo-form-grid textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--line-muted);
+  color: var(--text);
+  outline: none;
+  background: rgba(0, 0, 0, 0.35);
+  font: inherit;
+}
+
+.combo-form-grid input:focus,
+.combo-form-grid select:focus,
+.combo-form-grid textarea:focus {
+  border-color: var(--line);
+}
+
+.combo-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 18px 20px;
+  border-top: 1px solid var(--line-muted);
+}
+
+.combo-dialog__actions .danger {
+  margin-right: auto;
+  color: var(--alert);
+  border-color: var(--alert);
+  background: rgba(255, 61, 103, 0.06);
+}
+
+@media (max-width: 700px) {
+  .combo-editor-layout {
+    width: min(100% - 20px, 1100px);
+  }
+
+  .combo-editor-panel__header,
+  .combo-card__head {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .combo-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .combo-form-grid__wide {
+    grid-column: auto;
+  }
+
+  .combo-card dl {
+    flex-wrap: wrap;
+  }
+}

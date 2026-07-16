@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>COMBO EDITOR // N◎VA ARCHIVE</title>
+
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/combos.css">
+</head>
+
+<body>
+  <div class="background-grid"></div>
+  <div class="scanlines"></div>
+
+  <header class="auth-header">
+    <a id="return-to-cast" href="./account.html">
+      &lt; RETURN TO CAST
+    </a>
+
+    <p>N◎VA MUNICIPAL DATABASE</p>
+    <h1>COMBO DATA EDITOR</h1>
+  </header>
+
+  <main class="combo-editor-layout">
+    <section class="combo-editor-panel">
+      <header class="combo-editor-panel__header">
+        <div>
+          <p id="character-id">ACCESSING...</p>
+          <h2 id="character-name">CAST DATA</h2>
+        </div>
+
+        <button id="add-combo-button" type="button">
+          + ADD COMBO
+        </button>
+      </header>
+
+      <div id="combo-message" class="combo-message" aria-live="polite"></div>
+
+      <div id="combo-list" class="combo-list">
+        SCANNING COMBO DATA...
+      </div>
+    </section>
+  </main>
+
+  <dialog id="combo-dialog" class="combo-dialog">
+    <form id="combo-form" method="dialog">
+      <header class="combo-dialog__header">
+        <div>
+          <p>CAST COMBO DATABASE</p>
+          <h2 id="combo-dialog-title">ADD COMBO</h2>
+        </div>
+
+        <button id="close-dialog-button" type="button" aria-label="閉じる">
+          ×
+        </button>
+      </header>
+
+      <input id="combo-id" name="id" type="hidden">
+
+      <div class="combo-form-grid">
+        <label>
+          <span>コンボ名 *</span>
+          <input id="combo-name" name="name" type="text" maxlength="120" required>
+        </label>
+
+        <label>
+          <span>使用能力</span>
+          <select id="ability" name="ability">
+            <option value="">未指定</option>
+            <option value="reason">♠ 理性</option>
+            <option value="passion">♣ 感情</option>
+            <option value="life">♥ 生命</option>
+            <option value="mundane">♦ 外界</option>
+          </select>
+        </label>
+
+        <label class="combo-form-grid__wide">
+          <span>組み合わせ技能</span>
+          <input id="skills" name="skills" type="text" maxlength="500"
+            placeholder="例：白兵＋居合い＋修羅">
+        </label>
+
+        <label>
+          <span>判定修正</span>
+          <input id="modifier" name="modifier" type="text" maxlength="60"
+            placeholder="例：+3">
+        </label>
+
+        <label>
+          <span>達成値目安</span>
+          <input id="target-value" name="target_value" type="text" maxlength="60"
+            placeholder="例：18">
+        </label>
+
+        <label>
+          <span>タイミング</span>
+          <input id="timing" name="timing" type="text" maxlength="100">
+        </label>
+
+        <label>
+          <span>対象</span>
+          <input id="target" name="target" type="text" maxlength="100">
+        </label>
+
+        <label>
+          <span>射程</span>
+          <input id="range" name="range" type="text" maxlength="100">
+        </label>
+
+        <label>
+          <span>コスト</span>
+          <input id="cost" name="cost" type="text" maxlength="100">
+        </label>
+
+        <label>
+          <span>表示順</span>
+          <input id="sort-order" name="sort_order" type="number" min="0" value="0">
+        </label>
+
+        <label class="combo-form-grid__wide">
+          <span>効果・解説</span>
+          <textarea id="description" name="description" rows="6" maxlength="5000"></textarea>
+        </label>
+      </div>
+
+      <footer class="combo-dialog__actions">
+        <button id="delete-combo-button" type="button" class="danger" hidden>
+          DELETE
+        </button>
+
+        <button id="cancel-combo-button" type="button">
+          CANCEL
+        </button>
+
+        <button id="save-combo-button" type="submit">
+          SAVE
+        </button>
+      </footer>
+    </form>
+  </dialog>
+
+  <script type="module" src="./js/combos.js"></script>
+</body>
+</html>
