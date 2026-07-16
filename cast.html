@@ -2,213 +2,50 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="index, follow">
-
   <title>CAST DATA // N◎VA ARCHIVE</title>
-
   <link rel="stylesheet" href="./css/base.css">
   <link rel="stylesheet" href="./css/cast.css">
+  <link rel="stylesheet" href="./css/session.css">
 </head>
-
 <body>
-  <div class="background-grid"></div>
-  <div class="scanlines"></div>
-
+  <div class="background-grid"></div><div class="scanlines"></div>
   <header class="cast-header">
-    <a class="cast-header__back" href="./index.html">
-      &lt; RETURN TO ARCHIVE
-    </a>
-
-    <p class="cast-header__system">
-      N◎VA MUNICIPAL DATABASE
-    </p>
-
-    <p id="cast-status" class="cast-header__status">
-      ACCESSING CAST DATA...
-    </p>
+    <a class="cast-header__back" href="./index.html">&lt; RETURN TO ARCHIVE</a>
+    <p class="cast-header__system">N◎VA MUNICIPAL DATABASE</p>
+    <p id="cast-status" class="cast-header__status">ACCESSING CAST DATA...</p>
   </header>
 
   <main id="cast-content" class="cast-content" hidden>
     <section class="cast-hero">
-      <div class="cast-hero__image-panel">
-        <div class="cast-hero__image-frame">
-          <img
-            id="cast-image"
-            src="./assets/placeholders/scan-failed.webp"
-            alt=""
-          >
-
-          <span class="cast-hero__image-scan"></span>
-
-          <div class="cast-hero__image-label">
-            VISUAL IDENTITY DATA
-          </div>
-        </div>
-      </div>
-
+      <div class="cast-hero__image-panel"><div class="cast-hero__image-frame"><img id="cast-image" src="./assets/placeholders/scan-failed.webp" alt=""><span class="cast-hero__image-scan"></span><div class="cast-hero__image-label">VISUAL IDENTITY DATA</div></div></div>
       <div class="cast-hero__identity">
-        <p id="cast-public-id" class="cast-public-id"></p>
-
-        <p id="cast-handle" class="cast-handle"></p>
-
-        <h1 id="cast-name" class="cast-name"></h1>
-
-        <p id="cast-kana" class="cast-kana"></p>
-
-        <div id="cast-styles" class="cast-styles"></div>
-
-        <dl class="identity-grid">
-          <div>
-            <dt>PLAYER</dt>
-            <dd id="cast-player"></dd>
-          </div>
-
-          <div>
-            <dt>AFFILIATION</dt>
-            <dd id="cast-affiliation"></dd>
-          </div>
-
-          <div>
-            <dt>CITIZEN RANK</dt>
-            <dd id="cast-rank"></dd>
-          </div>
-
-          <div>
-            <dt>EXP</dt>
-            <dd id="cast-exp"></dd>
-          </div>
-        </dl>
-
+        <p id="cast-public-id" class="cast-public-id"></p><p id="cast-handle" class="cast-handle"></p><h1 id="cast-name" class="cast-name"></h1><p id="cast-kana" class="cast-kana"></p><div id="cast-styles" class="cast-styles"></div>
+        <dl class="identity-grid"><div><dt>PLAYER</dt><dd id="cast-player"></dd></div><div><dt>AFFILIATION</dt><dd id="cast-affiliation"></dd></div><div><dt>CITIZEN RANK</dt><dd id="cast-rank"></dd></div><div><dt>EXP</dt><dd id="cast-exp"></dd></div></dl>
         <p id="cast-summary" class="cast-summary"></p>
       </div>
     </section>
 
-    <nav class="cast-tabs" aria-label="キャスト情報">
-      <button
-        class="cast-tab is-active"
-        type="button"
-        data-tab="session"
-      >
-        SESSION DATA
-      </button>
+    <nav class="cast-tabs" aria-label="キャスト情報"><button class="cast-tab is-active" type="button" data-tab="session">SESSION DATA</button><button class="cast-tab" type="button" data-tab="profile">PROFILE</button><button class="cast-tab" type="button" data-tab="outfits">OUTFITS</button></nav>
 
-      <button
-        class="cast-tab"
-        type="button"
-        data-tab="profile"
-      >
-        PROFILE
-      </button>
-
-      <button
-        class="cast-tab"
-        type="button"
-        data-tab="outfits"
-      >
-        OUTFITS
-      </button>
-    </nav>
-
-    <section
-      id="tab-session"
-      class="cast-tab-panel is-active"
-      data-panel="session"
-    >
+    <section id="tab-session" class="cast-tab-panel is-active" data-panel="session">
       <div class="data-layout">
-        <section class="data-panel">
-          <header class="data-panel__header">
-            <h2>ABILITY / CONTROL</h2>
-          </header>
-
-          <div id="ability-grid" class="ability-grid"></div>
-        </section>
-
-        <section class="data-panel">
-          <header class="data-panel__header">
-            <h2>DIVINE WORKS</h2>
-          </header>
-
-          <div id="divine-list" class="divine-list"></div>
-        </section>
-
-        <section class="data-panel data-panel--wide">
-          <header class="data-panel__header">
-            <h2>SKILLS</h2>
-          </header>
-
-          <div id="skills-container"></div>
-        </section>
-
-<section class="data-panel data-panel--wide">
-  <header class="data-panel__header">
-    <h2>COMBOS</h2>
-  </header>
-
-  <div id="combo-container" class="combo-container"></div>
-</section>
-
+        <section class="data-panel"><header class="data-panel__header"><h2>ABILITY / CONTROL</h2></header><div id="ability-grid" class="ability-grid"></div></section>
+        <section class="data-panel"><header class="data-panel__header"><h2>DIVINE WORKS</h2></header><div id="divine-list" class="divine-list"></div></section>
+        <section class="data-panel data-panel--wide"><header class="data-panel__header"><h2>SKILLS</h2></header><div id="skills-container"></div></section>
+        <section class="data-panel data-panel--wide"><header class="data-panel__header"><h2>COMBOS</h2></header><div id="combo-container" class="combo-container"></div></section>
       </div>
     </section>
 
-    <section
-      id="tab-profile"
-      class="cast-tab-panel"
-      data-panel="profile"
-    >
-      <div class="data-layout">
-        <section class="data-panel">
-          <header class="data-panel__header">
-            <h2>PERSONAL DATA</h2>
-          </header>
+    <section id="tab-profile" class="cast-tab-panel" data-panel="profile"><div class="data-layout"><section class="data-panel"><header class="data-panel__header"><h2>PERSONAL DATA</h2></header><dl id="personal-data" class="profile-list"></dl></section><section class="data-panel"><header class="data-panel__header"><h2>LIFE PATH</h2></header><dl id="life-path" class="profile-list"></dl></section><section class="data-panel data-panel--wide"><header class="data-panel__header"><h2>PROFILE</h2></header><div id="profile-text" class="profile-text"></div></section></div></section>
 
-          <dl id="personal-data" class="profile-list"></dl>
-        </section>
-
-        <section class="data-panel">
-          <header class="data-panel__header">
-            <h2>LIFE PATH</h2>
-          </header>
-
-          <dl id="life-path" class="profile-list"></dl>
-        </section>
-
-        <section class="data-panel data-panel--wide">
-          <header class="data-panel__header">
-            <h2>PROFILE</h2>
-          </header>
-
-          <div id="profile-text" class="profile-text"></div>
-        </section>
-      </div>
-    </section>
-
-    <section
-      id="tab-outfits"
-      class="cast-tab-panel"
-      data-panel="outfits"
-    >
-      <div id="outfit-container" class="outfit-container"></div>
-    </section>
+    <section id="tab-outfits" class="cast-tab-panel" data-panel="outfits"><div id="outfit-container" class="outfit-container"></div></section>
   </main>
 
-  <section id="cast-error" class="cast-error" hidden>
-    <p class="cast-error__code">
-      ERROR // CAST DATA NOT FOUND
-    </p>
-
-    <p id="cast-error-message"></p>
-
-    <a href="./index.html">
-      RETURN TO ARCHIVE
-    </a>
-  </section>
+  <section id="cast-error" class="cast-error" hidden><p class="cast-error__code">ERROR // CAST DATA NOT FOUND</p><p id="cast-error-message"></p><a href="./index.html">RETURN TO ARCHIVE</a></section>
 
   <script type="module" src="./js/cast.js"></script>
+  <script type="module" src="./js/session.js"></script>
 </body>
 </html>
