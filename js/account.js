@@ -117,23 +117,31 @@ function createOwnedCastItem(character) {
     )}
   </span>
 
-  <div class="owned-cast__links">
-    <a
-      href="${SITE_BASE_PATH}cast.html?id=${
-        encodeURIComponent(character.public_id)
-      }"
-    >
-      OPEN
-    </a>
+<div class="owned-cast__links">
+  <a
+    href="${SITE_BASE_PATH}cast.html?id=${
+      encodeURIComponent(character.public_id)
+    }"
+  >
+    OPEN
+  </a>
 
-    <a
-      href="${SITE_BASE_PATH}edit.html?id=${
-        encodeURIComponent(character.public_id)
-      }"
-    >
-      EDIT
-    </a>
-  </div>
+  <a
+    href="${SITE_BASE_PATH}edit.html?id=${
+      encodeURIComponent(character.public_id)
+    }"
+  >
+    EDIT
+  </a>
+
+  <a
+    href="${SITE_BASE_PATH}skills.html?id=${
+      encodeURIComponent(character.public_id)
+    }"
+  >
+    SKILLS
+  </a>
+</div>
 </div>
     </article>
   `;

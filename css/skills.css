@@ -1,0 +1,246 @@
+.skill-editor-layout {
+  width: min(1100px, calc(100% - 32px));
+  margin: 36px auto 80px;
+}
+
+.skill-editor-panel {
+  border: 1px solid var(--line-muted);
+  background: var(--panel);
+}
+
+.skill-editor-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  padding: 22px;
+  border-bottom: 1px solid var(--line-muted);
+}
+
+.skill-editor-panel__header p,
+.skill-editor-panel__header h2 {
+  margin: 0;
+}
+
+.skill-editor-panel__header p {
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.skill-editor-panel__header h2 {
+  margin-top: 4px;
+  color: var(--line);
+}
+
+.skill-editor-panel__header button,
+.skill-dialog__actions button,
+.skill-dialog__header button {
+  padding: 11px 16px;
+  border: 1px solid var(--line);
+  color: var(--line);
+  background: rgba(65, 232, 255, 0.06);
+  cursor: pointer;
+  font-family: monospace;
+}
+
+.skill-message {
+  min-height: 46px;
+  padding: 14px 22px;
+  border-bottom: 1px solid var(--line-muted);
+  color: var(--text-muted);
+  font-family: monospace;
+}
+
+.skill-message--success {
+  color: var(--line);
+}
+
+.skill-message--error {
+  color: var(--alert);
+}
+
+.skill-list {
+  padding: 22px;
+}
+
+.skill-category + .skill-category {
+  margin-top: 28px;
+}
+
+.skill-category h3 {
+  margin: 0 0 12px;
+  color: var(--line);
+  font-family: monospace;
+}
+
+.skill-category__items {
+  display: grid;
+  gap: 10px;
+}
+
+.skill-card {
+  display: grid;
+  grid-template-columns: 80px minmax(180px, 1fr) 100px minmax(220px, 2fr);
+  gap: 14px;
+  align-items: center;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid rgba(65, 232, 255, 0.2);
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.22);
+  cursor: pointer;
+  text-align: left;
+}
+
+.skill-card:hover {
+  border-color: var(--line);
+  background: rgba(65, 232, 255, 0.06);
+}
+
+.skill-card__level,
+.skill-card__suits,
+.skill-card__details {
+  font-family: monospace;
+}
+
+.skill-card__level,
+.skill-card__details {
+  color: var(--text-muted);
+}
+
+.skill-card__suits {
+  color: var(--line);
+}
+
+.skill-dialog {
+  width: min(850px, calc(100% - 24px));
+  padding: 0;
+  border: 1px solid var(--line);
+  color: var(--text);
+  background: #071015;
+}
+
+.skill-dialog::backdrop {
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(3px);
+}
+
+.skill-dialog__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 20px;
+  border-bottom: 1px solid var(--line-muted);
+}
+
+.skill-dialog__header p,
+.skill-dialog__header h2 {
+  margin: 0;
+}
+
+.skill-dialog__header p {
+  color: var(--text-muted);
+  font-family: monospace;
+  font-size: 0.75rem;
+}
+
+.skill-dialog__header h2 {
+  margin-top: 4px;
+  color: var(--line);
+}
+
+.skill-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  padding: 20px;
+}
+
+.skill-form-grid label {
+  display: grid;
+  gap: 7px;
+}
+
+.skill-form-grid__wide {
+  grid-column: 1 / -1;
+}
+
+.skill-form-grid span,
+.suit-fieldset legend {
+  color: var(--text-muted);
+  font-family: monospace;
+  font-size: 0.75rem;
+}
+
+.skill-form-grid input,
+.skill-form-grid select,
+.skill-form-grid textarea {
+  width: 100%;
+  padding: 11px 12px;
+  border: 1px solid var(--line-muted);
+  color: var(--text);
+  outline: none;
+  background: rgba(0, 0, 0, 0.35);
+  font: inherit;
+}
+
+.skill-form-grid input:focus,
+.skill-form-grid select:focus,
+.skill-form-grid textarea:focus {
+  border-color: var(--line);
+}
+
+.suit-fieldset {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 0 20px;
+  padding: 16px;
+  border: 1px solid var(--line-muted);
+}
+
+.suit-fieldset label {
+  cursor: pointer;
+}
+
+.skill-dialog__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  padding: 18px 20px;
+  border-top: 1px solid var(--line-muted);
+}
+
+.skill-dialog__actions .danger {
+  margin-right: auto;
+  color: var(--alert);
+  border-color: var(--alert);
+  background: rgba(255, 61, 103, 0.06);
+}
+
+@media (max-width: 700px) {
+  .skill-editor-layout {
+    width: min(100% - 20px, 1100px);
+  }
+
+  .skill-editor-panel__header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .skill-card {
+    grid-template-columns: 70px 1fr;
+  }
+
+  .skill-card__details {
+    grid-column: 1 / -1;
+  }
+
+  .skill-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .skill-form-grid__wide {
+    grid-column: auto;
+  }
+}
