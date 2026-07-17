@@ -4,21 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>キャストシート編集 // N◎VA ARCHIVE</title>
-  <link rel="stylesheet" href="./css/base.css?v=27">
-  <link rel="stylesheet" href="./css/sheet.css?v=27">
-  <link rel="stylesheet" href="./css/sheet-ja.css?v=27">
-  <link rel="stylesheet" href="./css/sheet-ux-v4.css?v=27">
-  <link rel="stylesheet" href="./css/sheet-ux-v5.css?v=27">
-  <link rel="stylesheet" href="./css/sheet-ux-v7.css?v=27">
-  <link rel="stylesheet" href="./css/sheet-ux-v8.css?v=27">
-  <link rel="stylesheet" href="./css/sheet-ux-v9.css?v=27">
-  <link rel="stylesheet" href="./css/sheet-ux-v10.css?v=27">
-  <link rel="stylesheet" href="./css/ui-ja-v11.css?v=27">
-  <link rel="stylesheet" href="./css/ui-v12.css?v=27">
-  <link rel="stylesheet" href="./css/ui-v13.css?v=27">
-  <link rel="stylesheet" href="./css/site-unified-v15.css?v=27">
-  <link rel="stylesheet" href="./css/sheet-v21.css?v=27">
-  <link rel="stylesheet" href="./css/ui-v25.css?v=27">
+  <link rel="stylesheet" href="./css/base.css?v=28">
+  <link rel="stylesheet" href="./css/sheet.css?v=28">
+  <link rel="stylesheet" href="./css/sheet-ja.css?v=28">
+  <link rel="stylesheet" href="./css/sheet-ux-v4.css?v=28">
+  <link rel="stylesheet" href="./css/sheet-ux-v5.css?v=28">
+  <link rel="stylesheet" href="./css/sheet-ux-v7.css?v=28">
+  <link rel="stylesheet" href="./css/sheet-ux-v8.css?v=28">
+  <link rel="stylesheet" href="./css/sheet-ux-v9.css?v=28">
+  <link rel="stylesheet" href="./css/sheet-ux-v10.css?v=28">
+  <link rel="stylesheet" href="./css/ui-ja-v11.css?v=28">
+  <link rel="stylesheet" href="./css/ui-v12.css?v=28">
+  <link rel="stylesheet" href="./css/ui-v13.css?v=28">
+  <link rel="stylesheet" href="./css/site-unified-v15.css?v=28">
+  <link rel="stylesheet" href="./css/sheet-v21.css?v=28">
+  <link rel="stylesheet" href="./css/ui-v25.css?v=28">
 </head>
 <body>
   <div class="background-grid"></div><div class="scanlines"></div>
@@ -31,7 +31,7 @@
     <aside class="exp-panel">
       <p>消費経験点 <small>EXPERIENCE POINTS</small></p><strong id="exp-total">0</strong>
       <dl id="exp-breakdown"></dl>
-      <button id="save-button" type="button">今すぐ保存 <small>SAVE NOW</small></button>
+      <button id="save-button" type="button" data-save-state="unsaved">未保存 <small>NOT SAVED</small></button>
       <a id="cast-view-button" class="sheet-view-link" target="_blank" rel="noopener">キャストを閲覧 <small>VIEW CAST</small></a>
       <label>公開状態 <small>VISIBILITY</small><select id="visibility"><option value="public">公開 / PUBLIC</option><option value="private">非公開 / PRIVATE</option></select></label>
       <section class="visibility-help" aria-label="公開状態の説明"><strong>公開状態について</strong><dl><div><dt>公開 / PUBLIC</dt><dd>誰でも閲覧可能</dd></div><div><dt>非公開 / PRIVATE</dt><dd>自分だけ閲覧可能</dd></div></dl></section>
@@ -45,7 +45,8 @@
     </section>
   </main>
   <dialog id="tsv-dialog"><form method="dialog"><h2 id="tsv-title">TSV取込 <small>TSV IMPORT</small></h2><textarea id="tsv-text" rows="16"></textarea><div class="dialog-actions"><button value="cancel">キャンセル</button><button id="tsv-apply" value="default">取り込む</button></div></form></dialog>
-  <script type="module" src="./js/sheet.js?v=27"></script>
-  <script type="module" src="./js/ui-v25.js?v=27"></script>
+  <script src="./js/sheet-manual-save-v28.js?v=28"></script>
+  <script type="module" src="./js/sheet.js?v=28"></script>
+  <script type="module" src="./js/ui-v25.js?v=28"></script>
 </body>
 </html>
