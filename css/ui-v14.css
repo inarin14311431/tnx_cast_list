@@ -1,0 +1,57 @@
+/* Skill table layout and per-section controls */
+.skill-group{position:relative}
+.skill-group-title{
+  padding-right:190px!important;
+}
+.skill-group-actions{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:6px;
+  margin:-43px 8px 8px auto;
+  position:relative;
+  z-index:1;
+  width:max-content;
+  max-width:calc(100% - 16px);
+}
+.skill-group-actions button{
+  min-height:30px;
+  padding:5px 9px!important;
+  font-size:.72rem!important;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.skill-group-actions button small{
+  display:block;
+  margin-top:1px;
+  font-size:.52rem!important;
+  white-space:nowrap;
+}
+.skill-table .suit-col{
+  width:54px!important;
+  min-width:54px!important;
+  max-width:54px!important;
+  padding-left:3px!important;
+  padding-right:3px!important;
+  font-size:.68rem!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  word-break:keep-all!important;
+}
+.skill-table td:nth-child(4),
+.skill-table td:nth-child(5),
+.skill-table td:nth-child(6),
+.skill-table td:nth-child(7){
+  width:54px!important;
+  min-width:54px!important;
+  max-width:54px!important;
+}
+
+@media(max-width:850px){
+  .skill-group-title{padding-right:8px!important}
+  .skill-group-actions{
+    justify-content:flex-start;
+    margin:6px 8px 8px;
+    width:auto;
+  }
+}
