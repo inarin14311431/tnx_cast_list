@@ -11,18 +11,20 @@ localizeCastView();
 
 function localizeCastView(){
   const content = document.querySelector("#cast-content");
-  const skillTables = [...document.querySelectorAll("#skills-container .data-table")];
 
-  if(!content || content.hidden || !skillTables.length){
+  if(!content || content.hidden){
+    localizeStatus();
     if(attempts++ < 40) window.setTimeout(localizeCastView, 100);
     return;
   }
 
+  localizeStatus();
   localizeAbilityLabels();
   localizeSkillTables();
   localizeOutfitTables();
   localizeProfileLabels();
   localizeSkillHeadings();
+  localizeOutfitHeadings();
 }
 
 function setBilingual(element, jp, en){
@@ -35,6 +37,20 @@ function setBilingual(element, jp, en){
   }
 }
 
+function localizeStatus(){
+  const status = document.querySelector("#cast-status");
+  if(!status) return;
+  const text = status.textContent.trim();
+  if(/^SCANNING IDENTIFICATION CODE:/i.test(text)){
+    const code = text.split(":").slice(1).join(":").trim();
+    status.textContent = `キャストデータを読み込み中：${code}`;
+  }else if(text === "ACCESS GRANTED"){
+    status.textContent = "キャストデータを表示しています。";
+  }else if(text === "ACCESS DENIED"){
+    status.textContent = "キャストデータへアクセスできません。";
+  }
+}
+
 function localizeAbilityLabels(){
   const labels = {
     VALUE:["能力値","VALUE"],
@@ -43,6 +59,17 @@ function localizeAbilityLabels(){
   };
   document.querySelectorAll(".ability-card__label").forEach(element => {
     const hit = labels[element.textContent.trim().toUpperCase()];
+    if(hit) setBilingual(element, hit[0], hit[1]);
+  });
+
+  const abilityNames = {
+    REASON:["理性","REASON"],
+    PASSION:["感情","PASSION"],
+    LIFE:["生命","LIFE"],
+    MUNDANE:["外界","MUNDANE"]
+  };
+  document.querySelectorAll(".ability-card:not(.ability-card--cs) header span:last-child").forEach(element => {
+    const hit = abilityNames[element.textContent.trim().toUpperCase()];
     if(hit) setBilingual(element, hit[0], hit[1]);
   });
 }
@@ -93,6 +120,22 @@ function localizeOutfitTables(){
   document.querySelectorAll("#outfit-container th").forEach(cell => {
     const hit = labels[cell.textContent.trim().toUpperCase()];
     if(hit) setBilingual(cell,hit[0],hit[1]);
+  });
+}
+
+function localizeOutfitHeadings(){
+  const labels = {
+    WEAPON:["武器","WEAPON"],
+    ARMOR:["防具","ARMOR"],
+    CYBERWARE:["サイバーウェア","CYBERWARE"],
+    TRON:["トロン","TRON"],
+    VEHICLE:["ヴィークル","VEHICLE"],
+    RESIDENCE:["住居","RESIDENCE"],
+    OTHER:["その他","OTHER"]
+  };
+  document.querySelectorAll("#outfit-container .outfit-section h2").forEach(element => {
+    const hit = labels[element.textContent.trim().toUpperCase()];
+    if(hit) setBilingual(element,hit[0],hit[1]);
   });
 }
 
