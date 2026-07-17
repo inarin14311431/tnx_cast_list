@@ -1,0 +1,36 @@
+.account-actions > a:hover,
+.account-actions > button:hover{
+  color:#041319!important;
+  background:#68eaff!important;
+  border-color:#68eaff!important;
+}
+.account-actions > a:hover span,
+.account-actions > button:hover span,
+.account-actions > a:hover small,
+.account-actions > button:hover small{
+  color:#041319!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+
+.owned-cast__links{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:6px!important;
+  width:100%;
+}
+.owned-cast__links > a,
+.owned-cast__links > button{
+  min-width:0!important;
+  width:100%;
+  white-space:nowrap;
+}
+.owned-cast__links .action-label__jp,
+.owned-cast__links .action-label__en{white-space:nowrap}
+
+@media(max-width:900px){
+  .owned-cast__links{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:560px){
+  .owned-cast__links{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
