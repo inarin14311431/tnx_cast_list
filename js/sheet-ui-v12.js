@@ -1,8 +1,8 @@
 const properPrefixes = ["製作：", "芸術：", "操縦："];
 
 bindProperSkillButtons();
+initializeSkillLayout();
 initializeOutfitEnhancer();
-initializeSkillHeaderLabels();
 
 function bindProperSkillButtons(){
   document.querySelectorAll("[data-add-proper]").forEach(button => {
@@ -42,30 +42,93 @@ function addProperSkillRow(name){
       level.value = Math.max(1, Number(level.value || 1));
       level.dispatchEvent(new Event("input", {bubbles:true}));
     }
+
+    arrangeSkillLayout();
     nameInput?.focus();
     nameInput?.setSelectionRange(name.length, name.length);
   });
 }
 
-function initializeSkillHeaderLabels(){
-  const labels = {"♠":"理性","♣":"感情","♥":"生命","♦":"外界"};
+function initializeSkillLayout(){
   let scheduled = false;
-  const apply = () => {
-    scheduled = false;
-    document.querySelectorAll("#general-skills th.suit-col, #style-skills th.suit-col").forEach(cell => {
-      const label = labels[cell.textContent.trim()];
-      if(label) cell.textContent = label;
-    });
-  };
   const schedule = () => {
     if(scheduled) return;
     scheduled = true;
-    requestAnimationFrame(apply);
+    requestAnimationFrame(() => {
+      scheduled = false;
+      arrangeSkillLayout();
+    });
   };
-  [document.querySelector("#general-skills"), document.querySelector("#style-skills")].filter(Boolean).forEach(container => {
-    new MutationObserver(schedule).observe(container,{childList:true,subtree:true});
-  });
+
+  [document.querySelector("#general-skills"), document.querySelector("#style-skills")]
+    .filter(Boolean)
+    .forEach(container => new MutationObserver(schedule).observe(container,{childList:true,subtree:true}));
+
   schedule();
+}
+
+function arrangeSkillLayout(){
+  replaceSuitHeaders();
+  reorderProperRows();
+  moveSectionButtons();
+}
+
+function replaceSuitHeaders(){
+  const labels = {"♠":"理性","♣":"感情","♥":"生命","♦":"外界"};
+  document.querySelectorAll("#general-skills th.suit-col, #style-skills th.suit-col").forEach(cell => {
+    const label = labels[cell.textContent.trim()];
+    if(label) cell.textContent = label;
+  });
+}
+
+function reorderProperRows(){
+  const body = document.querySelector("#general-skills .skill-group tbody");
+  if(!body) return;
+
+  properPrefixes.forEach(prefix => {
+    const matching = [...body.querySelectorAll("tr[data-skill-key]")]
+      .filter(row => row.querySelector('input[data-f="name"]')?.value.startsWith(prefix));
+    if(matching.length < 2) return;
+
+    const master = matching.find(row => row.querySelector('input[data-f="level"]')?.value === "0") || matching[0];
+    let anchor = master;
+    matching.filter(row => row !== master).forEach(row => {
+      anchor.insertAdjacentElement("afterend", row);
+      anchor = row;
+    });
+  });
+}
+
+function moveSectionButtons(){
+  const groups = [...document.querySelectorAll("#general-skills .skill-group, #style-skills .skill-group")];
+  groups.forEach(group => {
+    const title = group.querySelector(":scope > .skill-group-title");
+    if(!title) return;
+
+    let actions = group.querySelector(":scope > .skill-group-actions");
+    if(!actions){
+      actions = document.createElement("div");
+      actions.className = "skill-group-actions";
+      title.insertAdjacentElement("afterend", actions);
+    }
+
+    const text = title.textContent;
+    const selectors = text.includes("一般技能")
+      ? ["[data-add-proper]"]
+      : text.includes("コネクション")
+        ? ["#add-connection"]
+        : text.includes("社会")
+          ? ["#add-social"]
+          : text.includes("スタイル技能")
+            ? ["#add-style-skill"]
+            : [];
+
+    selectors.forEach(selector => {
+      document.querySelectorAll(selector).forEach(button => {
+        if(button.parentElement !== actions) actions.append(button);
+      });
+    });
+  });
 }
 
 function initializeOutfitEnhancer(){
