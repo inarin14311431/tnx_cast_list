@@ -4,9 +4,9 @@
   width:100%;
 }
 #skills-container .data-table th:nth-child(1),
-#skills-container .data-table td:nth-child(1){width:auto}
+#skills-container .data-table td:nth-child(1){width:180px}
 #skills-container .data-table th:nth-child(2),
-#skills-container .data-table td:nth-child(2){width:54px}
+#skills-container .data-table td:nth-child(2){width:48px}
 #skills-container .data-table th:nth-child(3),
 #skills-container .data-table td:nth-child(3),
 #skills-container .data-table th:nth-child(4),
@@ -14,14 +14,33 @@
 #skills-container .data-table th:nth-child(5),
 #skills-container .data-table td:nth-child(5),
 #skills-container .data-table th:nth-child(6),
-#skills-container .data-table td:nth-child(6){width:58px!important}
+#skills-container .data-table td:nth-child(6){width:54px!important}
 #skills-container .skill-section.is-style .data-table th:last-child,
-#skills-container .skill-section.is-style .data-table td:last-child{width:34%}
+#skills-container .skill-section.is-style .data-table td:last-child{width:auto}
 
-/* CS occupies half a row on wide screens. */
+/* The general/social/connection tables keep all four suit columns visible. */
+.cast-skill-layout .skill-section.is-general .data-table th:last-child,
+.cast-skill-layout .skill-section.is-general .data-table td:last-child,
+.cast-skill-side .data-table th:last-child,
+.cast-skill-side .data-table td:last-child{
+  display:table-cell!important;
+}
+
+/* CS occupies half a row; its current-value field uses the full card width. */
 #ability-grid .ability-card--cs{
   width:calc(50% - 8px);
   max-width:520px;
+}
+#ability-grid .ability-card--cs .cs-row{
+  display:grid;
+  grid-template-columns:1fr;
+  width:100%;
+}
+#ability-grid .ability-card--cs .cs-row label,
+#ability-grid .ability-card--cs .cs-row input{
+  width:100%;
+  min-width:0;
+  box-sizing:border-box;
 }
 
 /* Fixed-height, vertically resizable read-only detail fields. */
@@ -53,6 +72,8 @@
 
 @media(max-width:820px){
   #ability-grid .ability-card--cs{width:100%;max-width:none}
+  #skills-container .data-table th:nth-child(1),
+  #skills-container .data-table td:nth-child(1){width:140px}
   #skills-container .data-table th:nth-child(n+3):nth-child(-n+6),
-  #skills-container .data-table td:nth-child(n+3):nth-child(-n+6){width:48px!important}
+  #skills-container .data-table td:nth-child(n+3):nth-child(-n+6){width:46px!important}
 }
