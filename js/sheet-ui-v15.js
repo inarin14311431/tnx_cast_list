@@ -1,4 +1,5 @@
 const properPrefixes = ["製作：", "芸術：", "操縦："];
+const properSuit = {"製作：":"reason","芸術：":"passion","操縦：":"life"};
 const skillArea = document.querySelector("#general-skills");
 const styleArea = document.querySelector("#style-skills");
 let skillUiScheduled = false;
@@ -21,6 +22,8 @@ function initialize(){
 
 function bindProperSkillButtons(){
   document.querySelectorAll("[data-add-proper]").forEach(button => {
+    if(button.dataset.bound === "1") return;
+    button.dataset.bound = "1";
     button.addEventListener("click", () => addProperSkillRow(button.dataset.addProper));
   });
 }
@@ -28,39 +31,34 @@ function bindProperSkillButtons(){
 function addProperSkillRow(name){
   const hiddenAdd = document.querySelector("#add-general");
   if(!hiddenAdd) return;
-
-  const existingKeys = new Set(
-    [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
-      .map(row => row.dataset.skillKey)
-  );
-
   hiddenAdd.click();
 
   requestAnimationFrame(() => {
-    const row = [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
-      .find(item => !existingKeys.has(item.dataset.skillKey));
+    const rows = [...document.querySelectorAll("#general-skills tr[data-skill-key]")];
+    const row = [...rows].reverse().find(item => item.querySelector('input[data-f="name"]')?.value === "");
     if(!row) return;
 
     const nameInput = row.querySelector('input[data-f="name"]');
     const kind = row.querySelector('select[data-f="skill_kind"]');
-    const level = row.querySelector('input[data-f="level"]');
+    const suit = row.querySelector(`input[data-f="${properSuit[name]}"]`);
 
-    if(nameInput){
-      nameInput.value = name;
-      nameInput.dispatchEvent(new Event("input", {bubbles:true}));
-    }
-    if(kind){
-      kind.value = "proper";
-      kind.dispatchEvent(new Event("input", {bubbles:true}));
-    }
-    if(level){
-      level.value = Math.max(1, Number(level.value || 1));
-      level.dispatchEvent(new Event("input", {bubbles:true}));
+    nameInput.value = name;
+    kind.value = "proper";
+    nameInput.dispatchEvent(new Event("input", {bubbles:true}));
+    kind.dispatchEvent(new Event("input", {bubbles:true}));
+    if(suit && !suit.checked){
+      suit.checked = true;
+      suit.dispatchEvent(new Event("input", {bubbles:true}));
     }
 
-    arrangeSkillUi();
-    nameInput?.focus();
-    nameInput?.setSelectionRange(name.length, name.length);
+    requestAnimationFrame(() => {
+      arrangeSkillUi();
+      const current = [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
+        .find(item => item.querySelector('input[data-f="name"]')?.value === name && item.querySelector('input[data-f="level"]')?.value !== "0");
+      const input = current?.querySelector('input[data-f="name"]');
+      input?.focus();
+      input?.setSelectionRange(name.length, name.length);
+    });
   });
 }
 
@@ -93,13 +91,14 @@ function placeProperRows(){
 
   for(const prefix of properPrefixes){
     const rows = [...tbody.querySelectorAll(":scope > tr[data-skill-key]")];
-    const matches = rows.filter(row => row.querySelector('input[data-f="name"]')?.value.startsWith(prefix));
-    if(matches.length < 2) continue;
-
-    const anchor = matches.find(row => row.querySelector('input[data-f="name"]')?.value === prefix) || matches[0];
+    const anchor = rows.find(row => row.querySelector('input[data-f="name"]')?.value === prefix);
+    if(!anchor) continue;
+    const extras = rows.filter(row => {
+      const value = row.querySelector('input[data-f="name"]')?.value || "";
+      return row !== anchor && value.startsWith(prefix);
+    });
     let cursor = anchor;
-    for(const row of matches){
-      if(row === anchor) continue;
+    for(const row of extras){
       if(cursor.nextElementSibling !== row) cursor.after(row);
       cursor = row;
     }
@@ -109,22 +108,29 @@ function placeProperRows(){
 function ensureGroupActions(){
   document.querySelectorAll(".skill-group").forEach(group => {
     const title = group.querySelector(":scope > .skill-group-title");
-    if(!title || group.querySelector(":scope > .skill-group-heading")) return;
+    if(!title) return;
 
-    const heading = document.createElement("div");
-    heading.className = "skill-group-heading";
-    title.before(heading);
-    heading.append(title);
+    let heading = group.querySelector(":scope > .skill-group-heading");
+    if(!heading){
+      heading = document.createElement("div");
+      heading.className = "skill-group-heading";
+      title.before(heading);
+      heading.append(title);
+    }
 
-    const actions = document.createElement("div");
-    actions.className = "skill-group-actions";
-    heading.append(actions);
+    let actions = heading.querySelector(":scope > .skill-group-actions");
+    if(!actions){
+      actions = document.createElement("div");
+      actions.className = "skill-group-actions";
+      heading.append(actions);
+    }
+    actions.replaceChildren();
 
     const text = title.textContent;
     if(text.includes("一般技能")){
-      addProxy(actions, "製作を追加", "ADD CRAFT", () => document.querySelector('[data-add-proper="製作："]')?.click());
-      addProxy(actions, "芸術を追加", "ADD ART", () => document.querySelector('[data-add-proper="芸術："]')?.click());
-      addProxy(actions, "操縦を追加", "ADD PILOTING", () => document.querySelector('[data-add-proper="操縦："]')?.click());
+      addProxy(actions, "製作を追加", "ADD CRAFT", () => addProperSkillRow("製作："));
+      addProxy(actions, "芸術を追加", "ADD ART", () => addProperSkillRow("芸術："));
+      addProxy(actions, "操縦を追加", "ADD PILOTING", () => addProperSkillRow("操縦："));
     } else if(text.includes("社会")){
       addProxy(actions, "社会を追加", "ADD SOCIAL", () => document.querySelector("#add-social")?.click());
     } else if(text.includes("コネクション")){
