@@ -13,6 +13,7 @@ initialize();
 function initialize(){
   bindTopButtons();
   bindTemplateSuitActivation();
+  bindStyleSortControls();
   initializeSkillUi();
   initializeOutfitEnhancer();
   updateViewLink();
@@ -24,7 +25,7 @@ function bindTopButtons(){
   document.querySelectorAll("[data-add-proper]").forEach(button => {
     button.addEventListener("click", event => {
       event.preventDefault();
-      createProperSkill(button.dataset.addProper, true);
+      createProperSkill(button.dataset.addProper);
     });
   });
 }
@@ -40,52 +41,65 @@ function bindTemplateSuitActivation(){
 
     event.preventDefault();
     event.stopImmediatePropagation();
-    createProperSkill(name, false, checkbox.dataset.f);
+    createProperSkill(name, checkbox.dataset.f);
   }, true);
 }
 
-function createProperSkill(prefix, preserveTemplate, selectedSuit = ""){
+function blankActualRows(){
+  return [...document.querySelectorAll("#general-skills tr[data-skill-key]")].filter(row => {
+    const name = row.querySelector('input[data-f="name"]')?.value || "";
+    const level = Number(row.querySelector('input[data-f="level"]')?.value || 0);
+    return name === "" && level > 0;
+  });
+}
+
+function createProperSkill(prefix, selectedSuit = ""){
   const hiddenAdd = document.querySelector("#add-general");
   if(!hiddenAdd) return;
 
-  const before = new Set(
-    [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
-      .map(row => row.dataset.skillKey)
-  );
-
+  const before = new Set(blankActualRows().map(row => row.dataset.skillKey));
   hiddenAdd.click();
 
   requestAnimationFrame(() => {
-    const row = [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
-      .find(item => !before.has(item.dataset.skillKey));
+    let row = blankActualRows().find(item => !before.has(item.dataset.skillKey));
+    if(!row) row = blankActualRows().at(-1);
     if(!row) return;
 
-    const nameInput = row.querySelector('input[data-f="name"]');
-    const kindSelect = row.querySelector('select[data-f="skill_kind"]');
-    if(!nameInput || !kindSelect) return;
+    const key = row.dataset.skillKey;
+    let nameInput = row.querySelector('input[data-f="name"]');
+    let kindSelect = row.querySelector('select[data-f="skill_kind"]');
+    let levelInput = row.querySelector('input[data-f="level"]');
+    if(!nameInput || !kindSelect || !levelInput) return;
 
-    // The invisible suffix keeps the permanent input template visible while
-    // presenting the same initial text to the user.
-    nameInput.value = preserveTemplate ? `${prefix}\u200B` : prefix;
-    kindSelect.value = "proper";
+    nameInput.value = prefix;
     nameInput.dispatchEvent(new Event("input", {bubbles:true}));
+    kindSelect.value = "proper";
     kindSelect.dispatchEvent(new Event("input", {bubbles:true}));
 
-    const suitName = selectedSuit || PROPER_SKILLS[prefix];
-    const suit = row.querySelector(`input[data-f="${suitName}"]`);
-    if(suit){
-      suit.checked = true;
-      suit.dispatchEvent(new Event("input", {bubbles:true}));
-    }
+    levelInput.value = "0";
+    levelInput.dispatchEvent(new Event("input", {bubbles:true}));
 
     requestAnimationFrame(() => {
-      arrangeSkillUi();
-      const matching = [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
-        .filter(item => (item.querySelector('input[data-f="name"]')?.value || "").startsWith(prefix));
-      const added = matching.find(item => item.dataset.skillKey === row.dataset.skillKey) || matching.at(-1);
-      const input = added?.querySelector('input[data-f="name"]');
-      input?.focus();
-      input?.setSelectionRange(prefix.length, prefix.length);
+      row = document.querySelector(`#general-skills tr[data-skill-key="${CSS.escape(key)}"]`)
+        || [...document.querySelectorAll("#general-skills tr[data-skill-key]")].find(item => item.querySelector('input[data-f="name"]')?.value === prefix && Number(item.querySelector('input[data-f="level"]')?.value || 0) === 0);
+      if(!row) return;
+
+      if(selectedSuit){
+        const suit = row.querySelector(`input[data-f="${selectedSuit}"]`);
+        if(suit && !suit.checked){
+          suit.checked = true;
+          suit.dispatchEvent(new Event("input", {bubbles:true}));
+        }
+      }
+
+      requestAnimationFrame(() => {
+        arrangeSkillUi();
+        const current = document.querySelector(`#general-skills tr[data-skill-key="${CSS.escape(key)}"]`)
+          || [...document.querySelectorAll("#general-skills tr[data-skill-key]")].reverse().find(item => item.querySelector('input[data-f="name"]')?.value === prefix);
+        const input = current?.querySelector('input[data-f="name"]');
+        input?.focus();
+        input?.setSelectionRange(prefix.length, prefix.length);
+      });
     });
   });
 }
@@ -110,6 +124,8 @@ function arrangeSkillUi(){
   replaceSuitHeaders();
   placeProperRows();
   ensureGroupActions();
+  markGeneralRows();
+  ensureStyleSortButtons();
 }
 
 function replaceSuitHeaders(){
@@ -126,13 +142,20 @@ function placeProperRows(){
   Object.keys(PROPER_SKILLS).forEach(prefix => {
     const rows = [...tbody.querySelectorAll(":scope > tr[data-skill-key]")];
     const anchor = rows.find(row => row.querySelector('input[data-f="name"]')?.value === prefix && Number(row.querySelector('input[data-f="level"]')?.value || 0) === 0);
-    if(!anchor) return;
-    const extras = rows.filter(row => row !== anchor && (row.querySelector('input[data-f="name"]')?.value || "").startsWith(prefix));
-    let cursor = anchor;
-    extras.forEach(row => {
+    const matching = rows.filter(row => (row.querySelector('input[data-f="name"]')?.value || "") === prefix && row !== anchor);
+    let cursor = anchor || matching.shift();
+    if(!cursor) return;
+    matching.forEach(row => {
       if(cursor.nextElementSibling !== row) cursor.after(row);
       cursor = row;
     });
+  });
+}
+
+function markGeneralRows(){
+  document.querySelectorAll("#general-skills .skill-group:first-child tr[data-skill-key]").forEach(row => {
+    const kind = row.querySelector('select[data-f="skill_kind"]')?.value;
+    row.classList.toggle("is-fixed-general", kind === "general");
   });
 }
 
@@ -156,9 +179,9 @@ function ensureGroupActions(){
     actions.replaceChildren();
     const text = title.textContent;
     if(text.includes("一般技能")){
-      addProxy(actions,"製作を追加","ADD CRAFT",()=>createProperSkill("製作：",true));
-      addProxy(actions,"芸術を追加","ADD ART",()=>createProperSkill("芸術：",true));
-      addProxy(actions,"操縦を追加","ADD PILOTING",()=>createProperSkill("操縦：",true));
+      addProxy(actions,"製作を追加","ADD CRAFT",()=>createProperSkill("製作："));
+      addProxy(actions,"芸術を追加","ADD ART",()=>createProperSkill("芸術："));
+      addProxy(actions,"操縦を追加","ADD PILOTING",()=>createProperSkill("操縦："));
     }else if(text.includes("社会")){
       addProxy(actions,"社会を追加","ADD SOCIAL",()=>document.querySelector("#add-social")?.click());
     }else if(text.includes("コネクション")){
@@ -178,6 +201,84 @@ function addProxy(container,jp,en,handler){
   container.append(button);
 }
 
+function bindStyleSortControls(){
+  document.addEventListener("click", event => {
+    const button = event.target.closest("[data-style-move]");
+    if(!button) return;
+    const row = button.closest("tr[data-skill-key]");
+    const tbody = row?.parentElement;
+    if(!row || !tbody) return;
+    const rows = [...tbody.querySelectorAll(":scope > tr[data-skill-key]")];
+    const index = rows.indexOf(row);
+    const targetIndex = button.dataset.styleMove === "up" ? index - 1 : index + 1;
+    if(targetIndex < 0 || targetIndex >= rows.length) return;
+    swapStyleRows(row, rows[targetIndex]);
+  });
+}
+
+function ensureStyleSortButtons(){
+  const rows = [...document.querySelectorAll("#style-skills tr[data-skill-key]")];
+  rows.forEach((row,index) => {
+    const cell = row.lastElementChild;
+    if(!cell) return;
+    let controls = cell.querySelector(".style-sort-controls");
+    if(!controls){
+      controls = document.createElement("span");
+      controls.className = "style-sort-controls";
+      controls.innerHTML = '<button type="button" data-style-move="up" title="上へ移動">↑</button><button type="button" data-style-move="down" title="下へ移動">↓</button>';
+      cell.prepend(controls);
+    }
+    controls.querySelector('[data-style-move="up"]').disabled = index === 0;
+    controls.querySelector('[data-style-move="down"]').disabled = index === rows.length - 1;
+  });
+}
+
+function snapshotRow(row){
+  const data = {};
+  row.querySelectorAll("[data-f]").forEach(element => {
+    data[element.dataset.f] = element.type === "checkbox" ? element.checked : element.value;
+  });
+  return data;
+}
+
+function applySnapshot(key, data){
+  let row = document.querySelector(`#style-skills tr[data-skill-key="${CSS.escape(key)}"]`);
+  if(!row) return;
+
+  for(const field of ["name","skill_kind","description"]){
+    const element = row.querySelector(`[data-f="${field}"]`);
+    if(!element || data[field] === undefined) continue;
+    element.value = data[field];
+    element.dispatchEvent(new Event("input",{bubbles:true}));
+  }
+
+  row = document.querySelector(`#style-skills tr[data-skill-key="${CSS.escape(key)}"]`);
+  const level = row?.querySelector('[data-f="level"]');
+  if(level){
+    level.value = "0";
+    level.dispatchEvent(new Event("input",{bubbles:true}));
+  }
+
+  SUITS.forEach(suitName => {
+    row = document.querySelector(`#style-skills tr[data-skill-key="${CSS.escape(key)}"]`);
+    const checkbox = row?.querySelector(`[data-f="${suitName}"]`);
+    if(checkbox && data[suitName]){
+      checkbox.checked = true;
+      checkbox.dispatchEvent(new Event("input",{bubbles:true}));
+    }
+  });
+}
+
+function swapStyleRows(first, second){
+  const firstKey = first.dataset.skillKey;
+  const secondKey = second.dataset.skillKey;
+  const firstData = snapshotRow(first);
+  const secondData = snapshotRow(second);
+  applySnapshot(firstKey, secondData);
+  applySnapshot(secondKey, firstData);
+  requestAnimationFrame(arrangeSkillUi);
+}
+
 function initializeOutfitEnhancer(){
   const list = document.querySelector("#outfit-list");
   if(!list) return;
@@ -193,7 +294,7 @@ function initializeOutfitEnhancer(){
 
 function enhanceOutfits(){
   document.querySelectorAll("#outfit-list .outfit-form").forEach(card => {
-    if(card.dataset.v20Enhanced === "1") return;
+    if(card.dataset.v21Enhanced === "1") return;
     const fields = card.querySelector(".outfit-fields");
     const header = card.querySelector(":scope > header");
     if(!fields || !header) return;
@@ -210,12 +311,12 @@ function enhanceOutfits(){
     const original = fields.querySelector('input[data-o="description"]');
     if(original && !fields.querySelector("textarea[data-description-proxy]")){
       const textarea = document.createElement("textarea");
-      textarea.rows=2; textarea.value=original.value; textarea.dataset.descriptionProxy="1"; textarea.setAttribute("aria-label","解説");
+      textarea.rows=3; textarea.value=original.value; textarea.dataset.descriptionProxy="1"; textarea.setAttribute("aria-label","解説");
       textarea.addEventListener("input",()=>{original.value=textarea.value;original.dispatchEvent(new Event("input",{bubbles:true}));});
       original.hidden=true; original.after(textarea); original.closest("label")?.classList.add("outfit-description");
     }
     if(remove){const wrap=document.createElement("div");wrap.className="outfit-delete-cell";wrap.append(remove);fields.append(wrap);}
-    card.dataset.v20Enhanced="1";
+    card.dataset.v21Enhanced="1";
   });
 }
 
