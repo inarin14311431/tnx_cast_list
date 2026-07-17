@@ -22,7 +22,12 @@
     <section class="cast-hero">
       <div class="cast-hero__image-panel"><div class="cast-hero__image-frame"><img id="cast-image" src="./assets/placeholders/scan-failed.webp" alt=""><span class="cast-hero__image-scan"></span><div class="cast-hero__image-label">人物画像 <small>VISUAL IDENTITY</small></div></div></div>
       <div class="cast-hero__identity">
-        <p id="cast-public-id" class="cast-public-id"></p><p id="cast-handle" class="cast-handle"></p><h1 id="cast-name" class="cast-name"></h1><p id="cast-kana" class="cast-kana"></p><div id="cast-styles" class="cast-styles"></div>
+        <p id="cast-public-id" class="cast-public-id"></p><p id="cast-handle" class="cast-handle"></p><h1 id="cast-name" class="cast-name"></h1><p id="cast-kana" class="cast-kana"></p>
+        <div id="cast-styles" class="cast-styles"></div>
+        <section class="hero-divine-panel" aria-label="神業">
+          <header><h2>神業 <small>DIVINE WORKS</small></h2></header>
+          <div id="divine-list" class="divine-list hero-divine-list"></div>
+        </section>
         <dl class="identity-grid"><div><dt>プレイヤー <small>PLAYER</small></dt><dd id="cast-player"></dd></div><div><dt>所属 <small>AFFILIATION</small></dt><dd id="cast-affiliation"></dd></div><div><dt>市民ランク <small>CITIZEN RANK</small></dt><dd id="cast-rank"></dd></div><div><dt>消費経験点 <small>EXP</small></dt><dd id="cast-exp"></dd></div></dl>
         <p id="cast-summary" class="cast-summary"></p>
       </div>
@@ -32,8 +37,7 @@
 
     <section id="tab-session" class="cast-tab-panel is-active" data-panel="session">
       <div class="data-layout">
-        <section class="data-panel"><header class="data-panel__header"><h2>能力値／制御値 <small>ABILITY / CONTROL</small></h2></header><div id="ability-grid" class="ability-grid"></div></section>
-        <section class="data-panel"><header class="data-panel__header"><h2>神業 <small>DIVINE WORKS</small></h2></header><div id="divine-list" class="divine-list"></div></section>
+        <section class="data-panel data-panel--wide"><header class="data-panel__header"><h2>能力値／制御値 <small>ABILITY / CONTROL</small></h2></header><div id="ability-grid" class="ability-grid"></div></section>
         <section class="data-panel data-panel--wide"><header class="data-panel__header"><h2>技能 <small>SKILLS</small></h2></header><div id="skills-container"></div></section>
         <section class="data-panel data-panel--wide"><header class="data-panel__header"><h2>コンボ <small>COMBOS</small></h2></header><div id="combo-container" class="combo-container"></div></section>
       </div>
