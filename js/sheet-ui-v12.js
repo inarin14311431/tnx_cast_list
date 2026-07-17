@@ -2,6 +2,7 @@ const properPrefixes = ["製作：", "芸術：", "操縦："];
 
 bindProperSkillButtons();
 initializeOutfitEnhancer();
+initializeSkillHeaderLabels();
 
 function bindProperSkillButtons(){
   document.querySelectorAll("[data-add-proper]").forEach(button => {
@@ -44,6 +45,27 @@ function addProperSkillRow(name){
     nameInput?.focus();
     nameInput?.setSelectionRange(name.length, name.length);
   });
+}
+
+function initializeSkillHeaderLabels(){
+  const labels = {"♠":"理性","♣":"感情","♥":"生命","♦":"外界"};
+  let scheduled = false;
+  const apply = () => {
+    scheduled = false;
+    document.querySelectorAll("#general-skills th.suit-col, #style-skills th.suit-col").forEach(cell => {
+      const label = labels[cell.textContent.trim()];
+      if(label) cell.textContent = label;
+    });
+  };
+  const schedule = () => {
+    if(scheduled) return;
+    scheduled = true;
+    requestAnimationFrame(apply);
+  };
+  [document.querySelector("#general-skills"), document.querySelector("#style-skills")].filter(Boolean).forEach(container => {
+    new MutationObserver(schedule).observe(container,{childList:true,subtree:true});
+  });
+  schedule();
 }
 
 function initializeOutfitEnhancer(){
