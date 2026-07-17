@@ -1,0 +1,86 @@
+/* Shared visual language based on the sheet editor. */
+:root{
+  --panel-bg:rgba(5,18,24,.92);
+  --panel-bg-soft:rgba(8,28,36,.88);
+  --panel-line:rgba(65,232,255,.52);
+  --panel-line-strong:rgba(65,232,255,.82);
+  --panel-text:#eefcff;
+  --panel-muted:#9dc5ce;
+}
+body{color:var(--panel-text)}
+.site-header,.auth-header,.cast-header,.sheet-header{
+  border-bottom:1px solid var(--panel-line)!important;
+  background:linear-gradient(180deg,rgba(4,15,20,.98),rgba(4,15,20,.88))!important;
+  box-shadow:0 8px 30px rgba(0,0,0,.28)
+}
+.archive-controls,.account-panel,.auth-terminal,.data-panel,.cast-hero,.exp-panel,.sheet-section{
+  border:1px solid var(--panel-line)!important;
+  background:linear-gradient(180deg,var(--panel-bg-soft),var(--panel-bg))!important;
+  box-shadow:0 12px 30px rgba(0,0,0,.22)
+}
+button,a.auth-navigation__link,.account-actions a,.account-actions button,.cast-tab,.sheet-view-link{
+  border-color:var(--panel-line)!important;
+}
+button:hover,a.auth-navigation__link:hover,.account-actions a:hover,.account-actions button:hover,.cast-tab:hover,.sheet-view-link:hover{
+  border-color:var(--panel-line-strong)!important;
+}
+input,select,textarea{
+  border-color:rgba(65,232,255,.55)!important;
+  background:rgba(1,11,15,.9)!important;
+  color:var(--panel-text)!important;
+}
+small{color:var(--panel-muted)}
+.cast-grid .cast-card,.owned-cast{
+  border-color:var(--panel-line)!important;
+  background:linear-gradient(180deg,rgba(8,28,36,.94),rgba(3,14,19,.96))!important;
+}
+
+/* Editor skill actions */
+.skill-toolbar > [data-add-proper],
+.skill-toolbar > #add-social,
+.skill-toolbar > #add-connection,
+.skill-toolbar > #add-style-skill{
+  display:none!important;
+}
+.skill-group-heading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:14px 0 7px;
+}
+.skill-group-heading .skill-group-title{margin:0}
+.skill-group-actions{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:6px}
+.skill-inline-add{
+  min-height:34px;
+  padding:6px 10px;
+  font-size:.74rem;
+  line-height:1.1;
+  white-space:nowrap;
+}
+.skill-inline-add small{display:block;margin-top:2px;font-size:.55rem;letter-spacing:.05em}
+.skill-table .suit-col{
+  width:48px!important;
+  min-width:48px!important;
+  padding-inline:3px!important;
+  font-size:.72rem!important;
+  line-height:1!important;
+  white-space:nowrap!important;
+}
+
+/* Read-only outfit proportions */
+.outfit-section .data-table{width:100%;table-layout:fixed;min-width:860px}
+.outfit-section .data-table th:nth-child(1),.outfit-section .data-table td:nth-child(1){width:20%}
+.outfit-section .data-table th:nth-child(2),.outfit-section .data-table td:nth-child(2){width:8%}
+.outfit-section .data-table th:nth-child(3),.outfit-section .data-table td:nth-child(3){width:8%}
+.outfit-section .data-table th:nth-child(4),.outfit-section .data-table td:nth-child(4){width:10%}
+.outfit-section .data-table th:nth-child(5),.outfit-section .data-table td:nth-child(5){width:10%}
+.outfit-section .data-table th:nth-child(6),.outfit-section .data-table td:nth-child(6){width:10%}
+.outfit-section .data-table th:nth-child(7),.outfit-section .data-table td:nth-child(7){width:12%}
+.outfit-section .data-table th:nth-child(8),.outfit-section .data-table td:nth-child(8){width:22%;white-space:normal;overflow-wrap:anywhere}
+
+@media(max-width:760px){
+  .skill-group-heading{align-items:flex-start;flex-direction:column}
+  .skill-group-actions{justify-content:flex-start}
+  .skill-table .suit-col{width:42px!important;min-width:42px!important;font-size:.66rem!important}
+}
