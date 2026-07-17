@@ -3,10 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>N◎VA CAST ARCHIVE</title>
+  <title>キャストアーカイブ // N◎VA</title>
   <link rel="stylesheet" href="./css/base.css">
   <link rel="stylesheet" href="./css/archive.css">
   <link rel="stylesheet" href="./css/archive-ja.css">
+  <link rel="stylesheet" href="./css/ui-ja-v11.css">
 </head>
 <body>
   <div class="background-grid"></div>
@@ -15,21 +16,21 @@
     <div class="site-header__top">
       <div>
         <p class="site-header__system">N◎VA MUNICIPAL DATABASE</p>
-        <h1>N◎VA CAST ARCHIVE</h1>
+        <h1>キャストアーカイブ <small>CAST ARCHIVE</small></h1>
       </div>
-      <nav id="auth-navigation" class="auth-navigation" aria-label="アカウント">CHECKING SESSION...</nav>
+      <nav id="auth-navigation" class="auth-navigation" aria-label="アカウント">ログイン状態を確認中…</nav>
     </div>
-    <p id="status-text">CONNECTING...</p>
+    <p id="status-text">データベースへ接続中…</p>
   </header>
   <main>
     <section class="archive-controls" aria-label="キャスト検索">
-      <label class="archive-control archive-control--search"><span>SEARCH</span><input id="archive-search" type="search" placeholder="名前・ハンドル・PL・所属・概要" autocomplete="off"></label>
-      <label class="archive-control"><span>STYLE</span><select id="archive-style-filter"><option value="">ALL STYLES</option></select></label>
-      <label class="archive-control"><span>PLAYER</span><select id="archive-player-filter"><option value="">ALL PLAYERS</option></select></label>
-      <label class="archive-control"><span>SORT</span><select id="archive-sort"><option value="updated-desc">UPDATED NEWEST</option><option value="updated-asc">UPDATED OLDEST</option><option value="name-asc">NAME A–Z</option><option value="name-desc">NAME Z–A</option><option value="exp-desc">EXP HIGH</option><option value="exp-asc">EXP LOW</option></select></label>
-      <button id="archive-reset" type="button">RESET FILTER</button>
+      <label class="archive-control archive-control--search"><span>検索 <small>SEARCH</small></span><input id="archive-search" type="search" placeholder="名前・ハンドル・PL・所属・概要" autocomplete="off"></label>
+      <label class="archive-control"><span>スタイル <small>STYLE</small></span><select id="archive-style-filter"><option value="">すべてのスタイル</option></select></label>
+      <label class="archive-control"><span>プレイヤー <small>PLAYER</small></span><select id="archive-player-filter"><option value="">すべてのプレイヤー</option></select></label>
+      <label class="archive-control"><span>並び順 <small>SORT</small></span><select id="archive-sort"><option value="updated-desc">更新が新しい順</option><option value="updated-asc">更新が古い順</option><option value="name-asc">名前昇順</option><option value="name-desc">名前降順</option><option value="exp-desc">経験点が高い順</option><option value="exp-asc">経験点が低い順</option></select></label>
+      <button id="archive-reset" type="button">検索条件をリセット <small>RESET</small></button>
     </section>
-    <section class="archive-summary"><p id="archive-result-count">0 CASTS SHOWN</p></section>
+    <section class="archive-summary"><p id="archive-result-count">0件表示</p></section>
     <section id="cast-grid" class="cast-grid" aria-live="polite"></section>
   </main>
   <script type="module" src="./js/archive.js"></script>
