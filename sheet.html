@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="./css/sheet-ux-v7.css">
   <link rel="stylesheet" href="./css/sheet-ux-v8.css">
   <link rel="stylesheet" href="./css/sheet-ux-v9.css">
+  <link rel="stylesheet" href="./css/sheet-ux-v10.css">
 </head>
 <body>
   <div class="background-grid"></div><div class="scanlines"></div>
@@ -25,34 +26,19 @@
       <p>消費経験点 <small>EXPERIENCE POINTS</small></p><strong id="exp-total">0</strong>
       <dl id="exp-breakdown"></dl>
       <button id="save-button" type="button">今すぐ保存 <small>SAVE NOW</small></button>
-      <label>公開状態 <small>VISIBILITY</small><select id="visibility"><option value="draft">下書き / DRAFT</option><option value="public">公開 / PUBLIC</option><option value="private">非公開 / PRIVATE</option><option value="archived">引退 / ARCHIVED</option></select></label>
-      <section class="visibility-help" aria-label="公開状態の説明">
-        <strong>公開状態について</strong>
-        <dl>
-          <div><dt>下書き <small>/ DRAFT</small></dt><dd>本人だけが編集・閲覧できます。</dd></div>
-          <div><dt>公開 <small>/ PUBLIC</small></dt><dd>キャスト一覧に掲載され、誰でも閲覧できます。</dd></div>
-          <div><dt>非公開 <small>/ PRIVATE</small></dt><dd>本人だけが閲覧できます。</dd></div>
-          <div><dt>引退 <small>/ ARCHIVED</small></dt><dd>過去データとして保存し、通常利用から除外されます。</dd></div>
-        </dl>
-      </section>
+      <label>公開状態 <small>VISIBILITY</small><select id="visibility"><option value="public">公開 / PUBLIC</option><option value="private">非公開 / PRIVATE</option></select></label>
+      <section class="visibility-help" aria-label="公開状態の説明"><strong>公開状態について</strong><dl><div><dt>公開 / PUBLIC</dt><dd>誰でも閲覧可能</dd></div><div><dt>非公開 / PRIVATE</dt><dd>自分だけ閲覧可能</dd></div></dl></section>
     </aside>
     <section class="sheet-main">
-      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>01 プロフィール</span><small>PROFILE</small></button><div class="section-body"><div class="form-grid">
-        <label>キャスト名<input id="character-name" required></label><label>読み<input id="character-kana"></label><label>ハンドル<input id="handle"></label><label>プレイヤー名<input id="player-name" required></label><label>所属<input id="affiliation"></label><label>市民ランク<input id="citizen-rank"></label><label class="wide">概要<textarea id="summary" rows="3"></textarea></label><label class="wide">プロフィール<textarea id="profile" rows="7"></textarea></label>
-      </div></div></section>
+      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>01 プロフィール</span><small>PROFILE</small></button><div class="section-body"><div class="form-grid"><label>キャスト名<input id="character-name" required></label><label>読み<input id="character-kana"></label><label>ハンドル<input id="handle"></label><label>プレイヤー名<input id="player-name" required></label><label>所属<input id="affiliation"></label><label>市民ランク<input id="citizen-rank"></label><label class="wide">概要<textarea id="summary" rows="3"></textarea></label><label class="wide">プロフィール<textarea id="profile" rows="7"></textarea></label></div></div></section>
       <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>02 スタイル</span><small>STYLES</small></button><div class="section-body"><div id="style-grid" class="style-grid"></div><div id="style-warning" class="warning"></div></div></section>
       <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>03 能力値・制御値・CS</span><small>ABILITY / CONTROL / CS</small></button><div class="section-body"><div id="ability-grid" class="ability-grid"></div></div></section>
-      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>04 一般技能・スタイル技能</span><small>GENERAL / STYLE SKILLS</small></button><div class="section-body">
-        <div class="toolbar"><button id="toggle-general" class="legacy-general-toggle" type="button" aria-hidden="true" tabindex="-1">取得済みのみ表示</button><button id="add-general" type="button">一般技能を追加 <small>ADD GENERAL</small></button><button id="add-style-skill" type="button">スタイル技能を追加 <small>ADD STYLE SKILL</small></button><button id="import-skd" type="button">SKD TSV取込 <small>IMPORT</small></button></div>
-        <div id="general-skills"></div><div id="style-skills"></div>
-      </div></section>
+      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>04 一般技能・スタイル技能</span><small>GENERAL / STYLE SKILLS</small></button><div class="section-body"><div class="toolbar skill-toolbar"><button id="add-general" type="button">一般技能を追加 <small>ADD GENERAL</small></button><button id="add-social" type="button">社会を追加 <small>ADD SOCIAL</small></button><button id="add-connection" type="button">コネを追加 <small>ADD CONNECTION</small></button><button id="add-style-skill" type="button">スタイル技能を追加 <small>ADD STYLE SKILL</small></button><button id="import-skd" type="button">SKD TSV取込 <small>IMPORT</small></button></div><div id="general-skills"></div><div id="style-skills"></div></div></section>
       <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>05 アウトフィット</span><small>OUTFITS</small></button><div class="section-body"><div class="toolbar"><button id="add-outfit" type="button">アウトフィットを追加 <small>ADD OUTFIT</small></button><button id="import-ofc" type="button">OFC TSV取込 <small>IMPORT</small></button></div><div id="outfit-list"></div></div></section>
     </section>
   </main>
   <dialog id="tsv-dialog"><form method="dialog"><h2 id="tsv-title">TSV取込 <small>TSV IMPORT</small></h2><textarea id="tsv-text" rows="16"></textarea><div class="dialog-actions"><button value="cancel">キャンセル</button><button id="tsv-apply" value="default">取り込む</button></div></form></dialog>
-  <script src="./js/sheet-runtime-fixes-v5.js"></script>
   <script type="module" src="./js/sheet.js"></script>
-  <script type="module" src="./js/sheet-extra-general-v8.js"></script>
   <script type="module" src="./js/sheet-recovery.js"></script>
 </body>
 </html>
