@@ -5,12 +5,12 @@ const user = await requireAuth();
 const message = document.querySelector("#backup-message");
 
 if (user) {
-  document.querySelector("#export-button").addEventListener("click", exportBackup);
-  document.querySelector("#import-button").addEventListener("click", importBackup);
+  document.querySelector("#export-button")?.addEventListener("click", exportBackup);
+  document.querySelector("#import-button")?.addEventListener("click", importBackup);
 }
 
 async function exportBackup() {
-  setMessage("EXPORTING...", "");
+  setMessage("エクスポート中…", "");
 
   const { data: characters, error } = await supabase
     .from("characters")
@@ -18,7 +18,7 @@ async function exportBackup() {
     .eq("owner_id", user.id)
     .order("updated_at");
 
-  if (error) return setMessage(error.message, "error");
+  if (error) return setMessage(`エクスポートに失敗しました：${error.message}`, "error");
 
   const casts = [];
 
@@ -30,7 +30,7 @@ async function exportBackup() {
     ]);
 
     const relatedError = skills.error || outfits.error || combos.error;
-    if (relatedError) return setMessage(relatedError.message, "error");
+    if (relatedError) return setMessage(`エクスポートに失敗しました：${relatedError.message}`, "error");
 
     casts.push({ character, skills: skills.data ?? [], outfits: outfits.data ?? [], combos: combos.data ?? [] });
   }
@@ -38,29 +38,34 @@ async function exportBackup() {
   const payload = { version: 1, exported_at: new Date().toISOString(), casts };
   const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
   const anchor = document.createElement("a");
-  anchor.href = URL.createObjectURL(blob);
+  const objectUrl = URL.createObjectURL(blob);
+  anchor.href = objectUrl;
   anchor.download = `tnx_cast_backup_${new Date().toISOString().slice(0, 10)}.json`;
   anchor.click();
-  URL.revokeObjectURL(anchor.href);
-  setMessage(`${casts.length} CASTS EXPORTED`, "success");
+  window.setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
+  setMessage(`${casts.length}件のキャストをエクスポートしました。`, "success");
 }
 
 async function importBackup() {
-  const file = document.querySelector("#import-file").files?.[0];
+  const file = document.querySelector("#import-file")?.files?.[0];
   if (!file) return setMessage("JSONファイルを選択してください。", "error");
 
   try {
     const payload = JSON.parse(await file.text());
+    if (!payload || !Array.isArray(payload.casts)) {
+      throw new Error("バックアップ形式が正しくありません。");
+    }
+
     let imported = 0;
 
-    for (const pack of payload.casts ?? []) {
-      const character = { ...pack.character };
+    for (const pack of payload.casts) {
+      const character = { ...(pack.character ?? {}) };
       delete character.id;
       delete character.public_id;
       delete character.created_at;
       delete character.updated_at;
       character.owner_id = user.id;
-      character.visibility = "draft";
+      character.visibility = "private";
 
       const { data: created, error } = await supabase
         .from("characters")
@@ -87,14 +92,15 @@ async function importBackup() {
       imported += 1;
     }
 
-    setMessage(`${imported} CASTS IMPORTED AS DRAFT`, "success");
+    setMessage(`${imported}件のキャストを非公開としてインポートしました。`, "success");
   } catch (error) {
     console.error(error);
-    setMessage(error.message || "インポートに失敗しました。", "error");
+    setMessage(error?.message ? `インポートに失敗しました：${error.message}` : "インポートに失敗しました。", "error");
   }
 }
 
 function setMessage(text, type) {
+  if (!message) return;
   message.textContent = text;
   message.className = `auth-message${type ? ` auth-message--${type}` : ""}`;
 }
