@@ -63,26 +63,34 @@ function activateProperTemplate(name,suitName){
   if(!add)return;
   const before=new Set(allGeneralRows().map(row=>row.dataset.skillKey));
   add.click();
-  let row=allGeneralRows().find(item=>!before.has(item.dataset.skillKey));
+
+  let row=allGeneralRows().find(item=>{
+    const rowName=item.querySelector('input[data-f="name"]')?.value||"";
+    return rowName===""&&!before.has(item.dataset.skillKey);
+  });
+  if(!row)row=[...allGeneralRows()].reverse().find(item=>(item.querySelector('input[data-f="name"]')?.value||"")==="");
   if(!row)return;
   const key=row.dataset.skillKey;
 
-  let input=row.querySelector('input[data-f="name"]');
-  if(!input)return;
-  input.value=name;
-  input.dispatchEvent(new Event("input",{bubbles:true}));
+  const setField=(field,value)=>{
+    const current=findGeneralRow(key);
+    const element=current?.querySelector(`[data-f="${field}"]`);
+    if(!element)return false;
+    if(element.type==="checkbox")element.checked=Boolean(value);else element.value=String(value);
+    element.dispatchEvent(new Event("input",{bubbles:true}));
+    return true;
+  };
 
-  row=findGeneralRow(key);
-  const kind=row?.querySelector('select[data-f="skill_kind"]');
-  if(kind){kind.value="proper";kind.dispatchEvent(new Event("input",{bubbles:true}));}
-
-  row=findGeneralRow(key);
-  const level=row?.querySelector('input[data-f="level"]');
-  if(level){level.value="0";level.dispatchEvent(new Event("input",{bubbles:true}));}
-
-  row=findGeneralRow(key);
-  const suit=row?.querySelector(`input[data-f="${suitName}"]`);
-  if(suit){suit.checked=true;suit.dispatchEvent(new Event("input",{bubbles:true}));}
+  setField("name",name);
+  setField("skill_kind","proper");
+  setField("level",0);
+  requestAnimationFrame(()=>{
+    setField(suitName,true);
+    requestAnimationFrame(()=>{
+      arrangeSkillUi();
+      findGeneralRow(key)?.querySelector('input[data-f="name"]')?.focus();
+    });
+  });
 }
 
 function findGeneralRow(key){return document.querySelector(`#general-skills tr[data-skill-key="${CSS.escape(key)}"]`);}
@@ -94,9 +102,9 @@ function ensureGroupActions(){
   document.querySelectorAll(".skill-group").forEach(group=>{
     const title=group.querySelector(":scope>.skill-group-title")||group.querySelector(":scope>.skill-group-heading>.skill-group-title");if(!title)return;
     let heading=group.querySelector(":scope>.skill-group-heading");if(!heading){heading=document.createElement("div");heading.className="skill-group-heading";title.before(heading);heading.append(title);}
-    if(heading.querySelector(":scope>.skill-group-actions[data-v26]"))return;
+    if(heading.querySelector(":scope>.skill-group-actions[data-v27]"))return;
     heading.querySelector(":scope>.skill-group-actions")?.remove();
-    const actions=document.createElement("div");actions.className="skill-group-actions";actions.dataset.v26="1";heading.append(actions);const text=title.textContent;
+    const actions=document.createElement("div");actions.className="skill-group-actions";actions.dataset.v27="1";heading.append(actions);const text=title.textContent;
     if(text.includes("一般技能"))addAction(actions,"一般技能を追加","ADD GENERAL SKILL","add-general");
     else if(text.includes("社会"))addAction(actions,"社会を追加","ADD SOCIAL","#add-social");
     else if(text.includes("コネクション"))addAction(actions,"コネを追加","ADD CONNECTION","#add-connection");
@@ -107,11 +115,44 @@ function addAction(container,jp,en,action){const button=document.createElement("
 function markGeneralRows(){document.querySelector("#general-skills .skill-group:first-child")?.querySelectorAll("tr[data-skill-key]").forEach(row=>{const name=row.querySelector('input[data-f="name"]')?.value||"";row.classList.toggle("is-fixed-general",FIXED_GENERAL.has(name));row.classList.toggle("is-custom-general",!FIXED_GENERAL.has(name));});}
 function allGeneralRows(){return [...document.querySelectorAll("#general-skills .skill-group:first-child tr[data-skill-key]")];}
 function rowsFor(kind){return kind==="general"?allGeneralRows():[...document.querySelectorAll("#style-skills tr[data-skill-key]")];}
-function storageKey(kind){const id=new URLSearchParams(location.search).get("id")||"new";return `tnx-skill-order:${id}:${kind}`;}
-function applyStoredOrder(kind){const rows=rowsFor(kind);if(rows.length<2)return;let order;try{order=JSON.parse(localStorage.getItem(storageKey(kind))||"[]");}catch{return;}if(!Array.isArray(order)||!order.length)return;const parent=rows[0].parentElement;const byKey=new Map(rows.map(row=>[row.dataset.skillKey,row]));order.forEach(key=>{const row=byKey.get(key);if(row)parent.append(row);});}
-function ensureSortButtons(){addSortControls(allGeneralRows().filter(row=>row.classList.contains("is-custom-general")),"general");addSortControls(rowsFor("style"),"style");}
-function addSortControls(rows,kind){const all=rowsFor(kind);rows.forEach(row=>{const cell=row.lastElementChild;if(!cell)return;let controls=cell.querySelector(`.skill-sort-controls[data-kind="${kind}"]`);if(!controls){controls=document.createElement("span");controls.className="skill-sort-controls";controls.dataset.kind=kind;controls.innerHTML=`<button type="button" data-skill-move="up" data-kind="${kind}" title="上へ移動">↑</button><button type="button" data-skill-move="down" data-kind="${kind}" title="下へ移動">↓</button>`;cell.prepend(controls);}const index=all.indexOf(row);controls.querySelector('[data-skill-move="up"]').disabled=index<=0;controls.querySelector('[data-skill-move="down"]').disabled=index<0||index>=all.length-1;});}
-function moveSkill(button){const kind=button.dataset.kind;const rows=rowsFor(kind);const row=button.closest("tr[data-skill-key]");const index=rows.indexOf(row);const targetIndex=button.dataset.skillMove==="up"?index-1:index+1;if(index<0||targetIndex<0||targetIndex>=rows.length)return;const target=rows[targetIndex];if(button.dataset.skillMove==="up")target.before(row);else target.after(row);localStorage.setItem(storageKey(kind),JSON.stringify(rowsFor(kind).map(item=>item.dataset.skillKey)));ensureSortButtons();document.querySelector("#save-status")?.classList.add("unsaved");}
+function storageKey(kind){const id=new URLSearchParams(location.search).get("id")||"new";return `tnx-skill-order:${id}:${kind}:v27`;}
+function rowToken(row,kind){
+  if(kind==="style")return `key:${row.dataset.skillKey}`;
+  const name=row.querySelector('input[data-f="name"]')?.value||"";
+  return FIXED_GENERAL.has(name)?`fixed:${name}`:`key:${row.dataset.skillKey}`;
+}
+function applyStoredOrder(kind){
+  const rows=rowsFor(kind);if(rows.length<2)return;
+  let order;try{order=JSON.parse(localStorage.getItem(storageKey(kind))||"[]");}catch{return;}
+  if(!Array.isArray(order)||!order.length)return;
+  const parent=rows[0].parentElement;
+  const byToken=new Map(rows.map(row=>[rowToken(row,kind),row]));
+  order.forEach(token=>{const row=byToken.get(token);if(row)parent.append(row);});
+}
+function ensureSortButtons(){addSortControls(allGeneralRows(),"general");addSortControls(rowsFor("style"),"style");}
+function addSortControls(rows,kind){
+  rows.forEach((row,index)=>{
+    const cell=row.lastElementChild;if(!cell)return;
+    let controls=cell.querySelector(`.skill-sort-controls[data-kind="${kind}"]`);
+    if(!controls){controls=document.createElement("span");controls.className="skill-sort-controls";controls.dataset.kind=kind;controls.innerHTML=`<button type="button" data-skill-move="up" data-kind="${kind}" title="上へ移動">↑</button><button type="button" data-skill-move="down" data-kind="${kind}" title="下へ移動">↓</button>`;cell.prepend(controls);}
+    controls.querySelector('[data-skill-move="up"]').disabled=index===0;
+    controls.querySelector('[data-skill-move="down"]').disabled=index===rows.length-1;
+  });
+}
+function moveSkill(button){
+  const kind=button.dataset.kind;
+  const rows=rowsFor(kind);
+  const row=button.closest("tr[data-skill-key]");
+  const index=rows.indexOf(row);
+  const targetIndex=button.dataset.skillMove==="up"?index-1:index+1;
+  if(index<0||targetIndex<0||targetIndex>=rows.length)return;
+  const target=rows[targetIndex];
+  if(button.dataset.skillMove==="up")target.before(row);else target.after(row);
+  const ordered=rowsFor(kind).map(item=>rowToken(item,kind));
+  localStorage.setItem(storageKey(kind),JSON.stringify(ordered));
+  ensureSortButtons();
+  document.querySelector("#save-status")?.classList.add("unsaved");
+}
 
 function initializeOutfitEnhancer(){const list=document.querySelector("#outfit-list");if(!list)return;let queued=false;const refresh=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;enhanceOutfits();});};new MutationObserver(refresh).observe(list,{childList:true,subtree:true});refresh();}
 function enhanceOutfits(){document.querySelectorAll("#outfit-list .outfit-form").forEach(card=>{if(card.dataset.v25Enhanced==="1")return;const fields=card.querySelector(".outfit-fields"),header=card.querySelector(":scope>header");if(!fields||!header)return;const category=header.querySelector("label"),remove=header.querySelector("[data-delete-outfit]");if(category)fields.prepend(category);[...fields.querySelectorAll("label")].forEach(label=>{const caption=[...label.childNodes].find(node=>node.nodeType===Node.TEXT_NODE)?.textContent.trim()||"";if(caption.startsWith("外界"))label.remove();});fields.querySelectorAll('input[data-o="purchase_value"],input[data-o="experience_cost"]').forEach(input=>{input.type="number";input.min="0";input.max="999";input.step="1";input.inputMode="numeric";});const original=fields.querySelector('input[data-o="description"]');if(original&&!fields.querySelector("textarea[data-description-proxy]")){const textarea=document.createElement("textarea");textarea.rows=3;textarea.value=original.value;textarea.dataset.descriptionProxy="1";textarea.setAttribute("aria-label","解説");textarea.addEventListener("input",()=>{original.value=textarea.value;original.dispatchEvent(new Event("input",{bubbles:true}));});original.hidden=true;original.after(textarea);original.closest("label")?.classList.add("outfit-description");}if(remove){const wrap=document.createElement("div");wrap.className="outfit-delete-cell";wrap.append(remove);fields.append(wrap);}card.dataset.v25Enhanced="1";});}
