@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="./css/sheet-ux-v10.css">
   <link rel="stylesheet" href="./css/ui-ja-v11.css">
   <link rel="stylesheet" href="./css/ui-v12.css">
+  <link rel="stylesheet" href="./css/ui-v13.css?v=13">
 </head>
 <body>
   <div class="background-grid"></div><div class="scanlines"></div>
@@ -28,6 +29,7 @@
       <p>消費経験点 <small>EXPERIENCE POINTS</small></p><strong id="exp-total">0</strong>
       <dl id="exp-breakdown"></dl>
       <button id="save-button" type="button">今すぐ保存 <small>SAVE NOW</small></button>
+      <a id="cast-view-button" class="sheet-view-link" target="_blank" rel="noopener">キャストを閲覧 <small>VIEW CAST</small></a>
       <label>公開状態 <small>VISIBILITY</small><select id="visibility"><option value="public">公開 / PUBLIC</option><option value="private">非公開 / PRIVATE</option></select></label>
       <section class="visibility-help" aria-label="公開状態の説明"><strong>公開状態について</strong><dl><div><dt>公開 / PUBLIC</dt><dd>誰でも閲覧可能</dd></div><div><dt>非公開 / PRIVATE</dt><dd>自分だけ閲覧可能</dd></div></dl></section>
     </aside>
@@ -42,5 +44,6 @@
   <dialog id="tsv-dialog"><form method="dialog"><h2 id="tsv-title">TSV取込 <small>TSV IMPORT</small></h2><textarea id="tsv-text" rows="16"></textarea><div class="dialog-actions"><button value="cancel">キャンセル</button><button id="tsv-apply" value="default">取り込む</button></div></form></dialog>
   <script type="module" src="./js/sheet.js"></script>
   <script type="module" src="./js/sheet-ui-v12.js"></script>
+  <script type="module" src="./js/sheet-ui-v13.js?v=13"></script>
 </body>
 </html>
