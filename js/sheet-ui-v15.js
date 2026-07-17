@@ -31,34 +31,45 @@ function bindProperSkillButtons(){
 function addProperSkillRow(name){
   const hiddenAdd = document.querySelector("#add-general");
   if(!hiddenAdd) return;
+
+  const before = new Set(
+    [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
+      .map(row => row.dataset.skillKey)
+  );
+
   hiddenAdd.click();
 
-  requestAnimationFrame(() => {
-    const rows = [...document.querySelectorAll("#general-skills tr[data-skill-key]")];
-    const row = [...rows].reverse().find(item => item.querySelector('input[data-f="name"]')?.value === "");
-    if(!row) return;
+  const row = [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
+    .find(item => !before.has(item.dataset.skillKey));
+  if(!row) return;
 
-    const nameInput = row.querySelector('input[data-f="name"]');
-    const kind = row.querySelector('select[data-f="skill_kind"]');
-    const suit = row.querySelector(`input[data-f="${properSuit[name]}"]`);
+  const nameInput = row.querySelector('input[data-f="name"]');
+  const kind = row.querySelector('select[data-f="skill_kind"]');
+  const suit = row.querySelector(`input[data-f="${properSuit[name]}"]`);
 
+  if(nameInput){
     nameInput.value = name;
-    kind.value = "proper";
     nameInput.dispatchEvent(new Event("input", {bubbles:true}));
+  }
+  if(kind){
+    kind.value = "proper";
     kind.dispatchEvent(new Event("input", {bubbles:true}));
-    if(suit && !suit.checked){
-      suit.checked = true;
-      suit.dispatchEvent(new Event("input", {bubbles:true}));
-    }
+  }
+  if(suit){
+    suit.checked = true;
+    suit.dispatchEvent(new Event("input", {bubbles:true}));
+  }
 
-    requestAnimationFrame(() => {
-      arrangeSkillUi();
-      const current = [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
-        .find(item => item.querySelector('input[data-f="name"]')?.value === name && item.querySelector('input[data-f="level"]')?.value !== "0");
-      const input = current?.querySelector('input[data-f="name"]');
-      input?.focus();
-      input?.setSelectionRange(name.length, name.length);
-    });
+  requestAnimationFrame(() => {
+    arrangeSkillUi();
+    const added = [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
+      .find(item => item.dataset.skillKey === row.dataset.skillKey)
+      || [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
+        .reverse()
+        .find(item => item.querySelector('input[data-f="name"]')?.value === name);
+    const input = added?.querySelector('input[data-f="name"]');
+    input?.focus();
+    input?.setSelectionRange(name.length, name.length);
   });
 }
 
