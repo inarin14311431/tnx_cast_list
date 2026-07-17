@@ -1,0 +1,56 @@
+.cast-skill-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.45fr) minmax(320px,.85fr);
+  gap:16px;
+  align-items:start;
+}
+.cast-skill-layout>.skill-section.is-general{grid-column:1;grid-row:1}
+.cast-skill-layout>.cast-skill-side{grid-column:2;grid-row:1;display:grid;gap:16px}
+.cast-skill-layout>.skill-section.is-style{grid-column:1/-1}
+
+.cast-skill-side .skill-section{margin:0}
+.cast-skill-layout .skill-section.is-general .data-table th:last-child,
+.cast-skill-layout .skill-section.is-general .data-table td:last-child,
+.cast-skill-side .data-table th:last-child,
+.cast-skill-side .data-table td:last-child{display:none}
+
+.cast-skill-layout .skill-section.is-style .data-table td:last-child{
+  min-width:260px;
+  white-space:pre-wrap;
+  line-height:1.45;
+  font-size:.82rem;
+  color:#d7eef2;
+  background:rgba(10,31,39,.58);
+}
+.cast-skill-layout .skill-section.is-style .data-table th:last-child{
+  min-width:260px;
+}
+
+#tab-session .panel-ability{border-color:#5fe7ff;box-shadow:inset 0 3px 0 rgba(95,231,255,.72)}
+#tab-session .panel-skills{border-color:#82f2b0;box-shadow:inset 0 3px 0 rgba(130,242,176,.72)}
+#tab-session .panel-combos{border-color:#f7c76e;box-shadow:inset 0 3px 0 rgba(247,199,110,.72)}
+#tab-session .panel-ability>.data-panel__header{background:linear-gradient(90deg,rgba(46,167,199,.22),transparent)}
+#tab-session .panel-skills>.data-panel__header{background:linear-gradient(90deg,rgba(56,178,112,.22),transparent)}
+#tab-session .panel-combos>.data-panel__header{background:linear-gradient(90deg,rgba(209,142,44,.22),transparent)}
+#outfit-container .panel-outfits{border-color:#d998ff;box-shadow:inset 0 3px 0 rgba(217,152,255,.68)}
+
+#outfit-container .data-table th,
+#outfit-container .data-table td{
+  font-size:.8rem!important;
+  line-height:1.35;
+  vertical-align:top;
+}
+#outfit-container .data-table th{font-weight:800;letter-spacing:.02em}
+#outfit-container .data-table td{font-weight:500}
+
+.cast-styles .style-chip,
+.cast-styles .style-chip:last-child{
+  border:1px solid rgba(105,235,255,.65)!important;
+}
+
+@media(max-width:980px){
+  .cast-skill-layout{grid-template-columns:1fr}
+  .cast-skill-layout>.skill-section.is-general,
+  .cast-skill-layout>.cast-skill-side,
+  .cast-skill-layout>.skill-section.is-style{grid-column:1;grid-row:auto}
+}
