@@ -5,36 +5,30 @@ initializeOutfitEnhancer();
 
 function bindProperSkillButtons(){
   document.querySelectorAll("[data-add-proper]").forEach(button => {
-    button.addEventListener("click", () => activateProperSkill(button.dataset.addProper));
+    button.addEventListener("click", () => addProperSkillRow(button.dataset.addProper));
   });
 }
 
-function activateProperSkill(name){
-  const rows = [...document.querySelectorAll("#general-skills tr[data-skill-key]")];
-  const target = rows.find(row => row.querySelector('input[data-f="name"]')?.value === name);
-
-  if(target){
-    const level = target.querySelector('input[data-f="level"]');
-    const kind = target.querySelector('select[data-f="skill_kind"]');
-    if(kind && kind.value !== "proper"){
-      kind.value = "proper";
-      kind.dispatchEvent(new Event("input", {bubbles:true}));
-    }
-    if(level){
-      level.value = Math.max(1, Number(level.value || 0));
-      level.dispatchEvent(new Event("input", {bubbles:true}));
-      level.focus();
-    }
-    return;
-  }
-
+function addProperSkillRow(name){
   const hiddenAdd = document.querySelector("#add-general");
-  hiddenAdd?.click();
+  if(!hiddenAdd) return;
+
+  const existingKeys = new Set(
+    [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
+      .map(row => row.dataset.skillKey)
+  );
+
+  hiddenAdd.click();
+
   requestAnimationFrame(() => {
-    const latest = [...document.querySelectorAll("#general-skills tr[data-skill-key]")].at(-1);
-    if(!latest) return;
-    const nameInput = latest.querySelector('input[data-f="name"]');
-    const kind = latest.querySelector('select[data-f="skill_kind"]');
+    const row = [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
+      .find(item => !existingKeys.has(item.dataset.skillKey));
+    if(!row) return;
+
+    const nameInput = row.querySelector('input[data-f="name"]');
+    const kind = row.querySelector('select[data-f="skill_kind"]');
+    const level = row.querySelector('input[data-f="level"]');
+
     if(nameInput){
       nameInput.value = name;
       nameInput.dispatchEvent(new Event("input", {bubbles:true}));
@@ -43,6 +37,12 @@ function activateProperSkill(name){
       kind.value = "proper";
       kind.dispatchEvent(new Event("input", {bubbles:true}));
     }
+    if(level){
+      level.value = Math.max(1, Number(level.value || 1));
+      level.dispatchEvent(new Event("input", {bubbles:true}));
+    }
+    nameInput?.focus();
+    nameInput?.setSelectionRange(name.length, name.length);
   });
 }
 
