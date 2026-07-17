@@ -10,6 +10,7 @@
   <link rel="stylesheet" href="./css/sheet-ux-v4.css">
   <link rel="stylesheet" href="./css/sheet-ux-v5.css">
   <link rel="stylesheet" href="./css/sheet-ux-v7.css">
+  <link rel="stylesheet" href="./css/sheet-ux-v8.css">
 </head>
 <body>
   <div class="background-grid"></div><div class="scanlines"></div>
@@ -41,7 +42,7 @@
       <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>02 スタイル</span><small>STYLES</small></button><div class="section-body"><div id="style-grid" class="style-grid"></div><div id="style-warning" class="warning"></div></div></section>
       <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>03 能力値・制御値・CS</span><small>ABILITY / CONTROL / CS</small></button><div class="section-body"><div id="ability-grid" class="ability-grid"></div></div></section>
       <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>04 一般技能・スタイル技能</span><small>GENERAL / STYLE SKILLS</small></button><div class="section-body">
-        <div class="toolbar"><button id="toggle-general" type="button">取得済みのみ表示 <small>OWNED ONLY</small></button><button id="add-general" type="button">一般技能を追加 <small>ADD GENERAL</small></button><button id="add-style-skill" type="button">スタイル技能を追加 <small>ADD STYLE SKILL</small></button><button id="import-skd" type="button">SKD TSV取込 <small>IMPORT</small></button></div>
+        <div class="toolbar"><button id="toggle-general" class="legacy-general-toggle" type="button" aria-hidden="true" tabindex="-1">取得済みのみ表示</button><button id="add-general" type="button">一般技能を追加 <small>ADD GENERAL</small></button><button id="add-style-skill" type="button">スタイル技能を追加 <small>ADD STYLE SKILL</small></button><button id="import-skd" type="button">SKD TSV取込 <small>IMPORT</small></button></div>
         <div id="general-skills"></div><div id="style-skills"></div>
       </div></section>
       <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>05 アウトフィット</span><small>OUTFITS</small></button><div class="section-body"><div class="toolbar"><button id="add-outfit" type="button">アウトフィットを追加 <small>ADD OUTFIT</small></button><button id="import-ofc" type="button">OFC TSV取込 <small>IMPORT</small></button></div><div id="outfit-list"></div></div></section>
@@ -50,7 +51,7 @@
   <dialog id="tsv-dialog"><form method="dialog"><h2 id="tsv-title">TSV取込 <small>TSV IMPORT</small></h2><textarea id="tsv-text" rows="16"></textarea><div class="dialog-actions"><button value="cancel">キャンセル</button><button id="tsv-apply" value="default">取り込む</button></div></form></dialog>
   <script src="./js/sheet-runtime-fixes-v5.js"></script>
   <script type="module" src="./js/sheet.js"></script>
-  <script type="module" src="./js/sheet-controls.js"></script>
+  <script type="module" src="./js/sheet-extra-general-v8.js"></script>
   <script type="module" src="./js/sheet-recovery.js"></script>
 </body>
 </html>
