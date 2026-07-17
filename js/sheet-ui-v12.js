@@ -93,7 +93,7 @@ function reorderProperRows(){
     const master = matching.find(row => row.querySelector('input[data-f="level"]')?.value === "0") || matching[0];
     let anchor = master;
     matching.filter(row => row !== master).forEach(row => {
-      anchor.insertAdjacentElement("afterend", row);
+      if(anchor.nextElementSibling !== row) anchor.insertAdjacentElement("afterend", row);
       anchor = row;
     });
   });
