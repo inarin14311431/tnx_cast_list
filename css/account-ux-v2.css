@@ -1,0 +1,40 @@
+.owned-cast__meta > span {
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.account-actions button,
+.account-actions a,
+#logout-button,
+#logout-button span,
+#logout-button small {
+  white-space: nowrap;
+  word-break: keep-all;
+}
+
+#logout-button {
+  min-width: 150px;
+}
+
+.account-actions {
+  align-items: stretch;
+}
+
+@media (max-width: 700px) {
+  .account-actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+  }
+
+  #logout-button {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  .account-actions {
+    grid-template-columns: 1fr;
+  }
+}
