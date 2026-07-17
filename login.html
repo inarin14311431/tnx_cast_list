@@ -2,148 +2,23 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1"
-  >
-
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>AUTHENTICATION // N◎VA ARCHIVE</title>
-
-  <link rel="stylesheet" href="./css/base.css">
-  <link rel="stylesheet" href="./css/auth.css">
+  <link rel="stylesheet" href="./css/base.css?v=15">
+  <link rel="stylesheet" href="./css/auth.css?v=15">
+  <link rel="stylesheet" href="./css/site-unified-v15.css?v=15">
 </head>
-
 <body>
-  <div class="background-grid"></div>
-  <div class="scanlines"></div>
-
-  <header class="auth-header">
-    <a href="./index.html">
-      &lt; RETURN TO ARCHIVE
-    </a>
-
-    <p>N◎VA MUNICIPAL DATABASE</p>
-    <h1>AUTHENTICATION GATE</h1>
-  </header>
-
+  <div class="background-grid"></div><div class="scanlines"></div>
+  <header class="auth-header"><a href="./index.html">&lt; RETURN TO ARCHIVE</a><p>N◎VA MUNICIPAL DATABASE</p><h1>AUTHENTICATION GATE</h1></header>
   <main class="auth-layout">
     <section class="auth-terminal">
-      <nav class="auth-tabs">
-        <button
-          class="auth-tab is-active"
-          type="button"
-          data-auth-tab="login"
-        >
-          LOGIN
-        </button>
-
-        <button
-          class="auth-tab"
-          type="button"
-          data-auth-tab="signup"
-        >
-          CREATE ACCOUNT
-        </button>
-      </nav>
-
-      <section
-        class="auth-panel is-active"
-        data-auth-panel="login"
-      >
-        <h2>IDENTITY VERIFICATION</h2>
-
-        <form id="login-form" class="auth-form">
-          <label>
-            <span>EMAIL ADDRESS</span>
-
-            <input
-              id="login-email"
-              name="email"
-              type="email"
-              autocomplete="email"
-              required
-            >
-          </label>
-
-          <label>
-            <span>PASSWORD</span>
-
-            <input
-              id="login-password"
-              name="password"
-              type="password"
-              autocomplete="current-password"
-              minlength="8"
-              required
-            >
-          </label>
-
-          <button type="submit">
-            ESTABLISH CONNECTION
-          </button>
-        </form>
-      </section>
-
-      <section
-        class="auth-panel"
-        data-auth-panel="signup"
-      >
-        <h2>NEW IDENTITY REGISTRATION</h2>
-
-        <form id="signup-form" class="auth-form">
-          <label>
-            <span>EMAIL ADDRESS</span>
-
-            <input
-              id="signup-email"
-              name="email"
-              type="email"
-              autocomplete="email"
-              required
-            >
-          </label>
-
-          <label>
-            <span>PASSWORD</span>
-
-            <input
-              id="signup-password"
-              name="password"
-              type="password"
-              autocomplete="new-password"
-              minlength="8"
-              required
-            >
-          </label>
-
-          <label>
-            <span>PASSWORD CONFIRMATION</span>
-
-            <input
-              id="signup-password-confirmation"
-              name="passwordConfirmation"
-              type="password"
-              autocomplete="new-password"
-              minlength="8"
-              required
-            >
-          </label>
-
-          <button type="submit">
-            REGISTER IDENTITY
-          </button>
-        </form>
-      </section>
-
-      <div
-        id="auth-message"
-        class="auth-message"
-        aria-live="polite"
-      ></div>
+      <nav class="auth-tabs"><button class="auth-tab is-active" type="button" data-auth-tab="login">LOGIN</button><button class="auth-tab" type="button" data-auth-tab="signup">CREATE ACCOUNT</button></nav>
+      <section class="auth-panel is-active" data-auth-panel="login"><h2>IDENTITY VERIFICATION</h2><form id="login-form" class="auth-form"><label><span>EMAIL ADDRESS</span><input id="login-email" name="email" type="email" autocomplete="email" required></label><label><span>PASSWORD</span><input id="login-password" name="password" type="password" autocomplete="current-password" minlength="8" required></label><button type="submit">ESTABLISH CONNECTION</button></form></section>
+      <section class="auth-panel" data-auth-panel="signup"><h2>NEW IDENTITY REGISTRATION</h2><form id="signup-form" class="auth-form"><label><span>EMAIL ADDRESS</span><input id="signup-email" name="email" type="email" autocomplete="email" required></label><label><span>PASSWORD</span><input id="signup-password" name="password" type="password" autocomplete="new-password" minlength="8" required></label><label><span>PASSWORD CONFIRMATION</span><input id="signup-password-confirmation" name="passwordConfirmation" type="password" autocomplete="new-password" minlength="8" required></label><button type="submit">REGISTER IDENTITY</button></form></section>
+      <div id="auth-message" class="auth-message" aria-live="polite"></div>
     </section>
   </main>
-
-  <script type="module" src="./js/login.js"></script>
+  <script type="module" src="./js/login.js?v=15"></script>
 </body>
 </html>
