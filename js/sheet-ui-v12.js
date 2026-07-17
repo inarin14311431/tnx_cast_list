@@ -1,4 +1,5 @@
 const properPrefixes = ["製作：", "芸術：", "操縦："];
+const properSuit = {"製作：":"reason","芸術：":"passion","操縦：":"life"};
 
 bindProperSkillButtons();
 initializeSkillLayout();
@@ -6,6 +7,8 @@ initializeOutfitEnhancer();
 
 function bindProperSkillButtons(){
   document.querySelectorAll("[data-add-proper]").forEach(button => {
+    if(button.dataset.bound === "1") return;
+    button.dataset.bound = "1";
     button.addEventListener("click", () => addProperSkillRow(button.dataset.addProper));
   });
 }
@@ -13,39 +16,34 @@ function bindProperSkillButtons(){
 function addProperSkillRow(name){
   const hiddenAdd = document.querySelector("#add-general");
   if(!hiddenAdd) return;
-
-  const existingKeys = new Set(
-    [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
-      .map(row => row.dataset.skillKey)
-  );
-
   hiddenAdd.click();
 
   requestAnimationFrame(() => {
-    const row = [...document.querySelectorAll("#general-skills tr[data-skill-key]")]
-      .find(item => !existingKeys.has(item.dataset.skillKey));
+    const rows = [...document.querySelectorAll("#general-skills tr[data-skill-key]")];
+    const row = [...rows].reverse().find(item => {
+      const input = item.querySelector('input[data-f="name"]');
+      return input && input.value === "";
+    });
     if(!row) return;
 
     const nameInput = row.querySelector('input[data-f="name"]');
     const kind = row.querySelector('select[data-f="skill_kind"]');
-    const level = row.querySelector('input[data-f="level"]');
+    const suit = row.querySelector(`input[data-f="${properSuit[name]}"]`);
 
-    if(nameInput){
-      nameInput.value = name;
-      nameInput.dispatchEvent(new Event("input", {bubbles:true}));
-    }
-    if(kind){
-      kind.value = "proper";
-      kind.dispatchEvent(new Event("input", {bubbles:true}));
-    }
-    if(level){
-      level.value = Math.max(1, Number(level.value || 1));
-      level.dispatchEvent(new Event("input", {bubbles:true}));
+    nameInput.value = name;
+    kind.value = "proper";
+    nameInput.dispatchEvent(new Event("input", {bubbles:true}));
+    kind.dispatchEvent(new Event("input", {bubbles:true}));
+    if(suit && !suit.checked){
+      suit.checked = true;
+      suit.dispatchEvent(new Event("input", {bubbles:true}));
     }
 
-    arrangeSkillLayout();
-    nameInput?.focus();
-    nameInput?.setSelectionRange(name.length, name.length);
+    requestAnimationFrame(() => {
+      reorderProperRows();
+      nameInput?.focus();
+      nameInput?.setSelectionRange(name.length, name.length);
+    });
   });
 }
 
@@ -70,7 +68,7 @@ function initializeSkillLayout(){
 function arrangeSkillLayout(){
   replaceSuitHeaders();
   reorderProperRows();
-  moveSectionButtons();
+  renderSectionButtons();
 }
 
 function replaceSuitHeaders(){
@@ -86,24 +84,38 @@ function reorderProperRows(){
   if(!body) return;
 
   properPrefixes.forEach(prefix => {
-    const matching = [...body.querySelectorAll("tr[data-skill-key]")]
-      .filter(row => row.querySelector('input[data-f="name"]')?.value.startsWith(prefix));
-    if(matching.length < 2) return;
-
-    const master = matching.find(row => row.querySelector('input[data-f="level"]')?.value === "0") || matching[0];
-    let anchor = master;
-    matching.filter(row => row !== master).forEach(row => {
+    const rows = [...body.querySelectorAll("tr[data-skill-key]")];
+    const exact = rows.find(row => row.querySelector('input[data-f="name"]')?.value === prefix);
+    if(!exact) return;
+    const extras = rows.filter(row => {
+      const value = row.querySelector('input[data-f="name"]')?.value || "";
+      return row !== exact && value.startsWith(prefix);
+    });
+    let anchor = exact;
+    extras.forEach(row => {
       if(anchor.nextElementSibling !== row) anchor.insertAdjacentElement("afterend", row);
       anchor = row;
     });
   });
 }
 
-function moveSectionButtons(){
-  const groups = [...document.querySelectorAll("#general-skills .skill-group, #style-skills .skill-group")];
-  groups.forEach(group => {
+function renderSectionButtons(){
+  const configs = [
+    {match:"一般技能", buttons:[
+      {label:"製作を追加", en:"ADD CRAFT", action:()=>addProperSkillRow("製作：")},
+      {label:"芸術を追加", en:"ADD ART", action:()=>addProperSkillRow("芸術：")},
+      {label:"操縦を追加", en:"ADD PILOTING", action:()=>addProperSkillRow("操縦：")}
+    ]},
+    {match:"社会", buttons:[{label:"社会を追加", en:"ADD SOCIAL", action:()=>document.querySelector("#add-social")?.click()}]},
+    {match:"コネクション", buttons:[{label:"コネを追加", en:"ADD CONNECTION", action:()=>document.querySelector("#add-connection")?.click()}]},
+    {match:"スタイル技能", buttons:[{label:"スタイル技能を追加", en:"ADD STYLE SKILL", action:()=>document.querySelector("#add-style-skill")?.click()}]}
+  ];
+
+  document.querySelectorAll("#general-skills .skill-group, #style-skills .skill-group").forEach(group => {
     const title = group.querySelector(":scope > .skill-group-title");
     if(!title) return;
+    const config = configs.find(item => title.textContent.includes(item.match));
+    if(!config) return;
 
     let actions = group.querySelector(":scope > .skill-group-actions");
     if(!actions){
@@ -111,22 +123,13 @@ function moveSectionButtons(){
       actions.className = "skill-group-actions";
       title.insertAdjacentElement("afterend", actions);
     }
-
-    const text = title.textContent;
-    const selectors = text.includes("一般技能")
-      ? ["[data-add-proper]"]
-      : text.includes("コネクション")
-        ? ["#add-connection"]
-        : text.includes("社会")
-          ? ["#add-social"]
-          : text.includes("スタイル技能")
-            ? ["#add-style-skill"]
-            : [];
-
-    selectors.forEach(selector => {
-      document.querySelectorAll(selector).forEach(button => {
-        if(button.parentElement !== actions) actions.append(button);
-      });
+    actions.replaceChildren();
+    config.buttons.forEach(item => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.innerHTML = `${item.label} <small>${item.en}</small>`;
+      button.addEventListener("click", item.action);
+      actions.append(button);
     });
   });
 }
