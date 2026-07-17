@@ -1,0 +1,105 @@
+/* Consolidated responsive behavior for all public and editor pages. */
+html{overflow-x:hidden}
+body{min-width:0;overflow-x:hidden}
+img,svg,video,canvas{max-width:100%;height:auto}
+input,select,textarea,button{max-width:100%;box-sizing:border-box}
+
+@media(max-width:980px){
+  .site-header,.auth-header,.cast-header,.sheet-header{padding-left:18px!important;padding-right:18px!important}
+  main,.cast-content,.account-layout,.auth-layout,.sheet-layout{width:100%!important;max-width:none!important;box-sizing:border-box}
+
+  .site-header__top,.cast-header,.sheet-header{gap:14px}
+  .archive-controls{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .archive-control--search{grid-column:1/-1}
+  .cast-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+
+  .account-layout{padding:18px!important}
+  .account-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .owned-cast-card,.owned-cast-item{min-width:0}
+  .owned-cast-actions{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+
+  .sheet-layout{display:block!important;padding:16px!important}
+  .exp-panel{position:static!important;width:auto!important;margin:0 0 16px!important}
+  .sheet-main{min-width:0!important}
+  .style-grid,.ability-grid,.form-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  .skill-toolbar,.toolbar{display:flex!important;flex-wrap:wrap!important}
+  .skill-group{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .skill-table{min-width:760px}
+  #outfit-list .outfit-fields{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #outfit-list .outfit-description{grid-column:1/-1!important}
+
+  .cast-hero{grid-template-columns:minmax(220px,34%) minmax(0,1fr)!important;gap:20px!important}
+  .data-layout{grid-template-columns:1fr!important}
+  .data-panel{min-width:0}
+  .cast-tabs{overflow-x:auto;justify-content:flex-start;-webkit-overflow-scrolling:touch}
+  .cast-tab{flex:0 0 auto;min-width:150px}
+  #skills-container.cast-skill-layout{grid-template-columns:1fr!important}
+  #skills-container .skill-section,.style-skill-panel__body{min-width:0!important;overflow-x:auto!important;-webkit-overflow-scrolling:touch}
+  #skills-container .data-table,.style-skill-panel__body .data-table{min-width:520px!important}
+  .outfit-container{overflow-x:auto;-webkit-overflow-scrolling:touch}
+}
+
+@media(max-width:640px){
+  body{font-size:14px}
+  .background-grid,.scanlines{display:none!important}
+  .site-header,.auth-header,.cast-header,.sheet-header{padding:12px!important}
+  .site-header__top,.cast-header,.sheet-header{display:flex!important;flex-direction:column!important;align-items:stretch!important}
+  .site-header h1,.auth-header h1,.sheet-header h1,.cast-name{font-size:clamp(1.35rem,7vw,2rem)!important;overflow-wrap:anywhere}
+  .auth-navigation,.cast-header__actions{display:flex!important;flex-wrap:wrap!important;gap:8px!important}
+  .auth-navigation a,.auth-navigation button,.cast-header__actions a{flex:1 1 140px;text-align:center}
+
+  main{padding-left:12px!important;padding-right:12px!important}
+  .archive-controls{grid-template-columns:1fr!important;padding:12px!important}
+  .archive-control--search{grid-column:auto}
+  .archive-controls button{width:100%}
+  .cast-grid{grid-template-columns:1fr!important;gap:14px!important}
+  .cast-card{min-width:0!important}
+
+  .auth-layout,.account-layout{padding:12px!important}
+  .auth-terminal,.account-panel{padding:16px!important}
+  .auth-tabs{display:grid!important;grid-template-columns:1fr 1fr!important}
+  .auth-tab{min-width:0!important;padding:12px 8px!important}
+  .account-actions{grid-template-columns:1fr!important}
+  .account-actions>*{width:100%!important}
+  .account-data{grid-template-columns:1fr!important}
+  .owned-cast-actions{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+
+  .sheet-layout{padding:10px!important}
+  .sheet-section{margin-bottom:12px!important}
+  .section-toggle{padding:12px!important}
+  .section-body{padding:12px!important}
+  .style-grid,.ability-grid,.form-grid{grid-template-columns:1fr!important}
+  .form-grid .wide{grid-column:auto!important}
+  .skill-toolbar,.toolbar{display:grid!important;grid-template-columns:1fr!important}
+  .skill-toolbar button,.toolbar button{width:100%!important}
+  .skill-group-heading{align-items:stretch!important;flex-direction:column!important;gap:8px!important}
+  .skill-group-actions{width:100%!important}
+  .skill-group-actions button{width:100%!important}
+  .skill-table{min-width:700px}
+  #outfit-list .outfit-fields{grid-template-columns:1fr!important}
+  #outfit-list .outfit-description{grid-column:auto!important}
+  .outfit-form header{align-items:stretch!important;flex-direction:column!important}
+  dialog{width:calc(100vw - 24px)!important;max-width:none!important;margin:12px!important}
+
+  .cast-content{padding:12px!important}
+  .cast-hero{grid-template-columns:1fr!important}
+  .cast-hero__image-panel{max-width:420px;width:100%;margin:0 auto}
+  .cast-styles,.identity-grid,.ability-grid{grid-template-columns:1fr!important}
+  .hero-divine-list{grid-template-columns:1fr!important}
+  .cast-tabs{margin-left:-12px;margin-right:-12px;padding-left:12px;padding-right:12px}
+  .cast-tab{min-width:132px;padding:10px 12px!important}
+  .data-panel__header{padding:12px 42px 12px 12px!important}
+  .data-panel__header h2{font-size:1rem!important}
+  #skills-container .data-table,.style-skill-panel__body .data-table{min-width:500px!important}
+  .profile-list{grid-template-columns:1fr!important}
+  .outfit-container .data-table{min-width:760px}
+
+  .cast-outfit-detail{resize:none!important;min-width:0!important}
+}
+
+@media(max-width:420px){
+  .owned-cast-actions{grid-template-columns:1fr!important}
+  .auth-tabs{grid-template-columns:1fr!important}
+  .cast-tab{min-width:118px;font-size:.85rem}
+  .skill-table{min-width:660px}
+}
