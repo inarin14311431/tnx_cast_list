@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="./css/sheet.css">
   <link rel="stylesheet" href="./css/sheet-ja.css">
   <link rel="stylesheet" href="./css/sheet-ux-v4.css">
+  <link rel="stylesheet" href="./css/sheet-ux-v5.css">
 </head>
 <body>
   <div class="background-grid"></div><div class="scanlines"></div>
@@ -21,15 +22,14 @@
       <p>消費経験点 <small>EXPERIENCE POINTS</small></p><strong id="exp-total">0</strong>
       <dl id="exp-breakdown"></dl>
       <button id="save-button" type="button">今すぐ保存 <small>SAVE NOW</small></button>
-      <label>公開状態 <small>VISIBILITY</small><select id="visibility"><option value="draft">下書き / DRAFT</option><option value="private">非公開 / PRIVATE</option><option value="public">公開 / PUBLIC</option><option value="unlisted">限定公開 / UNLISTED</option><option value="archived">保管 / ARCHIVED</option></select></label>
+      <label>公開状態 <small>VISIBILITY</small><select id="visibility"><option value="draft">下書き / DRAFT</option><option value="public">公開 / PUBLIC</option><option value="private">非公開 / PRIVATE</option><option value="archived">引退 / ARCHIVED</option></select></label>
       <section class="visibility-help" aria-label="公開状態の説明">
         <strong>公開状態について</strong>
         <dl>
-          <div><dt>下書き</dt><dd>作成途中。本人だけが編集・閲覧できます。</dd></div>
-          <div><dt>非公開</dt><dd>完成済みでも本人だけが閲覧できます。</dd></div>
-          <div><dt>公開</dt><dd>一覧に掲載され、誰でも閲覧できます。</dd></div>
-          <div><dt>限定公開</dt><dd>一覧には出ません。URLを知る人だけ閲覧できます。</dd></div>
-          <div><dt>保管</dt><dd>過去データとして保存し、通常利用から外します。</dd></div>
+          <div><dt>下書き <small>DRAFT</small></dt><dd>本人だけが編集・閲覧できます。</dd></div>
+          <div><dt>公開 <small>PUBLIC</small></dt><dd>キャスト一覧に掲載され、誰でも閲覧できます。</dd></div>
+          <div><dt>非公開 <small>PRIVATE</small></dt><dd>本人だけが閲覧できます。</dd></div>
+          <div><dt>引退 <small>ARCHIVED</small></dt><dd>過去データとして保存し、通常利用から除外されます。</dd></div>
         </dl>
       </section>
     </aside>
@@ -47,6 +47,7 @@
     </section>
   </main>
   <dialog id="tsv-dialog"><form method="dialog"><h2 id="tsv-title">TSV取込 <small>TSV IMPORT</small></h2><textarea id="tsv-text" rows="16"></textarea><div class="dialog-actions"><button value="cancel">キャンセル</button><button id="tsv-apply" value="default">取り込む</button></div></form></dialog>
+  <script src="./js/sheet-runtime-fixes-v5.js"></script>
   <script type="module" src="./js/sheet.js"></script>
   <script type="module" src="./js/sheet-controls.js"></script>
   <script type="module" src="./js/sheet-recovery.js"></script>
