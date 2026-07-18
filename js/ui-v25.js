@@ -4,7 +4,6 @@ const PROPER_TEMPLATES=new Set(["製作：","芸術：","操縦："]);
 const generalArea=document.querySelector("#general-skills");
 const styleArea=document.querySelector("#style-skills");
 let refreshQueued=false;
-let correctingExperience=false;
 
 initialize();
 
@@ -18,7 +17,6 @@ function initializeSheetUi(){
   [generalArea,styleArea].filter(Boolean).forEach(container=>new MutationObserver(queueRefresh).observe(container,{childList:true,subtree:true}));
   arrangeSkillUi();
   initializeOutfitEnhancer();
-  initializeExperienceCorrection();
   updateViewLink();
   const status=document.querySelector("#save-status");
   if(status)new MutationObserver(updateViewLink).observe(status,{childList:true,subtree:true});
@@ -94,7 +92,7 @@ function activateProperTemplate(name,suitName){
 }
 
 function findGeneralRow(key){return document.querySelector(`#general-skills tr[data-skill-key="${CSS.escape(key)}"]`);}
-function queueRefresh(){if(refreshQueued)return;refreshQueued=true;requestAnimationFrame(()=>{refreshQueued=false;arrangeSkillUi();correctExperience();});}
+function queueRefresh(){if(refreshQueued)return;refreshQueued=true;requestAnimationFrame(()=>{refreshQueued=false;arrangeSkillUi();});}
 function arrangeSkillUi(){replaceSuitHeaders();ensureGroupActions();markGeneralRows();applyStoredOrder("general");applyStoredOrder("style");ensureSortButtons();}
 function replaceSuitHeaders(){const labels={"♠":"理性","♣":"感情","♥":"生命","♦":"外界"};document.querySelectorAll("#general-skills th.suit-col,#style-skills th.suit-col").forEach(cell=>{const label=labels[cell.textContent.trim()];if(label)cell.textContent=label;});}
 
@@ -157,9 +155,6 @@ function moveSkill(button){
 function initializeOutfitEnhancer(){const list=document.querySelector("#outfit-list");if(!list)return;let queued=false;const refresh=()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;enhanceOutfits();});};new MutationObserver(refresh).observe(list,{childList:true,subtree:true});refresh();}
 function enhanceOutfits(){document.querySelectorAll("#outfit-list .outfit-form").forEach(card=>{if(card.dataset.v25Enhanced==="1")return;const fields=card.querySelector(".outfit-fields"),header=card.querySelector(":scope>header");if(!fields||!header)return;const category=header.querySelector("label"),remove=header.querySelector("[data-delete-outfit]");if(category)fields.prepend(category);[...fields.querySelectorAll("label")].forEach(label=>{const caption=[...label.childNodes].find(node=>node.nodeType===Node.TEXT_NODE)?.textContent.trim()||"";if(caption.startsWith("外界"))label.remove();});fields.querySelectorAll('input[data-o="purchase_value"],input[data-o="experience_cost"]').forEach(input=>{input.type="number";input.min="0";input.max="999";input.step="1";input.inputMode="numeric";});const original=fields.querySelector('input[data-o="description"]');if(original&&!fields.querySelector("textarea[data-description-proxy]")){const textarea=document.createElement("textarea");textarea.rows=3;textarea.value=original.value;textarea.dataset.descriptionProxy="1";textarea.setAttribute("aria-label","解説");textarea.addEventListener("input",()=>{original.value=textarea.value;original.dispatchEvent(new Event("input",{bubbles:true}));});original.hidden=true;original.after(textarea);original.closest("label")?.classList.add("outfit-description");}if(remove){const wrap=document.createElement("div");wrap.className="outfit-delete-cell";wrap.append(remove);fields.append(wrap);}card.dataset.v25Enhanced="1";});}
 
-function initializeExperienceCorrection(){const total=document.querySelector("#exp-total"),breakdown=document.querySelector("#exp-breakdown");if(total)new MutationObserver(correctExperience).observe(total,{childList:true,subtree:true,characterData:true});if(breakdown)new MutationObserver(correctExperience).observe(breakdown,{childList:true,subtree:true,characterData:true});document.addEventListener("input",()=>requestAnimationFrame(correctExperience));requestAnimationFrame(correctExperience);}
-function correctExperience(){if(correctingExperience)return;const total=document.querySelector("#exp-total"),breakdown=document.querySelector("#exp-breakdown");if(!total||!breakdown)return;const entry=[...breakdown.querySelectorAll("div")].find(item=>item.querySelector("dt")?.textContent.trim()==="一般技能"),value=entry?.querySelector("dd");if(!value)return;const oldGeneral=Number(value.textContent||0),corrected=calculateGeneralExperienceFromDom();if(oldGeneral===corrected)return;correctingExperience=true;total.textContent=String(Math.max(0,Number(total.textContent||0)-oldGeneral+corrected));value.textContent=String(corrected);correctingExperience=false;}
-function calculateGeneralExperienceFromDom(){let cost=0,socialFree=0,connectionFree=0;document.querySelectorAll("#general-skills .skill-group").forEach(group=>{const title=group.querySelector(".skill-group-title")?.textContent||"";group.querySelectorAll("tr[data-skill-key]").forEach(row=>{const name=row.querySelector('input[data-f="name"]')?.value.trim()||"",level=Number(row.querySelector('input[data-f="level"]')?.value||0);if(!name||level<=0)return;let free=0;if(title.includes("一般技能")&&FIXED_GENERAL.has(name)&&!name.endsWith("："))free=1;else if(title.includes("社会")&&name==="社会：N◎VA")free=1;else if(title.includes("社会")&&name==="社会：初期取得"&&socialFree++<1)free=1;else if(title.includes("コネクション")&&name==="コネ：初期取得"&&connectionFree++<2)free=1;const kind=row.querySelector('select[data-f="skill_kind"]')?.value||"proper";cost+=Math.max(0,level-free)*(kind==="proper"?5:10);});});return cost;}
 function updateViewLink(){const link=document.querySelector("#cast-view-button");if(!link)return;const id=new URLSearchParams(location.search).get("id")?.trim();if(!id){link.classList.remove("is-visible");link.removeAttribute("href");return;}link.href=`./cast.html?id=${encodeURIComponent(id)}`;link.classList.add("is-visible");}
 
 function initializeCastPanels(){const root=document.querySelector("#cast-content");const setup=()=>{document.querySelectorAll("#tab-session .data-panel,#tab-outfits .data-panel,#tab-profile .data-panel").forEach(panel=>{if(panel.dataset.collapseReady)return;const header=panel.querySelector(":scope>.data-panel__header");if(!header)return;header.setAttribute("role","button");header.tabIndex=0;header.setAttribute("aria-expanded","true");const toggle=()=>{const collapsed=panel.classList.toggle("is-collapsed");header.setAttribute("aria-expanded",String(!collapsed));};header.addEventListener("click",toggle);header.addEventListener("keydown",event=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();toggle();}});panel.dataset.collapseReady="1";});};new MutationObserver(setup).observe(root,{childList:true,subtree:true});setup();}
