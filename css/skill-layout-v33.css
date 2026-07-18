@@ -10,7 +10,7 @@
 #general-skills .skill-table .type-col{width:24%}
 #general-skills .skill-table .lv-col{width:9%}
 #general-skills .skill-table .suit-col{width:7%}
-#general-skills .skill-table th:last-child,#general-skills .skill-table td:last-child{width:28px}
+#general-skills .skill-table th:last-child,#general-skills .skill-table td:last-child{width:78px}
 #general-skills input,#general-skills select{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box;padding:5px 3px;font-size:12px}
 #general-skills{overflow-x:hidden!important}
 
@@ -19,7 +19,7 @@
 #style-skills .skill-table.has-detail th,#style-skills .skill-table.has-detail td,.style-skill-detail-table th,.style-skill-detail-table td{box-sizing:border-box;min-width:0!important;max-width:none!important;padding:6px 3px!important;vertical-align:top;white-space:normal;overflow-wrap:anywhere}
 /* 名称 / 種別 / LV / 4スート / 技能 / 上限 / timing / target / range / difficulty / confrontation / description / page */
 #style-skills .skill-table.has-detail th:nth-child(1),#style-skills .skill-table.has-detail td:nth-child(1),.style-skill-detail-table th:nth-child(1),.style-skill-detail-table td:nth-child(1){width:10%}
-#style-skills .skill-table.has-detail th:nth-child(2),#style-skills .skill-table.has-detail td:nth-child(2),.style-skill-detail-table th:nth-child(2),.style-skill-detail-table td:nth-child(2){width:6%}
+#style-skills .skill-table.has-detail th:nth-child(2),#style-skills .skill-table.has-detail td:nth-child(2),.style-skill-detail-table th:nth-child(2),.style-skill-detail-table td:nth-child(2){width:7%}
 #style-skills .skill-table.has-detail th:nth-child(3),#style-skills .skill-table.has-detail td:nth-child(3),.style-skill-detail-table th:nth-child(3),.style-skill-detail-table td:nth-child(3){width:4%}
 #style-skills .skill-table.has-detail th:nth-child(n+4):nth-child(-n+7),#style-skills .skill-table.has-detail td:nth-child(n+4):nth-child(-n+7),.style-skill-detail-table th:nth-child(n+4):nth-child(-n+7),.style-skill-detail-table td:nth-child(n+4):nth-child(-n+7){width:2.4%}
 #style-skills .skill-table.has-detail th:nth-child(8),#style-skills .skill-table.has-detail td:nth-child(8),.style-skill-detail-table th:nth-child(8),.style-skill-detail-table td:nth-child(8){width:6%}
@@ -31,11 +31,15 @@
 #style-skills .skill-table.has-detail th:nth-child(14),#style-skills .skill-table.has-detail td:nth-child(14),.style-skill-detail-table th:nth-child(14),.style-skill-detail-table td:nth-child(14){width:4%}
 #style-skills .skill-table.has-detail th:nth-child(15),#style-skills .skill-table.has-detail td:nth-child(15),.style-skill-detail-table th:nth-child(15),.style-skill-detail-table td:nth-child(15){width:auto}
 #style-skills .skill-table.has-detail th:nth-child(16),#style-skills .skill-table.has-detail td:nth-child(16),.style-skill-detail-table th:nth-child(16),.style-skill-detail-table td:nth-child(16){width:4%}
-#style-skills .skill-table.has-detail th:last-child,#style-skills .skill-table.has-detail td:last-child{width:30px}
+#style-skills .skill-table.has-detail th:last-child,#style-skills .skill-table.has-detail td:last-child{width:78px}
 #style-skills input,#style-skills select,#style-skills textarea{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box;font-size:12px;padding:5px 3px}
-#style-skills select[data-f="skill_kind"]{display:block!important;visibility:visible!important}
+#style-skills th.type-col,#style-skills td:nth-child(2){display:table-cell!important;visibility:visible!important}
+#style-skills select[data-f="skill_kind"]{display:block!important;visibility:visible!important;opacity:1!important}
 #style-skills textarea[data-style-detail="description"]{height:30px!important;min-height:30px!important;max-height:none!important;resize:vertical!important;overflow:auto!important;line-height:1.35}
 .style-skill-detail-table{font-size:12px}.style-skill-detail-table td{line-height:1.4}
+#general-skills td:last-child,#style-skills td:last-child{white-space:nowrap!important;display:flex;align-items:center;justify-content:center;gap:2px}
+#general-skills .skill-sort-controls,#style-skills .skill-sort-controls{display:inline-flex;align-items:center;gap:2px;flex:0 0 auto}
+#general-skills .skill-sort-controls button,#style-skills .skill-sort-controls button,#general-skills td:last-child>.row-delete,#style-skills td:last-child>.row-delete{display:inline-flex;align-items:center;justify-content:center;width:22px!important;min-width:22px!important;height:24px;padding:0!important;margin:0!important;line-height:1}
 #outfit-list .outfit-description textarea[data-o="description"]{display:block;width:100%!important;height:84px!important;min-height:84px!important;max-height:none!important;resize:vertical!important;overflow:auto!important;box-sizing:border-box}
 #outfit-list .outfit-description input[data-o="description"]{display:none!important}
-@media(max-width:900px){#general-skills{grid-template-columns:1fr}#general-skills>.skill-group:nth-child(n){grid-column:1;grid-row:auto}#style-skills{overflow-x:auto!important}#style-skills .skill-table.has-detail,.style-skill-detail-table{min-width:1080px!important}}
+@media(max-width:900px){#general-skills{grid-template-columns:1fr}#general-skills>.skill-group:nth-child(n){grid-column:1;grid-row:auto}#style-skills{overflow-x:auto!important}#style-skills .skill-table.has-detail,.style-skill-detail-table{min-width:1120px!important}}
