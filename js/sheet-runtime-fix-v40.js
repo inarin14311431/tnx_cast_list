@@ -27,7 +27,6 @@
         const kind=row.querySelector('[data-f="skill_kind"]')?.value||"proper";
         let free=0;
         if(type==="general"&&FIXED_GENERAL.has(name))free=1;
-        if(type==="social"&&/^社会[：:]?[ＮN]◎[ＶV][ＡA]$/i.test(name.replace(/\s/g,"")))free=1;
         value+=Math.max(0,level-free)*(kind==="proper"?5:10);
       });
     });
