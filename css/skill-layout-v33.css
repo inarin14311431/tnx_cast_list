@@ -1,0 +1,29 @@
+/* Unified skill and outfit layout for editor/view pages. */
+#general-skills{display:grid;grid-template-columns:minmax(0,1fr) minmax(280px,.72fr);grid-template-rows:auto auto;gap:18px 24px;align-items:start}
+#general-skills>.skill-group:nth-child(1){grid-column:1;grid-row:1 / span 2}
+#general-skills>.skill-group:nth-child(2){grid-column:2;grid-row:1}
+#general-skills>.skill-group:nth-child(3){grid-column:2;grid-row:2}
+#general-skills .skill-group,#style-skills .skill-group{min-width:0}
+#general-skills .skill-table,#style-skills .skill-table{width:100%;max-width:100%}
+#style-skills{overflow-x:hidden!important;width:100%}
+#style-skills .skill-table.has-detail,.style-skill-detail-table{width:100%!important;min-width:0!important;max-width:100%!important;table-layout:fixed!important}
+#style-skills .skill-table.has-detail th,#style-skills .skill-table.has-detail td,.style-skill-detail-table th,.style-skill-detail-table td{box-sizing:border-box;min-width:0!important;max-width:none!important;padding:6px 4px!important;vertical-align:top;white-space:normal;overflow-wrap:anywhere}
+#style-skills .skill-table.has-detail th:nth-child(1),#style-skills .skill-table.has-detail td:nth-child(1),.style-skill-detail-table th:nth-child(1),.style-skill-detail-table td:nth-child(1){width:10%}
+#style-skills .skill-table.has-detail th:nth-child(2),#style-skills .skill-table.has-detail td:nth-child(2),.style-skill-detail-table th:nth-child(2),.style-skill-detail-table td:nth-child(2){width:5%}
+#style-skills .skill-table.has-detail th:nth-child(3),#style-skills .skill-table.has-detail td:nth-child(3),.style-skill-detail-table th:nth-child(3),.style-skill-detail-table td:nth-child(3){width:4%}
+#style-skills .skill-table.has-detail th:nth-child(n+4):nth-child(-n+7),#style-skills .skill-table.has-detail td:nth-child(n+4):nth-child(-n+7),.style-skill-detail-table th:nth-child(n+4):nth-child(-n+7),.style-skill-detail-table td:nth-child(n+4):nth-child(-n+7){width:2.5%}
+#style-skills .skill-table.has-detail th:nth-child(8),#style-skills .skill-table.has-detail td:nth-child(8),.style-skill-detail-table th:nth-child(8),.style-skill-detail-table td:nth-child(8){width:6%}
+#style-skills .skill-table.has-detail th:nth-child(9),#style-skills .skill-table.has-detail td:nth-child(9),.style-skill-detail-table th:nth-child(9),.style-skill-detail-table td:nth-child(9){width:4%}
+#style-skills .skill-table.has-detail th:nth-child(10),#style-skills .skill-table.has-detail td:nth-child(10),.style-skill-detail-table th:nth-child(10),.style-skill-detail-table td:nth-child(10){width:7%}
+#style-skills .skill-table.has-detail th:nth-child(11),#style-skills .skill-table.has-detail td:nth-child(11),.style-skill-detail-table th:nth-child(11),.style-skill-detail-table td:nth-child(11){width:4%}
+#style-skills .skill-table.has-detail th:nth-child(12),#style-skills .skill-table.has-detail td:nth-child(12),.style-skill-detail-table th:nth-child(12),.style-skill-detail-table td:nth-child(12){width:5%}
+#style-skills .skill-table.has-detail th:nth-child(13),#style-skills .skill-table.has-detail td:nth-child(13),.style-skill-detail-table th:nth-child(13),.style-skill-detail-table td:nth-child(13){width:5%}
+#style-skills .skill-table.has-detail th:nth-child(14),#style-skills .skill-table.has-detail td:nth-child(14),.style-skill-detail-table th:nth-child(14),.style-skill-detail-table td:nth-child(14){width:4%}
+#style-skills .skill-table.has-detail th:nth-child(15),#style-skills .skill-table.has-detail td:nth-child(15),.style-skill-detail-table th:nth-child(15),.style-skill-detail-table td:nth-child(15){width:auto}
+#style-skills .skill-table.has-detail th:nth-child(16),#style-skills .skill-table.has-detail td:nth-child(16),.style-skill-detail-table th:nth-child(16),.style-skill-detail-table td:nth-child(16){width:4%}
+#style-skills .skill-table.has-detail th:last-child,#style-skills .skill-table.has-detail td:last-child{width:34px}
+#style-skills input,#style-skills select,#style-skills textarea{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box;font-size:12px;padding:5px 4px}
+#style-skills textarea,.style-skill-detail-table textarea{min-height:72px;resize:vertical}
+.style-skill-detail-table{font-size:12px}.style-skill-detail-table td{line-height:1.45}
+#outfit-list [data-o="description"],#outfit-list textarea[data-description-proxy],#outfit-list .outfit-description textarea{display:block;width:100%!important;height:84px!important;min-height:84px!important;max-height:none!important;resize:vertical!important;overflow:auto!important;box-sizing:border-box}
+@media(max-width:900px){#general-skills{grid-template-columns:1fr}#general-skills>.skill-group:nth-child(n){grid-column:1;grid-row:auto}#style-skills{overflow-x:auto!important}#style-skills .skill-table.has-detail,.style-skill-detail-table{min-width:1100px!important}}
