@@ -123,9 +123,15 @@ function applyStoredOrder(kind){
   const rows=rowsFor(kind);if(rows.length<2)return;
   let order;try{order=JSON.parse(localStorage.getItem(storageKey(kind))||"[]");}catch{return;}
   if(!Array.isArray(order)||!order.length)return;
-  const parent=rows[0].parentElement;
   const byToken=new Map(rows.map(row=>[rowToken(row,kind),row]));
-  order.forEach(token=>{const row=byToken.get(token);if(row)parent.append(row);});
+  const desired=order.map(token=>byToken.get(token)).filter(Boolean);
+  const desiredSet=new Set(desired);
+  for(const row of rows)if(!desiredSet.has(row))desired.push(row);
+  if(desired.length!==rows.length||desired.every((row,index)=>row===rows[index]))return;
+  const parent=rows[0].parentElement;
+  const fragment=document.createDocumentFragment();
+  desired.forEach(row=>fragment.append(row));
+  parent.append(fragment);
 }
 function ensureSortButtons(){addSortControls(allGeneralRows(),"general");addSortControls(rowsFor("style"),"style");}
 function addSortControls(rows,kind){
@@ -148,7 +154,7 @@ function moveSkill(button){
   if(button.dataset.skillMove==="up")target.before(row);else target.after(row);
   const ordered=rowsFor(kind).map(item=>rowToken(item,kind));
   localStorage.setItem(storageKey(kind),JSON.stringify(ordered));
-  ensureSortButtons();
+  requestAnimationFrame(()=>ensureSortButtons());
   document.querySelector("#save-status")?.classList.add("unsaved");
 }
 
