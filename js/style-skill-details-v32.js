@@ -22,18 +22,25 @@ if(root){
     return data;
   };
   const encode=data=>PREFIX+"\n"+JSON.stringify(data);
-  const esc=value=>String(value??"").replace(/[&<>\"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
   function enhance(){
     const table=root.querySelector("table.skill-table.has-detail");
     if(!table)return;
+    table.classList.add("style-skill-unified-table");
     const header=table.querySelector("thead tr");
     if(header&&!header.dataset.detailV32){
       const cells=[...header.children];
+      if(cells[1])cells[1].textContent="種別";
       const detail=cells[cells.length-2];
-      if(detail){detail.remove();const end=header.lastElementChild;for(const [,label] of FIELDS){const th=document.createElement("th");th.textContent=label;th.className="style-detail-col style-detail-col--"+label;header.insertBefore(th,end);}}
+      if(detail){
+        detail.remove();
+        const end=header.lastElementChild;
+        for(const [,label] of FIELDS){const th=document.createElement("th");th.textContent=label;th.className="style-detail-col style-detail-col--"+label;header.insertBefore(th,end);}
+      }
       header.dataset.detailV32="1";
     }
     table.querySelectorAll("tbody tr[data-skill-key]").forEach(row=>{
+      const typeSelect=row.querySelector('select[data-f="skill_kind"]');
+      if(typeSelect){typeSelect.setAttribute("aria-label","種別");typeSelect.hidden=false;}
       if(row.dataset.detailV32)return;
       const original=row.querySelector('textarea[data-f="description"]');
       if(!original)return;
@@ -48,14 +55,14 @@ if(root){
         control.dataset.styleDetail=key;
         control.setAttribute("aria-label",label);
         control.value=data[key]||"";
-        if(control.tagName==="TEXTAREA")control.rows=3;
+        if(control.tagName==="TEXTAREA")control.rows=1;
         control.addEventListener("input",()=>{
           const values={};row.querySelectorAll("[data-style-detail]").forEach(el=>values[el.dataset.styleDetail]=el.value);
           original.value=encode(values);
           original.dispatchEvent(new Event("input",{bubbles:true}));
         });
         td.append(control);
-        if(key==="description"){original.hidden=true;original.tabIndex=-1;td.append(original);}
+        if(key==="description"){original.hidden=true;original.style.display="none";original.tabIndex=-1;td.append(original);}
         row.insertBefore(td,deleteCell);
       });
       row.dataset.detailV32="1";
