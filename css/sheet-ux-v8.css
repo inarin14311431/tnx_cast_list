@@ -1,8 +1,0 @@
-.legacy-general-toggle{display:none!important}
-.control-editor{display:none!important}
-#ability-grid .ability-card>.control-editor{display:none!important}
-.master-proper-row td{opacity:.82}
-.master-proper-row input,.master-proper-row select{color:var(--text-muted);background:rgba(0,0,0,.18)}
-.master-proper-row input[readonly],.master-proper-row select:disabled{cursor:default}
-.master-proper-row .master-proper-acquire{min-width:64px;padding:7px 9px;border:1px solid var(--line-muted);color:var(--line);background:rgba(65,232,255,.05);cursor:pointer;white-space:nowrap}
-.master-proper-row .master-proper-acquire:hover{border-color:var(--line);background:rgba(65,232,255,.14)}
