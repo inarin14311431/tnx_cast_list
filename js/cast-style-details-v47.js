@@ -4,7 +4,7 @@ const PREFIX="@@TNX_STYLE_DETAIL_V1@@";
 const FIELDS=[
   ["skill","技能"],["limit","上限"],["timing","タイミング"],["target","対象"],
   ["range","射程"],["difficulty","目標値"],["confrontation","対決"],
-  ["description","解説"],["page","P"]
+  ["description","解説"],["page","参照P"]
 ];
 const SUITS=[
   ["reason","理性","♠"],["passion","感情","♣"],["life","生命","♥"],["mundane","外界","♦"]
