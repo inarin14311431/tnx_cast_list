@@ -41,22 +41,12 @@
 .cs-row input{padding:10px;text-align:center;font-size:1.2rem;font-weight:800}
 .cs-row strong{display:grid;place-items:center;min-height:44px;border:1px solid rgba(65,232,255,.36);background:rgba(65,232,255,.08);font-size:1.35rem}
 
-.exp-panel{position:sticky;top:18px;align-self:start;max-height:calc(100vh - 36px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
 .exp-panel #exp-total.flash{animation:exp-flash .5s ease}
 .exp-panel #save-button{position:relative;overflow:hidden;transition:background .16s,border-color .16s,transform .12s,box-shadow .16s}
 .exp-panel #save-button:active{transform:translateY(2px) scale(.985)}
 .exp-panel #save-button.is-saving{color:#061014;background:var(--line);box-shadow:0 0 22px rgba(65,232,255,.45)}
 .exp-panel #save-button.is-saved{color:#06140d;background:#70efa9;border-color:#70efa9;box-shadow:0 0 22px rgba(112,239,169,.35)}
 .exp-panel #save-button.is-error{animation:button-error .35s linear 2;color:#fff;background:#c92e50;border-color:#ff5379}
-
-.visibility-help{margin-top:10px;padding:10px 12px;border:1px solid rgba(65,232,255,.16);background:rgba(0,0,0,.2);font-size:.84rem;line-height:1.55;color:var(--text-muted)}
-.visibility-help strong{color:var(--text)}
-.visibility-help dl{display:grid;gap:12px;margin:10px 0 0}
-.visibility-help dl>div{display:block;padding-top:10px;border-top:1px solid rgba(65,232,255,.14)}
-.visibility-help dl>div:first-child{padding-top:0;border-top:0}
-.visibility-help dt{display:block;margin:0 0 4px;color:var(--line);font-weight:800;line-height:1.35}
-.visibility-help dt small{margin-left:4px;font-size:.78em;color:var(--text-muted)}
-.visibility-help dd{display:block;margin:4px 0 0;padding-left:1.2em;color:var(--text-muted);line-height:1.55}
 
 .divine-field{display:grid!important;grid-template-columns:auto minmax(0,1fr);grid-template-rows:auto;column-gap:12px;align-items:end;min-height:72px;padding:16px 14px 12px!important;border-top:1px solid rgba(65,232,255,.2);background:rgba(65,232,255,.035)}
 .divine-field>span{grid-column:1;grid-row:1;align-self:end;margin:0 0 1px;color:var(--line);font-weight:800;line-height:1.25;white-space:nowrap}
@@ -92,5 +82,16 @@
 @keyframes button-error{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 
 @media(max-width:1000px){.skill-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.outfit-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.sheet-header{grid-template-columns:1fr;padding-top:24px!important}.sheet-header #save-status{position:static;top:auto!important;transform:none;justify-self:stretch;margin-top:10px}.exp-panel{position:static;top:auto;max-height:none;overflow:visible}.ability-grid{grid-template-columns:1fr}.ability-card--cs{grid-column:auto}.ability-line{grid-template-columns:64px 1fr 1fr 58px}.ability-matrix__header,.ability-matrix__row{grid-template-columns:70px 1fr 1fr}.cs-row{grid-template-columns:1fr 1fr}.cs-row strong{grid-column:1/-1}.visibility-help dd{padding-left:10px}.divine-field{grid-template-columns:auto minmax(0,1fr);column-gap:9px;min-height:68px;padding:14px 10px 10px!important}}
+@media(max-width:760px){.sheet-header{grid-template-columns:1fr;padding-top:24px!important}.sheet-header #save-status{position:static;top:auto!important;transform:none;justify-self:stretch;margin-top:10px}.ability-grid{grid-template-columns:1fr}.ability-card--cs{grid-column:auto}.ability-line{grid-template-columns:64px 1fr 1fr 58px}.ability-matrix__header,.ability-matrix__row{grid-template-columns:70px 1fr 1fr}.cs-row{grid-template-columns:1fr 1fr}.cs-row strong{grid-column:1/-1}.divine-field{grid-template-columns:auto minmax(0,1fr);column-gap:9px;min-height:68px;padding:14px 10px 10px!important}}
 @media(max-width:680px){.skill-toolbar,.outfit-fields{grid-template-columns:1fr}.outfit-wide{grid-column:auto}}
+
+/* Sticky, compact experience panel. */
+@media (min-width:761px){
+  .exp-panel{position:sticky;top:18px;align-self:start;max-height:none;overflow:visible;padding:14px}
+  .exp-panel>p{margin:0 0 6px}
+  .exp-panel #exp-total{margin-bottom:8px}
+  .exp-panel #exp-breakdown{gap:2px;margin:0 0 10px}
+  .exp-panel #exp-breakdown>div{padding:3px 0}
+  .exp-panel button,.exp-panel .sheet-view-link,.exp-panel>label{margin-top:7px}
+}
+@media (max-width:760px){.exp-panel{position:static;max-height:none;overflow:visible}}
