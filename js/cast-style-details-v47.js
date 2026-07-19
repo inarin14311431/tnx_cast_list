@@ -41,9 +41,10 @@ function findSection(){
 function valueCell(value,key){
   const text=String(value??"");
   if(key==="description"){
-    return `<td class="style-view-cell style-view-cell--description"><textarea class="style-description-expandable" rows="1" readonly aria-label="解説">${esc(text)}</textarea></td>`;
+    return `<td class="style-view-cell style-view-cell--description"><textarea class="style-field-scroll style-description-expandable" rows="1" wrap="off" readonly aria-label="解説" title="${esc(text)}">${esc(text)}</textarea></td>`;
   }
-  return `<td class="style-view-cell style-view-cell--${key}"><span>${esc(text).replaceAll("\n","<br>")||"&nbsp;"}</span></td>`;
+  const oneLine=text.replace(/\r?\n/g," ");
+  return `<td class="style-view-cell style-view-cell--${key}"><input class="style-field-scroll" type="text" readonly value="${esc(oneLine)}" title="${esc(text)}" aria-label="${esc(key)}"></td>`;
 }
 
 function renderTable(section,skills){
