@@ -49,8 +49,8 @@ function valueCell(value,key){
 
 function renderTable(section,skills){
   section.classList.add("style-skill-section-v47","style-skill-view-editorlike");
+  const heading=section.querySelector("h3");
   section.innerHTML=`
-    <h3>スタイル技能 <small>STYLE SKILLS</small></h3>
     <div class="data-table-wrapper style-skill-view-wrapper">
       <table class="data-table style-skill-detail-table style-skill-view-table">
         <thead><tr>
@@ -69,6 +69,7 @@ function renderTable(section,skills){
         }).join("")}</tbody>
       </table>
     </div>`;
+  if(heading)section.prepend(heading);
 }
 
 async function loadSkills(){
