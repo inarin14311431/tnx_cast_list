@@ -41,6 +41,7 @@
 .cs-row input{padding:10px;text-align:center;font-size:1.2rem;font-weight:800}
 .cs-row strong{display:grid;place-items:center;min-height:44px;border:1px solid rgba(65,232,255,.36);background:rgba(65,232,255,.08);font-size:1.35rem}
 
+.exp-panel{position:sticky;top:18px;align-self:start;max-height:calc(100vh - 36px);overflow-y:auto;overscroll-behavior:contain;scrollbar-gutter:stable}
 .exp-panel #exp-total.flash{animation:exp-flash .5s ease}
 .exp-panel #save-button{position:relative;overflow:hidden;transition:background .16s,border-color .16s,transform .12s,box-shadow .16s}
 .exp-panel #save-button:active{transform:translateY(2px) scale(.985)}
@@ -91,5 +92,5 @@
 @keyframes button-error{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 
 @media(max-width:1000px){.skill-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.outfit-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.sheet-header{grid-template-columns:1fr;padding-top:24px!important}.sheet-header #save-status{position:static;top:auto!important;transform:none;justify-self:stretch;margin-top:10px}.ability-grid{grid-template-columns:1fr}.ability-card--cs{grid-column:auto}.ability-line{grid-template-columns:64px 1fr 1fr 58px}.ability-matrix__header,.ability-matrix__row{grid-template-columns:70px 1fr 1fr}.cs-row{grid-template-columns:1fr 1fr}.cs-row strong{grid-column:1/-1}.visibility-help dd{padding-left:10px}.divine-field{grid-template-columns:auto minmax(0,1fr);column-gap:9px;min-height:68px;padding:14px 10px 10px!important}}
+@media(max-width:760px){.sheet-header{grid-template-columns:1fr;padding-top:24px!important}.sheet-header #save-status{position:static;top:auto!important;transform:none;justify-self:stretch;margin-top:10px}.exp-panel{position:static;top:auto;max-height:none;overflow:visible}.ability-grid{grid-template-columns:1fr}.ability-card--cs{grid-column:auto}.ability-line{grid-template-columns:64px 1fr 1fr 58px}.ability-matrix__header,.ability-matrix__row{grid-template-columns:70px 1fr 1fr}.cs-row{grid-template-columns:1fr 1fr}.cs-row strong{grid-column:1/-1}.visibility-help dd{padding-left:10px}.divine-field{grid-template-columns:auto minmax(0,1fr);column-gap:9px;min-height:68px;padding:14px 10px 10px!important}}
 @media(max-width:680px){.skill-toolbar,.outfit-fields{grid-template-columns:1fr}.outfit-wide{grid-column:auto}}
