@@ -2,6 +2,14 @@ import { SITE_BASE_PATH } from "./config.js";
 import { supabase } from "./supabase-client.js";
 import { requireAuth, signOut } from "./auth-state.js";
 
+const VISIBILITY_LABELS = {
+  draft: "下書き / DRAFT",
+  public: "公開 / PUBLIC",
+  private: "非公開 / PRIVATE",
+  archived: "引退 / ARCHIVED",
+  unlisted: "限定公開 / UNLISTED"
+};
+
 const ownedCastsContainer = document.querySelector("#owned-casts");
 let currentUser = null;
 
@@ -53,6 +61,11 @@ function actionLabel(japanese, english) {
   return `<span class="action-label__jp">${japanese}</span><small class="action-label__en">${english}</small>`;
 }
 
+function visibilityLabel(value) {
+  const key = String(value ?? "").toLowerCase();
+  return VISIBILITY_LABELS[key] ?? key.toUpperCase();
+}
+
 function createOwnedCastItem(character) {
   const id = encodeURIComponent(character.public_id);
   return `
@@ -63,7 +76,7 @@ function createOwnedCastItem(character) {
         <h3>${escapeHtml(character.character_name)}</h3>
       </div>
       <div class="owned-cast__meta">
-        <span>${escapeHtml(character.visibility.toUpperCase())}</span>
+        <span>${escapeHtml(visibilityLabel(character.visibility))}</span>
         <div class="owned-cast__links" aria-label="キャスト操作">
           <a href="${SITE_BASE_PATH}cast.html?id=${id}">${actionLabel("閲覧", "OPEN")}</a>
           <a href="${SITE_BASE_PATH}sheet.html?id=${id}">${actionLabel("シート編集", "EDIT SHEET")}</a>
