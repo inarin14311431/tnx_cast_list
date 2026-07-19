@@ -7,7 +7,7 @@ const FIELDS=[
   ["description","解説"],["page","参照"]
 ];
 const SUITS=[
-  ["reason","理性"],["passion","感情"],["life","生命"],["mundane","外界"]
+  ["reason","理性","♠"],["passion","感情","♣"],["life","生命","♥"],["mundane","外界","♦"]
 ];
 const esc=value=>String(value??"").replace(/[&<>\"]/g,ch=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[ch]));
 
@@ -38,12 +38,17 @@ function findSection(){
   })||null;
 }
 
+function valueCell(value,key){
+  const text=String(value??"");
+  return `<td class="style-view-cell style-view-cell--${key}"><span>${esc(text).replaceAll("\n","<br>")||"&nbsp;"}</span></td>`;
+}
+
 function renderTable(section,skills){
-  section.classList.add("style-skill-section-v47");
+  section.classList.add("style-skill-section-v47","style-skill-view-editorlike");
   section.innerHTML=`
     <h3>スタイル技能 <small>STYLE SKILLS</small></h3>
-    <div class="data-table-wrapper">
-      <table class="data-table style-skill-detail-table">
+    <div class="data-table-wrapper style-skill-view-wrapper">
+      <table class="data-table style-skill-detail-table style-skill-view-table">
         <thead><tr>
           <th>名称</th><th>種別</th><th>LV</th>
           ${SUITS.map(([,label])=>`<th>${label}</th>`).join("")}
@@ -53,9 +58,9 @@ function renderTable(section,skills){
           const detail=parseDetail(skill.description);
           const kind={normal:"通常",secret:"秘技",ultimate:"奥義"}[skill.skill_kind]||skill.skill_kind||"";
           return `<tr>
-            <td>${esc(skill.name)}</td><td>${esc(kind)}</td><td>${esc(skill.level)}</td>
-            ${SUITS.map(([key])=>`<td class="style-suit-cell">${skill[key]?"●":""}</td>`).join("")}
-            ${FIELDS.map(([key])=>`<td>${esc(detail[key]).replaceAll("\n","<br>")}</td>`).join("")}
+            ${valueCell(skill.name,"name")}${valueCell(kind,"kind")}${valueCell(skill.level,"level")}
+            ${SUITS.map(([key,,mark])=>`<td class="style-suit-cell"><span class="style-suit-mark ${skill[key]?"is-active":""}">${mark}</span></td>`).join("")}
+            ${FIELDS.map(([key])=>valueCell(detail[key],key)).join("")}
           </tr>`;
         }).join("")}</tbody>
       </table>
