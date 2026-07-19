@@ -13,6 +13,8 @@ SupabaseとGitHub Pagesを使用した、トーキョーN◎VA用キャスト管
 - `backup.html`：バックアップ／復元
 - `login.html`：ログイン・アカウント作成
 
+`register.html`と`edit.html`は旧URL互換用です。新規作成・編集はすべて`sheet.html`へ転送されます。
+
 ## 統合キャラクターシート編集
 
 `sheet.html`で次を同一画面から編集できます。
@@ -89,6 +91,7 @@ SupabaseとGitHub Pagesを使用した、トーキョーN◎VA用キャスト管
 - 複数画面で使う処理だけを共通ファイルへ置く
 - HTMLのキャッシュ番号は、対象アセット変更時に更新する
 - 削除前に、全HTMLから参照が外れていることを確認する
+- 旧画面を復活させず、`sheet.html`を唯一の作成・編集画面として扱う
 
 ## 必須DB更新
 
