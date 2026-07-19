@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-labelledby="title desc">
+  <title id="title">Scan Failed</title>
+  <desc id="desc">キャスト画像が登録されていない場合のプレースホルダー</desc>
+  <defs>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" fill="none" stroke="#163741" stroke-width="1"/>
+    </pattern>
+    <linearGradient id="fade" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#0a2028"/>
+      <stop offset="1" stop-color="#02090d"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#fade)"/>
+  <rect width="800" height="800" fill="url(#grid)" opacity=".8"/>
+  <rect x="42" y="42" width="716" height="716" fill="none" stroke="#55e8ff" stroke-width="3" opacity=".65"/>
+  <path d="M42 126h82M42 42v82M758 126h-82M758 42v82M42 674h82M42 758v-82M758 674h-82M758 758v-82" fill="none" stroke="#55e8ff" stroke-width="8"/>
+  <g font-family="monospace" text-anchor="middle">
+    <text x="400" y="366" fill="#dffbff" font-size="64" font-weight="700" letter-spacing="6">SCAN FAILED</text>
+    <text x="400" y="430" fill="#78c9d6" font-size="22" letter-spacing="4">VISUAL IDENTITY NOT FOUND</text>
+    <text x="400" y="505" fill="#ff6687" font-size="18" letter-spacing="3">ERROR CODE: NO_IMAGE_DATA</text>
+  </g>
+  <g stroke="#55e8ff" opacity=".45">
+    <path d="M120 246h560M120 552h560"/>
+    <path d="M180 220v52M620 220v52M180 526v52M620 526v52"/>
+  </g>
+</svg>
