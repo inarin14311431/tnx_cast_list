@@ -1,0 +1,28 @@
+/* Account page styles consolidated from account-ja, account-ux-v2 and account-v17. */
+.owned-cast{padding:12px 14px;gap:14px}
+.owned-cast__meta{gap:8px}
+.owned-cast__meta>span{color:var(--text);font-size:.82rem;font-weight:800;white-space:nowrap}
+.owned-cast__links{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:6px!important;width:100%}
+.owned-cast__links a,.owned-cast__links button{display:grid;place-items:center;gap:3px;min-width:0!important;width:100%;min-height:54px;padding:9px 12px;border:1px solid rgba(103,239,255,.85);color:#f4fdff;background:linear-gradient(180deg,rgba(31,139,155,.34),rgba(9,39,47,.76));font-family:inherit;text-align:center;white-space:nowrap;cursor:pointer;box-shadow:0 0 0 1px rgba(103,239,255,.08),inset 0 0 18px rgba(103,239,255,.05);transition:border-color .16s,background .16s,transform .16s,box-shadow .16s}
+.owned-cast__links a:hover,.owned-cast__links button:hover{transform:translateY(-1px);border-color:#b8f8ff;background:linear-gradient(180deg,rgba(70,202,220,.42),rgba(12,59,69,.86));box-shadow:0 0 16px rgba(103,239,255,.22);text-shadow:none}
+.owned-cast__links button[data-delete]{border-color:rgba(255,93,127,.9);color:#ffdbe3;background:linear-gradient(180deg,rgba(145,31,58,.38),rgba(59,10,24,.8))}
+.owned-cast__links button[data-delete]:hover{background:linear-gradient(180deg,rgba(208,53,88,.52),rgba(92,14,34,.88));box-shadow:0 0 16px rgba(255,93,127,.22)}
+.owned-cast__links .action-label__jp,.owned-cast__links .action-label__en{white-space:nowrap}
+.action-label__jp{display:block;font-weight:900;font-size:1rem;line-height:1.15;letter-spacing:.02em}
+.action-label__en{display:block;color:#b9dde3;font:700 .68rem/1.1 monospace;letter-spacing:.1em}
+.account-actions{align-items:stretch}
+.account-actions a,.account-actions button{display:grid;gap:2px;white-space:nowrap;word-break:keep-all}
+#logout-button,#logout-button span,#logout-button small{white-space:nowrap;word-break:keep-all}
+#logout-button{min-width:150px}
+.account-actions>a:hover,.account-actions>button:hover{color:#041319!important;background:#68eaff!important;border-color:#68eaff!important}
+.account-actions>a:hover span,.account-actions>button:hover span,.account-actions>a:hover small,.account-actions>button:hover small{color:#041319!important;opacity:1!important;text-shadow:none!important}
+.account-panel{padding:18px}
+.account-layout{gap:16px;padding-top:24px}
+.account-data{margin:16px 0}
+.owned-cast h3{margin-top:2px}
+.owned-cast__handle{margin-top:2px}
+
+@media(max-width:900px){.owned-cast__links{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:700px){.account-actions{display:grid;grid-template-columns:repeat(2,minmax(150px,1fr))}#logout-button{min-width:0}}
+@media(max-width:560px){.owned-cast__links{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:420px){.account-actions{grid-template-columns:1fr}.owned-cast{padding:10px}.action-label__jp{font-size:.94rem}}
