@@ -4,15 +4,15 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>キャストシート編集 // N◎VA ARCHIVE</title>
-  <link rel="stylesheet" href="./css/base.css?v=48">
-  <link rel="stylesheet" href="./css/sheet.css?v=48">
-  <link rel="stylesheet" href="./css/sheet-ja.css?v=48">
-  <link rel="stylesheet" href="./css/sheet-layout.css?v=48">
-  <link rel="stylesheet" href="./css/ui-ja-v11.css?v=48">
-  <link rel="stylesheet" href="./css/site-unified-v15.css?v=48">
-  <link rel="stylesheet" href="./css/ui-v25.css?v=48">
-  <link rel="stylesheet" href="./css/responsive-v29.css?v=48">
-  <link rel="stylesheet" href="./css/sheet-features.css?v=48">
+  <link rel="stylesheet" href="./css/base.css?v=50">
+  <link rel="stylesheet" href="./css/sheet.css?v=50">
+  <link rel="stylesheet" href="./css/sheet-ja.css?v=50">
+  <link rel="stylesheet" href="./css/sheet-layout.css?v=50">
+  <link rel="stylesheet" href="./css/ui-ja-v11.css?v=50">
+  <link rel="stylesheet" href="./css/site-unified-v15.css?v=50">
+  <link rel="stylesheet" href="./css/ui-v25.css?v=50">
+  <link rel="stylesheet" href="./css/responsive-v29.css?v=50">
+  <link rel="stylesheet" href="./css/sheet-features.css?v=50">
 </head>
 <body>
   <div class="background-grid"></div><div class="scanlines"></div>
@@ -23,16 +23,17 @@
       <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>01 プロフィール</span><small>PROFILE</small></button><div class="section-body"><div class="form-grid"><label>キャスト名<input id="character-name" required></label><label>読み<input id="character-kana"></label><label>ハンドル<input id="handle"></label><label>プレイヤー名<input id="player-name" required></label><label>所属<input id="affiliation"></label><label>市民ランク<input id="citizen-rank"></label><label class="wide">概要<textarea id="summary" rows="3"></textarea></label><label class="wide">プロフィール<textarea id="profile" rows="7"></textarea></label></div></div></section>
       <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>02 スタイル</span><small>STYLES</small></button><div class="section-body"><div id="style-grid" class="style-grid"></div><div id="style-warning" class="warning"></div></div></section>
       <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>03 能力値・制御値・CS</span><small>ABILITY / CONTROL / CS</small></button><div class="section-body"><div id="ability-grid" class="ability-grid"></div></div></section>
-      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>04 一般技能・スタイル技能</span><small>GENERAL / STYLE SKILLS</small></button><div class="section-body"><div class="toolbar skill-toolbar"><button id="add-general" type="button" hidden aria-hidden="true" tabindex="-1">一般技能を追加</button><button id="add-social" type="button">社会を追加 <small>ADD SOCIAL</small></button><button id="add-connection" type="button">コネを追加 <small>ADD CONNECTION</small></button><button id="add-style-skill" type="button">スタイル技能を追加 <small>ADD STYLE SKILL</small></button><button id="import-skd" type="button">SKD TSV取込 <small>IMPORT</small></button></div><div id="general-skills"></div><div id="style-skills"></div></div></section>
-      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>05 アウトフィット</span><small>OUTFITS</small></button><div class="section-body"><div class="toolbar"><button id="add-outfit" type="button">アウトフィットを追加 <small>ADD OUTFIT</small></button><button id="import-ofc" type="button">OFC TSV取込 <small>IMPORT</small></button></div><div id="outfit-list"></div></div></section>
+      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>04 一般技能・社会・コネ</span><small>GENERAL / SOCIAL / CONNECTIONS</small></button><div class="section-body"><div class="toolbar skill-toolbar"><button id="add-general" type="button" hidden aria-hidden="true" tabindex="-1">一般技能を追加</button><button id="add-social" type="button">社会を追加 <small>ADD SOCIAL</small></button><button id="add-connection" type="button">コネを追加 <small>ADD CONNECTION</small></button><button id="import-skd" type="button">SKD TSV取込 <small>IMPORT</small></button></div><div id="general-skills"></div></div></section>
+      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>05 スタイル技能</span><small>STYLE SKILLS</small></button><div class="section-body"><div class="toolbar skill-toolbar"><button id="add-style-skill" type="button">スタイル技能を追加 <small>ADD STYLE SKILL</small></button></div><div id="style-skills"></div></div></section>
+      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>06 アウトフィット</span><small>OUTFITS</small></button><div class="section-body"><div class="toolbar"><button id="add-outfit" type="button">アウトフィットを追加 <small>ADD OUTFIT</small></button><button id="import-ofc" type="button">OFC TSV取込 <small>IMPORT</small></button></div><div id="outfit-list"></div></div></section>
     </section>
   </main>
   <dialog id="tsv-dialog"><form method="dialog"><h2 id="tsv-title">TSV取込 <small>TSV IMPORT</small></h2><textarea id="tsv-text" rows="16"></textarea><div class="dialog-actions"><button value="cancel">キャンセル</button><button id="tsv-apply" value="default">取り込む</button></div></form></dialog>
   <dialog id="legacy-import-dialog"><form method="dialog"><h2>旧キャラシJSON取込</h2><p>旧キャラシで取得したJSONを貼り付けてください。反映後もDBには保存されず、保存ボタンを押した時点で登録されます。</p><button id="legacy-bookmarklet-copy" type="button">ブックマークレットをコピー</button><textarea id="legacy-import-json" rows="14" placeholder="旧キャラシJSONを貼り付け"></textarea><p id="legacy-import-message" aria-live="polite"></p><div class="dialog-actions"><button value="cancel">閉じる</button><button id="legacy-import-apply" type="button">編集画面へ反映</button></div></form></dialog>
-  <script src="./js/sheet-draft.js?v=48"></script>
-  <script type="module" src="./js/sheet.js?v=48"></script>
-  <script type="module" src="./js/ui-v25.js?v=48"></script>
-  <script type="module" src="./js/sheet-features.js?v=48"></script>
-  <script src="./js/sheet-import.js?v=48"></script>
+  <script src="./js/sheet-draft.js?v=50"></script>
+  <script type="module" src="./js/sheet.js?v=50"></script>
+  <script type="module" src="./js/ui-v25.js?v=50"></script>
+  <script type="module" src="./js/sheet-features.js?v=50"></script>
+  <script src="./js/sheet-import.js?v=50"></script>
 </body>
 </html>
