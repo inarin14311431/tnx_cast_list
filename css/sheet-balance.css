@@ -68,24 +68,24 @@
 .suit-check input{width:36px!important;height:36px!important}
 .suit-check span{width:32px;height:32px;font-size:1.35rem!important}
 
-/* Style-skill table: compact fixed columns, all remaining width goes to description. */
+/* Style-skill table: compact px columns, all remaining width goes to description. */
 #style-skills{width:100%;min-width:0;overflow:visible}
 #style-skills .skill-group,#style-skills .skill-table-scroll{width:100%;min-width:0;overflow:visible}
 #style-skills .skill-table{width:100%;min-width:0;table-layout:fixed;font-size:.7rem}
 #style-skills .skill-table th,#style-skills .skill-table td{box-sizing:border-box;padding:4px 2px}
-#style-skills .skill-table .name-col{width:150px}
-#style-skills .skill-table .type-col{width:74px}
-#style-skills .skill-table .lv-col{width:54px}
-#style-skills .style-field-head--skill{width:88px}
-#style-skills .style-field-head--limit{width:54px}
-#style-skills .style-field-head--timing{width:82px}
-#style-skills .style-field-head--target{width:72px}
-#style-skills .style-field-head--range{width:62px}
-#style-skills .style-field-head--difficulty{width:68px}
-#style-skills .style-field-head--confrontation{width:62px}
+#style-skills .skill-table .name-col{width:132px}
+#style-skills .skill-table .type-col{width:68px}
+#style-skills .skill-table .lv-col{width:48px}
+#style-skills .style-field-head--skill{width:76px}
+#style-skills .style-field-head--limit{width:48px}
+#style-skills .style-field-head--timing{width:72px}
+#style-skills .style-field-head--target{width:62px}
+#style-skills .style-field-head--range{width:54px}
+#style-skills .style-field-head--difficulty{width:60px}
+#style-skills .style-field-head--confrontation{width:54px}
 #style-skills .style-field-head--description{width:auto}
-#style-skills .style-field-head--page{width:54px}
-#style-skills .delete-col{width:38px}
+#style-skills .style-field-head--page{width:50px}
+#style-skills .delete-col{width:34px}
 #style-skills input,#style-skills select,#style-skills textarea{width:100%;min-width:0;padding:5px 3px;font-size:.74rem}
 #style-skills textarea[data-style-field="description"]{min-height:42px;height:42px;resize:vertical}
 #style-skills .row-delete{width:100%;min-width:0;padding:5px 1px}
@@ -102,14 +102,18 @@
   .ability-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
   #style-skills .skill-table{font-size:.66rem}
   #style-skills input,#style-skills select,#style-skills textarea{font-size:.69rem;padding:4px 2px}
-  #style-skills .skill-table .name-col{width:132px}
-  #style-skills .skill-table .type-col{width:68px}
-  #style-skills .style-field-head--skill{width:78px}
-  #style-skills .style-field-head--timing{width:74px}
-  #style-skills .style-field-head--target{width:66px}
-  #style-skills .style-field-head--range{width:58px}
-  #style-skills .style-field-head--difficulty{width:62px}
-  #style-skills .style-field-head--confrontation{width:58px}
+  #style-skills .skill-table .name-col{width:118px}
+  #style-skills .skill-table .type-col{width:64px}
+  #style-skills .skill-table .lv-col{width:44px}
+  #style-skills .style-field-head--skill{width:68px}
+  #style-skills .style-field-head--limit{width:44px}
+  #style-skills .style-field-head--timing{width:66px}
+  #style-skills .style-field-head--target{width:58px}
+  #style-skills .style-field-head--range{width:50px}
+  #style-skills .style-field-head--difficulty{width:56px}
+  #style-skills .style-field-head--confrontation{width:50px}
+  #style-skills .style-field-head--page{width:46px}
+  #style-skills .delete-col{width:32px}
 }
 @media(max-width:1080px){
   .sheet-layout{grid-template-columns:1fr;width:min(100% - 20px,1500px)}
@@ -123,7 +127,7 @@
   .style-grid,.ability-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ability-card--cs{grid-column:1/-1}
   #style-skills,#style-skills .skill-table-scroll{overflow-x:auto}
-  #style-skills .skill-table{min-width:1120px}
+  #style-skills .skill-table{min-width:1030px}
 }
 @media(max-width:620px){
   .sheet-header{padding:18px 12px!important}
