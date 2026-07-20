@@ -47,7 +47,7 @@
 #style-skills .style-skill-full-table tbody tr[data-skill-key]{
   display:grid;
   grid-template-columns:var(--style-skill-columns);
-  align-items:stretch;
+  align-items:center;
   width:100%;
   min-width:0;
 }
@@ -58,6 +58,7 @@
   align-items:center;
   min-width:0;
   width:auto!important;
+  min-height:50px;
   box-sizing:border-box;
   padding:5px 3px;
   border-bottom:1px solid var(--line-muted);
@@ -80,20 +81,27 @@
   width:100%;
   min-width:0;
   max-width:100%;
+  height:38px;
+  min-height:38px;
   margin:0;
   padding:6px 4px;
   font-size:.76rem;
+  line-height:1.25;
 }
 
 #style-skills .style-skill-full-table textarea[data-style-field="description"]{
-  min-height:48px;
-  height:48px;
+  height:38px;
+  min-height:38px;
+  max-height:none;
   resize:vertical;
-  line-height:1.35;
+  overflow-y:auto;
+  white-space:pre-wrap;
+  line-height:1.25;
 }
 
 #style-skills .style-skill-full-table td:last-child{
   display:flex;
+  align-items:center;
   justify-content:flex-end;
   gap:4px;
   overflow:visible;
@@ -104,11 +112,12 @@
   width:28px;
   min-width:28px;
   height:30px;
+  min-height:30px;
   padding:0;
 }
 
 #style-skills .style-skill-full-table .style-field-cell--description{
-  align-items:stretch;
+  align-items:center;
 }
 
 #style-skills .style-skill-empty-row{
