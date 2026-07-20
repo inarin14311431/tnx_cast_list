@@ -19,6 +19,9 @@
 .outfit-table-head--concealment,.outfit-table-cell--concealment{width:64px}
 .outfit-table-head--attack,.outfit-table-cell--attack{width:62px}
 .outfit-table-head--defense,.outfit-table-cell--defense{width:62px}
+.outfit-table-head--defense_s,.outfit-table-cell--defense_s,
+.outfit-table-head--defense_i,.outfit-table-cell--defense_i,
+.outfit-table-head--defense_p,.outfit-table-cell--defense_p{width:52px;text-align:center}
 .outfit-table-head--range,.outfit-table-cell--range{width:64px}
 .outfit-table-head--slot,.outfit-table-cell--slot{width:110px}
 .outfit-table-head--control_modifier,.outfit-table-cell--control_modifier{width:58px}
@@ -27,10 +30,19 @@
 .outfit-table-head--description,.outfit-table-cell--description{width:auto}
 .outfit-table-head--actions,.outfit-table-cell--actions{width:38px;text-align:center}
 
+.outfit-table-group--armor [data-armor-defense]{text-align:center;font-weight:800}
+.outfit-table-group--armor tfoot th,
+.outfit-table-group--armor tfoot td{height:34px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:rgba(65,232,255,.08)}
+.outfit-table-group--armor tfoot th{color:var(--line);text-align:right;padding-right:10px;letter-spacing:.05em}
+.outfit-table-group--armor .armor-defense-total{color:var(--line);font:800 1rem monospace;text-align:center}
+
 @media(max-width:1180px){
   .outfit-table-head--category,.outfit-table-cell--category{width:84px}
   .outfit-table-head--name,.outfit-table-cell--name{width:132px}
   .outfit-table-head--slot,.outfit-table-cell--slot{width:96px}
+  .outfit-table-head--defense_s,.outfit-table-cell--defense_s,
+  .outfit-table-head--defense_i,.outfit-table-cell--defense_i,
+  .outfit-table-head--defense_p,.outfit-table-cell--defense_p{width:48px}
   .outfit-table{font-size:.7rem}
   .outfit-table input,.outfit-table select,.outfit-table textarea{font-size:.7rem;padding:5px 3px}
 }
@@ -38,4 +50,5 @@
 @media(max-width:860px){
   .outfit-table-scroll{overflow-x:auto}
   .outfit-table{min-width:980px}
+  .outfit-table-group--armor .outfit-table{min-width:1040px}
 }
