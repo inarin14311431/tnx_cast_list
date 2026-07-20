@@ -17,24 +17,24 @@
 .sheet-section:not(.is-open)>.section-body{display:none}
 .sheet-section:not(.is-open) .section-body{opacity:0;transform:scaleY(.98)}
 
-.ability-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.ability-card{padding:0}
-.ability-card h3{margin:0;padding:8px 10px;border-bottom:1px solid var(--line-muted);text-align:center}
-.ability-card h3 small{font-size:.68rem;color:var(--text-muted)}
-.ability-line{display:grid;grid-template-columns:74px minmax(86px,1fr) minmax(86px,1fr) 68px;gap:8px;align-items:end;padding:8px 10px}
+.ability-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;min-width:0}
+.ability-card{padding:0;min-width:0}
+.ability-card h3{margin:0;padding:7px 6px;border-bottom:1px solid var(--line-muted);text-align:center}
+.ability-card h3 small{font-size:.64rem;color:var(--text-muted)}
+.ability-line{display:grid;grid-template-columns:58px minmax(58px,1fr) minmax(58px,1fr) 52px;gap:5px;align-items:end;padding:6px}
 .ability-line+.ability-line{border-top:1px solid rgba(65,232,255,.12)}
 .ability-kind{align-self:center;font-weight:800;text-align:center}
-.ability-line label{display:grid;gap:4px;font-size:.78rem;color:var(--text-muted)}
-.ability-line input{min-width:0;padding:8px;text-align:center;font-size:1.1rem}
-.ability-line strong{display:grid;place-items:center;min-height:42px;border:1px solid rgba(65,232,255,.32);background:rgba(65,232,255,.07);font-size:1.35rem}
-.ability-matrix{padding:0;overflow:hidden}
-.ability-matrix h3{margin:0;padding:10px 12px;border-bottom:1px solid var(--line-muted);text-align:center}
-.ability-matrix__header,.ability-matrix__row{display:grid;grid-template-columns:88px minmax(90px,1fr) minmax(90px,1fr);align-items:center;gap:8px;padding:8px 10px}
-.ability-matrix__header{color:var(--line);font-weight:800;text-align:center;border-bottom:1px solid rgba(65,232,255,.18)}
+.ability-line label{display:grid;gap:4px;font-size:.74rem;color:var(--text-muted)}
+.ability-line input{min-width:0;padding:7px 4px;text-align:center;font-size:1rem}
+.ability-line strong{display:grid;place-items:center;min-height:38px;border:1px solid rgba(65,232,255,.32);background:rgba(65,232,255,.07);font-size:1.15rem}
+.ability-matrix{padding:0;overflow:hidden;min-width:0}
+.ability-matrix h3{margin:0;padding:8px 6px;border-bottom:1px solid var(--line-muted);text-align:center}
+.ability-matrix__header,.ability-matrix__row{display:grid;grid-template-columns:52px minmax(0,1fr) minmax(0,1fr);align-items:center;gap:4px;padding:6px}
+.ability-matrix__header{color:var(--line);font-size:.78rem;font-weight:800;text-align:center;border-bottom:1px solid rgba(65,232,255,.18)}
 .ability-matrix__row+.ability-matrix__row{border-top:1px solid rgba(65,232,255,.12)}
-.ability-matrix__row>span{font-weight:800;text-align:center}
-.ability-matrix__row input{width:100%;min-width:0;padding:10px;text-align:center;font-size:1.2rem;font-weight:800}
-.ability-matrix__result strong{display:grid;place-items:center;min-height:44px;border:1px solid rgba(65,232,255,.36);background:rgba(65,232,255,.08);font-size:1.35rem}
+.ability-matrix__row>span{font-size:.76rem;font-weight:800;text-align:center}
+.ability-matrix__row input{box-sizing:border-box;width:100%;min-width:0;padding:8px 3px;text-align:center;font-size:1rem;font-weight:800}
+.ability-matrix__result strong{display:grid;place-items:center;min-width:0;min-height:38px;border:1px solid rgba(65,232,255,.36);background:rgba(65,232,255,.08);font-size:1.15rem}
 .ability-card--cs{grid-column:1/-1}
 .cs-row{display:grid;grid-template-columns:repeat(2,minmax(120px,1fr)) 90px;gap:10px;align-items:end;max-width:620px;margin:auto;padding:10px}
 .cs-row label{display:grid;gap:5px}
@@ -66,21 +66,31 @@
 .toolbar #toggle-general{min-width:170px}
 
 .skill-toolbar{grid-template-columns:repeat(5,minmax(0,1fr))}
-#style-skills{min-width:0;overflow-x:auto}
+#style-skills{min-width:0;overflow:visible}
 #style-skills .skill-group{min-width:0}
-#style-skills .skill-table-scroll{overflow-x:auto}
-#style-skills .skill-table{width:100%;min-width:820px;table-layout:fixed}
-#style-skills .skill-table .name-col{width:22%}
-#style-skills .skill-table .type-col{width:90px}
-#style-skills .skill-table .lv-col{width:64px}
-#style-skills .skill-table .suit-col{width:54px}
-#style-skills .skill-table .detail-col{width:auto}
-#style-skills .skill-table .delete-col{width:48px}
-#style-skills .skill-table td{vertical-align:middle}
-#style-skills .skill-table input,#style-skills .skill-table select,#style-skills .skill-table textarea{box-sizing:border-box;width:100%;min-width:0}
-#style-skills .skill-table textarea[data-f="description"]{min-height:56px;height:56px;resize:vertical;overflow:auto;padding:8px;font:inherit;line-height:1.45}
+#style-skills .skill-table-scroll{overflow:visible}
+#style-skills .skill-table{width:100%;min-width:0;table-layout:fixed;font-size:.72rem}
+#style-skills .skill-table th,#style-skills .skill-table td{box-sizing:border-box;padding:4px 3px;vertical-align:middle}
+#style-skills .skill-table .name-col{width:12%}
+#style-skills .skill-table .type-col{width:7%}
+#style-skills .skill-table .lv-col{width:5%}
+#style-skills .style-field-head--skill{width:8%}
+#style-skills .style-field-head--limit{width:5%}
+#style-skills .style-field-head--timing{width:8%}
+#style-skills .style-field-head--target{width:7%}
+#style-skills .style-field-head--range{width:6%}
+#style-skills .style-field-head--difficulty{width:6%}
+#style-skills .style-field-head--confrontation{width:6%}
+#style-skills .style-field-head--description{width:20%}
+#style-skills .style-field-head--page{width:5%}
+#style-skills .delete-col{width:4%}
+#style-skills .skill-table input,#style-skills .skill-table select,#style-skills .skill-table textarea{box-sizing:border-box;width:100%;min-width:0;padding:6px 4px;font-size:.78rem}
+#style-skills .skill-table input[data-f="level"]{font-size:.9rem}
+#style-skills .skill-table textarea[data-style-field="description"]{min-height:46px;height:46px;resize:vertical;line-height:1.3}
+#style-skills .row-delete{min-width:0;width:100%;padding:6px 2px}
 #style-skills .style-skill-empty-row td{padding:22px 12px;color:var(--text-muted);text-align:center}
 #style-skills .style-skill-empty-table{margin-bottom:0}
+
 .outfit-form{display:block;padding:0}
 .outfit-form>header{display:flex;align-items:end;justify-content:space-between;gap:12px;padding:12px;border-bottom:1px solid var(--line-muted)}
 .outfit-form>header label{min-width:220px}
@@ -95,8 +105,9 @@
 @keyframes status-pulse{from{box-shadow:0 0 0 rgba(65,232,255,0)}to{box-shadow:0 0 18px rgba(65,232,255,.35)}}
 @keyframes button-error{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 
+@media(max-width:1180px){.ability-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:1000px){.skill-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.outfit-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.sheet-header{grid-template-columns:1fr;padding-top:24px!important}.sheet-header #save-status{position:static;top:auto!important;transform:none;justify-self:stretch;margin-top:10px}.ability-grid{grid-template-columns:1fr}.ability-card--cs{grid-column:auto}.ability-line{grid-template-columns:64px 1fr 1fr 58px}.ability-matrix__header,.ability-matrix__row{grid-template-columns:70px 1fr 1fr}.cs-row{grid-template-columns:1fr 1fr}.cs-row strong{grid-column:1/-1}.divine-field{grid-template-columns:auto minmax(0,1fr);column-gap:9px;min-height:68px;padding:14px 10px 10px!important}}
+@media(max-width:760px){.sheet-header{grid-template-columns:1fr;padding-top:24px!important}.sheet-header #save-status{position:static;top:auto!important;transform:none;justify-self:stretch;margin-top:10px}.ability-grid{grid-template-columns:1fr}.ability-card--cs{grid-column:auto}.ability-line{grid-template-columns:64px 1fr 1fr 58px}.ability-matrix__header,.ability-matrix__row{grid-template-columns:70px 1fr 1fr}.cs-row{grid-template-columns:1fr 1fr}.cs-row strong{grid-column:1/-1}.divine-field{grid-template-columns:auto minmax(0,1fr);column-gap:9px;min-height:68px;padding:14px 10px 10px!important}#style-skills .skill-table{font-size:.64rem}#style-skills .skill-table th,#style-skills .skill-table td{padding:3px 2px}#style-skills .skill-table input,#style-skills .skill-table select,#style-skills .skill-table textarea{padding:5px 2px;font-size:.7rem}}
 @media(max-width:680px){.skill-toolbar,.outfit-fields{grid-template-columns:1fr}.outfit-wide{grid-column:auto}}
 
 /* Sticky, compact experience panel. */
