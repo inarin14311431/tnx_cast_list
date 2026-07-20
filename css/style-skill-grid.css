@@ -7,6 +7,10 @@
     132px  /* 名称 */
     76px   /* 種別 */
     48px   /* レベル */
+    42px   /* ♠ */
+    42px   /* ♣ */
+    42px   /* ♥ */
+    42px   /* ♦ */
     52px   /* 技能 */
     44px   /* 上限 */
     68px   /* タイミング */
@@ -14,7 +18,7 @@
     54px   /* 射程 */
     58px   /* 目標値 */
     54px   /* 対決 */
-    minmax(180px,1fr) /* 解説 */
+    minmax(160px,1fr) /* 解説 */
     50px   /* 参照P */
     96px;  /* 並べ替え・削除 */
   width:100%;
@@ -89,6 +93,31 @@
   line-height:1.25;
 }
 
+#style-skills .style-skill-full-table .style-suit-head,
+#style-skills .style-skill-full-table .style-suit-cell{
+  justify-content:center;
+  padding-left:2px;
+  padding-right:2px;
+}
+
+#style-skills .style-skill-full-table .style-suit-cell .suit-check{
+  width:34px;
+  height:34px;
+  margin:0;
+}
+
+#style-skills .style-skill-full-table .style-suit-cell .suit-check input{
+  width:34px!important;
+  height:34px!important;
+  min-height:34px;
+}
+
+#style-skills .style-skill-full-table .style-suit-cell .suit-check span{
+  width:30px;
+  height:30px;
+  font-size:1.2rem!important;
+}
+
 #style-skills .style-skill-full-table textarea[data-style-field="description"]{
   height:38px;
   min-height:38px;
@@ -135,18 +164,22 @@
 @media(max-width:1280px){
   #style-skills{
     --style-skill-columns:
-      116px
-      68px
+      112px
+      64px
       44px
-      48px
-      42px
-      62px
-      52px
-      50px
-      54px
-      50px
-      minmax(150px,1fr)
+      38px
+      38px
+      38px
+      38px
       46px
+      40px
+      58px
+      48px
+      46px
+      50px
+      46px
+      minmax(140px,1fr)
+      44px
       92px;
   }
   #style-skills .style-skill-full-table input,
@@ -154,8 +187,8 @@
   #style-skills .style-skill-full-table textarea{font-size:.7rem;padding:5px 3px}
 }
 
-@media(max-width:980px){
+@media(max-width:1100px){
   #style-skills,
   #style-skills .skill-table-scroll{overflow-x:auto}
-  #style-skills .style-skill-full-table{min-width:1080px}
+  #style-skills .style-skill-full-table{min-width:1260px}
 }
