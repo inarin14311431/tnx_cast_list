@@ -1,0 +1,152 @@
+/* Stable CSS Grid layout for the style-skill editor.
+ * Fixed columns stay compact; description receives all remaining width.
+ */
+
+#style-skills{
+  --style-skill-columns:
+    132px  /* 名称 */
+    76px   /* 種別 */
+    48px   /* レベル */
+    52px   /* 技能 */
+    44px   /* 上限 */
+    68px   /* タイミング */
+    56px   /* 対象 */
+    54px   /* 射程 */
+    58px   /* 目標値 */
+    54px   /* 対決 */
+    minmax(180px,1fr) /* 解説 */
+    50px   /* 参照P */
+    96px;  /* 並べ替え・削除 */
+  width:100%;
+  min-width:0;
+}
+
+#style-skills .skill-group,
+#style-skills .skill-table-scroll{
+  width:100%;
+  min-width:0;
+  overflow:visible;
+}
+
+#style-skills .style-skill-full-table{
+  display:block;
+  width:100%;
+  min-width:0;
+  table-layout:auto;
+  border-collapse:separate;
+  border-spacing:0;
+}
+
+#style-skills .style-skill-full-table thead,
+#style-skills .style-skill-full-table tbody{
+  display:block;
+  width:100%;
+}
+
+#style-skills .style-skill-full-table thead tr,
+#style-skills .style-skill-full-table tbody tr[data-skill-key]{
+  display:grid;
+  grid-template-columns:var(--style-skill-columns);
+  align-items:stretch;
+  width:100%;
+  min-width:0;
+}
+
+#style-skills .style-skill-full-table th,
+#style-skills .style-skill-full-table td{
+  display:flex;
+  align-items:center;
+  min-width:0;
+  width:auto!important;
+  box-sizing:border-box;
+  padding:5px 3px;
+  border-bottom:1px solid var(--line-muted);
+  overflow:hidden;
+}
+
+#style-skills .style-skill-full-table th{
+  justify-content:center;
+  min-height:38px;
+  white-space:nowrap;
+  word-break:keep-all;
+  overflow-wrap:normal;
+  line-height:1.15;
+}
+
+#style-skills .style-skill-full-table input,
+#style-skills .style-skill-full-table select,
+#style-skills .style-skill-full-table textarea{
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  margin:0;
+  padding:6px 4px;
+  font-size:.76rem;
+}
+
+#style-skills .style-skill-full-table textarea[data-style-field="description"]{
+  min-height:48px;
+  height:48px;
+  resize:vertical;
+  line-height:1.35;
+}
+
+#style-skills .style-skill-full-table td:last-child{
+  display:flex;
+  justify-content:flex-end;
+  gap:4px;
+  overflow:visible;
+}
+
+#style-skills .style-skill-full-table td:last-child button{
+  flex:0 0 28px;
+  width:28px;
+  min-width:28px;
+  height:30px;
+  padding:0;
+}
+
+#style-skills .style-skill-full-table .style-field-cell--description{
+  align-items:stretch;
+}
+
+#style-skills .style-skill-empty-row{
+  display:block!important;
+  width:100%;
+}
+
+#style-skills .style-skill-empty-row td{
+  display:block;
+  width:100%!important;
+  padding:20px 12px;
+  text-align:center;
+}
+
+@media(max-width:1280px){
+  #style-skills{
+    --style-skill-columns:
+      116px
+      68px
+      44px
+      48px
+      42px
+      62px
+      52px
+      50px
+      54px
+      50px
+      minmax(150px,1fr)
+      46px
+      92px;
+  }
+  #style-skills .style-skill-full-table input,
+  #style-skills .style-skill-full-table select,
+  #style-skills .style-skill-full-table textarea{font-size:.7rem;padding:5px 3px}
+}
+
+@media(max-width:980px){
+  #style-skills,
+  #style-skills .skill-table-scroll{overflow-x:auto}
+  #style-skills .style-skill-full-table{min-width:1080px}
+}
