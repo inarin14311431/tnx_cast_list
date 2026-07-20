@@ -1,51 +1,45 @@
-/* Add an overall S+I+P total to the armor table footer. */
+/* Recalculate armor S/I/P totals vertically. No combined grand total. */
 (function(){
   const root=document.querySelector('#outfit-list');
   if(!root)return;
 
   let queued=false;
 
-  function ensureFooter(section){
+  function removeGrandTotal(row){
+    row.querySelector('.armor-defense-grand-label')?.remove();
+    row.querySelector('[data-armor-grand-total]')?.remove();
+    const spacer=row.querySelector('.armor-defense-total-spacer');
+    if(spacer){
+      spacer.classList.remove('armor-defense-total-spacer');
+      spacer.colSpan=3;
+    }
+  }
+
+  function numericValue(value){
+    const number=Number(String(value??'').trim());
+    return Number.isFinite(number)?number:0;
+  }
+
+  function updateSection(section){
     const row=section.querySelector('.armor-defense-total-row');
     if(!row)return;
+    removeGrandTotal(row);
 
-    let spacer=row.querySelector('.armor-defense-total-spacer');
-    if(!spacer){
-      spacer=row.lastElementChild;
-      if(spacer){
-        spacer.classList.add('armor-defense-total-spacer');
-        spacer.colSpan=1;
-      }
-    }
+    const totals={s:0,i:0,p:0};
+    section.querySelectorAll('tbody [data-armor-defense]').forEach(input=>{
+      const key=String(input.dataset.armorDefense||'').toLowerCase();
+      if(key in totals)totals[key]+=numericValue(input.value);
+    });
 
-    let label=row.querySelector('.armor-defense-grand-label');
-    let value=row.querySelector('[data-armor-grand-total]');
-    if(!label){
-      label=document.createElement('th');
-      label.className='armor-defense-grand-label';
-      label.textContent='総合計';
-      row.append(label);
-    }
-    if(!value){
-      value=document.createElement('td');
-      value.className='armor-defense-grand-total';
-      value.dataset.armorGrandTotal='1';
-      value.textContent='0';
-      row.append(value);
+    for(const key of ['s','i','p']){
+      const output=section.querySelector(`[data-armor-total="${key}"]`);
+      if(output)output.textContent=String(totals[key]);
     }
   }
 
   function update(){
     queued=false;
-    root.querySelectorAll('.outfit-table-group--armor').forEach(section=>{
-      ensureFooter(section);
-      const total=['s','i','p'].reduce((sum,key)=>{
-        const cell=section.querySelector(`[data-armor-total="${key}"]`);
-        return sum+Number(cell?.textContent||0);
-      },0);
-      const output=section.querySelector('[data-armor-grand-total]');
-      if(output)output.textContent=String(total);
-    });
+    root.querySelectorAll('.outfit-table-group--armor').forEach(updateSection);
   }
 
   function queue(){
@@ -54,8 +48,12 @@
     requestAnimationFrame(update);
   }
 
-  root.addEventListener('input',queue,true);
-  root.addEventListener('change',queue,true);
-  new MutationObserver(queue).observe(root,{childList:true,subtree:true,characterData:true});
+  root.addEventListener('input',event=>{
+    if(event.target.matches('[data-armor-defense]'))queue();
+  },true);
+  root.addEventListener('change',event=>{
+    if(event.target.matches('[data-armor-defense]'))queue();
+  },true);
+  new MutationObserver(queue).observe(root,{childList:true,subtree:true});
   queue();
 })();
