@@ -1,0 +1,26 @@
+/* Overall S + I + P total in the armor footer. */
+.outfit-table-group--armor .armor-defense-total-spacer{
+  width:auto;
+}
+.outfit-table-group--armor .armor-defense-grand-label,
+.outfit-table-group--armor .armor-defense-grand-total{
+  height:34px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  background:rgba(65,232,255,.13);
+}
+.outfit-table-group--armor .armor-defense-grand-label{
+  width:62px;
+  padding:0 6px;
+  color:var(--line);
+  font:800 .74rem monospace;
+  text-align:center;
+  white-space:nowrap;
+}
+.outfit-table-group--armor .armor-defense-grand-total{
+  width:58px;
+  color:#fff;
+  font:900 1.05rem monospace;
+  text-align:center;
+  text-shadow:0 0 10px rgba(65,232,255,.45);
+}
