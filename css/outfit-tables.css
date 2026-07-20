@@ -10,7 +10,13 @@
 .outfit-table td{height:48px}
 .outfit-table input,.outfit-table select,.outfit-table textarea{box-sizing:border-box;width:100%;min-width:0;height:36px;margin:0;padding:6px 5px;font-size:.76rem}
 .outfit-table textarea[data-o="description"]{height:36px;min-height:36px;resize:vertical;line-height:1.35;overflow:auto}
-.outfit-table .row-delete{width:30px;min-width:30px;height:30px;padding:0}
+
+.outfit-category-adds{display:flex;flex-wrap:wrap;gap:7px}
+.outfit-category-adds button{min-height:36px;padding:7px 10px}
+.outfit-table-cell--actions{display:flex;align-items:center;justify-content:center;gap:4px}
+.outfit-table .outfit-order-button,.outfit-table .outfit-delete-button{width:28px;min-width:28px;height:30px;padding:0;border:1px solid var(--line);color:var(--line);background:rgba(65,232,255,.05);cursor:pointer}
+.outfit-table .outfit-order-button:disabled{opacity:.25;cursor:default}
+.outfit-table .outfit-order-button:not(:disabled):hover,.outfit-table .outfit-delete-button:hover{background:rgba(65,232,255,.14)}
 
 .outfit-table-head--category,.outfit-table-cell--category{width:92px}
 .outfit-table-head--name,.outfit-table-cell--name{width:150px}
@@ -28,7 +34,7 @@
 .outfit-table-head--cs_modifier,.outfit-table-cell--cs_modifier{width:54px}
 .outfit-table-head--mundane_modifier,.outfit-table-cell--mundane_modifier{width:58px}
 .outfit-table-head--description,.outfit-table-cell--description{width:auto}
-.outfit-table-head--actions,.outfit-table-cell--actions{width:38px;text-align:center}
+.outfit-table-head--actions,.outfit-table-cell--actions{width:100px;text-align:center}
 
 .outfit-table-group--armor [data-armor-defense]{text-align:center;font-weight:800}
 .outfit-table-group--armor tfoot th,
@@ -48,7 +54,9 @@
 }
 
 @media(max-width:860px){
+  .outfit-category-adds{width:100%}
+  .outfit-category-adds button{flex:1 1 150px}
   .outfit-table-scroll{overflow-x:auto}
-  .outfit-table{min-width:980px}
-  .outfit-table-group--armor .outfit-table{min-width:1040px}
+  .outfit-table{min-width:1040px}
+  .outfit-table-group--armor .outfit-table{min-width:1100px}
 }
