@@ -1,0 +1,128 @@
+/* Final editor balance pass. Loaded after all sheet styles. */
+
+.sheet-layout{
+  grid-template-columns:220px minmax(0,1fr);
+  gap:16px;
+  width:min(1600px,calc(100% - 28px));
+  margin:18px auto 64px;
+}
+.sheet-main{gap:14px;min-width:0}
+.sheet-section{min-width:0}
+.section-toggle{padding:13px 16px}
+.section-body{padding:14px}
+
+/* Header: reduce unused height while keeping status readable. */
+.sheet-header{padding:58px 20px 12px!important;gap:16px}
+.sheet-header h1{font-size:1.25rem}
+.sheet-header #save-status{top:14px!important;padding:6px 14px}
+
+/* Experience panel: visually lighter and proportionate to the editor. */
+.exp-panel{padding:13px!important}
+.exp-panel>p{font-size:.72rem}
+.exp-panel>strong{margin:5px 0 10px;font-size:2.35rem;line-height:1}
+.exp-panel dl{margin-bottom:10px}
+.exp-panel dl div{padding:4px 0;font-size:.82rem}
+.exp-panel button,.exp-panel select,.exp-panel .sheet-view-link{min-height:38px;padding:8px 9px}
+
+/* Profile and style areas. */
+.form-grid{gap:10px}
+.form-grid label,.style-card label{font-size:.72rem}
+.form-grid input,.form-grid select{min-height:38px}
+.form-grid textarea{line-height:1.45}
+.style-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.style-card{min-width:0;padding:11px}
+.style-fields{gap:8px}
+.divine-field{min-height:62px;padding:12px 10px 9px!important}
+.divine-field ruby strong{font-size:1rem}
+
+/* Four abilities across on ordinary desktop widths. */
+.ability-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+.ability-card h3{padding:7px 4px;font-size:.9rem}
+.ability-matrix__header,.ability-matrix__row{
+  grid-template-columns:44px minmax(0,1fr) minmax(0,1fr);
+  gap:3px;
+  padding:5px;
+}
+.ability-matrix__header{font-size:.7rem}
+.ability-matrix__row>span{font-size:.7rem}
+.ability-matrix__row input{min-height:36px;padding:6px 2px;font-size:.95rem}
+.ability-matrix__result strong{min-height:36px;font-size:1.05rem}
+.ability-card--cs{grid-column:1/-1}
+.cs-row{grid-template-columns:minmax(110px,180px) minmax(110px,180px) 82px;justify-content:center;gap:8px;padding:8px}
+.cs-row input{min-height:38px;padding:7px;font-size:1rem}
+.cs-row strong{min-height:38px;font-size:1.15rem}
+
+/* Toolbars should not look wider than their content. */
+.toolbar,.skill-toolbar{display:flex;grid-template-columns:none;flex-wrap:wrap;gap:7px;margin-bottom:10px}
+.toolbar button{min-height:36px;padding:7px 10px}
+#add-style-skill{min-width:190px}
+
+/* General/social/connection tables. */
+.skill-group-title{margin:14px 0 6px;font-size:.9rem}
+#general-skills .skill-table th,#general-skills .skill-table td{padding:5px}
+#general-skills .skill-table .name-col{width:28%}
+#general-skills .skill-table .type-col{width:94px}
+#general-skills .skill-table .lv-col{width:54px}
+#general-skills .skill-table .suit-col{width:54px}
+.suit-check{width:36px;height:36px}
+.suit-check input{width:36px!important;height:36px!important}
+.suit-check span{width:32px;height:32px;font-size:1.35rem!important}
+
+/* Style-skill table: allocate space by information density. */
+#style-skills{overflow:visible}
+#style-skills .skill-table{width:100%;min-width:0;table-layout:fixed;font-size:.7rem}
+#style-skills .skill-table th,#style-skills .skill-table td{padding:4px 2px}
+#style-skills .skill-table .name-col{width:13%}
+#style-skills .skill-table .type-col{width:7%}
+#style-skills .skill-table .lv-col{width:5%}
+#style-skills .style-field-head--skill{width:8%}
+#style-skills .style-field-head--limit{width:5%}
+#style-skills .style-field-head--timing{width:8%}
+#style-skills .style-field-head--target{width:7%}
+#style-skills .style-field-head--range{width:6%}
+#style-skills .style-field-head--difficulty{width:6%}
+#style-skills .style-field-head--confrontation{width:6%}
+#style-skills .style-field-head--description{width:20%}
+#style-skills .style-field-head--page{width:5%}
+#style-skills .delete-col{width:4%}
+#style-skills input,#style-skills select,#style-skills textarea{padding:5px 3px;font-size:.74rem}
+#style-skills textarea[data-style-field="description"]{min-height:42px;height:42px}
+#style-skills .row-delete{padding:5px 1px}
+
+/* Outfit cards. */
+.outfit-form>header{padding:9px 10px}
+.outfit-form>header label{min-width:180px}
+.outfit-fields{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:10px}
+.outfit-fields input,.outfit-fields select,.outfit-fields textarea{min-height:36px;padding:7px 8px}
+
+@media(max-width:1280px){
+  .sheet-layout{grid-template-columns:205px minmax(0,1fr)}
+  .style-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ability-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+  #style-skills .skill-table{font-size:.66rem}
+  #style-skills input,#style-skills select,#style-skills textarea{font-size:.69rem;padding:4px 2px}
+}
+@media(max-width:1080px){
+  .sheet-layout{grid-template-columns:1fr;width:min(100% - 20px,1500px)}
+  .exp-panel{position:static!important;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}
+  .exp-panel>p,.exp-panel>strong,.exp-panel>dl{grid-column:1/-1}
+  .exp-panel>label{grid-column:1/-1}
+  .style-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .ability-grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+}
+@media(max-width:820px){
+  .style-grid,.ability-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ability-card--cs{grid-column:1/-1}
+  #style-skills{overflow-x:auto}
+  #style-skills .skill-table{min-width:1050px}
+}
+@media(max-width:620px){
+  .sheet-header{padding:18px 12px!important}
+  .sheet-layout{width:calc(100% - 12px);margin-top:10px}
+  .section-body{padding:10px}
+  .style-grid,.ability-grid{grid-template-columns:1fr}
+  .ability-card--cs{grid-column:auto}
+  .exp-panel{grid-template-columns:1fr}
+  .exp-panel>*{grid-column:1!important}
+  .outfit-fields{grid-template-columns:1fr}
+}
