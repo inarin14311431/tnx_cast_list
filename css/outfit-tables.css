@@ -1,0 +1,41 @@
+/* Category-specific outfit tables. Loaded after the general sheet styles. */
+#outfit-list{display:grid;gap:16px;min-width:0}
+.outfit-table-group{min-width:0}
+.outfit-table-title{margin:4px 0 7px;color:var(--line);font-family:monospace;font-size:.9rem}
+.outfit-table-title small{color:var(--text-muted);font-size:.68rem}
+.outfit-table-scroll{width:100%;min-width:0;overflow:visible}
+.outfit-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:.74rem}
+.outfit-table th,.outfit-table td{box-sizing:border-box;padding:5px 3px;border-bottom:1px solid var(--line-muted);vertical-align:middle}
+.outfit-table th{height:34px;color:var(--text-muted);font:700 .72rem monospace;white-space:nowrap}
+.outfit-table td{height:48px}
+.outfit-table input,.outfit-table select,.outfit-table textarea{box-sizing:border-box;width:100%;min-width:0;height:36px;margin:0;padding:6px 5px;font-size:.76rem}
+.outfit-table textarea[data-o="description"]{height:36px;min-height:36px;resize:vertical;line-height:1.35;overflow:auto}
+.outfit-table .row-delete{width:30px;min-width:30px;height:30px;padding:0}
+
+.outfit-table-head--category,.outfit-table-cell--category{width:92px}
+.outfit-table-head--name,.outfit-table-cell--name{width:150px}
+.outfit-table-head--purchase_value,.outfit-table-cell--purchase_value{width:66px}
+.outfit-table-head--experience_cost,.outfit-table-cell--experience_cost{width:66px}
+.outfit-table-head--concealment,.outfit-table-cell--concealment{width:64px}
+.outfit-table-head--attack,.outfit-table-cell--attack{width:62px}
+.outfit-table-head--defense,.outfit-table-cell--defense{width:62px}
+.outfit-table-head--range,.outfit-table-cell--range{width:64px}
+.outfit-table-head--slot,.outfit-table-cell--slot{width:110px}
+.outfit-table-head--control_modifier,.outfit-table-cell--control_modifier{width:58px}
+.outfit-table-head--cs_modifier,.outfit-table-cell--cs_modifier{width:54px}
+.outfit-table-head--mundane_modifier,.outfit-table-cell--mundane_modifier{width:58px}
+.outfit-table-head--description,.outfit-table-cell--description{width:auto}
+.outfit-table-head--actions,.outfit-table-cell--actions{width:38px;text-align:center}
+
+@media(max-width:1180px){
+  .outfit-table-head--category,.outfit-table-cell--category{width:84px}
+  .outfit-table-head--name,.outfit-table-cell--name{width:132px}
+  .outfit-table-head--slot,.outfit-table-cell--slot{width:96px}
+  .outfit-table{font-size:.7rem}
+  .outfit-table input,.outfit-table select,.outfit-table textarea{font-size:.7rem;padding:5px 3px}
+}
+
+@media(max-width:860px){
+  .outfit-table-scroll{overflow-x:auto}
+  .outfit-table{min-width:980px}
+}
