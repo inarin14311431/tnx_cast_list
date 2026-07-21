@@ -40,6 +40,23 @@
 
   function encode(data){return PREFIX+"\n"+JSON.stringify(data);}
 
+  function ensureKindOptions(row){
+    const select=row.querySelector('select[data-f="skill_kind"]');
+    const definitions=window.TNXStyleSkillKinds?.definitions||[
+      {value:"normal",label:"通常"},{value:"secret",label:"秘技"},{value:"ultimate",label:"奥義"},{value:"direction",label:"演出"}
+    ];
+    if(!select)return;
+    const selected=select.value;
+    select.replaceChildren(...definitions.map(item=>{
+      const option=document.createElement("option");
+      option.value=item.value;
+      option.textContent=item.label;
+      option.selected=item.value===selected;
+      return option;
+    }));
+    if(!definitions.some(item=>item.value===selected))select.value="normal";
+  }
+
   function rebuildHeader(table){
     const row=table.querySelector("thead tr");
     if(!row||row.dataset.fullStyleFields==="1")return;
@@ -49,6 +66,7 @@
   }
 
   function rebuildRow(row){
+    ensureKindOptions(row);
     if(row.dataset.fullStyleFields==="1")return;
     const nameCell=row.children[0];
     const typeCell=row.children[1];
@@ -106,6 +124,40 @@
     table.querySelectorAll("tbody tr[data-skill-key]").forEach(rebuildRow);
   }
 
+  function parseTsvKinds(text){
+    const lines=String(text||"").replace(/\r/g,"").trim().split("\n").filter(Boolean).map(line=>line.split("\t"));
+    if(lines.length<2)return[];
+    const headers=lines.shift().map(value=>value.trim());
+    const typeIndex=headers.indexOf("種別");
+    if(typeIndex<0)return[];
+    return lines.map(row=>window.TNXStyleSkillKinds?.fromLabel(row[typeIndex])||"normal");
+  }
+
+  function bindTsvImport(){
+    const button=document.querySelector("#tsv-apply");
+    const textarea=document.querySelector("#tsv-text");
+    if(!button||!textarea||button.dataset.directionImportBound)return;
+    button.dataset.directionImportBound="1";
+    button.addEventListener("click",()=>{
+      const title=document.querySelector("#tsv-title")?.textContent||"";
+      if(!title.includes("SKD"))return;
+      const kinds=parseTsvKinds(textarea.value);
+      if(!kinds.length)return;
+      const before=document.querySelectorAll('#style-skills tr[data-skill-key]').length;
+      setTimeout(()=>{
+        const rows=[...document.querySelectorAll('#style-skills tr[data-skill-key]')].slice(before);
+        rows.forEach((row,index)=>{
+          const select=row.querySelector('select[data-f="skill_kind"]');
+          const kind=kinds[index];
+          if(!select||!kind)return;
+          select.value=kind;
+          select.dispatchEvent(new Event("input",{bubbles:true}));
+        });
+        window.TNXExperience?.queue?.();
+      },0);
+    },true);
+  }
+
   function initialize(){
     const root=document.querySelector("#style-skills");
     if(!root){setTimeout(initialize,100);return;}
@@ -116,6 +168,7 @@
       requestAnimationFrame(()=>{queued=false;enhance();});
     };
     new MutationObserver(queue).observe(root,{childList:true,subtree:true});
+    bindTsvImport();
     queue();
   }
 
