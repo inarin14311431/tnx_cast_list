@@ -36,6 +36,9 @@
 #general-skills>.skill-group:nth-child(4) .skill-table th:last-child,
 #general-skills>.skill-group:nth-child(4) .skill-table td:last-child{width:86px!important}
 
+/* Keep the single general-skill add button at the right edge of the toolbar. */
+.skill-toolbar #add-general{margin-left:auto}
+
 @media(max-width:820px){
   #general-skills{grid-template-columns:1fr!important;grid-template-rows:auto!important}
   #general-skills>.skill-group:nth-child(1),
@@ -43,4 +46,5 @@
   #general-skills>.skill-group:nth-child(3),
   #general-skills>.skill-group:nth-child(4){grid-column:1!important;grid-row:auto!important}
   #general-skills .skill-table .name-col{width:auto!important}
+  .skill-toolbar #add-general{margin-left:0}
 }
