@@ -59,11 +59,23 @@
 
 /* General/social/connection tables. */
 .skill-group-title{margin:14px 0 6px;font-size:.9rem}
+#general-skills{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  grid-template-rows:auto auto;
+  gap:14px;
+  align-items:start;
+}
+#general-skills>.skill-group{min-width:0;margin:0}
+#general-skills>.skill-group:nth-child(1){grid-column:1;grid-row:1/span 2}
+#general-skills>.skill-group:nth-child(2){grid-column:2;grid-row:1}
+#general-skills>.skill-group:nth-child(3){grid-column:2;grid-row:2}
+#general-skills .skill-table{width:100%;table-layout:fixed}
 #general-skills .skill-table th,#general-skills .skill-table td{padding:5px}
-#general-skills .skill-table .name-col{width:28%}
-#general-skills .skill-table .type-col{width:94px}
-#general-skills .skill-table .lv-col{width:54px}
-#general-skills .skill-table .suit-col{width:54px}
+#general-skills .skill-table .name-col{width:auto}
+#general-skills .skill-table .type-col{width:72px}
+#general-skills .skill-table .lv-col{width:42px}
+#general-skills .skill-table .suit-col{width:42px}
 .suit-check{width:36px;height:36px}
 .suit-check input{width:36px!important;height:36px!important}
 .suit-check span{width:32px;height:32px;font-size:1.35rem!important}
@@ -126,6 +138,10 @@
 @media(max-width:820px){
   .style-grid,.ability-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
   .ability-card--cs{grid-column:1/-1}
+  #general-skills{grid-template-columns:1fr;grid-template-rows:auto}
+  #general-skills>.skill-group:nth-child(1),
+  #general-skills>.skill-group:nth-child(2),
+  #general-skills>.skill-group:nth-child(3){grid-column:1;grid-row:auto}
   #style-skills,#style-skills .skill-table-scroll{overflow-x:auto}
   #style-skills .skill-table{min-width:1030px}
 }
