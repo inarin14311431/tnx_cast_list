@@ -5,7 +5,7 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
   const $=selector=>document.querySelector(selector);
   const $$=selector=>[...document.querySelectorAll(selector)];
   const ABILITIES=["reason","passion","life","mundane"];
-  const STYLE_COST={normal:10,secret:20,ultimate:50};
+  const STYLE_COST=window.TNXStyleSkillKinds?.costs||{normal:10,secret:20,ultimate:50,direction:2};
   const INITIAL_ALLOWANCE={character:170,social:20,connection:15};
   let queued=false;
 
@@ -61,7 +61,7 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
       const level=Math.max(0,num(row.querySelector('[data-f="level"]')?.value));
       if(level<=0)continue;
       const kind=row.querySelector('[data-f="skill_kind"]')?.value||"general";
-      if(skillCategory(row)==="style")style+=level*(STYLE_COST[kind]||10);
+      if(skillCategory(row)==="style")style+=level*(STYLE_COST[kind]??10);
       else general+=level*(kind==="proper"?5:10);
     }
     return {general,style};
