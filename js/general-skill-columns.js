@@ -2,15 +2,36 @@
 (function(){
   const FIRST_COLUMN_END = "交渉";
 
+  function isGeneralGroup(group){
+    const title = group?.querySelector(".skill-group-title")?.textContent || "";
+    return title.includes("一般技能");
+  }
+
+  function removeGeneralOrderControls(root){
+    [...root.querySelectorAll(":scope > .skill-group")]
+      .filter(isGeneralGroup)
+      .forEach(group => {
+        group.querySelectorAll("[data-skill-move], .skill-order-button").forEach(button => button.remove());
+        group.querySelectorAll(".skill-row-actions").forEach(actions => {
+          const deleteButton = actions.querySelector(".row-delete");
+          const cell = actions.parentElement;
+          if(deleteButton && cell) cell.insertBefore(deleteButton, actions);
+          actions.remove();
+        });
+        group.querySelectorAll("tr[data-skill-key]").forEach(row => {
+          delete row.dataset.orderCategory;
+        });
+      });
+  }
+
   function splitGeneralSkills(){
     const root = document.querySelector("#general-skills");
     if(!root) return;
 
+    removeGeneralOrderControls(root);
+
     const groups = [...root.querySelectorAll(":scope > .skill-group")];
-    const general = groups.find(group => {
-      const title = group.querySelector(".skill-group-title")?.textContent || "";
-      return title.includes("一般技能") && !group.classList.contains("general-skill-column--second");
-    });
+    const general = groups.find(group => isGeneralGroup(group) && !group.classList.contains("general-skill-column--second"));
 
     if(!general || general.classList.contains("general-skill-column--first")) return;
 
@@ -33,6 +54,7 @@
     rows.slice(splitIndex + 1).forEach(row => secondBody.append(row));
 
     general.after(second);
+    removeGeneralOrderControls(root);
   }
 
   function initialize(){
