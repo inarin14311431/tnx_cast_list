@@ -1,0 +1,46 @@
+/* Three-column layout: general skills x2, then social/connection. */
+#general-skills{
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-rows:auto auto!important;
+  gap:12px!important;
+  align-items:start;
+}
+
+#general-skills>.skill-group:nth-child(1){grid-column:1!important;grid-row:1/span 2!important}
+#general-skills>.skill-group:nth-child(2){grid-column:2!important;grid-row:1/span 2!important}
+#general-skills>.skill-group:nth-child(3){grid-column:3!important;grid-row:1!important}
+#general-skills>.skill-group:nth-child(4){grid-column:3!important;grid-row:2!important}
+
+#general-skills .skill-group-title{white-space:nowrap}
+#general-skills .skill-table{font-size:.68rem}
+#general-skills .skill-table th,
+#general-skills .skill-table td{padding:4px 2px!important}
+
+/* About eight Japanese characters for the name field. */
+#general-skills .skill-table .name-col{width:8.5em!important}
+#general-skills .skill-table .type-col{width:58px!important}
+#general-skills .skill-table .lv-col{width:36px!important}
+#general-skills .skill-table .suit-col{width:32px!important}
+#general-skills .skill-table th:last-child,
+#general-skills .skill-table td:last-child{width:30px}
+
+#general-skills input,
+#general-skills select{min-width:0;padding:5px 3px;font-size:.72rem}
+#general-skills .suit-check,
+#general-skills .suit-check input{width:28px!important;height:28px!important}
+#general-skills .suit-check span{width:26px!important;height:26px!important;font-size:1.05rem!important}
+
+/* Social and connection use three horizontal action buttons. */
+#general-skills>.skill-group:nth-child(3) .skill-table th:last-child,
+#general-skills>.skill-group:nth-child(3) .skill-table td:last-child,
+#general-skills>.skill-group:nth-child(4) .skill-table th:last-child,
+#general-skills>.skill-group:nth-child(4) .skill-table td:last-child{width:86px!important}
+
+@media(max-width:820px){
+  #general-skills{grid-template-columns:1fr!important;grid-template-rows:auto!important}
+  #general-skills>.skill-group:nth-child(1),
+  #general-skills>.skill-group:nth-child(2),
+  #general-skills>.skill-group:nth-child(3),
+  #general-skills>.skill-group:nth-child(4){grid-column:1!important;grid-row:auto!important}
+  #general-skills .skill-table .name-col{width:auto!important}
+}
