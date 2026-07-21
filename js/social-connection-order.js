@@ -11,14 +11,25 @@
     const category=groupCategory(group);
     if(!category)return;
     const rows=[...group.querySelectorAll("tbody tr[data-skill-key]")];
-    rows.forEach((row,index)=>{
+    rows.forEach(row=>{
       row.dataset.orderCategory=category;
       const cell=row.lastElementChild;
-      if(!cell||cell.querySelector(".skill-order-controls"))return;
-      const controls=document.createElement("span");
-      controls.className="skill-order-controls";
-      controls.innerHTML=`<button type="button" class="skill-order-button" data-skill-move="up" aria-label="上へ移動" title="上へ移動">▲</button><button type="button" class="skill-order-button" data-skill-move="down" aria-label="下へ移動" title="下へ移動">▼</button>`;
-      cell.prepend(controls);
+      if(!cell)return;
+
+      let actions=cell.querySelector(".skill-row-actions");
+      if(!actions){
+        actions=document.createElement("span");
+        actions.className="skill-row-actions";
+        const deleteButton=cell.querySelector(".row-delete");
+        if(deleteButton){
+          deleteButton.classList.add("skill-action-button","skill-action-delete");
+          deleteButton.setAttribute("aria-label","削除");
+          deleteButton.title="削除";
+        }
+        cell.append(actions);
+        actions.innerHTML=`<button type="button" class="skill-action-button skill-order-button" data-skill-move="up" aria-label="上へ移動" title="上へ移動">▲</button><button type="button" class="skill-action-button skill-order-button" data-skill-move="down" aria-label="下へ移動" title="下へ移動">▼</button>`;
+        if(deleteButton)actions.append(deleteButton);
+      }
     });
     updateDisabled(group);
   }
@@ -35,6 +46,11 @@
 
   function enhance(){
     document.querySelectorAll("#general-skills .skill-group").forEach(enhanceGroup);
+    document.querySelectorAll("#style-skills .row-delete,#outfit-list .row-delete").forEach(button=>{
+      button.classList.add("skill-action-button","skill-action-delete");
+      button.setAttribute("aria-label","削除");
+      button.title="削除";
+    });
   }
 
   document.addEventListener("click",event=>{
@@ -98,18 +114,65 @@
       queued=true;
       requestAnimationFrame(()=>{queued=false;enhance();});
     };
-    new MutationObserver(queue).observe(root,{childList:true,subtree:true});
+    new MutationObserver(queue).observe(document.body,{childList:true,subtree:true});
     queue();
   }
 
   const style=document.createElement("style");
   style.textContent=`
-    #general-skills .skill-order-controls{display:inline-flex;flex-direction:column;gap:2px;vertical-align:middle;margin-right:4px}
-    #general-skills .skill-order-button{width:24px;min-width:24px;height:18px;min-height:18px;padding:0;border:1px solid rgba(90,220,255,.45);background:rgba(4,18,30,.82);color:#8de9ff;font-size:10px;line-height:16px;cursor:pointer}
-    #general-skills .skill-order-button:hover:not(:disabled){background:rgba(20,90,118,.8);color:#fff}
-    #general-skills .skill-order-button:disabled{opacity:.22;cursor:default}
-    #general-skills .skill-table td:last-child{white-space:nowrap;width:68px}
-    #general-skills .row-delete{vertical-align:middle}
+    .skill-row-actions{
+      display:inline-flex;
+      flex-direction:row;
+      align-items:center;
+      justify-content:flex-end;
+      gap:3px;
+      white-space:nowrap;
+    }
+    .skill-action-button,
+    #general-skills .skill-action-button,
+    #style-skills .skill-action-button,
+    #outfit-list .skill-action-button{
+      box-sizing:border-box;
+      width:26px!important;
+      min-width:26px!important;
+      height:26px!important;
+      min-height:26px!important;
+      margin:0!important;
+      padding:0!important;
+      border:1px solid rgba(90,220,255,.45)!important;
+      border-radius:3px!important;
+      background:rgba(4,18,30,.82)!important;
+      color:#8de9ff!important;
+      font-size:11px!important;
+      font-weight:700!important;
+      line-height:24px!important;
+      text-align:center!important;
+      cursor:pointer;
+      vertical-align:middle;
+    }
+    .skill-action-button:hover:not(:disabled){
+      border-color:rgba(140,238,255,.9)!important;
+      background:rgba(20,90,118,.8)!important;
+      color:#fff!important;
+    }
+    .skill-action-delete:hover:not(:disabled){
+      border-color:rgba(255,120,135,.85)!important;
+      background:rgba(112,28,42,.82)!important;
+      color:#fff!important;
+    }
+    .skill-action-button:disabled{
+      opacity:.22!important;
+      cursor:default!important;
+    }
+    #general-skills .skill-table td:last-child{
+      width:92px;
+      padding-left:3px;
+      padding-right:3px;
+      text-align:right;
+      white-space:nowrap;
+    }
+    #style-skills .skill-table td:last-child{text-align:center}
+    #outfit-list .outfit-form>header .skill-action-button{flex:0 0 26px}
   `;
   document.head.append(style);
 
