@@ -8,20 +8,24 @@
   }
 
   function ensureGeneralAddButton(group){
+    const heading=group?.querySelector(":scope > .skill-group-title");
     const source=document.querySelector("#add-general");
-    if(!group||!source)return;
+    if(!group||!heading||!source)return;
 
-    document.querySelectorAll("#general-skills .general-skill-heading-toolbar").forEach(toolbar=>{
-      if(!group.contains(toolbar))toolbar.remove();
+    document.querySelectorAll("#general-skills .general-skill-heading-row").forEach(row=>{
+      if(!group.contains(row))row.remove();
     });
-    if(group.querySelector(":scope > .general-skill-heading-toolbar"))return;
+    document.querySelectorAll("#general-skills .general-skill-heading-toolbar").forEach(toolbar=>toolbar.remove());
+    if(group.querySelector(":scope > .general-skill-heading-row"))return;
 
-    const toolbar=document.createElement("span");
-    toolbar.className="toolbar skill-toolbar general-skill-heading-toolbar";
+    const row=document.createElement("div");
+    row.className="toolbar skill-toolbar general-skill-heading-row";
+    heading.before(row);
+    row.append(heading);
 
     const button=source.cloneNode(true);
     button.removeAttribute("id");
-    button.classList.add("general-skill-add-inline");
+    button.dataset.generalAddProxy="true";
     button.setAttribute("aria-label","一般技能を追加");
     button.addEventListener("click",event=>{
       event.preventDefault();
@@ -29,8 +33,7 @@
       source.click();
     });
 
-    toolbar.append(button);
-    group.append(toolbar);
+    row.append(button);
   }
 
   function removeGeneralOrderControls(root){
@@ -69,13 +72,12 @@
     if(splitIndex<0||splitIndex>=rows.length-1)return;
 
     general.classList.add("general-skill-column","general-skill-column--first");
-    general.querySelectorAll(".general-skill-heading-toolbar").forEach(toolbar=>toolbar.remove());
+    general.querySelectorAll(".general-skill-heading-row,.general-skill-heading-toolbar").forEach(element=>element.remove());
 
     const second=document.createElement("section");
     second.className="skill-group general-skill-column general-skill-column--second";
 
     const heading=general.querySelector(".skill-group-title")?.cloneNode(true);
-    heading?.querySelector(".general-skill-heading-toolbar")?.remove();
     const secondTable=table.cloneNode(false);
     const thead=table.tHead?.cloneNode(true);
     const secondBody=document.createElement("tbody");
