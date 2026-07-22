@@ -3,10 +3,17 @@
  * style-skill-details-v32 and skill-layout-v33.
  */
 
-#save-button.is-saved,#save-button.is-saving,#save-button.is-error{color:#04110b!important;text-shadow:none!important}
-#save-button.is-saved small,#save-button.is-saving small,#save-button.is-error small{color:rgba(4,17,11,.72)!important;opacity:1!important}
-#save-button.is-error{color:#fff!important}
-#save-button.is-error small{color:rgba(255,255,255,.82)!important}
+#save-button{transition:border-color .18s ease,color .18s ease,background .18s ease,box-shadow .18s ease,transform .18s ease}
+#save-button.is-unsaved{border-color:#ffad42!important;color:#ffd59a!important;background:linear-gradient(90deg,rgba(255,138,31,.24),rgba(255,190,72,.08))!important;box-shadow:inset 3px 0 0 #ff941f,0 0 16px rgba(255,148,31,.18)!important;text-shadow:none!important}
+#save-button.is-unsaved small{color:rgba(255,223,176,.82)!important;opacity:1!important}
+#save-button.is-unsaved:hover{color:#241300!important;background:#ffb44f!important;box-shadow:0 0 22px rgba(255,174,66,.42)!important}
+#save-button.is-unsaved:hover small{color:rgba(36,19,0,.72)!important}
+#save-button.is-saving{border-color:#ffd166!important;color:#2a1d00!important;background:#ffd166!important;box-shadow:0 0 20px rgba(255,209,102,.32)!important;text-shadow:none!important}
+#save-button.is-saving small{color:rgba(42,29,0,.68)!important;opacity:1!important}
+#save-button.is-saved{border-color:#58e6bd!important;color:#03140f!important;background:#58e6bd!important;box-shadow:0 0 18px rgba(88,230,189,.28)!important;text-shadow:none!important}
+#save-button.is-saved small{color:rgba(3,20,15,.68)!important;opacity:1!important}
+#save-button.is-error{border-color:#ff6678!important;color:#fff!important;background:#b92f43!important;box-shadow:0 0 20px rgba(255,74,96,.3)!important;text-shadow:none!important}
+#save-button.is-error small{color:rgba(255,255,255,.82)!important;opacity:1!important}
 .skill-table .type-col,.skill-table th:nth-child(2),.skill-table td:nth-child(2){display:none!important}
 .outfit-form{padding:7px 9px}
 .outfit-form>header{display:none!important}
