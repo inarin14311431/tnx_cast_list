@@ -7,31 +7,47 @@
     return Object.entries(CATEGORY_BY_TITLE).find(([label])=>title.includes(label))?.[1]||"";
   }
 
+  function styleDeleteButton(button){
+    if(!button)return;
+    button.classList.add("skill-action-button","skill-action-delete");
+    button.setAttribute("aria-label","削除");
+    button.title="削除";
+  }
+
   function enhanceGroup(group){
     const category=groupCategory(group);
-    if(!category)return;
+    group.classList.toggle("skill-group--ordered",!!category);
+    group.classList.toggle("skill-group--general",!category&&(group.querySelector(".skill-group-title")?.textContent||"").includes("一般技能"));
+
     const rows=[...group.querySelectorAll("tbody tr[data-skill-key]")];
     rows.forEach(row=>{
-      row.dataset.orderCategory=category;
       const cell=row.lastElementChild;
       if(!cell)return;
+      const deleteButton=cell.querySelector(".row-delete");
+      styleDeleteButton(deleteButton);
 
+      if(!category){
+        row.querySelectorAll("[data-skill-move],.skill-order-button").forEach(button=>button.remove());
+        const actions=cell.querySelector(".skill-row-actions");
+        if(actions){
+          if(deleteButton)cell.insertBefore(deleteButton,actions);
+          actions.remove();
+        }
+        delete row.dataset.orderCategory;
+        return;
+      }
+
+      row.dataset.orderCategory=category;
       let actions=cell.querySelector(".skill-row-actions");
       if(!actions){
         actions=document.createElement("span");
         actions.className="skill-row-actions";
-        const deleteButton=cell.querySelector(".row-delete");
-        if(deleteButton){
-          deleteButton.classList.add("skill-action-button","skill-action-delete");
-          deleteButton.setAttribute("aria-label","削除");
-          deleteButton.title="削除";
-        }
         cell.append(actions);
         actions.innerHTML=`<button type="button" class="skill-action-button skill-order-button" data-skill-move="up" aria-label="上へ移動" title="上へ移動">▲</button><button type="button" class="skill-action-button skill-order-button" data-skill-move="down" aria-label="下へ移動" title="下へ移動">▼</button>`;
         if(deleteButton)actions.append(deleteButton);
       }
     });
-    updateDisabled(group);
+    if(category)updateDisabled(group);
   }
 
   function updateDisabled(group){
@@ -46,11 +62,7 @@
 
   function enhance(){
     document.querySelectorAll("#general-skills .skill-group").forEach(enhanceGroup);
-    document.querySelectorAll("#style-skills .row-delete,#outfit-list .row-delete").forEach(button=>{
-      button.classList.add("skill-action-button","skill-action-delete");
-      button.setAttribute("aria-label","削除");
-      button.title="削除";
-    });
+    document.querySelectorAll("#style-skills .row-delete,#outfit-list .row-delete").forEach(styleDeleteButton);
   }
 
   document.addEventListener("click",event=>{
@@ -120,57 +132,14 @@
 
   const style=document.createElement("style");
   style.textContent=`
-    .skill-row-actions{
-      display:inline-flex;
-      flex-direction:row;
-      align-items:center;
-      justify-content:flex-end;
-      gap:3px;
-      white-space:nowrap;
-    }
-    .skill-action-button,
-    #general-skills .skill-action-button,
-    #style-skills .skill-action-button,
-    #outfit-list .skill-action-button{
-      box-sizing:border-box;
-      width:26px!important;
-      min-width:26px!important;
-      height:26px!important;
-      min-height:26px!important;
-      margin:0!important;
-      padding:0!important;
-      border:1px solid rgba(90,220,255,.45)!important;
-      border-radius:3px!important;
-      background:rgba(4,18,30,.82)!important;
-      color:#8de9ff!important;
-      font-size:11px!important;
-      font-weight:700!important;
-      line-height:24px!important;
-      text-align:center!important;
-      cursor:pointer;
-      vertical-align:middle;
-    }
-    .skill-action-button:hover:not(:disabled){
-      border-color:rgba(140,238,255,.9)!important;
-      background:rgba(20,90,118,.8)!important;
-      color:#fff!important;
-    }
-    .skill-action-delete:hover:not(:disabled){
-      border-color:rgba(255,120,135,.85)!important;
-      background:rgba(112,28,42,.82)!important;
-      color:#fff!important;
-    }
-    .skill-action-button:disabled{
-      opacity:.22!important;
-      cursor:default!important;
-    }
-    #general-skills .skill-table td:last-child{
-      width:92px;
-      padding-left:3px;
-      padding-right:3px;
-      text-align:right;
-      white-space:nowrap;
-    }
+    .skill-row-actions{display:inline-flex;flex-direction:row;align-items:center;justify-content:flex-end;gap:3px;white-space:nowrap}
+    .skill-action-button,#general-skills .skill-action-button,#style-skills .skill-action-button,#outfit-list .skill-action-button{box-sizing:border-box;width:26px!important;min-width:26px!important;height:26px!important;min-height:26px!important;margin:0!important;padding:0!important;border:1px solid rgba(90,220,255,.45)!important;border-radius:3px!important;background:rgba(4,18,30,.82)!important;color:#8de9ff!important;font-size:11px!important;font-weight:700!important;line-height:24px!important;text-align:center!important;cursor:pointer;vertical-align:middle}
+    .skill-action-button:hover:not(:disabled){border-color:rgba(140,238,255,.9)!important;background:rgba(20,90,118,.8)!important;color:#fff!important}
+    .skill-action-delete:hover:not(:disabled){border-color:rgba(255,120,135,.85)!important;background:rgba(112,28,42,.82)!important;color:#fff!important}
+    .skill-action-button:disabled{opacity:.22!important;cursor:default!important}
+    #general-skills .skill-table td:last-child{padding-left:3px;padding-right:3px;text-align:right;white-space:nowrap}
+    #general-skills .skill-group--ordered .skill-table td:last-child{width:92px!important}
+    #general-skills .skill-group--general .skill-table td:last-child{width:32px!important}
     #style-skills .skill-table td:last-child{text-align:center}
     #outfit-list .outfit-form>header .skill-action-button{flex:0 0 26px}
   `;
