@@ -12,6 +12,14 @@
     return "is-standard";
   }
 
+  function roleFor(mark){
+    const value=String(mark||"").trim();
+    if(value.includes("◎")&&value.includes("●"))return "PERSONA=KEY";
+    if(value.includes("◎"))return "PERSONA";
+    if(value.includes("●"))return "KEY";
+    return "SHADOW";
+  }
+
   function enhanceStyles(){
     const styles=document.querySelector("#cast-styles");
     const chips=[...document.querySelectorAll("#cast-styles .style-chip")];
@@ -32,7 +40,9 @@
     chips.forEach((chip,index)=>{
       chip.querySelectorAll(".cast-archetype-card__scan,.cast-archetype-card__role").forEach(element=>element.remove());
       chip.classList.remove("cast-archetype-card","is-persona","is-key","is-dual","is-standard");
-      chip.classList.add("cast-style-card-simple",stateFor(chip.querySelector(".style-chip__mark")?.textContent));
+      const mark=chip.querySelector(".style-chip__mark")?.textContent||"";
+      chip.classList.add("cast-style-card-simple",stateFor(mark));
+      chip.dataset.styleRole=roleFor(mark);
       chip.dataset.castStyleSlot=String(index+1).padStart(2,"0");
       delete chip.dataset.archetypeCode;
       delete chip.dataset.archetypeEnhanced;
