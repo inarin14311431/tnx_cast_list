@@ -12,17 +12,20 @@
 #general-skills>.skill-group:nth-child(4){grid-column:3!important;grid-row:2!important}
 
 #general-skills .skill-group-title{white-space:nowrap}
+#general-skills .general-skill-column--second{
+  position:relative;
+}
 #general-skills .general-skill-column--second>.skill-group-title{
-  display:flex;
-  align-items:flex-start;
-  justify-content:space-between;
-  gap:10px;
+  padding-right:136px;
 }
 #general-skills .general-skill-heading-toolbar{
-  flex:0 0 auto;
+  position:absolute;
+  z-index:2;
+  top:9px;
+  right:0;
   flex-wrap:nowrap;
   gap:0;
-  margin:0 0 0 auto;
+  margin:0;
 }
 #general-skills .general-skill-heading-toolbar button{
   white-space:nowrap;
@@ -62,5 +65,10 @@
   #general-skills>.skill-group:nth-child(3),
   #general-skills>.skill-group:nth-child(4){grid-column:1!important;grid-row:auto!important}
   #general-skills .skill-table .name-col{width:auto!important}
-  #general-skills .general-skill-column--second>.skill-group-title{align-items:center}
+  #general-skills .general-skill-column--second>.skill-group-title{padding-right:0}
+  #general-skills .general-skill-heading-toolbar{
+    position:static;
+    justify-content:flex-end;
+    margin:0 0 8px;
+  }
 }
