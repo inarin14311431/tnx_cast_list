@@ -7,6 +7,26 @@
     return title.includes("一般技能");
   }
 
+  function ensureGeneralAddButton(group){
+    const heading=group?.querySelector(".skill-group-title");
+    if(!heading)return;
+
+    let button=heading.querySelector(".general-skill-add-inline");
+    if(button)return;
+
+    button=document.createElement("button");
+    button.type="button";
+    button.className="general-skill-add-inline";
+    button.innerHTML='一般技能を追加 <small>ADD GENERAL</small>';
+    button.setAttribute("aria-label","一般技能を追加");
+    button.addEventListener("click",event=>{
+      event.preventDefault();
+      event.stopPropagation();
+      document.querySelector("#add-general")?.click();
+    });
+    heading.append(button);
+  }
+
   function removeGeneralOrderControls(root){
     [...root.children].filter(isGeneralGroup).forEach(group=>{
       group.querySelectorAll("[data-skill-move],.skill-order-button").forEach(button=>button.remove());
@@ -26,7 +46,11 @@
     removeGeneralOrderControls(root);
 
     const general=[...root.children].find(group=>isGeneralGroup(group)&&!group.classList.contains("general-skill-column--second"));
-    if(!general||general.classList.contains("general-skill-column--first"))return;
+    if(!general)return;
+    if(general.classList.contains("general-skill-column--first")){
+      ensureGeneralAddButton(general);
+      return;
+    }
 
     const table=general.querySelector(".skill-table");
     const tbody=table?.tBodies?.[0];
@@ -41,6 +65,7 @@
     second.className="skill-group general-skill-column general-skill-column--second";
 
     const heading=general.querySelector(".skill-group-title")?.cloneNode(true);
+    heading?.querySelector(".general-skill-add-inline")?.remove();
     const secondTable=table.cloneNode(false);
     const thead=table.tHead?.cloneNode(true);
     const secondBody=document.createElement("tbody");
@@ -51,6 +76,7 @@
 
     rows.slice(splitIndex+1).forEach(row=>secondBody.append(row));
     general.after(second);
+    ensureGeneralAddButton(general);
     removeGeneralOrderControls(root);
   }
 
