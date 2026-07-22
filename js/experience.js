@@ -8,7 +8,6 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
   const STYLE_COST=window.TNXStyleSkillKinds?.costs||{normal:10,secret:20,ultimate:50,direction:2};
   const INITIAL_SKILL_COST=165;
   const CREATION_ALLOWANCE=170;
-  const PART_ORDER=["一般技能","能力値","制御値","スタイル技能","アウトフィット"];
   let queued=false;
   let writing=false;
 
@@ -93,18 +92,6 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
     return total;
   }
 
-  function applyAllowance(parts){
-    let remaining=CREATION_ALLOWANCE;
-    const net={};
-    for(const label of PART_ORDER){
-      const value=Math.max(0,num(parts[label]));
-      const covered=Math.min(value,remaining);
-      net[label]=value-covered;
-      remaining-=covered;
-    }
-    return net;
-  }
-
   function calculate(){
     queued=false;
     const base=baselines();
@@ -116,16 +103,17 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
     }
 
     const skills=skillParts();
-    const grossParts={
+    const paidGeneral=Math.max(0,skills.general-INITIAL_SKILL_COST);
+    const parts={
       "能力値":ability,
       "制御値":control,
-      "一般技能":skills.general,
+      "一般技能":paidGeneral,
       "スタイル技能":skills.style,
-      "アウトフィット":outfitCost()
+      "アウトフィット":outfitCost(),
+      "初期作成経験点":-CREATION_ALLOWANCE
     };
-    const gross=Object.values(grossParts).reduce((sum,value)=>sum+value,0);
-    const total=Math.max(0,gross-CREATION_ALLOWANCE);
-    const parts=applyAllowance(grossParts);
+    const gross=ability+control+paidGeneral+skills.style+parts["アウトフィット"];
+    const total=gross-CREATION_ALLOWANCE;
 
     writing=true;
     const output=$("#exp-total");
@@ -136,7 +124,7 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
       output.classList.add("flash");
     }
     const breakdown=$("#exp-breakdown");
-    const html=["能力値","制御値","一般技能","スタイル技能","アウトフィット"]
+    const html=["能力値","制御値","一般技能","スタイル技能","アウトフィット","初期作成経験点"]
       .map(label=>`<div><dt>${label}</dt><dd>${parts[label]||0}</dd></div>`)
       .join("");
     if(breakdown&&breakdown.innerHTML!==html)breakdown.innerHTML=html;
@@ -145,10 +133,10 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
     return {
       total,
       parts,
-      grossParts,
       gross,
+      rawGeneralSkillCost:skills.general,
       initialSkillCost:INITIAL_SKILL_COST,
-      allowance:CREATION_ALLOWANCE
+      creationAllowance:CREATION_ALLOWANCE
     };
   }
 
