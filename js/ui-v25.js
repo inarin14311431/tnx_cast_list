@@ -42,8 +42,7 @@ function bindSheetActions(){
       event.preventDefault();
       event.stopPropagation();
       const action=actionButton.dataset.skillUiAction;
-      if(action==="add-general")document.querySelector("#add-general")?.click();
-      else document.querySelector(action)?.click();
+      document.querySelector(action)?.click();
       return;
     }
 
@@ -92,8 +91,15 @@ function activateProperTemplate(name,suitName){
 }
 
 function findGeneralRow(key){return document.querySelector(`#general-skills tr[data-skill-key="${CSS.escape(key)}"]`);}
-function queueRefresh(){if(refreshQueued)return;refreshQueued=true;requestAnimationFrame(()=>{refreshQueued=false;arrangeSkillUi();});}
-function arrangeSkillUi(){replaceSuitHeaders();ensureGroupActions();markGeneralRows();applyStoredOrder("general");applyStoredOrder("style");ensureSortButtons();}
+function queueRefresh(){
+  if(refreshQueued)return;
+  refreshQueued=true;
+  queueMicrotask(()=>{
+    refreshQueued=false;
+    arrangeSkillUi();
+  });
+}
+function arrangeSkillUi(){replaceSuitHeaders();ensureGroupActions();markGeneralRows();applyStoredOrder("style");ensureSortButtons();}
 function replaceSuitHeaders(){const labels={"♠":"理性","♣":"感情","♥":"生命","♦":"外界"};document.querySelectorAll("#general-skills th.suit-col,#style-skills th.suit-col").forEach(cell=>{const label=labels[cell.textContent.trim()];if(label)cell.textContent=label;});}
 
 function ensureGroupActions(){
@@ -102,9 +108,10 @@ function ensureGroupActions(){
     let heading=group.querySelector(":scope>.skill-group-heading");if(!heading){heading=document.createElement("div");heading.className="skill-group-heading";title.before(heading);heading.append(title);}
     if(heading.querySelector(":scope>.skill-group-actions[data-v27]"))return;
     heading.querySelector(":scope>.skill-group-actions")?.remove();
-    const actions=document.createElement("div");actions.className="skill-group-actions";actions.dataset.v27="1";heading.append(actions);const text=title.textContent;
-    if(text.includes("一般技能"))addAction(actions,"一般技能を追加","ADD GENERAL SKILL","add-general");
-    else if(text.includes("社会"))addAction(actions,"社会を追加","ADD SOCIAL","#add-social");
+    const text=title.textContent;
+    if(text.includes("一般技能"))return;
+    const actions=document.createElement("div");actions.className="skill-group-actions";actions.dataset.v27="1";heading.append(actions);
+    if(text.includes("社会"))addAction(actions,"社会を追加","ADD SOCIAL","#add-social");
     else if(text.includes("コネクション"))addAction(actions,"コネを追加","ADD CONNECTION","#add-connection");
     else if(text.includes("スタイル技能"))addAction(actions,"スタイル技能を追加","ADD STYLE SKILL","#add-style-skill");
   });
@@ -133,7 +140,7 @@ function applyStoredOrder(kind){
   desired.forEach(row=>fragment.append(row));
   parent.append(fragment);
 }
-function ensureSortButtons(){addSortControls(allGeneralRows(),"general");addSortControls(rowsFor("style"),"style");}
+function ensureSortButtons(){addSortControls(rowsFor("style"),"style");}
 function addSortControls(rows,kind){
   rows.forEach((row,index)=>{
     const cell=row.lastElementChild;if(!cell)return;
