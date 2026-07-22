@@ -25,7 +25,7 @@
       if(heading?.classList.contains("cast-archetype-heading"))heading.remove();
       heading=document.createElement("header");
       heading.className="cast-style-heading-simple";
-      heading.innerHTML="<strong>キャストスタイル</strong>";
+      heading.innerHTML="<strong>キャスト　スタイル</strong>";
       styles.before(heading);
     }
 
