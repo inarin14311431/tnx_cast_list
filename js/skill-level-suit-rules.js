@@ -77,7 +77,9 @@
   }
 
   function enhance(){
-    document.querySelectorAll(`${ROOT_SELECTOR} tr[data-skill-key]`).forEach(wrapRow);
+    document.querySelectorAll(ROOT_SELECTOR).forEach(root=>{
+      root.querySelectorAll('tr[data-skill-key]').forEach(wrapRow);
+    });
   }
 
   function queue(){
