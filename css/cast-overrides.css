@@ -89,8 +89,56 @@
 .style-skill-panel__body .data-table th:nth-child(n+3):nth-child(-n+6),.style-skill-panel__body .data-table td:nth-child(n+3):nth-child(-n+6){width:54px!important}
 .style-skill-panel__body .data-table th:last-child,.style-skill-panel__body .data-table td:last-child{width:auto}
 
-/* Outfit detail: match the editor's compact 48px table rows. */
-.cast-outfit-detail{display:block;width:100%;min-width:180px;height:36px;min-height:36px;max-height:120px;resize:vertical;overflow:auto;box-sizing:border-box;margin:0;padding:6px 5px;border:1px solid rgba(105,235,255,.35);border-radius:4px;color:#d7eef2;background:rgba(7,26,33,.9);font:inherit;line-height:1.35}
+/* Outfit table: use one consistent font size and one-line rows. */
+#outfit-container .data-table th,
+#outfit-container .data-table td,
+#outfit-container .cast-outfit-detail{
+  font-size:.74rem!important;
+  line-height:1!important;
+}
+#outfit-container .data-table th{
+  height:30px;
+  padding:4px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+#outfit-container .data-table th small{
+  display:inline;
+  margin:0 0 0 4px;
+  font-size:inherit;
+  line-height:inherit;
+  letter-spacing:0;
+}
+#outfit-container .data-table tbody td{
+  height:32px;
+  max-height:32px;
+  padding:3px 4px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  vertical-align:middle;
+}
+.cast-outfit-detail{
+  display:block;
+  width:100%;
+  min-width:180px;
+  height:24px;
+  min-height:24px;
+  max-height:24px;
+  resize:none;
+  overflow-x:auto;
+  overflow-y:hidden;
+  box-sizing:border-box;
+  margin:0;
+  padding:4px 5px;
+  border:1px solid rgba(105,235,255,.35);
+  border-radius:4px;
+  color:#d7eef2;
+  background:rgba(7,26,33,.9);
+  font:inherit;
+  white-space:nowrap;
+}
 
 @media(max-width:980px){
   .cast-skill-layout,#skills-container.cast-skill-layout{grid-template-columns:1fr!important}
