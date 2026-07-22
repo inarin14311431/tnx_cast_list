@@ -17,7 +17,7 @@
 .sheet-header #save-status{top:14px!important;padding:6px 14px}
 
 /* Experience panel: visually lighter and proportionate to the editor. */
-.exp-panel{padding:13px!important}
+.exp-panel{position:sticky!important;top:18px;align-self:start;padding:13px!important;z-index:20}
 .exp-panel>p{font-size:.72rem}
 .exp-panel>strong{margin:5px 0 10px;font-size:2.35rem;line-height:1}
 .exp-panel dl{margin-bottom:10px}
@@ -129,7 +129,7 @@
 }
 @media(max-width:1080px){
   .sheet-layout{grid-template-columns:1fr;width:min(100% - 20px,1500px)}
-  .exp-panel{position:static!important;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end}
+  .exp-panel{top:8px;display:grid;grid-template-columns:1fr 1fr;gap:8px;align-items:end;background:rgba(3,12,17,.97)}
   .exp-panel>p,.exp-panel>strong,.exp-panel>dl{grid-column:1/-1}
   .exp-panel>label{grid-column:1/-1}
   .style-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
@@ -144,6 +144,9 @@
   #general-skills>.skill-group:nth-child(3){grid-column:1;grid-row:auto}
   #style-skills,#style-skills .skill-table-scroll{overflow-x:auto}
   #style-skills .skill-table{min-width:1030px}
+}
+@media(max-width:760px){
+  .exp-panel{position:static!important;z-index:auto}
 }
 @media(max-width:620px){
   .sheet-header{padding:18px 12px!important}
