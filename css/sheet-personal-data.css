@@ -1,10 +1,18 @@
 /* Structured personal data fields separated from the free-text profile. */
+.profile-top-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr);
+  gap:16px;
+  align-items:stretch;
+}
+.basic-profile-panel,
 .personal-data-panel{
   min-width:0;
   padding:12px;
   border:1px solid rgba(65,232,255,.24);
   background:rgba(0,0,0,.2);
 }
+.basic-profile-panel__header,
 .personal-data-panel__header{
   display:flex;
   align-items:baseline;
@@ -14,22 +22,26 @@
   padding-bottom:8px;
   border-bottom:1px solid var(--line-muted);
 }
+.basic-profile-panel__header h3,
 .personal-data-panel__header h3{
   margin:0;
   color:var(--line);
   font:800 .86rem monospace;
   letter-spacing:.04em;
 }
+.basic-profile-panel__header small,
 .personal-data-panel__header small{
   color:var(--text-muted);
   font:.62rem monospace;
   letter-spacing:.08em;
 }
+.basic-profile-grid,
 .personal-data-grid{
   display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr));
+  grid-template-columns:repeat(2,minmax(0,1fr));
   gap:9px 10px;
 }
+.basic-profile-grid label,
 .personal-data-grid label{
   display:grid;
   gap:4px;
@@ -37,9 +49,20 @@
   color:var(--text-muted);
   font-size:.7rem;
 }
+.basic-profile-grid input,
+.basic-profile-grid textarea,
 .personal-data-grid input{
   min-width:0;
+  box-sizing:border-box;
   padding:8px 9px;
+}
+.basic-profile-grid .basic-profile-summary{
+  grid-column:1/-1;
+}
+.basic-profile-grid .basic-profile-summary textarea{
+  min-height:92px;
+  resize:vertical;
+  line-height:1.55;
 }
 #personal-data-status{
   min-height:1.2em;
@@ -50,12 +73,10 @@
 #personal-data-status.is-saving{color:#ffd166}
 #personal-data-status.is-saved{color:var(--line)}
 #personal-data-status.is-error{color:var(--alert)}
-@media(max-width:1050px){
-  .personal-data-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:900px){
+  .profile-top-grid{grid-template-columns:1fr}
 }
-@media(max-width:720px){
-  .personal-data-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-}
-@media(max-width:440px){
+@media(max-width:560px){
+  .basic-profile-grid,
   .personal-data-grid{grid-template-columns:1fr}
 }
