@@ -9,22 +9,29 @@
 
   function ensureGeneralAddButton(group){
     const heading=group?.querySelector(".skill-group-title");
-    if(!heading)return;
+    const source=document.querySelector("#add-general");
+    if(!heading||!source)return;
 
-    let button=heading.querySelector(".general-skill-add-inline");
-    if(button)return;
+    document.querySelectorAll("#general-skills .general-skill-heading-toolbar").forEach(toolbar=>{
+      if(!heading.contains(toolbar))toolbar.remove();
+    });
+    if(heading.querySelector(".general-skill-heading-toolbar"))return;
 
-    button=document.createElement("button");
-    button.type="button";
-    button.className="general-skill-add-inline";
-    button.innerHTML='一般技能を追加 <small>ADD GENERAL</small>';
+    const toolbar=document.createElement("span");
+    toolbar.className="toolbar skill-toolbar general-skill-heading-toolbar";
+
+    const button=source.cloneNode(true);
+    button.removeAttribute("id");
+    button.classList.add("general-skill-add-inline");
     button.setAttribute("aria-label","一般技能を追加");
     button.addEventListener("click",event=>{
       event.preventDefault();
       event.stopPropagation();
-      document.querySelector("#add-general")?.click();
+      source.click();
     });
-    heading.append(button);
+
+    toolbar.append(button);
+    heading.append(toolbar);
   }
 
   function removeGeneralOrderControls(root){
@@ -47,8 +54,10 @@
 
     const general=[...root.children].find(group=>isGeneralGroup(group)&&!group.classList.contains("general-skill-column--second"));
     if(!general)return;
+
     if(general.classList.contains("general-skill-column--first")){
-      ensureGeneralAddButton(general);
+      const second=root.querySelector(".general-skill-column--second");
+      ensureGeneralAddButton(second);
       return;
     }
 
@@ -61,11 +70,13 @@
     if(splitIndex<0||splitIndex>=rows.length-1)return;
 
     general.classList.add("general-skill-column","general-skill-column--first");
+    general.querySelectorAll(".general-skill-heading-toolbar").forEach(toolbar=>toolbar.remove());
+
     const second=document.createElement("section");
     second.className="skill-group general-skill-column general-skill-column--second";
 
     const heading=general.querySelector(".skill-group-title")?.cloneNode(true);
-    heading?.querySelector(".general-skill-add-inline")?.remove();
+    heading?.querySelector(".general-skill-heading-toolbar")?.remove();
     const secondTable=table.cloneNode(false);
     const thead=table.tHead?.cloneNode(true);
     const secondBody=document.createElement("tbody");
@@ -76,7 +87,7 @@
 
     rows.slice(splitIndex+1).forEach(row=>secondBody.append(row));
     general.after(second);
-    ensureGeneralAddButton(general);
+    ensureGeneralAddButton(second);
     removeGeneralOrderControls(root);
   }
 
