@@ -1,1 +1,0 @@
-/* Browser draft persistence removed. This file is intentionally inert. */
