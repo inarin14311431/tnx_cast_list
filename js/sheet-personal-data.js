@@ -1,7 +1,9 @@
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js";
 
-const FIELDS=["age","gender","height","weight","eyes","hair","skin"];
+const PERSONAL_FIELDS=["age","gender","height","weight","eyes","hair","skin"];
+const LIFE_PATH_FIELDS=["life_path_origin","life_path_experience","life_path_encounter"];
+const FIELDS=[...PERSONAL_FIELDS,...LIFE_PATH_FIELDS];
 const LEGACY_KEYS={
   age:["base.age","age"],
   gender:["base.sex","base.gender","sex","gender"],
@@ -9,18 +11,20 @@ const LEGACY_KEYS={
   weight:["base.weight","weight"],
   eyes:["base.eyes","eyes"],
   hair:["base.hair","hair"],
-  skin:["base.skin","skin"]
+  skin:["base.skin","skin"],
+  life_path_origin:["base.lifepath.origin","base.lifepath.birth","life_path_origin"],
+  life_path_experience:["base.lifepath.experience","life_path_experience"],
+  life_path_encounter:["base.lifepath.encounter","base.lifepath.encouter","life_path_encounter"]
 };
-const inputs=Object.fromEntries(FIELDS.map(name=>[name,document.querySelector(`#${name}`)]));
-const status=document.querySelector("#personal-data-status");
+const inputs=Object.fromEntries(FIELDS.map(name=>[name,document.querySelector(`#${name.replaceAll("_","-")}`)]));
+const statuses=[document.querySelector("#personal-data-status"),document.querySelector("#life-path-status")].filter(Boolean);
 let user=null;
 let pending=false;
 let loading=false;
 let saving=false;
 let timer=0;
-let loadedPublicId="";
 
-if(FIELDS.every(name=>inputs[name])&&status)initialize();
+if(FIELDS.every(name=>inputs[name])&&statuses.length)initialize();
 
 async function initialize(){
   user=await requireAuth();
@@ -30,7 +34,7 @@ async function initialize(){
     input.addEventListener("input",()=>{
       if(loading)return;
       pending=true;
-      setStatus("パーソナルデータ未保存","");
+      setStatus("未保存","");
       queueSave();
     });
   }
@@ -48,7 +52,7 @@ async function initialize(){
   }
 
   const publicId=getPublicId();
-  if(publicId)await loadPersonalData(publicId);
+  if(publicId)await loadStructuredProfile(publicId);
   else setStatus("キャスト本体の初回保存後に登録されます。","");
 }
 
@@ -56,7 +60,7 @@ function getPublicId(){
   return new URLSearchParams(location.search).get("id")?.trim()||"";
 }
 
-async function loadPersonalData(publicId){
+async function loadStructuredProfile(publicId){
   loading=true;
   try{
     const {data,error}=await supabase
@@ -66,15 +70,14 @@ async function loadPersonalData(publicId){
       .eq("owner_id",user.id)
       .maybeSingle();
     if(error)throw error;
-    if(!data)throw new Error("パーソナルデータを読み込めませんでした。");
+    if(!data)throw new Error("プロフィールデータを読み込めませんでした。");
 
     for(const name of FIELDS)inputs[name].value=data[name]??"";
-    loadedPublicId=publicId;
     pending=false;
-    setStatus("パーソナルデータ読込済み","saved");
+    setStatus("読込済み","saved");
   }catch(error){
     console.error(error);
-    setStatus(error.message||"パーソナルデータの読込に失敗しました。","error");
+    setStatus(error.message||"プロフィールデータの読込に失敗しました。","error");
   }finally{
     loading=false;
   }
@@ -82,10 +85,10 @@ async function loadPersonalData(publicId){
 
 function queueSave(delay=900){
   clearTimeout(timer);
-  timer=setTimeout(savePersonalData,delay);
+  timer=setTimeout(saveStructuredProfile,delay);
 }
 
-async function savePersonalData(){
+async function saveStructuredProfile(){
   if(!pending||saving||loading||!user)return;
   const publicId=getPublicId();
   if(!publicId){
@@ -94,32 +97,31 @@ async function savePersonalData(){
   }
 
   saving=true;
-  setStatus("パーソナルデータ保存中…","saving");
+  setStatus("保存中…","saving");
   try{
     const payload=Object.fromEntries(FIELDS.map(name=>[name,inputs[name].value.trim()]));
-    const {data,error}=await supabase
+    const {error}=await supabase
       .from("characters")
       .update(payload)
       .eq("public_id",publicId)
-      .eq("owner_id",user.id)
-      .select("public_id")
-      .single();
+      .eq("owner_id",user.id);
     if(error)throw error;
-    loadedPublicId=data.public_id;
     pending=false;
-    setStatus("パーソナルデータ保存済み","saved");
+    setStatus("保存済み","saved");
   }catch(error){
     console.error(error);
     pending=true;
-    setStatus(error.message||"パーソナルデータの保存に失敗しました。","error");
+    setStatus(error.message||"プロフィールデータの保存に失敗しました。","error");
   }finally{
     saving=false;
   }
 }
 
 function setStatus(text,state){
-  status.textContent=text;
-  status.className=state?`is-${state}`:"";
+  for(const status of statuses){
+    status.textContent=text;
+    status.className=state?`is-${state}`:"";
+  }
 }
 
 function canonicalKey(value){
@@ -173,6 +175,7 @@ function sanitizeLegacyData(data){
       if(Object.prototype.hasOwnProperty.call(clone,key))delete clone[key];
       const parts=key.split(".");
       if(parts.length===2&&clone[parts[0]]&&typeof clone[parts[0]]==="object")delete clone[parts[0]][parts[1]];
+      if(parts.length===3&&clone[parts[0]]?.[parts[1]]&&typeof clone[parts[0]][parts[1]]==="object")delete clone[parts[0]][parts[1]][parts[2]];
     }
   }
   return clone;
