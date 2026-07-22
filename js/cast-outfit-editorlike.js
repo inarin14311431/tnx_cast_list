@@ -14,21 +14,21 @@ const CATEGORIES=[
 ];
 
 const LABELS={
-  name:["名称","NAME"],
-  purchase_value:["購入","PURCHASE"],
-  experience_cost:["常備化","EXP"],
-  concealment:["隠匿","CONCEAL"],
-  attack:["攻撃","ATTACK"],
-  defense:["防御","DEFENSE"],
-  defense_s:["S","S"],
-  defense_p:["P","P"],
-  defense_i:["I","I"],
-  range:["射程","RANGE"],
-  slot:["部位／エリア","SLOT / AREA"],
-  control_modifier:["制御","CONTROL"],
-  cs_modifier:["CS","CS"],
-  mundane_modifier:["外界","MUNDANE"],
-  description:["解説","DESCRIPTION"]
+  name:"名称",
+  purchase_value:"購入",
+  experience_cost:"常備化",
+  concealment:"隠匿",
+  attack:"攻撃",
+  defense:"防御",
+  defense_s:"S",
+  defense_p:"P",
+  defense_i:"I",
+  range:"射程",
+  slot:"部位／エリア",
+  control_modifier:"制御",
+  cs_modifier:"CS",
+  mundane_modifier:"外界",
+  description:"解説"
 };
 
 const SCHEMAS={
@@ -124,8 +124,8 @@ function createSection(category,jp,en,items){
 }
 
 function createHeader(field){
-  const [jp,en]=LABELS[field]||[field,field];
-  return `<th class="cast-outfit-col--${field}"><span>${escapeHtml(jp)}</span><small>${escapeHtml(en)}</small></th>`;
+  const label=LABELS[field]||field;
+  return `<th class="cast-outfit-col--${field}">${escapeHtml(label)}</th>`;
 }
 
 function createRow(category,schema,item){
@@ -149,7 +149,7 @@ function createArmorFooter(schema,totals){
   const tail=schema.length-firstDefense-3;
   return `
     <tfoot><tr class="cast-armor-total-row">
-      <th colspan="${firstDefense}">防御値合計 <small>DEFENSE TOTAL</small></th>
+      <th colspan="${firstDefense}">防御値合計</th>
       <td class="cast-armor-total">${totals.s}</td>
       <td class="cast-armor-total">${totals.p}</td>
       <td class="cast-armor-total">${totals.i}</td>
