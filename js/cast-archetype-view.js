@@ -1,15 +1,15 @@
-/* Archetype and divine-authority presentation for the public cast view. */
+/* Public-view presentation for cast styles, divine works and style skills. */
 (function(){
   const root=document.querySelector("#cast-content")||document.body;
   let completed=false;
   let attempts=0;
 
-  function roleFor(mark){
+  function stateFor(mark){
     const value=String(mark||"").trim();
-    if(value.includes("◎")&&value.includes("●"))return ["is-dual","PERSONA / KEY"];
-    if(value.includes("◎"))return ["is-persona","PERSONA"];
-    if(value.includes("●"))return ["is-key","KEY"];
-    return ["is-standard","STYLE"];
+    if(value.includes("◎")&&value.includes("●"))return "is-dual";
+    if(value.includes("◎"))return "is-persona";
+    if(value.includes("●"))return "is-key";
+    return "is-standard";
   }
 
   function enhanceStyles(){
@@ -17,33 +17,25 @@
     const chips=[...document.querySelectorAll("#cast-styles .style-chip")];
     if(!styles||!chips.length)return false;
 
-    styles.classList.add("cast-archetype-grid");
-    if(!styles.previousElementSibling?.classList.contains("cast-archetype-heading")){
-      const heading=document.createElement("header");
-      heading.className="cast-archetype-heading";
-      heading.innerHTML='<div><span>STYLE SIGNATURE</span><strong>アーキタイプ解析</strong></div><small>IDENTITY PATTERN // 3 SLOTS VERIFIED</small>';
+    styles.classList.remove("cast-archetype-grid");
+    styles.classList.add("cast-style-grid-simple");
+
+    let heading=styles.previousElementSibling;
+    if(!heading?.classList.contains("cast-style-heading-simple")){
+      if(heading?.classList.contains("cast-archetype-heading"))heading.remove();
+      heading=document.createElement("header");
+      heading.className="cast-style-heading-simple";
+      heading.innerHTML="<strong>キャストスタイル</strong>";
       styles.before(heading);
     }
 
     chips.forEach((chip,index)=>{
-      if(chip.dataset.archetypeEnhanced==="true")return;
-      chip.dataset.archetypeEnhanced="true";
-      chip.dataset.archetypeCode=`ARCHETYPE-${String(index+1).padStart(2,"0")}`;
-
-      const mark=chip.querySelector(".style-chip__mark")?.textContent||"";
-      const [state,role]=roleFor(mark);
-      chip.classList.add("cast-archetype-card",state);
-
-      const scan=document.createElement("span");
-      scan.className="cast-archetype-card__scan";
-      scan.textContent="PATTERN MATCHED";
-
-      const roleBadge=document.createElement("span");
-      roleBadge.className="cast-archetype-card__role";
-      roleBadge.textContent=role;
-
-      chip.prepend(scan);
-      chip.append(roleBadge);
+      chip.querySelectorAll(".cast-archetype-card__scan,.cast-archetype-card__role").forEach(element=>element.remove());
+      chip.classList.remove("cast-archetype-card","is-persona","is-key","is-dual","is-standard");
+      chip.classList.add("cast-style-card-simple",stateFor(chip.querySelector(".style-chip__mark")?.textContent));
+      chip.dataset.castStyleSlot=String(index+1).padStart(2,"0");
+      delete chip.dataset.archetypeCode;
+      delete chip.dataset.archetypeEnhanced;
     });
     return true;
   }
