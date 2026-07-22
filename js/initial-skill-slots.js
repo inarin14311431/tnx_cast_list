@@ -1,4 +1,4 @@
-/* Create the initial Social/Connection slots once for a new cast. */
+/* Normalize and complete the initial Social/Connection slots once for a new cast. */
 (function(){
   if(new URLSearchParams(location.search).has("id"))return;
 
@@ -23,11 +23,27 @@
   }
 
   function normalizeLegacyLabels(){
+    let changed=false;
     document.querySelectorAll('#general-skills tbody tr[data-skill-key] [data-f="name"]').forEach(input=>{
       const value=input.value.trim();
-      if(value==="社会：初期取得")input.value="社会：";
-      if(value==="コネ：初期取得")input.value="コネ：";
+      let replacement="";
+      if(value==="社会：初期取得")replacement="社会：";
+      if(value==="コネ：初期取得")replacement="コネ：";
+      if(!replacement)return;
+      input.value=replacement;
+      input.dispatchEvent(new Event("input",{bubbles:true}));
+      changed=true;
     });
+    return changed;
+  }
+
+  function addMissing(category){
+    const button=document.querySelector(BUTTONS[category]);
+    if(!button)return false;
+    const missing=Math.max(0,TARGETS[category]-countSlots(category));
+    if(!missing)return false;
+    button.click();
+    return true;
   }
 
   function initialize(attempt=0){
@@ -37,13 +53,13 @@
       return;
     }
 
-    normalizeLegacyLabels();
+    const normalized=normalizeLegacyLabels();
+    const addedSocial=addMissing("social");
+    const addedConnection=addMissing("connection");
 
-    for(const category of ["social","connection"]){
-      const button=document.querySelector(BUTTONS[category]);
-      if(!button)continue;
-      const missing=Math.max(0,TARGETS[category]-countSlots(category));
-      for(let index=0;index<missing;index++)button.click();
+    if(normalized||addedSocial||addedConnection){
+      requestAnimationFrame(()=>initialize(attempt+1));
+      return;
     }
 
     window.TNXExperience?.queue?.();
