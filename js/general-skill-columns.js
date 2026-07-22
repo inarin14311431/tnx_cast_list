@@ -61,7 +61,10 @@
     const queue=()=>{
       if(queued)return;
       queued=true;
-      requestAnimationFrame(()=>{queued=false;splitGeneralSkills();});
+      queueMicrotask(()=>{
+        queued=false;
+        splitGeneralSkills();
+      });
     };
     new MutationObserver(queue).observe(root,{childList:true});
     queue();
