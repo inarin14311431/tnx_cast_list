@@ -14,6 +14,13 @@
   letter-spacing:.08em;
   text-shadow:0 0 12px rgba(95,234,255,.18);
 }
+.cast-style-heading-simple small{
+  margin-left:.55em;
+  color:rgba(188,239,247,.68);
+  font-size:.72em;
+  font-weight:700;
+  letter-spacing:.14em;
+}
 
 #cast-styles.cast-style-grid-simple{
   display:grid!important;
