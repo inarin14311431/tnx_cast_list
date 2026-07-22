@@ -1,0 +1,109 @@
+/* Editor-like category tables for the public cast outfit view. */
+#outfit-container.cast-outfit-container{
+  display:grid;
+  gap:16px;
+  min-width:0;
+}
+.cast-outfit-section{
+  min-width:0;
+  overflow:hidden;
+}
+.cast-outfit-title{
+  padding:8px 12px;
+  border-bottom:1px solid var(--line-muted);
+  background:linear-gradient(90deg,rgba(142,82,190,.22),transparent);
+}
+.cast-outfit-title h2{
+  margin:0;
+  color:var(--line);
+  font:800 .9rem monospace;
+  letter-spacing:.04em;
+}
+.cast-outfit-title small{
+  margin-left:5px;
+  color:var(--text-muted);
+  font-size:.68rem;
+}
+.cast-outfit-table-scroll{
+  width:100%;
+  min-width:0;
+  overflow-x:auto;
+}
+.cast-outfit-table{
+  width:100%;
+  min-width:900px;
+  border-collapse:collapse;
+  table-layout:fixed;
+  font-size:.74rem;
+}
+.cast-outfit-table th,
+.cast-outfit-table td{
+  box-sizing:border-box;
+  height:32px;
+  padding:4px;
+  border-bottom:1px solid var(--line-muted);
+  vertical-align:middle;
+  line-height:1;
+}
+.cast-outfit-table th{
+  height:34px;
+  color:var(--text-muted);
+  background:rgba(65,232,255,.045);
+  font:700 .74rem/1 monospace;
+  white-space:nowrap;
+}
+.cast-outfit-table th small{
+  display:inline;
+  margin-left:4px;
+  color:var(--text-muted);
+  font:inherit;
+  opacity:.68;
+}
+.cast-outfit-value{
+  display:block;
+  width:100%;
+  overflow:hidden;
+  color:#d7eef2;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.cast-outfit-col--name{width:150px}
+.cast-outfit-col--purchase_value{width:66px;text-align:center}
+.cast-outfit-col--experience_cost{width:66px;text-align:center}
+.cast-outfit-col--concealment{width:68px;text-align:center}
+.cast-outfit-col--attack{width:68px;text-align:center}
+.cast-outfit-col--defense{width:68px;text-align:center}
+.cast-outfit-col--defense_s,
+.cast-outfit-col--defense_p,
+.cast-outfit-col--defense_i{width:52px;text-align:center}
+.cast-outfit-col--range{width:72px;text-align:center}
+.cast-outfit-col--slot{width:112px}
+.cast-outfit-col--control_modifier{width:64px;text-align:center}
+.cast-outfit-col--cs_modifier{width:54px;text-align:center}
+.cast-outfit-col--mundane_modifier{width:64px;text-align:center}
+.cast-outfit-col--description{width:auto}
+.cast-outfit-table tfoot th,
+.cast-outfit-table tfoot td{
+  height:34px;
+  border-top:1px solid var(--line);
+  border-bottom:1px solid var(--line);
+  background:rgba(65,232,255,.08);
+}
+.cast-outfit-table tfoot th{
+  padding-right:10px;
+  color:var(--line);
+  text-align:right;
+  letter-spacing:.05em;
+}
+.cast-outfit-table tfoot th small{
+  font-size:.66rem;
+}
+.cast-armor-total{
+  color:var(--line);
+  font:800 1rem/1 monospace;
+  text-align:center;
+}
+@media(max-width:860px){
+  .cast-outfit-table{min-width:980px}
+  .cast-outfit-table[data-outfit-category="armor"]{min-width:1040px}
+}
