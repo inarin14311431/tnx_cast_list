@@ -6,7 +6,8 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
   const $$=selector=>[...document.querySelectorAll(selector)];
   const ABILITIES=["reason","passion","life","mundane"];
   const STYLE_COST=window.TNXStyleSkillKinds?.costs||{normal:10,secret:20,ultimate:50,direction:2};
-  const INITIAL_ALLOWANCE=205;
+  const INITIAL_SKILL_COST=165;
+  const CREATION_ALLOWANCE=170;
   const PART_ORDER=["一般技能","能力値","制御値","スタイル技能","アウトフィット"];
   let queued=false;
   let writing=false;
@@ -93,7 +94,7 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
   }
 
   function applyAllowance(parts){
-    let remaining=INITIAL_ALLOWANCE;
+    let remaining=CREATION_ALLOWANCE;
     const net={};
     for(const label of PART_ORDER){
       const value=Math.max(0,num(parts[label]));
@@ -123,7 +124,7 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
       "アウトフィット":outfitCost()
     };
     const gross=Object.values(grossParts).reduce((sum,value)=>sum+value,0);
-    const total=Math.max(0,gross-INITIAL_ALLOWANCE);
+    const total=Math.max(0,gross-CREATION_ALLOWANCE);
     const parts=applyAllowance(grossParts);
 
     writing=true;
@@ -141,7 +142,14 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
     if(breakdown&&breakdown.innerHTML!==html)breakdown.innerHTML=html;
     writing=false;
 
-    return {total,parts,grossParts,gross,allowance:INITIAL_ALLOWANCE};
+    return {
+      total,
+      parts,
+      grossParts,
+      gross,
+      initialSkillCost:INITIAL_SKILL_COST,
+      allowance:CREATION_ALLOWANCE
+    };
   }
 
   function queue(){
