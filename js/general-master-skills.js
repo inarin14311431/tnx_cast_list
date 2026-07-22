@@ -1,5 +1,5 @@
 /* Materialize the fixed proper-name General skill rows exactly once per page.
- * This prevents the transient master rows from failing to update internal data. */
+ * This prevents transient master rows from failing to update internal data. */
 (function(){
   const MASTER_NAMES=["製作：","芸術：","操縦："];
   const pending=new Set(MASTER_NAMES);
@@ -52,7 +52,6 @@
     const acquired=[...visible.querySelectorAll('[data-f="reason"],[data-f="passion"],[data-f="life"],[data-f="mundane"]')]
       .some(control=>control.checked);
 
-    /* Already an acquired real row: do not create another one. */
     if(level>0||acquired){
       pending.delete(name);
       continueLater(attempt);
@@ -72,12 +71,13 @@
     requestAnimationFrame(()=>{
       const blank=[...rows()].reverse().find(row=>rowName(row)==="");
       if(blank){
-        setControl(blank.querySelector('[data-f="name"]'),name);
-        setControl(blank.querySelector('[data-f="skill_kind"]'),"proper");
+        /* Set fields that do not trigger a name-based rerender first.
+         * The name is written last because it rebuilds the skill tables. */
         setControl(blank.querySelector('[data-f="level"]'),0);
+        setControl(blank.querySelector('[data-f="skill_kind"]'),"proper");
+        setControl(blank.querySelector('[data-f="name"]'),name);
       }
 
-      /* Mark processed regardless of render timing, so it can never loop. */
       pending.delete(name);
       busy=false;
       continueLater(attempt);
