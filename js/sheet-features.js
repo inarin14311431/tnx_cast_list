@@ -6,9 +6,37 @@
 initialize();
 
 function initialize(){
+  initializeSaveButtonState();
   initializeSkillDetails();
   initializeEmptyStyleSkills();
   initializeOutfitDescriptions();
+}
+
+function initializeSaveButtonState(){
+  const status=document.querySelector("#save-status");
+  const button=document.querySelector("#save-button");
+  if(!status||!button)return;
+
+  const sync=()=>{
+    const text=status.textContent||"";
+    let state="unsaved";
+    if(status.classList.contains("error")||/エラー|失敗/.test(text))state="error";
+    else if(status.classList.contains("saving")||/保存中|読込中|初期化中/.test(text))state="saving";
+    else if(status.classList.contains("saved")||/保存済み/.test(text))state="saved";
+
+    button.classList.remove("is-unsaved","is-saving","is-saved","is-error");
+    button.classList.add(`is-${state}`);
+    button.dataset.saveState=state;
+  };
+
+  new MutationObserver(sync).observe(status,{
+    attributes:true,
+    attributeFilter:["class"],
+    childList:true,
+    subtree:true,
+    characterData:true
+  });
+  sync();
 }
 
 function initializeSkillDetails(){
