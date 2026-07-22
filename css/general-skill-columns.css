@@ -12,30 +12,6 @@
 #general-skills>.skill-group:nth-child(4){grid-column:3!important;grid-row:2!important}
 
 #general-skills .skill-group-title{white-space:nowrap}
-#general-skills .general-skill-heading-row{
-  display:flex!important;
-  flex-wrap:nowrap!important;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  margin:18px 0 8px;
-}
-#general-skills .general-skill-heading-row>.skill-group-title{
-  flex:1 1 auto;
-  min-width:0;
-  margin:0;
-}
-#general-skills .general-skill-heading-row>button{
-  flex:0 0 auto;
-  width:auto!important;
-  min-width:0!important;
-  max-width:none!important;
-  margin:0!important;
-  white-space:nowrap;
-}
-#general-skills .general-skill-heading-row>button small{
-  white-space:nowrap;
-}
 
 #general-skills .skill-table{font-size:.68rem}
 #general-skills .skill-table th,
@@ -71,6 +47,4 @@
   #general-skills>.skill-group:nth-child(3),
   #general-skills>.skill-group:nth-child(4){grid-column:1!important;grid-row:auto!important}
   #general-skills .skill-table .name-col{width:auto!important}
-  #general-skills .general-skill-heading-row{flex-wrap:wrap!important}
-  #general-skills .general-skill-heading-row>button{margin-left:auto!important}
 }
