@@ -1,0 +1,79 @@
+/* Cyber-scan presentation layer for the public cast view. */
+:root{
+  --scan-cyan:#5feaff;
+  --scan-blue:#3b8cff;
+  --scan-violet:#ad6cff;
+  --scan-green:#8affb4;
+  --scan-red:#ff5478;
+  --scan-deep:rgba(2,10,15,.94);
+}
+body.cast-scan-mode{
+  background:
+    radial-gradient(circle at 18% 12%,rgba(50,142,181,.13),transparent 30%),
+    radial-gradient(circle at 84% 18%,rgba(143,70,194,.11),transparent 27%),
+    linear-gradient(180deg,#02070b,#031018 46%,#020608);
+}
+body.cast-scan-mode::before{
+  position:fixed;inset:0;z-index:-1;content:"";pointer-events:none;
+  background-image:
+    linear-gradient(rgba(95,234,255,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(95,234,255,.035) 1px,transparent 1px);
+  background-size:42px 42px;
+  mask-image:linear-gradient(to bottom,rgba(0,0,0,.8),transparent 90%);
+}
+.cast-data-rain{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;opacity:.22;font:10px/1.55 monospace;color:var(--scan-cyan)}
+.cast-data-rain span{position:absolute;top:-35%;white-space:pre;animation:data-rain linear infinite;filter:drop-shadow(0 0 4px currentColor)}
+@keyframes data-rain{to{transform:translateY(160vh)}}
+
+.cast-access-overlay{
+  position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:24px;
+  color:#dffbff;background:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.02) 0 1px,transparent 1px 4px),
+    radial-gradient(circle at center,rgba(30,104,129,.22),transparent 44%),#01070a;
+  transition:opacity .5s ease,visibility .5s ease;
+}
+.cast-access-overlay.is-complete{opacity:0;visibility:hidden;pointer-events:none}
+.cast-access-terminal{position:relative;width:min(760px,100%);padding:28px;border:1px solid rgba(95,234,255,.45);background:rgba(2,14,20,.88);box-shadow:0 0 0 1px rgba(95,234,255,.08) inset,0 0 50px rgba(31,188,222,.12);clip-path:polygon(0 0,calc(100% - 26px) 0,100% 26px,100% 100%,26px 100%,0 calc(100% - 26px))}
+.cast-access-terminal::before,.cast-access-terminal::after{position:absolute;content:"";background:var(--scan-cyan);box-shadow:0 0 14px var(--scan-cyan)}
+.cast-access-terminal::before{top:0;left:0;width:110px;height:2px}.cast-access-terminal::after{right:0;bottom:0;width:2px;height:86px}
+.cast-access-kicker{margin:0;color:var(--scan-green);font:700 .72rem monospace;letter-spacing:.22em}
+.cast-access-title{margin:10px 0 4px;font:800 clamp(1.5rem,5vw,3rem)/1 monospace;letter-spacing:.04em;text-transform:uppercase;text-shadow:0 0 18px rgba(95,234,255,.45)}
+.cast-access-target{margin:0 0 22px;color:#8bb6c0;font:700 .78rem monospace;letter-spacing:.12em;overflow-wrap:anywhere}
+.cast-access-progress{position:relative;height:12px;margin:0 0 18px;border:1px solid rgba(95,234,255,.4);background:#02080b;overflow:hidden}
+.cast-access-progress span{display:block;width:0;height:100%;background:linear-gradient(90deg,var(--scan-blue),var(--scan-cyan),var(--scan-green));box-shadow:0 0 16px rgba(95,234,255,.75);transition:width .18s linear}
+.cast-access-log{display:grid;gap:6px;min-height:116px;padding:14px;border-left:2px solid rgba(95,234,255,.4);background:rgba(0,0,0,.28);font:12px/1.4 monospace;color:#96bec7}
+.cast-access-log p{margin:0}.cast-access-log strong{color:var(--scan-cyan)}.cast-access-log .ok{color:var(--scan-green)}
+
+.cast-header{position:sticky;top:0;z-index:50;padding:12px 0!important;background:rgba(2,9,13,.84);backdrop-filter:blur(14px);border-bottom-color:rgba(95,234,255,.28)!important;box-shadow:0 10px 30px rgba(0,0,0,.28)}
+.cast-header__system::before{content:"● ";color:var(--scan-green);text-shadow:0 0 8px var(--scan-green)}
+.cast-header__status{padding:5px 9px;border:1px solid rgba(95,234,255,.26);background:rgba(95,234,255,.05);color:var(--scan-green)!important;letter-spacing:.08em}
+.cast-content{position:relative}
+.cast-content::before{position:absolute;inset:-16px -16px auto;height:1px;content:"";background:linear-gradient(90deg,transparent,var(--scan-cyan),transparent);opacity:.5}
+.cast-hero{position:relative;padding:18px;border:1px solid rgba(95,234,255,.22);background:linear-gradient(135deg,rgba(34,159,190,.08),transparent 34%,rgba(145,72,196,.07));box-shadow:0 0 40px rgba(0,0,0,.35),inset 0 0 40px rgba(95,234,255,.025)}
+.cast-hero::before{position:absolute;top:8px;right:12px;content:"IDENTITY TRACE // COMPLETE";color:var(--scan-green);font:10px monospace;letter-spacing:.14em}
+.cast-hero__image-frame{border-color:rgba(95,234,255,.55)!important;box-shadow:0 0 30px rgba(37,178,208,.16)}
+.cast-hero__image-frame::after{position:absolute;inset:0;z-index:2;content:"";pointer-events:none;background:linear-gradient(90deg,transparent 49.6%,rgba(95,234,255,.15) 50%,transparent 50.4%),linear-gradient(transparent 49.6%,rgba(95,234,255,.12) 50%,transparent 50.4%);background-size:44px 44px;mix-blend-mode:screen}
+.cast-hero__identity{border-color:rgba(95,234,255,.34)!important;background:linear-gradient(135deg,rgba(13,59,72,.72),rgba(3,13,18,.88) 48%,rgba(41,15,56,.64))!important;box-shadow:inset 4px 0 0 rgba(95,234,255,.45)}
+.cast-public-id::before{content:"TARGET-ID // ";color:var(--scan-cyan)}
+.cast-handle{letter-spacing:.08em;text-shadow:0 0 12px rgba(95,234,255,.35)}
+.cast-name{position:relative;display:inline-block;color:#effdff;text-shadow:2px 0 rgba(255,51,108,.28),-2px 0 rgba(95,234,255,.3),0 0 26px rgba(95,234,255,.22)}
+.cast-styles .style-chip{position:relative;overflow:hidden;background:linear-gradient(90deg,rgba(95,234,255,.08),rgba(173,108,255,.07))!important}
+.cast-styles .style-chip::after{position:absolute;inset:auto 0 0;height:2px;content:"";background:linear-gradient(90deg,var(--scan-cyan),var(--scan-violet))}
+.identity-grid div{border-left-color:var(--scan-cyan)!important;background:linear-gradient(90deg,rgba(95,234,255,.08),rgba(0,0,0,.18))!important}
+.cast-summary{padding:14px 16px;border:1px solid rgba(95,234,255,.15);background:rgba(0,0,0,.2)}
+.cast-summary::before{display:block;margin-bottom:8px;content:"SCAN SUMMARY / 抽出概要";color:var(--scan-cyan);font:700 .68rem monospace;letter-spacing:.12em}
+.cast-tabs{position:sticky;top:72px;z-index:40;background:rgba(2,9,13,.92);backdrop-filter:blur(12px);border:1px solid rgba(95,234,255,.18)}
+.cast-tab{position:relative;overflow:hidden}.cast-tab::before{position:absolute;top:0;left:-100%;width:100%;height:1px;content:"";background:var(--scan-cyan);transition:left .25s}.cast-tab:hover::before,.cast-tab.is-active::before{left:0}.cast-tab.is-active{box-shadow:inset 0 -2px 0 var(--scan-cyan),0 0 20px rgba(95,234,255,.08)}
+.data-panel{position:relative;overflow:hidden;border-color:rgba(95,234,255,.24)!important;background:linear-gradient(180deg,rgba(5,24,31,.92),rgba(3,12,17,.94))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.025)}
+.data-panel::after{position:absolute;top:0;right:0;width:18px;height:18px;content:"";border-top:2px solid var(--scan-cyan);border-right:2px solid var(--scan-cyan);opacity:.5}
+.data-panel__header,.cast-outfit-title{position:relative;background:linear-gradient(90deg,rgba(39,162,191,.2),rgba(119,65,169,.08),transparent)!important}
+.data-panel__header h2::before,.cast-outfit-title h2::before{content:"[ ";color:var(--scan-green)}.data-panel__header h2::after,.cast-outfit-title h2::after{content:" ]";color:var(--scan-green)}
+.profile-list div{position:relative}.profile-list div::before{position:absolute;left:-8px;top:50%;width:4px;height:4px;border-radius:50%;content:"";background:var(--scan-green);box-shadow:0 0 8px var(--scan-green)}
+.profile-list dd{color:#e1f9fc}
+.profile-text{white-space:pre-wrap;background:repeating-linear-gradient(180deg,transparent 0 27px,rgba(95,234,255,.04) 27px 28px)}
+.data-table tr:hover td,.cast-outfit-table tr:hover td{background:rgba(95,234,255,.055)}
+.cast-outfit-table tfoot{box-shadow:inset 0 1px 0 var(--scan-cyan)}
+
+@keyframes data-rain{to{transform:translateY(170vh)}}
+@media(max-width:800px){.cast-access-terminal{padding:20px}.cast-header{position:relative}.cast-tabs{top:0}.cast-hero{padding:10px}.cast-hero::before{display:none}}
+@media(prefers-reduced-motion:reduce){.cast-data-rain span,.cast-hero__image-scan{animation:none!important}.cast-access-overlay{transition:none}}
