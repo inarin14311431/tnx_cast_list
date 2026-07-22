@@ -25,7 +25,7 @@
       if(heading?.classList.contains("cast-archetype-heading"))heading.remove();
       heading=document.createElement("header");
       heading.className="cast-style-heading-simple";
-      heading.innerHTML="<strong>キャスト　スタイル</strong>";
+      heading.innerHTML='<strong>スタイル <small>STYLE</small></strong>';
       styles.before(heading);
     }
 
@@ -49,7 +49,7 @@
     const heading=panel.querySelector("header h2");
     if(heading&&!heading.dataset.enhanced){
       heading.dataset.enhanced="true";
-      heading.innerHTML='神業認証 <small>DIVINE AUTHORITY</small>';
+      heading.innerHTML='神業 <small>DIVINE WORK</small>';
       const status=document.createElement("span");
       status.className="cast-divine-authority__status";
       status.textContent="AUTHORITY CHANNEL // ONLINE";
