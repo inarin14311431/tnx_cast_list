@@ -1,13 +1,14 @@
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
 
-/* Authoritative experience-point calculator for the editor. */
+/* Authoritative live experience-point calculator for the editor. */
 (function(){
   const $=selector=>document.querySelector(selector);
   const $$=selector=>[...document.querySelectorAll(selector)];
   const ABILITIES=["reason","passion","life","mundane"];
+  const GENERAL_MASTER=new Set(["医療","射撃","知覚","電脳","製作：","心理","自我","交渉","芸術：","運動","回避","白兵","操縦：","信用","圧力","隠密"]);
   const STYLE_COST=window.TNXStyleSkillKinds?.costs||{normal:10,secret:20,ultimate:50,direction:2};
-  const INITIAL_ALLOWANCE={character:170,social:20,connection:15};
   let queued=false;
+  let writing=false;
 
   function num(value){
     const parsed=Number(value);
@@ -52,17 +53,30 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
     return "general";
   }
 
+  function freeLevel(category,name){
+    if(category==="general"&&GENERAL_MASTER.has(name))return 1;
+    if((category==="social"||category==="connection")&&name.includes("初期取得"))return 1;
+    if(category==="social"&&name==="社会：N◎VA")return 1;
+    return 0;
+  }
+
   function skillParts(){
     let general=0,style=0;
+    const seen=new Set();
     const rows=$$("#general-skills tr[data-skill-key],#style-skills tr[data-skill-key]");
     for(const row of rows){
+      const key=row.dataset.skillKey;
+      if(key&&seen.has(key))continue;
+      if(key)seen.add(key);
       const name=row.querySelector('[data-f="name"]')?.value?.trim()||"";
-      if(!name||name.includes("初期取得"))continue;
+      if(!name)continue;
       const level=Math.max(0,num(row.querySelector('[data-f="level"]')?.value));
-      if(level<=0)continue;
+      const category=skillCategory(row);
+      const paid=Math.max(0,level-freeLevel(category,name));
+      if(paid<=0)continue;
       const kind=row.querySelector('[data-f="skill_kind"]')?.value||"general";
-      if(skillCategory(row)==="style")style+=level*(STYLE_COST[kind]??10);
-      else general+=level*(kind==="proper"?5:10);
+      if(category==="style")style+=paid*(STYLE_COST[kind]??10);
+      else general+=paid*(kind==="proper"?5:10);
     }
     return {general,style};
   }
@@ -88,26 +102,23 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
       ability+=steppedCost(base[key],num($(`#${key}-base`)?.value),10);
       control+=steppedCost(base[`${key}-control`],num($(`#${key}-control-base`)?.value),16);
     }
-
     const skills=skillParts();
     const outfit=outfitCost();
-    const gross=ability+control+skills.general+skills.style+outfit;
-    const allowance=INITIAL_ALLOWANCE.character+INITIAL_ALLOWANCE.social+INITIAL_ALLOWANCE.connection;
-    const total=Math.max(0,gross-allowance);
+    const total=ability+control+skills.general+skills.style+outfit;
     const parts={"能力値":ability,"制御値":control,"一般技能":skills.general,"スタイル技能":skills.style,"アウトフィット":outfit};
-
+    writing=true;
     const output=$("#exp-total");
     if(output)output.textContent=String(total);
     const breakdown=$("#exp-breakdown");
     if(breakdown)breakdown.innerHTML=Object.entries(parts).map(([label,value])=>`<div><dt>${label}</dt><dd>${value}</dd></div>`).join("");
-
-    return {total,parts,gross,allowance};
+    writing=false;
+    return {total,parts};
   }
 
   function queue(){
-    if(queued)return;
+    if(writing||queued)return;
     queued=true;
-    requestAnimationFrame(()=>requestAnimationFrame(calculate));
+    requestAnimationFrame(calculate);
   }
 
   window.TNXExperience={calculate,queue};
