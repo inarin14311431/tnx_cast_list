@@ -138,7 +138,30 @@ function skillRow(skill,detail){
   const labels={general:"一般",proper:"固有名詞",normal:"通常",secret:"秘技",ultimate:"奥義"};
   return `<tr data-skill-key="${skill._key}"><td><input data-f="name" value="${esc(skill.name)}"></td><td><select data-f="skill_kind">${kinds.map(value=>`<option value="${value}" ${skill.skill_kind===value?"selected":""}>${labels[value]}</option>`).join("")}</select></td><td><input data-f="level" type="number" min="0" value="${Number(skill.level)||0}"></td>${SUITS.map((suit,index)=>`<td class="suit-cell"><label class="suit-check"><input data-f="${suit}" type="checkbox" ${skill[suit]?"checked":""}><span>${MARKS[index]}</span></label></td>`).join("")}${detail?`<td><textarea data-f="description" rows="2">${esc(skill.description||skill.timing||"")}</textarea></td>`:""}<td><button class="row-delete" data-delete-skill="${skill._key}" type="button">×</button></td></tr>`;
 }
-function bindSkillRows(){ $$('[data-skill-key]').forEach(row=>row.querySelectorAll('[data-f]').forEach(element=>element.oninput=()=>{ let skill=skills.find(item=>item._key===row.dataset.skillKey); if(!skill){ skill=mergedGeneral().find(item=>item._key===row.dataset.skillKey); if(skill)skills.push(skill); } if(!skill)return; const field=element.dataset.f; skill[field]=element.type==="checkbox"?element.checked:element.type==="number"?Number(element.value):element.value; if(SUITS.includes(field)){ skill.level=SUITS.filter(suit=>skill[suit]).length; renderSkills(); }else if(field==="level"){ const level=Math.max(0,Number(element.value||0)); skill.level=level; SUITS.forEach((suit,index)=>skill[suit]=index<Math.min(level,4)); renderSkills(); } recalc(); markDirty(); })); }
+function bindSkillRows(){
+  $$('[data-skill-key]').forEach(row=>row.querySelectorAll('[data-f]').forEach(element=>element.oninput=()=>{
+    let skill=skills.find(item=>item._key===row.dataset.skillKey);
+    if(!skill){
+      skill=mergedGeneral().find(item=>item._key===row.dataset.skillKey);
+      if(skill)skills.push(skill);
+    }
+    if(!skill)return;
+    const field=element.dataset.f;
+    skill[field]=element.type==="checkbox"?element.checked:element.type==="number"?Number(element.value):element.value;
+    if(SUITS.includes(field)){
+      const suitCount=SUITS.filter(suit=>skill[suit]).length;
+      skill.level=Math.max(Number(skill.level||0),suitCount);
+      const levelInput=row.querySelector('[data-f="level"]');
+      if(levelInput)levelInput.value=String(skill.level);
+    }else if(field==="level"){
+      const level=Math.max(0,Number(element.value||0));
+      skill.level=level;
+      element.value=String(level);
+    }
+    recalc();
+    markDirty();
+  }));
+}
 
 function blankOutfit(){ return {_key:crypto.randomUUID(),category:"other",name:"",purchase_value:"",experience_cost:0,concealment:"",attack:"",defense:"",range:"",slot:"",control_modifier:0,cs_modifier:0,mundane_modifier:0,description:"",sort_order:outfits.length}; }
 function normalizeOutfit(outfit){ return {...blankOutfit(),...outfit,_key:outfit.id||crypto.randomUUID(),experience_cost:Number(outfit.experience_cost||0)}; }
