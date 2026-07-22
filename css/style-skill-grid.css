@@ -13,7 +13,7 @@
     42px   /* ♦ */
     52px   /* 技能 */
     44px   /* 上限 */
-    68px   /* タイミング */
+    76px   /* タイミング */
     56px   /* 対象 */
     54px   /* 射程 */
     58px   /* 目標値 */
@@ -76,6 +76,15 @@
   word-break:keep-all;
   overflow-wrap:normal;
   line-height:1.15;
+}
+
+#style-skills .style-skill-full-table .style-field-head--timing{
+  flex-wrap:nowrap!important;
+  padding-left:1px;
+  padding-right:1px;
+  white-space:nowrap!important;
+  word-break:keep-all!important;
+  overflow-wrap:normal!important;
 }
 
 #style-skills .style-skill-full-table input,
@@ -173,7 +182,7 @@
       38px
       46px
       40px
-      58px
+      72px
       48px
       46px
       50px
