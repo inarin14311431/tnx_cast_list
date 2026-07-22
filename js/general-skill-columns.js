@@ -8,14 +8,13 @@
   }
 
   function ensureGeneralAddButton(group){
-    const heading=group?.querySelector(".skill-group-title");
     const source=document.querySelector("#add-general");
-    if(!heading||!source)return;
+    if(!group||!source)return;
 
     document.querySelectorAll("#general-skills .general-skill-heading-toolbar").forEach(toolbar=>{
-      if(!heading.contains(toolbar))toolbar.remove();
+      if(!group.contains(toolbar))toolbar.remove();
     });
-    if(heading.querySelector(".general-skill-heading-toolbar"))return;
+    if(group.querySelector(":scope > .general-skill-heading-toolbar"))return;
 
     const toolbar=document.createElement("span");
     toolbar.className="toolbar skill-toolbar general-skill-heading-toolbar";
@@ -31,7 +30,7 @@
     });
 
     toolbar.append(button);
-    heading.append(toolbar);
+    group.append(toolbar);
   }
 
   function removeGeneralOrderControls(root){
