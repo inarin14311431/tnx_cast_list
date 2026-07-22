@@ -8,32 +8,39 @@
   }
 
   function ensureGeneralAddButton(group){
-    const heading=group?.querySelector(":scope > .skill-group-title");
     const source=document.querySelector("#add-general");
-    if(!group||!heading||!source)return;
+    if(!group||!source)return;
 
-    document.querySelectorAll("#general-skills .general-skill-heading-row").forEach(row=>{
-      if(!group.contains(row))row.remove();
-    });
-    document.querySelectorAll("#general-skills .general-skill-heading-toolbar").forEach(toolbar=>toolbar.remove());
-    if(group.querySelector(":scope > .general-skill-heading-row"))return;
+    document.querySelectorAll("#general-skills .general-skill-heading-row,#general-skills .general-skill-heading-toolbar").forEach(element=>element.remove());
 
-    const row=document.createElement("div");
-    row.className="toolbar skill-toolbar general-skill-heading-row";
-    heading.before(row);
-    row.append(heading);
+    let heading=group.querySelector(":scope > .skill-group-heading");
+    let title=heading?.querySelector(":scope > .skill-group-title")||group.querySelector(":scope > .skill-group-title");
+    if(!title)return;
 
-    const button=source.cloneNode(true);
-    button.removeAttribute("id");
-    button.dataset.generalAddProxy="true";
+    if(!heading){
+      heading=document.createElement("div");
+      heading.className="skill-group-heading";
+      title.before(heading);
+      heading.append(title);
+    }
+
+    if(heading.querySelector(":scope > .skill-group-actions[data-general-add-actions]"))return;
+    heading.querySelector(":scope > .skill-group-actions")?.remove();
+
+    const actions=document.createElement("div");
+    actions.className="skill-group-actions";
+    actions.dataset.v27="1";
+    actions.dataset.generalAddActions="1";
+
+    const button=document.createElement("button");
+    button.type="button";
+    button.className="skill-inline-add";
+    button.dataset.skillUiAction="#add-general";
     button.setAttribute("aria-label","一般技能を追加");
-    button.addEventListener("click",event=>{
-      event.preventDefault();
-      event.stopPropagation();
-      source.click();
-    });
+    button.innerHTML='一般技能を追加<small>ADD GENERAL</small>';
 
-    row.append(button);
+    actions.append(button);
+    heading.append(actions);
   }
 
   function removeGeneralOrderControls(root){
@@ -77,11 +84,11 @@
     const second=document.createElement("section");
     second.className="skill-group general-skill-column general-skill-column--second";
 
-    const heading=general.querySelector(".skill-group-title")?.cloneNode(true);
+    const title=general.querySelector(".skill-group-title")?.cloneNode(true);
     const secondTable=table.cloneNode(false);
     const thead=table.tHead?.cloneNode(true);
     const secondBody=document.createElement("tbody");
-    if(heading)second.append(heading);
+    if(title)second.append(title);
     if(thead)secondTable.append(thead);
     secondTable.append(secondBody);
     second.append(secondTable);
