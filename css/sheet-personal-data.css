@@ -1,0 +1,61 @@
+/* Structured personal data fields separated from the free-text profile. */
+.personal-data-panel{
+  min-width:0;
+  padding:12px;
+  border:1px solid rgba(65,232,255,.24);
+  background:rgba(0,0,0,.2);
+}
+.personal-data-panel__header{
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:11px;
+  padding-bottom:8px;
+  border-bottom:1px solid var(--line-muted);
+}
+.personal-data-panel__header h3{
+  margin:0;
+  color:var(--line);
+  font:800 .86rem monospace;
+  letter-spacing:.04em;
+}
+.personal-data-panel__header small{
+  color:var(--text-muted);
+  font:.62rem monospace;
+  letter-spacing:.08em;
+}
+.personal-data-grid{
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:9px 10px;
+}
+.personal-data-grid label{
+  display:grid;
+  gap:4px;
+  min-width:0;
+  color:var(--text-muted);
+  font-size:.7rem;
+}
+.personal-data-grid input{
+  min-width:0;
+  padding:8px 9px;
+}
+#personal-data-status{
+  min-height:1.2em;
+  margin:9px 0 0;
+  color:var(--text-muted);
+  font:.66rem/1.4 monospace;
+}
+#personal-data-status.is-saving{color:#ffd166}
+#personal-data-status.is-saved{color:var(--line)}
+#personal-data-status.is-error{color:var(--alert)}
+@media(max-width:1050px){
+  .personal-data-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:720px){
+  .personal-data-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(max-width:440px){
+  .personal-data-grid{grid-template-columns:1fr}
+}
