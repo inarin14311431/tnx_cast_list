@@ -1,9 +1,9 @@
-/* Materialize the fixed proper-name General skill rows once, so their controls
- * update the editor's internal skill data instead of transient display rows. */
+/* Materialize the fixed proper-name General skill rows exactly once per page.
+ * This prevents the transient master rows from failing to update internal data. */
 (function(){
   const MASTER_NAMES=["製作：","芸術：","操縦："];
-  let running=false;
-  let finished=false;
+  const pending=new Set(MASTER_NAMES);
+  let busy=false;
 
   function generalGroups(){
     return [...document.querySelectorAll("#general-skills>.skill-group")].filter(group=>{
@@ -27,54 +27,61 @@
     control.dispatchEvent(new Event("input",{bubbles:true}));
   }
 
-  function materialize(name){
-    const visible=rows().find(row=>rowName(row)===name);
-    if(!visible)return false;
-
-    const level=Number(visible.querySelector('[data-f="level"]')?.value||0);
-    const acquired=[...visible.querySelectorAll('[data-f="reason"],[data-f="passion"],[data-f="life"],[data-f="mundane"]')]
-      .some(control=>control.checked);
-    if(level>0||acquired)return false;
-
-    const addButton=document.querySelector("#add-general");
-    if(!addButton)return false;
-    addButton.click();
-
-    const blank=[...rows()].reverse().find(row=>rowName(row)==="");
-    if(!blank)return false;
-
-    setControl(blank.querySelector('[data-f="name"]'),name);
-    setControl(blank.querySelector('[data-f="skill_kind"]'),"proper");
-    setControl(blank.querySelector('[data-f="level"]'),0);
-    return true;
+  function continueLater(attempt){
+    requestAnimationFrame(()=>run(attempt+1));
   }
 
   function run(attempt=0){
-    if(running||finished)return;
+    if(busy||pending.size===0)return;
+
     const root=document.querySelector("#general-skills");
     if(!root||!root.querySelector("tr[data-skill-key]")){
       if(attempt<120)setTimeout(()=>run(attempt+1),50);
       return;
     }
 
-    running=true;
-    const missing=MASTER_NAMES.find(name=>{
-      const row=rows().find(item=>rowName(item)===name);
-      if(!row)return false;
-      const level=Number(row.querySelector('[data-f="level"]')?.value||0);
-      return level===0;
-    });
-
-    const changed=missing?materialize(missing):false;
-    running=false;
-
-    if(changed){
-      requestAnimationFrame(()=>run(attempt+1));
+    const name=pending.values().next().value;
+    const visible=rows().find(row=>rowName(row)===name);
+    if(!visible){
+      pending.delete(name);
+      continueLater(attempt);
       return;
     }
 
-    finished=true;
-    window.TNXExperience?.queue?.();
+    const level=Number(visible.querySelector('[data-f="level"]')?.value||0);
+    const acquired=[...visible.querySelectorAll('[data-f="reason"],[data-f="passion"],[data-f="life"],[data-f="mundane"]')]
+      .some(control=>control.checked);
+
+    /* Already an acquired real row: do not create another one. */
+    if(level>0||acquired){
+      pending.delete(name);
+      continueLater(attempt);
+      return;
+    }
+
+    const addButton=document.querySelector("#add-general");
+    if(!addButton){
+      pending.delete(name);
+      continueLater(attempt);
+      return;
+    }
+
+    busy=true;
+    addButton.click();
+
+    requestAnimationFrame(()=>{
+      const blank=[...rows()].reverse().find(row=>rowName(row)==="");
+      if(blank){
+        setControl(blank.querySelector('[data-f="name"]'),name);
+        setControl(blank.querySelector('[data-f="skill_kind"]'),"proper");
+        setControl(blank.querySelector('[data-f="level"]'),0);
+      }
+
+      /* Mark processed regardless of render timing, so it can never loop. */
+      pending.delete(name);
+      busy=false;
+      continueLater(attempt);
+    });
   }
 
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>run(),{once:true});
