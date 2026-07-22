@@ -17,6 +17,13 @@ function initializeSaveButtonState(){
   const button=document.querySelector("#save-button");
   if(!status||!button)return;
 
+  const labels={
+    unsaved:["未保存","NOT SAVED"],
+    saving:["保存中…","SAVING"],
+    saved:["保存済み","SAVED"],
+    error:["保存失敗","SAVE ERROR"]
+  };
+
   const sync=()=>{
     const text=status.textContent||"";
     let state="unsaved";
@@ -27,6 +34,13 @@ function initializeSaveButtonState(){
     button.classList.remove("is-unsaved","is-saving","is-saved","is-error");
     button.classList.add(`is-${state}`);
     button.dataset.saveState=state;
+
+    const [jp,en]=labels[state];
+    button.replaceChildren(document.createTextNode(jp+" "));
+    const small=document.createElement("small");
+    small.textContent=en;
+    button.append(small);
+    button.setAttribute("aria-label",jp);
   };
 
   new MutationObserver(sync).observe(status,{
