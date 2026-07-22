@@ -12,8 +12,11 @@ const LEGACY_KEYS={
   eyes:["base.eyes","eyes"],
   hair:["base.hair","hair"],
   skin:["base.skin","skin"],
-  life_path_origin:["base.lifepath.origin","base.lifepath.birth","life_path_origin"],
-  life_path_experience:["base.lifepath.experience","life_path_experience"],
+  /* Legacy character-sheets stores the three life-path values as
+   * experience / environment / encounter. base.birth is birthplace,
+   * not the life-path origin. */
+  life_path_origin:["base.lifepath.experience","base.lifepath.origin","life_path_origin"],
+  life_path_experience:["base.lifepath.environment","life_path_experience"],
   life_path_encounter:["base.lifepath.encounter","base.lifepath.encouter","life_path_encounter"]
 };
 const inputs=Object.fromEntries(FIELDS.map(name=>[name,document.querySelector(`#${name.replaceAll("_","-")}`)]));
