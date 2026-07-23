@@ -41,10 +41,45 @@ function findSection(){
 function valueCell(value,key){
   const text=String(value??"");
   if(key==="description"){
-    return `<td class="style-view-cell style-view-cell--description"><textarea class="style-field-scroll style-description-expandable" rows="1" wrap="off" readonly aria-label="解説" title="${esc(text)}">${esc(text)}</textarea></td>`;
+    return `<td class="style-view-cell style-view-cell--description"><textarea class="style-field-scroll style-description-expandable" rows="1" wrap="soft" readonly role="button" tabindex="0" aria-expanded="false" aria-label="解説。クリックで全文を表示" title="クリックで全文を表示">${esc(text)}</textarea></td>`;
   }
   const oneLine=text.replace(/\r?\n/g," ");
   return `<td class="style-view-cell style-view-cell--${key}"><input class="style-field-scroll" type="text" readonly value="${esc(oneLine)}" title="${esc(text)}" aria-label="${esc(key)}"></td>`;
+}
+
+function toggleDescription(field){
+  const expanded=!field.classList.contains("is-expanded");
+  field.classList.toggle("is-expanded",expanded);
+  field.setAttribute("aria-expanded",String(expanded));
+  field.setAttribute("aria-label",expanded?"解説。クリックで閉じる":"解説。クリックで全文を表示");
+  field.title=expanded?"クリックで閉じる":"クリックで全文を表示";
+
+  if(expanded){
+    field.style.setProperty("height","auto","important");
+    const height=Math.max(35,field.scrollHeight+2);
+    field.style.setProperty("height",`${height}px`,"important");
+    field.closest("tr")?.classList.add("is-description-expanded");
+    return;
+  }
+
+  field.style.removeProperty("height");
+  field.scrollTop=0;
+  field.scrollLeft=0;
+  field.closest("tr")?.classList.remove("is-description-expanded");
+}
+
+function initializeDescriptionToggles(section){
+  section.querySelectorAll(".style-description-expandable").forEach(field=>{
+    field.addEventListener("click",event=>{
+      event.preventDefault();
+      toggleDescription(field);
+    });
+    field.addEventListener("keydown",event=>{
+      if(event.key!=="Enter"&&event.key!==" ")return;
+      event.preventDefault();
+      toggleDescription(field);
+    });
+  });
 }
 
 function renderTable(section,skills){
@@ -85,6 +120,7 @@ function renderTable(section,skills){
       </table>
     </div>`;
   if(heading)section.prepend(heading);
+  initializeDescriptionToggles(section);
 }
 
 async function loadSkills(){
