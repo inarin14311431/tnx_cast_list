@@ -41,10 +41,15 @@ function findSection(){
 function valueCell(value,key){
   const text=String(value??"");
   if(key==="description"){
-    return `<td class="style-view-cell style-view-cell--description"><textarea class="style-field-scroll style-description-expandable" rows="1" wrap="soft" readonly role="button" tabindex="0" aria-expanded="false" aria-label="解説。クリックで全文を表示" title="クリックで全文を表示">${esc(text)}</textarea></td>`;
+    return `<td class="style-view-cell style-view-cell--description"><textarea class="style-field-scroll style-description-expandable" rows="1" wrap="soft" readonly aria-label="解説">${esc(text)}</textarea></td>`;
   }
   const oneLine=text.replace(/\r?\n/g," ");
   return `<td class="style-view-cell style-view-cell--${key}"><input class="style-field-scroll" type="text" readonly value="${esc(oneLine)}" title="${esc(text)}" aria-label="${esc(key)}"></td>`;
+}
+
+function headerCell(key,label){
+  if(key!=="description")return `<th>${label}</th>`;
+  return `<th class="style-description-heading"><span>${label}</span><button type="button" class="style-description-toggle-all" aria-pressed="false" aria-label="すべての解説を表示">全表示</button></th>`;
 }
 
 function measureDescriptionWidth(field){
@@ -61,7 +66,7 @@ function measureDescriptionWidth(field){
   probe.style.fontStyle=style.fontStyle;
   probe.style.fontWeight=style.fontWeight;
   probe.style.letterSpacing=style.letterSpacing;
-  probe.textContent=String(field.value||"").split(/\r?\n/).sort((a,b)=>b.length-a.length)[0]||" ";
+  probe.textContent=String(field.value||"").split(/\r?\n/).reduce((longest,line)=>line.length>longest.length?line:longest,"")||" ";
   document.body.append(probe);
   const padding=(parseFloat(style.paddingLeft)||0)+(parseFloat(style.paddingRight)||0)+28;
   const width=Math.ceil(probe.getBoundingClientRect().width+padding);
@@ -69,67 +74,69 @@ function measureDescriptionWidth(field){
   return width;
 }
 
-function collapseDescription(field){
-  if(!field?.classList.contains("is-expanded"))return;
-  const table=field.closest("table");
+function collapseAllDescriptions(section){
+  const table=section.querySelector(".style-skill-view-table");
   const descriptionColumn=table?.querySelector("col.style-col-description");
+  const button=section.querySelector(".style-description-toggle-all");
+  if(!table)return;
 
-  field.classList.remove("is-expanded");
-  field.setAttribute("aria-expanded","false");
-  field.setAttribute("aria-label","解説。クリックで全文を表示");
-  field.title="クリックで全文を表示";
-  field.style.removeProperty("height");
-  field.scrollTop=0;
-  field.scrollLeft=0;
-  field.closest("tr")?.classList.remove("is-description-expanded");
-  descriptionColumn?.style.removeProperty("width");
-  table?.style.removeProperty("min-width");
-}
-
-function expandDescription(field){
-  const table=field.closest("table");
-  const descriptionColumn=table?.querySelector("col.style-col-description");
-  if(!table||!descriptionColumn)return;
-
-  table.querySelectorAll(".style-description-expandable.is-expanded").forEach(openField=>{
-    if(openField!==field)collapseDescription(openField);
+  section.querySelectorAll(".style-description-expandable").forEach(field=>{
+    field.classList.remove("is-expanded");
+    field.style.removeProperty("height");
+    field.scrollTop=0;
+    field.scrollLeft=0;
+    field.closest("tr")?.classList.remove("is-description-expanded");
   });
 
-  const currentWidth=Math.max(1,parseFloat(getComputedStyle(descriptionColumn).width)||field.getBoundingClientRect().width||320);
-  const measuredWidth=measureDescriptionWidth(field);
-  const viewportLimit=Math.max(currentWidth,Math.min(960,window.innerWidth*.85));
-  const targetWidth=Math.max(currentWidth,Math.min(measuredWidth,viewportLimit));
+  descriptionColumn?.style.removeProperty("width");
+  table.style.removeProperty("min-width");
+  section.classList.remove("is-description-all-expanded");
+
+  if(button){
+    button.textContent="全表示";
+    button.setAttribute("aria-pressed","false");
+    button.setAttribute("aria-label","すべての解説を表示");
+  }
+}
+
+function expandAllDescriptions(section){
+  const table=section.querySelector(".style-skill-view-table");
+  const descriptionColumn=table?.querySelector("col.style-col-description");
+  const fields=[...section.querySelectorAll(".style-description-expandable")];
+  const button=section.querySelector(".style-description-toggle-all");
+  if(!table||!descriptionColumn||!fields.length)return;
+
+  const baseWidth=Math.max(1,fields[0].closest("td")?.getBoundingClientRect().width||320);
+  const measuredWidth=Math.max(baseWidth,...fields.map(measureDescriptionWidth));
+  const viewportLimit=Math.max(baseWidth,Math.min(960,window.innerWidth*.85));
+  const targetWidth=Math.max(baseWidth,Math.min(measuredWidth,viewportLimit));
   const tableWidth=table.getBoundingClientRect().width;
 
   descriptionColumn.style.setProperty("width",`${targetWidth}px`,"important");
-  table.style.setProperty("min-width",`${Math.ceil(tableWidth+(targetWidth-currentWidth))}px`,"important");
+  table.style.setProperty("min-width",`${Math.ceil(tableWidth+(targetWidth-baseWidth))}px`,"important");
+  section.classList.add("is-description-all-expanded");
 
-  field.classList.add("is-expanded");
-  field.setAttribute("aria-expanded","true");
-  field.setAttribute("aria-label","解説。クリックで閉じる");
-  field.title="クリックで閉じる";
-  field.style.setProperty("height","auto","important");
-  const height=Math.max(35,field.scrollHeight+2);
-  field.style.setProperty("height",`${height}px`,"important");
-  field.closest("tr")?.classList.add("is-description-expanded");
+  fields.forEach(field=>{
+    field.classList.add("is-expanded");
+    field.style.setProperty("height","auto","important");
+    const height=Math.max(35,field.scrollHeight+2);
+    field.style.setProperty("height",`${height}px`,"important");
+    field.closest("tr")?.classList.add("is-description-expanded");
+  });
+
+  if(button){
+    button.textContent="縮小";
+    button.setAttribute("aria-pressed","true");
+    button.setAttribute("aria-label","すべての解説を縮小");
+  }
 }
 
-function toggleDescription(field){
-  if(field.classList.contains("is-expanded"))collapseDescription(field);
-  else expandDescription(field);
-}
-
-function initializeDescriptionToggles(section){
-  section.querySelectorAll(".style-description-expandable").forEach(field=>{
-    field.addEventListener("click",event=>{
-      event.preventDefault();
-      toggleDescription(field);
-    });
-    field.addEventListener("keydown",event=>{
-      if(event.key!=="Enter"&&event.key!==" ")return;
-      event.preventDefault();
-      toggleDescription(field);
-    });
+function initializeDescriptionToggle(section){
+  const button=section.querySelector(".style-description-toggle-all");
+  if(!button)return;
+  button.addEventListener("click",()=>{
+    if(section.classList.contains("is-description-all-expanded"))collapseAllDescriptions(section);
+    else expandAllDescriptions(section);
   });
 }
 
@@ -157,7 +164,7 @@ function renderTable(section,skills){
         <thead><tr>
           <th>名称</th><th>種別</th><th>LV</th>
           ${SUITS.map(([,label])=>`<th>${label}</th>`).join("")}
-          ${FIELDS.map(([,label])=>`<th>${label}</th>`).join("")}
+          ${FIELDS.map(([key,label])=>headerCell(key,label)).join("")}
         </tr></thead>
         <tbody>${skills.map(skill=>{
           const detail=parseDetail(skill.description);
@@ -171,7 +178,7 @@ function renderTable(section,skills){
       </table>
     </div>`;
   if(heading)section.prepend(heading);
-  initializeDescriptionToggles(section);
+  initializeDescriptionToggle(section);
 }
 
 async function loadSkills(){
