@@ -47,25 +47,76 @@ function valueCell(value,key){
   return `<td class="style-view-cell style-view-cell--${key}"><input class="style-field-scroll" type="text" readonly value="${esc(oneLine)}" title="${esc(text)}" aria-label="${esc(key)}"></td>`;
 }
 
-function toggleDescription(field){
-  const expanded=!field.classList.contains("is-expanded");
-  field.classList.toggle("is-expanded",expanded);
-  field.setAttribute("aria-expanded",String(expanded));
-  field.setAttribute("aria-label",expanded?"解説。クリックで閉じる":"解説。クリックで全文を表示");
-  field.title=expanded?"クリックで閉じる":"クリックで全文を表示";
+function measureDescriptionWidth(field){
+  const style=getComputedStyle(field);
+  const probe=document.createElement("span");
+  probe.style.position="fixed";
+  probe.style.left="-10000px";
+  probe.style.top="-10000px";
+  probe.style.visibility="hidden";
+  probe.style.pointerEvents="none";
+  probe.style.whiteSpace="pre";
+  probe.style.fontFamily=style.fontFamily;
+  probe.style.fontSize=style.fontSize;
+  probe.style.fontStyle=style.fontStyle;
+  probe.style.fontWeight=style.fontWeight;
+  probe.style.letterSpacing=style.letterSpacing;
+  probe.textContent=String(field.value||"").split(/\r?\n/).sort((a,b)=>b.length-a.length)[0]||" ";
+  document.body.append(probe);
+  const padding=(parseFloat(style.paddingLeft)||0)+(parseFloat(style.paddingRight)||0)+28;
+  const width=Math.ceil(probe.getBoundingClientRect().width+padding);
+  probe.remove();
+  return width;
+}
 
-  if(expanded){
-    field.style.setProperty("height","auto","important");
-    const height=Math.max(35,field.scrollHeight+2);
-    field.style.setProperty("height",`${height}px`,"important");
-    field.closest("tr")?.classList.add("is-description-expanded");
-    return;
-  }
+function collapseDescription(field){
+  if(!field?.classList.contains("is-expanded"))return;
+  const table=field.closest("table");
+  const descriptionColumn=table?.querySelector("col.style-col-description");
 
+  field.classList.remove("is-expanded");
+  field.setAttribute("aria-expanded","false");
+  field.setAttribute("aria-label","解説。クリックで全文を表示");
+  field.title="クリックで全文を表示";
   field.style.removeProperty("height");
   field.scrollTop=0;
   field.scrollLeft=0;
   field.closest("tr")?.classList.remove("is-description-expanded");
+  descriptionColumn?.style.removeProperty("width");
+  table?.style.removeProperty("min-width");
+}
+
+function expandDescription(field){
+  const table=field.closest("table");
+  const descriptionColumn=table?.querySelector("col.style-col-description");
+  if(!table||!descriptionColumn)return;
+
+  table.querySelectorAll(".style-description-expandable.is-expanded").forEach(openField=>{
+    if(openField!==field)collapseDescription(openField);
+  });
+
+  const currentWidth=Math.max(1,parseFloat(getComputedStyle(descriptionColumn).width)||field.getBoundingClientRect().width||320);
+  const measuredWidth=measureDescriptionWidth(field);
+  const viewportLimit=Math.max(currentWidth,Math.min(960,window.innerWidth*.85));
+  const targetWidth=Math.max(currentWidth,Math.min(measuredWidth,viewportLimit));
+  const tableWidth=table.getBoundingClientRect().width;
+
+  descriptionColumn.style.setProperty("width",`${targetWidth}px`,"important");
+  table.style.setProperty("min-width",`${Math.ceil(tableWidth+(targetWidth-currentWidth))}px`,"important");
+
+  field.classList.add("is-expanded");
+  field.setAttribute("aria-expanded","true");
+  field.setAttribute("aria-label","解説。クリックで閉じる");
+  field.title="クリックで閉じる";
+  field.style.setProperty("height","auto","important");
+  const height=Math.max(35,field.scrollHeight+2);
+  field.style.setProperty("height",`${height}px`,"important");
+  field.closest("tr")?.classList.add("is-description-expanded");
+}
+
+function toggleDescription(field){
+  if(field.classList.contains("is-expanded"))collapseDescription(field);
+  else expandDescription(field);
 }
 
 function initializeDescriptionToggles(section){
