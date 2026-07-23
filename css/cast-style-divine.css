@@ -4,3 +4,9 @@
 .cast-divine-authority .hero-divine-list .divine-card.cast-divine-card{
   border-left:3px solid var(--divine-accent)!important;
 }
+
+/* Match the three divine columns to the style cards directly above. */
+.cast-divine-authority .hero-divine-list{
+  gap:12px!important;
+  padding:10px 0!important;
+}
