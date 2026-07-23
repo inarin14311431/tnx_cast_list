@@ -75,7 +75,8 @@ async function fetchCharacter(id) {
     .select(`
       public_id, character_name, character_kana, handle, handle_kana,
       player_name, style_1, style_1_mark, style_2, style_2_mark,
-      style_3, style_3_mark, divine_1, divine_2, divine_3, cs
+      style_3, style_3_mark, divine_1, divine_2, divine_3, cs,
+      mundane_value
     `)
     .eq("public_id", id)
     .maybeSingle();
@@ -97,7 +98,8 @@ function collectEditorCharacter() {
     handle: value("handle"),
     handle_kana: value("handle-kana"),
     player_name: value("player-name"),
-    cs: numberText("cs-final")
+    cs: numberText("cs-final"),
+    mundane_value: numberText("mundane-final")
   };
 
   for (let index = 1; index <= 3; index += 1) {
@@ -113,19 +115,20 @@ function collectEditorCharacter() {
 function createCocofoliaUnit(character) {
   const displayName = formatDisplayName(character);
   const styles = getStyles(character);
-  const divines = getDivines(character);
+  const divineCounts = countDivines(getDivines(character));
+  const rewardPoints = Math.max(0, Number(character.mundane_value || 0));
 
   if (!character.character_name?.trim()) throw new Error("キャスト名が入力されていません。");
-  if (!divines.length) throw new Error("神業を取得できません。スタイルを確認してください。");
+  if (!divineCounts.length) throw new Error("神業を取得できません。スタイルを確認してください。");
 
   const statuses = [
-    ...divines.map(label => ({ label, value: 1, max: 1 })),
-    { label: "報酬点", value: "３" },
+    ...divineCounts.map(({ label, count }) => ({ label, value: count, max: count })),
+    { label: "報酬点", value: rewardPoints },
     { label: "切り札", value: 1, max: 1 }
   ];
 
   const commands = [
-    ...divines.map(label => `:${label}-1`),
+    ...divineCounts.map(({ label }) => `:${label}-1`),
     ":報酬点-",
     ":切り札-1"
   ].join("\n") + "\n";
@@ -167,6 +170,14 @@ function getDivines(character) {
       return STYLE_DATA.find(style => style.name === styleName)?.divine || "";
     })
     .filter(Boolean);
+}
+
+function countDivines(divines) {
+  const counts = new Map();
+  for (const label of divines) {
+    counts.set(label, (counts.get(label) || 0) + 1);
+  }
+  return [...counts.entries()].map(([label, count]) => ({ label, count }));
 }
 
 function formatDisplayName(character) {
