@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>参加アクト一覧 // N◎VA CAST ARCHIVE</title>
+  <link rel="stylesheet" href="./css/base.css?v=30">
+  <link rel="stylesheet" href="./css/auth.css?v=30">
+  <link rel="stylesheet" href="./css/acts.css?v=1">
+  <link rel="stylesheet" href="./css/site-unified-v15.css?v=30">
+  <link rel="stylesheet" href="./css/responsive-v29.css?v=30">
+</head>
+<body>
+  <div class="background-grid"></div><div class="scanlines"></div>
+  <header class="auth-header act-history-header">
+    <a href="./account.html"><span>&lt; アカウントへ</span><small>RETURN TO ACCOUNT</small></a>
+    <p>N◎VA MUNICIPAL DATABASE</p>
+    <h1><span>参加アクト一覧</span><small>ACT PARTICIPATION HISTORY</small></h1>
+  </header>
+  <main class="act-history-layout">
+    <section class="act-history-panel">
+      <header class="act-history-panel__header">
+        <div><span>01</span><h2>表示対象 <small>VIEW CONTROL</small></h2></div>
+        <p id="history-status">履歴を読み込み中…</p>
+      </header>
+      <div class="act-history-panel__body act-history-filters">
+        <label>プレイヤー <small>PLAYER</small><select id="history-player-filter"><option value="">すべてのプレイヤー</option></select></label>
+        <label>キャスト <small>CAST</small><select id="history-cast-filter"><option value="">すべてのキャスト</option></select></label>
+        <button id="history-reset" type="button"><span>表示をリセット</span><small>RESET VIEW</small></button>
+      </div>
+    </section>
+
+    <section class="act-history-summary" aria-label="参加アクト集計">
+      <article><span>参加アクト数</span><strong id="history-act-count">0</strong><small>ACTS</small></article>
+      <article><span>獲得経験点</span><strong id="history-exp-total">0</strong><small>EXPERIENCE</small></article>
+      <article><span>対象キャスト数</span><strong id="history-cast-count">0</strong><small>CASTS</small></article>
+    </section>
+
+    <section class="act-history-panel">
+      <header class="act-history-panel__header">
+        <div><span>02</span><h2>アクト履歴 <small>ACT ARCHIVE</small></h2></div>
+        <p>PLAYER / CAST / EXPERIENCE</p>
+      </header>
+      <div class="act-history-panel__body">
+        <div id="act-history-list" class="act-history-list"><p class="act-history-empty">読み込み中…</p></div>
+      </div>
+    </section>
+  </main>
+  <script type="module" src="./js/acts.js?v=1"></script>
+</body>
+</html>
