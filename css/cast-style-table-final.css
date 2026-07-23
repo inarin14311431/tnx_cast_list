@@ -1,0 +1,54 @@
+#style-skill-panel .style-skill-view-table{
+  table-layout:fixed!important;
+  min-width:1380px!important;
+}
+#style-skill-panel .style-skill-view-table thead th,
+#style-skill-panel .style-skill-view-table thead th *{
+  box-sizing:border-box!important;
+  font-family:inherit!important;
+  font-size:12px!important;
+  font-style:normal!important;
+  font-weight:700!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  writing-mode:horizontal-tb!important;
+  text-orientation:mixed!important;
+  transform:none!important;
+}
+#style-skill-panel .style-skill-view-table col.style-col-name{width:180px!important}
+#style-skill-panel .style-skill-view-table col.style-col-kind{width:88px!important}
+#style-skill-panel .style-skill-view-table col.style-col-level{width:48px!important}
+#style-skill-panel .style-skill-view-table col.style-col-suit{width:48px!important}
+#style-skill-panel .style-skill-view-table col.style-col-skill{width:90px!important}
+#style-skill-panel .style-skill-view-table col.style-col-limit{width:52px!important}
+#style-skill-panel .style-skill-view-table col.style-col-timing{width:100px!important}
+#style-skill-panel .style-skill-view-table col.style-col-target{width:64px!important}
+#style-skill-panel .style-skill-view-table col.style-col-range{width:58px!important}
+#style-skill-panel .style-skill-view-table col.style-col-difficulty{width:64px!important}
+#style-skill-panel .style-skill-view-table col.style-col-confrontation{width:64px!important}
+#style-skill-panel .style-skill-view-table col.style-col-description{width:320px!important}
+#style-skill-panel .style-skill-view-table col.style-col-page{width:64px!important}
+#style-skill-panel .style-skill-view-table th:nth-child(2),
+#style-skill-panel .style-skill-view-table td:nth-child(2){
+  width:88px!important;
+  min-width:88px!important;
+  max-width:88px!important;
+}
+#style-skill-panel .style-view-cell--kind,
+#style-skill-panel .style-view-cell--kind .style-field-scroll{
+  box-sizing:border-box!important;
+  width:100%!important;
+  min-width:0!important;
+  padding-left:8px!important;
+  padding-right:8px!important;
+  overflow:visible!important;
+  font-size:12px!important;
+  text-align:center!important;
+  white-space:nowrap!important;
+}
+@media(max-width:720px){
+  #style-skill-panel .style-skill-view-table{min-width:1360px!important}
+  #style-skill-panel .style-skill-view-table col.style-col-name{width:160px!important}
+  #style-skill-panel .style-skill-view-table col.style-col-description{width:280px!important}
+}
