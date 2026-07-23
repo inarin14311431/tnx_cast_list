@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="./css/base.css?v=30">
   <link rel="stylesheet" href="./css/auth.css?v=30">
   <link rel="stylesheet" href="./css/acts.css?v=1">
+  <link rel="stylesheet" href="./css/acts-spending.css?v=1">
   <link rel="stylesheet" href="./css/site-unified-v15.css?v=30">
   <link rel="stylesheet" href="./css/responsive-v29.css?v=30">
 </head>
@@ -30,9 +31,11 @@
       </div>
     </section>
 
-    <section class="act-history-summary" aria-label="参加アクト集計">
+    <section class="act-history-summary" aria-label="参加アクト・経験点集計">
       <article><span>参加アクト数</span><strong id="history-act-count">0</strong><small>ACTS</small></article>
-      <article><span>獲得経験点</span><strong id="history-exp-total">0</strong><small>EXPERIENCE</small></article>
+      <article><span>獲得経験点</span><strong id="history-exp-total">0</strong><small>EARNED EXP</small></article>
+      <article><span>消費経験点</span><strong id="history-spent-total">0</strong><small>SPENT EXP</small></article>
+      <article><span>残経験点</span><strong id="history-balance-total">0</strong><small>BALANCE</small></article>
       <article><span>対象キャスト数</span><strong id="history-cast-count">0</strong><small>CASTS</small></article>
     </section>
 
@@ -45,7 +48,27 @@
         <div id="act-history-list" class="act-history-list"><p class="act-history-empty">読み込み中…</p></div>
       </div>
     </section>
+
+    <section class="act-history-panel">
+      <header class="act-history-panel__header">
+        <div><span>03</span><h2>経験点消費履歴 <small>EXPERIENCE SPENDING</small></h2></div>
+        <p>EARNED − SPENT = BALANCE</p>
+      </header>
+      <div class="act-history-panel__body">
+        <p class="experience-balance-note">消費数を登録すると履歴へ1レコード追加され、上部の残経験点を「獲得経験点－消費経験点」で再計算します。</p>
+        <form id="experience-spending-form" class="experience-spending-form">
+          <label>キャスト <small>CAST</small><select id="spending-character" required></select></label>
+          <label>消費経験点 <small>SPENT EXP</small><input id="spending-amount" type="number" min="1" max="9999" step="1" inputmode="numeric" required></label>
+          <label>消費日 <small>SPENT DATE</small><input id="spending-date" type="date" required></label>
+          <label>用途・内容 <small>DESCRIPTION</small><input id="spending-description" type="text" maxlength="240" placeholder="例：スタイル技能の取得"></label>
+          <button type="submit">消費履歴を追加</button>
+        </form>
+        <p id="spending-status" class="experience-spending-status">経験点消費履歴を読み込み中…</p>
+        <div id="experience-spending-list" class="experience-spending-list"><p class="experience-spending-empty">読み込み中…</p></div>
+      </div>
+    </section>
   </main>
   <script type="module" src="./js/acts.js?v=1"></script>
+  <script type="module" src="./js/acts-spending.js?v=1"></script>
 </body>
 </html>
