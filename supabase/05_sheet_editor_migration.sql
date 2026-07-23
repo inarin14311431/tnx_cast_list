@@ -1,6 +1,7 @@
 begin;
 
 alter table public.characters
+  add column if not exists handle_kana text not null default '',
   add column if not exists reason_base integer not null default 0,
   add column if not exists reason_growth integer not null default 0,
   add column if not exists reason_gear integer not null default 0,
