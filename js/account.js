@@ -80,7 +80,7 @@ function createOwnedCastItem(character) {
         <div class="owned-cast__links" aria-label="キャスト操作">
           <a href="${SITE_BASE_PATH}cast.html?id=${id}">${actionLabel("閲覧", "OPEN")}</a>
           <a href="${SITE_BASE_PATH}sheet.html?id=${id}">${actionLabel("シート編集", "EDIT SHEET")}</a>
-          <a href="${SITE_BASE_PATH}image.html?id=${id}">${actionLabel("画像", "IMAGE")}</a>
+          <a href="${SITE_BASE_PATH}acts.html?character=${id}">${actionLabel("参加アクト", "ACTS")}</a>
           <a href="${SITE_BASE_PATH}combos.html?id=${id}">${actionLabel("コンボ", "COMBOS")}</a>
           <button type="button" data-duplicate="${escapeHtml(character.public_id)}">${actionLabel("複製", "DUPLICATE")}</button>
           <button type="button" data-delete="${escapeHtml(character.public_id)}">${actionLabel("削除", "DELETE")}</button>
@@ -91,7 +91,7 @@ function createOwnedCastItem(character) {
 }
 
 async function deleteCharacter(publicId) {
-  if (!window.confirm(`${publicId} を削除します。関連する技能・装備・コンボも削除されます。`)) return;
+  if (!window.confirm(`${publicId} を削除します。関連する技能・装備・コンボ・参加アクト記録も削除されます。`)) return;
 
   const { error } = await supabase
     .from("characters")
