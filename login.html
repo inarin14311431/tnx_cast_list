@@ -3,23 +3,48 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>AUTHENTICATION // N◎VA ARCHIVE</title>
+  <title>ログイン // N◎VA CAST ARCHIVE</title>
   <link rel="stylesheet" href="./css/base.css?v=29">
   <link rel="stylesheet" href="./css/auth.css?v=29">
   <link rel="stylesheet" href="./css/site-unified-v15.css?v=29">
   <link rel="stylesheet" href="./css/responsive-v29.css?v=29">
+  <link rel="stylesheet" href="./css/auth-ja-v30.css?v=30">
 </head>
 <body>
   <div class="background-grid"></div><div class="scanlines"></div>
-  <header class="auth-header"><a href="./index.html">&lt; RETURN TO ARCHIVE</a><p>N◎VA MUNICIPAL DATABASE</p><h1>AUTHENTICATION GATE</h1></header>
+  <header class="auth-header">
+    <a href="./index.html"><span>&lt; キャスト一覧へ</span><small>RETURN TO ARCHIVE</small></a>
+    <p>N◎VA MUNICIPAL DATABASE</p>
+    <h1><span>オペレーター認証</span><small>AUTHENTICATION GATE</small></h1>
+  </header>
   <main class="auth-layout">
     <section class="auth-terminal">
-      <nav class="auth-tabs"><button class="auth-tab is-active" type="button" data-auth-tab="login">LOGIN</button><button class="auth-tab" type="button" data-auth-tab="signup">CREATE ACCOUNT</button></nav>
-      <section class="auth-panel is-active" data-auth-panel="login"><h2>IDENTITY VERIFICATION</h2><form id="login-form" class="auth-form"><label><span>EMAIL ADDRESS</span><input id="login-email" name="email" type="email" autocomplete="email" required></label><label><span>PASSWORD</span><input id="login-password" name="password" type="password" autocomplete="current-password" minlength="8" required></label><button type="submit">ESTABLISH CONNECTION</button></form></section>
-      <section class="auth-panel" data-auth-panel="signup"><h2>NEW IDENTITY REGISTRATION</h2><form id="signup-form" class="auth-form"><label><span>EMAIL ADDRESS</span><input id="signup-email" name="email" type="email" autocomplete="email" required></label><label><span>PASSWORD</span><input id="signup-password" name="password" type="password" autocomplete="new-password" minlength="8" required></label><label><span>PASSWORD CONFIRMATION</span><input id="signup-password-confirmation" name="passwordConfirmation" type="password" autocomplete="new-password" minlength="8" required></label><button type="submit">REGISTER IDENTITY</button></form></section>
+      <nav class="auth-tabs">
+        <button class="auth-tab is-active" type="button" data-auth-tab="login"><span>ログイン</span><small>LOGIN</small></button>
+        <button class="auth-tab" type="button" data-auth-tab="signup"><span>アカウント作成</span><small>CREATE ACCOUNT</small></button>
+      </nav>
+      <section class="auth-panel is-active" data-auth-panel="login">
+        <h2>本人確認 <small>IDENTITY VERIFICATION</small></h2>
+        <p class="auth-panel__lead">登録済みのメールアドレスとパスワードを入力してください。</p>
+        <form id="login-form" class="auth-form">
+          <label><span>メールアドレス <small>EMAIL ADDRESS</small></span><input id="login-email" name="email" type="email" autocomplete="email" placeholder="operator@example.com" required></label>
+          <label><span>パスワード <small>PASSWORD</small></span><input id="login-password" name="password" type="password" autocomplete="current-password" minlength="8" required></label>
+          <button type="submit"><span>接続を開始</span><small>ESTABLISH CONNECTION</small></button>
+        </form>
+      </section>
+      <section class="auth-panel" data-auth-panel="signup">
+        <h2>新規登録 <small>NEW IDENTITY REGISTRATION</small></h2>
+        <p class="auth-panel__lead">キャストの登録・編集に使用するオペレーターアカウントを作成します。</p>
+        <form id="signup-form" class="auth-form">
+          <label><span>メールアドレス <small>EMAIL ADDRESS</small></span><input id="signup-email" name="email" type="email" autocomplete="email" placeholder="operator@example.com" required></label>
+          <label><span>パスワード <small>PASSWORD</small></span><input id="signup-password" name="password" type="password" autocomplete="new-password" minlength="8" required></label>
+          <label><span>パスワード確認 <small>PASSWORD CONFIRMATION</small></span><input id="signup-password-confirmation" name="passwordConfirmation" type="password" autocomplete="new-password" minlength="8" required></label>
+          <button type="submit"><span>アカウントを登録</span><small>REGISTER IDENTITY</small></button>
+        </form>
+      </section>
       <div id="auth-message" class="auth-message" aria-live="polite"></div>
     </section>
   </main>
-  <script type="module" src="./js/login.js?v=29"></script>
+  <script type="module" src="./js/login.js?v=30"></script>
 </body>
 </html>
