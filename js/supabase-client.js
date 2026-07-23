@@ -15,3 +15,9 @@ export const supabase = createClient(
     }
   }
 );
+
+if (document.querySelector(".cast-content, .sheet-layout")) {
+  import("./cocofolia-export.js?v=1").catch(error => {
+    console.error("Cocofolia export could not be loaded.", error);
+  });
+}
