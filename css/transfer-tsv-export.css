@@ -1,0 +1,77 @@
+.transfer-tsv-copy-button,
+.transfer-bookmarklet-copy-button{
+  position:relative;
+  display:grid;
+  gap:3px;
+  min-height:44px;
+  padding:9px 14px;
+  overflow:hidden;
+  border:1px solid rgba(126,242,255,.72);
+  color:#eaffff;
+  background:linear-gradient(135deg,rgba(65,232,255,.16),rgba(140,112,255,.1));
+  box-shadow:inset 0 0 18px rgba(65,232,255,.05),0 0 18px rgba(65,232,255,.08);
+  font:800 .76rem/1.1 monospace;
+  letter-spacing:.06em;
+  text-align:left;
+  cursor:pointer;
+  transition:border-color .18s ease,box-shadow .18s ease,transform .18s ease,opacity .18s ease;
+}
+.transfer-tsv-copy-button::before,
+.transfer-bookmarklet-copy-button::before{
+  position:absolute;
+  inset:0 auto 0 0;
+  width:3px;
+  content:"";
+  background:#65eaff;
+  box-shadow:0 0 12px #65eaff;
+}
+.transfer-bookmarklet-copy-button{
+  border-color:rgba(181,139,255,.76);
+  color:#f2eaff;
+  background:linear-gradient(135deg,rgba(151,102,255,.18),rgba(65,232,255,.07));
+}
+.transfer-bookmarklet-copy-button::before{
+  background:#b58bff;
+  box-shadow:0 0 12px #b58bff;
+}
+.transfer-tsv-copy-button small,
+.transfer-bookmarklet-copy-button small{
+  color:#83c9d5;
+  font:700 .55rem/1 monospace;
+  letter-spacing:.12em;
+}
+.transfer-tsv-copy-button:hover:not(:disabled),
+.transfer-bookmarklet-copy-button:hover:not(:disabled){
+  border-color:#b8fbff;
+  box-shadow:inset 0 0 22px rgba(65,232,255,.1),0 0 20px rgba(65,232,255,.2);
+  transform:translateY(-1px);
+}
+.transfer-bookmarklet-copy-button:hover:not(:disabled){
+  border-color:#d1b8ff;
+  box-shadow:inset 0 0 22px rgba(181,139,255,.1),0 0 20px rgba(181,139,255,.22);
+}
+.transfer-tsv-copy-button:disabled,
+.transfer-bookmarklet-copy-button:disabled{opacity:.45;cursor:not-allowed}
+.transfer-tsv-copy-button[data-copy-state="copying"],
+.transfer-bookmarklet-copy-button[data-copy-state="copying"]{border-color:#ffd166;color:#fff1c4}
+.transfer-tsv-copy-button[data-copy-state="copying"]::before,
+.transfer-bookmarklet-copy-button[data-copy-state="copying"]::before{background:#ffd166;box-shadow:0 0 12px #ffd166}
+.transfer-tsv-copy-button[data-copy-state="success"],
+.transfer-bookmarklet-copy-button[data-copy-state="success"]{border-color:#75ffb4;color:#dffff0}
+.transfer-tsv-copy-button[data-copy-state="success"]::before,
+.transfer-bookmarklet-copy-button[data-copy-state="success"]::before{background:#75ffb4;box-shadow:0 0 12px #75ffb4}
+.transfer-tsv-copy-button[data-copy-state="error"],
+.transfer-bookmarklet-copy-button[data-copy-state="error"]{border-color:#ff6f91;color:#ffdce5}
+.transfer-tsv-copy-button[data-copy-state="error"]::before,
+.transfer-bookmarklet-copy-button[data-copy-state="error"]::before{background:#ff6f91;box-shadow:0 0 12px #ff6f91}
+.cast-header__actions .transfer-tsv-copy-button,
+.cast-header__actions .transfer-bookmarklet-copy-button{min-width:158px}
+.exp-panel>.transfer-tsv-copy-button,
+.exp-panel>.transfer-bookmarklet-copy-button{
+  width:100%;
+  margin-top:10px;
+}
+@media(max-width:620px){
+  .cast-header__actions .transfer-tsv-copy-button,
+  .cast-header__actions .transfer-bookmarklet-copy-button{min-width:0}
+}
