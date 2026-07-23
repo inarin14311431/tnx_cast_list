@@ -1,48 +1,79 @@
 .style-skill-view-table .style-description-heading{
-  padding-left:6px!important;
-  padding-right:6px!important;
+  padding-left:8px!important;
+  padding-right:8px!important;
+  white-space:nowrap!important;
 }
 
+/* Keep the 解説 label as plain header text, unaffected by the generic th * rule. */
 .style-skill-view-table .style-description-heading>span{
-  vertical-align:middle;
+  display:inline!important;
+  width:auto!important;
+  height:auto!important;
+  min-height:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  color:#b7d7df!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  font-family:inherit!important;
+  font-size:12px!important;
+  font-style:normal!important;
+  font-weight:700!important;
+  line-height:1!important;
+  letter-spacing:0!important;
+  vertical-align:middle!important;
 }
 
 .style-skill-view-table .style-description-toggle-all{
-  appearance:none;
-  display:inline-grid;
-  min-width:48px;
-  height:22px;
-  margin-left:8px;
-  padding:0 7px;
-  place-items:center;
-  border:1px solid rgba(94,243,255,.72);
-  border-radius:4px;
-  color:#bff9ff;
-  background:#063540;
-  box-shadow:inset 0 0 8px rgba(69,219,232,.08);
-  font-family:inherit;
-  font-size:10px;
-  font-style:normal;
-  font-weight:700;
-  line-height:1;
-  letter-spacing:.04em;
-  vertical-align:middle;
-  cursor:pointer;
+  appearance:none!important;
+  display:inline-grid!important;
+  width:auto!important;
+  min-width:58px!important;
+  height:26px!important;
+  min-height:26px!important;
+  margin:0 0 0 10px!important;
+  padding:0 10px!important;
+  place-items:center!important;
+  border:1px solid #8cfcff!important;
+  border-radius:5px!important;
+  color:#00171d!important;
+  background:#5ef3ff!important;
+  box-shadow:0 0 8px rgba(60,232,246,.58),inset 0 0 8px rgba(255,255,255,.2)!important;
+  font-family:inherit!important;
+  font-size:11px!important;
+  font-style:normal!important;
+  font-weight:800!important;
+  line-height:1!important;
+  letter-spacing:.04em!important;
+  vertical-align:middle!important;
+  cursor:pointer!important;
+  transition:transform .14s ease,filter .14s ease,box-shadow .14s ease!important;
 }
 
 .style-skill-view-table .style-description-toggle-all:hover,
 .style-skill-view-table .style-description-toggle-all:focus-visible{
-  color:#03222b;
-  background:#5ef3ff;
-  outline:none;
-  box-shadow:0 0 8px rgba(60,232,246,.5);
+  filter:brightness(1.18)!important;
+  transform:translateY(-1px)!important;
+  outline:2px solid rgba(183,255,255,.76)!important;
+  outline-offset:1px!important;
+  box-shadow:0 0 13px rgba(60,232,246,.82),inset 0 0 8px rgba(255,255,255,.28)!important;
 }
 
+/* Expanded state: use a clearly different warm color for 縮小. */
 .style-skill-view-table .style-description-toggle-all[aria-pressed="true"]{
-  border-color:#ff9ecf;
-  color:#ffe8f4;
-  background:#4a1734;
-  box-shadow:0 0 7px rgba(255,126,194,.28);
+  border-color:#ffb0d5!important;
+  color:#fff7fb!important;
+  background:#d63278!important;
+  box-shadow:0 0 10px rgba(255,70,151,.62),inset 0 0 8px rgba(255,255,255,.14)!important;
+}
+
+.style-skill-view-table .style-description-toggle-all[aria-pressed="true"]:hover,
+.style-skill-view-table .style-description-toggle-all[aria-pressed="true"]:focus-visible{
+  filter:brightness(1.15)!important;
+  outline-color:rgba(255,190,221,.82)!important;
+  box-shadow:0 0 14px rgba(255,70,151,.82),inset 0 0 8px rgba(255,255,255,.2)!important;
 }
 
 .style-skill-view-table .style-description-expandable{
