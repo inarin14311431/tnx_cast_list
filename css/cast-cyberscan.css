@@ -55,7 +55,14 @@ body.cast-scan-mode::before{
 .cast-hero__image-frame::after{position:absolute;inset:0;z-index:2;content:"";pointer-events:none;background:linear-gradient(90deg,transparent 49.6%,rgba(95,234,255,.15) 50%,transparent 50.4%),linear-gradient(transparent 49.6%,rgba(95,234,255,.12) 50%,transparent 50.4%);background-size:44px 44px;mix-blend-mode:screen}
 .cast-hero__identity{border-color:rgba(95,234,255,.34)!important;background:linear-gradient(135deg,rgba(13,59,72,.72),rgba(3,13,18,.88) 48%,rgba(41,15,56,.64))!important;box-shadow:inset 4px 0 0 rgba(95,234,255,.45)}
 .cast-public-id::before{content:"TARGET-ID // ";color:var(--scan-cyan)}
-.cast-handle{letter-spacing:.08em;text-shadow:0 0 12px rgba(95,234,255,.35)}
+.cast-name-readings{display:flex;align-items:baseline;flex-wrap:wrap;gap:.7em;margin:38px 0 8px;color:var(--scan-cyan)}
+.cast-name-readings .cast-handle-kana,.cast-name-readings .cast-kana{margin:0!important;line-height:1.2}
+.cast-handle-kana{font-size:clamp(1rem,2vw,1.35rem);letter-spacing:.08em;text-shadow:0 0 12px rgba(95,234,255,.35)}
+.cast-name-readings .cast-kana{color:#bcecf3!important;font-size:clamp(.88rem,1.4vw,1.1rem);letter-spacing:.12em}
+.cast-name-primary{display:flex;align-items:baseline;flex-wrap:wrap;gap:.55em}
+.cast-name-primary .cast-handle{flex:0 1 auto;margin:0!important;color:var(--scan-cyan);font-size:clamp(1.1rem,2.2vw,1.65rem);letter-spacing:.08em;line-height:1.2;text-shadow:0 0 12px rgba(95,234,255,.35)}
+.cast-name-primary .cast-name{flex:0 1 auto;margin:0;line-height:1}
+.cast-handle:empty,.cast-handle-kana:empty,.cast-kana:empty{display:none}
 .cast-name{position:relative;display:inline-block;color:#effdff;text-shadow:2px 0 rgba(255,51,108,.28),-2px 0 rgba(95,234,255,.3),0 0 26px rgba(95,234,255,.22)}
 .cast-styles .style-chip{position:relative;overflow:hidden;background:linear-gradient(90deg,rgba(95,234,255,.08),rgba(173,108,255,.07))!important}
 .cast-styles .style-chip::after{position:absolute;inset:auto 0 0;height:2px;content:"";background:linear-gradient(90deg,var(--scan-cyan),var(--scan-violet))}
@@ -75,5 +82,5 @@ body.cast-scan-mode::before{
 .cast-outfit-table tfoot{box-shadow:inset 0 1px 0 var(--scan-cyan)}
 
 @keyframes data-rain{to{transform:translateY(170vh)}}
-@media(max-width:800px){.cast-access-terminal{padding:20px}.cast-header{position:relative}.cast-tabs{top:0}.cast-hero{padding:10px}.cast-hero::before{display:none}}
+@media(max-width:800px){.cast-access-terminal{padding:20px}.cast-header{position:relative}.cast-tabs{top:0}.cast-hero{padding:10px}.cast-hero::before{display:none}.cast-name-readings{margin-top:28px}.cast-name-primary{align-items:flex-start;gap:.35em .55em}}
 @media(prefers-reduced-motion:reduce){.cast-data-rain span,.cast-hero__image-scan{animation:none!important}.cast-access-overlay{transition:none}}
