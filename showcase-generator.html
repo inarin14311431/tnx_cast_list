@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>セッション紹介生成 // N◎VA CAST ARCHIVE</title>
+  <title>アクト紹介生成 // N◎VA CAST ARCHIVE</title>
   <link rel="stylesheet" href="./css/base.css?v=30">
   <link rel="stylesheet" href="./css/showcase-generator.css?v=1">
 </head>
@@ -12,15 +12,15 @@
   <div class="scanlines"></div>
   <header class="showcase-header">
     <a class="showcase-header__back" href="./account.html">&lt; アカウントへ <small>RETURN TO ACCOUNT</small></a>
-    <div><p>N◎VA MUNICIPAL DATABASE</p><h1>セッション紹介生成 <small>SESSION CAST SHOWCASE</small></h1></div>
+    <div><p>N◎VA MUNICIPAL DATABASE</p><h1>アクト紹介生成 <small>ACT CAST SHOWCASE</small></h1></div>
     <a class="showcase-header__archive" href="./index.html">キャスト一覧 <small>CAST ARCHIVE</small></a>
   </header>
   <main class="showcase-layout">
     <section class="showcase-panel">
-      <header class="showcase-panel__header"><div><span>01</span><h2>セッション情報 <small>SESSION PROFILE</small></h2></div><p>GENERATED PAGE CONTROL</p></header>
+      <header class="showcase-panel__header"><div><span>01</span><h2>アクト情報 <small>ACT PROFILE</small></h2></div><p>GENERATED PAGE CONTROL</p></header>
       <div class="showcase-panel__body form-grid">
-        <label>ページタイトル<input id="page-title" type="text" value="SESSION CAST FILE"></label>
-        <label>セッション名／サブタイトル<input id="session-name" type="text" value="トーキョーＮ◎ＶＡ セッション参加キャスト"></label>
+        <label>ページタイトル<input id="page-title" type="text" value="ACT CAST FILE"></label>
+        <label>アクト名／サブタイトル<input id="act-name" type="text" value="トーキョーＮ◎ＶＡ アクト参加キャスト"></label>
         <label>RULER名<input id="ruler-name" type="text" placeholder="例：稲荷秋"></label>
         <label>公開ファイル名<input id="publish-slug" type="text" placeholder="例：tomorrow-once-more"><small>showcases/ファイル名.htmlとして公開します。</small></label>
         <label class="form-grid__wide">イントロ文<textarea id="intro-text" rows="4" placeholder="運命の扉を開く者たち。今夜、N◎VAの闇にアクセスする。"></textarea></label>
@@ -39,13 +39,13 @@
     <section class="showcase-panel">
       <header class="showcase-panel__header"><div><span>04</span><h2>生成・公開 <small>GENERATE / DEPLOY</small></h2></div><p>SECURE EDGE DEPLOYMENT</p></header>
       <div class="showcase-panel__body">
-        <div class="publish-grid"><div class="publish-target"><span>認証方式</span><strong>SUPABASE EDGE FUNCTION</strong><small>publish-showcase / ログイン中のオペレーターだけが公開できます。認証情報はブラウザへ配布されません。</small></div><div class="publish-target"><span>公開先</span><strong>inarin14311431/tnx_cast_list</strong><small>main / showcases</small></div></div>
+        <div class="publish-grid"><div class="publish-target"><span>認証方式</span><strong>SUPABASE EDGE FUNCTION</strong><small>publish-showcase / ログイン中のオペレーターだけが公開できます。認証情報はブラウザへ配布されません。</small></div><div class="publish-target"><span>公開先と履歴</span><strong>GitHub Pages + ACT HISTORY</strong><small>公開成功時、選択キャストの参加アクト履歴へ自動登録します。</small></div></div>
         <div class="generator-actions"><button id="generate-button" type="button">HTML生成 <small>GENERATE</small></button><button id="download-button" type="button" disabled>ダウンロード <small>DOWNLOAD</small></button><button id="copy-button" type="button" disabled>HTMLコピー <small>COPY</small></button><button id="publish-button" class="is-publish" type="button" disabled>GitHub Pagesへ公開 <small>SECURE DEPLOY</small></button></div>
         <p id="generator-status" class="generator-status">待機中</p><iframe id="showcase-preview" class="showcase-preview" title="生成HTMLプレビュー"></iframe>
       </div>
     </section>
   </main>
-  <script type="module" src="./js/showcase-generator.js?v=4"></script>
-  <script type="module" src="./js/showcase-generator-guard.js?v=1"></script>
+  <script type="module" src="./js/showcase-generator.js?v=5"></script>
+  <script type="module" src="./js/showcase-generator-guard.js?v=2"></script>
 </body>
 </html>
