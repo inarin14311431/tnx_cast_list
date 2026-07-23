@@ -23,4 +23,7 @@ if (document.querySelector(".cast-content, .sheet-layout")) {
   import("./udonarium-export.js?v=1").catch(error => {
     console.error("Udonarium export could not be loaded.", error);
   });
+  import("./transfer-tsv-export.js?v=1").catch(error => {
+    console.error("Transfer TSV export could not be loaded.", error);
+  });
 }
