@@ -17,6 +17,9 @@
 .sheet-section:not(.is-open)>.section-body{display:none}
 .sheet-section:not(.is-open) .section-body{opacity:0;transform:scaleY(.98)}
 
+/* The shared .style-card label rule overrides the browser's [hidden] rule. */
+#style-grid label[id$="-attribute-wrap"][hidden]{display:none!important}
+
 .ability-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;min-width:0}
 .ability-card{padding:0;min-width:0}
 .ability-card h3{margin:0;padding:7px 6px;border-bottom:1px solid var(--line-muted);text-align:center}
