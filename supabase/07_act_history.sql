@@ -55,6 +55,85 @@ create trigger act_participants_touch_updated_at
 before update on public.act_participants
 for each row execute function public.touch_act_history_updated_at();
 
+create or replace function public.record_act_publication(
+  p_slug text,
+  p_act_name text,
+  p_ruler_name text,
+  p_public_url text,
+  p_published_by uuid,
+  p_participant_ids uuid[]
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare
+  v_act_id uuid;
+begin
+  if coalesce(array_length(p_participant_ids, 1), 0) < 1
+     or coalesce(array_length(p_participant_ids, 1), 0) > 6 then
+    raise exception 'Participant count must be between 1 and 6.';
+  end if;
+
+  insert into public.acts (
+    slug, act_name, ruler_name, public_url, published_by, published_at
+  ) values (
+    p_slug, p_act_name, coalesce(p_ruler_name, ''), p_public_url,
+    p_published_by, now()
+  )
+  on conflict (slug) do update set
+    act_name = excluded.act_name,
+    ruler_name = excluded.ruler_name,
+    public_url = excluded.public_url,
+    published_by = excluded.published_by,
+    published_at = excluded.published_at
+  returning id into v_act_id;
+
+  delete from public.act_participants
+  where act_id = v_act_id
+    and not (character_id = any(p_participant_ids));
+
+  insert into public.act_participants (
+    act_id,
+    character_id,
+    character_public_id,
+    character_name,
+    player_name,
+    cast_order
+  )
+  select
+    v_act_id,
+    c.id,
+    c.public_id,
+    c.character_name,
+    coalesce(c.player_name, ''),
+    p.ordinality::smallint
+  from unnest(p_participant_ids) with ordinality as p(character_id, ordinality)
+  join public.characters c on c.id = p.character_id
+  where c.visibility = 'public'
+  on conflict (act_id, character_id) do update set
+    character_public_id = excluded.character_public_id,
+    character_name = excluded.character_name,
+    player_name = excluded.player_name,
+    cast_order = excluded.cast_order;
+
+  if (
+    select count(*)
+    from public.act_participants
+    where act_id = v_act_id
+      and character_id = any(p_participant_ids)
+  ) <> array_length(p_participant_ids, 1) then
+    raise exception 'One or more participant characters are not public or do not exist.';
+  end if;
+
+  return v_act_id;
+end;
+$$;
+
+revoke all on function public.record_act_publication(text, text, text, text, uuid, uuid[]) from public;
+grant execute on function public.record_act_publication(text, text, text, text, uuid, uuid[]) to service_role;
+
 alter table public.acts enable row level security;
 alter table public.act_participants enable row level security;
 
