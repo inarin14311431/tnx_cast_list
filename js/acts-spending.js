@@ -4,6 +4,8 @@ import { requireAuth } from "./auth-state.js";
 const elements = {
   playerFilter: document.querySelector("#history-player-filter"),
   castFilter: document.querySelector("#history-cast-filter"),
+  reset: document.querySelector("#history-reset"),
+  actList: document.querySelector("#act-history-list"),
   earnedTotal: document.querySelector("#history-exp-total"),
   spentTotal: document.querySelector("#history-spent-total"),
   balanceTotal: document.querySelector("#history-balance-total"),
@@ -19,6 +21,7 @@ const elements = {
 let currentUser = null;
 let ownedCharacters = [];
 let spendingRows = [];
+let renderScheduled = false;
 
 initialize();
 
@@ -31,10 +34,15 @@ async function initialize() {
   elements.list.addEventListener("click", deleteSpendingRecord);
   elements.playerFilter?.addEventListener("change", scheduleRender);
   elements.castFilter?.addEventListener("change", scheduleRender);
+  elements.reset?.addEventListener("click", scheduleRender);
 
   if (elements.earnedTotal) {
     new MutationObserver(updateExperienceSummary)
       .observe(elements.earnedTotal, { childList: true, characterData: true, subtree: true });
+  }
+  if (elements.actList) {
+    new MutationObserver(scheduleRender)
+      .observe(elements.actList, { childList: true, subtree: true });
   }
 
   await loadData();
@@ -57,6 +65,14 @@ async function loadData() {
   }
 
   ownedCharacters = characters ?? [];
+
+  if (!ownedCharacters.length) {
+    spendingRows = [];
+    populateCharacterOptions();
+    renderSpendingHistory();
+    setStatus("登録キャストがありません。");
+    return;
+  }
 
   const { data, error } = await supabase
     .from("character_experience_spending")
@@ -84,7 +100,10 @@ async function loadData() {
 }
 
 function scheduleRender() {
+  if (renderScheduled) return;
+  renderScheduled = true;
   window.setTimeout(() => {
+    renderScheduled = false;
     populateCharacterOptions();
     renderSpendingHistory();
   }, 0);
