@@ -179,6 +179,46 @@
   white-space:nowrap!important;
 }
 
+/*
+ * Shared row rhythm: roughly 1.5 times the former 30px style-skill row.
+ * Applies to general, social, connection, and style skills.
+ */
+#skills-container .skill-section .data-table thead tr,
+#style-skill-panel .style-skill-view-table thead tr,
+#skills-container .skill-section .data-table thead th,
+#style-skill-panel .style-skill-view-table thead th{
+  height:36px!important;
+  min-height:36px!important;
+}
+
+#skills-container .skill-section .data-table tbody tr,
+#style-skill-panel .style-skill-view-table tbody tr,
+#skills-container .skill-section .data-table tbody td,
+#style-skill-panel .style-skill-view-table tbody td{
+  height:45px!important;
+  min-height:45px!important;
+}
+
+#skills-container .skill-section .data-table tbody td,
+#style-skill-panel .style-skill-view-table tbody td{
+  padding-top:4px!important;
+  padding-bottom:4px!important;
+  vertical-align:middle!important;
+}
+
+#style-skill-panel .style-skill-view-table .style-field-scroll{
+  height:35px!important;
+  min-height:35px!important;
+  padding-top:7px!important;
+  padding-bottom:7px!important;
+  line-height:1.2!important;
+}
+
+#style-skill-panel .style-skill-view-table .style-description-expandable{
+  height:35px!important;
+  min-height:35px!important;
+}
+
 @media(max-width:720px){
   #skills-container .skill-data-table--general col.skill-col-name,
   #skills-container .skill-data-table--social col.skill-col-name,
