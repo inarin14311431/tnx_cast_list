@@ -6,12 +6,49 @@
   align-items:stretch;
 }
 .profile-text-field{
+  position:relative;
+  display:block!important;
   min-width:0;
+  box-sizing:border-box;
+  padding:52px 12px 12px;
+  border:1px solid rgba(65,232,255,.24);
+  color:transparent!important;
+  background:rgba(0,0,0,.2);
+  font-size:0!important;
+}
+.profile-text-field::before{
+  content:"背景設定";
+  position:absolute;
+  top:12px;
+  right:12px;
+  left:12px;
+  box-sizing:border-box;
+  height:29px;
+  padding:0 90px 8px 0;
+  border-bottom:1px solid var(--line-muted);
+  color:var(--line);
+  font:800 .86rem/20px monospace;
+  letter-spacing:.04em;
+}
+.profile-text-field::after{
+  content:"PROFILE";
+  position:absolute;
+  top:13px;
+  right:12px;
+  color:var(--text-muted);
+  font:.62rem/20px monospace;
+  letter-spacing:.08em;
 }
 .profile-text-field textarea{
+  display:block;
+  box-sizing:border-box;
   min-height:430px;
   height:100%;
+  margin:0;
   resize:vertical;
+  color:var(--text);
+  font:inherit;
+  font-size:1rem;
   line-height:1.65;
 }
 .sheet-image-editor{
