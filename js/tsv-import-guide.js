@@ -148,6 +148,12 @@
     const lines = [];
     if (data.notes) lines.push(data.notes);
     const extras = [
+      ["隠匿A", data.concealA],
+      ["隠匿B", data.concealB],
+      ["攻撃", data.attack],
+      ["防御", data.defense],
+      ["射程", data.range],
+      ["スロット", data.slot],
       ["制御", data.control],
       ["電制", data.electrical_control],
       ["防御S", data.protecS],
@@ -199,7 +205,7 @@
       };
 
       for (const [field, value] of Object.entries(values)) {
-        await setControl(card.querySelector(`[data-o="${field}"]`), value || "");
+        await setControl(card.querySelector(`[data-o="${field}"]`), value ?? "");
         card = document.querySelector(`[data-outfit-key="${CSS.escape(key)}"]`) || card;
       }
     }
@@ -211,9 +217,7 @@
     if (!button || !styleAdd) return;
     const oldToolbar = button.parentElement;
     const styleToolbar = styleAdd.parentElement;
-    oldToolbar?.classList.add("general-skill-import-toolbar");
-    styleToolbar?.classList.add("style-skill-import-toolbar");
-    styleAdd.insertAdjacentElement("afterend", button);
+    if (oldToolbar !== styleToolbar) styleAdd.insertAdjacentElement("afterend", button);
   }
 
   function createGuide(dialog) {
