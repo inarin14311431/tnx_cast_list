@@ -1,6 +1,6 @@
 const fields = [
   document.querySelector("#page-title"),
-  document.querySelector("#session-name"),
+  document.querySelector("#act-name"),
   document.querySelector("#ruler-name"),
   document.querySelector("#intro-text"),
   document.querySelector("#background-url")
@@ -20,7 +20,7 @@ function invalidateGeneratedOutput() {
   if (publishButton) publishButton.disabled = true;
   preview?.removeAttribute("srcdoc");
   if (status) {
-    status.textContent = "セッション情報が変更されました。HTMLを再生成してください。";
+    status.textContent = "アクト情報が変更されました。HTMLを再生成してください。";
     status.className = "generator-status";
   }
 }
