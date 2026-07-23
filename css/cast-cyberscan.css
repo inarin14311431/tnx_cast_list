@@ -59,9 +59,9 @@ body.cast-scan-mode::before{
 .cast-name-readings .cast-handle-kana,.cast-name-readings .cast-kana{margin:0!important;line-height:1.2}
 .cast-handle-kana{font-size:clamp(1rem,2vw,1.35rem);letter-spacing:.08em;text-shadow:0 0 12px rgba(95,234,255,.35)}
 .cast-name-readings .cast-kana{color:#bcecf3!important;font-size:clamp(.88rem,1.4vw,1.1rem);letter-spacing:.12em}
-.cast-name-primary{display:flex;align-items:baseline;flex-wrap:wrap;gap:.55em}
-.cast-name-primary .cast-handle{flex:0 1 auto;margin:0!important;color:var(--scan-cyan);font-size:clamp(1.1rem,2.2vw,1.65rem);letter-spacing:.08em;line-height:1.2;text-shadow:0 0 12px rgba(95,234,255,.35)}
-.cast-name-primary .cast-name{flex:0 1 auto;margin:0;line-height:1}
+.cast-name-primary{display:flex;align-items:baseline;flex-wrap:wrap;gap:.35em;max-width:100%;font-size:clamp(1.3rem,1.65vw,1.75rem);line-height:1.08}
+.cast-name-primary .cast-handle,.cast-name-primary .cast-name{flex:0 1 auto;min-width:0;margin:0!important;font-size:inherit!important;font-weight:800;line-height:1.08;letter-spacing:.025em;white-space:nowrap}
+.cast-name-primary .cast-handle{color:var(--scan-cyan);text-shadow:0 0 12px rgba(95,234,255,.35)}
 .cast-handle:empty,.cast-handle-kana:empty,.cast-kana:empty{display:none}
 .cast-name{position:relative;display:inline-block;color:#effdff;text-shadow:2px 0 rgba(255,51,108,.28),-2px 0 rgba(95,234,255,.3),0 0 26px rgba(95,234,255,.22)}
 .cast-styles .style-chip{position:relative;overflow:hidden;background:linear-gradient(90deg,rgba(95,234,255,.08),rgba(173,108,255,.07))!important}
@@ -82,5 +82,5 @@ body.cast-scan-mode::before{
 .cast-outfit-table tfoot{box-shadow:inset 0 1px 0 var(--scan-cyan)}
 
 @keyframes data-rain{to{transform:translateY(170vh)}}
-@media(max-width:800px){.cast-access-terminal{padding:20px}.cast-header{position:relative}.cast-tabs{top:0}.cast-hero{padding:10px}.cast-hero::before{display:none}.cast-name-readings{margin-top:28px}.cast-name-primary{align-items:flex-start;gap:.35em .55em}}
+@media(max-width:800px){.cast-access-terminal{padding:20px}.cast-header{position:relative}.cast-tabs{top:0}.cast-hero{padding:10px}.cast-hero::before{display:none}.cast-name-readings{margin-top:28px}.cast-name-primary{align-items:flex-start;gap:.35em;font-size:clamp(1.15rem,5.2vw,1.6rem)}.cast-name-primary .cast-handle,.cast-name-primary .cast-name{white-space:normal;overflow-wrap:anywhere}}
 @media(prefers-reduced-motion:reduce){.cast-data-rain span,.cast-hero__image-scan{animation:none!important}.cast-access-overlay{transition:none}}
