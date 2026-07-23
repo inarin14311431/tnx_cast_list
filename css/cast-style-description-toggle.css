@@ -1,7 +1,50 @@
+.style-skill-view-table .style-description-heading{
+  padding-left:6px!important;
+  padding-right:6px!important;
+}
+
+.style-skill-view-table .style-description-heading>span{
+  vertical-align:middle;
+}
+
+.style-skill-view-table .style-description-toggle-all{
+  appearance:none;
+  display:inline-grid;
+  min-width:48px;
+  height:22px;
+  margin-left:8px;
+  padding:0 7px;
+  place-items:center;
+  border:1px solid rgba(94,243,255,.72);
+  border-radius:4px;
+  color:#bff9ff;
+  background:#063540;
+  box-shadow:inset 0 0 8px rgba(69,219,232,.08);
+  font:700 10px/1 inherit;
+  letter-spacing:.04em;
+  vertical-align:middle;
+  cursor:pointer;
+}
+
+.style-skill-view-table .style-description-toggle-all:hover,
+.style-skill-view-table .style-description-toggle-all:focus-visible{
+  color:#03222b;
+  background:#5ef3ff;
+  outline:none;
+  box-shadow:0 0 8px rgba(60,232,246,.5);
+}
+
+.style-skill-view-table .style-description-toggle-all[aria-pressed="true"]{
+  border-color:#ff9ecf;
+  color:#ffe8f4;
+  background:#4a1734;
+  box-shadow:0 0 7px rgba(255,126,194,.28);
+}
+
 .style-skill-view-table .style-description-expandable{
   box-sizing:border-box!important;
   resize:none!important;
-  cursor:zoom-in!important;
+  cursor:text!important;
   white-space:nowrap!important;
   overflow:hidden!important;
   overflow-wrap:normal!important;
@@ -9,21 +52,19 @@
   transition:height .18s ease,background-color .18s ease,outline-color .18s ease!important;
 }
 
-.style-skill-view-table .style-description-expandable:hover,
 .style-skill-view-table .style-description-expandable:focus-visible{
   background:#06242c!important;
   outline:1px solid rgba(69,219,232,.72)!important;
 }
 
 .style-skill-view-table .style-description-expandable.is-expanded{
-  cursor:zoom-out!important;
   white-space:pre-wrap!important;
   overflow:hidden!important;
   overflow-wrap:anywhere!important;
   word-break:break-word!important;
   padding:7px 8px!important;
   background:#06242c!important;
-  outline:1px solid #45dbe8!important;
+  outline:1px solid rgba(69,219,232,.5)!important;
 }
 
 .style-skill-view-table tbody tr.is-description-expanded,
