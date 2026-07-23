@@ -1,0 +1,26 @@
+.act-history-summary{grid-template-columns:repeat(5,minmax(0,1fr))}
+.act-history-summary article:nth-child(3){border-left-color:var(--act-pink)}
+.act-history-summary article:nth-child(4){border-left-color:var(--act-green)}
+.experience-balance-note{margin:0 0 14px;color:#82aeb7;font:700 .68rem/1.6 monospace}
+.experience-spending-form{display:grid;grid-template-columns:minmax(180px,1.2fr) 120px 150px minmax(220px,1.4fr) auto;gap:10px;align-items:end;margin-bottom:18px;padding:14px;border:1px solid rgba(255,114,185,.22);background:rgba(255,114,185,.035)}
+.experience-spending-form label{display:grid;gap:5px;color:#bfe8ef;font-size:.72rem;font-weight:800}
+.experience-spending-form label small{color:#799fa8;font:700 .56rem/1 monospace;letter-spacing:.1em}
+.experience-spending-form input,.experience-spending-form select{width:100%;min-width:0;padding:10px;border:1px solid var(--act-line);color:#f3fdff;background:rgba(0,7,11,.86);font:inherit}
+.experience-spending-form button{min-height:42px;padding:8px 14px;border:1px solid rgba(255,114,185,.62);color:#ffe7f3;background:rgba(255,114,185,.1);cursor:pointer;font-weight:900;white-space:nowrap}
+.experience-spending-form button:hover{color:#061017;background:var(--act-pink)}
+.experience-spending-form button:disabled{opacity:.45;cursor:wait}
+.experience-spending-list{display:grid;gap:8px}
+.experience-spending-record{display:grid;grid-template-columns:130px minmax(180px,.8fr) minmax(220px,1.5fr) 110px auto;gap:12px;align-items:center;padding:11px 12px;border-left:3px solid var(--act-pink);background:linear-gradient(90deg,rgba(255,114,185,.08),rgba(0,0,0,.18))}
+.experience-spending-record p{margin:0}
+.experience-spending-record__date{color:#8eb5bd;font:700 .66rem/1.4 monospace}
+.experience-spending-record__cast strong{display:block;color:#fff}
+.experience-spending-record__cast small{display:block;margin-top:3px;color:#729ca5;font:700 .58rem/1.3 monospace}
+.experience-spending-record__description{color:#c4dde2;font-size:.78rem;overflow-wrap:anywhere}
+.experience-spending-record__amount{color:var(--act-pink);font:900 1rem/1 monospace;text-align:right}
+.experience-spending-record button{padding:7px 10px;border:1px solid rgba(255,114,185,.5);color:#ffdce9;background:rgba(255,114,185,.06);cursor:pointer;font-weight:800}
+.experience-spending-record button:hover{color:#061017;background:var(--act-pink)}
+.experience-spending-empty{margin:0;padding:28px;border:1px dashed rgba(255,114,185,.25);color:#779da6;text-align:center}
+.experience-spending-status{margin:0 0 12px;color:#8fb9c2;font:700 .7rem/1.5 monospace}
+.experience-spending-status.is-error{color:#ff8ca7}.experience-spending-status.is-success{color:var(--act-green)}
+@media(max-width:1050px){.act-history-summary{grid-template-columns:repeat(3,minmax(0,1fr))}.experience-spending-form{grid-template-columns:repeat(2,minmax(0,1fr))}.experience-spending-form button{grid-column:1/-1}.experience-spending-record{grid-template-columns:120px minmax(180px,1fr) 100px auto}.experience-spending-record__description{grid-column:2}}
+@media(max-width:700px){.act-history-summary{grid-template-columns:1fr}.experience-spending-form{grid-template-columns:1fr}.experience-spending-form button{grid-column:auto}.experience-spending-record{grid-template-columns:1fr auto}.experience-spending-record__cast,.experience-spending-record__description{grid-column:1/-1}.experience-spending-record__amount{text-align:left}}
