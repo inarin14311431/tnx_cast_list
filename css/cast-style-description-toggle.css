@@ -1,0 +1,42 @@
+.style-skill-view-table .style-description-expandable{
+  box-sizing:border-box!important;
+  resize:none!important;
+  cursor:zoom-in!important;
+  white-space:nowrap!important;
+  overflow:hidden!important;
+  overflow-wrap:normal!important;
+  word-break:normal!important;
+  transition:height .18s ease,background-color .18s ease,outline-color .18s ease!important;
+}
+
+.style-skill-view-table .style-description-expandable:hover,
+.style-skill-view-table .style-description-expandable:focus-visible{
+  background:#06242c!important;
+  outline:1px solid rgba(69,219,232,.72)!important;
+}
+
+.style-skill-view-table .style-description-expandable.is-expanded{
+  cursor:zoom-out!important;
+  white-space:pre-wrap!important;
+  overflow:hidden!important;
+  overflow-wrap:anywhere!important;
+  word-break:break-word!important;
+  padding:7px 8px!important;
+  background:#06242c!important;
+  outline:1px solid #45dbe8!important;
+}
+
+.style-skill-view-table tbody tr.is-description-expanded,
+.style-skill-view-table tbody tr.is-description-expanded>td{
+  height:auto!important;
+}
+
+.style-skill-view-table tbody tr.is-description-expanded>td{
+  vertical-align:middle!important;
+}
+
+.style-skill-view-table tbody tr.is-description-expanded>.style-view-cell--description{
+  vertical-align:top!important;
+  padding-top:4px!important;
+  padding-bottom:4px!important;
+}
