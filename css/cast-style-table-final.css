@@ -36,6 +36,7 @@
 
 #skills-container .skill-section .data-table tbody td,
 #style-skill-panel .style-skill-view-table tbody td{
+  box-sizing:border-box!important;
   border:0!important;
   border-right:1px solid #168da0!important;
   border-bottom:1px solid #168da0!important;
@@ -46,6 +47,68 @@
 #skills-container .skill-section .data-table tbody tr:hover td,
 #style-skill-panel .style-skill-view-table tbody tr:hover td{
   background:#06242c!important;
+}
+
+/*
+ * Align suit columns at 300px from the left edge.
+ * General/social/connection: 252 + 48 = 300
+ * Style skills:              180 + 72 + 48 = 300
+ */
+#skills-container .skill-data-table--general,
+#skills-container .skill-data-table--social,
+#skills-container .skill-data-table--connection{
+  table-layout:fixed!important;
+  min-width:620px!important;
+}
+#skills-container .skill-data-table--general col.skill-col-name,
+#skills-container .skill-data-table--social col.skill-col-name,
+#skills-container .skill-data-table--connection col.skill-col-name{
+  width:252px!important;
+}
+#skills-container .skill-data-table--general col.skill-col-level,
+#skills-container .skill-data-table--social col.skill-col-level,
+#skills-container .skill-data-table--connection col.skill-col-level{
+  width:48px!important;
+}
+#skills-container .skill-data-table--general col.skill-col-suit,
+#skills-container .skill-data-table--social col.skill-col-suit,
+#skills-container .skill-data-table--connection col.skill-col-suit{
+  width:48px!important;
+}
+#skills-container .skill-data-table--general th:nth-child(1),
+#skills-container .skill-data-table--general td:nth-child(1),
+#skills-container .skill-data-table--social th:nth-child(1),
+#skills-container .skill-data-table--social td:nth-child(1),
+#skills-container .skill-data-table--connection th:nth-child(1),
+#skills-container .skill-data-table--connection td:nth-child(1){
+  width:252px!important;
+  min-width:252px!important;
+  max-width:252px!important;
+}
+#skills-container .skill-data-table--general th:nth-child(2),
+#skills-container .skill-data-table--general td:nth-child(2),
+#skills-container .skill-data-table--social th:nth-child(2),
+#skills-container .skill-data-table--social td:nth-child(2),
+#skills-container .skill-data-table--connection th:nth-child(2),
+#skills-container .skill-data-table--connection td:nth-child(2){
+  width:48px!important;
+  min-width:48px!important;
+  max-width:48px!important;
+  text-align:center!important;
+}
+#skills-container .skill-data-table--general th:nth-child(n+3):nth-child(-n+6),
+#skills-container .skill-data-table--general td:nth-child(n+3):nth-child(-n+6),
+#skills-container .skill-data-table--social th:nth-child(n+3):nth-child(-n+6),
+#skills-container .skill-data-table--social td:nth-child(n+3):nth-child(-n+6),
+#skills-container .skill-data-table--connection th:nth-child(n+3):nth-child(-n+6),
+#skills-container .skill-data-table--connection td:nth-child(n+3):nth-child(-n+6){
+  width:48px!important;
+  min-width:48px!important;
+  max-width:48px!important;
+  padding-left:2px!important;
+  padding-right:2px!important;
+  text-align:center!important;
+  vertical-align:middle!important;
 }
 
 #style-skill-panel .style-skill-view-table{
@@ -88,6 +151,21 @@
 }
 
 @media(max-width:720px){
+  #skills-container .skill-data-table--general col.skill-col-name,
+  #skills-container .skill-data-table--social col.skill-col-name,
+  #skills-container .skill-data-table--connection col.skill-col-name{
+    width:232px!important;
+  }
+  #skills-container .skill-data-table--general th:nth-child(1),
+  #skills-container .skill-data-table--general td:nth-child(1),
+  #skills-container .skill-data-table--social th:nth-child(1),
+  #skills-container .skill-data-table--social td:nth-child(1),
+  #skills-container .skill-data-table--connection th:nth-child(1),
+  #skills-container .skill-data-table--connection td:nth-child(1){
+    width:232px!important;
+    min-width:232px!important;
+    max-width:232px!important;
+  }
   #style-skill-panel .style-skill-view-table{min-width:1344px!important}
   #style-skill-panel .style-skill-view-table col.style-col-name{width:160px!important}
   #style-skill-panel .style-skill-view-table col.style-col-kind{width:72px!important}
