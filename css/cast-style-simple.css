@@ -158,7 +158,176 @@
   display:none;
 }
 
+/* Unified hierarchy for style and divine-work cards. */
+.cast-divine-authority{
+  margin-top:24px!important;
+  padding:0!important;
+  border:0!important;
+  background:none!important;
+  box-shadow:none!important;
+}
+.cast-style-heading-simple,
+.cast-divine-authority>header{
+  position:relative;
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  min-height:42px;
+  margin:0 0 10px;
+  padding:0 14px 8px;
+  border:0!important;
+  border-bottom:1px solid rgba(95,234,255,.32)!important;
+  background:transparent!important;
+}
+.cast-style-heading-simple{margin-top:24px}
+.cast-divine-authority>header{
+  border-bottom-color:rgba(255,84,120,.32)!important;
+}
+.cast-divine-authority>header::before{
+  content:"";
+  position:absolute;
+  left:0;
+  top:6px;
+  bottom:8px;
+  width:3px;
+  background:linear-gradient(180deg,#ff5478,rgba(255,84,120,0));
+  box-shadow:0 0 14px rgba(255,84,120,.25);
+}
+.cast-divine-authority>header h2{
+  display:inline-flex;
+  align-items:baseline;
+  gap:.55rem;
+  margin:0;
+  padding-left:8px;
+  color:#ffd7e2;
+  font:900 1rem/1.15 monospace;
+  letter-spacing:.06em;
+  text-shadow:0 0 12px rgba(255,84,120,.18);
+}
+.cast-divine-authority>header h2::before{
+  content:"";
+  width:10px;
+  height:10px;
+  border:1px solid rgba(255,120,155,.82);
+  border-radius:2px;
+  box-shadow:0 0 8px rgba(255,84,120,.25),inset 0 0 6px rgba(255,84,120,.12);
+}
+.cast-divine-authority>header h2 small{
+  margin:0;
+  color:#e8a6ba;
+  font:700 .7rem/1.1 monospace;
+  letter-spacing:.14em;
+}
+.cast-divine-authority__status{
+  color:var(--scan-green);
+  font:700 .58rem/1 monospace;
+  letter-spacing:.12em;
+}
+#cast-styles.cast-style-grid-simple,
+.cast-divine-authority .hero-divine-list{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px!important;
+  box-sizing:border-box;
+  margin:0!important;
+  padding:0 10px!important;
+}
+#cast-styles .cast-style-card-simple{
+  min-height:86px;
+  padding:24px 14px 13px 18px;
+}
+.cast-divine-authority .cast-divine-card{
+  position:relative;
+  display:grid;
+  grid-template-columns:28px minmax(0,1fr);
+  grid-template-rows:auto auto;
+  gap:4px 9px;
+  min-width:0;
+  min-height:86px;
+  padding:24px 14px 12px 12px;
+  overflow:hidden;
+  text-align:left;
+  border:1px solid color-mix(in srgb,var(--divine-accent) 55%,transparent)!important;
+  border-left:3px solid var(--divine-accent)!important;
+  background:
+    linear-gradient(90deg,color-mix(in srgb,var(--divine-accent) 10%,transparent),rgba(3,12,17,.92) 45%),
+    linear-gradient(180deg,rgba(255,255,255,.04),transparent 48%)!important;
+  box-shadow:
+    inset 0 0 22px rgba(0,0,0,.26),
+    inset 0 1px color-mix(in srgb,var(--divine-accent) 30%,transparent),
+    0 0 14px color-mix(in srgb,var(--divine-accent) 8%,transparent);
+}
+.cast-divine-authority .cast-divine-card::before{
+  content:none!important;
+}
+.cast-divine-card__code{
+  position:absolute;
+  top:7px;
+  right:10px;
+  color:color-mix(in srgb,var(--divine-accent) 72%,white 20%);
+  font:800 .58rem/1 monospace;
+  letter-spacing:.1em;
+  text-shadow:0 0 9px color-mix(in srgb,var(--divine-accent) 22%,transparent);
+}
+.cast-divine-authority .divine-card__number{
+  grid-column:1;
+  grid-row:1/3;
+  align-self:center;
+  display:grid;
+  place-items:center;
+  min-width:24px;
+  height:24px;
+  padding:0 4px;
+  border:1px solid color-mix(in srgb,var(--divine-accent) 55%,transparent);
+  border-radius:4px;
+  color:color-mix(in srgb,var(--divine-accent) 72%,white 28%);
+  background:color-mix(in srgb,var(--divine-accent) 10%,#05131b 90%);
+  font:800 .68rem/1 monospace;
+  letter-spacing:.06em;
+  text-shadow:none;
+}
+.cast-divine-authority .divine-card__style{
+  display:none!important;
+}
+.cast-divine-authority .divine-card__name{
+  grid-column:2;
+  grid-row:1;
+  align-self:end;
+  min-width:0;
+  color:#fff;
+  font-size:clamp(1.02rem,1.35vw,1.18rem);
+  font-weight:900;
+  line-height:1.15;
+  letter-spacing:.02em;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+  text-shadow:0 0 12px color-mix(in srgb,var(--divine-accent) 24%,transparent);
+}
+.cast-divine-authority .divine-card__yomi{
+  grid-column:2;
+  grid-row:2;
+  align-self:start;
+  min-width:0;
+  color:color-mix(in srgb,var(--divine-accent) 44%,#c7e6ec 56%);
+  font:700 .68rem/1.2 monospace;
+  letter-spacing:.08em;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.cast-divine-card__seal,
+.cast-divine-card__channel{
+  display:none!important;
+}
+
 @media(max-width:980px){
-  #cast-styles.cast-style-grid-simple{grid-template-columns:1fr}
+  #cast-styles.cast-style-grid-simple,
+  .cast-divine-authority .hero-divine-list{
+    grid-template-columns:1fr;
+    padding:0!important;
+  }
   .cast-style-heading-simple::after{display:none}
+  .cast-divine-authority__status{display:none}
 }
