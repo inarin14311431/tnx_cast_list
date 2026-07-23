@@ -3,13 +3,20 @@
   const root=document.querySelector("#cast-content")||document.body;
   const scriptUrl=document.currentScript?.src||location.href;
   const styleDataUrl=new URL("./style-data.js",scriptUrl).href;
+  const divineYomiByName=new Map([
+    ["死の舞踏","ダンスマカブル"],
+    ["天変地異","カタストロフ"],
+    ["突然変異","ミューテーション"]
+  ]);
   const divineYomiByStyle=new Map();
   let completed=false;
   let attempts=0;
 
   import(styleDataUrl).then(module=>{
     for(const item of module.STYLE_DATA||[]){
-      divineYomiByStyle.set(item.name,item.divineYomi||"");
+      const yomi=divineYomiByName.get(item.divine)||item.divineYomi||"";
+      divineYomiByStyle.set(item.name,yomi);
+      if(item.divine&&!divineYomiByName.has(item.divine))divineYomiByName.set(item.divine,yomi);
     }
     enhanceDivines();
   }).catch(error=>console.warn("Divine work readings could not be loaded.",error));
@@ -95,13 +102,14 @@
 
       const styleName=card.querySelector(".divine-card__style")?.textContent.trim()||"";
       const name=card.querySelector(".divine-card__name");
+      const divineName=name?.textContent.trim()||"";
       let yomi=card.querySelector(".divine-card__yomi");
       if(!yomi){
         yomi=document.createElement("span");
         yomi.className="divine-card__yomi";
         name?.insertAdjacentElement("afterend",yomi);
       }
-      yomi.textContent=divineYomiByStyle.get(styleName)||"";
+      yomi.textContent=divineYomiByName.get(divineName)||divineYomiByStyle.get(styleName)||"";
       yomi.hidden=!yomi.textContent;
     });
     return true;
