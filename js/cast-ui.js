@@ -1,3 +1,5 @@
+import { supabase } from "./supabase-client.js";
+
 /* Consolidated cast-view UI enhancements.
  * Formerly: cast-ui-v13.js, cast-ui-v14.js, cast-ui-v16.js,
  * cast-ui-v17.js, cast-ui-v20.js and cast-ui-v22.js.
@@ -79,6 +81,27 @@
     localizeStatus();localizeAbilityLabels();localizeSkillTables();localizeOutfitTables();localizeProfileLabels();localizeSkillHeadings();localizeOutfitHeadings();
   }
   localizeCastView();
+})();
+
+(async () => {
+  const publicId = new URLSearchParams(location.search).get('id')?.trim() || '';
+  const handle = document.querySelector('#cast-handle');
+  const handleKana = document.querySelector('#cast-handle-kana');
+  if(handle?.textContent.trim()==='NO HANDLE')handle.textContent='';
+  if(!publicId||!handleKana)return;
+
+  const {data,error}=await supabase
+    .from('characters')
+    .select('handle_kana')
+    .eq('public_id',publicId)
+    .maybeSingle();
+
+  if(error){
+    console.warn('handle kana could not be loaded',error);
+    return;
+  }
+  const value=String(data?.handle_kana||'').trim();
+  handleKana.textContent=value?`“${value}”`:'';
 })();
 
 (() => {
