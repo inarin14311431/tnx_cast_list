@@ -53,6 +53,21 @@ function renderTable(section,skills){
   section.innerHTML=`
     <div class="data-table-wrapper style-skill-view-wrapper">
       <table class="data-table style-skill-detail-table style-skill-view-table">
+        <colgroup>
+          <col class="style-col-name">
+          <col class="style-col-kind">
+          <col class="style-col-level">
+          ${SUITS.map(()=>'<col class="style-col-suit">').join("")}
+          <col class="style-col-skill">
+          <col class="style-col-limit">
+          <col class="style-col-timing">
+          <col class="style-col-target">
+          <col class="style-col-range">
+          <col class="style-col-difficulty">
+          <col class="style-col-confrontation">
+          <col class="style-col-description">
+          <col class="style-col-page">
+        </colgroup>
         <thead><tr>
           <th>名称</th><th>種別</th><th>LV</th>
           ${SUITS.map(([,label])=>`<th>${label}</th>`).join("")}
