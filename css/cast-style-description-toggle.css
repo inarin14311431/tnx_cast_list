@@ -20,7 +20,11 @@
   color:#bff9ff;
   background:#063540;
   box-shadow:inset 0 0 8px rgba(69,219,232,.08);
-  font:700 10px/1 inherit;
+  font-family:inherit;
+  font-size:10px;
+  font-style:normal;
+  font-weight:700;
+  line-height:1;
   letter-spacing:.04em;
   vertical-align:middle;
   cursor:pointer;
