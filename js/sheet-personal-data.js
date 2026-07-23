@@ -1,10 +1,12 @@
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js";
 
+const HANDLE_FIELDS=["handle_kana"];
 const PERSONAL_FIELDS=["age","gender","height","weight","eyes","hair","skin"];
 const LIFE_PATH_FIELDS=["life_path_origin","life_path_experience","life_path_encounter"];
-const FIELDS=[...PERSONAL_FIELDS,...LIFE_PATH_FIELDS];
+const FIELDS=[...HANDLE_FIELDS,...PERSONAL_FIELDS,...LIFE_PATH_FIELDS];
 const LEGACY_KEYS={
+  handle_kana:["base.handleKana","base.handle_kana","handleKana","handle_kana"],
   age:["base.age","age"],
   gender:["base.sex","base.gender","sex","gender"],
   height:["base.height","height"],
