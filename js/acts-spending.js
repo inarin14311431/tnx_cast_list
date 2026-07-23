@@ -84,7 +84,7 @@ async function loadData() {
   if (error) {
     console.error(error);
     const hint = /character_experience_spending/i.test(String(error.message ?? ""))
-      ? " Supabaseでsupabase/08_experience_spending.sqlを実行してください。"
+      ? " Supabaseでsupabase/09_experience_spending.sqlを実行してください。"
       : "";
     setStatus(`経験点消費履歴を取得できませんでした。${hint}`, "error");
     elements.list.innerHTML = `<p class="experience-spending-empty">経験点消費履歴を取得できませんでした。</p>`;
