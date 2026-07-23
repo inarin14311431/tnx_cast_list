@@ -20,4 +20,7 @@ if (document.querySelector(".cast-content, .sheet-layout")) {
   import("./cocofolia-export.js?v=2").catch(error => {
     console.error("Cocofolia export could not be loaded.", error);
   });
+  import("./udonarium-export.js?v=1").catch(error => {
+    console.error("Udonarium export could not be loaded.", error);
+  });
 }
