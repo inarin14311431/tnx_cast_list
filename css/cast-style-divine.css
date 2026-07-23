@@ -10,3 +10,32 @@
   gap:12px!important;
   padding:10px 0!important;
 }
+
+/* Match the internal alignment of divine cards to the style cards. */
+.cast-divine-authority .hero-divine-list .divine-card.cast-divine-card{
+  grid-template-columns:36px minmax(0,1fr)!important;
+  gap:4px 8px!important;
+  padding:24px 14px 12px 18px!important;
+  place-items:initial!important;
+  align-items:center!important;
+  justify-items:stretch!important;
+  text-align:left!important;
+}
+.cast-divine-authority .hero-divine-list .divine-card__number{
+  min-width:24px!important;
+  padding:0 6px!important;
+  justify-self:start!important;
+  align-self:center!important;
+}
+.cast-divine-authority .hero-divine-list .divine-card__name{
+  display:block!important;
+  width:100%!important;
+  justify-self:stretch!important;
+  text-align:left!important;
+}
+.cast-divine-authority .hero-divine-list .divine-card__yomi{
+  display:block!important;
+  width:100%!important;
+  justify-self:stretch!important;
+  text-align:left!important;
+}
