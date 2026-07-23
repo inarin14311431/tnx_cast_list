@@ -1,23 +1,60 @@
+/* Final shared table treatment for skill and style-skill views. */
+#skills-container .skill-section .data-table,
 #style-skill-panel .style-skill-view-table{
-  table-layout:fixed!important;
-  min-width:1380px!important;
+  width:100%!important;
+  border-collapse:separate!important;
+  border-spacing:0!important;
+  border-top:1px solid #168da0!important;
+  border-left:1px solid #168da0!important;
+  background:#00151c!important;
 }
+
+#skills-container .skill-section .data-table thead th,
 #style-skill-panel .style-skill-view-table thead th,
 #style-skill-panel .style-skill-view-table thead th *{
   box-sizing:border-box!important;
+  height:32px!important;
+  padding:4px 6px!important;
+  border:0!important;
+  border-right:1px solid #168da0!important;
+  border-bottom:1px solid #168da0!important;
+  color:#b7d7df!important;
+  background:#082b35!important;
   font-family:inherit!important;
   font-size:12px!important;
   font-style:normal!important;
   font-weight:700!important;
   line-height:1.2!important;
   letter-spacing:0!important;
+  text-align:center!important;
+  vertical-align:middle!important;
   white-space:nowrap!important;
   writing-mode:horizontal-tb!important;
   text-orientation:mixed!important;
   transform:none!important;
 }
+
+#skills-container .skill-section .data-table tbody td,
+#style-skill-panel .style-skill-view-table tbody td{
+  border:0!important;
+  border-right:1px solid #168da0!important;
+  border-bottom:1px solid #168da0!important;
+  color:#e7f7f9!important;
+  background:#00151c!important;
+}
+
+#skills-container .skill-section .data-table tbody tr:hover td,
+#style-skill-panel .style-skill-view-table tbody tr:hover td{
+  background:#06242c!important;
+}
+
+#style-skill-panel .style-skill-view-table{
+  table-layout:fixed!important;
+  min-width:1364px!important;
+}
+
 #style-skill-panel .style-skill-view-table col.style-col-name{width:180px!important}
-#style-skill-panel .style-skill-view-table col.style-col-kind{width:88px!important}
+#style-skill-panel .style-skill-view-table col.style-col-kind{width:72px!important}
 #style-skill-panel .style-skill-view-table col.style-col-level{width:48px!important}
 #style-skill-panel .style-skill-view-table col.style-col-suit{width:48px!important}
 #style-skill-panel .style-skill-view-table col.style-col-skill{width:90px!important}
@@ -29,26 +66,30 @@
 #style-skill-panel .style-skill-view-table col.style-col-confrontation{width:64px!important}
 #style-skill-panel .style-skill-view-table col.style-col-description{width:320px!important}
 #style-skill-panel .style-skill-view-table col.style-col-page{width:64px!important}
+
 #style-skill-panel .style-skill-view-table th:nth-child(2),
 #style-skill-panel .style-skill-view-table td:nth-child(2){
-  width:88px!important;
-  min-width:88px!important;
-  max-width:88px!important;
+  width:72px!important;
+  min-width:72px!important;
+  max-width:72px!important;
 }
+
 #style-skill-panel .style-view-cell--kind,
 #style-skill-panel .style-view-cell--kind .style-field-scroll{
   box-sizing:border-box!important;
   width:100%!important;
   min-width:0!important;
-  padding-left:8px!important;
-  padding-right:8px!important;
+  padding-left:4px!important;
+  padding-right:4px!important;
   overflow:visible!important;
   font-size:12px!important;
   text-align:center!important;
   white-space:nowrap!important;
 }
+
 @media(max-width:720px){
-  #style-skill-panel .style-skill-view-table{min-width:1360px!important}
+  #style-skill-panel .style-skill-view-table{min-width:1344px!important}
   #style-skill-panel .style-skill-view-table col.style-col-name{width:160px!important}
+  #style-skill-panel .style-skill-view-table col.style-col-kind{width:72px!important}
   #style-skill-panel .style-skill-view-table col.style-col-description{width:280px!important}
 }
