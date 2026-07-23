@@ -72,11 +72,14 @@
   }
 
   function optionMatch(select,value){
-    const target=clean(value).replace(/[◎●]/g,"").toLowerCase();
-    if(!target)return null;
-    return [...select.options].find(option=>clean(option.value).toLowerCase()===target)
-      ||[...select.options].find(option=>clean(option.textContent).replace(/[◎●]/g,"").toLowerCase()===target)
-      ||[...select.options].find(option=>clean(option.textContent).replace(/[◎●]/g,"").toLowerCase().includes(target));
+    const raw=clean(value).replace(/[◎●]/g,"").toLowerCase();
+    if(!raw)return null;
+    const translated={normal:"通常",secret:"秘技",ultimate:"奥義",direction:"演出",general:"一般",proper:"固有名詞"}[raw];
+    const targets=[raw,translated].filter(Boolean).map(item=>item.toLowerCase());
+    const normalized=option=>({value:clean(option.value).toLowerCase(),text:clean(option.textContent).replace(/[◎●]/g,"").toLowerCase()});
+    return [...select.options].find(option=>targets.includes(normalized(option).value))
+      ||[...select.options].find(option=>targets.includes(normalized(option).text))
+      ||[...select.options].find(option=>targets.some(target=>normalized(option).text.includes(target)));
   }
 
   function notify(element){
@@ -111,7 +114,7 @@
       player:["base.player","player"],rank:["base.rank","rank"],name:["base.name","name"],kana:["base.namekana","base.kana","kana"],
       handle:["base.handle","handle"],affiliation:["base.post","base.affiliation","affiliation"],summary:["base.lifepath.memo","base.summary","summary"],
       profile:["base.memoir","base.profile","profile"],age:["base.age","age"],sex:["base.sex","base.gender","sex","gender"],
-      height:["base.height","height"],weight:["base.weight","weight"],eyes:["base.eyes","eyes"],hair:["base.hair","hair"],skin:["base.skin","skin"],
+      height:["base.height","height"],weight:["base.weight","weight"],eyes:["base.eyes","base.eye","eyes","eye"],hair:["base.hair","hair"],skin:["base.skin","skin"],
       lifepath_origin:["base.lifepath.experience","base.lifepath.origin"],lifepath_experience:["base.lifepath.environment"],lifepath_encounter:["base.lifepath.encounter","base.lifepath.encouter"]
     };
     for(const [field,paths] of Object.entries(mappings))setPath(paths,base[field]);
@@ -125,17 +128,30 @@
     }).slice(0,3);
   }
 
+  function arrayKeys(prefix){
+    const indexes=new Set();
+    const escaped=canonical(prefix).replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+    const pattern=new RegExp(`^${escaped}\\.([^.]*)\\.`);
+    for(const key of controlMap.keys()){
+      const match=key.match(pattern);
+      if(match)indexes.add(match[1]);
+    }
+    return [...indexes].sort((a,b)=>(Number(a)-Number(b))||String(a).localeCompare(String(b)));
+  }
+
   function setStyles(styles){
     const fallbacks=styleSelects();
-    for(let index=0;index<3;index++){
-      const style=styles[String(index)]||{};
-      const styleControl=findControl([`styles.${index}.name`,`style.${index}.name`,`styles.${index}.style`,`style.${index}.style`])||fallbacks[index];
+    const detectedIndexes=arrayKeys("styles");
+    for(let position=0;position<3;position++){
+      const style=styles[String(position)]||{};
+      const index=detectedIndexes[position]??(position===0?"0":String(position).padStart(3,"0"));
+      const styleControl=findControl([`styles.${index}.name`,`style.${index}.name`,`styles.${index}.style`,`style.${index}.style`])||fallbacks[position];
       if(styleControl&&clean(style.name)){setElement(styleControl,style.name);results.set++}else if(clean(style.name))results.missing++;
       setPath([`styles.${index}.attribute`,`style.${index}.attribute`,`styles.${index}.utsuwa`],style.attribute);
       setPath([`styles.${index}.mark`,`style.${index}.mark`,`styles.${index}.symbol`],style.mark);
-      const prefix=`styles.${index}.`;
+      const prefixes=[`styles.${index}.`,`style.${index}.`];
       for(const [key,element] of controlMap){
-        if(!key.startsWith(prefix)||!(element.type==="checkbox"||element.type==="radio"))continue;
+        if(!prefixes.some(prefix=>key.startsWith(prefix))||!(element.type==="checkbox"||element.type==="radio"))continue;
         if(/persona|double|cast|primary/.test(key)){setElement(element,String(style.mark||"").includes("◎"));results.set++}
         if(/key|single|secondary/.test(key)){setElement(element,String(style.mark||"").includes("●"));results.set++}
       }
@@ -149,17 +165,6 @@
       setPath([`ability.${key}.ctl`,`ability.${key}.control`,`abilities.${key}.control`],data.control,false);
     }
     setPath(["ability.cs","abilities.cs","cs"],abilities.cs?.value,false);
-  }
-
-  function arrayKeys(prefix){
-    const indexes=new Set();
-    const escaped=canonical(prefix).replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
-    const pattern=new RegExp(`^${escaped}\\.([^.]*)\\.`);
-    for(const key of controlMap.keys()){
-      const match=key.match(pattern);
-      if(match)indexes.add(match[1]);
-    }
-    return [...indexes].sort((a,b)=>(Number(a)-Number(b))||String(a).localeCompare(String(b)));
   }
 
   function findContainer(prefix,headingPattern){
@@ -236,7 +241,6 @@
   function skillRecord(record,prefix=""){
     return {
       name:prefix?stripPrefix(record.name,prefix):record.name,
-      kind:record.kind,
       level:record.level,
       reason:record.reason,
       passion:record.passion,
