@@ -22,7 +22,7 @@
         <label>ページタイトル<input id="page-title" type="text" value="ACT CAST FILE"></label>
         <label>アクト名／サブタイトル<input id="act-name" type="text" value="トーキョーＮ◎ＶＡ アクト参加キャスト"></label>
         <label>RULER名<input id="ruler-name" type="text" placeholder="例：稲荷秋"></label>
-        <label>公開ファイル名<input id="publish-slug" type="text" placeholder="例：tomorrow-once-more"><small>showcases/ファイル名.htmlとして公開します。</small></label>
+        <label>公開ファイル名<input id="publish-slug" type="text" placeholder="自動設定：act-0001"><small>既存のアクト履歴から次の連番を自動設定します。内容を上書きする場合は、公開済みページと同じファイル名を入力してください。</small></label>
         <label class="form-grid__wide">イントロ文<textarea id="intro-text" rows="4" placeholder="運命の扉を開く者たち。今夜、N◎VAの闇にアクセスする。"></textarea></label>
         <label>背景画像URL<input id="background-url" type="url" placeholder="https://... または ./assets/citymap.png"></label>
         <label>背景画像ファイル<input id="background-file" type="file" accept="image/*"><small>URLが入力されている場合はURLを優先します。</small></label>
@@ -46,6 +46,7 @@
     </section>
   </main>
   <script type="module" src="./js/showcase-generator.js?v=5"></script>
+  <script type="module" src="./js/showcase-auto-slug.js?v=1"></script>
   <script type="module" src="./js/showcase-generator-guard.js?v=2"></script>
 </body>
 </html>
