@@ -391,11 +391,20 @@ function renderSkills(skills) {
       }
 
       return `
-        <section class="skill-section">
+        <section class="skill-section skill-section--${escapeHtml(category)}">
           <h3>${escapeHtml(label)}</h3>
 
           <div class="data-table-wrapper">
-            <table class="data-table">
+            <table class="data-table skill-data-table skill-data-table--${escapeHtml(category)}">
+              <colgroup>
+                <col class="skill-col-name">
+                <col class="skill-col-level">
+                <col class="skill-col-suit">
+                <col class="skill-col-suit">
+                <col class="skill-col-suit">
+                <col class="skill-col-suit">
+                <col class="skill-col-detail">
+              </colgroup>
               <thead>
                 <tr>
                   <th>NAME</th>
@@ -519,136 +528,88 @@ function renderCombos(combos) {
   }
 
   container.innerHTML = combos
-    .map(createComboCard)
+    .map(combo => {
+      const abilityKey =
+        String(combo.ability_key ?? "reason").toLowerCase();
+
+      const abilityLabel =
+        COMBO_ABILITY_LABELS[abilityKey] ?? abilityKey;
+
+      const skillNames = Array.isArray(combo.skill_names)
+        ? combo.skill_names
+        : [];
+
+      const outcome = [
+        combo.difficulty ? `目標値 ${combo.difficulty}` : "",
+        combo.confrontation ? `対決 ${combo.confrontation}` : "",
+        combo.target ? `対象 ${combo.target}` : "",
+        combo.range ? `射程 ${combo.range}` : ""
+      ].filter(Boolean).join(" / ");
+
+      return `
+        <article class="combo-card">
+          <header class="combo-card__header">
+            <div>
+              <p class="combo-card__index">
+                COMBO ${String(combo.sort_order + 1).padStart(2, "0")}
+              </p>
+              <h3>${escapeHtml(combo.name || "UNNAMED COMBO")}</h3>
+            </div>
+            <span class="combo-card__ability">
+              ${escapeHtml(abilityLabel)}
+            </span>
+          </header>
+
+          <div class="combo-card__body">
+            <dl class="combo-card__meta">
+              <div>
+                <dt>技能</dt>
+                <dd>${escapeHtml(skillNames.join("＋") || "—")}</dd>
+              </div>
+              <div>
+                <dt>達成値</dt>
+                <dd>${escapeHtml(combo.achievement || "—")}</dd>
+              </div>
+              <div>
+                <dt>効果</dt>
+                <dd>${escapeHtml(combo.effect || "—")}</dd>
+              </div>
+            </dl>
+
+            ${outcome ? `<p class="combo-card__outcome">${escapeHtml(outcome)}</p>` : ""}
+
+            ${combo.description
+              ? `<p class="combo-card__description">${escapeHtml(combo.description)}</p>`
+              : ""}
+          </div>
+        </article>
+      `;
+    })
     .join("");
 }
 
-function createComboCard(combo) {
-  const ability =
-    COMBO_ABILITY_LABELS[combo.ability] ||
-    "ABILITY UNREGISTERED";
-
-  const conditions = [
-    combo.timing,
-    combo.target,
-    combo.range,
-    combo.cost
-  ]
-    .filter(Boolean)
-    .join(" / ");
-
-  return `
-    <article class="session-combo-card">
-      <header class="session-combo-card__header">
-        <div>
-          <p class="session-combo-card__ability">
-            ${escapeHtml(ability)}
-          </p>
-
-          <h3>
-            ${escapeHtml(combo.name)}
-          </h3>
-        </div>
-
-        <dl class="session-combo-card__values">
-          <div>
-            <dt>MODIFIER</dt>
-            <dd>
-              ${escapeHtml(combo.modifier || "—")}
-            </dd>
-          </div>
-
-          <div>
-            <dt>VALUE</dt>
-            <dd>
-              ${escapeHtml(combo.target_value || "—")}
-            </dd>
-          </div>
-        </dl>
-      </header>
-
-      <div class="session-combo-card__skills">
-        <span>COMBINATION</span>
-
-        <strong>
-          ${escapeHtml(
-            combo.skills || "NO SKILL COMBINATION"
-          )}
-        </strong>
-      </div>
-
-      ${
-        conditions
-          ? `
-            <p class="session-combo-card__conditions">
-              ${escapeHtml(conditions)}
-            </p>
-          `
-          : ""
-      }
-
-      ${
-        combo.description
-          ? `
-            <p class="session-combo-card__description">
-              ${escapeHtml(combo.description)}
-            </p>
-          `
-          : ""
-      }
-    </article>
-  `;
-}
-
-function createOutfitRow(item) {
+function createOutfitRow(outfit) {
   return `
     <tr>
-      <td>${escapeHtml(item.name)}</td>
-      <td>${escapeHtml(item.purchase_value)}</td>
-      <td>${escapeHtml(item.experience_cost)}</td>
-      <td>${escapeHtml(item.slot)}</td>
-      <td>${escapeHtml(item.range)}</td>
-      <td>${escapeHtml(item.attack)}</td>
-      <td>${escapeHtml(item.defense)}</td>
-      <td>${escapeHtml(item.description)}</td>
+      <td>${escapeHtml(outfit.name)}</td>
+      <td>${escapeHtml(outfit.purchase_value)}</td>
+      <td>${escapeHtml(outfit.experience_cost)}</td>
+      <td>${escapeHtml(outfit.slot)}</td>
+      <td>${escapeHtml(outfit.range)}</td>
+      <td>${escapeHtml(outfit.attack)}</td>
+      <td>${escapeHtml(outfit.defense)}</td>
+      <td>${escapeHtml(outfit.description)}</td>
     </tr>
   `;
 }
 
-function setupTabs() {
-  const buttons =
-    document.querySelectorAll("[data-tab]");
-
-  const panels =
-    document.querySelectorAll("[data-panel]");
-
-  buttons.forEach(button => {
-    button.addEventListener("click", () => {
-      const target = button.dataset.tab;
-
-      buttons.forEach(item => {
-        item.classList.toggle(
-          "is-active",
-          item === button
-        );
-      });
-
-      panels.forEach(panel => {
-        panel.classList.toggle(
-          "is-active",
-          panel.dataset.panel === target
-        );
-      });
-    });
-  });
-}
-
 function createDefinitionList(items) {
   return items
+    .filter(([, value]) => value)
     .map(([label, value]) => `
       <div>
         <dt>${escapeHtml(label)}</dt>
-        <dd>${escapeHtml(value || "—")}</dd>
+        <dd>${escapeHtml(value)}</dd>
       </div>
     `)
     .join("");
@@ -656,31 +617,37 @@ function createDefinitionList(items) {
 
 function groupBy(items, key) {
   return items.reduce((groups, item) => {
-    const value = item[key];
-
-    if (!groups[value]) {
-      groups[value] = [];
-    }
-
-    groups[value].push(item);
+    const groupKey = item[key] || "other";
+    groups[groupKey] ??= [];
+    groups[groupKey].push(item);
     return groups;
   }, {});
-}
-
-function formatHandle(handle) {
-  return handle ? `“${handle}”` : "NO HANDLE";
-}
-
-function displayValue(value) {
-  return value ?? "—";
 }
 
 function setText(selector, value) {
   const element = document.querySelector(selector);
 
-  if (element) {
-    element.textContent = value ?? "";
+  if (!element) {
+    return;
   }
+
+  element.textContent = displayValue(value);
+}
+
+function displayValue(value) {
+  if (value === null || value === undefined || value === "") {
+    return "—";
+  }
+
+  return String(value);
+}
+
+function formatHandle(handle) {
+  if (!handle) {
+    return "NO HANDLE";
+  }
+
+  return `“${handle}”`;
 }
 
 function escapeHtml(value) {
@@ -696,8 +663,6 @@ function showError(message) {
   statusText.textContent = "ACCESS DENIED";
   errorMessage.textContent = message;
   errorPanel.hidden = false;
-  content.hidden = true;
 }
 
-setupTabs();
 loadCharacter();
