@@ -10,22 +10,14 @@
 <body>
   <div class="background-grid"></div>
   <div class="scanlines"></div>
-
   <header class="showcase-header">
     <a class="showcase-header__back" href="./account.html">&lt; アカウントへ <small>RETURN TO ACCOUNT</small></a>
-    <div>
-      <p>N◎VA MUNICIPAL DATABASE</p>
-      <h1>セッション紹介生成 <small>SESSION CAST SHOWCASE</small></h1>
-    </div>
+    <div><p>N◎VA MUNICIPAL DATABASE</p><h1>セッション紹介生成 <small>SESSION CAST SHOWCASE</small></h1></div>
     <a class="showcase-header__archive" href="./index.html">キャスト一覧 <small>CAST ARCHIVE</small></a>
   </header>
-
   <main class="showcase-layout">
     <section class="showcase-panel">
-      <header class="showcase-panel__header">
-        <div><span>01</span><h2>セッション情報 <small>SESSION PROFILE</small></h2></div>
-        <p>GENERATED PAGE CONTROL</p>
-      </header>
+      <header class="showcase-panel__header"><div><span>01</span><h2>セッション情報 <small>SESSION PROFILE</small></h2></div><p>GENERATED PAGE CONTROL</p></header>
       <div class="showcase-panel__body form-grid">
         <label>ページタイトル<input id="page-title" type="text" value="SESSION CAST FILE"></label>
         <label>セッション名／サブタイトル<input id="session-name" type="text" value="トーキョーＮ◎ＶＡ セッション参加キャスト"></label>
@@ -36,65 +28,24 @@
         <label>背景画像ファイル<input id="background-file" type="file" accept="image/*"><small>URLが入力されている場合はURLを優先します。</small></label>
       </div>
     </section>
-
     <section class="showcase-panel">
-      <header class="showcase-panel__header">
-        <div><span>02</span><h2>公開キャスト選択 <small>PUBLIC CAST SELECTOR</small></h2></div>
-        <p><strong id="selected-count">0</strong> / 6 SELECTED</p>
-      </header>
-      <div class="showcase-panel__body">
-        <div class="selector-controls">
-          <label>検索<input id="cast-search" type="search" placeholder="名前・ハンドル・PL・所属"></label>
-          <label>プレイヤー<select id="player-filter"><option value="">すべて</option></select></label>
-          <label>スタイル<select id="style-filter"><option value="">すべて</option></select></label>
-        </div>
-        <p id="library-status" class="generator-status">公開キャストを読み込み中…</p>
-        <div id="public-cast-grid" class="public-cast-grid" aria-live="polite"></div>
-      </div>
+      <header class="showcase-panel__header"><div><span>02</span><h2>公開キャスト選択 <small>PUBLIC CAST SELECTOR</small></h2></div><p><strong id="selected-count">0</strong> / 6 SELECTED</p></header>
+      <div class="showcase-panel__body"><div class="selector-controls"><label>検索<input id="cast-search" type="search" placeholder="名前・ハンドル・PL・所属"></label><label>プレイヤー<select id="player-filter"><option value="">すべて</option></select></label><label>スタイル<select id="style-filter"><option value="">すべて</option></select></label></div><p id="library-status" class="generator-status">公開キャストを読み込み中…</p><div id="public-cast-grid" class="public-cast-grid" aria-live="polite"></div></div>
     </section>
-
     <section class="showcase-panel">
-      <header class="showcase-panel__header">
-        <div><span>03</span><h2>出演順と紹介文 <small>CAST ORDER / PROFILE</small></h2></div>
-        <p>CAST 01—06</p>
-      </header>
-      <div class="showcase-panel__body">
-        <div id="selected-casts" class="selected-casts">
-          <p class="empty-state">公開キャストから1～6名を選択してください。</p>
-        </div>
-      </div>
+      <header class="showcase-panel__header"><div><span>03</span><h2>出演順と紹介文 <small>CAST ORDER / PROFILE</small></h2></div><p>CAST 01—06</p></header>
+      <div class="showcase-panel__body"><div id="selected-casts" class="selected-casts"><p class="empty-state">公開キャストから1～6名を選択してください。</p></div></div>
     </section>
-
     <section class="showcase-panel">
-      <header class="showcase-panel__header">
-        <div><span>04</span><h2>生成・公開 <small>GENERATE / DEPLOY</small></h2></div>
-        <p>STATIC HTML OUTPUT</p>
-      </header>
+      <header class="showcase-panel__header"><div><span>04</span><h2>生成・公開 <small>GENERATE / DEPLOY</small></h2></div><p>SECURE EDGE DEPLOYMENT</p></header>
       <div class="showcase-panel__body">
-        <div class="publish-grid">
-          <label>GitHub Fine-grained Token
-            <input id="github-token" type="password" autocomplete="off" placeholder="github_pat_...">
-            <small>リポジトリ Contents の書込権限が必要です。入力値は保存しません。</small>
-          </label>
-          <div class="publish-target">
-            <span>公開先</span>
-            <strong>inarin14311431/tnx_cast_list</strong>
-            <small>main / showcases</small>
-          </div>
-        </div>
-        <div class="generator-actions">
-          <button id="generate-button" type="button">HTML生成 <small>GENERATE</small></button>
-          <button id="download-button" type="button" disabled>ダウンロード <small>DOWNLOAD</small></button>
-          <button id="copy-button" type="button" disabled>HTMLコピー <small>COPY</small></button>
-          <button id="publish-button" class="is-publish" type="button" disabled>GitHub Pagesへ公開 <small>DEPLOY</small></button>
-        </div>
-        <p id="generator-status" class="generator-status">待機中</p>
-        <iframe id="showcase-preview" class="showcase-preview" title="生成HTMLプレビュー"></iframe>
+        <div class="publish-grid"><div class="publish-target"><span>認証方式</span><strong>SUPABASE EDGE FUNCTION</strong><small>ログイン中のオペレーターだけが公開できます。認証情報はブラウザへ配布されません。</small></div><div class="publish-target"><span>公開先</span><strong>inarin14311431/tnx_cast_list</strong><small>main / showcases</small></div></div>
+        <div class="generator-actions"><button id="generate-button" type="button">HTML生成 <small>GENERATE</small></button><button id="download-button" type="button" disabled>ダウンロード <small>DOWNLOAD</small></button><button id="copy-button" type="button" disabled>HTMLコピー <small>COPY</small></button><button id="publish-button" class="is-publish" type="button" disabled>GitHub Pagesへ公開 <small>SECURE DEPLOY</small></button></div>
+        <p id="generator-status" class="generator-status">待機中</p><iframe id="showcase-preview" class="showcase-preview" title="生成HTMLプレビュー"></iframe>
       </div>
     </section>
   </main>
-
-  <script type="module" src="./js/showcase-generator.js?v=1"></script>
+  <script type="module" src="./js/showcase-generator.js?v=2"></script>
   <script type="module" src="./js/showcase-generator-guard.js?v=1"></script>
 </body>
 </html>
