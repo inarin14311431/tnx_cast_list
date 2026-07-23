@@ -49,6 +49,35 @@
   background:#06242c!important;
 }
 
+/* Match all standard-skill suit marks to style-skill marks. */
+#skills-container .skill-section .cast-suit-box{
+  display:grid!important;
+  place-items:center!important;
+  box-sizing:border-box!important;
+  width:27px!important;
+  min-width:27px!important;
+  max-width:27px!important;
+  height:27px!important;
+  min-height:27px!important;
+  max-height:27px!important;
+  margin:auto!important;
+  padding:0!important;
+  border:1px solid #2b8794!important;
+  border-radius:6px!important;
+  color:#a7d1d6!important;
+  background:#062832!important;
+  box-shadow:none!important;
+  font-size:21px!important;
+  font-weight:400!important;
+  line-height:1!important;
+}
+#skills-container .skill-section .cast-suit-box.is-active{
+  border-color:#5ef3ff!important;
+  color:#03222b!important;
+  background:#39dce8!important;
+  box-shadow:0 0 5px rgba(60,232,246,.55)!important;
+}
+
 /*
  * Align suit columns at 300px from the left edge.
  * General/social/connection: 252 + 48 = 300
