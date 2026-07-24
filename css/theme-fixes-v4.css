@@ -2,21 +2,39 @@
 
 /* Public view: style skills use .style-suit-mark instead of .cast-suit-box. */
 html[data-theme] #style-skill-panel .style-suit-mark,
-html[data-theme] .style-skill-view-table .style-suit-mark{
+html[data-theme] #style-skill-panel .style-skill-view-table .style-suit-mark,
+html[data-theme] #tab-session .style-skill-view-table .style-suit-mark{
+  display:grid!important;
+  place-items:center!important;
+  box-sizing:border-box!important;
+  width:27px!important;
+  min-width:27px!important;
+  max-width:27px!important;
+  height:27px!important;
+  min-height:27px!important;
+  max-height:27px!important;
+  margin:auto!important;
+  padding:0!important;
+  border:1px solid var(--line-muted)!important;
+  border-radius:6px!important;
   color:var(--text-muted)!important;
-  border-color:var(--line-muted)!important;
   background:color-mix(in srgb,var(--theme-input-bg) 90%,var(--line) 10%)!important;
   box-shadow:none!important;
+  font-size:21px!important;
+  font-weight:400!important;
+  line-height:1!important;
+  text-shadow:none!important;
 }
 html[data-theme] #style-skill-panel .style-suit-mark.is-active,
-html[data-theme] .style-skill-view-table .style-suit-mark.is-active{
+html[data-theme] #style-skill-panel .style-skill-view-table .style-suit-mark.is-active,
+html[data-theme] #tab-session .style-skill-view-table .style-suit-mark.is-active{
   color:var(--theme-on-accent)!important;
   border-color:var(--line)!important;
   background:var(--line)!important;
   box-shadow:0 0 8px var(--theme-shadow)!important;
 }
 
-/* Editor view: general and style skills share the same suit treatment. */
+/* Editor view: general and style skills share exactly the same suit treatment. */
 html[data-theme] #general-skills .suit-check span,
 html[data-theme] #style-skills .suit-check span{
   color:var(--text-muted)!important;
@@ -32,9 +50,40 @@ html[data-theme] #style-skills .suit-check input:checked+span{
   box-shadow:0 0 8px var(--theme-shadow)!important;
 }
 
-/* Skill reorder labels come from button text only: ▲ ▼ ×. */
-html[data-theme] [data-skill-move]::before,
-html[data-theme] [data-skill-move]::after{
-  content:none!important;
+/* Render exactly one ▲ or ▼, regardless of legacy button text or pseudo-elements. */
+html[data-theme] [data-skill-move="up"],
+html[data-theme] [data-skill-move="down"],
+html[data-theme] [data-outfit-move="up"],
+html[data-theme] [data-outfit-move="down"]{
+  position:relative!important;
+  font-size:0!important;
+  line-height:1!important;
+  text-indent:0!important;
+}
+html[data-theme] [data-skill-move="up"]::before,
+html[data-theme] [data-outfit-move="up"]::before{
+  display:inline!important;
+  content:"▲"!important;
+  font-size:.72rem!important;
+  line-height:1!important;
+}
+html[data-theme] [data-skill-move="down"]::before,
+html[data-theme] [data-outfit-move="down"]::before{
+  display:inline!important;
+  content:"▼"!important;
+  font-size:.72rem!important;
+  line-height:1!important;
+}
+html[data-theme] [data-skill-move="up"]::after,
+html[data-theme] [data-skill-move="down"]::after,
+html[data-theme] [data-outfit-move="up"]::after,
+html[data-theme] [data-outfit-move="down"]::after{
   display:none!important;
+  content:none!important;
+}
+html[data-theme] .row-delete,
+html[data-theme] .outfit-delete-button{
+  font-size:.8rem!important;
+  line-height:1!important;
+  text-indent:0!important;
 }
