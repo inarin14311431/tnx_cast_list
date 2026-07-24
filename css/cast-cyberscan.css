@@ -25,13 +25,7 @@ body.cast-scan-mode::before{
 .cast-data-rain span{position:absolute;top:-35%;white-space:pre;animation:data-rain linear infinite;filter:drop-shadow(0 0 4px currentColor)}
 @keyframes data-rain{to{transform:translateY(160vh)}}
 
-.cast-access-overlay{
-  position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:24px;
-  color:#dffbff;background:
-    repeating-linear-gradient(0deg,rgba(255,255,255,.02) 0 1px,transparent 1px 4px),
-    radial-gradient(circle at center,rgba(30,104,129,.22),transparent 44%),#01070a;
-  transition:opacity .5s ease,visibility .5s ease;
-}
+.cast-access-overlay{position:fixed;inset:0;z-index:9999;display:grid;place-items:center;padding:24px;color:#dffbff;background:repeating-linear-gradient(0deg,rgba(255,255,255,.02) 0 1px,transparent 1px 4px),radial-gradient(circle at center,rgba(30,104,129,.22),transparent 44%),#01070a;transition:opacity .5s ease,visibility .5s ease}
 .cast-access-overlay.is-complete{opacity:0;visibility:hidden;pointer-events:none}
 .cast-access-terminal{position:relative;width:min(760px,100%);padding:28px;border:1px solid rgba(95,234,255,.45);background:rgba(2,14,20,.88);box-shadow:0 0 0 1px rgba(95,234,255,.08) inset,0 0 50px rgba(31,188,222,.12);clip-path:polygon(0 0,calc(100% - 26px) 0,100% 26px,100% 100%,26px 100%,0 calc(100% - 26px))}
 .cast-access-terminal::before,.cast-access-terminal::after{position:absolute;content:"";background:var(--scan-cyan);box-shadow:0 0 14px var(--scan-cyan)}
@@ -51,8 +45,10 @@ body.cast-scan-mode::before{
 .cast-content::before{position:absolute;inset:-16px -16px auto;height:1px;content:"";background:linear-gradient(90deg,transparent,var(--scan-cyan),transparent);opacity:.5}
 .cast-hero{position:relative;padding:18px;border:1px solid rgba(95,234,255,.22);background:linear-gradient(135deg,rgba(34,159,190,.08),transparent 34%,rgba(145,72,196,.07));box-shadow:0 0 40px rgba(0,0,0,.35),inset 0 0 40px rgba(95,234,255,.025)}
 .cast-hero::before{position:absolute;top:8px;right:12px;content:"IDENTITY TRACE // COMPLETE";color:var(--scan-green);font:10px monospace;letter-spacing:.14em}
-.cast-hero__image-frame{border-color:rgba(95,234,255,.55)!important;box-shadow:0 0 30px rgba(37,178,208,.16)}
-.cast-hero__image-frame::after{position:absolute;inset:0;z-index:2;content:"";pointer-events:none;background:linear-gradient(90deg,transparent 49.6%,rgba(95,234,255,.15) 50%,transparent 50.4%),linear-gradient(transparent 49.6%,rgba(95,234,255,.12) 50%,transparent 50.4%);background-size:44px 44px;mix-blend-mode:screen}
+.cast-hero__image-frame{position:relative;border-color:rgba(95,234,255,.55)!important;background-color:#02080b!important;background-image:linear-gradient(rgba(95,234,255,.15) 1px,transparent 1px),linear-gradient(90deg,rgba(95,234,255,.15) 1px,transparent 1px)!important;background-size:44px 44px!important;box-shadow:0 0 30px rgba(37,178,208,.16)}
+.cast-hero__image-frame img{position:relative;z-index:1;background:transparent}
+.cast-hero__image-frame::after{display:none!important;content:none!important}
+.cast-hero__image-scan,.cast-hero__image-label{z-index:2}
 .cast-hero__identity{border-color:rgba(95,234,255,.34)!important;background:linear-gradient(135deg,rgba(13,59,72,.72),rgba(3,13,18,.88) 48%,rgba(41,15,56,.64))!important;box-shadow:inset 4px 0 0 rgba(95,234,255,.45)}
 .cast-public-id::before{content:"TARGET-ID // ";color:var(--scan-cyan)}
 .cast-name-readings{display:flex;align-items:baseline;flex-wrap:wrap;gap:.7em;margin:38px 0 8px;color:var(--scan-cyan)}
@@ -80,7 +76,6 @@ body.cast-scan-mode::before{
 .profile-text{white-space:pre-wrap;background:repeating-linear-gradient(180deg,transparent 0 27px,rgba(95,234,255,.04) 27px 28px)}
 .data-table tr:hover td,.cast-outfit-table tr:hover td{background:rgba(95,234,255,.055)}
 .cast-outfit-table tfoot{box-shadow:inset 0 1px 0 var(--scan-cyan)}
-
 @keyframes data-rain{to{transform:translateY(170vh)}}
 @media(max-width:800px){.cast-access-terminal{padding:20px}.cast-header{position:relative}.cast-tabs{top:0}.cast-hero{padding:10px}.cast-hero::before{display:none}.cast-name-readings{margin-top:28px}.cast-name-primary{align-items:flex-start;gap:.35em;font-size:clamp(1.15rem,5.2vw,1.6rem)}.cast-name-primary .cast-handle,.cast-name-primary .cast-name{white-space:normal;overflow-wrap:anywhere}}
 @media(prefers-reduced-motion:reduce){.cast-data-rain span,.cast-hero__image-scan{animation:none!important}.cast-access-overlay{transition:none}}
