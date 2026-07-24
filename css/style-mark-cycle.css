@@ -1,3 +1,5 @@
+@import url("./style-selection-emphasis.css?v=1");
+
 /* Style assignment marks displayed to the right of each style name. */
 .style-card .style-mark-source{display:none!important}
 .style-card .style-name-label{min-width:0}
