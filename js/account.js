@@ -68,10 +68,11 @@ function visibilityLabel(value) {
 
 function createOwnedCastItem(character) {
   const id = encodeURIComponent(character.public_id);
+  const displayId = obfuscatePublicId(character.public_id);
   return `
     <article class="owned-cast">
       <div>
-        <p class="owned-cast__id">${escapeHtml(character.public_id)}</p>
+        <p class="owned-cast__id">${escapeHtml(displayId)}</p>
         <p class="owned-cast__handle">${escapeHtml(character.handle ? `“${character.handle}”` : "ハンドル未登録")}</p>
         <h3>${escapeHtml(character.character_name)}</h3>
       </div>
@@ -151,6 +152,16 @@ async function duplicateCharacter(publicId) {
   }
 
   window.location.href = `${SITE_BASE_PATH}sheet.html?id=${encodeURIComponent(created.public_id)}`;
+}
+
+function obfuscatePublicId(value) {
+  const source = `TNX_CAST_ARCHIVE::${String(value ?? "")}`;
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < source.length; index++) {
+    hash ^= source.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return `TNX-${(hash >>> 0).toString(16).toUpperCase().padStart(8, "0")}`;
 }
 
 function formatDate(value) {
