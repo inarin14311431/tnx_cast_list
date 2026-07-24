@@ -18,6 +18,7 @@ const GENERAL_MASTER = [
 const OUTFIT_LABELS = {weapon:"武器",armor:"防具",cyberware:"サイバーウェア",tron:"トロン",vehicle:"ヴィークル",residence:"住居",other:"その他"};
 let user, character = null, skills = [], outfits = [], loading = false, dirty = false, saving = false, pending = false, saveTimer, importMode = "";
 const styleBaseline = {};
+const generalMasterPlaceholders = new Map();
 
 init();
 
@@ -127,7 +128,16 @@ function renderAbilities(){ $("#ability-grid").innerHTML=ABILITIES.map(([key,jp,
 function blankSkill(category){ return {_key:crypto.randomUUID(),category,name:"",level:1,free_level:0,skill_kind:category==="style"?"normal":category==="general"?"general":"proper",reason:false,passion:false,life:false,mundane:false,timing:"",target:"",range:"",difficulty:"",confrontation:"",description:"",sort_order:skills.length}; }
 function normalizeSkill(skill){ const result={...blankSkill(skill.category),...skill,_key:skill.id||crypto.randomUUID(),free_level:0,skill_kind:skill.skill_kind||inferKind(skill)}; if(result.name==="初期取得")result.name=result.category==="connection"?"コネ：":"社会："; if(result.name==="社会：初期取得")result.name="社会："; if(result.name==="コネ：初期取得")result.name="コネ："; return result; }
 function inferKind(skill){ if(skill.category==="style")return /奥義/.test(skill.type||"")?"ultimate":/秘技/.test(skill.type||"")?"secret":"normal"; return String(skill.name||"").includes("：")?"proper":"general"; }
-function mergedGeneral(){ const output=[...skills.filter(item=>item.category==="general")]; for(const [name,suit,kind] of GENERAL_MASTER)if(!output.some(item=>item.name===name))output.push({...blankSkill("general"),name,level:0,skill_kind:kind,[suit]:false,_master:true}); return output.sort((a,b)=>{ const ai=GENERAL_MASTER.findIndex(item=>item[0]===a.name),bi=GENERAL_MASTER.findIndex(item=>item[0]===b.name); if(ai<0&&bi<0)return 0; if(ai<0)return 1; if(bi<0)return-1; return ai-bi; }); }
+function generalMasterPlaceholder(name,suit,kind){
+  let skill=generalMasterPlaceholders.get(name);
+  const reusable=skill&&!skills.includes(skill)&&skill.name===name&&Number(skill.level||0)===0&&!SUITS.some(key=>skill[key]);
+  if(!reusable){
+    skill={...blankSkill("general"),name,level:0,skill_kind:kind,[suit]:false,_master:true};
+    generalMasterPlaceholders.set(name,skill);
+  }
+  return skill;
+}
+function mergedGeneral(){ const output=[...skills.filter(item=>item.category==="general")]; for(const [name,suit,kind] of GENERAL_MASTER)if(!output.some(item=>item.name===name))output.push(generalMasterPlaceholder(name,suit,kind)); return output.sort((a,b)=>{ const ai=GENERAL_MASTER.findIndex(item=>item[0]===a.name),bi=GENERAL_MASTER.findIndex(item=>item[0]===b.name); if(ai<0&&bi<0)return 0; if(ai<0)return 1; if(bi<0)return-1; return ai-bi; }); }
 function renderSkills(){ $("#general-skills").innerHTML=[skillTable("一般技能","GENERAL SKILLS",mergedGeneral(),false),skillTable("社会","SOCIAL",skills.filter(item=>item.category==="social"),false),skillTable("コネクション","CONNECTIONS",skills.filter(item=>item.category==="connection"),false)].join(""); $("#style-skills").innerHTML=skillTable("スタイル技能","STYLE SKILLS",skills.filter(item=>item.category==="style"),true); bindSkillRows(); }
 function skillTable(jp,en,rows,detail){ if(!rows.length)return""; return `<section class="skill-group"><h3 class="skill-group-title">${jp} <small>${en}</small></h3><table class="skill-table ${detail?"has-detail":"no-detail"}"><thead><tr><th class="name-col">名称</th><th class="type-col">種別</th><th class="lv-col">LV</th>${MARKS.map(mark=>`<th class="suit-col">${mark}</th>`).join("")}${detail?"<th>詳細</th>":""}<th></th></tr></thead><tbody>${rows.map(item=>skillRow(item,detail)).join("")}</tbody></table></section>`; }
 function skillRow(skill,detail){
