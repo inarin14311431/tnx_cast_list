@@ -147,13 +147,14 @@ function createCharacterCard(character) {
           <span class="cast-card__scanline"></span>
         </div>
         <div class="cast-card__body">
-          <div class="cast-card__meta"><p class="cast-card__id">${escapeHtml(displayId)}</p><p class="cast-card__exp">${escapeHtml(character.experience_points ?? 0)} EXP</p></div>
+          <div class="cast-card__meta"><p class="cast-card__exp">${escapeHtml(character.experience_points ?? 0)} EXP</p></div>
           <p class="cast-card__handle">${escapeHtml(character.handle || "ハンドル未登録")}</p>
           <h2 class="cast-card__name">${escapeHtml(character.character_name)}</h2>
           <p class="cast-card__styles">${styles}</p>
           <p class="cast-card__player">プレイヤー：${escapeHtml(character.player_name || "—")}</p>
           <p class="cast-card__affiliation">${escapeHtml(character.affiliation)}</p>
           <p class="cast-card__summary">${escapeHtml(character.summary)}</p>
+          <p class="cast-card__serial">${escapeHtml(displayId)}</p>
         </div>
       </a>
     </article>`;
