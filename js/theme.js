@@ -29,7 +29,7 @@
     if (document.querySelector('link[data-theme-runtime]')) return;
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "./css/theme-runtime.css?v=1";
+    link.href = "./css/theme-runtime.css?v=2";
     link.dataset.themeRuntime = "1";
     document.head.append(link);
   }
