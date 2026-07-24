@@ -1,0 +1,41 @@
+/* Multiline text controls for style-skill names and imported outfit data. */
+#style-skills textarea[data-f="name"],
+#outfit-list textarea[data-o]{
+  display:block;
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  min-height:36px;
+  margin:0;
+  padding:7px 6px;
+  resize:vertical;
+  overflow:hidden;
+  color:inherit;
+  background:inherit;
+  font:inherit;
+  line-height:1.35;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+}
+
+#style-skills tr:has(textarea[data-f="name"]),
+#style-skills tr:has(textarea[data-f="name"])>td,
+#outfit-list tr:has(textarea[data-o]),
+#outfit-list tr:has(textarea[data-o])>td{
+  height:auto!important;
+  min-height:0!important;
+}
+
+#style-skills tr:has(textarea[data-f="name"])>td,
+#outfit-list tr:has(textarea[data-o])>td{
+  vertical-align:top!important;
+}
+
+#style-skills textarea[data-f="name"]{
+  resize:none;
+}
+
+#outfit-list textarea[data-o="description"]{
+  min-height:36px;
+}
