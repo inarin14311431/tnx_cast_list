@@ -36,6 +36,15 @@
     document.head.append(link);
   }
 
+  function appendScript(src, marker) {
+    if (document.querySelector(`script[${marker}]`)) return;
+    const script = document.createElement("script");
+    script.src = src;
+    script.async = false;
+    script.setAttribute(marker, "1");
+    document.head.append(script);
+  }
+
   function loadLateOverrides() {
     appendStylesheet("./css/theme-runtime.css?v=2", "data-theme-runtime");
     appendStylesheet("./css/theme-polish.css?v=2", "data-theme-polish");
@@ -70,6 +79,7 @@
     buttonObserver.observe(document.documentElement, { childList: true, subtree: true });
   }
 
+  appendScript("./js/handle-format.js?v=2", "data-handle-format");
   applyTheme(readTheme());
 
   function bindSelectors() {
