@@ -91,3 +91,56 @@ html[data-theme] #outfit-list .outfit-delete-button:hover:not(:disabled){
   background:var(--alert)!important;
   filter:brightness(1.12);
 }
+
+/* Public-view return link matches the plain two-line editor-header link. */
+html[data-theme] .cast-header__actions .cast-header__back{
+  display:grid!important;
+  grid-template-columns:1fr!important;
+  gap:4px!important;
+  align-items:start!important;
+  justify-content:start!important;
+  min-width:0!important;
+  width:auto!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  color:var(--text)!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  font-family:inherit!important;
+  text-align:left!important;
+  text-decoration:none!important;
+  text-shadow:none!important;
+  white-space:nowrap!important;
+}
+html[data-theme] .cast-header__actions .cast-header__back span{
+  color:var(--text)!important;
+  font-size:1rem!important;
+  font-weight:400!important;
+  line-height:1.25!important;
+  letter-spacing:.035em!important;
+  text-shadow:none!important;
+}
+html[data-theme] .cast-header__actions .cast-header__back small{
+  display:block!important;
+  margin:0!important;
+  color:var(--text-muted)!important;
+  font-family:monospace!important;
+  font-size:.68rem!important;
+  font-weight:700!important;
+  line-height:1.15!important;
+  letter-spacing:.075em!important;
+  text-shadow:none!important;
+}
+html[data-theme] .cast-header__actions .cast-header__back:hover,
+html[data-theme] .cast-header__actions .cast-header__back:focus-visible{
+  color:var(--line)!important;
+  border:0!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+html[data-theme] .cast-header__actions .cast-header__back:hover span,
+html[data-theme] .cast-header__actions .cast-header__back:focus-visible span{
+  color:var(--line)!important;
+}
