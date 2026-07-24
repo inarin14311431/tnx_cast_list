@@ -27,19 +27,23 @@
   <link rel="stylesheet" href="./css/cast-status-hide.css?v=1">
   <link rel="stylesheet" href="./css/themes.css?v=1">
   <link rel="stylesheet" href="./css/style-skill-separators.css?v=2">
+  <link rel="stylesheet" href="./css/cast-id-header.css?v=1">
 </head>
 <body>
   <div class="background-grid"></div><div class="scanlines"></div>
   <header class="cast-header">
     <div class="cast-header__actions"><a class="cast-header__back" href="./account.html"><span>&lt; アカウントへ</span><small>RETURN TO ACCOUNT</small></a><a id="cast-edit-button" class="cast-edit-link" hidden><span>キャストを編集</span><small>EDIT CAST</small></a></div>
-    <p class="cast-header__system">N◎VA MUNICIPAL DATABASE</p>
-    <p id="cast-status" class="cast-header__status">キャストデータへアクセス中…</p>
+    <div class="cast-header__record">
+      <p class="cast-header__system">N◎VA MUNICIPAL DATABASE</p>
+      <p id="cast-status" class="cast-header__status">キャストデータへアクセス中…</p>
+      <p id="cast-public-id" class="cast-public-id cast-header__public-id"></p>
+    </div>
   </header>
   <main id="cast-content" class="cast-content" hidden>
     <section class="cast-hero">
       <div class="cast-hero__image-panel"><div class="cast-hero__image-frame"><img id="cast-image" src="./assets/placeholders/scan-failed.webp" alt=""><span class="cast-hero__image-scan"></span><div class="cast-hero__image-label">人物画像 <small>VISUAL IDENTITY</small></div></div></div>
       <div class="cast-hero__identity">
-        <p id="cast-public-id" class="cast-public-id"></p><div class="cast-name-readings"><span id="cast-handle-kana" class="cast-handle-kana"></span><span id="cast-kana" class="cast-kana"></span></div><div class="cast-name-primary"><span id="cast-handle" class="cast-handle"></span><h1 id="cast-name" class="cast-name"></h1></div>
+        <div class="cast-name-readings"><span id="cast-handle-kana" class="cast-handle-kana"></span><span id="cast-kana" class="cast-kana"></span></div><div class="cast-name-primary"><span id="cast-handle" class="cast-handle"></span><h1 id="cast-name" class="cast-name"></h1></div>
         <div id="cast-styles" class="cast-styles"></div>
         <section class="hero-divine-panel" aria-label="神業"><header><h2>神業 <small>DIVINE WORK</small></h2></header><div id="divine-list" class="divine-list hero-divine-list"></div></section>
         <dl class="identity-grid"><div><dt>プレイヤー</dt><dd id="cast-player"></dd></div><div><dt>所属</dt><dd id="cast-affiliation"></dd></div><div><dt>市民ランク</dt><dd id="cast-rank"></dd></div><div><dt>消費経験点</dt><dd id="cast-exp"></dd></div></dl>
@@ -54,6 +58,7 @@
   <section id="cast-error" class="cast-error" hidden><p class="cast-error__code">キャストデータが見つかりません <small>CAST DATA NOT FOUND</small></p><p id="cast-error-message"></p><a href="./index.html">キャスト一覧へ戻る</a></section>
   <script src="./js/cast-cyberscan.js?v=68"></script>
   <script type="module" src="./js/cast.js?v=69"></script>
+  <script src="./js/cast-id-display.js?v=1"></script>
   <script src="./js/cast-tabs.js?v=1"></script>
   <script type="module" src="./js/cast-ui.js?v=69"></script>
   <script type="module" src="./js/ui-v25.js?v=69"></script>
