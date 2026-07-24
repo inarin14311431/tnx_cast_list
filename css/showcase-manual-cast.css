@@ -1,0 +1,78 @@
+/* Manual, non-archive casts in the act showcase generator. */
+.showcase-panel__header-actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:flex-end!important;
+  gap:12px!important;
+}
+
+.showcase-panel__header-actions>p{white-space:nowrap}
+
+.manual-cast-add{
+  min-height:36px;
+  padding:7px 12px;
+  border:1px solid rgba(117,255,180,.62);
+  color:#dffff0;
+  background:linear-gradient(180deg,rgba(117,255,180,.16),rgba(117,255,180,.05));
+  cursor:pointer;
+  font-weight:900;
+  white-space:nowrap;
+}
+
+.manual-cast-add small{
+  display:block;
+  margin-top:2px;
+  color:#79b998;
+  font:700 .54rem/1 "Share Tech Mono",monospace;
+  letter-spacing:.12em;
+}
+
+.manual-cast-add:hover:not(:disabled){
+  border-color:var(--showcase-green);
+  box-shadow:0 0 16px rgba(117,255,180,.16);
+}
+
+.manual-cast-add:disabled{opacity:.35;cursor:not-allowed}
+
+.selected-cast--manual{
+  border-color:rgba(255,99,185,.42);
+  background:linear-gradient(90deg,rgba(255,99,185,.06),rgba(0,8,12,.7));
+}
+
+.selected-cast--manual img{
+  object-fit:cover;
+  filter:saturate(.65) contrast(1.08);
+}
+
+.selected-cast__manual-fields{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+
+.selected-cast__manual-fields .manual-field--quote,
+.selected-cast__manual-fields .manual-field--description{
+  grid-column:span 3;
+}
+
+.selected-cast__manual-fields textarea{min-height:78px}
+
+.selected-cast__manual-id{
+  color:#ff9ed0!important;
+  letter-spacing:.08em;
+}
+
+@media(max-width:1000px){
+  .showcase-panel__header-actions{align-items:flex-end!important;flex-direction:column!important;gap:6px!important}
+  .selected-cast__manual-fields{grid-column:1/-1;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .selected-cast__manual-fields .manual-field--quote,
+  .selected-cast__manual-fields .manual-field--description{grid-column:1/-1}
+}
+
+@media(max-width:680px){
+  .showcase-panel__header-actions{width:100%;align-items:stretch!important}
+  .manual-cast-add{width:100%}
+  .selected-cast__manual-fields{grid-template-columns:1fr}
+  .selected-cast__manual-fields .manual-field--quote,
+  .selected-cast__manual-fields .manual-field--description{grid-column:auto}
+}
