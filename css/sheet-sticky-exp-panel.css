@@ -1,0 +1,24 @@
+/* Keep the experience/action panel visible beside the editor content. */
+:root{--sheet-editor-sticky-offset:118px}
+
+@media (min-width:981px){
+  .sheet-layout{align-items:start}
+  .exp-panel{
+    position:sticky!important;
+    top:var(--sheet-editor-sticky-offset)!important;
+    align-self:start!important;
+    max-height:calc(100vh - var(--sheet-editor-sticky-offset) - 18px)!important;
+    overflow-x:hidden!important;
+    overflow-y:auto!important;
+    overscroll-behavior:contain;
+    scrollbar-gutter:stable;
+  }
+}
+
+@media (max-width:980px){
+  .exp-panel{
+    position:static!important;
+    max-height:none!important;
+    overflow:visible!important;
+  }
+}
