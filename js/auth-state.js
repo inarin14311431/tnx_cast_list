@@ -46,8 +46,8 @@ export async function renderAuthNavigation() {
   if (user) {
     container.innerHTML = `
       <a href="./account.html" class="auth-navigation__account">
-        <span class="auth-navigation__account-main">自分のキャスト管理</span>
-        <small>MY CASTS / ${escapeHtml(user.email ?? "ACCOUNT")}</small>
+        <span class="auth-navigation__account-main">キャスト管理</span>
+        <small>CAST MANAGEMENT / ${escapeHtml(user.email ?? "ACCOUNT")}</small>
       </a>
       <button id="header-logout-button" class="auth-navigation__logout" type="button">
         <span>ログアウト</span>
