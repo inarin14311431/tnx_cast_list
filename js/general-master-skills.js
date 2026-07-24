@@ -1,9 +1,11 @@
-/* Materialize fixed proper-name General skill rows once and keep suit/level values synchronized. */
+/* Materialize fixed proper-name General skills only when first acquired.
+ * The generated level-0 master row is replaced by one real editor row, so
+ * repeated suit clicks never create duplicate 製作：/芸術：/操縦： records. */
 (function(){
   const MASTER_NAMES=["製作：","芸術：","操縦："];
   const SUITS=["reason","passion","life","mundane"];
-  const completed=new Set();
-  const materializing=new Set();
+  const bound=new Set();
+  const busy=new Set();
   let readyNotified=false;
 
   const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -24,12 +26,13 @@
     return (row?.querySelector('[data-f="name"]')?.value||"").trim();
   }
 
-  function isProperName(name){
-    return MASTER_NAMES.some(master=>String(name||"").startsWith(master));
+  function exactMasterName(row){
+    const name=rowName(row);
+    return MASTER_NAMES.includes(name)?name:"";
   }
 
   function suitBoxes(row){
-    return SUITS.map(suit=>row.querySelector(`[data-f="${suit}"]`)).filter(Boolean);
+    return SUITS.map(suit=>row?.querySelector(`[data-f="${suit}"]`)).filter(Boolean);
   }
 
   function selectedCount(row){
@@ -69,7 +72,7 @@
   }
 
   async function removeDuplicateExactRows(name,preferredKey=""){
-    for(let attempt=0;attempt<12;attempt++){
+    for(let attempt=0;attempt<16;attempt++){
       const matches=rows().filter(row=>rowName(row)===name);
       if(matches.length<=1)return matches[0]||null;
 
@@ -85,24 +88,12 @@
     return rows().find(row=>rowName(row)===name)||null;
   }
 
-  async function materialize(name){
-    if(completed.has(name)||materializing.has(name))return;
-    materializing.add(name);
-
+  async function materialize(name,desiredSuits){
+    if(bound.has(name)||busy.has(name))return;
+    busy.add(name);
     const scrollPosition={x:window.scrollX,y:window.scrollY};
 
     try{
-      let visible=await waitFor(()=>rows().find(row=>rowName(row)===name));
-      if(!visible)return;
-
-      visible=await removeDuplicateExactRows(name)||visible;
-      const level=Number(visible.querySelector('[data-f="level"]')?.value||0);
-      const acquired=suitBoxes(visible).some(control=>control.checked);
-      if(level>0||acquired){
-        completed.add(name);
-        return;
-      }
-
       const beforeKeys=new Set(rows().map(row=>row.dataset.skillKey));
       const addButton=document.querySelector("#add-general");
       if(!addButton)return;
@@ -116,30 +107,34 @@
       if(!blank)return;
 
       const realKey=blank.dataset.skillKey;
-      setControl(blank.querySelector('[data-f="level"]'),0);
       setControl(blank.querySelector('[data-f="skill_kind"]'),"proper");
       setControl(blank.querySelector('[data-f="name"]'),name);
+
+      SUITS.forEach(suit=>{
+        setControl(blank.querySelector(`[data-f="${suit}"]`),Boolean(desiredSuits[suit]));
+      });
+      setControl(blank.querySelector('[data-f="level"]'),SUITS.filter(suit=>desiredSuits[suit]).length);
       await settle();
 
-      /* The core editor now owns the newly created row. Deleting the old
-         generated master row only forces a clean rerender; it does not remove
-         the real skill because its key is different. */
       await removeDuplicateExactRows(name,realKey);
-      completed.add(name);
+      bound.add(name);
     }finally{
       restoreScroll(scrollPosition);
-      materializing.delete(name);
+      busy.delete(name);
     }
   }
 
-  async function materializeAll(){
-    const root=document.querySelector("#general-skills");
-    if(!root||!root.querySelector("tr[data-skill-key]")){
-      setTimeout(materializeAll,80);
-      return;
-    }
+  async function cleanupExistingDuplicates(){
+    const root=await waitFor(()=>{
+      const element=document.querySelector("#general-skills");
+      return element?.querySelector("tr[data-skill-key]")?element:null;
+    });
+    if(!root)return;
 
-    for(const name of MASTER_NAMES)await materialize(name);
+    for(const name of MASTER_NAMES){
+      const remaining=await removeDuplicateExactRows(name);
+      if(remaining&&(rowScore(remaining)>0))bound.add(name);
+    }
 
     if(!readyNotified){
       readyNotified=true;
@@ -147,28 +142,34 @@
     }
   }
 
-  function synchronizeSuitLevel(box){
-    const row=box.closest('tr[data-skill-key]');
-    if(!row||!isProperName(rowName(row)))return;
+  document.addEventListener("click",event=>{
+    const label=event.target.closest?.(".suit-check");
+    const box=label?.querySelector('input[data-f="reason"],input[data-f="passion"],input[data-f="life"],input[data-f="mundane"]');
+    const row=box?.closest('tr[data-skill-key]');
+    const name=exactMasterName(row);
+    if(!box||!row||!name)return;
 
-    requestAnimationFrame(()=>{
-      const level=row.querySelector('[data-f="level"]');
-      if(!level)return;
-      const count=selectedCount(row);
-      const current=Math.max(0,Number(level.value||0));
-      const next=box.checked?Math.max(current,count):count;
-      if(next===current)return;
-      level.value=String(next);
-      level.dispatchEvent(new Event("input",{bubbles:true}));
-      level.dispatchEvent(new Event("change",{bubbles:true}));
-    });
+    /* A row with acquired data is already a real skill and should use the
+       editor's normal handlers. Only the untouched level-0 master row needs
+       conversion. */
+    if(bound.has(name)||rowScore(row)>0){
+      bound.add(name);
+      return;
+    }
+
+    event.preventDefault();
+    event.stopImmediatePropagation();
+
+    const desiredSuits=Object.fromEntries(SUITS.map(suit=>{
+      const control=row.querySelector(`[data-f="${suit}"]`);
+      return [suit,control===box?!control.checked:Boolean(control?.checked)];
+    }));
+    materialize(name,desiredSuits);
+  },true);
+
+  if(document.readyState==="loading"){
+    document.addEventListener("DOMContentLoaded",cleanupExistingDuplicates,{once:true});
+  }else{
+    cleanupExistingDuplicates();
   }
-
-  document.addEventListener("input",event=>{
-    const box=event.target.closest?.('[data-f="reason"],[data-f="passion"],[data-f="life"],[data-f="mundane"]');
-    if(box?.type==="checkbox")synchronizeSuitLevel(box);
-  });
-
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",materializeAll,{once:true});
-  else materializeAll();
 })();
