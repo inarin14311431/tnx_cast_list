@@ -4,6 +4,7 @@
   const SUITS=["reason","passion","life","mundane"];
   const completed=new Set();
   const materializing=new Set();
+  let readyNotified=false;
 
   const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 
@@ -42,6 +43,11 @@
     control.dispatchEvent(new Event("change",{bubbles:true}));
   }
 
+  function restoreScroll(position){
+    window.scrollTo(position.x,position.y);
+    requestAnimationFrame(()=>window.scrollTo(position.x,position.y));
+  }
+
   async function waitFor(getter,attempts=80){
     for(let attempt=0;attempt<attempts;attempt++){
       const value=getter();
@@ -69,12 +75,18 @@
       const originalKey=visible.dataset.skillKey;
       const addButton=document.querySelector("#add-general");
       if(!addButton)return;
+
+      const scrollPosition={x:window.scrollX,y:window.scrollY};
       addButton.click();
+      restoreScroll(scrollPosition);
 
       const blank=await waitFor(()=>[...rows()].reverse().find(row=>{
         return rowName(row)===""&&row.dataset.skillKey!==originalKey;
       }));
-      if(!blank)return;
+      if(!blank){
+        restoreScroll(scrollPosition);
+        return;
+      }
 
       const realKey=blank.dataset.skillKey;
       setControl(blank.querySelector('[data-f="level"]'),0);
@@ -87,6 +99,7 @@
       visible.dataset.skillKey=realKey;
       blank.remove();
       completed.add(name);
+      restoreScroll(scrollPosition);
     }finally{
       materializing.delete(name);
     }
@@ -99,6 +112,10 @@
       return;
     }
     for(const name of MASTER_NAMES)await materialize(name);
+    if(!readyNotified){
+      readyNotified=true;
+      window.dispatchEvent(new CustomEvent("tnx:general-master-ready"));
+    }
   }
 
   function synchronizeSuitLevel(box){
