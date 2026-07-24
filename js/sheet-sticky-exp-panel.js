@@ -3,11 +3,23 @@
   const header = document.querySelector(".sheet-header");
   const layout = document.querySelector(".sheet-layout");
   const panel = document.querySelector(".exp-panel");
+  const saveButton = document.querySelector("#save-button");
+  const visibilityControl = document.querySelector("#visibility")?.closest("label");
   const isNewCharacter = !new URLSearchParams(window.location.search).get("id");
   const desktop = window.matchMedia("(min-width:981px)");
 
   let framePending = false;
   let userInteracted = false;
+  let arrangingPanel = false;
+
+  const enforcePanelOrder = () => {
+    if (arrangingPanel || !panel || !saveButton || !visibilityControl) return;
+    if (visibilityControl.parentElement !== panel || saveButton.parentElement !== panel) return;
+    if (visibilityControl.nextElementSibling === saveButton) return;
+    arrangingPanel = true;
+    panel.insertBefore(visibilityControl, saveButton);
+    arrangingPanel = false;
+  };
 
   const markUserInteraction = () => {
     userInteracted = true;
@@ -39,6 +51,7 @@
 
   const updatePanelPosition = () => {
     framePending = false;
+    enforcePanelOrder();
     if (!panel || !layout || !desktop.matches) {
       root.style.setProperty("--sheet-editor-exp-shift", "0px");
       return;
@@ -58,10 +71,12 @@
     requestAnimationFrame(updatePanelPosition);
   };
 
+  enforcePanelOrder();
   updateOffset();
   updatePanelPosition();
   resetToTop();
   requestAnimationFrame(() => requestAnimationFrame(() => {
+    enforcePanelOrder();
     resetToTop();
     queuePanelUpdate();
   }));
@@ -72,17 +87,27 @@
     queuePanelUpdate();
   }, { passive: true });
   window.addEventListener("load", () => {
+    enforcePanelOrder();
     resetToTop();
     queuePanelUpdate();
   }, { once: true });
 
   window.addEventListener("tnx:general-master-ready", () => {
+    enforcePanelOrder();
     resetToTop();
     requestAnimationFrame(() => {
+      enforcePanelOrder();
       resetToTop();
       queuePanelUpdate();
     });
   });
+
+  if (panel) {
+    new MutationObserver(() => {
+      enforcePanelOrder();
+      queuePanelUpdate();
+    }).observe(panel, { childList: true });
+  }
 
   if (header && "ResizeObserver" in window) {
     new ResizeObserver(() => {
