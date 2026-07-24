@@ -2,6 +2,8 @@
 (() => {
   const STORAGE_KEY = "tnx-cast-site-theme";
   const THEMES = new Set(["nova", "moon", "star", "eden"]);
+  let buttonObserver = null;
+  let buttonRefreshQueued = false;
 
   function readTheme() {
     try {
@@ -38,13 +40,42 @@
     appendStylesheet("./css/theme-runtime.css?v=2", "data-theme-runtime");
     appendStylesheet("./css/theme-polish.css?v=2", "data-theme-polish");
     appendStylesheet("./css/theme-fixes-v3.css?v=2", "data-theme-fixes-v3");
-    appendStylesheet("./css/theme-fixes-v4.css?v=2", "data-theme-fixes-v4");
+    appendStylesheet("./css/theme-fixes-v4.css?v=3", "data-theme-fixes-v4");
+  }
+
+  function normalizeOrderButtons(root = document) {
+    root.querySelectorAll?.('[data-skill-move="up"],[data-outfit-move="up"]').forEach(button => {
+      if (button.textContent !== "▲") button.textContent = "▲";
+    });
+    root.querySelectorAll?.('[data-skill-move="down"],[data-outfit-move="down"]').forEach(button => {
+      if (button.textContent !== "▼") button.textContent = "▼";
+    });
+    root.querySelectorAll?.('.row-delete,.outfit-delete-button').forEach(button => {
+      if (button.textContent.trim() !== "×") button.textContent = "×";
+    });
+  }
+
+  function queueButtonNormalization() {
+    if (buttonRefreshQueued) return;
+    buttonRefreshQueued = true;
+    queueMicrotask(() => {
+      buttonRefreshQueued = false;
+      normalizeOrderButtons();
+    });
+  }
+
+  function observeDynamicButtons() {
+    if (buttonObserver || !document.documentElement) return;
+    buttonObserver = new MutationObserver(queueButtonNormalization);
+    buttonObserver.observe(document.documentElement, { childList: true, subtree: true });
   }
 
   applyTheme(readTheme());
 
   function bindSelectors() {
     loadLateOverrides();
+    normalizeOrderButtons();
+    observeDynamicButtons();
     document.querySelectorAll("[data-theme-select]").forEach(select => {
       if (select.dataset.themeBound === "1") return;
       select.dataset.themeBound = "1";
