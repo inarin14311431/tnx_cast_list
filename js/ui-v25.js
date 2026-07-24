@@ -56,14 +56,24 @@ function ensureGroupActions(){
   document.querySelectorAll(".skill-group").forEach(group=>{
     const title=group.querySelector(":scope>.skill-group-title")||group.querySelector(":scope>.skill-group-heading>.skill-group-title");if(!title)return;
     let heading=group.querySelector(":scope>.skill-group-heading");if(!heading){heading=document.createElement("div");heading.className="skill-group-heading";title.before(heading);heading.append(title);}
-    if(heading.querySelector(":scope>.skill-group-actions[data-v27]"))return;
+    if(heading.querySelector(":scope>.skill-group-actions[data-v28]"))return;
     heading.querySelector(":scope>.skill-group-actions")?.remove();
     const text=title.textContent;
-    if(text.includes("一般技能"))return;
-    const actions=document.createElement("div");actions.className="skill-group-actions";actions.dataset.v27="1";heading.append(actions);
-    if(text.includes("社会"))addAction(actions,"社会を追加","ADD SOCIAL","#add-social");
-    else if(text.includes("コネクション"))addAction(actions,"コネを追加","ADD CONNECTION","#add-connection");
-    else if(text.includes("スタイル技能"))addAction(actions,"スタイル技能を追加","ADD STYLE SKILL","#add-style-skill");
+    const actions=document.createElement("div");actions.className="skill-group-actions";actions.dataset.v28="1";
+    if(text.includes("一般技能")){
+      if(!group.classList.contains("general-skill-column--second"))return;
+      heading.append(actions);
+      addAction(actions,"一般技能を追加","ADD GENERAL","#add-general");
+    }else if(text.includes("社会")){
+      heading.append(actions);
+      addAction(actions,"社会を追加","ADD SOCIAL","#add-social");
+    }else if(text.includes("コネクション")){
+      heading.append(actions);
+      addAction(actions,"コネを追加","ADD CONNECTION","#add-connection");
+    }else if(text.includes("スタイル技能")){
+      heading.append(actions);
+      addAction(actions,"スタイル技能を追加","ADD STYLE SKILL","#add-style-skill");
+    }
   });
 }
 function addAction(container,jp,en,action){const button=document.createElement("button");button.type="button";button.className="skill-inline-add";button.dataset.skillUiAction=action;button.innerHTML=`${jp}<small>${en}</small>`;container.append(button);}
