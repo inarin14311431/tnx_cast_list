@@ -1,0 +1,112 @@
+/* Final theme-specific corrections loaded after all legacy page styles. */
+html[data-theme] .site-header__top{
+  align-items:flex-start!important;
+}
+html[data-theme] .site-header__operator{
+  display:grid!important;
+  justify-items:end!important;
+  gap:8px!important;
+  min-width:min(100%,420px)!important;
+  width:max-content!important;
+  max-width:100%!important;
+}
+html[data-theme] .auth-navigation{
+  display:flex!important;
+  flex-wrap:wrap!important;
+  justify-content:flex-end!important;
+  gap:8px!important;
+  width:100%!important;
+  min-width:0!important;
+}
+html[data-theme] .auth-navigation__account,
+html[data-theme] .auth-navigation__logout{
+  box-sizing:border-box!important;
+  min-width:0!important;
+}
+html[data-theme] .auth-navigation__account{
+  flex:1 1 210px!important;
+}
+html[data-theme] .auth-navigation__logout{
+  flex:0 1 112px!important;
+  min-width:112px!important;
+}
+html[data-theme] .theme-picker,
+html[data-theme] .theme-picker select{
+  min-width:0!important;
+}
+
+/* Current public-view style cards use fixed dark-theme text colors. */
+html[data-theme] .cast-style-heading-simple strong,
+html[data-theme] #cast-styles .cast-style-card-simple .style-chip__name,
+html[data-theme] #cast-styles .cast-style-card-simple .style-chip__mark{
+  color:var(--text)!important;
+  text-shadow:none!important;
+}
+html[data-theme] .cast-style-heading-simple strong small,
+html[data-theme] #cast-styles .cast-style-card-simple::after{
+  color:var(--text-muted)!important;
+  text-shadow:none!important;
+}
+html[data-theme] #cast-styles .cast-style-card-simple .style-chip__index{
+  color:var(--line)!important;
+  border-color:var(--line)!important;
+  background:color-mix(in srgb,var(--theme-input-bg) 86%,var(--line) 14%)!important;
+}
+
+html[data-theme] .cast-divine-authority>header h2,
+html[data-theme] .cast-divine-authority .divine-card__name{
+  color:var(--text)!important;
+  text-shadow:none!important;
+}
+html[data-theme] .cast-divine-authority>header h2 small,
+html[data-theme] .cast-divine-authority .divine-card__yomi,
+html[data-theme] .cast-divine-card__code,
+html[data-theme] .cast-divine-authority__status{
+  color:var(--text-muted)!important;
+  text-shadow:none!important;
+}
+html[data-theme] .cast-divine-authority .divine-card__number{
+  color:var(--theme-divine-line)!important;
+  border-color:var(--theme-divine-line)!important;
+  background:color-mix(in srgb,var(--theme-input-bg) 84%,var(--theme-divine-line) 16%)!important;
+}
+html[data-theme] .cast-style-heading-simple,
+html[data-theme] .cast-divine-authority>header{
+  border-bottom-color:var(--line-muted)!important;
+}
+
+/* Prevent fixed pale text from surviving in light profile/outfit themes. */
+html[data-theme="moon"] #tab-profile dd,
+html[data-theme="moon"] #profile-text,
+html[data-theme="moon"] #tab-outfits,
+html[data-theme="moon"] #tab-outfits td,
+html[data-theme="eden"] #tab-profile dd,
+html[data-theme="eden"] #profile-text,
+html[data-theme="eden"] #tab-outfits,
+html[data-theme="eden"] #tab-outfits td{
+  color:var(--text)!important;
+  opacity:1!important;
+}
+
+@media(max-width:900px){
+  html[data-theme] .site-header__top{align-items:stretch!important}
+  html[data-theme] .site-header__operator{
+    min-width:0!important;
+    width:100%!important;
+    justify-items:stretch!important;
+  }
+  html[data-theme] .auth-navigation{justify-content:stretch!important}
+}
+@media(max-width:700px){
+  html[data-theme] .auth-navigation__account{
+    flex-basis:calc(100% - 120px)!important;
+  }
+}
+@media(max-width:430px){
+  html[data-theme] .auth-navigation{flex-direction:column!important}
+  html[data-theme] .auth-navigation__account,
+  html[data-theme] .auth-navigation__logout{
+    width:100%!important;
+    min-width:0!important;
+  }
+}
