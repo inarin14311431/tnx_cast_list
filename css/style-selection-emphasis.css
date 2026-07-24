@@ -77,7 +77,8 @@
   font-weight:700;
 }
 
-#style-grid .style-card.is-style-selected{
+#style-grid .style-card.is-style-selected,
+#style-grid .style-card:has(.style-fields>label:first-child select option:checked:not([value=""])){
   border-color:#6ff2ff;
   background:
     linear-gradient(145deg,rgba(65,232,255,.16),rgba(2,12,18,.9) 55%),
@@ -85,16 +86,19 @@
   box-shadow:0 0 20px rgba(65,232,255,.19),inset 0 0 28px rgba(65,232,255,.08);
 }
 
-#style-grid .style-card.is-style-selected::before{
+#style-grid .style-card.is-style-selected::before,
+#style-grid .style-card:has(.style-fields>label:first-child select option:checked:not([value=""]))::before{
   color:#8ff5ff;
   text-shadow:0 0 10px rgba(65,232,255,.65);
 }
 
-#style-grid .style-card.is-style-selected .divine-field{
+#style-grid .style-card.is-style-selected .divine-field,
+#style-grid .style-card:has(.style-fields>label:first-child select option:checked:not([value=""])) .divine-field{
   background:linear-gradient(90deg,rgba(65,232,255,.1),rgba(65,232,255,.025));
 }
 
-#style-grid .style-card.is-style-selected .divine-field ruby strong{
+#style-grid .style-card.is-style-selected .divine-field ruby strong,
+#style-grid .style-card:has(.style-fields>label:first-child select option:checked:not([value=""])) .divine-field ruby strong{
   color:#9bf6ff;
   text-shadow:0 0 12px rgba(65,232,255,.34);
 }
