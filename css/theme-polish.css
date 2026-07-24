@@ -1,4 +1,6 @@
 /* Final theme-specific corrections loaded after all legacy page styles. */
+
+/* Index header: keep account controls and theme selector inside the viewport. */
 html[data-theme] .site-header__top{
   align-items:flex-start!important;
 }
@@ -6,8 +8,8 @@ html[data-theme] .site-header__operator{
   display:grid!important;
   justify-items:end!important;
   gap:8px!important;
-  min-width:min(100%,420px)!important;
-  width:max-content!important;
+  min-width:0!important;
+  width:min(100%,420px)!important;
   max-width:100%!important;
 }
 html[data-theme] .auth-navigation{
@@ -24,18 +26,19 @@ html[data-theme] .auth-navigation__logout{
   min-width:0!important;
 }
 html[data-theme] .auth-navigation__account{
-  flex:1 1 210px!important;
+  flex:1 1 190px!important;
 }
 html[data-theme] .auth-navigation__logout{
-  flex:0 1 112px!important;
-  min-width:112px!important;
+  flex:0 1 96px!important;
+  min-width:96px!important;
 }
 html[data-theme] .theme-picker,
 html[data-theme] .theme-picker select{
   min-width:0!important;
+  width:100%!important;
 }
 
-/* Current public-view style cards use fixed dark-theme text colors. */
+/* Current public-view style cards use fixed dark-theme backgrounds and text. */
 html[data-theme] .cast-style-heading-simple strong,
 html[data-theme] #cast-styles .cast-style-card-simple .style-chip__name,
 html[data-theme] #cast-styles .cast-style-card-simple .style-chip__mark{
@@ -46,6 +49,14 @@ html[data-theme] .cast-style-heading-simple strong small,
 html[data-theme] #cast-styles .cast-style-card-simple::after{
   color:var(--text-muted)!important;
   text-shadow:none!important;
+}
+html[data-theme] #cast-styles .cast-style-card-simple{
+  color:var(--text)!important;
+  border-color:color-mix(in srgb,var(--line) 58%,var(--line-muted) 42%)!important;
+  background:
+    linear-gradient(90deg,color-mix(in srgb,var(--line) 10%,transparent),color-mix(in srgb,var(--theme-panel-flat) 96%,var(--background) 4%) 42%),
+    linear-gradient(180deg,color-mix(in srgb,#fff 6%,transparent),transparent 45%)!important;
+  box-shadow:inset 0 0 22px color-mix(in srgb,var(--background) 14%,transparent),0 0 14px var(--theme-shadow)!important;
 }
 html[data-theme] #cast-styles .cast-style-card-simple .style-chip__index{
   color:var(--line)!important;
@@ -65,6 +76,14 @@ html[data-theme] .cast-divine-authority__status{
   color:var(--text-muted)!important;
   text-shadow:none!important;
 }
+html[data-theme] .cast-divine-authority .cast-divine-card{
+  color:var(--text)!important;
+  border-color:color-mix(in srgb,var(--theme-divine-line) 58%,var(--line-muted) 42%)!important;
+  background:
+    linear-gradient(90deg,color-mix(in srgb,var(--theme-divine-line) 10%,transparent),color-mix(in srgb,var(--theme-panel-flat) 96%,var(--background) 4%) 45%),
+    linear-gradient(180deg,color-mix(in srgb,#fff 5%,transparent),transparent 48%)!important;
+  box-shadow:inset 0 0 22px color-mix(in srgb,var(--background) 15%,transparent),0 0 14px var(--theme-shadow)!important;
+}
 html[data-theme] .cast-divine-authority .divine-card__number{
   color:var(--theme-divine-line)!important;
   border-color:var(--theme-divine-line)!important;
@@ -75,17 +94,293 @@ html[data-theme] .cast-divine-authority>header{
   border-bottom-color:var(--line-muted)!important;
 }
 
-/* Prevent fixed pale text from surviving in light profile/outfit themes. */
-html[data-theme="moon"] #tab-profile dd,
-html[data-theme="moon"] #profile-text,
-html[data-theme="moon"] #tab-outfits,
-html[data-theme="moon"] #tab-outfits td,
-html[data-theme="eden"] #tab-profile dd,
-html[data-theme="eden"] #profile-text,
-html[data-theme="eden"] #tab-outfits,
-html[data-theme="eden"] #tab-outfits td{
+/* Public cast hero follows the selected world theme instead of keeping a dark fixed panel. */
+html[data-theme] .cast-hero,
+html[data-theme] .cast-hero__identity,
+html[data-theme] .cast-hero__image-panel{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:
+    linear-gradient(135deg,color-mix(in srgb,var(--theme-panel-flat) 82%,var(--line) 8%),color-mix(in srgb,var(--background) 76%,var(--theme-panel-flat) 24%))!important;
+}
+html[data-theme] .cast-public-id,
+html[data-theme] .cast-handle-kana,
+html[data-theme] .cast-kana,
+html[data-theme] .cast-handle,
+html[data-theme] .cast-name,
+html[data-theme] .cast-summary,
+html[data-theme] .identity-grid dt,
+html[data-theme] .identity-grid dd{
+  color:var(--text)!important;
+  text-shadow:none!important;
+}
+html[data-theme] .cast-public-id,
+html[data-theme] .cast-handle-kana,
+html[data-theme] .cast-kana,
+html[data-theme] .identity-grid dt{
+  color:var(--text-muted)!important;
+}
+html[data-theme="moon"] .cast-hero,
+html[data-theme="eden"] .cast-hero{
+  box-shadow:0 8px 24px var(--theme-shadow)!important;
+}
+
+/* Ability cards and values remain legible in light themes. */
+html[data-theme] .ability-card,
+html[data-theme] .ability-grid>*{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:color-mix(in srgb,var(--theme-panel-flat) 94%,var(--line) 6%)!important;
+}
+html[data-theme] .ability-card h3,
+html[data-theme] .ability-card strong,
+html[data-theme] .ability-card__value,
+html[data-theme] .ability-card__control,
+html[data-theme] .ability-matrix__result{
+  color:var(--text)!important;
+  text-shadow:none!important;
+}
+html[data-theme] .ability-card small,
+html[data-theme] .ability-card span,
+html[data-theme] .ability-card__label,
+html[data-theme] .ability-matrix__header{
+  color:var(--text-muted)!important;
+  text-shadow:none!important;
+}
+
+/* ACT DATA / PROFILE / OUTFITS tabs. */
+html[data-theme] .cast-tabs{background:transparent!important}
+html[data-theme] .cast-tab{
+  color:var(--line)!important;
+  border-color:var(--line-muted)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--theme-panel-flat) 84%,var(--line) 8%),color-mix(in srgb,var(--theme-panel-flat) 96%,var(--background) 4%))!important;
+  box-shadow:none!important;
+}
+html[data-theme] .cast-tab.is-active{
+  color:var(--theme-on-accent)!important;
+  border-color:var(--line)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--line) 86%,#fff 14%),var(--line))!important;
+}
+html[data-theme] .cast-tab small{color:var(--text-muted)!important}
+html[data-theme] .cast-tab.is-active small{color:inherit!important}
+
+/* General, social, connection and style-skill tables. */
+html[data-theme] #skills-container table,
+html[data-theme] #general-skills table,
+html[data-theme] #style-skills table,
+html[data-theme] .skill-table,
+html[data-theme] .style-skill-detail-table{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:color-mix(in srgb,var(--theme-panel-flat) 96%,var(--line) 4%)!important;
+}
+html[data-theme] #skills-container table thead th,
+html[data-theme] #general-skills table thead th,
+html[data-theme] #style-skills table thead th,
+html[data-theme] .skill-table thead th,
+html[data-theme] .style-skill-detail-table thead th{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--theme-panel-flat) 78%,var(--line) 16%),color-mix(in srgb,var(--theme-panel-flat) 92%,var(--line) 8%))!important;
+}
+html[data-theme] #skills-container table tbody td,
+html[data-theme] #general-skills table tbody td,
+html[data-theme] #style-skills table tbody td,
+html[data-theme] .skill-table tbody td,
+html[data-theme] .style-skill-detail-table tbody td{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--theme-panel-flat) 96%,var(--line) 3%),color-mix(in srgb,var(--theme-panel-flat) 92%,var(--background) 8%))!important;
+  text-shadow:none!important;
+}
+html[data-theme] #skills-container table tbody tr:nth-child(even) td,
+html[data-theme] #general-skills table tbody tr:nth-child(even) td,
+html[data-theme] #style-skills table tbody tr:nth-child(even) td,
+html[data-theme] .skill-table tbody tr:nth-child(even) td{
+  background:color-mix(in srgb,var(--theme-panel-flat) 90%,var(--line) 10%)!important;
+}
+html[data-theme] #skills-container tbody td>:not(.suit-check),
+html[data-theme] #general-skills tbody td>:not(.suit-check),
+html[data-theme] #style-skills tbody td>:not(.suit-check){
+  color:var(--text)!important;
+  text-shadow:none!important;
+}
+html[data-theme] #general-skills tbody input,
+html[data-theme] #general-skills tbody select,
+html[data-theme] #general-skills tbody textarea,
+html[data-theme] #style-skills tbody input,
+html[data-theme] #style-skills tbody select,
+html[data-theme] #style-skills tbody textarea{
+  color:var(--text)!important;
+  background:var(--theme-input-bg)!important;
+  border-color:var(--line-muted)!important;
+}
+
+/* Profile and outfit tabs: eliminate fixed pale cyan text in light themes. */
+html[data-theme] #tab-profile,
+html[data-theme] #tab-profile dd,
+html[data-theme] #tab-profile p,
+html[data-theme] #tab-profile li,
+html[data-theme] #tab-profile .profile-text,
+html[data-theme] #tab-outfits,
+html[data-theme] #tab-outfits p,
+html[data-theme] #tab-outfits li,
+html[data-theme] #tab-outfits strong,
+html[data-theme] #tab-outfits td,
+html[data-theme] #tab-outfits th,
+html[data-theme] #tab-outfits .outfit-card,
+html[data-theme] #tab-outfits .outfit-container{
   color:var(--text)!important;
   opacity:1!important;
+  text-shadow:none!important;
+}
+html[data-theme] #tab-profile dt,
+html[data-theme] #tab-profile .profile-list dt,
+html[data-theme] #tab-profile .data-panel__header h2,
+html[data-theme] #tab-outfits th{
+  color:var(--line)!important;
+}
+html[data-theme] #tab-profile small,
+html[data-theme] #tab-outfits small{
+  color:var(--text-muted)!important;
+}
+html[data-theme] #profile-text,
+html[data-theme] #tab-profile .profile-text,
+html[data-theme] #tab-profile .profile-list{
+  color:var(--text)!important;
+  background:color-mix(in srgb,var(--theme-panel-flat) 96%,var(--line) 4%)!important;
+}
+html[data-theme] #tab-profile .profile-list div,
+html[data-theme] #tab-profile .profile-list>div{
+  border-color:color-mix(in srgb,var(--line-muted) 70%,transparent)!important;
+}
+html[data-theme] #tab-outfits table,
+html[data-theme] #tab-outfits .outfit-card{
+  border-color:var(--line-muted)!important;
+  background:var(--theme-panel-bg)!important;
+}
+html[data-theme] #tab-outfits th{
+  background:color-mix(in srgb,var(--theme-panel-flat) 82%,var(--line) 18%)!important;
+}
+html[data-theme] #tab-outfits td{
+  background:color-mix(in srgb,var(--theme-panel-flat) 96%,var(--line) 4%)!important;
+}
+
+/* Buttons in the editor, export toolbar and account cast manager. */
+html[data-theme] .exp-panel>button,
+html[data-theme] .exp-panel>.sheet-view-link,
+html[data-theme] .cast-header__actions>a,
+html[data-theme] .cast-header__actions>button,
+html[data-theme] #cocofolia-copy-button,
+html[data-theme] #udonarium-export-button,
+html[data-theme] .transfer-tsv-copy-button,
+html[data-theme] .transfer-bookmarklet-copy-button,
+html[data-theme] .account-actions a,
+html[data-theme] .account-actions button,
+html[data-theme] .owned-cast__links a,
+html[data-theme] .owned-cast__links button,
+html[data-theme] .generator-actions button,
+html[data-theme] .auth-form button{
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--theme-button-bg) 82%,#fff 18%),color-mix(in srgb,var(--theme-button-bg) 96%,var(--line) 4%))!important;
+  box-shadow:0 0 14px var(--theme-shadow)!important;
+  text-shadow:none!important;
+}
+html[data-theme] .owned-cast__links .action-label__jp{
+  color:var(--text)!important;
+}
+html[data-theme] .exp-panel>button small,
+html[data-theme] .exp-panel>.sheet-view-link small,
+html[data-theme] .cast-header__actions small,
+html[data-theme] .account-actions small,
+html[data-theme] .owned-cast__links .action-label__en,
+html[data-theme] .generator-actions small,
+html[data-theme] .auth-form button small{
+  color:var(--text-muted)!important;
+  text-shadow:none!important;
+}
+html[data-theme] .exp-panel>button:hover,
+html[data-theme] .exp-panel>.sheet-view-link:hover,
+html[data-theme] .cast-header__actions>a:hover,
+html[data-theme] .cast-header__actions>button:hover,
+html[data-theme] #cocofolia-copy-button:hover,
+html[data-theme] #udonarium-export-button:hover,
+html[data-theme] .transfer-tsv-copy-button:hover:not(:disabled),
+html[data-theme] .transfer-bookmarklet-copy-button:hover:not(:disabled),
+html[data-theme] .account-actions a:hover,
+html[data-theme] .account-actions button:hover,
+html[data-theme] .owned-cast__links a:hover,
+html[data-theme] .owned-cast__links button:hover,
+html[data-theme] .generator-actions button:hover,
+html[data-theme] .auth-form button:hover{
+  color:var(--theme-on-accent)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--theme-button-hover) 88%,#fff 12%),var(--theme-button-hover))!important;
+}
+html[data-theme] .exp-panel>button:hover small,
+html[data-theme] .exp-panel>.sheet-view-link:hover small,
+html[data-theme] .cast-header__actions>a:hover small,
+html[data-theme] .cast-header__actions>button:hover small,
+html[data-theme] .account-actions a:hover small,
+html[data-theme] .account-actions button:hover small,
+html[data-theme] .owned-cast__links a:hover .action-label__jp,
+html[data-theme] .owned-cast__links a:hover .action-label__en,
+html[data-theme] .owned-cast__links button:hover .action-label__jp,
+html[data-theme] .owned-cast__links button:hover .action-label__en,
+html[data-theme] .generator-actions button:hover small,
+html[data-theme] .auth-form button:hover small{
+  color:inherit!important;
+}
+html[data-theme] .owned-cast__links button[data-delete]{
+  color:color-mix(in srgb,var(--alert) 72%,var(--text) 28%)!important;
+  border-color:var(--alert)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--theme-panel-flat) 76%,var(--alert) 24%),color-mix(in srgb,var(--theme-panel-flat) 88%,var(--alert) 12%))!important;
+}
+html[data-theme] .owned-cast__links button[data-delete] .action-label__jp,
+html[data-theme] .owned-cast__links button[data-delete] .action-label__en{
+  color:inherit!important;
+}
+html[data-theme] .owned-cast__links button[data-delete]:hover{
+  color:#fff!important;
+  background:var(--alert)!important;
+}
+
+/* Style-skill and outfit order/delete controls follow each selected theme. */
+html[data-theme] .skill-sort-controls button,
+html[data-theme] .outfit-order-button,
+html[data-theme] .outfit-delete-button,
+html[data-theme] .outfit-table-cell--actions button,
+html[data-theme] .row-delete{
+  color:var(--text)!important;
+  border:1px solid var(--line-muted)!important;
+  background:var(--theme-input-bg)!important;
+  box-shadow:0 0 10px var(--theme-shadow)!important;
+  text-shadow:none!important;
+}
+html[data-theme] .skill-sort-controls button:hover:not(:disabled),
+html[data-theme] .outfit-order-button:hover:not(:disabled),
+html[data-theme] .outfit-delete-button:hover:not(:disabled),
+html[data-theme] .outfit-table-cell--actions button:hover:not(:disabled),
+html[data-theme] .row-delete:hover:not(:disabled){
+  color:var(--theme-on-accent)!important;
+  border-color:var(--line)!important;
+  background:var(--line)!important;
+}
+html[data-theme] .skill-sort-controls button:disabled,
+html[data-theme] .outfit-order-button:disabled{
+  color:var(--text-muted)!important;
+  opacity:.38!important;
+  box-shadow:none!important;
+}
+html[data-theme] .outfit-delete-button,
+html[data-theme] .row-delete{
+  border-color:color-mix(in srgb,var(--alert) 70%,var(--line-muted) 30%)!important;
+}
+html[data-theme] .outfit-delete-button:hover:not(:disabled),
+html[data-theme] .row-delete:hover:not(:disabled){
+  color:#fff!important;
+  border-color:var(--alert)!important;
+  background:var(--alert)!important;
 }
 
 @media(max-width:900px){
@@ -99,7 +394,7 @@ html[data-theme="eden"] #tab-outfits td{
 }
 @media(max-width:700px){
   html[data-theme] .auth-navigation__account{
-    flex-basis:calc(100% - 120px)!important;
+    flex-basis:calc(100% - 104px)!important;
   }
 }
 @media(max-width:430px){
