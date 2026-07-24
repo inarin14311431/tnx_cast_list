@@ -90,6 +90,8 @@
         select.dispatchEvent(new Event("change",{bubbles:true}));
       }
     });
+    const message=document.querySelector("#legacy-import-message")?.textContent||"";
+    if(/反映しました|取込エラー/.test(message)){pendingNoneNames.clear();return;}
     applyTimer=window.setTimeout(applyPendingNone,80);
   }
 
