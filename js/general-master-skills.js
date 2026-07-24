@@ -1,6 +1,6 @@
-/* Promote only synthetic level-0 proper-name master rows after the core editor
- * has had the first chance to process a suit change. This lets 製作：, 芸術：
- * and 操縦： use exactly the same path, including previously saved level-0 rows. */
+/* Promote the three level-0 proper-name master rows without visibly adding a
+ * second row. The real editor skill is created internally, then the original
+ * fixed-position row adopts that skill key and continues as the editable row. */
 (() => {
   const MASTER_NAMES = ["製作：", "芸術：", "操縦："];
   const SUITS = ["reason", "passion", "life", "mundane"];
@@ -40,10 +40,11 @@
     return SUITS.filter(suit => state[suit]).length;
   }
 
-  function setControl(control, value) {
+  function setControl(control, value, dispatch = true) {
     if (!control) return;
     if (control.type === "checkbox") control.checked = Boolean(value);
     else control.value = String(value ?? "");
+    if (!dispatch) return;
     control.dispatchEvent(new Event("input", { bubbles: true }));
     control.dispatchEvent(new Event("change", { bubbles: true }));
   }
@@ -53,23 +54,44 @@
     requestAnimationFrame(() => window.scrollTo(position.x, position.y));
   }
 
-  function forceCoreRerender(addButton, realKey, scrollPosition) {
-    /* Adding one temporary blank row invokes sheet.js renderSkills(). At that
-       moment the real exact-name skill is already in the core skills array, so
-       the synthetic master row is no longer generated. Removing the temporary
-       blank row invokes one final clean render. This also works for 製作： in
-       the first visual column, where deleting the synthetic DOM row directly
-       was unreliable. */
-    const beforeKeys = new Set(rows().map(candidate => candidate.dataset.skillKey));
-    addButton.click();
-    restoreScroll(scrollPosition);
+  function adoptRealSkill(realRow, name, desired, scrollPosition) {
+    const realKey = realRow.dataset.skillKey;
+    const level = SUITS.filter(suit => desired[suit]).length;
 
-    const temporary = [...rows()].reverse().find(candidate => {
+    setControl(realRow.querySelector('[data-f="skill_kind"]'), "proper");
+    setControl(realRow.querySelector('[data-f="name"]'), name);
+    SUITS.forEach(suit => setControl(realRow.querySelector(`[data-f="${suit}"]`), desired[suit]));
+    setControl(realRow.querySelector('[data-f="level"]'), level);
+
+    /* add-general rerenders the table before the real row is configured. Find
+       the newly generated fixed-position master row and make it point at the
+       real skill object. Its existing handlers read data-skill-key at event
+       time, so subsequent edits use the real core record. */
+    const fixedRow = rows().find(candidate => {
       return candidate.dataset.skillKey !== realKey
-        && !beforeKeys.has(candidate.dataset.skillKey)
-        && rowName(candidate) === "";
+        && rowName(candidate) === name
+        && Number(candidate.querySelector('[data-f="level"]')?.value || 0) === 0
+        && selectedCount(candidate) === 0;
     });
-    temporary?.querySelector("[data-delete-skill]")?.click();
+
+    if (!fixedRow) {
+      restoreScroll(scrollPosition);
+      return;
+    }
+
+    fixedRow.dataset.skillKey = realKey;
+    const deleteButton = fixedRow.querySelector("[data-delete-skill]");
+    if (deleteButton) deleteButton.dataset.deleteSkill = realKey;
+
+    setControl(fixedRow.querySelector('[data-f="skill_kind"]'), "proper", false);
+    setControl(fixedRow.querySelector('[data-f="name"]'), name, false);
+    SUITS.forEach(suit => setControl(fixedRow.querySelector(`[data-f="${suit}"]`), desired[suit], false));
+    setControl(fixedRow.querySelector('[data-f="level"]'), level, false);
+
+    /* The lower temporary row represented the same real skill only during the
+       conversion. Removing it from the DOM keeps the original left/right table
+       position and prevents any visible first-click duplication. */
+    realRow.remove();
     restoreScroll(scrollPosition);
   }
 
@@ -77,8 +99,7 @@
     if (converting.has(name)) return;
 
     const desired = selectedSuits(row);
-    const level = SUITS.filter(suit => desired[suit]).length;
-    if (level === 0) return;
+    if (!SUITS.some(suit => desired[suit])) return;
 
     const addButton = document.querySelector("#add-general");
     if (!addButton) return;
@@ -96,13 +117,7 @@
       });
       if (!realRow) return;
 
-      const realKey = realRow.dataset.skillKey;
-      setControl(realRow.querySelector('[data-f="skill_kind"]'), "proper");
-      setControl(realRow.querySelector('[data-f="name"]'), name);
-      SUITS.forEach(suit => setControl(realRow.querySelector(`[data-f="${suit}"]`), desired[suit]));
-      setControl(realRow.querySelector('[data-f="level"]'), level);
-
-      forceCoreRerender(addButton, realKey, scrollPosition);
+      adoptRealSkill(realRow, name, desired, scrollPosition);
     } finally {
       converting.delete(name);
     }
@@ -118,15 +133,15 @@
     const level = row.querySelector('[data-f="level"]');
     const current = Math.max(0, Number(level?.value || 0));
 
-    /* A real row is updated by sheet.js before this document-level listener.
-       Only a synthetic master row still has level 0 after a suit is selected. */
+    /* A real row is updated by sheet.js before this listener. A synthetic row
+       is the only case where a checked suit still leaves the level at zero. */
     if (count > 0 && current === 0) {
       promoteSyntheticRow(row, name);
       return;
     }
 
-    /* Existing real rows, including older saved level-0 製作： records, stay in
-       place. Keep their level equal to the number of selected suits. */
+    /* Core processing raises levels but does not lower them when a suit is
+       cleared. Proper-name General skills always follow the selected suit count. */
     if (level && current !== count) {
       level.value = String(count);
       level.dispatchEvent(new Event("input", { bubbles: true }));
