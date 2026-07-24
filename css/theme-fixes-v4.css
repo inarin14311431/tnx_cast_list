@@ -50,40 +50,44 @@ html[data-theme] #style-skills .suit-check input:checked+span{
   box-shadow:0 0 8px var(--theme-shadow)!important;
 }
 
-/* Render exactly one ▲ or ▼, regardless of legacy button text or pseudo-elements. */
-html[data-theme] [data-skill-move="up"],
-html[data-theme] [data-skill-move="down"],
-html[data-theme] [data-outfit-move="up"],
-html[data-theme] [data-outfit-move="down"]{
-  position:relative!important;
-  font-size:0!important;
+/* Reorder labels are supplied by JavaScript. Never add a second glyph in CSS. */
+html[data-theme] [data-skill-move],
+html[data-theme] [data-outfit-move]{
+  font-size:.78rem!important;
+  font-weight:700!important;
   line-height:1!important;
   text-indent:0!important;
 }
-html[data-theme] [data-skill-move="up"]::before,
-html[data-theme] [data-outfit-move="up"]::before{
-  display:inline!important;
-  content:"▲"!important;
-  font-size:.72rem!important;
-  line-height:1!important;
-}
-html[data-theme] [data-skill-move="down"]::before,
-html[data-theme] [data-outfit-move="down"]::before{
-  display:inline!important;
-  content:"▼"!important;
-  font-size:.72rem!important;
-  line-height:1!important;
-}
-html[data-theme] [data-skill-move="up"]::after,
-html[data-theme] [data-skill-move="down"]::after,
-html[data-theme] [data-outfit-move="up"]::after,
-html[data-theme] [data-outfit-move="down"]::after{
+html[data-theme] [data-skill-move]::before,
+html[data-theme] [data-skill-move]::after,
+html[data-theme] [data-outfit-move]::before,
+html[data-theme] [data-outfit-move]::after{
   display:none!important;
   content:none!important;
 }
-html[data-theme] .row-delete,
-html[data-theme] .outfit-delete-button{
-  font-size:.8rem!important;
+
+/* Keep delete marks readable on every world theme. */
+html[data-theme] #general-skills .row-delete,
+html[data-theme] #style-skills .row-delete,
+html[data-theme] #outfit-list .row-delete,
+html[data-theme] #outfit-list .outfit-delete-button{
+  color:#fff!important;
+  border-color:var(--alert)!important;
+  background:color-mix(in srgb,var(--alert) 86%,#111 14%)!important;
+  box-shadow:0 0 8px color-mix(in srgb,var(--alert) 32%,transparent)!important;
+  font-size:.88rem!important;
+  font-weight:900!important;
   line-height:1!important;
   text-indent:0!important;
+  text-shadow:none!important;
+  opacity:1!important;
+}
+html[data-theme] #general-skills .row-delete:hover:not(:disabled),
+html[data-theme] #style-skills .row-delete:hover:not(:disabled),
+html[data-theme] #outfit-list .row-delete:hover:not(:disabled),
+html[data-theme] #outfit-list .outfit-delete-button:hover:not(:disabled){
+  color:#fff!important;
+  border-color:color-mix(in srgb,var(--alert) 78%,#fff 22%)!important;
+  background:var(--alert)!important;
+  filter:brightness(1.12);
 }
