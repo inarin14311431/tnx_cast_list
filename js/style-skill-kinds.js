@@ -15,6 +15,10 @@
     .replace(/\.{2,}/g,".");
   const cleanName=value=>normalize(value).replace(/^[★†※■┗]+\s*/,"");
   const isNone=value=>/^(?:なし|none)$/i.test(normalize(value));
+  const isExplicitZero=value=>{
+    const text=normalize(value);
+    return text!==""&&Number(text)===0;
+  };
   let pendingNoneNames=new Set();
   let pendingUntil=0;
   let applyTimer=0;
@@ -33,7 +37,7 @@
     for(const field of Array.isArray(data?.fields)?data.fields:[]){
       for(const source of [field.path,field.id,field.name]){
         const key=canonicalKey(source);
-        const match=key.match(/^(superhumanskills|styleskills|styleSkills)\.([^.]*)\.(name|type|kind|category)$/);
+        const match=key.match(/^(superhumanskills|styleskills|styleSkills)\.([^.]*)\.(name|type|kind|category|expbase|experience|cost|level|lv)$/);
         if(match)put(match[1],match[2],match[3],field.value);
       }
     }
@@ -46,8 +50,9 @@
 
     for(const row of rows.values()){
       const type=row.type??row.kind??row.category;
+      const cost=row.expbase??row.experience??row.cost;
       const name=cleanName(row.name);
-      if(name&&isNone(type))names.add(name);
+      if(name&&(isNone(type)||isExplicitZero(cost)))names.add(name);
     }
     return names;
   }
@@ -90,7 +95,7 @@
 
   function queueNoneMapping(names){
     pendingNoneNames=names;
-    pendingUntil=Date.now()+6000;
+    pendingUntil=Date.now()+120000;
     applyPendingNone();
   }
 
