@@ -7,42 +7,6 @@
     return title.includes("一般技能");
   }
 
-  function ensureGeneralAddButton(group){
-    const source=document.querySelector("#add-general");
-    if(!group||!source)return;
-
-    document.querySelectorAll("#general-skills .general-skill-heading-row,#general-skills .general-skill-heading-toolbar").forEach(element=>element.remove());
-
-    let heading=group.querySelector(":scope > .skill-group-heading");
-    let title=heading?.querySelector(":scope > .skill-group-title")||group.querySelector(":scope > .skill-group-title");
-    if(!title)return;
-
-    if(!heading){
-      heading=document.createElement("div");
-      heading.className="skill-group-heading";
-      title.before(heading);
-      heading.append(title);
-    }
-
-    if(heading.querySelector(":scope > .skill-group-actions[data-general-add-actions]"))return;
-    heading.querySelector(":scope > .skill-group-actions")?.remove();
-
-    const actions=document.createElement("div");
-    actions.className="skill-group-actions";
-    actions.dataset.v27="1";
-    actions.dataset.generalAddActions="1";
-
-    const button=document.createElement("button");
-    button.type="button";
-    button.className="skill-inline-add";
-    button.dataset.skillUiAction="#add-general";
-    button.setAttribute("aria-label","一般技能を追加");
-    button.innerHTML='一般技能を追加<small>ADD GENERAL</small>';
-
-    actions.append(button);
-    heading.append(actions);
-  }
-
   function removeGeneralOrderControls(root){
     [...root.children].filter(isGeneralGroup).forEach(group=>{
       group.querySelectorAll("[data-skill-move],.skill-order-button").forEach(button=>button.remove());
@@ -56,6 +20,14 @@
     });
   }
 
+  function placeBlankSlots(firstBody,secondBody){
+    if(!firstBody||!secondBody)return;
+    const root=document.querySelector("#general-skills");
+    if(!root)return;
+    root.querySelectorAll('tr[data-general-slot-column="left"]').forEach(row=>firstBody.append(row));
+    root.querySelectorAll('tr[data-general-slot-column="right"]').forEach(row=>secondBody.append(row));
+  }
+
   function splitGeneralSkills(){
     const root=document.querySelector("#general-skills");
     if(!root)return;
@@ -66,7 +38,7 @@
 
     if(general.classList.contains("general-skill-column--first")){
       const second=root.querySelector(".general-skill-column--second");
-      ensureGeneralAddButton(second);
+      placeBlankSlots(general.querySelector("tbody"),second?.querySelector("tbody"));
       return;
     }
 
@@ -95,7 +67,7 @@
 
     rows.slice(splitIndex+1).forEach(row=>secondBody.append(row));
     general.after(second);
-    ensureGeneralAddButton(second);
+    placeBlankSlots(tbody,secondBody);
     removeGeneralOrderControls(root);
   }
 
