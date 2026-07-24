@@ -1,0 +1,67 @@
+/* Style-skill separator rows. */
+#style-skills .style-skill-separator-row{
+  position:relative;
+  height:48px!important;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--line) 24%,transparent),color-mix(in srgb,var(--panel) 92%,transparent) 42%,color-mix(in srgb,var(--line) 10%,transparent))!important;
+  box-shadow:inset 4px 0 0 var(--line),inset 0 1px 0 color-mix(in srgb,var(--line) 60%,transparent),inset 0 -1px 0 color-mix(in srgb,var(--line) 35%,transparent);
+}
+#style-skills .style-skill-separator-row td{
+  height:48px!important;
+  padding:6px 8px!important;
+  border-top:1px solid color-mix(in srgb,var(--line) 62%,transparent)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--line) 42%,transparent)!important;
+  background:transparent!important;
+}
+#style-skills .style-skill-separator-row td:not(:first-child):not(:last-child){display:none!important}
+#style-skills .style-skill-separator-row td:first-child{
+  width:auto!important;
+  max-width:none!important;
+}
+#style-skills .style-skill-separator-row td:first-child input{
+  width:100%!important;
+  min-height:34px!important;
+  padding:4px 12px!important;
+  border:0!important;
+  color:var(--line)!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  font-size:1rem!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+#style-skills .style-skill-separator-row td:first-child input:focus{
+  outline:1px solid color-mix(in srgb,var(--line) 70%,transparent)!important;
+  background:color-mix(in srgb,var(--theme-input-bg) 76%,transparent)!important;
+}
+#style-skills .style-skill-separator-row td:last-child{
+  width:128px!important;
+  min-width:128px!important;
+}
+#style-skills .style-skill-separator-row::before{
+  content:"STYLE SECTION";
+  position:absolute;
+  top:2px;
+  left:16px;
+  color:var(--text-muted);
+  font:600 .52rem/1 monospace;
+  letter-spacing:.14em;
+  pointer-events:none;
+  opacity:.8;
+}
+
+/* Public cast view. */
+.style-skill-public-separator td{
+  padding:10px 14px!important;
+  border-top:1px solid color-mix(in srgb,var(--line) 65%,transparent)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--line) 40%,transparent)!important;
+  color:var(--line)!important;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--line) 18%,transparent),transparent 75%)!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+.style-skill-public-separator small{
+  margin-left:.8em;
+  color:var(--text-muted);
+  font:600 .58rem monospace;
+  letter-spacing:.12em;
+}
