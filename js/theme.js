@@ -36,7 +36,7 @@
 
   function loadLateOverrides() {
     appendStylesheet("./css/theme-runtime.css?v=2", "data-theme-runtime");
-    appendStylesheet("./css/theme-polish.css?v=1", "data-theme-polish");
+    appendStylesheet("./css/theme-polish.css?v=2", "data-theme-polish");
   }
 
   applyTheme(readTheme());
