@@ -150,6 +150,11 @@
   padding:4px!important;
 }
 
+.cast-outfit-table tbody tr.is-description-expanded>td.cast-outfit-col--description{
+  height:auto!important;
+  min-height:0!important;
+}
+
 @media(max-width:720px){
   #style-skill-panel .style-skill-view-table col.style-col-description{
     width:280px!important;
