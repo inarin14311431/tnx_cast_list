@@ -1,4 +1,4 @@
-/* Materialize the fixed proper-name General skill rows and keep suit/level values synchronized. */
+/* Materialize fixed proper-name General skill rows once and keep suit/level values synchronized. */
 (function(){
   const MASTER_NAMES=["製作：","芸術：","操縦："];
   const SUITS=["reason","passion","life","mundane"];
@@ -7,6 +7,7 @@
   let readyNotified=false;
 
   const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  const nextFrame=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
 
   function generalGroups(){
     return [...document.querySelectorAll("#general-skills>.skill-group")].filter(group=>{
@@ -35,6 +36,11 @@
     return suitBoxes(row).filter(box=>box.checked).length;
   }
 
+  function rowScore(row){
+    const level=Math.max(0,Number(row?.querySelector('[data-f="level"]')?.value||0));
+    return level*10+selectedCount(row);
+  }
+
   function setControl(control,value){
     if(!control)return;
     if(control.type==="checkbox")control.checked=Boolean(value);
@@ -48,7 +54,7 @@
     requestAnimationFrame(()=>window.scrollTo(position.x,position.y));
   }
 
-  async function waitFor(getter,attempts=80){
+  async function waitFor(getter,attempts=100){
     for(let attempt=0;attempt<attempts;attempt++){
       const value=getter();
       if(value)return value;
@@ -57,14 +63,39 @@
     return null;
   }
 
+  async function settle(){
+    await nextFrame();
+    await wait(40);
+  }
+
+  async function removeDuplicateExactRows(name,preferredKey=""){
+    for(let attempt=0;attempt<12;attempt++){
+      const matches=rows().filter(row=>rowName(row)===name);
+      if(matches.length<=1)return matches[0]||null;
+
+      const keep=matches.find(row=>row.dataset.skillKey===preferredKey)
+        || [...matches].sort((a,b)=>rowScore(b)-rowScore(a))[0];
+      const victim=matches.find(row=>row!==keep);
+      const button=victim?.querySelector("[data-delete-skill]");
+      if(!button)return keep;
+
+      button.click();
+      await settle();
+    }
+    return rows().find(row=>rowName(row)===name)||null;
+  }
+
   async function materialize(name){
     if(completed.has(name)||materializing.has(name))return;
     materializing.add(name);
 
+    const scrollPosition={x:window.scrollX,y:window.scrollY};
+
     try{
-      const visible=await waitFor(()=>rows().find(row=>rowName(row)===name));
+      let visible=await waitFor(()=>rows().find(row=>rowName(row)===name));
       if(!visible)return;
 
+      visible=await removeDuplicateExactRows(name)||visible;
       const level=Number(visible.querySelector('[data-f="level"]')?.value||0);
       const acquired=suitBoxes(visible).some(control=>control.checked);
       if(level>0||acquired){
@@ -72,35 +103,31 @@
         return;
       }
 
-      const originalKey=visible.dataset.skillKey;
+      const beforeKeys=new Set(rows().map(row=>row.dataset.skillKey));
       const addButton=document.querySelector("#add-general");
       if(!addButton)return;
 
-      const scrollPosition={x:window.scrollX,y:window.scrollY};
       addButton.click();
       restoreScroll(scrollPosition);
 
       const blank=await waitFor(()=>[...rows()].reverse().find(row=>{
-        return rowName(row)===""&&row.dataset.skillKey!==originalKey;
+        return rowName(row)===""&&!beforeKeys.has(row.dataset.skillKey);
       }));
-      if(!blank){
-        restoreScroll(scrollPosition);
-        return;
-      }
+      if(!blank)return;
 
       const realKey=blank.dataset.skillKey;
       setControl(blank.querySelector('[data-f="level"]'),0);
       setControl(blank.querySelector('[data-f="skill_kind"]'),"proper");
       setControl(blank.querySelector('[data-f="name"]'),name);
+      await settle();
 
-      /* Row handlers resolve the skill from data-skill-key at event time.
-       * Reusing the visible master row keeps the fixed layout while binding it
-       * to the real skill object that was just added to the editor state. */
-      visible.dataset.skillKey=realKey;
-      blank.remove();
+      /* The core editor now owns the newly created row. Deleting the old
+         generated master row only forces a clean rerender; it does not remove
+         the real skill because its key is different. */
+      await removeDuplicateExactRows(name,realKey);
       completed.add(name);
-      restoreScroll(scrollPosition);
     }finally{
+      restoreScroll(scrollPosition);
       materializing.delete(name);
     }
   }
@@ -111,7 +138,9 @@
       setTimeout(materializeAll,80);
       return;
     }
+
     for(const name of MASTER_NAMES)await materialize(name);
+
     if(!readyNotified){
       readyNotified=true;
       window.dispatchEvent(new CustomEvent("tnx:general-master-ready"));
