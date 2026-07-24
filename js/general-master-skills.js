@@ -1,9 +1,11 @@
-/* Materialize the fixed proper-name General skill rows exactly once per page.
- * This prevents transient master rows from failing to update internal data. */
+/* Materialize the fixed proper-name General skill rows and keep suit/level values synchronized. */
 (function(){
   const MASTER_NAMES=["製作：","芸術：","操縦："];
-  const pending=new Set(MASTER_NAMES);
-  let busy=false;
+  const SUITS=["reason","passion","life","mundane"];
+  const completed=new Set();
+  const materializing=new Set();
+
+  const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
 
   function generalGroups(){
     return [...document.querySelectorAll("#general-skills>.skill-group")].filter(group=>{
@@ -17,7 +19,19 @@
   }
 
   function rowName(row){
-    return (row.querySelector('[data-f="name"]')?.value||"").trim();
+    return (row?.querySelector('[data-f="name"]')?.value||"").trim();
+  }
+
+  function isProperName(name){
+    return MASTER_NAMES.some(master=>String(name||"").startsWith(master));
+  }
+
+  function suitBoxes(row){
+    return SUITS.map(suit=>row.querySelector(`[data-f="${suit}"]`)).filter(Boolean);
+  }
+
+  function selectedCount(row){
+    return suitBoxes(row).filter(box=>box.checked).length;
   }
 
   function setControl(control,value){
@@ -25,65 +39,88 @@
     if(control.type==="checkbox")control.checked=Boolean(value);
     else control.value=String(value);
     control.dispatchEvent(new Event("input",{bubbles:true}));
+    control.dispatchEvent(new Event("change",{bubbles:true}));
   }
 
-  function continueLater(attempt){
-    requestAnimationFrame(()=>run(attempt+1));
+  async function waitFor(getter,attempts=80){
+    for(let attempt=0;attempt<attempts;attempt++){
+      const value=getter();
+      if(value)return value;
+      await wait(40);
+    }
+    return null;
   }
 
-  function run(attempt=0){
-    if(busy||pending.size===0)return;
+  async function materialize(name){
+    if(completed.has(name)||materializing.has(name))return;
+    materializing.add(name);
 
-    const root=document.querySelector("#general-skills");
-    if(!root||!root.querySelector("tr[data-skill-key]")){
-      if(attempt<120)setTimeout(()=>run(attempt+1),50);
-      return;
-    }
+    try{
+      const visible=await waitFor(()=>rows().find(row=>rowName(row)===name));
+      if(!visible)return;
 
-    const name=pending.values().next().value;
-    const visible=rows().find(row=>rowName(row)===name);
-    if(!visible){
-      pending.delete(name);
-      continueLater(attempt);
-      return;
-    }
-
-    const level=Number(visible.querySelector('[data-f="level"]')?.value||0);
-    const acquired=[...visible.querySelectorAll('[data-f="reason"],[data-f="passion"],[data-f="life"],[data-f="mundane"]')]
-      .some(control=>control.checked);
-
-    if(level>0||acquired){
-      pending.delete(name);
-      continueLater(attempt);
-      return;
-    }
-
-    const addButton=document.querySelector("#add-general");
-    if(!addButton){
-      pending.delete(name);
-      continueLater(attempt);
-      return;
-    }
-
-    busy=true;
-    addButton.click();
-
-    requestAnimationFrame(()=>{
-      const blank=[...rows()].reverse().find(row=>rowName(row)==="");
-      if(blank){
-        /* Set fields that do not trigger a name-based rerender first.
-         * The name is written last because it rebuilds the skill tables. */
-        setControl(blank.querySelector('[data-f="level"]'),0);
-        setControl(blank.querySelector('[data-f="skill_kind"]'),"proper");
-        setControl(blank.querySelector('[data-f="name"]'),name);
+      const level=Number(visible.querySelector('[data-f="level"]')?.value||0);
+      const acquired=suitBoxes(visible).some(control=>control.checked);
+      if(level>0||acquired){
+        completed.add(name);
+        return;
       }
 
-      pending.delete(name);
-      busy=false;
-      continueLater(attempt);
+      const originalKey=visible.dataset.skillKey;
+      const addButton=document.querySelector("#add-general");
+      if(!addButton)return;
+      addButton.click();
+
+      const blank=await waitFor(()=>[...rows()].reverse().find(row=>{
+        return rowName(row)===""&&row.dataset.skillKey!==originalKey;
+      }));
+      if(!blank)return;
+
+      setControl(blank.querySelector('[data-f="level"]'),0);
+      setControl(blank.querySelector('[data-f="skill_kind"]'),"proper");
+      setControl(blank.querySelector('[data-f="name"]'),name);
+
+      await waitFor(()=>{
+        const candidate=rows().find(row=>rowName(row)===name);
+        return candidate&&candidate.dataset.skillKey!==originalKey?candidate:null;
+      });
+      completed.add(name);
+    }finally{
+      materializing.delete(name);
+    }
+  }
+
+  async function materializeAll(){
+    const root=document.querySelector("#general-skills");
+    if(!root||!root.querySelector("tr[data-skill-key]")){
+      setTimeout(materializeAll,80);
+      return;
+    }
+    for(const name of MASTER_NAMES)await materialize(name);
+  }
+
+  function synchronizeSuitLevel(box){
+    const row=box.closest('tr[data-skill-key]');
+    if(!row||!isProperName(rowName(row)))return;
+
+    requestAnimationFrame(()=>{
+      const level=row.querySelector('[data-f="level"]');
+      if(!level)return;
+      const count=selectedCount(row);
+      const current=Math.max(0,Number(level.value||0));
+      const next=box.checked?Math.max(current,count):count;
+      if(next===current)return;
+      level.value=String(next);
+      level.dispatchEvent(new Event("input",{bubbles:true}));
+      level.dispatchEvent(new Event("change",{bubbles:true}));
     });
   }
 
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",()=>run(),{once:true});
-  else run();
+  document.addEventListener("input",event=>{
+    const box=event.target.closest?.('[data-f="reason"],[data-f="passion"],[data-f="life"],[data-f="mundane"]');
+    if(box?.type==="checkbox")synchronizeSuitLevel(box);
+  });
+
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",materializeAll,{once:true});
+  else materializeAll();
 })();
