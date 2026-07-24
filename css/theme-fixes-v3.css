@@ -137,13 +137,23 @@ html[data-theme] #skills-container .skill-section .data-table tbody tr:hover td,
 html[data-theme] #style-skill-panel .style-skill-view-table tbody tr:hover td{
   background:color-mix(in srgb,var(--theme-panel-flat) 78%,var(--line) 22%)!important;
 }
-html[data-theme] #skills-container .skill-section .cast-suit-box{
+
+/* General and style skills share exactly the same suit colors. */
+html[data-theme] #skills-container .skill-section .cast-suit-box,
+html[data-theme] #style-skill-panel .cast-suit-box,
+html[data-theme] #style-skill-panel .style-skill-view-table .cast-suit-box,
+html[data-theme] #tab-session .skill-section .cast-suit-box,
+html[data-theme] #tab-session .style-skill-view-table .cast-suit-box{
   color:var(--text-muted)!important;
   border-color:var(--line-muted)!important;
   background:color-mix(in srgb,var(--theme-input-bg) 90%,var(--line) 10%)!important;
   box-shadow:none!important;
 }
-html[data-theme] #skills-container .skill-section .cast-suit-box.is-active{
+html[data-theme] #skills-container .skill-section .cast-suit-box.is-active,
+html[data-theme] #style-skill-panel .cast-suit-box.is-active,
+html[data-theme] #style-skill-panel .style-skill-view-table .cast-suit-box.is-active,
+html[data-theme] #tab-session .skill-section .cast-suit-box.is-active,
+html[data-theme] #tab-session .style-skill-view-table .cast-suit-box.is-active{
   color:var(--theme-on-accent)!important;
   border-color:var(--line)!important;
   background:var(--line)!important;
@@ -196,20 +206,36 @@ html[data-theme] #outfit-container .cast-armor-total{
 
 /* 3: Present reorder controls as ▲ ▼ × and keep all three visible. */
 html[data-theme] [data-skill-move="up"],
-html[data-theme] [data-skill-move="down"],
+html[data-theme] [data-skill-move="down"]{
+  font-size:.72rem!important;
+  line-height:1!important;
+  text-indent:0!important;
+}
+html[data-theme] [data-skill-move="up"]::before,
+html[data-theme] [data-skill-move="down"]::before,
+html[data-theme] [data-skill-move="up"]::after,
+html[data-theme] [data-skill-move="down"]::after{
+  content:none!important;
+  display:none!important;
+}
 html[data-theme] [data-outfit-move="up"],
 html[data-theme] [data-outfit-move="down"]{
   font-size:0!important;
 }
-html[data-theme] [data-skill-move="up"]::before,
 html[data-theme] [data-outfit-move="up"]::before{
   content:"▲";
+  display:inline!important;
   font-size:.72rem;
 }
-html[data-theme] [data-skill-move="down"]::before,
 html[data-theme] [data-outfit-move="down"]::before{
   content:"▼";
+  display:inline!important;
   font-size:.72rem;
+}
+html[data-theme] [data-outfit-move="up"]::after,
+html[data-theme] [data-outfit-move="down"]::after{
+  content:none!important;
+  display:none!important;
 }
 html[data-theme] .skill-sort-controls button,
 html[data-theme] .row-delete,
