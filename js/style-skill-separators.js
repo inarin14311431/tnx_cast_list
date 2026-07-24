@@ -2,8 +2,21 @@
 (()=>{
   const MARKER="[[STYLE_SEPARATOR]]";
   const container=document.querySelector("#style-skills");
-  const addButton=document.querySelector("#add-style-separator");
-  if(!container||!addButton)return;
+  if(!container)return;
+
+  let addButton=document.querySelector("#add-style-separator");
+  if(!addButton){
+    addButton=document.createElement("button");
+    addButton.id="add-style-separator";
+    addButton.type="button";
+    addButton.innerHTML="区切り線を追加 <small>ADD STYLE SECTION</small>";
+    const toolbar=document.querySelector("#add-style-skill")?.closest(".toolbar");
+    if(toolbar){
+      toolbar.style.gridTemplateColumns="repeat(3,minmax(0,1fr))";
+      document.querySelector("#add-style-skill")?.after(addButton);
+    }
+  }
+  if(!addButton.isConnected)return;
 
   const wait=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
   const rows=()=>[...container.querySelectorAll('tr[data-skill-key]')];
