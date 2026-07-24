@@ -1,0 +1,58 @@
+/* Late-loaded overrides for legacy styles that use hard-coded colors. */
+html[data-theme] .site-title,
+html[data-theme] .site-title__nova,
+html[data-theme] .site-title__archive,
+html[data-theme] .auth-header h1,
+html[data-theme] .cast-name,
+html[data-theme] .sheet-header h1,
+html[data-theme] .showcase-header h1{
+  color:var(--text)!important;
+  text-shadow:0 0 18px var(--theme-shadow)!important;
+}
+html[data-theme] .site-header::before,
+html[data-theme] .site-title__nova::after,
+html[data-theme] .site-title__divider,
+html[data-theme] .site-header__system::before{
+  border-color:var(--line)!important;
+  background:linear-gradient(90deg,var(--line),transparent)!important;
+  box-shadow:0 0 12px var(--theme-shadow)!important;
+}
+html[data-theme] .auth-navigation__account,
+html[data-theme] .auth-navigation__logout{
+  color:var(--line)!important;
+  border-color:var(--line)!important;
+  background:var(--theme-button-bg)!important;
+  box-shadow:0 0 18px var(--theme-shadow)!important;
+}
+html[data-theme] .auth-navigation__logout{color:var(--text-muted)!important}
+html[data-theme] .auth-navigation__account:hover,
+html[data-theme] .auth-navigation__logout:hover{
+  color:var(--theme-on-accent)!important;
+  background:var(--theme-button-hover)!important;
+}
+html[data-theme] .auth-navigation__account:hover small,
+html[data-theme] .auth-navigation__logout:hover small{color:inherit!important}
+html[data-theme] .cast-card:hover,
+html[data-theme] .owned-cast:hover{
+  border-color:var(--line)!important;
+  box-shadow:0 0 24px var(--theme-shadow)!important;
+}
+html[data-theme] .cast-card__scanline,
+html[data-theme] .cast-hero__image-scan,
+html[data-theme] .image-preview-scan{
+  background:linear-gradient(to bottom,transparent,color-mix(in srgb,var(--line) 38%,transparent),transparent)!important;
+}
+html[data-theme] .auth-tab.is-active,
+html[data-theme] .section-toggle,
+html[data-theme] .skill-group-heading,
+html[data-theme] .data-panel__header,
+html[data-theme] .showcase-panel__header,
+html[data-theme] .act-history-panel__header{
+  border-color:var(--line-muted)!important;
+}
+html[data-theme="moon"] .cast-hero__image-label,
+html[data-theme="moon"] .cast-card__image,
+html[data-theme="eden"] .cast-hero__image-label,
+html[data-theme="eden"] .cast-card__image{
+  color:var(--text)!important;
+}
