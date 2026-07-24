@@ -1,0 +1,312 @@
+/* Shared site color themes. Loaded after page-specific styles. */
+:root,
+:root[data-theme="nova"]{
+  --background:#05080b;
+  --panel:rgba(8,18,24,.94);
+  --line:#67efff;
+  --line-muted:#2d91a1;
+  --text:#effcff;
+  --text-muted:#a9cbd2;
+  --alert:#ff5d7f;
+  --theme-body-bg:radial-gradient(circle at 50% 0%,rgba(20,90,110,.22),transparent 55%),#05080b;
+  --theme-header-bg:linear-gradient(180deg,rgba(4,15,20,.98),rgba(4,15,20,.88));
+  --theme-panel-bg:linear-gradient(180deg,rgba(8,28,36,.94),rgba(3,14,19,.96));
+  --theme-panel-flat:rgba(8,18,24,.94);
+  --theme-input-bg:rgba(1,11,15,.9);
+  --theme-button-bg:rgba(65,232,255,.08);
+  --theme-button-hover:#67efff;
+  --theme-on-accent:#041317;
+  --theme-grid-line:rgba(65,232,255,.04);
+  --theme-scan-line:rgba(255,255,255,.1);
+  --theme-scan-opacity:.08;
+  --theme-shadow:rgba(65,232,255,.18);
+  --theme-divine-bg:rgba(34,5,15,.78);
+  --theme-divine-line:#ff6f96;
+}
+
+:root[data-theme="moon"]{
+  --background:#edf6ff;
+  --panel:rgba(255,255,255,.96);
+  --line:#1769aa;
+  --line-muted:#8eb8dc;
+  --text:#102235;
+  --text-muted:#536f88;
+  --alert:#c43858;
+  --theme-body-bg:radial-gradient(circle at 50% -10%,rgba(89,174,238,.26),transparent 48%),linear-gradient(180deg,#f9fcff,#e9f4ff 70%,#dcecf8);
+  --theme-header-bg:linear-gradient(180deg,rgba(255,255,255,.98),rgba(235,246,255,.96));
+  --theme-panel-bg:linear-gradient(180deg,rgba(255,255,255,.98),rgba(235,245,253,.97));
+  --theme-panel-flat:rgba(255,255,255,.96);
+  --theme-input-bg:#fff;
+  --theme-button-bg:#dceeff;
+  --theme-button-hover:#1769aa;
+  --theme-on-accent:#fff;
+  --theme-grid-line:rgba(23,105,170,.08);
+  --theme-scan-line:rgba(23,105,170,.08);
+  --theme-scan-opacity:.025;
+  --theme-shadow:rgba(23,105,170,.18);
+  --theme-divine-bg:#fff1f4;
+  --theme-divine-line:#c43858;
+}
+
+:root[data-theme="star"]{
+  --background:#160f24;
+  --panel:rgba(31,20,46,.95);
+  --line:#ffb35c;
+  --line-muted:#8a68a7;
+  --text:#fff4e8;
+  --text-muted:#d0b8da;
+  --alert:#ff6d8d;
+  --theme-body-bg:radial-gradient(circle at 50% -15%,rgba(255,126,88,.26),transparent 38%),linear-gradient(180deg,#261735,#160f24 58%,#0c0b18);
+  --theme-header-bg:linear-gradient(180deg,rgba(42,24,56,.98),rgba(25,16,39,.94));
+  --theme-panel-bg:linear-gradient(180deg,rgba(48,29,62,.96),rgba(24,16,37,.97));
+  --theme-panel-flat:rgba(31,20,46,.95);
+  --theme-input-bg:rgba(16,10,27,.92);
+  --theme-button-bg:rgba(255,179,92,.1);
+  --theme-button-hover:#ffb35c;
+  --theme-on-accent:#2a1604;
+  --theme-grid-line:rgba(255,179,92,.055);
+  --theme-scan-line:rgba(255,214,182,.09);
+  --theme-scan-opacity:.055;
+  --theme-shadow:rgba(255,139,86,.2);
+  --theme-divine-bg:rgba(75,20,49,.8);
+  --theme-divine-line:#ff779c;
+}
+
+:root[data-theme="eden"]{
+  --background:#f4f4ef;
+  --panel:rgba(255,255,252,.98);
+  --line:#3f7169;
+  --line-muted:#a9b8b3;
+  --text:#202725;
+  --text-muted:#66736f;
+  --alert:#a44352;
+  --theme-body-bg:linear-gradient(180deg,#fafaf7,#f0f1ec);
+  --theme-header-bg:#fbfbf8;
+  --theme-panel-bg:#fff;
+  --theme-panel-flat:#fff;
+  --theme-input-bg:#fff;
+  --theme-button-bg:#edf1ef;
+  --theme-button-hover:#3f7169;
+  --theme-on-accent:#fff;
+  --theme-grid-line:rgba(63,113,105,.035);
+  --theme-scan-line:transparent;
+  --theme-scan-opacity:0;
+  --theme-shadow:rgba(35,50,46,.1);
+  --theme-divine-bg:#f5f0ec;
+  --theme-divine-line:#8b6758;
+}
+
+html[data-theme] body{
+  color:var(--text)!important;
+  background:var(--theme-body-bg)!important;
+}
+html[data-theme] .background-grid{
+  background-image:linear-gradient(var(--theme-grid-line) 1px,transparent 1px),linear-gradient(90deg,var(--theme-grid-line) 1px,transparent 1px)!important;
+}
+html[data-theme] .scanlines{
+  opacity:var(--theme-scan-opacity)!important;
+  background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,var(--theme-scan-line) 4px)!important;
+}
+
+html[data-theme] .site-header,
+html[data-theme] .auth-header,
+html[data-theme] .cast-header,
+html[data-theme] .sheet-header,
+html[data-theme] .showcase-header{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:var(--theme-header-bg)!important;
+  box-shadow:0 8px 30px var(--theme-shadow)!important;
+}
+
+html[data-theme] .archive-controls,
+html[data-theme] .account-panel,
+html[data-theme] .auth-terminal,
+html[data-theme] .data-panel,
+html[data-theme] .cast-hero,
+html[data-theme] .exp-panel,
+html[data-theme] .sheet-section,
+html[data-theme] .style-card,
+html[data-theme] .ability-card,
+html[data-theme] .outfit-card,
+html[data-theme] .cast-card,
+html[data-theme] .owned-cast,
+html[data-theme] .showcase-panel,
+html[data-theme] .act-history-panel,
+html[data-theme] .act-history-summary article,
+html[data-theme] .experience-spending-item,
+html[data-theme] dialog{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:var(--theme-panel-bg)!important;
+  box-shadow:0 12px 30px var(--theme-shadow)!important;
+}
+
+html[data-theme] input,
+html[data-theme] select,
+html[data-theme] textarea{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:var(--theme-input-bg)!important;
+}
+html[data-theme] input:focus,
+html[data-theme] select:focus,
+html[data-theme] textarea:focus{
+  border-color:var(--line)!important;
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--line) 28%,transparent)!important;
+}
+
+html[data-theme] button,
+html[data-theme] .sheet-view-link,
+html[data-theme] .account-actions a,
+html[data-theme] .auth-navigation__account,
+html[data-theme] .auth-navigation__logout,
+html[data-theme] .cast-tab,
+html[data-theme] .cast-header__back,
+html[data-theme] .cast-edit-link{
+  border-color:var(--line)!important;
+}
+html[data-theme] .toolbar button,
+html[data-theme] .skill-inline-add,
+html[data-theme] #add-general,
+html[data-theme] #archive-reset,
+html[data-theme] .account-actions a,
+html[data-theme] .account-actions button,
+html[data-theme] .auth-form button,
+html[data-theme] .generator-actions button,
+html[data-theme] .experience-spending-form button{
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+  background:var(--theme-button-bg)!important;
+}
+html[data-theme] .toolbar button:hover,
+html[data-theme] .skill-inline-add:hover,
+html[data-theme] #add-general:hover,
+html[data-theme] #archive-reset:hover,
+html[data-theme] .account-actions a:hover,
+html[data-theme] .account-actions button:hover,
+html[data-theme] .auth-form button:hover,
+html[data-theme] .generator-actions button:hover,
+html[data-theme] .experience-spending-form button:hover{
+  color:var(--theme-on-accent)!important;
+  background:var(--theme-button-hover)!important;
+}
+html[data-theme] button small,
+html[data-theme] .skill-inline-add small,
+html[data-theme] #add-general small{
+  color:var(--text-muted)!important;
+}
+html[data-theme] button:hover small,
+html[data-theme] .skill-inline-add:hover small,
+html[data-theme] #add-general:hover small{
+  color:inherit!important;
+}
+
+html[data-theme] .skill-table th,
+html[data-theme] .data-table th,
+html[data-theme] .archive-control span,
+html[data-theme] small,
+html[data-theme] .cast-card__id,
+html[data-theme] .cast-card__exp,
+html[data-theme] .cast-card__styles,
+html[data-theme] .cast-card__player,
+html[data-theme] .cast-card__summary,
+html[data-theme] .warning,
+html[data-theme] .generator-status{
+  color:var(--text-muted)!important;
+}
+html[data-theme] .skill-table th,
+html[data-theme] .skill-table td,
+html[data-theme] .data-table th,
+html[data-theme] .data-table td{
+  border-color:var(--line-muted)!important;
+}
+html[data-theme] .skill-group-title,
+html[data-theme] .site-header__system,
+html[data-theme] .cast-card__handle,
+html[data-theme] .cast-public-id,
+html[data-theme] .data-panel__header h2,
+html[data-theme] .account-panel h2,
+html[data-theme] .showcase-panel__header h2,
+html[data-theme] .act-history-panel__header h2{
+  color:var(--line)!important;
+}
+
+html[data-theme] .suit-check span{
+  color:var(--text-muted)!important;
+  border-color:var(--line-muted)!important;
+  background:color-mix(in srgb,var(--theme-input-bg) 88%,var(--line) 12%)!important;
+}
+html[data-theme] .suit-check input:checked + span{
+  color:var(--theme-on-accent)!important;
+  border-color:var(--line)!important;
+  background:var(--line)!important;
+  box-shadow:0 0 14px var(--theme-shadow)!important;
+}
+html[data-theme] .divine-field,
+html[data-theme] .divine-card,
+html[data-theme] .style-divine-card{
+  border-color:var(--theme-divine-line)!important;
+  background:var(--theme-divine-bg)!important;
+}
+
+html[data-theme] .section-toggle,
+html[data-theme] .cast-tab{
+  color:var(--line)!important;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--line) 10%,transparent),transparent)!important;
+}
+html[data-theme] .cast-tab.is-active{
+  color:var(--theme-on-accent)!important;
+  background:var(--line)!important;
+}
+html[data-theme] .cast-card__image{
+  background:color-mix(in srgb,var(--background) 80%,#000 20%)!important;
+}
+
+.site-header__operator{
+  display:grid;
+  justify-items:end;
+  gap:8px;
+  min-width:min(100%,310px);
+}
+.theme-picker{
+  display:grid;
+  grid-template-columns:auto minmax(210px,1fr);
+  align-items:center;
+  gap:8px;
+  width:100%;
+  color:var(--text-muted);
+  font-size:.68rem;
+  font-family:monospace;
+}
+.theme-picker>span{
+  display:grid;
+  line-height:1.15;
+  white-space:nowrap;
+}
+.theme-picker>span small{
+  font-size:.52rem;
+  letter-spacing:.06em;
+}
+.theme-picker select{
+  width:100%;
+  min-height:34px;
+  padding:6px 9px;
+  font-size:.72rem;
+}
+
+:root[data-theme="moon"] .cast-card,
+:root[data-theme="moon"] .owned-cast,
+:root[data-theme="eden"] .cast-card,
+:root[data-theme="eden"] .owned-cast{
+  box-shadow:0 8px 22px var(--theme-shadow)!important;
+}
+:root[data-theme="eden"] .background-grid,
+:root[data-theme="eden"] .scanlines{
+  display:none!important;
+}
+
+@media(max-width:700px){
+  .site-header__operator{width:100%;justify-items:stretch}
+  .theme-picker{grid-template-columns:1fr}
+}
