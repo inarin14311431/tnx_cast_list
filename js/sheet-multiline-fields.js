@@ -18,7 +18,7 @@ function fitTextarea(field) {
 }
 
 function copyControl(input, extraClass = "") {
-  if (!(input instanceof HTMLInputElement) || input.dataset.multilineConverted === "true") return input;
+  if (!(input instanceof HTMLInputElement)) return input;
   if (["number", "hidden", "checkbox", "radio", "file"].includes(input.type)) return input;
 
   const field = document.createElement("textarea");
@@ -46,10 +46,11 @@ function restoreStyleName(field) {
 }
 
 function restoreOutfitFields(scope) {
-  const key = scope.closest("[data-outfit-key]")?.dataset.outfitKey;
+  const owner = scope.closest("[data-outfit-key]");
+  const key = owner?.dataset.outfitKey;
   const data = key ? restoredOutfits.get(key) : null;
-  if (!data) return;
-  scope.querySelectorAll("textarea[data-o]").forEach(field => {
+  if (!owner || !data) return;
+  owner.querySelectorAll("textarea[data-o]").forEach(field => {
     const name = field.dataset.o;
     if (!name || data[name] === undefined || data[name] === null) return;
     const value = normalizeNewlines(data[name]);
