@@ -6,7 +6,7 @@ const publicId = new URLSearchParams(location.search).get("id")?.trim() || "";
 const restoredStyleNames = new Map();
 const restoredOutfits = new Map();
 const appliedStyleKeys = new Set();
-const appliedOutfitKeys = new Set();
+const appliedOutfitFields = new Set();
 let queued = false;
 
 function normalizeNewlines(value) {
@@ -55,14 +55,15 @@ function restoreOutfitFields(scope) {
   const owner = scope.closest("[data-outfit-key]");
   const key = owner?.dataset.outfitKey;
   const data = key ? restoredOutfits.get(key) : null;
-  if (!owner || !data || appliedOutfitKeys.has(key)) return;
+  if (!owner || !data) return;
   owner.querySelectorAll("textarea[data-o]").forEach(field => {
     const name = field.dataset.o;
-    if (!name || data[name] === undefined || data[name] === null) return;
+    const restoreKey = `${key}:${name}`;
+    if (!name || appliedOutfitFields.has(restoreKey) || data[name] === undefined || data[name] === null) return;
     field.value = normalizeNewlines(data[name]);
+    appliedOutfitFields.add(restoreKey);
     fitTextarea(field);
   });
-  appliedOutfitKeys.add(key);
 }
 
 function enhanceStyleNames() {
@@ -77,13 +78,10 @@ function enhanceStyleNames() {
 }
 
 function enhanceOutfitFields() {
-  outfitRoot?.querySelectorAll('input[data-o]').forEach(input => {
-    const field = copyControl(input, "outfit-field-multiline");
-    restoreOutfitFields(field);
-  });
+  outfitRoot?.querySelectorAll('input[data-o]').forEach(input => copyControl(input, "outfit-field-multiline"));
+  outfitRoot?.querySelectorAll('[data-outfit-key]').forEach(owner => restoreOutfitFields(owner));
   outfitRoot?.querySelectorAll('textarea[data-o]').forEach(field => {
     field.value = normalizeNewlines(field.value);
-    restoreOutfitFields(field);
     fitTextarea(field);
   });
 }
