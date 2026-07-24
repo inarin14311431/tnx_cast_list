@@ -1,10 +1,10 @@
-/* Convert the three level-0 proper-name master rows into real General skills
- * on their first suit click. The conversion is synchronous so 製作：, 芸術：
- * and 操縦： all use exactly the same stable editor row afterwards. */
+/* Promote only synthetic level-0 proper-name master rows after the core editor
+ * has had the first chance to process a suit change. This lets 製作：, 芸術：
+ * and 操縦： use exactly the same path, including previously saved level-0 rows. */
 (() => {
   const MASTER_NAMES = ["製作：", "芸術：", "操縦："];
   const SUITS = ["reason", "passion", "life", "mundane"];
-  const realKeys = new Set();
+  const converting = new Set();
 
   function generalGroups() {
     return [...document.querySelectorAll("#general-skills > .skill-group")].filter(group => {
@@ -18,7 +18,7 @@
   }
 
   function rowName(row) {
-    return (row?.querySelector('[data-f="name"]')?.value || "").trim();
+    return String(row?.querySelector('[data-f="name"]')?.value || "").trim().normalize("NFC");
   }
 
   function exactMasterName(row) {
@@ -30,8 +30,14 @@
     return Object.fromEntries(SUITS.map(suit => [suit, row?.querySelector(`[data-f="${suit}"]`)]));
   }
 
+  function selectedSuits(row) {
+    const inputs = suitInputs(row);
+    return Object.fromEntries(SUITS.map(suit => [suit, Boolean(inputs[suit]?.checked)]));
+  }
+
   function selectedCount(row) {
-    return Object.values(suitInputs(row)).filter(input => input?.checked).length;
+    const state = selectedSuits(row);
+    return SUITS.filter(suit => state[suit]).length;
   }
 
   function setControl(control, value) {
@@ -47,84 +53,75 @@
     requestAnimationFrame(() => window.scrollTo(position.x, position.y));
   }
 
-  function convertMasterRow(row, clickedBox, name) {
-    const addButton = document.querySelector("#add-general");
-    if (!addButton) return false;
+  function promoteSyntheticRow(row, name) {
+    if (converting.has(name)) return;
 
-    const desiredSuits = Object.fromEntries(SUITS.map(suit => {
-      const input = row.querySelector(`[data-f="${suit}"]`);
-      return [suit, input === clickedBox ? !input.checked : Boolean(input?.checked)];
-    }));
-    const beforeKeys = new Set(rows().map(candidate => candidate.dataset.skillKey));
+    const desired = selectedSuits(row);
+    const level = SUITS.filter(suit => desired[suit]).length;
+    if (level === 0) return;
+
+    const addButton = document.querySelector("#add-general");
+    if (!addButton) return;
+
+    converting.add(name);
     const scrollPosition = { x: window.scrollX, y: window.scrollY };
 
-    addButton.click();
-    restoreScroll(scrollPosition);
+    try {
+      const beforeKeys = new Set(rows().map(candidate => candidate.dataset.skillKey));
+      addButton.click();
+      restoreScroll(scrollPosition);
 
-    const realRow = [...rows()].reverse().find(candidate => {
-      return !beforeKeys.has(candidate.dataset.skillKey) && rowName(candidate) === "";
-    });
-    if (!realRow) return false;
+      const realRow = [...rows()].reverse().find(candidate => {
+        return !beforeKeys.has(candidate.dataset.skillKey) && rowName(candidate) === "";
+      });
+      if (!realRow) return;
 
-    const realKey = realRow.dataset.skillKey;
-    realKeys.add(realKey);
+      const realKey = realRow.dataset.skillKey;
+      setControl(realRow.querySelector('[data-f="skill_kind"]'), "proper");
+      setControl(realRow.querySelector('[data-f="name"]'), name);
+      SUITS.forEach(suit => setControl(realRow.querySelector(`[data-f="${suit}"]`), desired[suit]));
+      setControl(realRow.querySelector('[data-f="level"]'), level);
 
-    setControl(realRow.querySelector('[data-f="skill_kind"]'), "proper");
-    setControl(realRow.querySelector('[data-f="name"]'), name);
-    SUITS.forEach(suit => setControl(realRow.querySelector(`[data-f="${suit}"]`), desiredSuits[suit]));
-    setControl(realRow.querySelector('[data-f="level"]'), SUITS.filter(suit => desiredSuits[suit]).length);
-
-    /* At this point the DOM still contains the generated level-0 master row.
-       Its delete button forces the core editor to rerender. Because the row is
-       synthetic, no real skill is removed; the newly created row remains. */
-    const duplicate = rows().find(candidate => {
-      return candidate.dataset.skillKey !== realKey
-        && rowName(candidate) === name
-        && Number(candidate.querySelector('[data-f="level"]')?.value || 0) === 0
-        && selectedCount(candidate) === 0;
-    });
-    duplicate?.querySelector("[data-delete-skill]")?.click();
-    restoreScroll(scrollPosition);
-    return true;
+      /* The generated master row is not part of the core skills array. Clicking
+         its delete button only forces a clean rerender; the newly promoted row
+         remains and becomes the sole displayed row for this exact name. */
+      const synthetic = rows().find(candidate => {
+        return candidate.dataset.skillKey !== realKey
+          && rowName(candidate) === name
+          && Number(candidate.querySelector('[data-f="level"]')?.value || 0) === 0
+          && selectedCount(candidate) === 0;
+      });
+      synthetic?.querySelector("[data-delete-skill]")?.click();
+      restoreScroll(scrollPosition);
+    } finally {
+      converting.delete(name);
+    }
   }
 
-  document.addEventListener("click", event => {
-    const label = event.target.closest?.(".suit-check");
-    const clickedBox = label?.querySelector('input[data-f="reason"],input[data-f="passion"],input[data-f="life"],input[data-f="mundane"]');
-    const row = clickedBox?.closest("tr[data-skill-key]");
-    const name = exactMasterName(row);
-    if (!clickedBox || !row || !name) return;
-
-    /* Rows created by this script and already acquired rows are handled by the
-       editor's normal input handler. Only untouched synthetic level-0 rows are
-       intercepted. */
-    if (realKeys.has(row.dataset.skillKey) || Number(row.querySelector('[data-f="level"]')?.value || 0) > 0 || selectedCount(row) > 0) {
-      realKeys.add(row.dataset.skillKey);
-      return;
-    }
-
-    event.preventDefault();
-    event.stopImmediatePropagation();
-    convertMasterRow(row, clickedBox, name);
-  }, true);
-
-  /* Keep the level equal to the number of selected suits for proper-name
-     General skills, including names such as 製作：武器. */
   document.addEventListener("input", event => {
     const box = event.target.closest?.('input[data-f="reason"],input[data-f="passion"],input[data-f="life"],input[data-f="mundane"]');
     const row = box?.closest("tr[data-skill-key]");
-    const name = rowName(row);
-    if (!box || !row || !MASTER_NAMES.some(master => name.startsWith(master))) return;
+    const name = exactMasterName(row);
+    if (!box || !row || !name || converting.has(name)) return;
 
-    requestAnimationFrame(() => {
-      const level = row.querySelector('[data-f="level"]');
-      if (!level) return;
-      const count = selectedCount(row);
-      if (Number(level.value || 0) === count) return;
+    const count = selectedCount(row);
+    const level = row.querySelector('[data-f="level"]');
+    const current = Math.max(0, Number(level?.value || 0));
+
+    /* A real row is updated by sheet.js before this document-level listener.
+       Only a synthetic master row still has level 0 after a suit is selected. */
+    if (count > 0 && current === 0) {
+      promoteSyntheticRow(row, name);
+      return;
+    }
+
+    /* Existing real rows, including older saved level-0 製作： records, stay in
+       place. Keep their level equal to the number of selected suits. */
+    if (level && current !== count) {
       level.value = String(count);
       level.dispatchEvent(new Event("input", { bubbles: true }));
       level.dispatchEvent(new Event("change", { bubbles: true }));
-    });
+    }
   });
 
   function notifyReady() {
