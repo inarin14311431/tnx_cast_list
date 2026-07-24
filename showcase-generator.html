@@ -7,6 +7,7 @@
   <script src="./js/theme.js?v=1"></script>
   <link rel="stylesheet" href="./css/base.css?v=30">
   <link rel="stylesheet" href="./css/showcase-generator.css?v=1">
+  <link rel="stylesheet" href="./css/showcase-manual-cast.css?v=1">
   <link rel="stylesheet" href="./css/themes.css?v=1">
 </head>
 <body>
@@ -35,19 +36,19 @@
       <div class="showcase-panel__body"><div class="selector-controls"><label>検索<input id="cast-search" type="search" placeholder="名前・ハンドル・PL・所属"></label><label>プレイヤー<select id="player-filter"><option value="">すべて</option></select></label><label>スタイル<select id="style-filter"><option value="">すべて</option></select></label></div><p id="library-status" class="generator-status">公開キャストを読み込み中…</p><div id="public-cast-grid" class="public-cast-grid" aria-live="polite"></div></div>
     </section>
     <section class="showcase-panel">
-      <header class="showcase-panel__header"><div><span>03</span><h2>出演順と紹介文 <small>CAST ORDER / PROFILE</small></h2></div><p>CAST 01—06</p></header>
-      <div class="showcase-panel__body"><div id="selected-casts" class="selected-casts"><p class="empty-state">公開キャストから1～6名を選択してください。</p></div></div>
+      <header class="showcase-panel__header"><div><span>03</span><h2>出演順と紹介文 <small>CAST ORDER / PROFILE</small></h2></div><div class="showcase-panel__header-actions"><p>CAST 01—06</p><button id="add-manual-cast" class="manual-cast-add" type="button">手動追加 <small>ADD MANUAL CAST</small></button></div></header>
+      <div class="showcase-panel__body"><div id="selected-casts" class="selected-casts"><p class="empty-state">公開キャストを選択するか、「手動追加」からキャストを入力してください。</p></div></div>
     </section>
     <section class="showcase-panel">
       <header class="showcase-panel__header"><div><span>04</span><h2>生成・公開 <small>GENERATE / DEPLOY</small></h2></div><p>SECURE EDGE DEPLOYMENT</p></header>
       <div class="showcase-panel__body">
-        <div class="publish-grid"><div class="publish-target"><span>認証方式</span><strong>SUPABASE EDGE FUNCTION</strong><small>publish-showcase / ログイン中のオペレーターだけが公開できます。認証情報はブラウザへ配布されません。</small></div><div class="publish-target"><span>公開先と履歴</span><strong>GitHub Pages + ACT HISTORY</strong><small>公開成功時、選択キャストの参加アクト履歴へ自動登録します。</small></div></div>
+        <div class="publish-grid"><div class="publish-target"><span>認証方式</span><strong>SUPABASE EDGE FUNCTION</strong><small>publish-showcase / ログイン中のオペレーターだけが公開できます。認証情報はブラウザへ配布されません。</small></div><div class="publish-target"><span>公開先と履歴</span><strong>GitHub Pages + ACT HISTORY</strong><small>公開成功時、登録済みの選択キャストだけを参加アクト履歴へ登録します。手動追加キャストは紹介HTMLにのみ含まれます。</small></div></div>
         <div class="generator-actions"><button id="generate-button" type="button">HTML生成 <small>GENERATE</small></button><button id="download-button" type="button" disabled>ダウンロード <small>DOWNLOAD</small></button><button id="copy-button" type="button" disabled>HTMLコピー <small>COPY</small></button><button id="publish-button" class="is-publish" type="button" disabled>GitHub Pagesへ公開 <small>SECURE DEPLOY</small></button></div>
         <p id="generator-status" class="generator-status">待機中</p><iframe id="showcase-preview" class="showcase-preview" title="生成HTMLプレビュー"></iframe>
       </div>
     </section>
   </main>
-  <script type="module" src="./js/showcase-generator.js?v=6"></script>
+  <script type="module" src="./js/showcase-generator-v2.js?v=1"></script>
   <script type="module" src="./js/showcase-auto-slug.js?v=1"></script>
   <script type="module" src="./js/showcase-generator-guard.js?v=2"></script>
 </body>
