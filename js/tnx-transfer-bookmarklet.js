@@ -22,8 +22,7 @@
 
     window.__TNX_TRANSFER_TSV__=transferText;
 
-    /* Both the main importer and its repair pass must read exactly the same
-       clipboard payload. Override readText only for this bookmarklet run. */
+    /* Both the main importer and repair passes read exactly the same payload. */
     const clipboard=navigator.clipboard;
     const originalReadText=clipboard?.readText?.bind(clipboard);
     let overridden=false;
@@ -41,11 +40,12 @@
 
     await load("https://cdn.jsdelivr.net/gh/inarin14311431/tnx_cast_list@893d5243ca5dedd2f525f23d6a4536f96d9fd772/js/tnx-transfer-bookmarklet.js");
     await load(`https://inarin14311431.github.io/tnx_cast_list/js/tnx-transfer-bookmarklet-fixes.js?t=${Date.now()}`);
+    await load(`https://inarin14311431.github.io/tnx_cast_list/js/tnx-transfer-bookmarklet-fixes-v3.js?t=${Date.now()}`);
 
     if(overridden&&clipboard&&originalReadText){
       window.setTimeout(()=>{
         try{Object.defineProperty(clipboard,"readText",{configurable:true,value:originalReadText})}catch{}
-      },15000);
+      },18000);
     }
   }catch(error){
     console.error("TNX transfer loader failed",error);
