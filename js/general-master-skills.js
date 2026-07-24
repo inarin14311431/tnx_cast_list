@@ -1,22 +1,38 @@
 /* Fixed General-skill master rows are managed by sheet.js.
- * This bridge only preserves the readiness event used by layout helpers. */
+ * Remove the four temporary startup blank slots once, then preserve the
+ * readiness event used by layout helpers. User-added blank rows are not
+ * affected because cleanup finishes before the editor becomes interactive. */
 (() => {
-  let notified = false;
+  let completed = false;
 
-  function notifyReady() {
-    if (notified) return;
+  function initializeGeneralRows() {
+    if (completed) return;
     const root = document.querySelector("#general-skills");
     if (!root?.querySelector("tr[data-skill-key]")) {
-      setTimeout(notifyReady, 80);
+      setTimeout(initializeGeneralRows, 80);
       return;
     }
-    notified = true;
+
+    const temporarySlot = root.querySelector('tr[data-general-slot-column]');
+    if (temporarySlot) {
+      const deleteButton = temporarySlot.querySelector("[data-delete-skill]");
+      if (deleteButton) {
+        deleteButton.click();
+        queueMicrotask(initializeGeneralRows);
+        return;
+      }
+      temporarySlot.remove();
+      queueMicrotask(initializeGeneralRows);
+      return;
+    }
+
+    completed = true;
     window.dispatchEvent(new CustomEvent("tnx:general-master-ready"));
   }
 
   if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", notifyReady, { once: true });
+    document.addEventListener("DOMContentLoaded", initializeGeneralRows, { once: true });
   } else {
-    notifyReady();
+    initializeGeneralRows();
   }
 })();
