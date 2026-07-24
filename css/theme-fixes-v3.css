@@ -1,0 +1,266 @@
+/* High-specificity theme corrections for legacy cyber-scan and table styles. */
+
+/* 1: Divine-work names and readings must stay legible on pale cards. */
+html[data-theme] .style-divine-card__name,
+html[data-theme] .style-divine-card__style,
+html[data-theme] .divine-field strong,
+html[data-theme] #divine-list .divine-card__name,
+html[data-theme] .cast-divine-authority .divine-card__name{
+  color:var(--text)!important;
+  text-shadow:none!important;
+}
+html[data-theme] .style-divine-card__yomi,
+html[data-theme] .divine-field rt,
+html[data-theme] #divine-list .divine-card__yomi,
+html[data-theme] .cast-divine-authority .divine-card__yomi{
+  color:var(--text-muted)!important;
+  text-shadow:none!important;
+}
+
+/* 2: Replace the fixed dark cyber-scan surfaces with each selected theme. */
+html[data-theme] body.cast-scan-mode{
+  color:var(--text)!important;
+  background:var(--theme-body-bg)!important;
+}
+html[data-theme] body.cast-scan-mode::before{
+  background-image:
+    linear-gradient(var(--theme-grid-line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--theme-grid-line) 1px,transparent 1px)!important;
+}
+html[data-theme] .cast-header{
+  color:var(--text)!important;
+  background:var(--theme-header-bg)!important;
+  border-bottom-color:var(--line-muted)!important;
+  box-shadow:0 10px 30px var(--theme-shadow)!important;
+}
+html[data-theme] .cast-hero{
+  border-color:var(--line-muted)!important;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--theme-panel-flat) 88%,var(--line) 12%),color-mix(in srgb,var(--theme-panel-flat) 96%,var(--background) 4%))!important;
+  box-shadow:0 12px 34px var(--theme-shadow)!important;
+}
+html[data-theme] .cast-hero__identity{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--theme-panel-flat) 90%,var(--line) 10%),color-mix(in srgb,var(--theme-panel-flat) 94%,var(--theme-divine-line) 6%))!important;
+  box-shadow:inset 4px 0 0 color-mix(in srgb,var(--line) 58%,transparent)!important;
+}
+html[data-theme] .identity-grid div{
+  color:var(--text)!important;
+  border-left-color:var(--line)!important;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--line) 8%,transparent),color-mix(in srgb,var(--theme-panel-flat) 96%,var(--background) 4%))!important;
+}
+html[data-theme] .cast-tabs{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:color-mix(in srgb,var(--theme-header-bg) 94%,transparent)!important;
+  box-shadow:0 8px 20px var(--theme-shadow)!important;
+}
+html[data-theme] .data-panel{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:var(--theme-panel-bg)!important;
+  box-shadow:inset 0 1px 0 color-mix(in srgb,#fff 22%,transparent)!important;
+}
+html[data-theme] .data-panel__header,
+html[data-theme] .cast-outfit-title{
+  background:linear-gradient(90deg,color-mix(in srgb,var(--line) 14%,transparent),color-mix(in srgb,var(--theme-divine-line) 5%,transparent),transparent)!important;
+}
+html[data-theme] .profile-text{
+  color:var(--text)!important;
+  background:repeating-linear-gradient(180deg,transparent 0 27px,color-mix(in srgb,var(--line) 5%,transparent) 27px 28px)!important;
+}
+
+/* 4: Give the public-view header button group breathing room on the left. */
+html[data-theme] .cast-header__actions{
+  margin-left:12px!important;
+}
+
+/* 5: Keep the index account controls away from the right edge. */
+html[data-theme] .site-header__operator{
+  box-sizing:border-box!important;
+  width:min(100%,440px)!important;
+  padding-right:14px!important;
+}
+html[data-theme] .auth-navigation{
+  box-sizing:border-box!important;
+  padding-right:2px!important;
+}
+html[data-theme] .auth-navigation__logout{
+  flex-basis:108px!important;
+  min-width:108px!important;
+  padding-left:12px!important;
+  padding-right:12px!important;
+}
+
+/* 6: Summary label and body use firm theme contrast. */
+html[data-theme] .cast-summary{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:color-mix(in srgb,var(--theme-panel-flat) 94%,var(--line) 6%)!important;
+  text-shadow:none!important;
+}
+html[data-theme] .cast-summary::before{
+  color:var(--line)!important;
+  text-shadow:none!important;
+}
+
+/* 7: The final skill-table stylesheet used fixed #00151c backgrounds. */
+html[data-theme] #skills-container .skill-section .data-table,
+html[data-theme] #style-skill-panel .style-skill-view-table{
+  color:var(--text)!important;
+  border-top-color:var(--line-muted)!important;
+  border-left-color:var(--line-muted)!important;
+  background:var(--theme-panel-flat)!important;
+}
+html[data-theme] #skills-container .skill-section .data-table thead th,
+html[data-theme] #style-skill-panel .style-skill-view-table thead th,
+html[data-theme] #style-skill-panel .style-skill-view-table thead th *{
+  color:var(--text)!important;
+  border-right-color:var(--line-muted)!important;
+  border-bottom-color:var(--line-muted)!important;
+  background:color-mix(in srgb,var(--theme-panel-flat) 78%,var(--line) 22%)!important;
+  text-shadow:none!important;
+}
+html[data-theme] #skills-container .skill-section .data-table tbody td,
+html[data-theme] #style-skill-panel .style-skill-view-table tbody td{
+  color:var(--text)!important;
+  border-right-color:var(--line-muted)!important;
+  border-bottom-color:var(--line-muted)!important;
+  background:color-mix(in srgb,var(--theme-panel-flat) 97%,var(--line) 3%)!important;
+  text-shadow:none!important;
+}
+html[data-theme] #skills-container .skill-section .data-table tbody tr:nth-child(even) td,
+html[data-theme] #style-skill-panel .style-skill-view-table tbody tr:nth-child(even) td{
+  background:color-mix(in srgb,var(--theme-panel-flat) 88%,var(--line) 12%)!important;
+}
+html[data-theme] #skills-container .skill-section .data-table tbody tr:hover td,
+html[data-theme] #style-skill-panel .style-skill-view-table tbody tr:hover td{
+  background:color-mix(in srgb,var(--theme-panel-flat) 78%,var(--line) 22%)!important;
+}
+html[data-theme] #skills-container .skill-section .cast-suit-box{
+  color:var(--text-muted)!important;
+  border-color:var(--line-muted)!important;
+  background:color-mix(in srgb,var(--theme-input-bg) 90%,var(--line) 10%)!important;
+  box-shadow:none!important;
+}
+html[data-theme] #skills-container .skill-section .cast-suit-box.is-active{
+  color:var(--theme-on-accent)!important;
+  border-color:var(--line)!important;
+  background:var(--line)!important;
+  box-shadow:0 0 8px var(--theme-shadow)!important;
+}
+
+/* 8: Public outfit tables had pale cyan values on white surfaces. */
+html[data-theme] #outfit-container .cast-outfit-section{
+  color:var(--text)!important;
+  border:1px solid var(--line-muted)!important;
+  background:var(--theme-panel-flat)!important;
+}
+html[data-theme] #outfit-container .cast-outfit-title h2{
+  color:var(--line)!important;
+}
+html[data-theme] #outfit-container .cast-outfit-title small{
+  color:var(--text-muted)!important;
+}
+html[data-theme] #outfit-container .cast-outfit-table{
+  color:var(--text)!important;
+  background:var(--theme-panel-flat)!important;
+}
+html[data-theme] #outfit-container .cast-outfit-table th{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:color-mix(in srgb,var(--theme-panel-flat) 78%,var(--line) 22%)!important;
+}
+html[data-theme] #outfit-container .cast-outfit-table td{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:color-mix(in srgb,var(--theme-panel-flat) 97%,var(--line) 3%)!important;
+}
+html[data-theme] #outfit-container .cast-outfit-table tbody tr:nth-child(even) td{
+  background:color-mix(in srgb,var(--theme-panel-flat) 89%,var(--line) 11%)!important;
+}
+html[data-theme] #outfit-container .cast-outfit-value{
+  color:var(--text)!important;
+  opacity:1!important;
+  text-shadow:none!important;
+}
+html[data-theme] #outfit-container .cast-outfit-table tfoot th,
+html[data-theme] #outfit-container .cast-outfit-table tfoot td{
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+  background:color-mix(in srgb,var(--theme-panel-flat) 80%,var(--line) 20%)!important;
+}
+html[data-theme] #outfit-container .cast-armor-total{
+  color:var(--text)!important;
+}
+
+/* 3: Present reorder controls as ▲ ▼ × and keep all three visible. */
+html[data-theme] [data-skill-move="up"],
+html[data-theme] [data-skill-move="down"],
+html[data-theme] [data-outfit-move="up"],
+html[data-theme] [data-outfit-move="down"]{
+  font-size:0!important;
+}
+html[data-theme] [data-skill-move="up"]::before,
+html[data-theme] [data-outfit-move="up"]::before{
+  content:"▲";
+  font-size:.72rem;
+}
+html[data-theme] [data-skill-move="down"]::before,
+html[data-theme] [data-outfit-move="down"]::before{
+  content:"▼";
+  font-size:.72rem;
+}
+html[data-theme] .skill-sort-controls button,
+html[data-theme] .row-delete,
+html[data-theme] .outfit-order-button,
+html[data-theme] .outfit-delete-button{
+  min-width:28px!important;
+  height:28px!important;
+  padding:0 6px!important;
+  color:var(--text)!important;
+  border:1px solid var(--line-muted)!important;
+  background:var(--theme-input-bg)!important;
+  opacity:1!important;
+  text-indent:0!important;
+}
+html[data-theme] .row-delete,
+html[data-theme] .outfit-delete-button{
+  color:var(--alert)!important;
+  border-color:color-mix(in srgb,var(--alert) 70%,var(--line-muted) 30%)!important;
+}
+html[data-theme] .skill-sort-controls button:hover:not(:disabled),
+html[data-theme] .outfit-order-button:hover:not(:disabled){
+  color:var(--theme-on-accent)!important;
+  border-color:var(--line)!important;
+  background:var(--line)!important;
+}
+html[data-theme] .row-delete:hover:not(:disabled),
+html[data-theme] .outfit-delete-button:hover:not(:disabled){
+  color:#fff!important;
+  border-color:var(--alert)!important;
+  background:var(--alert)!important;
+}
+html[data-theme] .skill-sort-controls button:disabled,
+html[data-theme] .outfit-order-button:disabled{
+  color:var(--text-muted)!important;
+  background:color-mix(in srgb,var(--theme-input-bg) 92%,var(--text-muted) 8%)!important;
+  opacity:.38!important;
+}
+
+/* Light themes get an explicit dark foreground wherever legacy CSS used white. */
+html[data-theme="moon"] .owned-cast__links .action-label__jp,
+html[data-theme="moon"] .owned-cast__links .action-label__en,
+html[data-theme="eden"] .owned-cast__links .action-label__jp,
+html[data-theme="eden"] .owned-cast__links .action-label__en{
+  color:var(--text)!important;
+  text-shadow:none!important;
+}
+
+@media(max-width:760px){
+  html[data-theme] .cast-header__actions{margin-left:0!important}
+}
+@media(max-width:900px){
+  html[data-theme] .site-header__operator{padding-right:0!important}
+  html[data-theme] .auth-navigation{padding-right:0!important}
+}
