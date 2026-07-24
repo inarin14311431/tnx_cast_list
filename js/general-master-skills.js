@@ -76,14 +76,16 @@
       }));
       if(!blank)return;
 
+      const realKey=blank.dataset.skillKey;
       setControl(blank.querySelector('[data-f="level"]'),0);
       setControl(blank.querySelector('[data-f="skill_kind"]'),"proper");
       setControl(blank.querySelector('[data-f="name"]'),name);
 
-      await waitFor(()=>{
-        const candidate=rows().find(row=>rowName(row)===name);
-        return candidate&&candidate.dataset.skillKey!==originalKey?candidate:null;
-      });
+      /* Row handlers resolve the skill from data-skill-key at event time.
+       * Reusing the visible master row keeps the fixed layout while binding it
+       * to the real skill object that was just added to the editor state. */
+      visible.dataset.skillKey=realKey;
+      blank.remove();
       completed.add(name);
     }finally{
       materializing.delete(name);
