@@ -1,175 +1,144 @@
-/* Materialize fixed proper-name General skills only when first acquired.
- * The generated level-0 master row is replaced by one real editor row, so
- * repeated suit clicks never create duplicate 製作：/芸術：/操縦： records. */
-(function(){
-  const MASTER_NAMES=["製作：","芸術：","操縦："];
-  const SUITS=["reason","passion","life","mundane"];
-  const bound=new Set();
-  const busy=new Set();
-  let readyNotified=false;
+/* Convert the three level-0 proper-name master rows into real General skills
+ * on their first suit click. The conversion is synchronous so 製作：, 芸術：
+ * and 操縦： all use exactly the same stable editor row afterwards. */
+(() => {
+  const MASTER_NAMES = ["製作：", "芸術：", "操縦："];
+  const SUITS = ["reason", "passion", "life", "mundane"];
+  const realKeys = new Set();
 
-  const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
-  const nextFrame=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-
-  function generalGroups(){
-    return [...document.querySelectorAll("#general-skills>.skill-group")].filter(group=>{
-      const title=group.querySelector(".skill-group-title")?.textContent||"";
+  function generalGroups() {
+    return [...document.querySelectorAll("#general-skills > .skill-group")].filter(group => {
+      const title = group.querySelector(".skill-group-title")?.textContent || "";
       return title.includes("一般技能");
     });
   }
 
-  function rows(){
-    return generalGroups().flatMap(group=>[...group.querySelectorAll("tbody tr[data-skill-key]")]);
+  function rows() {
+    return generalGroups().flatMap(group => [...group.querySelectorAll("tbody tr[data-skill-key]")]);
   }
 
-  function rowName(row){
-    return (row?.querySelector('[data-f="name"]')?.value||"").trim();
+  function rowName(row) {
+    return (row?.querySelector('[data-f="name"]')?.value || "").trim();
   }
 
-  function exactMasterName(row){
-    const name=rowName(row);
-    return MASTER_NAMES.includes(name)?name:"";
+  function exactMasterName(row) {
+    const name = rowName(row);
+    return MASTER_NAMES.includes(name) ? name : "";
   }
 
-  function suitBoxes(row){
-    return SUITS.map(suit=>row?.querySelector(`[data-f="${suit}"]`)).filter(Boolean);
+  function suitInputs(row) {
+    return Object.fromEntries(SUITS.map(suit => [suit, row?.querySelector(`[data-f="${suit}"]`)]));
   }
 
-  function selectedCount(row){
-    return suitBoxes(row).filter(box=>box.checked).length;
+  function selectedCount(row) {
+    return Object.values(suitInputs(row)).filter(input => input?.checked).length;
   }
 
-  function rowScore(row){
-    const level=Math.max(0,Number(row?.querySelector('[data-f="level"]')?.value||0));
-    return level*10+selectedCount(row);
+  function setControl(control, value) {
+    if (!control) return;
+    if (control.type === "checkbox") control.checked = Boolean(value);
+    else control.value = String(value ?? "");
+    control.dispatchEvent(new Event("input", { bubbles: true }));
+    control.dispatchEvent(new Event("change", { bubbles: true }));
   }
 
-  function setControl(control,value){
-    if(!control)return;
-    if(control.type==="checkbox")control.checked=Boolean(value);
-    else control.value=String(value);
-    control.dispatchEvent(new Event("input",{bubbles:true}));
-    control.dispatchEvent(new Event("change",{bubbles:true}));
+  function restoreScroll(position) {
+    window.scrollTo(position.x, position.y);
+    requestAnimationFrame(() => window.scrollTo(position.x, position.y));
   }
 
-  function restoreScroll(position){
-    window.scrollTo(position.x,position.y);
-    requestAnimationFrame(()=>window.scrollTo(position.x,position.y));
-  }
+  function convertMasterRow(row, clickedBox, name) {
+    const addButton = document.querySelector("#add-general");
+    if (!addButton) return false;
 
-  async function waitFor(getter,attempts=100){
-    for(let attempt=0;attempt<attempts;attempt++){
-      const value=getter();
-      if(value)return value;
-      await wait(40);
-    }
-    return null;
-  }
+    const desiredSuits = Object.fromEntries(SUITS.map(suit => {
+      const input = row.querySelector(`[data-f="${suit}"]`);
+      return [suit, input === clickedBox ? !input.checked : Boolean(input?.checked)];
+    }));
+    const beforeKeys = new Set(rows().map(candidate => candidate.dataset.skillKey));
+    const scrollPosition = { x: window.scrollX, y: window.scrollY };
 
-  async function settle(){
-    await nextFrame();
-    await wait(40);
-  }
+    addButton.click();
+    restoreScroll(scrollPosition);
 
-  async function removeDuplicateExactRows(name,preferredKey=""){
-    for(let attempt=0;attempt<16;attempt++){
-      const matches=rows().filter(row=>rowName(row)===name);
-      if(matches.length<=1)return matches[0]||null;
-
-      const keep=matches.find(row=>row.dataset.skillKey===preferredKey)
-        || [...matches].sort((a,b)=>rowScore(b)-rowScore(a))[0];
-      const victim=matches.find(row=>row!==keep);
-      const button=victim?.querySelector("[data-delete-skill]");
-      if(!button)return keep;
-
-      button.click();
-      await settle();
-    }
-    return rows().find(row=>rowName(row)===name)||null;
-  }
-
-  async function materialize(name,desiredSuits){
-    if(bound.has(name)||busy.has(name))return;
-    busy.add(name);
-    const scrollPosition={x:window.scrollX,y:window.scrollY};
-
-    try{
-      const beforeKeys=new Set(rows().map(row=>row.dataset.skillKey));
-      const addButton=document.querySelector("#add-general");
-      if(!addButton)return;
-
-      addButton.click();
-      restoreScroll(scrollPosition);
-
-      const blank=await waitFor(()=>[...rows()].reverse().find(row=>{
-        return rowName(row)===""&&!beforeKeys.has(row.dataset.skillKey);
-      }));
-      if(!blank)return;
-
-      const realKey=blank.dataset.skillKey;
-      setControl(blank.querySelector('[data-f="skill_kind"]'),"proper");
-      setControl(blank.querySelector('[data-f="name"]'),name);
-
-      SUITS.forEach(suit=>{
-        setControl(blank.querySelector(`[data-f="${suit}"]`),Boolean(desiredSuits[suit]));
-      });
-      setControl(blank.querySelector('[data-f="level"]'),SUITS.filter(suit=>desiredSuits[suit]).length);
-      await settle();
-
-      await removeDuplicateExactRows(name,realKey);
-      bound.add(name);
-    }finally{
-      restoreScroll(scrollPosition);
-      busy.delete(name);
-    }
-  }
-
-  async function cleanupExistingDuplicates(){
-    const root=await waitFor(()=>{
-      const element=document.querySelector("#general-skills");
-      return element?.querySelector("tr[data-skill-key]")?element:null;
+    const realRow = [...rows()].reverse().find(candidate => {
+      return !beforeKeys.has(candidate.dataset.skillKey) && rowName(candidate) === "";
     });
-    if(!root)return;
+    if (!realRow) return false;
 
-    for(const name of MASTER_NAMES){
-      const remaining=await removeDuplicateExactRows(name);
-      if(remaining&&(rowScore(remaining)>0))bound.add(name);
-    }
+    const realKey = realRow.dataset.skillKey;
+    realKeys.add(realKey);
 
-    if(!readyNotified){
-      readyNotified=true;
-      window.dispatchEvent(new CustomEvent("tnx:general-master-ready"));
-    }
+    setControl(realRow.querySelector('[data-f="skill_kind"]'), "proper");
+    setControl(realRow.querySelector('[data-f="name"]'), name);
+    SUITS.forEach(suit => setControl(realRow.querySelector(`[data-f="${suit}"]`), desiredSuits[suit]));
+    setControl(realRow.querySelector('[data-f="level"]'), SUITS.filter(suit => desiredSuits[suit]).length);
+
+    /* At this point the DOM still contains the generated level-0 master row.
+       Its delete button forces the core editor to rerender. Because the row is
+       synthetic, no real skill is removed; the newly created row remains. */
+    const duplicate = rows().find(candidate => {
+      return candidate.dataset.skillKey !== realKey
+        && rowName(candidate) === name
+        && Number(candidate.querySelector('[data-f="level"]')?.value || 0) === 0
+        && selectedCount(candidate) === 0;
+    });
+    duplicate?.querySelector("[data-delete-skill]")?.click();
+    restoreScroll(scrollPosition);
+    return true;
   }
 
-  document.addEventListener("click",event=>{
-    const label=event.target.closest?.(".suit-check");
-    const box=label?.querySelector('input[data-f="reason"],input[data-f="passion"],input[data-f="life"],input[data-f="mundane"]');
-    const row=box?.closest('tr[data-skill-key]');
-    const name=exactMasterName(row);
-    if(!box||!row||!name)return;
+  document.addEventListener("click", event => {
+    const label = event.target.closest?.(".suit-check");
+    const clickedBox = label?.querySelector('input[data-f="reason"],input[data-f="passion"],input[data-f="life"],input[data-f="mundane"]');
+    const row = clickedBox?.closest("tr[data-skill-key]");
+    const name = exactMasterName(row);
+    if (!clickedBox || !row || !name) return;
 
-    /* A row with acquired data is already a real skill and should use the
-       editor's normal handlers. Only the untouched level-0 master row needs
-       conversion. */
-    if(bound.has(name)||rowScore(row)>0){
-      bound.add(name);
+    /* Rows created by this script and already acquired rows are handled by the
+       editor's normal input handler. Only untouched synthetic level-0 rows are
+       intercepted. */
+    if (realKeys.has(row.dataset.skillKey) || Number(row.querySelector('[data-f="level"]')?.value || 0) > 0 || selectedCount(row) > 0) {
+      realKeys.add(row.dataset.skillKey);
       return;
     }
 
     event.preventDefault();
     event.stopImmediatePropagation();
+    convertMasterRow(row, clickedBox, name);
+  }, true);
 
-    const desiredSuits=Object.fromEntries(SUITS.map(suit=>{
-      const control=row.querySelector(`[data-f="${suit}"]`);
-      return [suit,control===box?!control.checked:Boolean(control?.checked)];
-    }));
-    materialize(name,desiredSuits);
-  },true);
+  /* Keep the level equal to the number of selected suits for proper-name
+     General skills, including names such as 製作：武器. */
+  document.addEventListener("input", event => {
+    const box = event.target.closest?.('input[data-f="reason"],input[data-f="passion"],input[data-f="life"],input[data-f="mundane"]');
+    const row = box?.closest("tr[data-skill-key]");
+    const name = rowName(row);
+    if (!box || !row || !MASTER_NAMES.some(master => name.startsWith(master))) return;
 
-  if(document.readyState==="loading"){
-    document.addEventListener("DOMContentLoaded",cleanupExistingDuplicates,{once:true});
-  }else{
-    cleanupExistingDuplicates();
+    requestAnimationFrame(() => {
+      const level = row.querySelector('[data-f="level"]');
+      if (!level) return;
+      const count = selectedCount(row);
+      if (Number(level.value || 0) === count) return;
+      level.value = String(count);
+      level.dispatchEvent(new Event("input", { bubbles: true }));
+      level.dispatchEvent(new Event("change", { bubbles: true }));
+    });
+  });
+
+  function notifyReady() {
+    const root = document.querySelector("#general-skills");
+    if (!root?.querySelector("tr[data-skill-key]")) {
+      setTimeout(notifyReady, 80);
+      return;
+    }
+    window.dispatchEvent(new CustomEvent("tnx:general-master-ready"));
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", notifyReady, { once: true });
+  } else {
+    notifyReady();
   }
 })();
