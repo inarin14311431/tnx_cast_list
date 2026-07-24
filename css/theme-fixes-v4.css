@@ -1,0 +1,40 @@
+/* Final suit-color normalization for public and editor skill tables. */
+
+/* Public view: style skills use .style-suit-mark instead of .cast-suit-box. */
+html[data-theme] #style-skill-panel .style-suit-mark,
+html[data-theme] .style-skill-view-table .style-suit-mark{
+  color:var(--text-muted)!important;
+  border-color:var(--line-muted)!important;
+  background:color-mix(in srgb,var(--theme-input-bg) 90%,var(--line) 10%)!important;
+  box-shadow:none!important;
+}
+html[data-theme] #style-skill-panel .style-suit-mark.is-active,
+html[data-theme] .style-skill-view-table .style-suit-mark.is-active{
+  color:var(--theme-on-accent)!important;
+  border-color:var(--line)!important;
+  background:var(--line)!important;
+  box-shadow:0 0 8px var(--theme-shadow)!important;
+}
+
+/* Editor view: general and style skills share the same suit treatment. */
+html[data-theme] #general-skills .suit-check span,
+html[data-theme] #style-skills .suit-check span{
+  color:var(--text-muted)!important;
+  border-color:var(--line-muted)!important;
+  background:color-mix(in srgb,var(--theme-input-bg) 90%,var(--line) 10%)!important;
+  box-shadow:none!important;
+}
+html[data-theme] #general-skills .suit-check input:checked+span,
+html[data-theme] #style-skills .suit-check input:checked+span{
+  color:var(--theme-on-accent)!important;
+  border-color:var(--line)!important;
+  background:var(--line)!important;
+  box-shadow:0 0 8px var(--theme-shadow)!important;
+}
+
+/* Skill reorder labels come from button text only: ▲ ▼ ×. */
+html[data-theme] [data-skill-move]::before,
+html[data-theme] [data-skill-move]::after{
+  content:none!important;
+  display:none!important;
+}
