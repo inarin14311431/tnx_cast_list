@@ -1,6 +1,5 @@
 const SUITS=["reason","passion","life","mundane"];
 const FIXED_GENERAL=new Set(["医療","射撃","知覚","電脳","製作：","心理","自我","交渉","芸術：","運動","回避","白兵","操縦：","信用","圧力","隠密"]);
-const PROPER_TEMPLATES=new Set(["製作：","芸術：","操縦："]);
 const generalArea=document.querySelector("#general-skills");
 const styleArea=document.querySelector("#style-skills");
 let refreshQueued=false;
@@ -24,19 +23,6 @@ function initializeSheetUi(){
 
 function bindSheetActions(){
   document.addEventListener("click",event=>{
-    const templateSuit=event.target.closest('#general-skills .skill-group:first-child input[type="checkbox"][data-f]');
-    if(templateSuit&&SUITS.includes(templateSuit.dataset.f)){
-      const row=templateSuit.closest("tr[data-skill-key]");
-      const name=row?.querySelector('input[data-f="name"]')?.value||"";
-      const level=Number(row?.querySelector('input[data-f="level"]')?.value||0);
-      if(PROPER_TEMPLATES.has(name)&&level===0){
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        activateProperTemplate(name,templateSuit.dataset.f);
-        return;
-      }
-    }
-
     const actionButton=event.target.closest("[data-skill-ui-action]");
     if(actionButton){
       event.preventDefault();
@@ -55,42 +41,6 @@ function bindSheetActions(){
   },true);
 }
 
-function activateProperTemplate(name,suitName){
-  const add=document.querySelector("#add-general");
-  if(!add)return;
-  const before=new Set(allGeneralRows().map(row=>row.dataset.skillKey));
-  add.click();
-
-  let row=allGeneralRows().find(item=>{
-    const rowName=item.querySelector('input[data-f="name"]')?.value||"";
-    return rowName===""&&!before.has(item.dataset.skillKey);
-  });
-  if(!row)row=[...allGeneralRows()].reverse().find(item=>(item.querySelector('input[data-f="name"]')?.value||"")==="");
-  if(!row)return;
-  const key=row.dataset.skillKey;
-
-  const setField=(field,value)=>{
-    const current=findGeneralRow(key);
-    const element=current?.querySelector(`[data-f="${field}"]`);
-    if(!element)return false;
-    if(element.type==="checkbox")element.checked=Boolean(value);else element.value=String(value);
-    element.dispatchEvent(new Event("input",{bubbles:true}));
-    return true;
-  };
-
-  setField("name",name);
-  setField("skill_kind","proper");
-  setField("level",0);
-  requestAnimationFrame(()=>{
-    setField(suitName,true);
-    requestAnimationFrame(()=>{
-      arrangeSkillUi();
-      findGeneralRow(key)?.querySelector('input[data-f="name"]')?.focus();
-    });
-  });
-}
-
-function findGeneralRow(key){return document.querySelector(`#general-skills tr[data-skill-key="${CSS.escape(key)}"]`);}
 function queueRefresh(){
   if(refreshQueued)return;
   refreshQueued=true;
