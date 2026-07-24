@@ -37,6 +37,7 @@ small{color:var(--panel-muted)}
 
 /* Editor skill actions */
 .skill-toolbar > [data-add-proper],
+.skill-toolbar > #add-general,
 .skill-toolbar > #add-social,
 .skill-toolbar > #add-connection,
 .skill-toolbar > #add-style-skill{
@@ -59,31 +60,6 @@ small{color:var(--panel-muted)}
   white-space:nowrap;
 }
 .skill-inline-add small{display:block;margin-top:2px;font-size:.55rem;letter-spacing:.05em}
-
-/* Match the General-skill add button to the compact Social add button. */
-#add-general{
-  min-height:34px!important;
-  padding:6px 10px!important;
-  border:1px solid #6facb8!important;
-  color:#eefcff!important;
-  background:#6b6b6b!important;
-  font-size:.74rem!important;
-  font-weight:700!important;
-  line-height:1.1!important;
-  white-space:nowrap;
-}
-#add-general small{
-  display:block;
-  margin-top:2px;
-  color:#9dc5ce!important;
-  font-size:.55rem!important;
-  font-weight:600!important;
-  letter-spacing:.05em;
-}
-#add-general:hover{
-  border-color:#70acb8!important;
-  background:#787878!important;
-}
 .skill-table .suit-col{
   width:48px!important;
   min-width:48px!important;
