@@ -71,13 +71,15 @@ function createOwnedCastItem(character) {
   const displayId = obfuscatePublicId(character.public_id);
   return `
     <article class="owned-cast">
-      <div>
-        <p class="owned-cast__id">${escapeHtml(displayId)}</p>
+      <div class="owned-cast__identity">
         <p class="owned-cast__handle">${escapeHtml(character.handle ? `“${character.handle}”` : "ハンドル未登録")}</p>
         <h3>${escapeHtml(character.character_name)}</h3>
       </div>
       <div class="owned-cast__meta">
-        <span>${escapeHtml(visibilityLabel(character.visibility))}</span>
+        <div class="owned-cast__status-row">
+          <span class="owned-cast__visibility">${escapeHtml(visibilityLabel(character.visibility))}</span>
+          <span class="owned-cast__serial">${escapeHtml(displayId)}</span>
+        </div>
         <div class="owned-cast__links" aria-label="キャスト操作">
           <a href="${SITE_BASE_PATH}cast.html?id=${id}">${actionLabel("閲覧", "OPEN")}</a>
           <a href="${SITE_BASE_PATH}sheet.html?id=${id}">${actionLabel("シート編集", "EDIT SHEET")}</a>
