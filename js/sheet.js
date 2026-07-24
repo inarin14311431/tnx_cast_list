@@ -44,6 +44,7 @@ function bind(){
     if(deleteOutfit){ outfits = outfits.filter(item => item._key !== deleteOutfit.dataset.deleteOutfit); renderOutfits(); recalc(); markDirty(); }
   });
   $("#save-button").onclick = () => saveAll(true);
+  $("#add-general").onclick = addGeneralSkill;
   $("#add-social").onclick = () => addSkill("social", "proper", "社会：");
   $("#add-connection").onclick = () => addSkill("connection", "proper", "コネ：");
   $("#add-style-skill").onclick = () => addSkill("style", "normal", "");
@@ -55,6 +56,25 @@ function bind(){
 
 function onEdit(event){ if(loading || !event.target.matches("input,select,textarea")) return; recalc(); markDirty(); }
 function addSkill(category, kind, name){ skills.push({...blankSkill(category), skill_kind:kind, name}); renderSkills(); recalc(); markDirty(); }
+function generalColumnCounts(){
+  const leftRows=document.querySelectorAll("#general-skills .general-skill-column--first tbody tr").length;
+  const rightRows=document.querySelectorAll("#general-skills .general-skill-column--second tbody tr").length;
+  if(leftRows||rightRows)return {left:leftRows,right:rightRows};
+  return skills.filter(item=>item.category==="general"&&item._slotColumn).reduce((counts,item)=>{
+    counts[item._slotColumn==="left"?"left":"right"]+=1;
+    return counts;
+  },{left:0,right:0});
+}
+function addGeneralSkill(){
+  const counts=generalColumnCounts();
+  const column=counts.left<=counts.right?"left":"right";
+  const skill={...blankSkill("general"),name:"",level:0,free_level:0,skill_kind:"proper",_blankSlot:true,_slotColumn:column};
+  skills.push(skill);
+  renderSkills();
+  recalc();
+  markDirty();
+  requestAnimationFrame(()=>document.querySelector(`#general-skills tr[data-skill-key="${skill._key}"] [data-f="name"]`)?.focus());
+}
 
 function createNew(){
   loading = true;
