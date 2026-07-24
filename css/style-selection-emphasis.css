@@ -1,0 +1,105 @@
+/* Make the three Style choices the visual center of cast construction. */
+#style-grid{
+  gap:16px;
+  padding:4px;
+}
+
+#style-grid .style-card{
+  position:relative;
+  overflow:hidden;
+  min-width:0;
+  padding:16px 14px 0;
+  border:2px solid rgba(65,232,255,.42);
+  background:
+    linear-gradient(145deg,rgba(65,232,255,.08),rgba(2,10,15,.82) 52%),
+    rgba(0,0,0,.28);
+  box-shadow:inset 0 0 24px rgba(65,232,255,.045),0 0 0 rgba(65,232,255,0);
+  transition:border-color .2s ease,box-shadow .2s ease,transform .2s ease,background .2s ease;
+}
+
+#style-grid .style-card::before{
+  position:absolute;
+  top:8px;
+  right:10px;
+  color:rgba(122,238,255,.34);
+  font:800 .67rem/1 monospace;
+  letter-spacing:.14em;
+  pointer-events:none;
+}
+#style-grid .style-card:nth-child(1)::before{content:"STYLE 01"}
+#style-grid .style-card:nth-child(2)::before{content:"STYLE 02"}
+#style-grid .style-card:nth-child(3)::before{content:"STYLE 03"}
+
+#style-grid .style-fields{
+  position:relative;
+  z-index:1;
+}
+
+#style-grid .style-fields>label:first-child{
+  gap:8px;
+  color:#bdf7ff;
+  font-size:.82rem;
+  font-weight:800;
+  letter-spacing:.08em;
+}
+
+#style-grid .style-fields>label:first-child select{
+  min-height:56px;
+  padding:10px 42px 10px 14px;
+  border:2px solid rgba(65,232,255,.68);
+  color:#e9fdff;
+  background:linear-gradient(90deg,rgba(7,30,39,.96),rgba(3,14,20,.96));
+  font-size:1.18rem;
+  font-weight:900;
+  line-height:1.35;
+  letter-spacing:.045em;
+  text-shadow:0 0 12px rgba(65,232,255,.28);
+  box-shadow:inset 0 0 18px rgba(65,232,255,.06);
+  cursor:pointer;
+  transition:border-color .18s ease,box-shadow .18s ease,background .18s ease;
+}
+
+#style-grid .style-fields>label:first-child select:hover{
+  border-color:#8ff4ff;
+  background:linear-gradient(90deg,rgba(10,43,54,.98),rgba(3,18,25,.98));
+}
+
+#style-grid .style-fields>label:first-child select:focus{
+  border-color:#fff;
+  outline:0;
+  box-shadow:0 0 0 2px rgba(65,232,255,.3),0 0 22px rgba(65,232,255,.34),inset 0 0 20px rgba(65,232,255,.1);
+}
+
+#style-grid .style-fields>label:first-child select option{
+  color:#f2fdff;
+  background:#101a1f;
+  font-size:1.08rem;
+  font-weight:700;
+}
+
+#style-grid .style-card.is-style-selected{
+  border-color:#6ff2ff;
+  background:
+    linear-gradient(145deg,rgba(65,232,255,.16),rgba(2,12,18,.9) 55%),
+    rgba(0,0,0,.3);
+  box-shadow:0 0 20px rgba(65,232,255,.19),inset 0 0 28px rgba(65,232,255,.08);
+}
+
+#style-grid .style-card.is-style-selected::before{
+  color:#8ff5ff;
+  text-shadow:0 0 10px rgba(65,232,255,.65);
+}
+
+#style-grid .style-card.is-style-selected .divine-field{
+  background:linear-gradient(90deg,rgba(65,232,255,.1),rgba(65,232,255,.025));
+}
+
+#style-grid .style-card.is-style-selected .divine-field ruby strong{
+  color:#9bf6ff;
+  text-shadow:0 0 12px rgba(65,232,255,.34);
+}
+
+@media(max-width:760px){
+  #style-grid .style-card{padding:14px 10px 0}
+  #style-grid .style-fields>label:first-child select{min-height:52px;font-size:1.08rem;padding-left:11px}
+}
