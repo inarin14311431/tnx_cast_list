@@ -92,7 +92,7 @@ function applyFilters() {
 
   const filtered = allCharacters.filter(character => {
     const searchableText = normalizeText([
-      character.public_id, character.character_name, character.character_kana,
+      character.public_id, obfuscatePublicId(character.public_id), character.character_name, character.character_kana,
       character.handle, character.player_name, character.affiliation,
       character.citizen_rank, character.summary,
       character.style_1, character.style_2, character.style_3
@@ -132,6 +132,7 @@ function renderCharacters(characters) {
 
 function createCharacterCard(character) {
   const imageUrl = character.image_url || "./assets/placeholders/scan-failed.webp";
+  const displayId = obfuscatePublicId(character.public_id);
   const styles = [
     [character.style_1, character.style_1_mark],
     [character.style_2, character.style_2_mark],
@@ -146,7 +147,7 @@ function createCharacterCard(character) {
           <span class="cast-card__scanline"></span>
         </div>
         <div class="cast-card__body">
-          <div class="cast-card__meta"><p class="cast-card__id">${escapeHtml(character.public_id)}</p><p class="cast-card__exp">${escapeHtml(character.experience_points ?? 0)} EXP</p></div>
+          <div class="cast-card__meta"><p class="cast-card__id">${escapeHtml(displayId)}</p><p class="cast-card__exp">${escapeHtml(character.experience_points ?? 0)} EXP</p></div>
           <p class="cast-card__handle">${escapeHtml(character.handle || "ハンドル未登録")}</p>
           <h2 class="cast-card__name">${escapeHtml(character.character_name)}</h2>
           <p class="cast-card__styles">${styles}</p>
@@ -156,6 +157,16 @@ function createCharacterCard(character) {
         </div>
       </a>
     </article>`;
+}
+
+function obfuscatePublicId(value) {
+  const source = `TNX_CAST_ARCHIVE::${String(value ?? "")}`;
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < source.length; index++) {
+    hash ^= source.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return `TNX-${(hash >>> 0).toString(16).toUpperCase().padStart(8, "0")}`;
 }
 
 function normalizeText(value) {
