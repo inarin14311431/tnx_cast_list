@@ -56,3 +56,204 @@ html[data-theme="eden"] .cast-hero__image-label,
 html[data-theme="eden"] .cast-card__image{
   color:var(--text)!important;
 }
+
+/* Buttons in the editor and cast-view export toolbars. */
+html[data-theme] .exp-panel>button,
+html[data-theme] .exp-panel>.sheet-view-link,
+html[data-theme] .cast-header__actions>a,
+html[data-theme] .cast-header__actions>button,
+html[data-theme] #cocofolia-copy-button,
+html[data-theme] #udonarium-export-button,
+html[data-theme] .transfer-tsv-copy-button,
+html[data-theme] .transfer-bookmarklet-copy-button,
+html[data-theme] .account-actions a,
+html[data-theme] .account-actions button,
+html[data-theme] .generator-actions button,
+html[data-theme] .auth-form button{
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--theme-button-bg) 82%,#fff 18%),color-mix(in srgb,var(--theme-button-bg) 96%,var(--line) 4%))!important;
+  box-shadow:0 0 14px var(--theme-shadow)!important;
+  text-shadow:none!important;
+}
+html[data-theme] .exp-panel>button:hover,
+html[data-theme] .exp-panel>.sheet-view-link:hover,
+html[data-theme] .cast-header__actions>a:hover,
+html[data-theme] .cast-header__actions>button:hover,
+html[data-theme] #cocofolia-copy-button:hover,
+html[data-theme] #udonarium-export-button:hover,
+html[data-theme] .transfer-tsv-copy-button:hover:not(:disabled),
+html[data-theme] .transfer-bookmarklet-copy-button:hover:not(:disabled),
+html[data-theme] .account-actions a:hover,
+html[data-theme] .account-actions button:hover,
+html[data-theme] .generator-actions button:hover,
+html[data-theme] .auth-form button:hover{
+  color:var(--theme-on-accent)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--theme-button-hover) 88%,#fff 12%),var(--theme-button-hover))!important;
+}
+html[data-theme] .exp-panel>button small,
+html[data-theme] .exp-panel>.sheet-view-link small,
+html[data-theme] .cast-header__actions small,
+html[data-theme] .account-actions small,
+html[data-theme] .generator-actions small,
+html[data-theme] .auth-form button small{
+  color:var(--text-muted)!important;
+}
+html[data-theme] .exp-panel>button:hover small,
+html[data-theme] .exp-panel>.sheet-view-link:hover small,
+html[data-theme] .cast-header__actions>a:hover small,
+html[data-theme] .cast-header__actions>button:hover small,
+html[data-theme] .account-actions a:hover small,
+html[data-theme] .account-actions button:hover small,
+html[data-theme] .generator-actions button:hover small,
+html[data-theme] .auth-form button:hover small{
+  color:inherit!important;
+}
+
+/* Cast-view style slots and Divine Works. */
+html[data-theme] #cast-styles>* ,
+html[data-theme] .cast-styles>* ,
+html[data-theme] .style-divine-card,
+html[data-theme] .style-card,
+html[data-theme] .hero-divine-panel,
+html[data-theme] .hero-divine-list .divine-card,
+html[data-theme] .divine-list .divine-card{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+}
+html[data-theme] #cast-styles>* ,
+html[data-theme] .cast-styles>* ,
+html[data-theme] .style-divine-card,
+html[data-theme] .style-card{
+  background:linear-gradient(135deg,color-mix(in srgb,var(--theme-panel-flat) 88%,var(--line) 6%),color-mix(in srgb,var(--background) 78%,var(--theme-panel-flat) 22%))!important;
+}
+html[data-theme] .hero-divine-panel{
+  background:linear-gradient(135deg,color-mix(in srgb,var(--theme-divine-bg) 58%,var(--theme-panel-flat) 42%),color-mix(in srgb,var(--theme-panel-flat) 82%,var(--theme-divine-line) 18%))!important;
+}
+html[data-theme] .hero-divine-list .divine-card,
+html[data-theme] .divine-list .divine-card{
+  background:linear-gradient(180deg,color-mix(in srgb,var(--theme-divine-bg) 76%,#fff 8%),color-mix(in srgb,var(--theme-panel-flat) 90%,var(--theme-divine-line) 10%))!important;
+}
+html[data-theme] .style-divine-card *,
+html[data-theme] .divine-card *{
+  color:inherit;
+}
+
+/* ACT DATA / PROFILE / OUTFITS tabs. */
+html[data-theme] .cast-tabs{background:transparent!important}
+html[data-theme] .cast-tab{
+  color:var(--line)!important;
+  border-color:var(--line-muted)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--theme-panel-flat) 84%,var(--line) 8%),color-mix(in srgb,var(--theme-panel-flat) 96%,var(--background) 4%))!important;
+  box-shadow:none!important;
+}
+html[data-theme] .cast-tab.is-active{
+  color:var(--theme-on-accent)!important;
+  border-color:var(--line)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--line) 86%,#fff 14%),var(--line))!important;
+}
+html[data-theme] .cast-tab small{color:var(--text-muted)!important}
+html[data-theme] .cast-tab.is-active small{color:inherit!important}
+
+/* General and style-skill tables. */
+html[data-theme] #skills-container table,
+html[data-theme] .skill-table,
+html[data-theme] .data-table,
+html[data-theme] .style-skill-detail-table{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:color-mix(in srgb,var(--theme-panel-flat) 96%,var(--line) 4%)!important;
+}
+html[data-theme] #skills-container table thead th,
+html[data-theme] .skill-table thead th,
+html[data-theme] .data-table thead th,
+html[data-theme] .style-skill-detail-table thead th{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--theme-panel-flat) 78%,var(--line) 16%),color-mix(in srgb,var(--theme-panel-flat) 92%,var(--line) 8%))!important;
+}
+html[data-theme] #skills-container table tbody td,
+html[data-theme] .skill-table tbody td,
+html[data-theme] .data-table tbody td,
+html[data-theme] .style-skill-detail-table tbody td{
+  color:var(--text)!important;
+  border-color:var(--line-muted)!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--theme-panel-flat) 96%,var(--line) 3%),color-mix(in srgb,var(--theme-panel-flat) 92%,var(--background) 8%))!important;
+}
+html[data-theme] #skills-container table tbody tr:nth-child(even) td,
+html[data-theme] .skill-table tbody tr:nth-child(even) td,
+html[data-theme] .data-table tbody tr:nth-child(even) td{
+  background:color-mix(in srgb,var(--theme-panel-flat) 91%,var(--line) 9%)!important;
+}
+
+/* Profile tab readability. */
+html[data-theme] #tab-profile,
+html[data-theme] #tab-profile dd,
+html[data-theme] #tab-profile p,
+html[data-theme] #tab-profile li,
+html[data-theme] #tab-profile .profile-text{
+  color:var(--text)!important;
+  text-shadow:none!important;
+}
+html[data-theme] #tab-profile dt,
+html[data-theme] #tab-profile .profile-list dt,
+html[data-theme] #tab-profile .data-panel__header h2{
+  color:var(--line)!important;
+}
+html[data-theme] #tab-profile small,
+html[data-theme] #tab-profile .profile-list small{
+  color:var(--text-muted)!important;
+}
+html[data-theme] #profile-text,
+html[data-theme] #tab-profile .profile-text,
+html[data-theme] #tab-profile .profile-list{
+  color:var(--text)!important;
+  background:color-mix(in srgb,var(--theme-panel-flat) 96%,var(--line) 4%)!important;
+}
+html[data-theme] #tab-profile .profile-list div,
+html[data-theme] #tab-profile .profile-list>div{
+  border-color:color-mix(in srgb,var(--line-muted) 70%,transparent)!important;
+}
+
+/* Outfit tab readability and table backgrounds. */
+html[data-theme] #tab-outfits,
+html[data-theme] #tab-outfits p,
+html[data-theme] #tab-outfits li,
+html[data-theme] #tab-outfits strong,
+html[data-theme] #tab-outfits td,
+html[data-theme] #tab-outfits th,
+html[data-theme] #tab-outfits .outfit-card,
+html[data-theme] #tab-outfits .outfit-container{
+  color:var(--text)!important;
+  text-shadow:none!important;
+}
+html[data-theme] #tab-outfits small{color:var(--text-muted)!important}
+html[data-theme] #tab-outfits table,
+html[data-theme] #tab-outfits .outfit-card{
+  border-color:var(--line-muted)!important;
+  background:var(--theme-panel-bg)!important;
+}
+html[data-theme] #tab-outfits th{
+  color:var(--line)!important;
+  background:color-mix(in srgb,var(--theme-panel-flat) 82%,var(--line) 18%)!important;
+}
+html[data-theme] #tab-outfits td{
+  background:color-mix(in srgb,var(--theme-panel-flat) 96%,var(--line) 4%)!important;
+}
+
+/* Light themes need firm contrast rather than pale cyber-glow text. */
+html[data-theme="moon"] #tab-profile,
+html[data-theme="moon"] #tab-outfits,
+html[data-theme="moon"] #skills-container,
+html[data-theme="eden"] #tab-profile,
+html[data-theme="eden"] #tab-outfits,
+html[data-theme="eden"] #skills-container{
+  color:var(--text)!important;
+  text-shadow:none!important;
+}
+html[data-theme="moon"] .hero-divine-list .divine-card,
+html[data-theme="moon"] .divine-list .divine-card,
+html[data-theme="eden"] .hero-divine-list .divine-card,
+html[data-theme="eden"] .divine-list .divine-card{
+  box-shadow:0 0 0 1px var(--line-muted),0 8px 18px var(--theme-shadow)!important;
+}
