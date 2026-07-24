@@ -5,10 +5,16 @@ const outfitRoot = document.querySelector("#outfit-list");
 const publicId = new URLSearchParams(location.search).get("id")?.trim() || "";
 const restoredStyleNames = new Map();
 const restoredOutfits = new Map();
+const appliedStyleKeys = new Set();
+const appliedOutfitKeys = new Set();
 let queued = false;
 
 function normalizeNewlines(value) {
   return String(value ?? "").replace(/\r\n?/g, "\n").replace(/\\n/g, "\n");
+}
+
+function comparisonKey(value) {
+  return normalizeNewlines(value).replace(/\s+/g, " ").trim();
 }
 
 function fitTextarea(field) {
@@ -39,9 +45,9 @@ function copyControl(input, extraClass = "") {
 
 function restoreStyleName(field) {
   const key = field.closest("tr[data-skill-key]")?.dataset.skillKey;
-  if (!key || !restoredStyleNames.has(key)) return;
-  const value = restoredStyleNames.get(key);
-  if (field.value !== value) field.value = value;
+  if (!key || appliedStyleKeys.has(key) || !restoredStyleNames.has(key)) return;
+  field.value = restoredStyleNames.get(key);
+  appliedStyleKeys.add(key);
   fitTextarea(field);
 }
 
@@ -49,14 +55,14 @@ function restoreOutfitFields(scope) {
   const owner = scope.closest("[data-outfit-key]");
   const key = owner?.dataset.outfitKey;
   const data = key ? restoredOutfits.get(key) : null;
-  if (!owner || !data) return;
+  if (!owner || !data || appliedOutfitKeys.has(key)) return;
   owner.querySelectorAll("textarea[data-o]").forEach(field => {
     const name = field.dataset.o;
     if (!name || data[name] === undefined || data[name] === null) return;
-    const value = normalizeNewlines(data[name]);
-    if (field.value !== value) field.value = value;
+    field.value = normalizeNewlines(data[name]);
     fitTextarea(field);
   });
+  appliedOutfitKeys.add(key);
 }
 
 function enhanceStyleNames() {
@@ -115,12 +121,12 @@ function restoreTsvImport(mode, rows) {
 
     const used = new Set();
     for (const row of rows) {
-      const expectedName = normalizeNewlines(row.name || "");
+      const expectedName = comparisonKey(row.name || "");
       const candidates = [...(outfitRoot?.querySelectorAll('[data-outfit-key]') || [])].reverse();
       const target = candidates.find(item => {
         if (used.has(item)) return false;
         const name = item.querySelector('[data-o="name"]')?.value || "";
-        return normalizeNewlines(name) === expectedName;
+        return comparisonKey(name) === expectedName;
       });
       if (!target) continue;
       used.add(target);
