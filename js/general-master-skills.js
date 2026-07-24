@@ -53,6 +53,26 @@
     requestAnimationFrame(() => window.scrollTo(position.x, position.y));
   }
 
+  function forceCoreRerender(addButton, realKey, scrollPosition) {
+    /* Adding one temporary blank row invokes sheet.js renderSkills(). At that
+       moment the real exact-name skill is already in the core skills array, so
+       the synthetic master row is no longer generated. Removing the temporary
+       blank row invokes one final clean render. This also works for 製作： in
+       the first visual column, where deleting the synthetic DOM row directly
+       was unreliable. */
+    const beforeKeys = new Set(rows().map(candidate => candidate.dataset.skillKey));
+    addButton.click();
+    restoreScroll(scrollPosition);
+
+    const temporary = [...rows()].reverse().find(candidate => {
+      return candidate.dataset.skillKey !== realKey
+        && !beforeKeys.has(candidate.dataset.skillKey)
+        && rowName(candidate) === "";
+    });
+    temporary?.querySelector("[data-delete-skill]")?.click();
+    restoreScroll(scrollPosition);
+  }
+
   function promoteSyntheticRow(row, name) {
     if (converting.has(name)) return;
 
@@ -82,17 +102,7 @@
       SUITS.forEach(suit => setControl(realRow.querySelector(`[data-f="${suit}"]`), desired[suit]));
       setControl(realRow.querySelector('[data-f="level"]'), level);
 
-      /* The generated master row is not part of the core skills array. Clicking
-         its delete button only forces a clean rerender; the newly promoted row
-         remains and becomes the sole displayed row for this exact name. */
-      const synthetic = rows().find(candidate => {
-        return candidate.dataset.skillKey !== realKey
-          && rowName(candidate) === name
-          && Number(candidate.querySelector('[data-f="level"]')?.value || 0) === 0
-          && selectedCount(candidate) === 0;
-      });
-      synthetic?.querySelector("[data-delete-skill]")?.click();
-      restoreScroll(scrollPosition);
+      forceCoreRerender(addButton, realKey, scrollPosition);
     } finally {
       converting.delete(name);
     }
