@@ -168,7 +168,7 @@ function renderTable(section,skills){
         </tr></thead>
         <tbody>${skills.map(skill=>{
           const detail=parseDetail(skill.description);
-          const kind={normal:"通常",secret:"秘技",ultimate:"奥義"}[skill.skill_kind]||skill.skill_kind||"";
+          const kind={none:"なし",normal:"通常",secret:"秘技",ultimate:"奥義",direction:"演出"}[skill.skill_kind]||skill.skill_kind||"";
           return `<tr>
             ${valueCell(skill.name,"name")}${valueCell(kind,"kind")}${valueCell(skill.level,"level")}
             ${SUITS.map(([key,,mark])=>`<td class="style-suit-cell"><span class="style-suit-mark ${skill[key]?"is-active":""}">${mark}</span></td>`).join("")}
