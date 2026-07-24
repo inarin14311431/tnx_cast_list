@@ -4,6 +4,7 @@
   const CLOSE="”";
   const DISPLAY_SELECTORS="#cast-handle,#cast-handle-kana,.owned-cast__handle,.cast-card__handle";
   const PLACEHOLDERS=new Set(["","—","-","NO HANDLE","ハンドル未登録"]);
+  let pendingImportPlan=null;
 
   const canonicalKey=value=>String(value||"").trim()
     .replace(/\[\s*["']?([^\]"']+)["']?\s*\]/g,".$1")
@@ -114,10 +115,26 @@
     window.setTimeout(apply,0);
   }
 
+  function captureImportPlan(){
+    const raw=document.querySelector("#legacy-import-json")?.value||"";
+    pendingImportPlan=createImportPlan(raw);
+  }
+
+  document.addEventListener("pointerdown",event=>{
+    if(event.target.closest?.("#legacy-import-apply"))captureImportPlan();
+  },true);
+
+  document.addEventListener("keydown",event=>{
+    if(!event.target.closest?.("#legacy-import-apply"))return;
+    if(event.key==="Enter"||event.key===" ")captureImportPlan();
+  },true);
+
   document.addEventListener("click",event=>{
     if(!event.target.closest?.("#legacy-import-apply"))return;
     const raw=document.querySelector("#legacy-import-json")?.value||"";
-    maintainImportedValues(createImportPlan(raw));
+    const plan=pendingImportPlan||createImportPlan(raw);
+    pendingImportPlan=null;
+    maintainImportedValues(plan);
   },true);
 
   function normalizeDisplayElement(element){
