@@ -15,10 +15,10 @@ const GENERAL_MASTER = [
   ["運動","life","general"],["回避","life","general"],["白兵","life","general"],["操縦：","life","proper"],
   ["信用","mundane","general"],["圧力","mundane","general"],["隠密","mundane","general"]
 ];
+const GENERAL_BLANK_SLOT_COLUMNS = ["left","left","right","right"];
 const OUTFIT_LABELS = {weapon:"武器",armor:"防具",cyberware:"サイバーウェア",tron:"トロン",vehicle:"ヴィークル",residence:"住居",other:"その他"};
 let user, character = null, skills = [], outfits = [], loading = false, dirty = false, saving = false, pending = false, saveTimer, importMode = "";
 const styleBaseline = {};
-const generalMasterPlaceholders = new Map();
 
 init();
 
@@ -44,7 +44,6 @@ function bind(){
     if(deleteOutfit){ outfits = outfits.filter(item => item._key !== deleteOutfit.dataset.deleteOutfit); renderOutfits(); recalc(); markDirty(); }
   });
   $("#save-button").onclick = () => saveAll(true);
-  $("#add-general").onclick = () => addSkill("general", "proper", "");
   $("#add-social").onclick = () => addSkill("social", "proper", "社会：");
   $("#add-connection").onclick = () => addSkill("connection", "proper", "コネ：");
   $("#add-style-skill").onclick = () => addSkill("style", "normal", "");
@@ -62,6 +61,8 @@ function createNew(){
   character = {visibility:"private"};
   $("#visibility").value = "private";
   skills = GENERAL_MASTER.filter(item => item[2] === "general").map(([name,suit]) => ({...blankSkill("general"),name,level:1,free_level:0,[suit]:true,skill_kind:"general"}));
+  ensureGeneralMasterRows();
+  addInitialGeneralBlankSlots();
   skills.push(
     {...blankSkill("social"),name:"社会：N◎VA",level:1,free_level:0,skill_kind:"proper"},
     {...blankSkill("social"),name:"社会：",level:1,free_level:0,skill_kind:"proper"},
@@ -85,6 +86,8 @@ async function loadCharacter(publicId){
     supabase.from("character_outfits").select("*").eq("character_id",data.id).order("sort_order")
   ]);
   skills = (skillResult.data || []).map(normalizeSkill);
+  ensureGeneralMasterRows();
+  addInitialGeneralBlankSlots();
   outfits = (outfitResult.data || []).map(normalizeOutfit);
   renderSkills(); renderOutfits(); recalc();
   loading = false; dirty = false; setStatus("保存済み","saved");
@@ -128,16 +131,44 @@ function renderAbilities(){ $("#ability-grid").innerHTML=ABILITIES.map(([key,jp,
 function blankSkill(category){ return {_key:crypto.randomUUID(),category,name:"",level:1,free_level:0,skill_kind:category==="style"?"normal":category==="general"?"general":"proper",reason:false,passion:false,life:false,mundane:false,timing:"",target:"",range:"",difficulty:"",confrontation:"",description:"",sort_order:skills.length}; }
 function normalizeSkill(skill){ const result={...blankSkill(skill.category),...skill,_key:skill.id||crypto.randomUUID(),free_level:0,skill_kind:skill.skill_kind||inferKind(skill)}; if(result.name==="初期取得")result.name=result.category==="connection"?"コネ：":"社会："; if(result.name==="社会：初期取得")result.name="社会："; if(result.name==="コネ：初期取得")result.name="コネ："; return result; }
 function inferKind(skill){ if(skill.category==="style")return /奥義/.test(skill.type||"")?"ultimate":/秘技/.test(skill.type||"")?"secret":"normal"; return String(skill.name||"").includes("：")?"proper":"general"; }
-function generalMasterPlaceholder(name,suit,kind){
-  let skill=generalMasterPlaceholders.get(name);
-  const reusable=skill&&!skills.includes(skill)&&skill.name===name&&Number(skill.level||0)===0&&!SUITS.some(key=>skill[key]);
-  if(!reusable){
-    skill={...blankSkill("general"),name,level:0,skill_kind:kind,[suit]:false,_master:true};
-    generalMasterPlaceholders.set(name,skill);
+function ensureGeneralMasterRows(){
+  for(const [name,,kind] of GENERAL_MASTER){
+    const matches=skills.filter(item=>item.category==="general"&&item.name===name);
+    let skill=matches.sort((a,b)=>{
+      const levelDiff=Number(b.level||0)-Number(a.level||0);
+      if(levelDiff)return levelDiff;
+      return SUITS.filter(suit=>b[suit]).length-SUITS.filter(suit=>a[suit]).length;
+    })[0];
+    if(skill){
+      for(const duplicate of matches){
+        if(duplicate===skill)continue;
+        SUITS.forEach(suit=>{skill[suit]=Boolean(skill[suit]||duplicate[suit]);});
+        skill.level=Math.max(Number(skill.level||0),Number(duplicate.level||0));
+      }
+      skill.level=Math.max(Number(skill.level||0),SUITS.filter(suit=>skill[suit]).length);
+      skills=skills.filter(item=>item===skill||item.category!=="general"||item.name!==name);
+    }else{
+      skill={...blankSkill("general"),name,level:0,free_level:0,skill_kind:kind};
+      skills.push(skill);
+    }
+    skill._fixedMaster=true;
   }
-  return skill;
 }
-function mergedGeneral(){ const output=[...skills.filter(item=>item.category==="general")]; for(const [name,suit,kind] of GENERAL_MASTER)if(!output.some(item=>item.name===name))output.push(generalMasterPlaceholder(name,suit,kind)); return output.sort((a,b)=>{ const ai=GENERAL_MASTER.findIndex(item=>item[0]===a.name),bi=GENERAL_MASTER.findIndex(item=>item[0]===b.name); if(ai<0&&bi<0)return 0; if(ai<0)return 1; if(bi<0)return-1; return ai-bi; }); }
+function addInitialGeneralBlankSlots(){
+  for(const column of GENERAL_BLANK_SLOT_COLUMNS){
+    skills.push({...blankSkill("general"),name:"",level:0,free_level:0,skill_kind:"proper",_blankSlot:true,_slotColumn:column});
+  }
+}
+function mergedGeneral(){
+  const output=skills.filter(item=>item.category==="general");
+  return output.sort((a,b)=>{
+    const ai=GENERAL_MASTER.findIndex(item=>item[0]===a.name),bi=GENERAL_MASTER.findIndex(item=>item[0]===b.name);
+    if(ai<0&&bi<0)return 0;
+    if(ai<0)return 1;
+    if(bi<0)return-1;
+    return ai-bi;
+  });
+}
 function renderSkills(){ $("#general-skills").innerHTML=[skillTable("一般技能","GENERAL SKILLS",mergedGeneral(),false),skillTable("社会","SOCIAL",skills.filter(item=>item.category==="social"),false),skillTable("コネクション","CONNECTIONS",skills.filter(item=>item.category==="connection"),false)].join(""); $("#style-skills").innerHTML=skillTable("スタイル技能","STYLE SKILLS",skills.filter(item=>item.category==="style"),true); bindSkillRows(); }
 function skillTable(jp,en,rows,detail){ if(!rows.length)return""; return `<section class="skill-group"><h3 class="skill-group-title">${jp} <small>${en}</small></h3><table class="skill-table ${detail?"has-detail":"no-detail"}"><thead><tr><th class="name-col">名称</th><th class="type-col">種別</th><th class="lv-col">LV</th>${MARKS.map(mark=>`<th class="suit-col">${mark}</th>`).join("")}${detail?"<th>詳細</th>":""}<th></th></tr></thead><tbody>${rows.map(item=>skillRow(item,detail)).join("")}</tbody></table></section>`; }
 function skillRow(skill,detail){
@@ -146,15 +177,12 @@ function skillRow(skill,detail){
   else if(skill.category==="general") kinds=["general","proper"];
   else kinds=["proper"];
   const labels={general:"一般",proper:"固有名詞",normal:"通常",secret:"秘技",ultimate:"奥義"};
-  return `<tr data-skill-key="${skill._key}"><td><input data-f="name" value="${esc(skill.name)}"></td><td><select data-f="skill_kind">${kinds.map(value=>`<option value="${value}" ${skill.skill_kind===value?"selected":""}>${labels[value]}</option>`).join("")}</select></td><td><input data-f="level" type="number" min="0" value="${Number(skill.level)||0}"></td>${SUITS.map((suit,index)=>`<td class="suit-cell"><label class="suit-check"><input data-f="${suit}" type="checkbox" ${skill[suit]?"checked":""}><span>${MARKS[index]}</span></label></td>`).join("")}${detail?`<td><textarea data-f="description" rows="2">${esc(skill.description||skill.timing||"")}</textarea></td>`:""}<td><button class="row-delete" data-delete-skill="${skill._key}" type="button">×</button></td></tr>`;
+  const slotAttribute=skill._blankSlot?` data-general-slot-column="${esc(skill._slotColumn||"right")}"`:"";
+  return `<tr data-skill-key="${skill._key}"${slotAttribute}><td><input data-f="name" value="${esc(skill.name)}"></td><td><select data-f="skill_kind">${kinds.map(value=>`<option value="${value}" ${skill.skill_kind===value?"selected":""}>${labels[value]}</option>`).join("")}</select></td><td><input data-f="level" type="number" min="0" value="${Number(skill.level)||0}"></td>${SUITS.map((suit,index)=>`<td class="suit-cell"><label class="suit-check"><input data-f="${suit}" type="checkbox" ${skill[suit]?"checked":""}><span>${MARKS[index]}</span></label></td>`).join("")}${detail?`<td><textarea data-f="description" rows="2">${esc(skill.description||skill.timing||"")}</textarea></td>`:""}<td><button class="row-delete" data-delete-skill="${skill._key}" type="button">×</button></td></tr>`;
 }
 function bindSkillRows(){
   $$('[data-skill-key]').forEach(row=>row.querySelectorAll('[data-f]').forEach(element=>element.oninput=()=>{
-    let skill=skills.find(item=>item._key===row.dataset.skillKey);
-    if(!skill){
-      skill=mergedGeneral().find(item=>item._key===row.dataset.skillKey);
-      if(skill)skills.push(skill);
-    }
+    const skill=skills.find(item=>item._key===row.dataset.skillKey);
     if(!skill)return;
     const field=element.dataset.f;
     skill[field]=element.type==="checkbox"?element.checked:element.type==="number"?Number(element.value):element.value;
