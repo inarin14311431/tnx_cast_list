@@ -44,9 +44,6 @@
 #general-skills>.skill-group:nth-child(4) .skill-table th:last-child,
 #general-skills>.skill-group:nth-child(4) .skill-table td:last-child{width:86px!important}
 
-/* The functional original remains hidden in the top toolbar. */
-.sheet-section>.section-body>.skill-toolbar #add-general{display:none!important}
-
 @media(max-width:820px){
   #general-skills{grid-template-columns:1fr!important;grid-template-rows:auto!important}
   #general-skills>.skill-group:nth-child(1),
