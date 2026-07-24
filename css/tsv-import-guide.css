@@ -163,9 +163,26 @@
   border-top:1px solid var(--line-muted);
   background:rgba(3,10,14,.96);
 }
+
+/* Keep the legacy JSON import compact while preserving a scrollable editor. */
+#legacy-import-dialog{
+  max-height:calc(100vh - 48px);
+  overflow:auto;
+}
+#legacy-import-dialog #legacy-import-json{
+  box-sizing:border-box;
+  height:260px;
+  min-height:160px;
+  max-height:36vh;
+  resize:vertical;
+  overflow:auto;
+  font:.76rem/1.5 monospace;
+}
+
 @media(max-width:680px){
   #tsv-dialog>form{padding:14px}
   .tsv-import-guide__header{display:grid}
   #tsv-sample-insert{width:100%}
   #tsv-dialog .dialog-actions{bottom:-14px;margin:0 -14px -14px;padding:10px 14px}
+  #legacy-import-dialog #legacy-import-json{height:220px;max-height:32vh}
 }
