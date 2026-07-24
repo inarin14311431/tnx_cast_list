@@ -15,6 +15,7 @@
   function applyTheme(theme, persist = false) {
     const next = THEMES.has(theme) ? theme : "nova";
     document.documentElement.dataset.theme = next;
+    document.documentElement.style.colorScheme = next === "moon" || next === "eden" ? "light" : "dark";
     if (persist) {
       try { localStorage.setItem(STORAGE_KEY, next); } catch {}
     }
@@ -24,9 +25,19 @@
     window.dispatchEvent(new CustomEvent("tnx:theme-change", { detail: { theme: next } }));
   }
 
+  function loadLateOverrides() {
+    if (document.querySelector('link[data-theme-runtime]')) return;
+    const link = document.createElement("link");
+    link.rel = "stylesheet";
+    link.href = "./css/theme-runtime.css?v=1";
+    link.dataset.themeRuntime = "1";
+    document.head.append(link);
+  }
+
   applyTheme(readTheme());
 
   function bindSelectors() {
+    loadLateOverrides();
     document.querySelectorAll("[data-theme-select]").forEach(select => {
       if (select.dataset.themeBound === "1") return;
       select.dataset.themeBound = "1";
