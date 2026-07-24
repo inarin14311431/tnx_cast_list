@@ -25,13 +25,18 @@
     window.dispatchEvent(new CustomEvent("tnx:theme-change", { detail: { theme: next } }));
   }
 
-  function loadLateOverrides() {
-    if (document.querySelector('link[data-theme-runtime]')) return;
+  function appendStylesheet(href, marker) {
+    if (document.querySelector(`link[${marker}]`)) return;
     const link = document.createElement("link");
     link.rel = "stylesheet";
-    link.href = "./css/theme-runtime.css?v=2";
-    link.dataset.themeRuntime = "1";
+    link.href = href;
+    link.setAttribute(marker, "1");
     document.head.append(link);
+  }
+
+  function loadLateOverrides() {
+    appendStylesheet("./css/theme-runtime.css?v=2", "data-theme-runtime");
+    appendStylesheet("./css/theme-polish.css?v=1", "data-theme-polish");
   }
 
   applyTheme(readTheme());
