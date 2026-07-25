@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="./css/base.css?v=30">
   <link rel="stylesheet" href="./css/showcase-generator.css?v=2">
   <link rel="stylesheet" href="./css/showcase-manual-cast.css?v=1">
+  <link rel="stylesheet" href="./css/showcase-history.css?v=1">
   <link rel="stylesheet" href="./css/themes.css?v=1">
   <link rel="stylesheet" href="./css/showcase-section-colors.css?v=1">
 </head>
@@ -33,8 +34,21 @@
       </div>
     </section>
     <section class="showcase-panel">
-      <header class="showcase-panel__header"><div><span>02</span><h2>公開キャスト選択 <small>PUBLIC CAST SELECTOR</small></h2></div><p><strong id="selected-count">0</strong> / 6 SELECTED</p></header>
-      <div class="showcase-panel__body"><div class="selector-controls"><label>検索<input id="cast-search" type="search" placeholder="名前・ハンドル・PL・所属"></label><label>プレイヤー<select id="player-filter"><option value="">すべて</option></select></label><label>スタイル<select id="style-filter"><option value="">すべて</option></select></label></div><p id="library-status" class="generator-status">公開キャストを読み込み中…</p><div id="public-cast-grid" class="public-cast-grid" aria-live="polite"></div></div>
+      <header class="showcase-panel__header"><div><span>02</span><h2>キャスト選択 <small>CAST SELECTOR</small></h2></div><p><strong id="selected-count">0</strong> / 6 SHOWCASE SELECTED</p></header>
+      <div class="showcase-panel__body">
+        <div class="selector-controls"><label>検索<input id="cast-search" type="search" placeholder="名前・ハンドル・PL・所属"></label><label>プレイヤー<select id="player-filter"><option value="">すべて</option></select></label><label>スタイル<select id="style-filter"><option value="">すべて</option></select></label></div>
+        <p id="library-status" class="generator-status">公開キャストを読み込み中…</p>
+        <div id="public-cast-grid" class="public-cast-grid" aria-live="polite"></div>
+        <section class="private-history-selector" aria-labelledby="private-history-heading">
+          <header class="private-history-selector__header">
+            <h3 id="private-history-heading">自分の非公開キャスト <small>OWNED PRIVATE CAST / HISTORY ONLY</small></h3>
+            <p><strong id="private-selected-count">0</strong> SELECTED</p>
+          </header>
+          <p class="private-history-selector__lead">自分が所有する下書き・非公開・限定公開・引退キャストを、GitHub Pagesへ掲載せず参加アクト履歴だけに追加できます。</p>
+          <p id="private-library-status" class="generator-status">自分の非公開キャストを読み込み中…</p>
+          <div id="owned-private-cast-grid" class="private-cast-grid" aria-live="polite"></div>
+        </section>
+      </div>
     </section>
     <section class="showcase-panel">
       <header class="showcase-panel__header"><div><span>03</span><h2>出演順と紹介文 <small>CAST ORDER / PROFILE</small></h2></div><div class="showcase-panel__header-actions"><p>CAST 01—06</p><button id="add-manual-cast" class="manual-cast-add" type="button">手動追加 <small>ADD MANUAL CAST</small></button></div></header>
@@ -44,14 +58,14 @@
       <header class="showcase-panel__header"><div><span>04</span><h2>生成・公開 <small>GENERATE / DEPLOY</small></h2></div><p>ACT OUTPUT / HISTORY</p></header>
       <div class="showcase-panel__body">
         <div class="generator-actions"><button id="generate-button" type="button">HTML生成 <small>GENERATE</small></button><button id="download-button" type="button" disabled>ダウンロード <small>DOWNLOAD</small></button><button id="copy-button" type="button" disabled>HTMLコピー <small>COPY</small></button><button id="history-button" class="is-history" type="button">履歴のみ登録 <small>HISTORY ONLY</small></button><button id="publish-button" class="is-publish" type="button" disabled>GitHub Pagesへ公開 <small>DEPLOY &amp; HISTORY</small></button></div>
-        <p class="generator-action-note">履歴のみ登録はHTML生成不要です。手動追加キャストはサイト未登録のため、参加アクト履歴には含まれません。</p>
+        <p class="generator-action-note">履歴のみ登録はHTML生成不要です。自分の非公開キャストも登録できます。手動追加キャストはサイト未登録のため履歴には含まれません。GitHub Pages公開は公開キャストのみ対応します。</p>
         <p id="generator-status" class="generator-status">待機中</p><iframe id="showcase-preview" class="showcase-preview" title="生成HTMLプレビュー"></iframe>
       </div>
     </section>
   </main>
   <script type="module" src="./js/showcase-generator-loader.js?v=2"></script>
   <script type="module" src="./js/showcase-auto-slug.js?v=1"></script>
-  <script type="module" src="./js/showcase-history.js?v=2"></script>
+  <script type="module" src="./js/showcase-history.js?v=3"></script>
   <script type="module" src="./js/showcase-generator-guard.js?v=2"></script>
   <script src="./js/showcase-remove-label.js?v=2"></script>
 </body>
