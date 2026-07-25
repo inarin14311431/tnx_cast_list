@@ -6,7 +6,7 @@
   if(!source||!apply)return;
 
   let pendingStyleNames=[];
-  let syncTimer=0;
+  let syncTimers=[];
 
   const normalizeLineBreaks=value=>String(value??"")
     .replace(/\r\n?/g,"\n")
@@ -135,8 +135,27 @@
     field.style.height=`${Math.max(36,field.scrollHeight+2)}px`;
   }
 
+  function removeUnexpectedDuplicates(){
+    if(!styleRoot||!pendingStyleNames.length)return;
+    const remaining=new Map();
+    for(const name of pendingStyleNames){
+      const key=compact(name);
+      remaining.set(key,(remaining.get(key)||0)+1);
+    }
+    for(const row of [...styleRoot.querySelectorAll("tr[data-skill-key]")]){
+      const key=compact(row.querySelector('[data-f="name"]')?.value);
+      if(!key)continue;
+      const count=remaining.get(key)||0;
+      if(count>0){
+        remaining.set(key,count-1);
+        continue;
+      }
+      row.querySelector("[data-delete-skill]")?.click();
+    }
+  }
+
   function syncImportedStyleNames(){
-    if(!pendingStyleNames.length||!styleRoot)return;
+    if(!pendingStyleNames.length||!styleRoot||window.__tnxLegacyImportInProgress)return;
     const rows=[...styleRoot.querySelectorAll("tr[data-skill-key]")];
     if(!rows.length)return;
     const unused=new Set(rows);
@@ -144,6 +163,7 @@
     for(const [index,name] of pendingStyleNames.entries()){
       const wanted=compact(name);
       let row=[...unused].find(candidate=>compact(candidate.querySelector('[data-f="name"]')?.value)===wanted);
+      if(!row)row=[...unused].find(candidate=>!compact(candidate.querySelector('[data-f="name"]')?.value));
       if(!row)row=[...unused][index]||[...unused][0];
       if(!row)continue;
       unused.delete(row);
@@ -158,16 +178,22 @@
       }
       fitTextarea(field);
     }
+    removeUnexpectedDuplicates();
     window.TNXMultilineFields?.enhance?.();
   }
 
-  function scheduleSync(){
-    clearTimeout(syncTimer);
-    syncTimer=setTimeout(syncImportedStyleNames,40);
-    for(const delay of [120,300,700,1300,2200])setTimeout(syncImportedStyleNames,delay);
+  function clearSyncTimers(){
+    for(const timer of syncTimers)clearTimeout(timer);
+    syncTimers=[];
+  }
+
+  function scheduleCompletedSync(){
+    clearSyncTimers();
+    for(const delay of [0,80,220,500])syncTimers.push(setTimeout(syncImportedStyleNames,delay));
   }
 
   apply.addEventListener("click",()=>{
+    clearSyncTimers();
     const repaired=repairJsonStringControls(source.value);
     if(repaired!==source.value){
       source.value=repaired;
@@ -175,23 +201,25 @@
     }
     try{
       pendingStyleNames=extractStyleNames(JSON.parse(source.value));
+      window.__tnxLegacyImportInProgress=true;
     }catch{
       pendingStyleNames=[];
+      window.__tnxLegacyImportInProgress=false;
     }
-    scheduleSync();
   },true);
-
-  if(styleRoot){
-    new MutationObserver(()=>{
-      if(pendingStyleNames.length)scheduleSync();
-    }).observe(styleRoot,{childList:true,subtree:true});
-  }
 
   if(message){
     new MutationObserver(()=>{
       if(message.textContent.includes("旧キャラシ"))message.textContent=message.textContent.replaceAll("旧キャラシ","キャラシ倉庫");
       if(message.textContent.includes("旧サイト"))message.textContent=message.textContent.replaceAll("旧サイト","キャラシ倉庫");
-      if(message.textContent.includes("反映しました"))scheduleSync();
+      if(message.textContent.includes("反映しました")){
+        window.__tnxLegacyImportInProgress=false;
+        scheduleCompletedSync();
+      }else if(message.textContent.includes("取込エラー")){
+        window.__tnxLegacyImportInProgress=false;
+        pendingStyleNames=[];
+        clearSyncTimers();
+      }
     }).observe(message,{childList:true,subtree:true,characterData:true});
   }
 })();
