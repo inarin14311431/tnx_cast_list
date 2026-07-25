@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="./css/showcase-generator.css?v=1">
   <link rel="stylesheet" href="./css/showcase-manual-cast.css?v=1">
   <link rel="stylesheet" href="./css/themes.css?v=1">
+  <link rel="stylesheet" href="./css/showcase-section-colors.css?v=1">
 </head>
 <body>
   <div class="background-grid"></div>
@@ -42,7 +43,6 @@
     <section class="showcase-panel">
       <header class="showcase-panel__header"><div><span>04</span><h2>生成・公開 <small>GENERATE / DEPLOY</small></h2></div><p>SECURE EDGE DEPLOYMENT</p></header>
       <div class="showcase-panel__body">
-        <div class="publish-grid"><div class="publish-target"><span>認証方式</span><strong>SUPABASE EDGE FUNCTION</strong><small>publish-showcase / ログイン中のオペレーターだけが公開できます。認証情報はブラウザへ配布されません。</small></div><div class="publish-target"><span>公開先と履歴</span><strong>GitHub Pages + ACT HISTORY</strong><small>公開成功時、登録済みの選択キャストだけを参加アクト履歴へ登録します。手動追加キャストは紹介HTMLにのみ含まれます。</small></div></div>
         <div class="generator-actions"><button id="generate-button" type="button">HTML生成 <small>GENERATE</small></button><button id="download-button" type="button" disabled>ダウンロード <small>DOWNLOAD</small></button><button id="copy-button" type="button" disabled>HTMLコピー <small>COPY</small></button><button id="publish-button" class="is-publish" type="button" disabled>GitHub Pagesへ公開 <small>SECURE DEPLOY</small></button></div>
         <p id="generator-status" class="generator-status">待機中</p><iframe id="showcase-preview" class="showcase-preview" title="生成HTMLプレビュー"></iframe>
       </div>
