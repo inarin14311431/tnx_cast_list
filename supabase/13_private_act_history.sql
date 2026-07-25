@@ -1,8 +1,8 @@
 begin;
 
 -- Register act history as the current authenticated user.
--- Any public cast may be referenced. Non-public casts may be referenced only when
--- they are owned by the current user. This function never changes GitHub Pages.
+-- Any public cast may be referenced. A private cast may be referenced only when
+-- it is owned by the current user. This function never changes GitHub Pages.
 create or replace function public.record_act_history_for_current_user(
   p_slug text,
   p_act_name text,
@@ -55,7 +55,10 @@ begin
     select count(*)
     from public.characters c
     where c.id = any(v_participant_ids)
-      and (c.visibility = 'public' or c.owner_id = v_user_id)
+      and (
+        c.visibility = 'public'
+        or (c.visibility = 'private' and c.owner_id = v_user_id)
+      )
   ) <> array_length(v_participant_ids, 1) then
     raise exception 'One or more participant characters are not accessible.'
       using errcode = '42501';
@@ -110,7 +113,8 @@ begin
     p.ordinality::smallint
   from unnest(v_participant_ids) with ordinality as p(character_id, ordinality)
   join public.characters c on c.id = p.character_id
-  where c.visibility = 'public' or c.owner_id = v_user_id
+  where c.visibility = 'public'
+     or (c.visibility = 'private' and c.owner_id = v_user_id)
   on conflict (act_id, character_id) do update set
     character_public_id = excluded.character_public_id,
     character_name = excluded.character_name,
