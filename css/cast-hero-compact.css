@@ -1,0 +1,201 @@
+/* Compact desktop hero layout.
+ * Keep style/divine cards visually dominant while matching the identity panel
+ * to the portrait height and reducing secondary profile fields.
+ */
+@media (min-width:801px){
+  .cast-hero{
+    --cast-hero-compact-height:clamp(540px,40vw,590px);
+    align-items:start;
+  }
+
+  .cast-hero__image-panel,
+  .cast-hero__identity{
+    box-sizing:border-box;
+    height:var(--cast-hero-compact-height);
+    min-height:0;
+  }
+
+  .cast-hero__image-frame{
+    width:100%;
+    height:100%;
+    min-height:0;
+    aspect-ratio:auto!important;
+  }
+
+  .cast-hero__identity{
+    display:block;
+    overflow:hidden;
+    padding:16px 18px 14px!important;
+  }
+
+  .cast-name-readings{
+    margin:14px 0 4px!important;
+  }
+
+  .cast-name-primary{
+    font-size:clamp(1.18rem,1.5vw,1.58rem)!important;
+  }
+
+  .cast-style-heading-simple,
+  .cast-divine-authority>header{
+    min-height:30px!important;
+    margin:0 0 6px!important;
+    padding:0 10px 5px!important;
+  }
+
+  .cast-style-heading-simple{
+    margin-top:12px!important;
+  }
+
+  .cast-style-heading-simple strong,
+  .cast-divine-authority>header h2{
+    font-size:.9rem!important;
+  }
+
+  .cast-style-heading-simple strong small,
+  .cast-divine-authority>header h2 small{
+    font-size:.62rem!important;
+  }
+
+  #cast-styles.cast-style-grid-simple,
+  .cast-divine-authority .hero-divine-list{
+    grid-template-columns:repeat(3,minmax(0,1fr))!important;
+    gap:8px!important;
+    padding:0 4px!important;
+  }
+
+  #cast-styles .cast-style-card-simple{
+    min-height:62px!important;
+    padding:17px 10px 8px 13px!important;
+  }
+
+  #cast-styles .cast-style-card-simple::before{
+    inset:4px!important;
+  }
+
+  #cast-styles .cast-style-card-simple::after{
+    top:5px!important;
+    right:7px!important;
+    font-size:.54rem!important;
+  }
+
+  #cast-styles .cast-style-card-simple .style-chip__index,
+  .cast-divine-authority .divine-card__number{
+    min-width:22px!important;
+    height:22px!important;
+    font-size:.62rem!important;
+  }
+
+  #cast-styles .cast-style-card-simple .style-chip__name{
+    font-size:clamp(1rem,1.28vw,1.2rem)!important;
+  }
+
+  #cast-styles .cast-style-card-simple .style-chip__mark{
+    font-size:1rem!important;
+  }
+
+  .cast-divine-authority{
+    margin-top:10px!important;
+  }
+
+  .cast-divine-authority .cast-divine-card,
+  .cast-divine-authority .hero-divine-list .divine-card.cast-divine-card{
+    min-height:62px!important;
+    padding:17px 10px 8px 12px!important;
+    grid-template-columns:28px minmax(0,1fr)!important;
+    gap:2px 7px!important;
+  }
+
+  .cast-divine-card__code{
+    top:5px!important;
+    right:7px!important;
+    font-size:.52rem!important;
+  }
+
+  .cast-divine-authority .divine-card__name{
+    font-size:clamp(.98rem,1.2vw,1.12rem)!important;
+    line-height:1.08!important;
+  }
+
+  .cast-divine-authority .divine-card__yomi{
+    font-size:.61rem!important;
+    line-height:1.05!important;
+  }
+
+  .identity-grid{
+    grid-template-columns:1fr 1.45fr .9fr .9fr!important;
+    gap:6px!important;
+    margin:12px 4px 0!important;
+  }
+
+  .identity-grid div{
+    min-width:0;
+    min-height:42px;
+    padding:6px 8px!important;
+    border-left-width:1px!important;
+  }
+
+  .identity-grid dt{
+    font-size:.57rem!important;
+    line-height:1.1;
+    white-space:nowrap;
+  }
+
+  .identity-grid dd{
+    display:-webkit-box;
+    margin:2px 0 0!important;
+    overflow:hidden;
+    color:#edfaff;
+    font-size:.76rem;
+    line-height:1.25;
+    overflow-wrap:anywhere;
+    -webkit-box-orient:vertical;
+    -webkit-line-clamp:2;
+  }
+
+  .cast-summary{
+    box-sizing:border-box;
+    max-height:58px;
+    margin:9px 4px 0!important;
+    padding:7px 9px!important;
+    overflow:auto;
+    font-size:.72rem;
+    line-height:1.35!important;
+  }
+
+  .cast-summary:empty{
+    display:none;
+  }
+
+  .cast-summary::before{
+    margin-bottom:3px!important;
+    font-size:.55rem!important;
+  }
+}
+
+@media (min-width:801px) and (max-width:1100px){
+  .cast-hero{
+    --cast-hero-compact-height:clamp(520px,52vw,560px);
+  }
+
+  .cast-hero__identity{
+    padding-right:14px!important;
+    padding-left:14px!important;
+  }
+
+  #cast-styles .cast-style-card-simple,
+  .cast-divine-authority .cast-divine-card,
+  .cast-divine-authority .hero-divine-list .divine-card.cast-divine-card{
+    padding-right:8px!important;
+    padding-left:9px!important;
+  }
+
+  #cast-styles .cast-style-card-simple .style-chip__name,
+  .cast-divine-authority .divine-card__name{
+    font-size:.94rem!important;
+  }
+
+  .identity-grid{
+    grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  }
+}
