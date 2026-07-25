@@ -14,8 +14,12 @@ const normalize=value=>String(value??"")
   .replace(/\\r\\n|\\n|\\r/g,"\n");
 const compare=value=>normalize(value).replace(/\s+/g," ").trim();
 
+function isImportSource(field){
+  return field?.matches?.("#legacy-import-json,#tsv-text");
+}
+
 function normalizeTextarea(field){
-  if(!(field instanceof HTMLTextAreaElement))return false;
+  if(!(field instanceof HTMLTextAreaElement)||isImportSource(field))return false;
   const value=normalize(field.value);
   if(value===field.value)return false;
   field.value=value;
@@ -108,7 +112,7 @@ function enhance(){
   outfitRoot?.querySelectorAll('input[data-o]').forEach(input=>convert(input,"outfit"));
   outfitRoot?.querySelectorAll('[data-outfit-key]').forEach(restoreOutfit);
   outfitRoot?.querySelectorAll('textarea[data-o]').forEach(field=>{normalizeTextarea(field);prepareOutfit(field);});
-  document.querySelectorAll("textarea").forEach(normalizeTextarea);
+  document.querySelectorAll("textarea:not(#legacy-import-json):not(#tsv-text)").forEach(normalizeTextarea);
 }
 
 function queue(){
@@ -172,13 +176,13 @@ styleRoot&&new MutationObserver(queue).observe(styleRoot,{childList:true,subtree
 outfitRoot&&new MutationObserver(queue).observe(outfitRoot,{childList:true,subtree:true});
 document.addEventListener("input",event=>{
   const field=event.target;
-  if(!(field instanceof HTMLTextAreaElement))return;
+  if(!(field instanceof HTMLTextAreaElement)||isImportSource(field))return;
   normalizeTextarea(field);
   if(field.matches('#style-skills textarea[data-f="name"]'))fitStyle(field);
 },true);
 document.addEventListener("change",event=>{
   const field=event.target;
-  if(field instanceof HTMLTextAreaElement)normalizeTextarea(field);
+  if(field instanceof HTMLTextAreaElement&&!isImportSource(field))normalizeTextarea(field);
 },true);
 document.addEventListener("click",event=>{
   if(event.target.closest?.("#legacy-import-apply"))enhance();
