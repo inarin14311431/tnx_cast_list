@@ -1,0 +1,62 @@
+/* Black-and-blood vampire treatment for Vlad Colony. */
+:root[data-theme="vlad"]{
+  --background:#020202;
+  --panel:rgba(12,7,8,.98);
+  --line:#d51f37;
+  --line-muted:#6d2b34;
+  --text:#f7eeee;
+  --text-muted:#b89b9f;
+  --alert:#ff314d;
+  --theme-body-bg:
+    radial-gradient(circle at 50% -16%,rgba(176,0,24,.25),transparent 40%),
+    radial-gradient(circle at 88% 18%,rgba(110,0,15,.18),transparent 32%),
+    radial-gradient(circle at 10% 76%,rgba(90,0,12,.11),transparent 34%),
+    linear-gradient(180deg,#100305,#050203 58%,#000000);
+  --theme-header-bg:linear-gradient(180deg,rgba(22,7,9,.99),rgba(5,2,3,.98));
+  --theme-panel-bg:linear-gradient(180deg,rgba(28,8,11,.97),rgba(7,3,4,.99));
+  --theme-panel-flat:rgba(12,7,8,.98);
+  --theme-input-bg:rgba(3,1,2,.96);
+  --theme-button-bg:rgba(213,31,55,.10);
+  --theme-button-hover:#d51f37;
+  --theme-on-accent:#fff5f6;
+  --theme-grid-line:rgba(213,31,55,.045);
+  --theme-scan-line:rgba(255,49,77,.13);
+  --theme-scan-opacity:.06;
+  --theme-shadow:rgba(213,31,55,.24);
+  --theme-divine-bg:rgba(35,3,7,.94);
+  --theme-divine-line:#ff314d;
+}
+
+html[data-theme="vlad"] body{
+  background:
+    linear-gradient(115deg,transparent 0 47%,rgba(145,0,20,.035) 48% 49%,transparent 50% 100%),
+    var(--theme-body-bg)!important;
+}
+
+html[data-theme="vlad"] .site-header,
+html[data-theme="vlad"] .auth-header,
+html[data-theme="vlad"] .cast-header,
+html[data-theme="vlad"] .sheet-header,
+html[data-theme="vlad"] .showcase-header{
+  border-bottom-color:#8d1426!important;
+  box-shadow:0 10px 34px rgba(130,0,18,.28)!important;
+}
+
+html[data-theme="vlad"] .cast-card:hover,
+html[data-theme="vlad"] .owned-cast:hover,
+html[data-theme="vlad"] .showcase-panel:hover{
+  box-shadow:0 0 28px rgba(213,31,55,.28)!important;
+}
+
+html[data-theme="vlad"] .hero-divine-panel,
+html[data-theme="vlad"] .divine-card,
+html[data-theme="vlad"] .style-divine-card,
+html[data-theme="vlad"] .divine-field{
+  background:linear-gradient(135deg,rgba(45,3,9,.94),rgba(10,2,3,.98))!important;
+  border-color:#a7182d!important;
+}
+
+html[data-theme="vlad"] ::selection{
+  color:#fff;
+  background:#a6001d;
+}
