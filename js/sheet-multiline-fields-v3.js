@@ -25,14 +25,45 @@ function prepareOutfit(field){
   field.dataset.manualResizeReady="1";
 }
 
+function fieldRestoreKey(field){
+  const styleKey=field.closest("tr[data-skill-key]")?.dataset.skillKey;
+  if(field.matches('textarea[data-f="name"]'))return styleKey?{type:"style",key:styleKey}:null;
+  const outfitKey=field.closest("[data-outfit-key]")?.dataset.outfitKey;
+  const outfitField=field.dataset.o;
+  if(outfitKey&&outfitField)return {type:"outfit",key:`${outfitKey}:${outfitField}`};
+  return null;
+}
+
+function markEdited(field){
+  const restoreKey=fieldRestoreKey(field);
+  if(!restoreKey)return;
+  if(restoreKey.type==="style")appliedStyles.add(restoreKey.key);
+  else appliedOutfits.add(restoreKey.key);
+}
+
+function bridgeOriginalValue(input,field){
+  try{
+    Object.defineProperty(input,"value",{
+      configurable:true,
+      get:()=>field.value,
+      set:value=>{field.value=normalize(value);}
+    });
+  }catch{
+    input.addEventListener("input",()=>{field.value=normalize(input.getAttribute("value")||input.value);});
+  }
+}
+
 function convert(input,kind){
   if(!(input instanceof HTMLInputElement)||["number","hidden","checkbox","radio","file"].includes(input.type))return input;
   const field=document.createElement("textarea");
   for(const attribute of [...input.attributes])if(!["type","value"].includes(attribute.name))field.setAttribute(attribute.name,attribute.value);
   field.rows=1;
   field.value=normalize(input.value);
+  bridgeOriginalValue(input,field);
   field.oninput=input.oninput;
   field.onchange=input.onchange;
+  field.addEventListener("input",()=>markEdited(field),true);
+  field.addEventListener("change",()=>markEdited(field),true);
   input.replaceWith(field);
   if(kind==="style")fitStyle(field);else prepareOutfit(field);
   return field;
@@ -87,7 +118,12 @@ function restoreImport(mode,rows){
     enhance();
     if(mode==="skd"){
       const fields=[...(styleRoot?.querySelectorAll('tr[data-skill-key] textarea[data-f="name"]')||[])].slice(-rows.length);
-      fields.forEach((field,index)=>{field.value=rows[index]?.["名称"]||field.value;fitStyle(field);});
+      fields.forEach((field,index)=>{
+        field.value=rows[index]?.["名称"]||field.value;
+        markEdited(field);
+        field.dispatchEvent(new Event("input",{bubbles:true}));
+        fitStyle(field);
+      });
       return;
     }
     const used=new Set();
@@ -100,6 +136,8 @@ function restoreImport(mode,rows){
         const field=target.querySelector(`textarea[data-o="${name}"]`);
         if(!field||value===undefined)continue;
         field.value=normalize(value);
+        markEdited(field);
+        field.dispatchEvent(new Event("input",{bubbles:true}));
         prepareOutfit(field);
       }
     }
@@ -122,6 +160,12 @@ async function loadOriginal(){
 styleRoot&&new MutationObserver(queue).observe(styleRoot,{childList:true,subtree:true});
 outfitRoot&&new MutationObserver(queue).observe(outfitRoot,{childList:true,subtree:true});
 document.addEventListener("input",event=>{const field=event.target.closest?.('#style-skills textarea[data-f="name"]');if(field)fitStyle(field);},true);
-document.addEventListener("click",event=>{if(!event.target.closest?.("#tsv-apply"))return;const mode=document.querySelector("#tsv-title")?.textContent.includes("SKD")?"skd":"ofc";restoreImport(mode,parseTsv(document.querySelector("#tsv-text")?.value));},true);
+document.addEventListener("click",event=>{
+  if(event.target.closest?.("#legacy-import-apply"))enhance();
+  if(!event.target.closest?.("#tsv-apply"))return;
+  const mode=document.querySelector("#tsv-title")?.textContent.includes("SKD")?"skd":"ofc";
+  restoreImport(mode,parseTsv(document.querySelector("#tsv-text")?.value));
+},true);
+window.TNXMultilineFields={enhance,queue,normalize};
 queue();
 loadOriginal();
