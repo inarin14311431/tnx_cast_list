@@ -17,7 +17,7 @@
   function applyTheme(theme, persist = false) {
     const next = THEMES.has(theme) ? theme : "nova";
     document.documentElement.dataset.theme = next;
-    document.documentElement.style.colorScheme = "dark";
+    document.documentElement.style.colorScheme = next === "intron" ? "light" : "dark";
     if (persist) {
       try { localStorage.setItem(STORAGE_KEY, next); } catch {}
     }
@@ -52,6 +52,7 @@
     appendStylesheet("./css/theme-fixes-v4.css?v=4", "data-theme-fixes-v4");
     appendStylesheet("./css/style-skill-separators.css?v=1", "data-style-skill-separators");
     appendStylesheet("./css/theme-city-expansion.css?v=2", "data-theme-city-expansion");
+    appendStylesheet("./css/theme-intron-light.css?v=1", "data-theme-intron-light");
   }
 
   function loadPageEnhancements(){
