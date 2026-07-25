@@ -1,0 +1,69 @@
+/* Keep index account controls fully inside narrow mobile viewports. */
+@media (max-width:700px){
+  html[data-theme] .site-header__top{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr)!important;
+    gap:22px!important;
+  }
+
+  html[data-theme] .site-header__operator{
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-width:none!important;
+    min-width:0!important;
+    padding:0!important;
+    justify-items:stretch!important;
+  }
+
+  html[data-theme] .auth-navigation{
+    display:grid!important;
+    grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+    gap:10px!important;
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-width:0!important;
+    padding:0!important;
+  }
+
+  html[data-theme] .auth-navigation__account,
+  html[data-theme] .auth-navigation__logout{
+    display:flex!important;
+    align-items:center!important;
+    justify-content:center!important;
+    box-sizing:border-box!important;
+    width:100%!important;
+    min-width:0!important;
+    max-width:none!important;
+    min-height:48px!important;
+    margin:0!important;
+    padding:10px 8px!important;
+    overflow:hidden!important;
+    text-align:center!important;
+    white-space:normal!important;
+  }
+
+  html[data-theme] .auth-navigation__account{
+    grid-column:1!important;
+  }
+
+  html[data-theme] .auth-navigation__logout{
+    grid-column:2!important;
+    flex-basis:auto!important;
+  }
+
+  html[data-theme] .theme-picker{
+    width:100%!important;
+    margin:0!important;
+  }
+}
+
+@media (max-width:420px){
+  html[data-theme] .auth-navigation{
+    grid-template-columns:minmax(0,1fr)!important;
+  }
+
+  html[data-theme] .auth-navigation__account,
+  html[data-theme] .auth-navigation__logout{
+    grid-column:1!important;
+  }
+}
