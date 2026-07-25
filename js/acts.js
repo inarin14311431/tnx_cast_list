@@ -227,7 +227,10 @@ function renderActRecord(row) {
       <p class="act-record__ruler">RULER：${escapeHtml(act.ruler_name || "—")}</p>
       <div class="act-record__exp">
         <label>獲得経験点 <small>EXPERIENCE</small><input data-experience-input type="number" min="0" max="9999" step="1" value="${escapeAttribute(row.earned_experience || 0)}"></label>
-        <button type="button" data-save-experience>保存</button>
+        <div class="act-record__exp-actions">
+          <button type="button" data-save-experience>保存</button>
+          <button type="button" class="act-record__delete" data-delete-participation>履歴削除</button>
+        </div>
       </div>
     </article>`;
 }
@@ -243,6 +246,12 @@ async function handleHistoryClick(event) {
     return;
   }
 
+  const deleteButton = event.target.closest("[data-delete-participation]");
+  if (deleteButton) {
+    await deleteParticipationHistory(deleteButton);
+    return;
+  }
+
   const button = event.target.closest("[data-save-experience]");
   const record = event.target.closest("[data-participation-id]");
   if (!button || !record) return;
@@ -253,7 +262,7 @@ async function handleHistoryClick(event) {
     return;
   }
 
-  button.disabled = true;
+  setRecordButtonsDisabled(record, true);
   button.textContent = "保存中";
   const { error } = await supabase
     .from("act_participants")
@@ -263,7 +272,7 @@ async function handleHistoryClick(event) {
   if (error) {
     console.error(error);
     setStatus("獲得経験点を保存できませんでした。キャスト所有者だけが更新できます。", "error");
-    button.disabled = false;
+    setRecordButtonsDisabled(record, false);
     button.textContent = "保存";
     return;
   }
@@ -274,14 +283,66 @@ async function handleHistoryClick(event) {
   setStatus("獲得経験点を保存しました。", "success");
 }
 
+async function deleteParticipationHistory(button) {
+  const record = button.closest("[data-participation-id]");
+  if (!record) return;
+
+  const participationId = String(record.dataset.participationId || "");
+  const row = participationRows.find(item => String(item.id) === participationId);
+  if (!row) {
+    setStatus("削除対象の参加アクト履歴を確認できませんでした。", "error");
+    return;
+  }
+
+  const character = ownedCharacters.find(item => item.id === row.character_id);
+  const characterName = formatFullName(character ?? { character_name: row.character_name });
+  const actName = row.act?.act_name || row.act?.slug || "名称未登録アクト";
+  const experience = Number(row.earned_experience || 0);
+  const confirmed = window.confirm(
+    `「${characterName}」の参加履歴から「${actName}」を削除します。\n` +
+    `この記録の獲得経験点 ${experience} EXP も集計から削除されます。\n\nこの操作は元に戻せません。`
+  );
+  if (!confirmed) return;
+
+  setRecordButtonsDisabled(record, true);
+  button.textContent = "削除中";
+  setStatus("参加アクト履歴を削除中…");
+
+  const { data, error } = await supabase.rpc("delete_owned_act_participation", {
+    p_participation_id: Number(participationId)
+  });
+
+  if (error || data !== true) {
+    console.error(error);
+    const message = /delete_owned_act_participation|schema cache|function.*does not exist/i.test(String(error?.message ?? ""))
+      ? "履歴削除機能が未設定です。Supabaseで supabase/16_delete_owned_act_history.sql を実行してください。"
+      : "参加アクト履歴を削除できませんでした。キャスト所有者だけが削除できます。";
+    setStatus(message, "error");
+    setRecordButtonsDisabled(record, false);
+    button.textContent = "履歴削除";
+    return;
+  }
+
+  participationRows = participationRows.filter(item => String(item.id) !== participationId);
+  if (!participationRows.some(item => item.character_id === row.character_id)) {
+    expandedCharacterIds.delete(String(row.character_id));
+  }
+  renderHistory();
+  setStatus(`「${actName}」を「${characterName}」の参加履歴から削除しました。`, "success");
+}
+
+function setRecordButtonsDisabled(record, disabled) {
+  record.querySelectorAll("button").forEach(button => { button.disabled = disabled; });
+}
+
 function setStatus(message, state = "") {
   elements.status.textContent = message;
   elements.status.className = `act-history-message${state ? ` is-${state}` : ""}`;
 }
 
 function formatFullName(character) {
-  const handle = String(character.handle ?? "").trim();
-  return [handle ? `“${handle}”` : "", character.character_name].filter(Boolean).join(" ");
+  const handle = String(character?.handle ?? "").trim();
+  return [handle ? `“${handle}”` : "", character?.character_name].filter(Boolean).join(" ");
 }
 
 function formatDate(value) {
