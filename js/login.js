@@ -7,37 +7,8 @@ const messageArea = document.querySelector("#auth-message");
 let redirecting = false;
 
 setupTabs();
-checkExistingSession();
 loginForm?.addEventListener("submit", handleLogin);
 signupForm?.addEventListener("submit", handleSignup);
-
-async function checkExistingSession() {
-  try {
-    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-    if (sessionError) throw sessionError;
-    if (!session) return;
-
-    // A cached session can remain after its access or refresh token has become
-    // invalid. Validate the actual user before leaving the login page; checking
-    // session existence alone causes login/account redirect loops.
-    const { data: { user }, error: userError } = await supabase.auth.getUser();
-    if (user && !userError) {
-      redirectAfterLogin();
-      return;
-    }
-
-    if (isInvalidSessionError(userError)) {
-      await clearLocalSession();
-      setMessage("保存されていたログイン情報の期限が切れています。もう一度ログインしてください。 / SESSION EXPIRED", "error");
-      return;
-    }
-
-    if (userError) throw userError;
-  } catch (error) {
-    console.error("Failed to verify the existing login session:", error);
-    setMessage("ログイン状態を確認できませんでした。再読み込み後も続く場合は、メールアドレスとパスワードでログインしてください。 / SESSION CHECK FAILED", "error");
-  }
-}
 
 async function handleLogin(event) {
   event.preventDefault();
@@ -51,12 +22,16 @@ async function handleLogin(event) {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) throw error;
     if (!data.user || !data.session) throw new Error("The authenticated session could not be established.");
+
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+    if (sessionError) throw sessionError;
+    if (!session?.user) throw new Error("The authenticated session was not persisted.");
+
     setMessage("認証しました。接続を開始します。 / ACCESS GRANTED", "success");
-    window.setTimeout(redirectAfterLogin, 400);
+    redirectAfterLogin();
   } catch (error) {
     console.error(error);
     setMessage(translateAuthError(error), "error");
-  } finally {
     setFormsDisabled(false);
   }
 }
@@ -86,7 +61,7 @@ async function handleSignup(event) {
 
     if (data.session) {
       setMessage("登録が完了しました。 / REGISTRATION COMPLETE", "success");
-      window.setTimeout(redirectAfterLogin, 400);
+      redirectAfterLogin();
       return;
     }
 
@@ -96,7 +71,7 @@ async function handleSignup(event) {
     console.error(error);
     setMessage(translateAuthError(error), "error");
   } finally {
-    setFormsDisabled(false);
+    if (!redirecting) setFormsDisabled(false);
   }
 }
 
@@ -121,35 +96,7 @@ function redirectAfterLogin() {
   }
 
   redirecting = true;
-  window.location.replace(destination);
-}
-
-async function clearLocalSession() {
-  try {
-    await supabase.auth.signOut({ scope: "local" });
-  } catch (error) {
-    console.warn("Could not clear the stale local session through Supabase.", error);
-    clearSupabaseStorageFallback();
-  }
-}
-
-function clearSupabaseStorageFallback() {
-  try {
-    for (let index = localStorage.length - 1; index >= 0; index -= 1) {
-      const key = localStorage.key(index);
-      if (key && /^sb-.*-auth-token$/.test(key)) localStorage.removeItem(key);
-    }
-  } catch {
-    // Storage may be unavailable in private browsing or hardened browsers.
-  }
-}
-
-function isInvalidSessionError(error) {
-  if (!error) return true;
-  const status = Number(error.status ?? error.statusCode ?? 0);
-  const message = String(error.message ?? "").toLowerCase();
-  return status === 401 ||
-    /invalid.*(?:jwt|token|session)|(?:jwt|token|session).*expired|refresh token.*(?:not found|invalid|expired)/i.test(message);
+  window.location.assign(destination);
 }
 
 function setupTabs() {
@@ -185,6 +132,6 @@ function translateAuthError(error) {
   if (message.includes("User already registered")) return "このメールアドレスは既に登録されています。 / ACCOUNT ALREADY EXISTS";
   if (message.includes("Password should be")) return "パスワードの条件を満たしていません。 / PASSWORD REQUIREMENTS NOT MET";
   if (message.toLowerCase().includes("rate limit")) return "短時間に操作が集中しました。しばらく待ってから再試行してください。 / RATE LIMIT EXCEEDED";
-  if (/session|token|jwt/i.test(message)) return "ログイン情報の確認に失敗しました。もう一度ログインしてください。 / INVALID SESSION";
-  return "認証処理に失敗しました。 / AUTHENTICATION FAILED";
+  if (/session|token|jwt/i.test(message)) return "ログイン情報の保存に失敗しました。ブラウザのサイトデータを確認してください。 / SESSION STORAGE FAILED";
+  return message ? `認証処理に失敗しました：${message}` : "認証処理に失敗しました。 / AUTHENTICATION FAILED";
 }
