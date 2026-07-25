@@ -167,13 +167,38 @@
   --theme-divine-line:#e7a558;
 }
 
+:root[data-theme="intron"]{
+  --background:#050505;
+  --panel:rgba(19,19,19,.98);
+  --line:#f1f1f1;
+  --line-muted:#686868;
+  --text:#f7f7f7;
+  --text-muted:#a4a4a4;
+  --alert:#d6d6d6;
+  --theme-body-bg:radial-gradient(circle at 50% -18%,rgba(255,255,255,.13),transparent 42%),radial-gradient(circle at 12% 72%,rgba(255,255,255,.035),transparent 34%),linear-gradient(180deg,#151515,#080808 58%,#020202);
+  --theme-header-bg:linear-gradient(180deg,rgba(29,29,29,.99),rgba(12,12,12,.98));
+  --theme-panel-bg:linear-gradient(180deg,rgba(30,30,30,.97),rgba(12,12,12,.99));
+  --theme-panel-flat:rgba(19,19,19,.98);
+  --theme-input-bg:rgba(5,5,5,.96);
+  --theme-button-bg:rgba(255,255,255,.075);
+  --theme-button-hover:#f1f1f1;
+  --theme-on-accent:#080808;
+  --theme-grid-line:rgba(255,255,255,.035);
+  --theme-scan-line:rgba(255,255,255,.095);
+  --theme-scan-opacity:.05;
+  --theme-shadow:rgba(255,255,255,.14);
+  --theme-divine-bg:rgba(22,22,22,.92);
+  --theme-divine-line:#c4c4c4;
+}
+
 :root[data-theme="moon"],
 :root[data-theme="star"],
 :root[data-theme="eden"],
 :root[data-theme="vlad"],
 :root[data-theme="lutetia"],
 :root[data-theme="buena"],
-:root[data-theme="canberra"]{
+:root[data-theme="canberra"],
+:root[data-theme="intron"]{
   color-scheme:dark;
 }
 
@@ -181,3 +206,16 @@
 :root[data-theme="eden"] .scanlines{
   display:block!important;
 }
+
+html[data-theme="intron"] [style*="--style-color"]{
+  --style-color:#d8d8d8!important;
+}
+html[data-theme="intron"] .showcase-layout>.showcase-panel{
+  --section-accent:#e8e8e8;
+  --section-border:rgba(232,232,232,.42);
+  --section-fill:rgba(232,232,232,.09);
+  --section-glow:rgba(255,255,255,.055);
+}
+html[data-theme="intron"] .showcase-layout>.showcase-panel:nth-of-type(2){--section-accent:#c8c8c8}
+html[data-theme="intron"] .showcase-layout>.showcase-panel:nth-of-type(3){--section-accent:#a8a8a8}
+html[data-theme="intron"] .showcase-layout>.showcase-panel:nth-of-type(4){--section-accent:#f5f5f5}
