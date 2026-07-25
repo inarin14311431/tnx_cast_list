@@ -1,7 +1,7 @@
 function reportRuntimeError(message) {
   const status = document.querySelector("#library-status");
   if (!status) return;
-  status.textContent = `公開キャスト選択エラー：${message}`;
+  status.textContent = `キャスト選択エラー：${message}`;
   status.className = "generator-status is-error";
 }
 
@@ -15,15 +15,16 @@ window.addEventListener("unhandledrejection", event => {
 });
 
 try {
-  await import("./showcase-generator-v2.js?v=6");
+  await import("./showcase-generator-v3.js?v=1");
 } catch (error) {
   console.error("Showcase generator could not be initialized.", error);
   reportRuntimeError(error?.message || "初期化に失敗しました。ページを再読み込みしてください。");
 }
 
 setTimeout(() => {
-  const status = document.querySelector("#library-status");
-  if (status?.textContent?.includes("読み込み中")) {
-    reportRuntimeError("公開キャストの読込みが完了しませんでした。通信状態、ログイン状態、またはSupabaseのcharacters列を確認してください。");
+  const publicStatus = document.querySelector("#library-status");
+  const privateStatus = document.querySelector("#private-library-status");
+  if (publicStatus?.textContent?.includes("読み込み中") || privateStatus?.textContent?.includes("読み込み中")) {
+    reportRuntimeError("キャストの読込みが完了しませんでした。通信状態、ログイン状態、またはSupabaseのcharacters列を確認してください。");
   }
 }, 12000);
