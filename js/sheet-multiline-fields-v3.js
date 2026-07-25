@@ -1,0 +1,127 @@
+import { supabase } from "./supabase-client.js";
+
+const styleRoot=document.querySelector("#style-skills");
+const outfitRoot=document.querySelector("#outfit-list");
+const publicId=new URLSearchParams(location.search).get("id")?.trim()||"";
+const styleValues=new Map();
+const outfitValues=new Map();
+const appliedStyles=new Set();
+const appliedOutfits=new Set();
+let queued=false;
+
+const normalize=value=>String(value??"").replace(/\r\n?/g,"\n").replace(/\\n/g,"\n");
+const compare=value=>normalize(value).replace(/\s+/g," ").trim();
+
+function fitStyle(field){
+  if(!(field instanceof HTMLTextAreaElement))return;
+  field.style.height="auto";
+  field.style.height=`${Math.max(36,field.scrollHeight+2)}px`;
+}
+
+function prepareOutfit(field){
+  if(!(field instanceof HTMLTextAreaElement)||field.dataset.manualResizeReady==="1")return;
+  field.rows=1;
+  field.style.height="36px";
+  field.dataset.manualResizeReady="1";
+}
+
+function convert(input,kind){
+  if(!(input instanceof HTMLInputElement)||["number","hidden","checkbox","radio","file"].includes(input.type))return input;
+  const field=document.createElement("textarea");
+  for(const attribute of [...input.attributes])if(!["type","value"].includes(attribute.name))field.setAttribute(attribute.name,attribute.value);
+  field.rows=1;
+  field.value=normalize(input.value);
+  field.oninput=input.oninput;
+  field.onchange=input.onchange;
+  input.replaceWith(field);
+  if(kind==="style")fitStyle(field);else prepareOutfit(field);
+  return field;
+}
+
+function restoreStyle(field){
+  const key=field.closest("tr[data-skill-key]")?.dataset.skillKey;
+  if(!key||appliedStyles.has(key)||!styleValues.has(key))return;
+  field.value=styleValues.get(key);
+  appliedStyles.add(key);
+  fitStyle(field);
+}
+
+function restoreOutfit(owner){
+  const key=owner?.dataset.outfitKey;
+  const data=key?outfitValues.get(key):null;
+  if(!key||!data)return;
+  owner.querySelectorAll("textarea[data-o]").forEach(field=>{
+    const name=field.dataset.o;
+    const restoreKey=`${key}:${name}`;
+    if(!name||appliedOutfits.has(restoreKey)||data[name]===undefined||data[name]===null)return;
+    field.value=normalize(data[name]);
+    appliedOutfits.add(restoreKey);
+    prepareOutfit(field);
+  });
+}
+
+function enhance(){
+  queued=false;
+  styleRoot?.querySelectorAll('tr[data-skill-key] td:first-child input[data-f="name"]').forEach(input=>restoreStyle(convert(input,"style")));
+  styleRoot?.querySelectorAll('textarea[data-f="name"]').forEach(field=>{restoreStyle(field);fitStyle(field);});
+  outfitRoot?.querySelectorAll('input[data-o]').forEach(input=>convert(input,"outfit"));
+  outfitRoot?.querySelectorAll('[data-outfit-key]').forEach(restoreOutfit);
+  outfitRoot?.querySelectorAll('textarea[data-o]').forEach(field=>{field.value=normalize(field.value);prepareOutfit(field);});
+}
+
+function queue(){
+  if(queued)return;
+  queued=true;
+  requestAnimationFrame(enhance);
+}
+
+function parseTsv(text){
+  const lines=String(text??"").replace(/\r/g,"").trim().split("\n").filter(Boolean).map(line=>line.split("\t"));
+  if(!lines.length)return[];
+  const header=lines.shift().map(value=>value.trim());
+  return lines.map(row=>Object.fromEntries(header.map((name,index)=>[name,normalize(row[index]||"")])));
+}
+
+function restoreImport(mode,rows){
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{
+    enhance();
+    if(mode==="skd"){
+      const fields=[...(styleRoot?.querySelectorAll('tr[data-skill-key] textarea[data-f="name"]')||[])].slice(-rows.length);
+      fields.forEach((field,index)=>{field.value=rows[index]?.["名称"]||field.value;fitStyle(field);});
+      return;
+    }
+    const used=new Set();
+    for(const row of rows){
+      const target=[...(outfitRoot?.querySelectorAll('[data-outfit-key]')||[])].reverse().find(item=>!used.has(item)&&compare(item.querySelector('[data-o="name"]')?.value)===compare(row.name));
+      if(!target)continue;
+      used.add(target);
+      const values={name:row.name,purchase_value:row.purchase,concealment:[row.concealA,row.concealB].filter(Boolean).join("/"),attack:row.attack,defense:row.defense,range:row.range,slot:row.part||row.slot,description:row.notes};
+      for(const [name,value] of Object.entries(values)){
+        const field=target.querySelector(`textarea[data-o="${name}"]`);
+        if(!field||value===undefined)continue;
+        field.value=normalize(value);
+        prepareOutfit(field);
+      }
+    }
+  }));
+}
+
+async function loadOriginal(){
+  if(!publicId)return;
+  const {data:character,error}=await supabase.from("characters").select("id").eq("public_id",publicId).maybeSingle();
+  if(error||!character)return;
+  const [skills,outfits]=await Promise.all([
+    supabase.from("character_skills").select("id,name").eq("character_id",character.id).eq("category","style").order("sort_order"),
+    supabase.from("character_outfits").select("*").eq("character_id",character.id).order("sort_order")
+  ]);
+  for(const skill of skills.data||[])styleValues.set(String(skill.id),normalize(skill.name));
+  for(const outfit of outfits.data||[])outfitValues.set(String(outfit.id),outfit);
+  queue();
+}
+
+styleRoot&&new MutationObserver(queue).observe(styleRoot,{childList:true,subtree:true});
+outfitRoot&&new MutationObserver(queue).observe(outfitRoot,{childList:true,subtree:true});
+document.addEventListener("input",event=>{const field=event.target.closest?.('#style-skills textarea[data-f="name"]');if(field)fitStyle(field);},true);
+document.addEventListener("click",event=>{if(!event.target.closest?.("#tsv-apply"))return;const mode=document.querySelector("#tsv-title")?.textContent.includes("SKD")?"skd":"ofc";restoreImport(mode,parseTsv(document.querySelector("#tsv-text")?.value));},true);
+queue();
+loadOriginal();
