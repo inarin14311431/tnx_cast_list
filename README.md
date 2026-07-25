@@ -101,37 +101,31 @@ SupabaseのSQL Editorで次を番号順に1回ずつ実行してください。
 supabase/05_sheet_editor_migration.sql
 supabase/10_transactional_character_save.sql
 supabase/11_showcase_publish_security.sql
+supabase/12_showcase_history_only.sql
 ```
 
 `10_transactional_character_save.sql`は、キャスト本体・技能・アウトフィットを1トランザクションで保存するRPCを追加します。保存途中でエラーが発生した場合は全処理がロールバックされ、既存の技能や装備は変更されません。また、技能の`free_level`を保持します。
 
 `11_showcase_publish_security.sql`は、別の公開者が所有するアクト紹介ファイル名を上書きできないよう、アクト履歴登録RPCに所有者確認を追加します。
 
+`12_showcase_history_only.sql`は、GitHub Pagesへ公開せずに参加アクト履歴だけを登録するRPCを追加します。既存の公開URLがある履歴を「履歴のみ登録」で更新した場合、公開URLは保持されます。
+
 これらのSQLは既存データを削除せず、必要な列と関数だけを追加・更新します。既存データを破棄するSQLは`05_sheet_editor_migration.sql`末尾にコメントとして収録しています。
 
-## アクト紹介公開権限
+## アクト紹介の公開と履歴登録
 
-`publish-showcase` Edge Functionは、許可ユーザーが未設定の場合に公開を拒否します。SupabaseのEdge Function Secretsへ、少なくとも次のどちらかを設定してください。
+`publish-showcase` Edge Functionは、ログイン済みユーザーであればGitHub Pagesへの公開を利用できます。`SHOWCASE_ADMIN_USER_IDS`と`SHOWCASE_ADMIN_EMAILS`は使用しません。
 
-```text
-SHOWCASE_ADMIN_USER_IDS=Supabase AuthのユーザーUUID
-SHOWCASE_ADMIN_EMAILS=公開を許可するメールアドレス
-```
+同じアクト識別名／slugは、最初に登録したユーザーだけが更新できます。別ユーザーが同じ識別名で上書きすることはできません。また、`script`、イベント属性、`javascript:` URL、iframe等を含むHTMLは公開できません。
 
-複数指定する場合はカンマ区切りです。ユーザーUUIDとメールアドレスは併用できます。
+04「生成・公開」では次の2種類を利用できます。
 
-```text
-SHOWCASE_ADMIN_USER_IDS=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx,yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
-SHOWCASE_ADMIN_EMAILS=operator@example.com,suboperator@example.com
-```
+- `履歴のみ登録`：HTML生成とGitHub Pages公開を行わず、参加アクト履歴だけを保存
+- `GitHub Pagesへ公開`：生成HTMLを公開し、同時に参加アクト履歴も保存
 
-設定後、`supabase/functions/publish-showcase/index.ts`をEdge Functionへ再デプロイしてください。新しい関数は次を拒否します。
+履歴テーブルは公開キャストを参照するため、手動追加キャストは履歴登録の対象外です。紹介HTMLには引き続き掲載できます。
 
-- 許可リストにないユーザーからのGitHub公開
-- 他の公開者が使用しているslugの上書き
-- `script`、イベント属性、`javascript:` URL、iframe等を含むHTML
-
-HTMLの生成・プレビュー・ダウンロード・コピーは、GitHub公開権限がないユーザーでも利用できます。
+関数コードを変更した場合は、`supabase/functions/publish-showcase/index.ts`をEdge Functionへ再デプロイしてください。
 
 ## 経験点計算
 
