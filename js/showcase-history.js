@@ -52,7 +52,7 @@ async function loadOwnedPrivateCharacters() {
       image_url, updated_at
     `)
     .eq("owner_id", session.user.id)
-    .neq("visibility", "public")
+    .eq("visibility", "private")
     .order("updated_at", { ascending: false });
 
   if (error) {
@@ -93,7 +93,7 @@ function renderPrivateCharacters() {
         data-private-character-id="${escapeAttribute(character.id)}" aria-pressed="${selected}">
         <img src="${escapeAttribute(character.image_url || "./assets/placeholders/scan-failed.webp")}" alt="" loading="lazy">
         <span class="cast-pick-card__body">
-          <span class="private-history-card__visibility">${escapeHtml(visibilityLabel(character.visibility))} / HISTORY ONLY</span>
+          <span class="private-history-card__visibility">非公開 / HISTORY ONLY</span>
           <span class="cast-pick-card__handle">${escapeHtml(formatHandle(character.handle) || "NO HANDLE")}</span>
           <h3>${escapeHtml(character.character_name || "名称未登録")}</h3>
           <span class="cast-pick-card__styles">${escapeHtml(styles)}</span>
@@ -267,16 +267,6 @@ function normalizeSlug(value) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 64);
-}
-
-function visibilityLabel(value) {
-  const labels = {
-    draft: "下書き",
-    private: "非公開",
-    archived: "引退",
-    unlisted: "限定公開"
-  };
-  return labels[String(value ?? "").toLowerCase()] || String(value ?? "非公開");
 }
 
 function formatHandle(value) {
