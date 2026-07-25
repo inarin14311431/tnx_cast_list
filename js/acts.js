@@ -15,6 +15,7 @@ const elements = {
 let currentUser = null;
 let ownedCharacters = [];
 let participationRows = [];
+const expandedCharacterIds = new Set();
 
 initialize();
 
@@ -27,11 +28,16 @@ async function initialize() {
 
 function bindEvents() {
   elements.playerFilter?.addEventListener("change", () => {
+    expandedCharacterIds.clear();
     syncCastOptions();
     renderHistory();
   });
-  elements.castFilter?.addEventListener("change", renderHistory);
+  elements.castFilter?.addEventListener("change", () => {
+    expandedCharacterIds.clear();
+    renderHistory();
+  });
   elements.reset?.addEventListener("click", () => {
+    expandedCharacterIds.clear();
     elements.playerFilter.value = "";
     syncCastOptions();
     elements.castFilter.value = "";
@@ -188,13 +194,21 @@ function renderHistory() {
 function renderCharacterGroup(group) {
   const { character, rows } = group;
   const totalExp = rows.reduce((sum, row) => sum + Number(row.earned_experience || 0), 0);
+  const characterId = String(character.id);
+  const recordsId = `act-records-${characterId.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
+  const isExpanded = expandedCharacterIds.has(characterId);
+
   return `
-    <section class="act-character-group">
+    <section class="act-character-group${isExpanded ? " is-expanded" : ""}">
       <header class="act-character-group__header">
-        <h4>${escapeHtml(formatFullName(character))}<small>${escapeHtml(character.public_id)}</small></h4>
-        <p>${rows.length} RECORDS / ${totalExp} EXP</p>
+        <button class="act-character-toggle" type="button" data-toggle-character data-character-id="${escapeAttribute(characterId)}"
+          aria-expanded="${isExpanded}" aria-controls="${escapeAttribute(recordsId)}">
+          <span class="act-character-toggle__name">${escapeHtml(formatFullName(character))}</span>
+          <span class="act-character-toggle__summary">${rows.length} RECORDS / ${totalExp} EXP</span>
+          <span class="act-character-toggle__icon" aria-hidden="true">${isExpanded ? "−" : "＋"}</span>
+        </button>
       </header>
-      <div class="act-records">${rows.map(renderActRecord).join("")}</div>
+      <div id="${escapeAttribute(recordsId)}" class="act-records"${isExpanded ? "" : " hidden"}>${rows.map(renderActRecord).join("")}</div>
     </section>`;
 }
 
@@ -219,6 +233,16 @@ function renderActRecord(row) {
 }
 
 async function handleHistoryClick(event) {
+  const toggle = event.target.closest("[data-toggle-character]");
+  if (toggle) {
+    const characterId = String(toggle.dataset.characterId || "");
+    if (!characterId) return;
+    if (expandedCharacterIds.has(characterId)) expandedCharacterIds.delete(characterId);
+    else expandedCharacterIds.add(characterId);
+    renderHistory();
+    return;
+  }
+
   const button = event.target.closest("[data-save-experience]");
   const record = event.target.closest("[data-participation-id]");
   if (!button || !record) return;
