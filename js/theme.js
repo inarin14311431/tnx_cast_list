@@ -1,7 +1,7 @@
 /* Persistent color-theme controller shared by all active pages. */
 (() => {
   const STORAGE_KEY = "tnx-cast-site-theme";
-  const THEMES = new Set(["nova", "moon", "star", "eden"]);
+  const THEMES = new Set(["nova", "moon", "star", "eden", "vlad", "lutetia", "buena", "canberra"]);
   let buttonObserver = null;
   let buttonRefreshQueued = false;
 
@@ -17,7 +17,7 @@
   function applyTheme(theme, persist = false) {
     const next = THEMES.has(theme) ? theme : "nova";
     document.documentElement.dataset.theme = next;
-    document.documentElement.style.colorScheme = next === "moon" || next === "eden" ? "light" : "dark";
+    document.documentElement.style.colorScheme = "dark";
     if (persist) {
       try { localStorage.setItem(STORAGE_KEY, next); } catch {}
     }
@@ -51,6 +51,7 @@
     appendStylesheet("./css/theme-fixes-v3.css?v=2", "data-theme-fixes-v3");
     appendStylesheet("./css/theme-fixes-v4.css?v=4", "data-theme-fixes-v4");
     appendStylesheet("./css/style-skill-separators.css?v=1", "data-style-skill-separators");
+    appendStylesheet("./css/theme-city-expansion.css?v=1", "data-theme-city-expansion");
   }
 
   function loadPageEnhancements(){
