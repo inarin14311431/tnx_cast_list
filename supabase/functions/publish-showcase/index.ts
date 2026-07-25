@@ -7,6 +7,13 @@ const DEFAULT_PAGES_BASE = "https://inarin14311431.github.io/tnx_cast_list";
 const MAX_HTML_BYTES = 2_000_000;
 const SLUG_PATTERN = /^[a-z0-9](?:[a-z0-9-]{0,62}[a-z0-9])?$/;
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const FORBIDDEN_HTML_RULES: Array<{ pattern: RegExp; message: string }> = [
+  { pattern: /<\s*script\b/i, message: "script要素を含むHTMLは公開できません。" },
+  { pattern: /<\s*(iframe|object|embed|applet|base|form)\b/i, message: "外部実行や送信を行うHTML要素は公開できません。" },
+  { pattern: /\son[a-z0-9_-]+\s*=/i, message: "イベントハンドラー属性を含むHTMLは公開できません。" },
+  { pattern: /javascript\s*:/i, message: "javascript: URLを含むHTMLは公開できません。" },
+  { pattern: /<\s*meta\b[^>]*http-equiv\s*=\s*(?:["']\s*refresh\s*["']|refresh)/i, message: "自動転送を含むHTMLは公開できません。" }
+];
 
 Deno.serve(async request => {
   const origin = request.headers.get("origin") ?? "";
@@ -31,6 +38,7 @@ Deno.serve(async request => {
 
     const adminClient = createAdminClient();
     await assertActHistorySchema(adminClient);
+    await assertSlugOwnership(adminClient, input.slug, user.id);
     await assertPublicParticipants(adminClient, input.participantIds);
 
     const repository = Deno.env.get("GITHUB_SHOWCASE_REPOSITORY")?.trim() || DEFAULT_REPOSITORY;
@@ -136,8 +144,16 @@ function createAdminClient(): AdminClient {
 function requirePublisherPermission(user: AuthenticatedUser) {
   const allowedUserIds = parseList(Deno.env.get("SHOWCASE_ADMIN_USER_IDS"));
   const allowedEmails = parseList(Deno.env.get("SHOWCASE_ADMIN_EMAILS")).map(value => value.toLowerCase());
-  if (!allowedUserIds.length && !allowedEmails.length) return;
-  const userAllowed = allowedUserIds.includes(user.id) || Boolean(user.email && allowedEmails.includes(user.email.toLowerCase()));
+
+  if (!allowedUserIds.length && !allowedEmails.length) {
+    throw new HttpError(
+      503,
+      "アクト紹介ページの公開許可ユーザーが設定されていません。SHOWCASE_ADMIN_USER_IDS または SHOWCASE_ADMIN_EMAILS を設定してください。"
+    );
+  }
+
+  const userAllowed = allowedUserIds.includes(user.id) ||
+    Boolean(user.email && allowedEmails.includes(user.email.toLowerCase()));
   if (!userAllowed) throw new HttpError(403, "このアカウントにはアクト紹介ページを公開する権限がありません。");
 }
 
@@ -158,12 +174,30 @@ function validateRequest(body: PublishRequest | null) {
   if (!html.trim()) throw new HttpError(400, "Generated HTML is empty.");
   if (new TextEncoder().encode(html).byteLength > MAX_HTML_BYTES) throw new HttpError(413, "Generated HTML exceeds the 2 MB publication limit.");
   if (!/^\s*<!doctype html>/i.test(html) || !/<html[\s>]/i.test(html)) throw new HttpError(400, "Only a complete HTML document can be published.");
+
+  for (const rule of FORBIDDEN_HTML_RULES) {
+    if (rule.pattern.test(html)) throw new HttpError(400, rule.message);
+  }
+
   return { slug, actName, rulerName, html, participantIds };
 }
 
 async function assertActHistorySchema(client: AdminClient) {
-  const { error } = await client.from("acts").select("id").limit(1);
+  const { error } = await client.from("acts").select("id, published_by").limit(1);
   if (error) throw new HttpError(500, `アクト履歴テーブルを確認できません。supabase/07_act_history.sqlを実行してください。 ${error.message}`);
+}
+
+async function assertSlugOwnership(client: AdminClient, slug: string, userId: string) {
+  const { data, error } = await client
+    .from("acts")
+    .select("id, published_by")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error) throw new HttpError(500, `公開ファイル名の所有者を確認できませんでした。 ${error.message}`);
+  if (data && data.published_by !== userId) {
+    throw new HttpError(409, "この公開ファイル名は別の公開者が使用しています。別のファイル名を指定してください。");
+  }
 }
 
 async function assertPublicParticipants(client: AdminClient, participantIds: string[]) {
