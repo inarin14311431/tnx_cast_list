@@ -18,7 +18,8 @@
 #logout-button,#logout-button span,#logout-button small{white-space:nowrap;word-break:keep-all}
 #logout-button{min-width:150px}
 .account-actions>a:hover,.account-actions>button:hover{color:#041319!important;background:#68eaff!important;border-color:#68eaff!important}
-.account-actions>a:hover span,.account-actions>button:hover span,.account-actions>a:hover small,.account-actions>button:hover small{color:#041319!important;opacity:1!important;text-shadow:none!important}
+.account-actions>a:hover span,.account-actions>button:hover span,.account-actions>a:hover small,.account-actions>button:hover small,
+.account-actions>a:focus-visible span,.account-actions>button:focus-visible span,.account-actions>a:focus-visible small,.account-actions>button:focus-visible small{color:inherit!important;opacity:1!important;text-shadow:none!important}
 .account-panel{padding:18px}
 .account-layout{gap:16px;padding-top:24px}
 .account-data{margin:16px 0}
