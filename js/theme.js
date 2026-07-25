@@ -53,6 +53,7 @@
     appendStylesheet("./css/style-skill-separators.css?v=1", "data-style-skill-separators");
     appendStylesheet("./css/theme-city-expansion.css?v=2", "data-theme-city-expansion");
     appendStylesheet("./css/theme-intron-light.css?v=1", "data-theme-intron-light");
+    appendStylesheet("./css/mobile-auth-navigation-fix.css?v=1", "data-mobile-auth-navigation-fix");
   }
 
   function loadPageEnhancements(){
