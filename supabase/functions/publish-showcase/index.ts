@@ -35,15 +35,27 @@ Deno.serve(async request => {
     const adminClient = createAdminClient();
     await assertActHistorySchema(adminClient);
     await assertSlugOwnership(adminClient, input.slug, user.id);
-    await assertPublicParticipants(adminClient, input.participantIds);
+
+    // The generated HTML may contain any public cast, but act history is always
+    // reduced to public casts owned by the authenticated publisher.
+    const ownedParticipantIds = await getOwnedPublicParticipantIds(
+      adminClient,
+      input.participantIds,
+      user.id
+    );
+    const excludedParticipantCount = input.participantIds.length - ownedParticipantIds.length;
 
     if (input.mode === "history") {
+      if (!ownedParticipantIds.length) {
+        throw new HttpError(400, "履歴登録対象となる自分の公開キャストがありません。");
+      }
+
       const actId = await recordActHistory(adminClient, {
         slug: input.slug,
         actName: input.actName,
         rulerName: input.rulerName,
         recordedBy: user.id,
-        participantIds: input.participantIds
+        participantIds: ownedParticipantIds
       });
 
       console.info("Act history registered without publication", {
@@ -51,7 +63,8 @@ Deno.serve(async request => {
         email: user.email,
         slug: input.slug,
         actId,
-        participantCount: input.participantIds.length
+        participantCount: ownedParticipantIds.length,
+        excludedParticipantCount
       });
 
       return json({
@@ -60,7 +73,8 @@ Deno.serve(async request => {
         historyOnly: true,
         slug: input.slug,
         actId,
-        participantCount: input.participantIds.length
+        participantCount: ownedParticipantIds.length,
+        excludedParticipantCount
       }, 200, corsHeaders);
     }
 
@@ -89,7 +103,7 @@ Deno.serve(async request => {
         rulerName: input.rulerName,
         publicUrl,
         publishedBy: user.id,
-        participantIds: input.participantIds
+        participantIds: ownedParticipantIds
       });
     } catch (error) {
       console.error("Act history registration failed after GitHub publication", error);
@@ -103,7 +117,8 @@ Deno.serve(async request => {
       branch,
       path,
       actId,
-      participantCount: input.participantIds.length,
+      participantCount: ownedParticipantIds.length,
+      excludedParticipantCount,
       commitSha: result.commitSha
     });
 
@@ -113,7 +128,8 @@ Deno.serve(async request => {
       slug: input.slug,
       path,
       actId,
-      participantCount: input.participantIds.length,
+      participantCount: ownedParticipantIds.length,
+      excludedParticipantCount,
       commitSha: result.commitSha,
       publicUrl
     }, 200, corsHeaders);
@@ -183,8 +199,9 @@ function validateRequest(body: PublishRequest | null) {
   if (!SLUG_PATTERN.test(slug)) throw new HttpError(400, "アクト識別名は1～64文字の半角小文字英数字とハイフンで入力してください。");
   if (!actName || actName.length > 200) throw new HttpError(400, "アクト名は1～200文字で入力してください。");
   if (rulerName.length > 120) throw new HttpError(400, "RULER名は120文字以内で入力してください。");
-  if (participantIds.length < 1 || participantIds.length > 6) throw new HttpError(400, "履歴へ登録できる公開キャストを1～6名で指定してください。");
+  if (participantIds.length > 6) throw new HttpError(400, "履歴候補として送信できるキャストは6名までです。");
   if (participantIds.some(id => !UUID_PATTERN.test(id))) throw new HttpError(400, "参加キャストIDの形式が正しくありません。");
+  if (mode === "history" && participantIds.length < 1) throw new HttpError(400, "履歴へ登録するキャストを1名以上指定してください。");
 
   if (mode === "publish") {
     if (!html.trim()) throw new HttpError(400, "Generated HTML is empty.");
@@ -216,14 +233,17 @@ async function assertSlugOwnership(client: AdminClient, slug: string, userId: st
   }
 }
 
-async function assertPublicParticipants(client: AdminClient, participantIds: string[]) {
+async function getOwnedPublicParticipantIds(client: AdminClient, participantIds: string[], userId: string) {
+  if (!participantIds.length) return [];
   const { data, error } = await client
     .from("characters")
     .select("id")
     .in("id", participantIds)
+    .eq("owner_id", userId)
     .eq("visibility", "public");
-  if (error) throw new HttpError(500, `参加キャストの確認に失敗しました。 ${error.message}`);
-  if ((data ?? []).length !== participantIds.length) throw new HttpError(400, "選択したキャストの一部が非公開、または存在しません。");
+  if (error) throw new HttpError(500, `参加キャストの所有者確認に失敗しました。 ${error.message}`);
+  const ownedIds = new Set((data ?? []).map(character => String(character.id)));
+  return participantIds.filter(id => ownedIds.has(id));
 }
 
 async function recordActPublication(client: AdminClient, input: {
