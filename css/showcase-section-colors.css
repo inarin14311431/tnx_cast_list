@@ -24,6 +24,7 @@
 }
 
 .showcase-layout > .showcase-panel{
+  isolation:isolate;
   border-color:var(--section-border);
   background:
     linear-gradient(135deg,var(--section-glow),transparent 35%),
@@ -34,8 +35,15 @@
     inset 0 0 30px var(--section-glow);
 }
 .showcase-layout > .showcase-panel::after{
+  z-index:0;
   border-color:var(--section-accent);
   opacity:.8;
+  pointer-events:none;
+}
+.showcase-layout > .showcase-panel .showcase-panel__header,
+.showcase-layout > .showcase-panel .showcase-panel__body{
+  position:relative;
+  z-index:1;
 }
 .showcase-layout > .showcase-panel .showcase-panel__header{
   border-bottom-color:var(--section-border);
@@ -53,4 +61,11 @@
 }
 .showcase-layout > .showcase-panel:nth-of-type(4) .generator-actions{
   margin-top:0;
+}
+
+#public-cast-grid,
+#public-cast-grid .cast-pick-card{
+  position:relative;
+  z-index:2;
+  pointer-events:auto;
 }
