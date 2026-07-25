@@ -31,6 +31,13 @@ SupabaseとGitHub Pagesを使用した、トーキョーN◎VA用キャスト管
 
 アカウント画面の「新規キャスト作成」および「シート編集」から利用します。
 
+キャストの公開状態は次の2種類だけを使用します。
+
+- `public`：公開
+- `private`：非公開
+
+旧仕様の`draft`、`unlisted`、`archived`は使用しません。
+
 ## アセット構成
 
 一旦の完成版として、ページ固有の番号付き差分ファイルを統合しています。
@@ -103,6 +110,7 @@ supabase/10_transactional_character_save.sql
 supabase/11_showcase_publish_security.sql
 supabase/12_showcase_history_only.sql
 supabase/13_private_act_history.sql
+supabase/14_visibility_two_state.sql
 ```
 
 `10_transactional_character_save.sql`は、キャスト本体・技能・アウトフィットを1トランザクションで保存するRPCを追加します。保存途中でエラーが発生した場合は全処理がロールバックされ、既存の技能や装備は変更されません。また、技能の`free_level`を保持します。
@@ -111,9 +119,11 @@ supabase/13_private_act_history.sql
 
 `12_showcase_history_only.sql`は、GitHub Pagesへ公開せずに参加アクト履歴だけを登録するRPCを追加します。既存の公開URLがある履歴を「履歴のみ登録」で更新した場合、公開URLは保持されます。
 
-`13_private_act_history.sql`は、履歴登録を現在のログインユーザーとして実行するRPCを追加します。公開キャストに加えて、ログインユーザー自身が所有する下書き・非公開・限定公開・引退キャストを参加アクト履歴へ登録できます。GitHub Pagesの公開内容は変更しません。
+`13_private_act_history.sql`は、履歴登録を現在のログインユーザーとして実行するRPCを追加します。公開キャストに加えて、ログインユーザー自身が所有する非公開キャストを参加アクト履歴へ登録できます。GitHub Pagesの公開内容は変更しません。
 
-これらのSQLは既存データを削除せず、必要な列と関数だけを追加・更新します。既存データを破棄するSQLは`05_sheet_editor_migration.sql`末尾にコメントとして収録しています。
+`14_visibility_two_state.sql`は、旧状態の`draft`、`unlisted`、`archived`を`private`へ変換し、公開状態を`public`と`private`の2種類だけに制限します。
+
+これらのSQLは既存キャストを削除しません。`14_visibility_two_state.sql`で旧状態のキャストがあった場合は、非公開キャストとして保持されます。
 
 ## アクト紹介の公開と履歴登録
 
@@ -126,7 +136,7 @@ supabase/13_private_act_history.sql
 - `履歴のみ登録`：HTML生成とGitHub Pages公開を行わず、参加アクト履歴だけを保存
 - `GitHub Pagesへ公開`：生成HTMLを公開し、同時に参加アクト履歴も保存
 
-履歴のみ登録では、公開キャストとログインユーザー自身が所有する非公開系キャストを合計6名まで登録できます。手動追加キャストはデータベース上のキャストIDを持たないため、履歴登録の対象外です。紹介HTMLには引き続き掲載できます。
+履歴のみ登録では、公開キャストとログインユーザー自身が所有する非公開キャストを合計6名まで登録できます。手動追加キャストはデータベース上のキャストIDを持たないため、履歴登録の対象外です。紹介HTMLには引き続き掲載できます。
 
 GitHub Pages公開は公開キャストのみ対応します。自分の非公開キャストは専用の「履歴のみ」選択欄に表示され、生成HTMLやGitHub Pagesには含まれません。
 
