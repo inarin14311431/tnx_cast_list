@@ -8,8 +8,6 @@
   min-height:36px;
   margin:0;
   padding:7px 6px;
-  resize:vertical;
-  overflow:hidden;
   color:inherit;
   background:inherit;
   font:inherit;
@@ -34,8 +32,11 @@
 
 #style-skills textarea[data-f="name"]{
   resize:none;
+  overflow:hidden;
 }
 
-#outfit-list textarea[data-o="description"]{
-  min-height:36px;
+#outfit-list textarea[data-o]{
+  height:36px;
+  resize:vertical;
+  overflow:auto;
 }
