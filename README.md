@@ -95,13 +95,16 @@ SupabaseとGitHub Pagesを使用した、トーキョーN◎VA用キャスト管
 
 ## 必須DB更新
 
-SupabaseのSQL Editorで次を1回実行してください。
+SupabaseのSQL Editorで次を番号順に1回ずつ実行してください。
 
 ```text
 supabase/05_sheet_editor_migration.sql
+supabase/10_transactional_character_save.sql
 ```
 
-このSQLは既存データを削除せず、新しい列だけを追加します。既存データを破棄するSQLは同ファイル末尾にコメントとして収録しています。
+`10_transactional_character_save.sql`は、キャスト本体・技能・アウトフィットを1トランザクションで保存するRPCを追加します。保存途中でエラーが発生した場合は全処理がロールバックされ、既存の技能や装備は変更されません。また、技能の`free_level`を保持します。
+
+これらのSQLは既存データを削除せず、必要な列と関数だけを追加します。既存データを破棄するSQLは`05_sheet_editor_migration.sql`末尾にコメントとして収録しています。
 
 ## 経験点計算
 
