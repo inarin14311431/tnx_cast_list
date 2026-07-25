@@ -16,6 +16,12 @@
       if(retries++<MAX_RETRIES)setTimeout(ensureStyleSkillRow,100);
       return;
     }
+
+    if(window.__tnxLegacyImportInProgress){
+      setTimeout(queueEnsure,100);
+      return;
+    }
+
     if(hasEditableRow(area))return;
 
     button.click();
