@@ -29,17 +29,43 @@ Deno.serve(async request => {
 
   try {
     const user = await requireAuthenticatedUser(request);
-    requirePublisherPermission(user);
-
     const body = await request.json().catch(() => null) as PublishRequest | null;
     const input = validateRequest(body);
-    const githubToken = Deno.env.get("GITHUB_SHOWCASE_TOKEN")?.trim();
-    if (!githubToken) throw new HttpError(500, "GITHUB_SHOWCASE_TOKEN is not configured.");
 
     const adminClient = createAdminClient();
     await assertActHistorySchema(adminClient);
     await assertSlugOwnership(adminClient, input.slug, user.id);
     await assertPublicParticipants(adminClient, input.participantIds);
+
+    if (input.mode === "history") {
+      const actId = await recordActHistory(adminClient, {
+        slug: input.slug,
+        actName: input.actName,
+        rulerName: input.rulerName,
+        recordedBy: user.id,
+        participantIds: input.participantIds
+      });
+
+      console.info("Act history registered without publication", {
+        userId: user.id,
+        email: user.email,
+        slug: input.slug,
+        actId,
+        participantCount: input.participantIds.length
+      });
+
+      return json({
+        ok: true,
+        mode: "history",
+        historyOnly: true,
+        slug: input.slug,
+        actId,
+        participantCount: input.participantIds.length
+      }, 200, corsHeaders);
+    }
+
+    const githubToken = Deno.env.get("GITHUB_SHOWCASE_TOKEN")?.trim();
+    if (!githubToken) throw new HttpError(500, "GITHUB_SHOWCASE_TOKEN is not configured.");
 
     const repository = Deno.env.get("GITHUB_SHOWCASE_REPOSITORY")?.trim() || DEFAULT_REPOSITORY;
     const branch = Deno.env.get("GITHUB_SHOWCASE_BRANCH")?.trim() || DEFAULT_BRANCH;
@@ -83,6 +109,7 @@ Deno.serve(async request => {
 
     return json({
       ok: true,
+      mode: "publish",
       slug: input.slug,
       path,
       actId,
@@ -93,12 +120,13 @@ Deno.serve(async request => {
   } catch (error) {
     const status = error instanceof HttpError ? error.status : 500;
     const message = error instanceof Error ? error.message : "Unexpected server error.";
-    if (status >= 500) console.error("Act showcase publication failed", error);
+    if (status >= 500) console.error("Act showcase operation failed", error);
     return json({ error: message }, status, corsHeaders);
   }
 });
 
 type PublishRequest = {
+  mode?: unknown;
   slug?: unknown;
   actName?: unknown;
   rulerName?: unknown;
@@ -141,24 +169,10 @@ function createAdminClient(): AdminClient {
   });
 }
 
-function requirePublisherPermission(user: AuthenticatedUser) {
-  const allowedUserIds = parseList(Deno.env.get("SHOWCASE_ADMIN_USER_IDS"));
-  const allowedEmails = parseList(Deno.env.get("SHOWCASE_ADMIN_EMAILS")).map(value => value.toLowerCase());
-
-  if (!allowedUserIds.length && !allowedEmails.length) {
-    throw new HttpError(
-      503,
-      "アクト紹介ページの公開許可ユーザーが設定されていません。SHOWCASE_ADMIN_USER_IDS または SHOWCASE_ADMIN_EMAILS を設定してください。"
-    );
-  }
-
-  const userAllowed = allowedUserIds.includes(user.id) ||
-    Boolean(user.email && allowedEmails.includes(user.email.toLowerCase()));
-  if (!userAllowed) throw new HttpError(403, "このアカウントにはアクト紹介ページを公開する権限がありません。");
-}
-
 function validateRequest(body: PublishRequest | null) {
   if (!body || typeof body !== "object") throw new HttpError(400, "A JSON request body is required.");
+
+  const mode = body.mode === "history" ? "history" : "publish";
   const slug = typeof body.slug === "string" ? body.slug.trim().toLowerCase() : "";
   const actName = typeof body.actName === "string" ? body.actName.trim() : "";
   const rulerName = typeof body.rulerName === "string" ? body.rulerName.trim() : "";
@@ -166,20 +180,22 @@ function validateRequest(body: PublishRequest | null) {
   const rawParticipantIds = Array.isArray(body.participantIds) ? body.participantIds : [];
   const participantIds = [...new Set(rawParticipantIds.filter(value => typeof value === "string").map(value => value.trim()))];
 
-  if (!SLUG_PATTERN.test(slug)) throw new HttpError(400, "公開ファイル名は1～64文字の半角小文字英数字とハイフンで入力してください。");
+  if (!SLUG_PATTERN.test(slug)) throw new HttpError(400, "アクト識別名は1～64文字の半角小文字英数字とハイフンで入力してください。");
   if (!actName || actName.length > 200) throw new HttpError(400, "アクト名は1～200文字で入力してください。");
   if (rulerName.length > 120) throw new HttpError(400, "RULER名は120文字以内で入力してください。");
-  if (participantIds.length < 1 || participantIds.length > 6) throw new HttpError(400, "参加キャストは1～6名で指定してください。");
+  if (participantIds.length < 1 || participantIds.length > 6) throw new HttpError(400, "履歴へ登録できる公開キャストを1～6名で指定してください。");
   if (participantIds.some(id => !UUID_PATTERN.test(id))) throw new HttpError(400, "参加キャストIDの形式が正しくありません。");
-  if (!html.trim()) throw new HttpError(400, "Generated HTML is empty.");
-  if (new TextEncoder().encode(html).byteLength > MAX_HTML_BYTES) throw new HttpError(413, "Generated HTML exceeds the 2 MB publication limit.");
-  if (!/^\s*<!doctype html>/i.test(html) || !/<html[\s>]/i.test(html)) throw new HttpError(400, "Only a complete HTML document can be published.");
 
-  for (const rule of FORBIDDEN_HTML_RULES) {
-    if (rule.pattern.test(html)) throw new HttpError(400, rule.message);
+  if (mode === "publish") {
+    if (!html.trim()) throw new HttpError(400, "Generated HTML is empty.");
+    if (new TextEncoder().encode(html).byteLength > MAX_HTML_BYTES) throw new HttpError(413, "Generated HTML exceeds the 2 MB publication limit.");
+    if (!/^\s*<!doctype html>/i.test(html) || !/<html[\s>]/i.test(html)) throw new HttpError(400, "Only a complete HTML document can be published.");
+    for (const rule of FORBIDDEN_HTML_RULES) {
+      if (rule.pattern.test(html)) throw new HttpError(400, rule.message);
+    }
   }
 
-  return { slug, actName, rulerName, html, participantIds };
+  return { mode, slug, actName, rulerName, html, participantIds };
 }
 
 async function assertActHistorySchema(client: AdminClient) {
@@ -194,9 +210,9 @@ async function assertSlugOwnership(client: AdminClient, slug: string, userId: st
     .eq("slug", slug)
     .maybeSingle();
 
-  if (error) throw new HttpError(500, `公開ファイル名の所有者を確認できませんでした。 ${error.message}`);
-  if (data && data.published_by !== userId) {
-    throw new HttpError(409, "この公開ファイル名は別の公開者が使用しています。別のファイル名を指定してください。");
+  if (error) throw new HttpError(500, `アクト識別名の所有者を確認できませんでした。 ${error.message}`);
+  if (data?.published_by && data.published_by !== userId) {
+    throw new HttpError(409, "このアクト識別名は別のユーザーが使用しています。別の識別名を指定してください。");
   }
 }
 
@@ -224,6 +240,24 @@ async function recordActPublication(client: AdminClient, input: {
     p_ruler_name: input.rulerName,
     p_public_url: input.publicUrl,
     p_published_by: input.publishedBy,
+    p_participant_ids: input.participantIds
+  });
+  if (error) throw error;
+  return typeof data === "string" ? data : "";
+}
+
+async function recordActHistory(client: AdminClient, input: {
+  slug: string;
+  actName: string;
+  rulerName: string;
+  recordedBy: string;
+  participantIds: string[];
+}) {
+  const { data, error } = await client.rpc("record_act_history", {
+    p_slug: input.slug,
+    p_act_name: input.actName,
+    p_ruler_name: input.rulerName,
+    p_recorded_by: input.recordedBy,
     p_participant_ids: input.participantIds
   });
   if (error) throw error;
