@@ -3,11 +3,8 @@ import { supabase } from "./supabase-client.js";
 import { requireAuth, signOut } from "./auth-state.js?v=3";
 
 const VISIBILITY_LABELS = {
-  draft: "下書き / DRAFT",
   public: "公開 / PUBLIC",
-  private: "非公開 / PRIVATE",
-  archived: "引退 / ARCHIVED",
-  unlisted: "限定公開 / UNLISTED"
+  private: "非公開 / PRIVATE"
 };
 
 const ownedCastsContainer = document.querySelector("#owned-casts");
@@ -63,7 +60,7 @@ function actionLabel(japanese, english) {
 
 function visibilityLabel(value) {
   const key = String(value ?? "").toLowerCase();
-  return VISIBILITY_LABELS[key] ?? key.toUpperCase();
+  return VISIBILITY_LABELS[key] ?? VISIBILITY_LABELS.private;
 }
 
 function createOwnedCastItem(character) {
@@ -127,7 +124,7 @@ async function duplicateCharacter(publicId) {
   delete copy.created_at;
   delete copy.updated_at;
   copy.character_name = `${copy.character_name}（複製）`;
-  copy.visibility = "draft";
+  copy.visibility = "private";
 
   const { data: created, error: createError } = await supabase
     .from("characters")
