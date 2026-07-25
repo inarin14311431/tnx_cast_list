@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { renderAuthNavigation } from "./auth-state.js?v=1";
+import { renderAuthNavigation } from "./auth-state.js?v=2";
 
 const castGrid = document.querySelector("#cast-grid");
 const statusText = document.querySelector("#status-text");
