@@ -102,6 +102,7 @@ supabase/05_sheet_editor_migration.sql
 supabase/10_transactional_character_save.sql
 supabase/11_showcase_publish_security.sql
 supabase/12_showcase_history_only.sql
+supabase/13_private_act_history.sql
 ```
 
 `10_transactional_character_save.sql`は、キャスト本体・技能・アウトフィットを1トランザクションで保存するRPCを追加します。保存途中でエラーが発生した場合は全処理がロールバックされ、既存の技能や装備は変更されません。また、技能の`free_level`を保持します。
@@ -109,6 +110,8 @@ supabase/12_showcase_history_only.sql
 `11_showcase_publish_security.sql`は、別の公開者が所有するアクト紹介ファイル名を上書きできないよう、アクト履歴登録RPCに所有者確認を追加します。
 
 `12_showcase_history_only.sql`は、GitHub Pagesへ公開せずに参加アクト履歴だけを登録するRPCを追加します。既存の公開URLがある履歴を「履歴のみ登録」で更新した場合、公開URLは保持されます。
+
+`13_private_act_history.sql`は、履歴登録を現在のログインユーザーとして実行するRPCを追加します。公開キャストに加えて、ログインユーザー自身が所有する下書き・非公開・限定公開・引退キャストを参加アクト履歴へ登録できます。GitHub Pagesの公開内容は変更しません。
 
 これらのSQLは既存データを削除せず、必要な列と関数だけを追加・更新します。既存データを破棄するSQLは`05_sheet_editor_migration.sql`末尾にコメントとして収録しています。
 
@@ -123,9 +126,11 @@ supabase/12_showcase_history_only.sql
 - `履歴のみ登録`：HTML生成とGitHub Pages公開を行わず、参加アクト履歴だけを保存
 - `GitHub Pagesへ公開`：生成HTMLを公開し、同時に参加アクト履歴も保存
 
-履歴テーブルは公開キャストを参照するため、手動追加キャストは履歴登録の対象外です。紹介HTMLには引き続き掲載できます。
+履歴のみ登録では、公開キャストとログインユーザー自身が所有する非公開系キャストを合計6名まで登録できます。手動追加キャストはデータベース上のキャストIDを持たないため、履歴登録の対象外です。紹介HTMLには引き続き掲載できます。
 
-関数コードを変更した場合は、`supabase/functions/publish-showcase/index.ts`をEdge Functionへ再デプロイしてください。
+GitHub Pages公開は公開キャストのみ対応します。自分の非公開キャストは専用の「履歴のみ」選択欄に表示され、生成HTMLやGitHub Pagesには含まれません。
+
+関数コードを変更した場合は、`supabase/functions/publish-showcase/index.ts`をEdge Functionへ再デプロイしてください。`13_private_act_history.sql`による履歴のみ登録は、Edge Functionの再デプロイを必要としません。
 
 ## 経験点計算
 
