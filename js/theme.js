@@ -54,7 +54,7 @@
     appendStylesheet("./css/theme-city-expansion.css?v=2", "data-theme-city-expansion");
     appendStylesheet("./css/theme-intron-light.css?v=1", "data-theme-intron-light");
     appendStylesheet("./css/theme-vlad-vampire.css?v=1", "data-theme-vlad-vampire");
-    appendStylesheet("./css/theme-special-brands.css?v=1", "data-theme-special-brands");
+    appendStylesheet("./css/theme-special-brands.css?v=2", "data-theme-special-brands");
     appendStylesheet("./css/mobile-auth-navigation-fix.css?v=1", "data-mobile-auth-navigation-fix");
   }
 
