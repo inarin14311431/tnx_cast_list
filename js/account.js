@@ -1,6 +1,6 @@
 import { SITE_BASE_PATH } from "./config.js";
 import { supabase } from "./supabase-client.js";
-import { requireAuth, signOut } from "./auth-state.js?v=2";
+import { requireAuth, signOut } from "./auth-state.js?v=3";
 
 const VISIBILITY_LABELS = {
   draft: "下書き / DRAFT",
