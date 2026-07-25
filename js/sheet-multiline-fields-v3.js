@@ -9,8 +9,18 @@ const appliedStyles=new Set();
 const appliedOutfits=new Set();
 let queued=false;
 
-const normalize=value=>String(value??"").replace(/\r\n?/g,"\n").replace(/\\n/g,"\n");
+const normalize=value=>String(value??"")
+  .replace(/\r\n?/g,"\n")
+  .replace(/\\r\\n|\\n|\\r/g,"\n");
 const compare=value=>normalize(value).replace(/\s+/g," ").trim();
+
+function normalizeTextarea(field){
+  if(!(field instanceof HTMLTextAreaElement))return false;
+  const value=normalize(field.value);
+  if(value===field.value)return false;
+  field.value=value;
+  return true;
+}
 
 function fitStyle(field){
   if(!(field instanceof HTMLTextAreaElement))return;
@@ -94,10 +104,11 @@ function restoreOutfit(owner){
 function enhance(){
   queued=false;
   styleRoot?.querySelectorAll('tr[data-skill-key] td:first-child input[data-f="name"]').forEach(input=>restoreStyle(convert(input,"style")));
-  styleRoot?.querySelectorAll('textarea[data-f="name"]').forEach(field=>{restoreStyle(field);fitStyle(field);});
+  styleRoot?.querySelectorAll('textarea[data-f="name"]').forEach(field=>{restoreStyle(field);normalizeTextarea(field);fitStyle(field);});
   outfitRoot?.querySelectorAll('input[data-o]').forEach(input=>convert(input,"outfit"));
   outfitRoot?.querySelectorAll('[data-outfit-key]').forEach(restoreOutfit);
-  outfitRoot?.querySelectorAll('textarea[data-o]').forEach(field=>{field.value=normalize(field.value);prepareOutfit(field);});
+  outfitRoot?.querySelectorAll('textarea[data-o]').forEach(field=>{normalizeTextarea(field);prepareOutfit(field);});
+  document.querySelectorAll("textarea").forEach(normalizeTextarea);
 }
 
 function queue(){
@@ -119,7 +130,7 @@ function restoreImport(mode,rows){
     if(mode==="skd"){
       const fields=[...(styleRoot?.querySelectorAll('tr[data-skill-key] textarea[data-f="name"]')||[])].slice(-rows.length);
       fields.forEach((field,index)=>{
-        field.value=rows[index]?.["名称"]||field.value;
+        field.value=normalize(rows[index]?.["名称"]||field.value);
         markEdited(field);
         field.dispatchEvent(new Event("input",{bubbles:true}));
         fitStyle(field);
@@ -159,7 +170,16 @@ async function loadOriginal(){
 
 styleRoot&&new MutationObserver(queue).observe(styleRoot,{childList:true,subtree:true});
 outfitRoot&&new MutationObserver(queue).observe(outfitRoot,{childList:true,subtree:true});
-document.addEventListener("input",event=>{const field=event.target.closest?.('#style-skills textarea[data-f="name"]');if(field)fitStyle(field);},true);
+document.addEventListener("input",event=>{
+  const field=event.target;
+  if(!(field instanceof HTMLTextAreaElement))return;
+  normalizeTextarea(field);
+  if(field.matches('#style-skills textarea[data-f="name"]'))fitStyle(field);
+},true);
+document.addEventListener("change",event=>{
+  const field=event.target;
+  if(field instanceof HTMLTextAreaElement)normalizeTextarea(field);
+},true);
 document.addEventListener("click",event=>{
   if(event.target.closest?.("#legacy-import-apply"))enhance();
   if(!event.target.closest?.("#tsv-apply"))return;
