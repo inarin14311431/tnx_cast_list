@@ -11,6 +11,7 @@ const status = document.querySelector("#generator-status");
 const privateGrid = document.querySelector("#owned-private-cast-grid");
 const privateStatus = document.querySelector("#private-library-status");
 const privateSelectedCount = document.querySelector("#private-selected-count");
+const privateSelectionSummary = document.querySelector("#private-selection-summary");
 
 let privateCharacters = [];
 let selectedPrivateIds = [];
@@ -21,7 +22,7 @@ initialize();
 
 async function initialize() {
   historyButton?.addEventListener("click", registerHistoryOnly);
-  privateGrid?.addEventListener("click", handlePrivateCastClick);
+  privateGrid?.addEventListener("change", handlePrivateCastChange);
 
   publicGrid?.addEventListener("click", scheduleSelectedRowAnnotation, true);
   selectedCasts?.addEventListener("click", scheduleSelectedRowAnnotation, true);
@@ -31,6 +32,7 @@ async function initialize() {
 
   setHistoryButtonReady();
   scheduleSelectedRowAnnotation();
+  updatePrivateSelectionSummary();
   await loadOwnedPrivateCharacters();
 }
 
@@ -44,6 +46,9 @@ async function loadOwnedPrivateCharacters() {
   }
 
   setPrivateStatus("自分の非公開キャストを読み込み中…");
+
+  // アカウント画面と同じく、まず本人所有のキャストを取得してから
+  // privateだけを抽出する。RLS環境差による複合条件の不一致を避ける。
   const { data, error } = await supabase
     .from("characters")
     .select(`
@@ -52,20 +57,20 @@ async function loadOwnedPrivateCharacters() {
       image_url, updated_at
     `)
     .eq("owner_id", session.user.id)
-    .eq("visibility", "private")
     .order("updated_at", { ascending: false });
 
   if (error) {
     console.error(error);
-    setPrivateStatus("自分の非公開キャストを取得できませんでした。", "error");
+    setPrivateStatus(`自分の非公開キャストを取得できませんでした。${error.message ? ` ${error.message}` : ""}`, "error");
     return;
   }
 
-  privateCharacters = data ?? [];
+  privateCharacters = (data ?? []).filter(character => character.visibility === "private");
+  selectedPrivateIds = selectedPrivateIds.filter(id => privateCharacters.some(character => character.id === id));
   renderPrivateCharacters();
   setPrivateStatus(
     privateCharacters.length
-      ? `${privateCharacters.length}件の自分の非公開キャストを読み込みました。`
+      ? `${privateCharacters.length}件の自分の非公開キャストを読み込みました。チェックを入れると履歴対象になります。`
       : "履歴登録に追加できる非公開キャストはありません。",
     privateCharacters.length ? "success" : ""
   );
@@ -76,12 +81,13 @@ function renderPrivateCharacters() {
 
   if (!privateCharacters.length) {
     privateGrid.innerHTML = "";
-    updatePrivateSelectedCount();
+    updatePrivateSelectionSummary();
     return;
   }
 
   privateGrid.innerHTML = privateCharacters.map(character => {
-    const selected = selectedPrivateIds.includes(character.id);
+    const selectedIndex = selectedPrivateIds.indexOf(character.id);
+    const selected = selectedIndex >= 0;
     const styles = [
       [character.style_1, character.style_1_mark],
       [character.style_2, character.style_2_mark],
@@ -89,8 +95,9 @@ function renderPrivateCharacters() {
     ].filter(([name]) => name).map(([name, mark]) => `${name}${mark || ""}`).join(" / ");
 
     return `
-      <button class="cast-pick-card private-history-card${selected ? " is-selected" : ""}" type="button"
-        data-private-character-id="${escapeAttribute(character.id)}" aria-pressed="${selected}">
+      <label class="cast-pick-card private-history-card${selected ? " is-selected" : ""}">
+        <input class="private-history-card__check" type="checkbox"
+          data-private-character-id="${escapeAttribute(character.id)}"${selected ? " checked" : ""}>
         <img src="${escapeAttribute(character.image_url || "./assets/placeholders/scan-failed.webp")}" alt="" loading="lazy">
         <span class="cast-pick-card__body">
           <span class="private-history-card__visibility">非公開 / HISTORY ONLY</span>
@@ -98,32 +105,58 @@ function renderPrivateCharacters() {
           <h3>${escapeHtml(character.character_name || "名称未登録")}</h3>
           <span class="cast-pick-card__styles">${escapeHtml(styles)}</span>
           <span class="cast-pick-card__player">PL：${escapeHtml(character.player_name || "—")}</span>
+          <span class="private-history-card__state">${selected ? "選択済み / SELECTED" : "履歴へ追加 / ADD TO HISTORY"}</span>
         </span>
-      </button>`;
+        ${selected ? `<span class="private-history-card__order">HISTORY ${String(selectedIndex + 1).padStart(2, "0")}</span>` : ""}
+      </label>`;
   }).join("");
 
-  updatePrivateSelectedCount();
+  updatePrivateSelectionSummary();
 }
 
-function handlePrivateCastClick(event) {
-  const card = event.target.closest("[data-private-character-id]");
-  if (!card) return;
+function handlePrivateCastChange(event) {
+  const checkbox = event.target.closest("input[data-private-character-id]");
+  if (!checkbox) return;
 
-  const id = card.dataset.privateCharacterId;
+  const id = checkbox.dataset.privateCharacterId;
+  const character = privateCharacters.find(item => item.id === id);
+  if (!character) return;
+
   const currentIndex = selectedPrivateIds.indexOf(id);
 
-  if (currentIndex >= 0) {
-    selectedPrivateIds.splice(currentIndex, 1);
-  } else {
+  if (checkbox.checked) {
     const publicCount = collectPublicParticipantIds().length;
-    if (publicCount + selectedPrivateIds.length >= MAX_CASTS) {
-      setStatus("参加アクト履歴へ登録できるキャストは合計6名までです。", "error");
+    if (currentIndex < 0 && publicCount + selectedPrivateIds.length >= MAX_CASTS) {
+      checkbox.checked = false;
+      setStatus("参加アクト履歴へ登録できるキャストは、公開・非公開を合わせて6名までです。", "error");
       return;
     }
-    selectedPrivateIds.push(id);
+    if (currentIndex < 0) selectedPrivateIds.push(id);
+    setPrivateStatus(`「${character.character_name || "名称未登録"}」を履歴対象に追加しました。GitHub Pagesには掲載されません。`, "success");
+  } else {
+    if (currentIndex >= 0) selectedPrivateIds.splice(currentIndex, 1);
+    setPrivateStatus(`「${character.character_name || "名称未登録"}」を履歴対象から外しました。`);
   }
 
   renderPrivateCharacters();
+}
+
+function updatePrivateSelectionSummary() {
+  if (privateSelectedCount) privateSelectedCount.textContent = String(selectedPrivateIds.length);
+  if (!privateSelectionSummary) return;
+
+  const selected = selectedPrivateIds
+    .map(id => privateCharacters.find(character => character.id === id))
+    .filter(Boolean);
+
+  if (!selected.length) {
+    privateSelectionSummary.innerHTML = `<span>非公開キャストは未選択です。</span><small>NO PRIVATE HISTORY TARGET</small>`;
+    return;
+  }
+
+  privateSelectionSummary.innerHTML = `
+    <span class="private-selection-summary__label">履歴登録対象：</span>
+    ${selected.map((character, index) => `<span class="private-selection-summary__item"><b>${String(index + 1).padStart(2, "0")}</b>${escapeHtml(character.character_name || "名称未登録")}</span>`).join("")}`;
 }
 
 function scheduleSelectedRowAnnotation() {
@@ -242,10 +275,6 @@ function setHistoryButtonReady() {
   if (!historyButton) return;
   historyButton.disabled = registering;
   historyButton.setAttribute("aria-disabled", String(registering));
-}
-
-function updatePrivateSelectedCount() {
-  if (privateSelectedCount) privateSelectedCount.textContent = String(selectedPrivateIds.length);
 }
 
 function setPrivateStatus(message, state = "") {
