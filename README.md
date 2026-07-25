@@ -100,11 +100,38 @@ SupabaseのSQL Editorで次を番号順に1回ずつ実行してください。
 ```text
 supabase/05_sheet_editor_migration.sql
 supabase/10_transactional_character_save.sql
+supabase/11_showcase_publish_security.sql
 ```
 
 `10_transactional_character_save.sql`は、キャスト本体・技能・アウトフィットを1トランザクションで保存するRPCを追加します。保存途中でエラーが発生した場合は全処理がロールバックされ、既存の技能や装備は変更されません。また、技能の`free_level`を保持します。
 
-これらのSQLは既存データを削除せず、必要な列と関数だけを追加します。既存データを破棄するSQLは`05_sheet_editor_migration.sql`末尾にコメントとして収録しています。
+`11_showcase_publish_security.sql`は、別の公開者が所有するアクト紹介ファイル名を上書きできないよう、アクト履歴登録RPCに所有者確認を追加します。
+
+これらのSQLは既存データを削除せず、必要な列と関数だけを追加・更新します。既存データを破棄するSQLは`05_sheet_editor_migration.sql`末尾にコメントとして収録しています。
+
+## アクト紹介公開権限
+
+`publish-showcase` Edge Functionは、許可ユーザーが未設定の場合に公開を拒否します。SupabaseのEdge Function Secretsへ、少なくとも次のどちらかを設定してください。
+
+```text
+SHOWCASE_ADMIN_USER_IDS=Supabase AuthのユーザーUUID
+SHOWCASE_ADMIN_EMAILS=公開を許可するメールアドレス
+```
+
+複数指定する場合はカンマ区切りです。ユーザーUUIDとメールアドレスは併用できます。
+
+```text
+SHOWCASE_ADMIN_USER_IDS=xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx,yyyyyyyy-yyyy-yyyy-yyyy-yyyyyyyyyyyy
+SHOWCASE_ADMIN_EMAILS=operator@example.com,suboperator@example.com
+```
+
+設定後、`supabase/functions/publish-showcase/index.ts`をEdge Functionへ再デプロイしてください。新しい関数は次を拒否します。
+
+- 許可リストにないユーザーからのGitHub公開
+- 他の公開者が使用しているslugの上書き
+- `script`、イベント属性、`javascript:` URL、iframe等を含むHTML
+
+HTMLの生成・プレビュー・ダウンロード・コピーは、GitHub公開権限がないユーザーでも利用できます。
 
 ## 経験点計算
 
