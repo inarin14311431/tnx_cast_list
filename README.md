@@ -111,6 +111,7 @@ supabase/11_showcase_publish_security.sql
 supabase/12_showcase_history_only.sql
 supabase/13_private_act_history.sql
 supabase/14_visibility_two_state.sql
+supabase/15_owner_scoped_act_history.sql
 ```
 
 `10_transactional_character_save.sql`は、キャスト本体・技能・アウトフィットを1トランザクションで保存するRPCを追加します。保存途中でエラーが発生した場合は全処理がロールバックされ、既存の技能や装備は変更されません。また、技能の`free_level`を保持します。
@@ -123,6 +124,8 @@ supabase/14_visibility_two_state.sql
 
 `14_visibility_two_state.sql`は、旧状態の`draft`、`unlisted`、`archived`を`private`へ変換し、公開状態を`public`と`private`の2種類だけに制限します。
 
+`15_owner_scoped_act_history.sql`は、参加履歴の登録・削除と経験点更新をキャスト所有者の範囲に限定します。アクト紹介HTMLへ他人の公開キャストを掲載しても、そのキャストの履歴や経験点は変更されません。履歴再登録時も既存の`earned_experience`は保持されます。
+
 これらのSQLは既存キャストを削除しません。`14_visibility_two_state.sql`で旧状態のキャストがあった場合は、非公開キャストとして保持されます。
 
 ## アクト紹介の公開と履歴登録
@@ -134,13 +137,15 @@ supabase/14_visibility_two_state.sql
 04「生成・公開」では次の2種類を利用できます。
 
 - `履歴のみ登録`：HTML生成とGitHub Pages公開を行わず、参加アクト履歴だけを保存
-- `GitHub Pagesへ公開`：生成HTMLを公開し、同時に参加アクト履歴も保存
+- `GitHub Pagesへ公開`：生成HTMLを公開し、同時にログインユーザー自身の参加アクト履歴を保存
 
-公開キャストとログインユーザー自身が所有する非公開キャストは、合計6名まで同じ出演順・紹介文編集欄へ追加できます。どちらもHTML生成、ダウンロード、コピー、履歴のみ登録の対象です。手動追加キャストはHTMLには掲載できますが、データベース上のキャストIDを持たないため履歴登録の対象外です。
+出演枠には、他人の公開キャスト、自分の公開・非公開キャスト、手動追加キャストを合計6名まで追加できます。これらはHTML生成、ダウンロード、コピーの対象です。
+
+参加履歴へ登録されるのは、ログインユーザー自身が所有する登録済みキャストだけです。他人の公開キャストと手動追加キャストはHTMLには掲載できますが、履歴登録・削除・経験点更新の対象にはなりません。同じ実アクトを複数ユーザーが別々の識別名で登録した場合も、各ユーザーは自分のキャストの履歴と経験点だけを管理します。
 
 GitHub Pagesへの公開は、出演キャストがすべて公開キャストの場合だけ利用できます。非公開キャストが1名でも含まれる場合は、HTML生成・ダウンロード・コピーは可能ですが、GitHub Pagesへの公開ボタンが無効になります。生成HTML内の非公開キャストにはキャストデータベースへのリンクを出力しません。
 
-関数コードを変更した場合は、`supabase/functions/publish-showcase/index.ts`をEdge Functionへ再デプロイしてください。今回のアクト紹介生成画面の変更だけでは、Edge Functionの再デプロイやSQL実行は必要ありません。
+`supabase/15_owner_scoped_act_history.sql`を実行した後、`supabase/functions/publish-showcase/index.ts`をEdge Functionへ再デプロイしてください。SQLとEdge Functionの両方が更新されるまで、GitHub Pages公開時の履歴所有者制限は完全には反映されません。
 
 ## 経験点計算
 
