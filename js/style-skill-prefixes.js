@@ -1,6 +1,7 @@
 /* Keep style-skill name prefixes synchronized with the selected skill kind. */
 (function(){
   const STYLE_ROOT="#style-skills";
+  let queued=false;
 
   function formatter(){
     return window.TNXStyleSkillKinds?.formatName;
@@ -27,8 +28,31 @@
     document.querySelectorAll(`${STYLE_ROOT} tr[data-skill-key]`).forEach(row=>normalizeRow(row));
   }
 
+  function queueNormalize(){
+    if(queued)return;
+    queued=true;
+    requestAnimationFrame(()=>{
+      queued=false;
+      normalizeAll();
+    });
+  }
+
   function scheduleImportNormalization(){
     [0,40,120,300].forEach(delay=>window.setTimeout(normalizeAll,delay));
+  }
+
+  function observeStyleRows(){
+    const root=document.querySelector(STYLE_ROOT);
+    if(!root){
+      window.setTimeout(observeStyleRows,100);
+      return;
+    }
+
+    new MutationObserver(mutations=>{
+      if(mutations.some(mutation=>mutation.addedNodes.length||mutation.removedNodes.length))queueNormalize();
+    }).observe(root,{childList:true,subtree:true});
+
+    [0,80,250,600].forEach(delay=>window.setTimeout(normalizeAll,delay));
   }
 
   document.addEventListener("input",event=>{
@@ -57,4 +81,7 @@
       scheduleImportNormalization();
     }
   },true);
+
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",observeStyleRows,{once:true});
+  else observeStyleRows();
 })();
