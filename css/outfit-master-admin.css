@@ -1,0 +1,49 @@
+.outfit-master-admin{
+  grid-column:1 / -1;
+}
+
+.outfit-master-admin__description{
+  margin:0 0 16px;
+  color:var(--text-muted,#9fb7c4);
+  line-height:1.7;
+}
+
+.outfit-master-admin__data{
+  margin-bottom:16px;
+}
+
+.outfit-master-admin__actions{
+  display:grid;
+  grid-template-columns:minmax(240px,360px) 1fr;
+  gap:14px;
+  align-items:center;
+}
+
+.outfit-master-admin__actions button{
+  min-height:54px;
+}
+
+.outfit-master-admin__actions p{
+  margin:0;
+  color:var(--text-muted,#9fb7c4);
+  font-size:.84rem;
+  line-height:1.6;
+}
+
+.outfit-master-admin__actions p[data-state="working"]{
+  color:var(--accent,#4adaff);
+}
+
+.outfit-master-admin__actions p[data-state="success"]{
+  color:#8ff0c6;
+}
+
+.outfit-master-admin__actions p[data-state="error"]{
+  color:#ff9ba7;
+}
+
+@media (max-width:720px){
+  .outfit-master-admin__actions{
+    grid-template-columns:1fr;
+  }
+}
