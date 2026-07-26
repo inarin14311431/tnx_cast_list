@@ -39,6 +39,22 @@ import { supabase } from "./supabase-client.js";
     return row?.dataset.styleSeparator==="1"||isMarker(descriptionValue(row));
   }
 
+  function ensureNoneKind(row){
+    const kind=row?.querySelector('[data-f="skill_kind"]');
+    if(!kind)return;
+    if(!kind.querySelector('option[value="none"]')){
+      const option=document.createElement("option");
+      option.value="none";
+      option.textContent="なし";
+      kind.prepend(option);
+    }
+    kind.dataset.styleSeparatorLocked="1";
+    kind.title="区切り行の種別は「なし」に固定されます。";
+    if(kind.value==="none")return;
+    kind.value="none";
+    emit(kind);
+  }
+
   function ensureAddButton(){
     const headingActions=container.querySelector('.skill-group-actions[data-v28],.skill-group-actions');
     const toolbar=document.querySelector("#add-style-skill")?.closest(".toolbar");
@@ -61,6 +77,7 @@ import { supabase } from "./supabase-client.js";
     if(!isSeparator(row))return;
     row.classList.add("style-skill-separator-row");
     row.dataset.styleSeparator="1";
+    ensureNoneKind(row);
     const name=row.querySelector('[data-f="name"]');
     if(name){
       name.placeholder="スタイル名を入力（例：アヤカシ）";
@@ -126,7 +143,7 @@ import { supabase } from "./supabase-client.js";
     if(!name)return null;
     return {
       name,
-      skill_kind:row.querySelector('[data-f="skill_kind"]')?.value||"normal",
+      skill_kind:isSeparator(row)?"none":row.querySelector('[data-f="skill_kind"]')?.value||"normal",
       level:Number(row.querySelector('[data-f="level"]')?.value||0),
       reason:!!row.querySelector('[data-f="reason"]')?.checked,
       passion:!!row.querySelector('[data-f="passion"]')?.checked,
@@ -214,6 +231,11 @@ import { supabase } from "./supabase-client.js";
   observer.observe(container,{childList:true,subtree:true});
 
   container.addEventListener("input",event=>{
+    const row=event.target.closest?.('tr[data-skill-key]');
+    if(row)decorate(row);
+  });
+
+  container.addEventListener("change",event=>{
     const row=event.target.closest?.('tr[data-skill-key]');
     if(row)decorate(row);
   });
