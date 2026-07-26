@@ -100,10 +100,11 @@
 
   try{
     const data=parse(String(window.__TNX_TRANSFER_TSV__||""));
-    /* Older transfer passes can continue until around 9 seconds. Run again afterward so level 0 is final. */
-    for(const delay of [450,1000,2200,4500,8000,10500,12500]){
-      await wait(delay);
-      await repairSeparators(data);
+    /* Older repair loops can continue until about 18.2 seconds. These are absolute run times. */
+    for(const delay of [450,1000,2200,4500,8000,19000,22000]){
+      window.setTimeout(()=>{
+        repairSeparators(data).catch(error=>console.error("TNX style-separator level-zero repair failed",error));
+      },delay);
     }
   }catch(error){
     console.error("TNX style-separator level-zero repair failed",error);
