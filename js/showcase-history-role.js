@@ -2,9 +2,12 @@ import { supabase } from "./supabase-client.js";
 
 const selectedCasts = document.querySelector("#selected-casts");
 const generatorStatus = document.querySelector("#generator-status");
+const publishSlug = document.querySelector("#publish-slug");
+const persistedKeys = new Set();
 
 wrapHistoryRpc();
 wrapPublishFunction();
+observeCompletedOperations();
 
 function wrapHistoryRpc() {
   if (!supabase || typeof supabase.rpc !== "function" || supabase.__historyRoleRpcWrapped) return;
@@ -35,9 +38,40 @@ function wrapPublishFunction() {
   };
 }
 
+function observeCompletedOperations() {
+  if (!generatorStatus) return;
+  const observer = new MutationObserver(() => {
+    const message = String(generatorStatus.textContent || "");
+    if (!/公開処理が完了|参加アクト履歴へ登録しました/.test(message)) return;
+    window.setTimeout(persistRolesByCurrentSlug, 0);
+  });
+  observer.observe(generatorStatus, { childList: true, subtree: true, characterData: true });
+}
+
+async function persistRolesByCurrentSlug() {
+  const slug = normalizeSlug(publishSlug?.value);
+  if (!slug) return;
+
+  const { data, error } = await supabase
+    .from("acts")
+    .select("id")
+    .eq("slug", slug)
+    .maybeSingle();
+
+  if (error || !data?.id) {
+    if (error) console.error("Act ID could not be resolved for participation roles.", error);
+    return;
+  }
+
+  await persistRolesWithoutBreakingHistory(data.id);
+}
+
 async function persistRolesWithoutBreakingHistory(actId) {
+  const assignments = collectRoleAssignments();
+  const persistenceKey = `${actId}:${assignments.map(item => `${item.characterId}=${item.role}`).join("|")}`;
+  if (!assignments.length || persistedKeys.has(persistenceKey)) return;
+
   try {
-    const assignments = collectRoleAssignments();
     for (const assignment of assignments) {
       const { error } = await supabase
         .from("act_participants")
@@ -47,6 +81,7 @@ async function persistRolesWithoutBreakingHistory(actId) {
 
       if (error) throw error;
     }
+    persistedKeys.add(persistenceKey);
   } catch (error) {
     console.error("Participation roles could not be saved.", error);
     window.setTimeout(() => {
@@ -71,4 +106,13 @@ function collectRoleAssignments() {
   });
 
   return assignments;
+}
+
+function normalizeSlug(value) {
+  return String(value || "")
+    .normalize("NFKC")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 64);
 }
