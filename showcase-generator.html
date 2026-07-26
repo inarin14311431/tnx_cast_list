@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="./css/base.css?v=30">
   <link rel="stylesheet" href="./css/showcase-generator.css?v=2">
   <link rel="stylesheet" href="./css/showcase-manual-cast.css?v=1">
+  <link rel="stylesheet" href="./css/showcase-handout.css?v=1">
   <link rel="stylesheet" href="./css/showcase-history.css?v=3">
   <link rel="stylesheet" href="./css/themes.css?v=1">
   <link rel="stylesheet" href="./css/showcase-section-colors.css?v=1">
@@ -44,7 +45,7 @@
             <h3 id="private-history-heading">自分の非公開キャスト <small>OWNED PRIVATE CAST / LOCAL OUTPUT</small></h3>
             <p><strong id="private-selected-count">0</strong> SELECTED</p>
           </header>
-          <p class="private-history-selector__lead">公開キャストと同じ出演枠へ追加し、出演順・キャッチコピー・紹介文を編集してHTMLを生成できます。非公開キャストを含むHTMLはGitHub Pagesへ公開できません。</p>
+          <p class="private-history-selector__lead">公開キャストと同じ出演枠へ追加し、出演順・参加枠・ハンドアウトを編集してHTMLを生成できます。非公開キャストを含むHTMLはGitHub Pagesへ公開できません。</p>
           <p id="private-library-status" class="generator-status">自分の非公開キャストを読み込み中…</p>
           <div id="owned-private-cast-grid" class="private-cast-grid" aria-live="polite"></div>
           <div id="private-selection-summary" class="private-selection-summary" aria-live="polite"><span>非公開キャストは未選択です。</span><small>NO PRIVATE CAST SELECTED</small></div>
@@ -52,7 +53,7 @@
       </div>
     </section>
     <section class="showcase-panel">
-      <header class="showcase-panel__header"><div><span>03</span><h2>出演順と紹介文 <small>CAST ORDER / PROFILE</small></h2></div><div class="showcase-panel__header-actions"><p>CAST 01—06</p><button id="add-manual-cast" class="manual-cast-add" type="button">手動追加 <small>ADD MANUAL CAST</small></button></div></header>
+      <header class="showcase-panel__header"><div><span>03</span><h2>出演順とハンドアウト <small>CAST ORDER / HANDOUT</small></h2></div><div class="showcase-panel__header-actions"><p>CAST 01—06</p><button id="add-manual-cast" class="manual-cast-add" type="button">手動追加 <small>ADD MANUAL CAST</small></button></div></header>
       <div class="showcase-panel__body"><div id="selected-casts" class="selected-casts"><p class="empty-state">公開または非公開キャストを選択するか、「手動追加」からキャストを入力してください。</p></div></div>
     </section>
     <section class="showcase-panel">
@@ -64,7 +65,7 @@
       </div>
     </section>
   </main>
-  <script type="module" src="./js/showcase-generator-loader.js?v=4"></script>
+  <script type="module" src="./js/showcase-generator-loader.js?v=5"></script>
   <script type="module" src="./js/showcase-auto-slug.js?v=1"></script>
   <script src="./js/showcase-remove-label.js?v=2"></script>
 </body>
