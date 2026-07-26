@@ -1,7 +1,3 @@
-#classify-outfits-button{
-  min-width:180px;
-}
-
 .outfit-category-status{
   min-height:1.6em;
   margin:8px 0 14px;
@@ -30,11 +26,4 @@
 .outfit-category-status[data-state="error"]{
   border-color:rgba(255,100,116,.55);
   color:#ff9ba7;
-}
-
-@media (max-width:720px){
-  #classify-outfits-button{
-    width:100%;
-    min-width:0;
-  }
 }
