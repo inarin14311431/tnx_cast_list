@@ -25,7 +25,7 @@ if (preview) {
   preview.addEventListener("load", () => {
     const source = String(preview.srcdoc || "");
     if (!source) return;
-    const transformed = applyTaglines(source);
+    const transformed = applyShowcaseEnhancements(source);
     if (transformed !== source) preview.srcdoc = transformed;
   });
 }
@@ -162,7 +162,7 @@ function bindOutputActions() {
 
     try {
       await navigator.clipboard.writeText(html);
-      setStatus("一言／キャッチコピーを含むHTMLをクリップボードへコピーしました。", "success");
+      setStatus("一言／キャッチコピーと参加枠強調を含むHTMLをクリップボードへコピーしました。", "success");
     } catch (error) {
       console.error(error);
       setStatus("クリップボードへのコピーに失敗しました。", "error");
@@ -184,7 +184,7 @@ function wrapShowcasePublication() {
       ...options,
       body: {
         ...options.body,
-        html: applyTaglines(String(options.body.html))
+        html: applyShowcaseEnhancements(String(options.body.html))
       }
     });
   };
@@ -192,51 +192,100 @@ function wrapShowcasePublication() {
 
 function getOutputHtml() {
   const source = String(preview?.srcdoc || "");
-  return source ? applyTaglines(source) : "";
+  return source ? applyShowcaseEnhancements(source) : "";
 }
 
-function applyTaglines(source) {
+function applyShowcaseEnhancements(source) {
   if (!source.trim()) return source;
-  const signature = createSignature();
-  if (!taglines.some(value => String(value || "").trim())) return source;
 
+  const handoutRoles = collectHandoutRoles();
+  const hasTaglines = taglines.some(value => String(value || "").trim());
+  const hasStyleRole = handoutRoles.some(role => normalizeStyleName(role) && normalizeStyleName(role) !== "共通");
+  if (!hasTaglines && !hasStyleRole) return source;
+
+  const signature = createSignature(handoutRoles);
   const documentNode = new DOMParser().parseFromString(source, "text/html");
-  if (documentNode.documentElement.dataset.showcaseTaglineSignature === signature) return source;
+  if (documentNode.documentElement.dataset.showcaseEnhancementSignature === signature) return source;
 
   documentNode.querySelectorAll(".cast-card__tagline").forEach(node => node.remove());
-  documentNode.querySelectorAll("style[data-showcase-tagline-style]").forEach(node => node.remove());
+  documentNode.querySelectorAll(".style__handout-role-label").forEach(node => node.remove());
+  documentNode.querySelectorAll(".style--handout-role").forEach(node => {
+    node.classList.remove("style--handout-role");
+    node.removeAttribute("data-handout-role");
+  });
+  documentNode.querySelectorAll("style[data-showcase-enhancement-style]").forEach(node => node.remove());
 
-  let inserted = 0;
+  let changed = false;
   documentNode.querySelectorAll(".cast-card").forEach((card, index) => {
-    const text = String(taglines[index] || "").trim();
-    if (!text) return;
+    const taglineText = String(taglines[index] || "").trim();
+    if (taglineText) {
+      const tagline = documentNode.createElement("p");
+      tagline.className = "cast-card__tagline";
+      tagline.textContent = `“${taglineText}”`;
+      const anchor = card.querySelector(".cast-card__handout, .cast-card__link");
+      card.querySelector(".cast-card__body")?.insertBefore(tagline, anchor || null);
+      changed = true;
+    }
 
-    const tagline = documentNode.createElement("p");
-    tagline.className = "cast-card__tagline";
-    tagline.textContent = `“${text}”`;
-    const anchor = card.querySelector(".cast-card__handout, .cast-card__link");
-    card.querySelector(".cast-card__body")?.insertBefore(tagline, anchor || null);
-    inserted += 1;
+    const role = normalizeStyleName(handoutRoles[index]);
+    if (!role || role === "共通") return;
+
+    card.querySelectorAll(".cast-card__styles .style").forEach(styleBadge => {
+      const styleName = normalizeStyleName(styleBadge.textContent);
+      if (styleName !== role) return;
+
+      styleBadge.classList.add("style--handout-role");
+      styleBadge.dataset.handoutRole = "true";
+      const label = documentNode.createElement("small");
+      label.className = "style__handout-role-label";
+      label.textContent = "HANDOUT ROLE";
+      styleBadge.prepend(label);
+      changed = true;
+    });
   });
 
-  if (!inserted) return source;
+  if (!changed) return source;
 
   const style = documentNode.createElement("style");
-  style.dataset.showcaseTaglineStyle = "true";
-  style.textContent = `.cast-card__tagline{margin:24px 0 0;padding:14px 16px;border-left:3px solid var(--pink);color:#ffd8eb;background:rgba(255,84,181,.045);font-size:1.05rem;font-weight:900;line-height:1.75;white-space:pre-wrap}`;
+  style.dataset.showcaseEnhancementStyle = "true";
+  style.textContent = `
+.cast-card__tagline{margin:24px 0 0;padding:14px 16px;border-left:3px solid var(--pink);color:#ffd8eb;background:rgba(255,84,181,.045);font-size:1.05rem;font-weight:900;line-height:1.75;white-space:pre-wrap}
+.style.style--handout-role{display:inline-grid;gap:5px;min-width:112px;padding:9px 14px 10px;border-width:2px;color:#fff!important;background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,84,181,.14));box-shadow:0 0 0 1px var(--style-color),0 0 24px rgba(255,84,181,.34),inset 0 0 18px rgba(255,255,255,.05);font-size:.82rem;transform:translateY(-2px)}
+.style__handout-role-label{display:block;color:var(--style-color);font:900 .46rem/1 Orbitron,"Share Tech Mono",monospace;letter-spacing:.16em;text-shadow:0 0 10px currentColor}
+@media(max-width:760px){.style.style--handout-role{min-width:104px;padding:8px 12px 9px}}
+`;
   documentNode.head.append(style);
-  documentNode.documentElement.dataset.showcaseTaglineSignature = signature;
+  documentNode.documentElement.dataset.showcaseEnhancementSignature = signature;
   return `<!doctype html>\n${documentNode.documentElement.outerHTML}`;
 }
 
-function createSignature() {
-  const source = taglines.map(value => String(value || "").trim()).join("\u241f");
+function collectHandoutRoles() {
+  if (!selectedCasts) return [];
+  return [...selectedCasts.querySelectorAll("[data-selected-index]")]
+    .sort((a, b) => Number(a.dataset.selectedIndex) - Number(b.dataset.selectedIndex))
+    .map(row => String(row.querySelector('[data-field="quote"]')?.value || "").trim());
+}
+
+function normalizeStyleName(value) {
+  return String(value || "")
+    .normalize("NFKC")
+    .replace(/[◎●]/g, "")
+    .replace(/\s+/g, "")
+    .trim();
+}
+
+function createSignature(handoutRoles) {
+  const source = [
+    ...taglines.map(value => String(value || "").trim()),
+    "\u241e",
+    ...handoutRoles.map(value => String(value || "").trim())
+  ].join("\u241f");
   let hash = 0x811c9dc5;
   for (let index = 0; index < source.length; index += 1) {
     hash ^= source.charCodeAt(index);
     hash = Math.imul(hash, 0x01000193);
   }
-  return `v1-${(hash >>> 0).toString(16)}`;
+  return `v2-${(hash >>> 0).toString(16)}`;
 }
 
 function setStatus(message, state = "") {
