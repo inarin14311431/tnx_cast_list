@@ -19,39 +19,31 @@ if (root && toolbar) {
   let busy = false;
   let blurTimer = 0;
 
-  const button = document.createElement("button");
-  button.id = "classify-outfits-button";
-  button.type = "button";
-  button.innerHTML = "マスタから分類 <small>CLASSIFY OUTFITS</small>";
-  importButton.insertAdjacentElement("afterend", button);
-
   const status = document.createElement("p");
   status.id = "outfit-category-status";
   status.className = "outfit-category-status";
   status.setAttribute("aria-live", "polite");
   toolbar.insertAdjacentElement("afterend", status);
 
-  button.addEventListener("click", () => classifyAll(true));
-
   root.addEventListener("focusout", event => {
     const input = event.target.closest?.('input[data-o="name"]');
     if (!input) return;
     window.clearTimeout(blurTimer);
-    blurTimer = window.setTimeout(() => classifyInputs([input], false), 120);
+    blurTimer = window.setTimeout(() => classifyInputs([input]), 120);
   });
 
   applyImportButton?.addEventListener("click", () => {
     const title = document.querySelector("#tsv-title")?.textContent || "";
     if (!/OFC/i.test(title)) return;
-    window.setTimeout(() => classifyAll(false), 900);
+    window.setTimeout(classifyAll, 900);
   });
 
-  async function classifyAll(manual) {
+  async function classifyAll() {
     const inputs = [...root.querySelectorAll('input[data-o="name"]')];
-    await classifyInputs(inputs, manual);
+    await classifyInputs(inputs);
   }
 
-  async function classifyInputs(inputs, manual) {
+  async function classifyInputs(inputs) {
     if (busy) return;
 
     const targets = inputs
@@ -59,16 +51,12 @@ if (root && toolbar) {
       .filter(Boolean)
       .filter(target => target.name && target.category === "other");
 
-    if (!targets.length) {
-      if (manual) setStatus("分類対象となる「その他」のアウトフィットがありません。", "neutral");
-      return;
-    }
+    if (!targets.length) return;
 
     const uniqueNames = [...new Set(targets.map(target => target.name))];
     const missingNames = uniqueNames.filter(name => !cache.has(normalizeKey(name)));
 
     busy = true;
-    button.disabled = true;
     setStatus(`${uniqueNames.length}件を分類マスタで検索しています…`, "working");
 
     try {
@@ -117,7 +105,6 @@ if (root && toolbar) {
       setStatus(functionError(error), "error");
     } finally {
       busy = false;
-      button.disabled = false;
     }
   }
 
