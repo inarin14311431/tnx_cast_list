@@ -100,8 +100,8 @@
 
   try{
     const data=parse(String(window.__TNX_TRANSFER_TSV__||""));
-    /* Older repair loops can continue until about 18.2 seconds. These are absolute run times. */
-    for(const delay of [450,1000,2200,4500,8000,19000,22000]){
+    /* The existing level-writing repair loop finishes at about 10.35 seconds. */
+    for(const delay of [450,1000,2200,4500,8000,11000,12500]){
       window.setTimeout(()=>{
         repairSeparators(data).catch(error=>console.error("TNX style-separator level-zero repair failed",error));
       },delay);
