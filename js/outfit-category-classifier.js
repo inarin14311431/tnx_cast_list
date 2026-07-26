@@ -2,6 +2,7 @@ import { supabase } from "./supabase-client.js";
 
 const root = document.querySelector("#outfit-list");
 const importButton = document.querySelector("#import-ofc");
+const applyImportButton = document.querySelector("#tsv-apply");
 const toolbar = importButton?.closest(".toolbar");
 
 if (root && toolbar) {
@@ -39,7 +40,9 @@ if (root && toolbar) {
     blurTimer = window.setTimeout(() => classifyInputs([input], false), 120);
   });
 
-  importButton.addEventListener("click", () => {
+  applyImportButton?.addEventListener("click", () => {
+    const title = document.querySelector("#tsv-title")?.textContent || "";
+    if (!/OFC/i.test(title)) return;
     window.setTimeout(() => classifyAll(false), 900);
   });
 
@@ -99,7 +102,6 @@ if (root && toolbar) {
 
         current.categorySelect.value = result.category;
         current.categorySelect.dispatchEvent(new Event("input", { bubbles: true }));
-        current.categorySelect.dispatchEvent(new Event("change", { bubbles: true }));
         changed += 1;
         await twoFrames();
       }
