@@ -17,6 +17,7 @@ window.addEventListener("unhandledrejection", event => {
 try {
   await import("./showcase-generator-v3.js?v=2");
   await import("./showcase-tagline.js?v=2");
+  await import("./showcase-style-alignment.js?v=1");
   await import("./showcase-history-role.js?v=1");
 } catch (error) {
   console.error("Showcase generator could not be initialized.", error);
