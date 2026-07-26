@@ -65,61 +65,21 @@
       : String(position);
   }
 
-  function identity(element){
-    return [element?.id,element?.name,element?.className,element?.getAttribute?.("data-bind"),element?.getAttribute?.("data-field")]
-      .filter(Boolean).join(" ");
-  }
+  function setLevelZero(row,index){
+    const level=document.getElementById(`superhumanskills.${index}.level`)
+      ||row?.querySelector('input[id$=".level"],input[name$=".level"],input[name*="level"]');
+    if(!level)return false;
 
-  function typeControl(row,index){
-    for(const suffix of ["type","kind","category","skilltype"]){
-      const direct=document.getElementById(`superhumanskills.${index}.${suffix}`)
-        ||document.querySelector(`[name="superhumanskills.${CSS.escape(index)}.${suffix}"]`);
-      if(direct)return direct;
-    }
-    const controls=[...(row?.querySelectorAll("select,input")||[])];
-    return controls.find(element=>
-      /type|kind|category|skill.?type|種別/i.test(identity(element))
-      ||(element.tagName==="SELECT"&&[...element.options].some(option=>clean(option.textContent)==="なし"))
-    )||null;
-  }
+    level.value="0";
+    level.setAttribute("value","0");
+    notify(level);
 
-  function expbaseControl(row,index){
-    for(const suffix of ["expbase","experiencebase","baseexp","cost"]){
-      const direct=document.getElementById(`superhumanskills.${index}.${suffix}`)
-        ||document.querySelector(`[name="superhumanskills.${CSS.escape(index)}.${suffix}"]`);
-      if(direct)return direct;
-    }
-    return [...(row?.querySelectorAll("input,select")||[])].find(element=>
-      /expbase|experience.?base|base.?exp|cost/i.test(identity(element))
-    )||null;
-  }
+    try{if(typeof window.levelChange==="function")window.levelChange(level)}catch{}
 
-  function setNoneType(element){
-    if(!element)return false;
-    if(element.tagName==="SELECT"){
-      const option=[...element.options].find(item=>clean(item.textContent)==="なし")
-        ||[...element.options].find(item=>["none","0","1"].includes(clean(item.value).toLowerCase()));
-      if(option)element.value=option.value;
-      else element.value="なし";
-    }else{
-      element.value="なし";
-      element.setAttribute("value","なし");
-    }
-    notify(element);
-    return true;
-  }
-
-  function setZeroExpbase(element){
-    if(!element)return false;
-    if(element.tagName==="SELECT"){
-      const option=[...element.options].find(item=>clean(item.value)==="0")
-        ||[...element.options].find(item=>clean(item.textContent)==="なし");
-      element.value=option?option.value:"0";
-    }else{
-      element.value="0";
-      element.setAttribute("value","0");
-    }
-    notify(element);
+    /* levelChange may restore a previous value, so zero it once more without touching type. */
+    level.value="0";
+    level.setAttribute("value","0");
+    notify(level);
     return true;
   }
 
@@ -129,26 +89,10 @@
     const rows=await ensureRows(list.length);
 
     for(let position=0;position<list.length;position++){
-      const record=list[position];
-      if(!isSeparator(record))continue;
+      if(!isSeparator(list[position]))continue;
       const row=rows[position];
       if(!row)continue;
-      const index=rowIndex(row,position);
-
-      const type=typeControl(row,index);
-      setNoneType(type);
-
-      const expbase=expbaseControl(row,index);
-      setZeroExpbase(expbase);
-
-      try{
-        const level=document.getElementById(`superhumanskills.${index}.level`);
-        if(level&&typeof window.levelChange==="function")window.levelChange(level);
-      }catch{}
-
-      /* levelChange may recalculate the type, so apply the final values once more. */
-      setNoneType(typeControl(row,index));
-      setZeroExpbase(expbaseControl(row,index));
+      setLevelZero(row,rowIndex(row,position));
     }
 
     try{window.sumExp?.()}catch{}
@@ -161,6 +105,6 @@
       await repairSeparators(data);
     }
   }catch(error){
-    console.error("TNX style-separator transfer repair failed",error);
+    console.error("TNX style-separator level-zero repair failed",error);
   }
 })();
