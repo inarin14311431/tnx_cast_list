@@ -77,21 +77,17 @@ SupabaseとGitHub Pagesを使用した、トーキョーN◎VA用キャスト管
 - `css/sheet-ja.css`：編集画面の日本語表示
 - `css/sheet-layout.css`：ヘッダー、能力値、神業、ツールバー等
 - `css/sheet-features.css`：技能表、アウトフィット、操作部品
-- `css/outfit-category-classifier.css`：アウトフィット分類検索の状態表示
 - `js/sheet.js`：DB読込・保存・基本描画
 - `js/sheet-draft.js`：ブラウザ内一時保存
 - `js/sheet-features.js`：スタイル技能詳細、経験点補正、初期スロット等
 - `js/sheet-import.js`：旧キャラクターシートJSON取り込み
-- `js/outfit-category-classifier.js`：非公開分類マスタへの名称検索
 
 旧`sheet-ux-v*.css`、`sheet-v*.css`、`style-skill-details-v32.*`、`skill-layout-v33.css`、各種`*-fix-v*.js`は統合・削除済みです。
 
 ### アカウント
 
 - `css/account.css`
-- `css/outfit-master-admin.css`：管理者用分類マスタ同期パネル
 - `js/account.js`
-- `js/outfit-master-admin.js`：管理者権限確認と同期操作
 
 旧`account-ja.css`、`account-ux-v2.css`、`account-v17.css`、`account-status-labels.js`は統合・削除済みです。
 
@@ -117,7 +113,7 @@ supabase/13_private_act_history.sql
 supabase/14_visibility_two_state.sql
 supabase/15_owner_scoped_act_history.sql
 supabase/16_style_separator_none.sql
-supabase/17_private_outfit_master.sql
+supabase/18_delete_owned_act_history.sql
 ```
 
 `10_transactional_character_save.sql`は、キャスト本体・技能・アウトフィットを1トランザクションで保存するRPCを追加します。保存途中でエラーが発生した場合は全処理がロールバックされ、既存の技能や装備は変更されません。また、技能の`free_level`を保持します。
@@ -134,52 +130,9 @@ supabase/17_private_outfit_master.sql
 
 `16_style_separator_none.sql`は、既存のスタイル技能区切り行を種別`none`へ変換し、今後どの保存経路から登録しても`STYLE_SEPARATOR`の種別を必ず「なし」に固定します。
 
-`17_private_outfit_master.sql`は、アウトフィット分類マスタをJSONBで保存する非公開テーブルを追加します。`anon`と`authenticated`にはテーブル権限を与えず、service roleを使用するEdge Functionだけが読み書きします。
+`18_delete_owned_act_history.sql`は、ログインユーザー本人が所有するキャストの参加履歴を1件ずつ削除するRPCを追加します。公開ページ情報と他ユーザーの履歴には影響しません。
 
 これらのSQLは既存キャストを削除しません。`14_visibility_two_state.sql`で旧状態のキャストがあった場合は、非公開キャストとして保持されます。
-
-## アウトフィット分類マスタ
-
-`outfit-classifier` Edge Functionは、Googleスプレッドシートの「大分類」「小分類」「メーカー」「名称」を管理者操作で取得し、検索に必要な項目だけを非公開JSONとして保存します。解説、購入値、常備化値などは分類マスタへ保存しません。
-
-一般ユーザーはログイン中にアウトフィット名を送信し、次の判定結果だけを受け取ります。
-
-```json
-{
-  "matched": true,
-  "category": "cyberware",
-  "categoryLabel": "サイバーウェア"
-}
-```
-
-マスタ全件、メーカー名、小分類、元シートの行データはブラウザへ返しません。同名アイテムが複数の大分類に存在する場合は、誤分類を避けるため自動変更しません。
-
-### 導入手順
-
-1. `supabase/17_private_outfit_master.sql`をSQL Editorで実行する。
-2. Edge Functionのシークレットを設定する。
-3. `outfit-classifier`をデプロイする。
-4. 管理者アカウントで`account.html`を開き、「スプレッドシートから同期」を押す。
-
-```bash
-supabase secrets set \
-  OUTFIT_MASTER_SPREADSHEET_ID="対象スプレッドシートID" \
-  OUTFIT_MASTER_SPREADSHEET_GID="0" \
-  OUTFIT_MASTER_ADMIN_USER_IDS="管理者のSupabaseユーザーID" \
-  OUTFIT_MASTER_ALLOWED_ORIGINS="https://inarin14311431.github.io"
-
-supabase functions deploy outfit-classifier
-```
-
-管理者は`OUTFIT_MASTER_ADMIN_USER_IDS`の代わりに、または併用して次も設定できます。
-
-```bash
-supabase secrets set OUTFIT_MASTER_ADMIN_EMAILS="管理者メールアドレス"
-```
-
-管理者判定はEdge Function内で行います。管理者ではないユーザーにはアカウント画面の同期パネルが表示されず、`sync`操作を直接送っても403になります。
-
-キャスト編集画面では、分類が「その他」のアウトフィットだけを自動判定します。名称欄からフォーカスを外した時、OFC TSVを取り込んだ時、または「マスタから分類」を押した時に検索します。既に手動で武器・防具等へ分類した行は上書きしません。
 
 ## アクト紹介の公開と履歴登録
 
@@ -214,4 +167,4 @@ GitHub Pagesへの公開は、出演キャストがすべて公開キャスト�
 
 ## TSV
 
-SKDは日本語ヘッダー、OFCは`target/name/purchase/permanent/...`形式に対応します。OFCの分類は`weapons / armours / outfits / vehicles / residences`を自動判定し、未分類の「その他」は非公開アウトフィットマスタから名称検索できます。
+SKDは日本語ヘッダー、OFCは`target/name/purchase/permanent/...`形式に対応します。OFCの分類は`weapons / armours / outfits / vehicles / residences`を取込時に判定し、取込後は画面上で手動変更できます。
