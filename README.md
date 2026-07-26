@@ -112,6 +112,7 @@ supabase/12_showcase_history_only.sql
 supabase/13_private_act_history.sql
 supabase/14_visibility_two_state.sql
 supabase/15_owner_scoped_act_history.sql
+supabase/16_style_separator_none.sql
 ```
 
 `10_transactional_character_save.sql`は、キャスト本体・技能・アウトフィットを1トランザクションで保存するRPCを追加します。保存途中でエラーが発生した場合は全処理がロールバックされ、既存の技能や装備は変更されません。また、技能の`free_level`を保持します。
@@ -125,6 +126,8 @@ supabase/15_owner_scoped_act_history.sql
 `14_visibility_two_state.sql`は、旧状態の`draft`、`unlisted`、`archived`を`private`へ変換し、公開状態を`public`と`private`の2種類だけに制限します。
 
 `15_owner_scoped_act_history.sql`は、参加履歴の登録・削除と経験点更新をキャスト所有者の範囲に限定します。アクト紹介HTMLへ他人の公開キャストを掲載しても、そのキャストの履歴や経験点は変更されません。履歴再登録時も既存の`earned_experience`は保持されます。
+
+`16_style_separator_none.sql`は、既存のスタイル技能区切り行を種別`none`へ変換し、今後どの保存経路から登録しても`STYLE_SEPARATOR`の種別を必ず「なし」に固定します。
 
 これらのSQLは既存キャストを削除しません。`14_visibility_two_state.sql`で旧状態のキャストがあった場合は、非公開キャストとして保持されます。
 
