@@ -1,0 +1,46 @@
+.selected-cast__fields{
+  grid-template-columns:minmax(180px,.62fr) minmax(260px,1.38fr);
+}
+
+.selected-cast__handout-field{
+  grid-column:1 / -1;
+}
+
+.selected-cast__tagline-field input{
+  min-height:42px;
+}
+
+.selected-cast__manual-fields .manual-field--role{
+  grid-column:span 1;
+}
+
+.selected-cast__manual-fields .manual-field--tagline{
+  grid-column:span 2;
+}
+
+.selected-cast__manual-fields .manual-field--handout{
+  grid-column:1 / -1;
+}
+
+@media(max-width:1000px){
+  .selected-cast__fields{
+    grid-template-columns:minmax(160px,.55fr) minmax(240px,1.45fr);
+  }
+
+  .selected-cast__manual-fields .manual-field--role,
+  .selected-cast__manual-fields .manual-field--tagline,
+  .selected-cast__manual-fields .manual-field--handout{
+    grid-column:1 / -1;
+  }
+}
+
+@media(max-width:680px){
+  .selected-cast__fields{
+    grid-template-columns:1fr;
+  }
+
+  .selected-cast__tagline-field,
+  .selected-cast__handout-field{
+    grid-column:auto;
+  }
+}
