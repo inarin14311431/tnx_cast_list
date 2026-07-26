@@ -1,4 +1,6 @@
 (async()=>{
+  const FORMAT="TNX_CAST_TRANSFER_TSV";
+  const STYLE_SEPARATOR_MARKER="[[STYLE_SEPARATOR]]";
   const load=src=>new Promise((resolve,reject)=>{
     const script=document.createElement("script");
     script.src=src;
@@ -6,6 +8,36 @@
     script.onerror=()=>{script.remove();reject(new Error(`転記スクリプトを読み込めませんでした: ${src}`))};
     document.documentElement.append(script);
   });
+
+  function normalizeStyleSeparatorLevels(text){
+    const lines=String(text||"").replace(/\r/g,"").split("\n");
+    const styleRecords=new Map();
+
+    for(const line of lines){
+      const columns=line.split("\t");
+      if(columns[0]!==FORMAT||columns[2]!=="style_skill")continue;
+      const index=columns[3]||"0";
+      const field=columns[4]||"";
+      const value=columns.slice(5).join("\t");
+      if(!styleRecords.has(index))styleRecords.set(index,{});
+      styleRecords.get(index)[field]=value;
+    }
+
+    const separatorIndexes=new Set(
+      [...styleRecords]
+        .filter(([,record])=>{
+          const kind=String(record.kind||"").trim().toLowerCase();
+          return kind==="none"||kind==="なし"||String(record.description||"").includes(STYLE_SEPARATOR_MARKER);
+        })
+        .map(([index])=>index)
+    );
+
+    return lines.map(line=>{
+      const columns=line.split("\t");
+      if(columns[0]!==FORMAT||columns[2]!=="style_skill"||columns[4]!=="level"||!separatorIndexes.has(columns[3]||"0"))return line;
+      return [...columns.slice(0,5),"0"].join("\t");
+    }).join("\n");
+  }
 
   try{
     let transferText=String(window.__TNX_TRANSFER_TSV__||"");
@@ -16,13 +48,14 @@
         transferText=prompt("転記TSVを貼り付けてください。","")||"";
       }
     }
-    if(!transferText.startsWith("TNX_CAST_TRANSFER_TSV\t")){
+    if(!transferText.startsWith(`${FORMAT}\t`)){
       throw new Error("転記TSVを取得できませんでした。先にキャスト画面の「転記TSV」を押してください。");
     }
 
+    transferText=normalizeStyleSeparatorLevels(transferText);
     window.__TNX_TRANSFER_TSV__=transferText;
 
-    /* All import and repair passes read exactly the same clipboard payload. */
+    /* All import and repair passes read exactly the same normalized payload. */
     const clipboard=navigator.clipboard;
     const originalReadText=clipboard?.readText?.bind(clipboard);
     let overridden=false;
