@@ -7,13 +7,20 @@
     {value:"ultimate",label:"奥義",cost:50},
     {value:"direction",label:"演出",cost:2}
   ];
+  const prefixes={secret:"†",ultimate:"※",direction:"＠"};
 
   const normalize=value=>String(value||"").trim();
   const canonicalKey=value=>normalize(value)
     .replace(/\[\s*["']?([^\]"']+)["']?\s*\]/g,".$1")
     .replace(/^[.#]+|[.]$/g,"")
     .replace(/\.{2,}/g,".");
-  const cleanName=value=>normalize(value).replace(/^[★†※■┗]+\s*/,"");
+  const cleanName=value=>normalize(value).replace(/^[★†※＠■┗]+\s*/,"");
+  const stripKindPrefix=value=>normalize(value).replace(/^[\s　]*(?:[†※＠][\s　]*)+/,"");
+  const formatName=(value,kind)=>{
+    const base=stripKindPrefix(value);
+    if(!base)return "";
+    return `${prefixes[kind]||""}${base}`;
+  };
   const isNone=value=>/^(?:なし|none)$/i.test(normalize(value));
   const isExplicitZero=value=>{
     const text=normalize(value);
@@ -114,6 +121,9 @@
     values:definitions.map(item=>item.value),
     labels:Object.fromEntries(definitions.map(item=>[item.value,item.label])),
     costs:Object.fromEntries(definitions.map(item=>[item.value,item.cost])),
+    prefixes,
+    stripKindPrefix,
+    formatName,
     fromLabel(label){
       const text=normalize(label);
       return definitions.find(item=>item.label===text||item.value===text.toLowerCase())?.value||"normal";
