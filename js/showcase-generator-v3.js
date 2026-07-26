@@ -86,6 +86,7 @@ function bindEvents() {
   elements.privateGrid?.addEventListener("click", handlePrivateLibraryClick);
   elements.selectedCasts?.addEventListener("click", handleSelectedCastClick);
   elements.selectedCasts?.addEventListener("input", handleSelectedCastInput);
+  elements.selectedCasts?.addEventListener("change", handleSelectedCastInput);
   elements.manualAddButton?.addEventListener("click", addManualCast);
   elements.actName?.addEventListener("input", suggestSlug);
   elements.publishSlug?.addEventListener("input", () => {
@@ -249,7 +250,7 @@ function toggleArchiveCast(source, characterId, library) {
       setGeneratorStatus("キャストは公開・非公開・手動追加を合わせて最大6名までです。", "error");
       return;
     }
-    selectedCasts.push({ source, manual: false, character, description: character.summary ?? "", quote: "" });
+    selectedCasts.push({ source, manual: false, character, description: "", quote: "" });
   }
 
   invalidateGeneratedHtml();
@@ -327,8 +328,8 @@ function createArchiveSelection(item, index) {
         ${isPrivate ? `<p class="selected-cast__privacy">HTML生成可／GitHub Pages公開不可</p>` : ""}
       </div>
       <div class="selected-cast__fields">
-        <label>キャッチコピー<input type="text" data-field="quote" value="${escapeAttribute(item.quote)}" placeholder="例：真実は、いつだって硝煙の向こうにある"></label>
-        <label>紹介文<textarea data-field="description" rows="3">${escapeHtml(item.description)}</textarea></label>
+        <label>参加枠（スタイル）<select data-field="quote" required>${createHandoutRoleOptions(character, item.quote)}</select></label>
+        <label class="selected-cast__handout-field">ハンドアウト<textarea data-field="description" rows="7" placeholder="コネ：結城あや　推奨スート：スペード&#10;キミは……&#10;&#10;【ＰＳ：達成すべき目的】">${escapeHtml(item.description)}</textarea></label>
       </div>
       ${createSelectionActions(index)}
     </article>`;
@@ -349,11 +350,18 @@ function createManualSelection(item, index) {
         <label>名前<input type="text" data-field="manual-name" value="${escapeAttribute(character.character_name)}" placeholder="キャスト名" required></label>
         <label>スタイル<input type="text" data-field="manual-styles" value="${escapeAttribute(character.manual_styles)}" placeholder="例：カタナ◎ / カブト● / フェイト"></label>
         <label>PL名<input type="text" data-field="manual-player" value="${escapeAttribute(character.player_name)}" placeholder="プレイヤー名"></label>
-        <label class="manual-field--quote">キャッチコピー<input type="text" data-field="quote" value="${escapeAttribute(item.quote)}" placeholder="キャッチコピー"></label>
-        <label class="manual-field--description">紹介文<textarea data-field="description" rows="3" placeholder="キャストの紹介文">${escapeHtml(item.description)}</textarea></label>
+        <label class="manual-field--role">参加枠（スタイル）<input type="text" data-field="quote" value="${escapeAttribute(item.quote)}" placeholder="例：トーキー、共通" required></label>
+        <label class="manual-field--handout">ハンドアウト<textarea data-field="description" rows="7" placeholder="コネ、推奨スート、導入、ＰＳなどを入力">${escapeHtml(item.description)}</textarea></label>
       </div>
       ${createSelectionActions(index)}
     </article>`;
+}
+
+function createHandoutRoleOptions(character, selectedValue) {
+  const roles = ["共通", ...new Set(getStyleNames(character))];
+  const selected = String(selectedValue ?? "").trim();
+  if (selected && !roles.includes(selected)) roles.push(selected);
+  return `<option value="">参加枠を選択</option>${roles.map(role => `<option value="${escapeAttribute(role)}"${selected === role ? " selected" : ""}>${escapeHtml(role)}</option>`).join("")}`;
 }
 
 function createSelectionActions(index) {
@@ -435,6 +443,8 @@ function validateSelectedCasts() {
   if (selectedCasts.length > MAX_CASTS) throw new Error("キャストは最大6名までです。");
   const incompleteManual = selectedCasts.find(item => item.manual && !item.character.character_name.trim());
   if (incompleteManual) throw new Error("手動追加キャストの名前を入力してください。");
+  const missingRole = selectedCasts.find(item => !String(item.quote ?? "").trim());
+  if (missingRole) throw new Error("各キャストの参加枠（スタイル）を選択または入力してください。");
 }
 
 function renderShowcase(data) {
@@ -473,9 +483,9 @@ body:before{position:fixed;inset:0;z-index:-1;content:"";background:linear-gradi
 .hero h1 span{display:block;color:var(--cyan);font-size:.42em;letter-spacing:.08em}.hero__act{margin:24px 0 0;color:#fff;font-size:clamp(1rem,2vw,1.35rem);font-weight:800}.hero__ruler{margin:9px 0 0;color:var(--pink);font:800 .78rem/1.4 "Share Tech Mono",monospace;letter-spacing:.16em}.hero__intro{max-width:800px;margin:22px auto 0;color:#b9d7de;line-height:1.9;white-space:pre-wrap}
 .cast-nav{position:sticky;top:0;z-index:20;padding:10px 0;overflow-x:auto;background:rgba(2,8,12,.9);backdrop-filter:blur(12px);border-top:1px solid rgba(0,239,255,.2);border-bottom:1px solid rgba(0,239,255,.2)}.cast-nav .wrap{display:flex;gap:8px}.cast-nav a{flex:0 0 auto;padding:8px 12px;border:1px solid rgba(0,239,255,.24);color:#bcecf3;text-decoration:none;font:700 .68rem/1 "Share Tech Mono",monospace}.cast-nav a span{margin-right:8px;color:var(--green)}
 .cast-list{display:grid;gap:34px;padding:42px 0 80px}.cast-card{position:relative;display:grid;grid-template-columns:minmax(250px,38%) minmax(0,1fr);min-height:520px;overflow:hidden;border:1px solid rgba(0,239,255,.3);background:linear-gradient(135deg,rgba(0,239,255,.06),transparent 35%),rgba(1,9,14,.92);box-shadow:0 22px 60px rgba(0,0,0,.32)}.cast-card:nth-child(even){grid-template-columns:minmax(0,1fr) minmax(250px,38%)}.cast-card:nth-child(even) .cast-card__image{order:2}.cast-card__image{position:relative;min-height:520px;overflow:hidden;background:#000}.cast-card__image img{width:100%;height:100%;object-fit:cover}.cast-card__image:after{position:absolute;inset:0;content:"";background:linear-gradient(90deg,transparent 70%,rgba(1,9,14,.9))}.cast-card:nth-child(even) .cast-card__image:after{background:linear-gradient(270deg,transparent 70%,rgba(1,9,14,.9))}
-.cast-card__body{position:relative;display:grid;align-content:center;padding:clamp(28px,5vw,72px);padding-bottom:clamp(94px,8vw,116px)}.cast-card__slot{margin:0;color:var(--green);font:800 .75rem/1 Orbitron,sans-serif;letter-spacing:.18em}.cast-card__reading{margin:28px 0 5px;color:#87aeb7;font:700 .72rem/1.4 "Share Tech Mono",monospace;letter-spacing:.1em}.cast-card__name{margin:0;color:#fff;font-size:clamp(2rem,4vw,4rem);line-height:1.04;letter-spacing:-.035em;white-space:nowrap}.cast-card__name--long{font-size:clamp(1.65rem,3vw,2.55rem)}.cast-card__name--very-long{font-size:clamp(1.35rem,2.15vw,1.82rem);letter-spacing:-.045em}.cast-card__styles{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 0}.style{padding:7px 10px;border:1px solid var(--style-color);color:var(--style-color);font:800 .72rem/1 "Share Tech Mono",monospace}.cast-card__meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:22px 0 0}.cast-card__meta div{padding:10px;border-left:2px solid rgba(0,239,255,.45);background:rgba(0,239,255,.035)}.cast-card__meta small{display:block;color:#6f98a1;font:700 .58rem/1 "Share Tech Mono",monospace}.cast-card__meta strong{display:block;margin-top:5px;color:#eefdff}.cast-card__quote{margin:24px 0 0;padding-left:16px;border-left:3px solid var(--pink);color:#ffd8eb;font-size:1.05rem;font-weight:800;line-height:1.7}.cast-card__description{margin:20px 0 0;color:#b8d4db;line-height:1.9;white-space:pre-wrap}.cast-card__link{display:inline-block;margin-top:24px;color:var(--cyan);font:800 .7rem/1 "Share Tech Mono",monospace;letter-spacing:.1em}.cast-card__link--disabled{color:#668b94;cursor:default}.cast-card__serial{position:absolute;right:18px;bottom:16px;z-index:4;margin:0;padding:9px 13px 8px;border:1px solid rgba(0,239,255,.58);border-bottom-width:3px;color:var(--cyan);background:linear-gradient(180deg,rgba(0,239,255,.18),rgba(1,9,14,.88));font:800 .7rem/1 "Share Tech Mono",monospace;letter-spacing:.14em}.cast-card__serial:before{content:"ARCHIVE ID";display:block;margin-bottom:5px;color:#7ba6af;font-size:.53rem;letter-spacing:.2em}.footer{padding:24px 0 50px;border-top:1px solid rgba(0,239,255,.18);color:#668b94;font:600 .65rem/1.7 "Share Tech Mono",monospace;text-align:center}
-@media(max-width:760px){body{background-attachment:scroll}.hero{min-height:auto;padding:56px 0}.cast-card,.cast-card:nth-child(even){grid-template-columns:1fr}.cast-card:nth-child(even) .cast-card__image{order:0}.cast-card__image{min-height:420px}.cast-card__image:after,.cast-card:nth-child(even) .cast-card__image:after{background:linear-gradient(180deg,transparent 68%,rgba(1,9,14,.94))}.cast-card__body{padding:26px 26px 96px}.cast-card__name,.cast-card__name--long{font-size:clamp(1.7rem,8vw,2.55rem);white-space:normal}.cast-card__name--very-long{font-size:clamp(1.45rem,6.7vw,2rem);white-space:normal}.cast-card__meta{grid-template-columns:1fr}}
-`;
+.cast-card__body{position:relative;display:grid;align-content:center;padding:clamp(28px,5vw,72px);padding-bottom:clamp(94px,8vw,116px)}.cast-card__slot{margin:0;color:var(--green);font:800 .75rem/1 Orbitron,sans-serif;letter-spacing:.18em}.cast-card__reading{margin:28px 0 5px;color:#87aeb7;font:700 .72rem/1.4 "Share Tech Mono",monospace;letter-spacing:.1em}.cast-card__name{margin:0;color:#fff;font-size:clamp(2rem,4vw,4rem);line-height:1.04;letter-spacing:-.035em;white-space:nowrap}.cast-card__name--long{font-size:clamp(1.65rem,3vw,2.55rem)}.cast-card__name--very-long{font-size:clamp(1.35rem,2.15vw,1.82rem);letter-spacing:-.045em}.cast-card__styles{display:flex;flex-wrap:wrap;gap:7px;margin:18px 0 0}.style{padding:7px 10px;border:1px solid var(--style-color);color:var(--style-color);font:800 .72rem/1 "Share Tech Mono",monospace}.cast-card__meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin:22px 0 0}.cast-card__meta div{padding:10px;border-left:2px solid rgba(0,239,255,.45);background:rgba(0,239,255,.035)}.cast-card__meta small{display:block;color:#6f98a1;font:700 .58rem/1 "Share Tech Mono",monospace}.cast-card__meta strong{display:block;margin-top:5px;color:#eefdff}.cast-card__handout{margin:24px 0 0;border:1px solid rgba(255,84,181,.4);background:rgba(255,84,181,.035)}.cast-card__handout summary{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 16px;list-style:none;cursor:pointer;background:linear-gradient(90deg,rgba(255,84,181,.12),rgba(0,239,255,.035))}.cast-card__handout summary::-webkit-details-marker{display:none}.cast-card__handout summary:after{content:"＋";flex:0 0 auto;color:var(--cyan);font:900 1rem/1 Orbitron,sans-serif}.cast-card__handout[open] summary{border-bottom:1px solid rgba(255,84,181,.28)}.cast-card__handout[open] summary:after{content:"−"}.cast-card__handout-role{color:#ffd8eb;font-size:1rem;font-weight:900;line-height:1.5}.cast-card__handout-action{color:#7bb1bb;font:700 .62rem/1 "Share Tech Mono",monospace;letter-spacing:.13em}.cast-card__handout-body{padding:17px 18px;color:#b8d4db;line-height:1.9;white-space:pre-wrap}.cast-card__link{display:inline-block;margin-top:24px;color:var(--cyan);font:800 .7rem/1 "Share Tech Mono",monospace;letter-spacing:.1em}.cast-card__link--disabled{color:#668b94;cursor:default}.cast-card__serial{position:absolute;right:18px;bottom:16px;z-index:4;margin:0;padding:9px 13px 8px;border:1px solid rgba(0,239,255,.58);border-bottom-width:3px;color:var(--cyan);background:linear-gradient(180deg,rgba(0,239,255,.18),rgba(1,9,14,.88));font:800 .7rem/1 "Share Tech Mono",monospace;letter-spacing:.14em}.cast-card__serial:before{content:"ARCHIVE ID";display:block;margin-bottom:5px;color:#7ba6af;font-size:.53rem;letter-spacing:.2em}.footer{padding:24px 0 50px;border-top:1px solid rgba(0,239,255,.18);color:#668b94;font:600 .65rem/1.7 "Share Tech Mono",monospace;text-align:center}
+@media(max-width:760px){body{background-attachment:scroll}.hero{min-height:auto;padding:56px 0}.cast-card,.cast-card:nth-child(even){grid-template-columns:1fr}.cast-card:nth-child(even) .cast-card__image{order:0}.cast-card__image{min-height:420px}.cast-card__image:after,.cast-card:nth-child(even) .cast-card__image:after{background:linear-gradient(180deg,transparent 68%,rgba(1,9,14,.94))}.cast-card__body{padding:26px 26px 96px}.cast-card__name,.cast-card__name--long{font-size:clamp(1.7rem,8vw,2.55rem);white-space:normal}.cast-card__name--very-long{font-size:clamp(1.45rem,6.7vw,2rem);white-space:normal}.cast-card__meta{grid-template-columns:1fr}.cast-card__handout summary{align-items:flex-start;flex-direction:column}.cast-card__handout-action{display:none}}
+  `;
 }
 
 function createOutputCastCard(item, index) {
@@ -488,6 +498,12 @@ function createOutputCastCard(item, index) {
   const fullName = item.manual ? character.character_name : formatFullName(character);
   const nameClass = getOutputNameClass(fullName);
   const displayId = item.manual ? "ScanFailed" : item.source === "private" ? "PRIVATE" : obfuscatePublicId(character.public_id);
+  const handoutRole = String(item.quote ?? "").trim();
+  const handoutText = String(item.description ?? "").trim();
+  const handoutTitle = handoutRole === "共通" ? "共通ハンドアウト" : `『${handoutRole}』用ハンドアウト`;
+  const handout = handoutRole
+    ? `<details class="cast-card__handout"><summary><span class="cast-card__handout-role">${escapeHtml(handoutTitle)}</span><span class="cast-card__handout-action">OPEN HANDOUT</span></summary><div class="cast-card__handout-body">${handoutText ? escapeHtml(handoutText) : "ハンドアウト詳細は未登録です。"}</div></details>`
+    : "";
   let link;
   if (item.manual) {
     link = `<span class="cast-card__link cast-card__link--disabled">CAST DATABASE // SCAN FAILED</span>`;
@@ -507,8 +523,7 @@ function createOutputCastCard(item, index) {
     <h2 class="cast-card__name${nameClass}">${escapeHtml(fullName)}</h2>
     ${styles ? `<div class="cast-card__styles">${styles}</div>` : ""}
     <div class="cast-card__meta"><div><small>PLAYER</small><strong>${escapeHtml(character.player_name || "—")}</strong></div><div><small>AFFILIATION</small><strong>${escapeHtml(character.affiliation || "—")}</strong></div><div><small>AGE</small><strong>${escapeHtml(character.age || "—")}</strong></div><div><small>GENDER / ID</small><strong>${escapeHtml([character.gender, character.citizen_rank].filter(Boolean).join(" / ") || "—")}</strong></div></div>
-    ${String(item.quote ?? "").trim() ? `<p class="cast-card__quote">“${escapeHtml(String(item.quote).trim())}”</p>` : ""}
-    ${String(item.description ?? "").trim() ? `<p class="cast-card__description">${escapeHtml(String(item.description).trim())}</p>` : ""}
+    ${handout}
     ${link}
   </div>
   <p class="cast-card__serial">${escapeHtml(displayId)}</p>
