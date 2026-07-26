@@ -42,6 +42,7 @@
     await load(`https://inarin14311431.github.io/tnx_cast_list/js/tnx-transfer-bookmarklet-fixes.js?t=${Date.now()}`);
     await load(`https://inarin14311431.github.io/tnx_cast_list/js/tnx-transfer-bookmarklet-fixes-v3.js?t=${Date.now()}`);
     await load(`https://inarin14311431.github.io/tnx_cast_list/js/tnx-transfer-bookmarklet-fixes-v4.js?t=${Date.now()}`);
+    await load(`https://inarin14311431.github.io/tnx_cast_list/js/tnx-transfer-bookmarklet-fixes-v5.js?t=${Date.now()}`);
 
     if(overridden&&clipboard&&originalReadText){
       window.setTimeout(()=>{
