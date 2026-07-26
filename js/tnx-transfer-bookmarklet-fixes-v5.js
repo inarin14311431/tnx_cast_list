@@ -100,7 +100,8 @@
 
   try{
     const data=parse(String(window.__TNX_TRANSFER_TSV__||""));
-    for(const delay of [450,1000,2200,4500,8000]){
+    /* Older transfer passes can continue until around 9 seconds. Run again afterward so level 0 is final. */
+    for(const delay of [450,1000,2200,4500,8000,10500,12500]){
       await wait(delay);
       await repairSeparators(data);
     }
