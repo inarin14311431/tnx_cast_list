@@ -1,0 +1,48 @@
+/* Compact numeric columns and unified labels for outfit tables. */
+.outfit-table-head--purchase_value,
+.outfit-table-cell--purchase_value,
+.outfit-table-head--experience_cost,
+.outfit-table-cell--experience_cost,
+.outfit-table-head--page_number,
+.outfit-table-cell--page_number{
+  width:52px!important;
+  min-width:52px!important;
+  max-width:52px!important;
+  text-align:center
+}
+
+.outfit-table-cell--purchase_value input,
+.outfit-table-cell--purchase_value textarea,
+.outfit-table-cell--experience_cost input,
+.outfit-table-cell--experience_cost textarea,
+.outfit-table-cell--page_number input,
+.outfit-table-cell--page_number textarea{
+  padding-left:3px!important;
+  padding-right:3px!important;
+  text-align:center
+}
+
+.outfit-table-head--speed,
+.outfit-table-cell--speed{
+  width:38px!important;
+  min-width:38px!important;
+  max-width:38px!important;
+  text-align:center
+}
+
+.outfit-table-cell--speed input,
+.outfit-table-cell--speed textarea{
+  padding-left:2px!important;
+  padding-right:2px!important;
+  text-align:center
+}
+
+.outfit-table-head--control_modifier,
+.outfit-table-cell--control_modifier,
+.outfit-table-head--control_value,
+.outfit-table-cell--control_value{
+  width:52px!important;
+  min-width:52px!important;
+  max-width:52px!important;
+  text-align:center
+}
