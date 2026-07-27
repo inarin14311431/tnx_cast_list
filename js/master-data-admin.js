@@ -1,7 +1,10 @@
 import { supabase } from "./supabase-client.js";
 
-const FUNCTION_NAME = "sync-master-data";
+const SYNC_FUNCTION_NAME = "sync-master-data";
+const USER_LIST_FUNCTION_NAME = "master-auth-users";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+let registeredUsers = [];
 
 initialize();
 
@@ -14,15 +17,17 @@ async function initialize() {
   layout.insertBefore(panel, ownedPanel || null);
 
   try {
-    const status = await invoke({ action: "status" });
+    const status = await invokeFunction(SYNC_FUNCTION_NAME, { action: "status" });
     if (!status.canSync) {
       panel.remove();
       return;
     }
+
     panel.hidden = false;
     renderStatus(panel, status);
     panel.querySelector("#master-data-sync-button").addEventListener("click", () => synchronize(panel));
     bindUserSqlGenerator(panel);
+    loadRegisteredUsers(panel);
   } catch (error) {
     console.warn("Master data admin panel is unavailable.", error);
     panel.remove();
@@ -44,16 +49,25 @@ function createPanel() {
     </dl>
     <p id="master-data-admin-status" class="master-data-admin__status">状態を確認中…</p>
     <section class="master-search-user-sql" aria-labelledby="master-search-user-sql-heading">
-      <header>
-        <div><h3 id="master-search-user-sql-heading">検索利用者登録SQL <small>UID ALLOWLIST SQL</small></h3><p>検索を許可するユーザーIDを入力し、生成したSQLをSupabase SQL Editorで実行してください。</p></div>
+      <header class="master-search-user-sql__header">
+        <div>
+          <h3 id="master-search-user-sql-heading">検索利用者登録SQL <small>USER ALLOWLIST SQL</small></h3>
+          <p>Supabase Authの登録メールアドレスを選び、生成したSQLをSQL Editorで手動実行してください。</p>
+        </div>
+        <button id="master-search-user-reload" type="button">登録者を再読込 <small>RELOAD USERS</small></button>
       </header>
       <div class="master-search-user-sql__fields">
-        <label>ユーザーID / UID<input id="master-search-user-id" type="text" inputmode="text" autocomplete="off" spellcheck="false" placeholder="00000000-0000-0000-0000-000000000000"></label>
-        <label>メモ（任意）<input id="master-search-user-memo" type="text" maxlength="160" placeholder="例：稲荷秋"></label>
+        <label>登録メールアドレス
+          <input id="master-search-user-email" type="search" list="master-search-user-email-list" autocomplete="off" spellcheck="false" placeholder="メールアドレスを入力または選択" disabled>
+          <datalist id="master-search-user-email-list"></datalist>
+        </label>
+        <label>ユーザーID / UID
+          <input id="master-search-user-id" type="text" readonly placeholder="メール選択後に自動表示">
+        </label>
       </div>
-      <textarea id="master-search-user-sql-preview" rows="5" readonly aria-label="生成SQL"></textarea>
+      <textarea id="master-search-user-sql-preview" rows="7" readonly aria-label="生成SQL"></textarea>
       <div class="master-search-user-sql__actions">
-        <p id="master-search-user-sql-status">UIDを入力してください。</p>
+        <p id="master-search-user-sql-status">Supabase Authの登録者を読み込み中…</p>
         <button id="master-search-user-sql-copy" type="button" disabled>登録SQLをコピー <small>COPY INSERT SQL</small></button>
       </div>
     </section>`;
@@ -61,49 +75,97 @@ function createPanel() {
 }
 
 function bindUserSqlGenerator(panel) {
-  const uidInput = panel.querySelector("#master-search-user-id");
-  const memoInput = panel.querySelector("#master-search-user-memo");
+  const emailInput = panel.querySelector("#master-search-user-email");
   const copyButton = panel.querySelector("#master-search-user-sql-copy");
+  const reloadButton = panel.querySelector("#master-search-user-reload");
 
-  const refresh = () => refreshUserSql(panel);
-  uidInput.addEventListener("input", refresh);
-  memoInput.addEventListener("input", refresh);
+  emailInput.addEventListener("input", () => refreshUserSql(panel));
+  emailInput.addEventListener("change", () => refreshUserSql(panel));
   copyButton.addEventListener("click", () => copyUserSql(panel));
-  refresh();
+  reloadButton.addEventListener("click", () => loadRegisteredUsers(panel));
 }
 
-function refreshUserSql(panel) {
-  const uid = panel.querySelector("#master-search-user-id").value.trim();
-  const memo = panel.querySelector("#master-search-user-memo").value.trim() || "SKD/OFC検索利用者";
+async function loadRegisteredUsers(panel) {
+  const emailInput = panel.querySelector("#master-search-user-email");
+  const userIdInput = panel.querySelector("#master-search-user-id");
+  const list = panel.querySelector("#master-search-user-email-list");
+  const preview = panel.querySelector("#master-search-user-sql-preview");
+  const copyButton = panel.querySelector("#master-search-user-sql-copy");
+  const reloadButton = panel.querySelector("#master-search-user-reload");
+  const status = panel.querySelector("#master-search-user-sql-status");
+
+  emailInput.disabled = true;
+  reloadButton.disabled = true;
+  copyButton.disabled = true;
+  userIdInput.value = "";
+  preview.value = "";
+  status.textContent = "Supabase Authの登録者を読み込み中…";
+  status.className = "is-loading";
+
+  try {
+    const result = await invokeFunction(USER_LIST_FUNCTION_NAME, { action: "list" });
+    registeredUsers = (Array.isArray(result.users) ? result.users : [])
+      .filter(user => UUID_PATTERN.test(String(user?.id || "")) && String(user?.email || "").trim())
+      .map(user => ({ id: String(user.id), email: String(user.email).trim() }));
+
+    list.replaceChildren(...registeredUsers.map(user => {
+      const option = document.createElement("option");
+      option.value = user.email;
+      option.label = user.id;
+      return option;
+    }));
+
+    emailInput.disabled = registeredUsers.length === 0;
+    status.textContent = registeredUsers.length
+      ? `${registeredUsers.length.toLocaleString("ja-JP")}件の登録者を読み込みました。メールアドレスを選択してください。${result.truncated ? " 一覧は上限件数で打ち切られています。" : ""}`
+      : "メールアドレスを持つ登録者が見つかりませんでした。";
+    status.className = registeredUsers.length ? "is-ready" : "is-error";
+    refreshUserSql(panel, false);
+  } catch (error) {
+    console.error(error);
+    registeredUsers = [];
+    list.replaceChildren();
+    emailInput.value = "";
+    emailInput.disabled = true;
+    status.textContent = formatUserListError(error);
+    status.className = "is-error";
+  } finally {
+    reloadButton.disabled = false;
+  }
+}
+
+function refreshUserSql(panel, updateStatus = true) {
+  const emailInput = panel.querySelector("#master-search-user-email");
+  const userIdInput = panel.querySelector("#master-search-user-id");
   const preview = panel.querySelector("#master-search-user-sql-preview");
   const copyButton = panel.querySelector("#master-search-user-sql-copy");
   const status = panel.querySelector("#master-search-user-sql-status");
+  const email = emailInput.value.trim();
+  const selected = registeredUsers.find(user => user.email.toLowerCase() === email.toLowerCase());
 
-  if (!uid) {
+  if (!selected) {
+    userIdInput.value = "";
     preview.value = "";
     copyButton.disabled = true;
-    status.textContent = "UIDを入力してください。";
-    status.className = "";
+    if (updateStatus) {
+      status.textContent = email ? "登録者一覧の候補からメールアドレスを選択してください。" : "メールアドレスを選択してください。";
+      status.className = email ? "is-error" : "is-ready";
+    }
     return;
   }
 
-  if (!UUID_PATTERN.test(uid)) {
-    preview.value = "";
-    copyButton.disabled = true;
-    status.textContent = "UIDの形式が正しくありません。";
-    status.className = "is-error";
-    return;
-  }
-
-  preview.value = createRegistrationSql(uid, memo);
+  userIdInput.value = selected.id;
+  preview.value = createRegistrationSql(selected.id, selected.email);
   copyButton.disabled = false;
-  status.textContent = "SQLを生成しました。";
-  status.className = "is-ready";
+  if (updateStatus) {
+    status.textContent = `${selected.email} の登録SQLを生成しました。`;
+    status.className = "is-ready";
+  }
 }
 
-function createRegistrationSql(uid, memo) {
-  const escapedMemo = String(memo).replace(/'/g, "''");
-  return `insert into public.master_search_users (user_id, memo)\nvalues (\n  '${uid}',\n  '${escapedMemo}'\n)\non conflict (user_id) do update\nset memo = excluded.memo;`;
+function createRegistrationSql(uid, email) {
+  const escapedEmail = String(email).replace(/'/g, "''");
+  return `insert into public.master_search_users (user_id, memo)\nvalues (\n  '${uid}',\n  '${escapedEmail}'\n)\non conflict (user_id) do update\nset memo = excluded.memo;`;
 }
 
 async function copyUserSql(panel) {
@@ -114,7 +176,7 @@ async function copyUserSql(panel) {
 
   try {
     await copyText(sql, preview);
-    status.textContent = "登録SQLをクリップボードへコピーしました。";
+    status.textContent = "登録SQLをクリップボードへコピーしました。Supabase SQL Editorで実行してください。";
     status.className = "is-success";
   } catch (error) {
     console.error(error);
@@ -143,7 +205,7 @@ async function synchronize(panel) {
   statusArea.className = "master-data-admin__status is-loading";
 
   try {
-    const result = await invoke({ action: "sync" });
+    const result = await invokeFunction(SYNC_FUNCTION_NAME, { action: "sync" });
     renderStatus(panel, {
       ready: true,
       skdCount: result.skdCount,
@@ -155,7 +217,7 @@ async function synchronize(panel) {
     statusArea.className = "master-data-admin__status is-success";
   } catch (error) {
     console.error(error);
-    statusArea.textContent = formatError(error);
+    statusArea.textContent = formatSyncError(error);
     statusArea.className = "master-data-admin__status is-error";
   } finally {
     button.disabled = false;
@@ -180,8 +242,8 @@ function renderStatus(panel, status) {
   }
 }
 
-async function invoke(body) {
-  const { data, error } = await supabase.functions.invoke(FUNCTION_NAME, { body });
+async function invokeFunction(functionName, body) {
+  const { data, error } = await supabase.functions.invoke(functionName, { body });
   if (error) {
     let message = error.message || String(error);
     try {
@@ -201,7 +263,7 @@ function formatDate(value) {
   return `最終同期：${new Intl.DateTimeFormat("ja-JP", { dateStyle: "medium", timeStyle: "short" }).format(date)}`;
 }
 
-function formatError(error) {
+function formatSyncError(error) {
   const message = String(error?.message || error || "");
   if (/Failed to send|not found|404/i.test(message)) {
     return "sync-master-data Edge Functionをデプロイしてください。";
@@ -213,4 +275,15 @@ function formatError(error) {
     return "Supabaseで supabase/20_authenticated_master_search.sql を実行してください。";
   }
   return message ? `同期に失敗しました：${message}` : "同期に失敗しました。Edge Functionのログを確認してください。";
+}
+
+function formatUserListError(error) {
+  const message = String(error?.message || error || "");
+  if (/Failed to send|not found|404/i.test(message)) {
+    return "master-auth-users Edge Functionをデプロイしてください。";
+  }
+  if (/restricted to administrators|403|permission/i.test(message)) {
+    return "登録者一覧を取得する管理者権限がありません。MASTER_DATA_ADMIN_USER_IDSまたはMASTER_DATA_ADMIN_EMAILSを確認してください。";
+  }
+  return message ? `登録者一覧の取得に失敗しました：${message}` : "登録者一覧の取得に失敗しました。Edge Functionのログを確認してください。";
 }
