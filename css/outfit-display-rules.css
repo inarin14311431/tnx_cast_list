@@ -1,0 +1,23 @@
+/* Final category-specific outfit visibility rules. */
+.outfit-rule-hidden,
+.cast-outfit-rule-hidden{display:none!important}
+
+/* Remove the no-longer-used mundane modifier column wherever an old row still contains it. */
+.outfit-table-head--mundane_modifier,
+.outfit-table-cell--mundane_modifier{display:none!important}
+
+/* Keep the remaining columns readable after the OFC-only fields are hidden. */
+.outfit-table[data-outfit-schema="weapon"]{min-width:1160px}
+.outfit-table[data-outfit-schema="armor"]{min-width:1160px}
+.outfit-table[data-outfit-schema="cyberware"]{min-width:1240px}
+.outfit-table[data-outfit-schema="tron"]{min-width:1280px}
+.outfit-table[data-outfit-schema="vehicle"]{min-width:1780px}
+.outfit-table[data-outfit-schema="residence"]{min-width:1120px}
+.outfit-table[data-outfit-schema="other"]{min-width:820px}
+
+.outfit-table-head--speed,.outfit-table-cell--speed{width:86px}
+.outfit-table-head--residence_entry,.outfit-table-cell--residence_entry{width:72px}
+
+/* Preserve line breaks when Tron catalogue metadata is moved into the description. */
+.outfit-table-cell--description textarea,
+#outfit-container .data-table td:last-child{white-space:pre-wrap}
