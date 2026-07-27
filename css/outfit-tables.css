@@ -16,50 +16,7 @@
 
 .outfit-import-toolbar #add-outfit[hidden]{display:none!important}
 .outfit-table-cell--actions{display:flex;align-items:center;justify-content:center;gap:4px}
-.outfit-table .outfit-order-button,
-.outfit-table .outfit-delete-button{
-  box-sizing:border-box!important;
-  width:28px!important;
-  min-width:28px!important;
-  height:30px!important;
-  min-height:30px!important;
-  margin:0!important;
-  padding:0!important;
-  border-radius:3px!important;
-  font-size:11px!important;
-  font-weight:800!important;
-  line-height:28px!important;
-  text-align:center!important;
-  cursor:pointer;
-  box-shadow:none!important;
-}
-.outfit-table .outfit-order-button{
-  border:1px solid rgba(90,220,255,.58)!important;
-  color:#8de9ff!important;
-  background:rgba(4,18,30,.92)!important;
-}
-.outfit-table .outfit-order-button:not(:disabled):hover{
-  border-color:rgba(140,238,255,.95)!important;
-  color:#fff!important;
-  background:rgba(20,90,118,.82)!important;
-}
-.outfit-table .outfit-order-button:disabled{
-  border-color:rgba(90,220,255,.22)!important;
-  color:rgba(141,233,255,.34)!important;
-  background:rgba(4,18,30,.55)!important;
-  opacity:1!important;
-  cursor:default!important;
-}
-.outfit-table .outfit-delete-button{
-  border:1px solid #ff6b88!important;
-  color:#fff!important;
-  background:#d84061!important;
-}
-.outfit-table .outfit-delete-button:hover{
-  border-color:#ff9aae!important;
-  color:#fff!important;
-  background:#f05272!important;
-}
+.outfit-table-cell--actions .skill-action-button{flex:0 0 26px}
 
 .outfit-table-head--category,.outfit-table-cell--category{width:92px}
 .outfit-table-head--name,.outfit-table-cell--name{width:150px}
