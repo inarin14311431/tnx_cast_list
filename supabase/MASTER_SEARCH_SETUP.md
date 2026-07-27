@@ -1,24 +1,60 @@
 # SKD / OFC検索マスタ設定
 
-編集画面の`SKD検索`・`OFC検索`は、Supabase Authでログイン済みのユーザーだけが利用できます。匿名ユーザーにはマスタテーブルのSELECT権限を付与しません。
+編集画面の`SKD検索`・`OFC検索`は、Supabase Authへログインしたうえで、`public.master_search_users`へUIDを明示登録されたユーザーだけが利用できます。単にアカウントを作成しただけのユーザーや、同期管理者として登録されていないユーザーにはマスタデータを返しません。
 
 ## 1. SQL適用
 
-Supabase SQL Editorで次を1回実行します。
+新規構築の場合は、Supabase SQL Editorで次を実行します。
 
 ```text
 supabase/20_authenticated_master_search.sql
 ```
 
-このSQLは次を追加します。
+旧版の`20_authenticated_master_search.sql`をすでに実行している環境では、追加で次を1回実行してください。
+
+```text
+supabase/21_master_search_uid_allowlist.sql
+```
+
+このSQLは次を追加・更新します。
 
 - `public.skd_master`
 - `public.ofc_master`
+- `public.master_search_users`（検索許可UIDリスト）
+- `public.can_use_master_search()`（現在UIDの許可確認）
 - 検索用インデックス
-- authenticated専用SELECTポリシー
+- 許可UID専用SELECTポリシー
 - service_role専用更新権限
 
-## 2. 管理者設定
+## 2. 検索を許可するUIDの登録
+
+検索を許可するユーザーごとに、Supabase SQL Editorで登録します。
+
+```sql
+insert into public.master_search_users (user_id, memo)
+values ('<検索を許可するSupabase Auth UID>', 'SKD/OFC検索利用者')
+on conflict (user_id) do update
+set memo = excluded.memo;
+```
+
+登録状況の確認：
+
+```sql
+select user_id, memo, created_at
+from public.master_search_users
+order by created_at;
+```
+
+利用許可を取り消す場合：
+
+```sql
+delete from public.master_search_users
+where user_id = '<利用を停止するUID>';
+```
+
+`MASTER_DATA_ADMIN_USER_IDS`は同期操作の管理者設定です。ここへ登録しただけでは検索許可リストへ自動登録されません。同期管理者自身も検索する場合は、そのUIDを`public.master_search_users`へ登録してください。
+
+## 3. 同期管理者設定
 
 アカウント画面に同期パネルを表示する管理者をEdge FunctionのSecretsへ登録します。ユーザーIDかメールアドレスのどちらか一方で構いません。
 
@@ -47,13 +83,13 @@ supabase secrets set \
   MASTER_OFC_GID="0"
 ```
 
-## 3. Edge Functionデプロイ
+## 4. Edge Functionデプロイ
 
 ```bash
 supabase functions deploy sync-master-data
 ```
 
-## 4. 初回同期
+## 5. 初回同期
 
 1. 管理者としてアカウント画面を開く
 2. `SKD・OFC検索マスタ`パネルを確認する
@@ -64,12 +100,14 @@ supabase functions deploy sync-master-data
 
 元スプレッドシートを非公開のまま同期するには、Googleサービスアカウント等を使う別実装が必要です。現在のEdge FunctionはGoogle SheetsのCSVエクスポートを使用します。
 
-## 5. 利用方法
+## 6. 利用方法
 
-編集画面に次のボタンが追加されます。
+許可UIDで編集画面を開いた場合だけ、次のボタンが表示されます。
 
 - `スタイル技能を追加` / `SKD TSV取込` / `SKD検索`
 - `OFC TSV取込` / `OFC検索`
+
+未登録UIDでは検索ボタンを表示せず、開発者ツール等から直接マスタテーブルへアクセスしてもRLSにより0件となります。
 
 検索結果は複数選択でき、次の2方式を利用できます。
 
