@@ -1,6 +1,8 @@
 /* Final category-specific outfit visibility rules. */
 .outfit-rule-hidden,
-.cast-outfit-rule-hidden{display:none!important}
+.cast-outfit-rule-hidden,
+.cast-outfit-detail-hidden,
+.cast-outfit-detail-row-hidden{display:none!important}
 
 /* Remove the no-longer-used mundane modifier column wherever an old row still contains it. */
 .outfit-table-head--mundane_modifier,
