@@ -89,11 +89,21 @@ function enhanceAll() {
   document.querySelectorAll(`${ROOT_SELECTOR} table[data-outfit-schema]`).forEach(table => {
     const category = table.dataset.outfitSchema || "other";
     const fields = EXTRA_FIELDS[category] || [];
-    if (!fields.length) return;
-    addHeaders(table, fields);
-    table.querySelectorAll("tbody [data-outfit-key]").forEach(row => addCells(row, fields));
+    if (fields.length) addHeaders(table, fields);
+    table.querySelectorAll("tbody [data-outfit-key]").forEach(row => {
+      if (fields.length) addCells(row, fields);
+      fillDerivedValues(row);
+    });
     if (category === "armor") updateArmorFooter(table);
   });
+}
+
+function fillDerivedValues(row) {
+  const penalty = row.querySelector('[data-ofc="concealment_penalty"]');
+  if (!penalty || penalty.value) return;
+  const concealment = row.querySelector('[data-o="concealment"]')?.value || "";
+  const parts = String(concealment).split(/[\/／]/);
+  if (parts.length > 1 && parts[1] !== "") penalty.value = parts.slice(1).join("/").trim();
 }
 
 function updateArmorFooter(table) {
