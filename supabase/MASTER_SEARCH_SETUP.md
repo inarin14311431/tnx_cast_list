@@ -37,6 +37,8 @@ on conflict (user_id) do update
 set memo = excluded.memo;
 ```
 
+管理者のアカウント画面にある`SKD・OFC検索マスタ`パネルでは、Supabase Authの登録メールアドレスを候補から選択し、上記の登録SQLをクリップボードへコピーできます。SQLの実行自体はSupabase SQL Editorで手動実行します。
+
 登録状況の確認：
 
 ```sql
@@ -85,9 +87,14 @@ supabase secrets set \
 
 ## 4. Edge Functionデプロイ
 
+マスタ同期用と、管理者向け登録メール一覧取得用の2つをデプロイします。
+
 ```bash
 supabase functions deploy sync-master-data
+supabase functions deploy master-auth-users
 ```
+
+`master-auth-users`は管理者だけが呼び出せます。返す情報は登録者のメールアドレス、UID、登録日時、最終ログイン日時だけで、パスワードや認証トークンは返しません。
 
 ## 5. 初回同期
 
