@@ -1,16 +1,26 @@
 import { supabase } from "./supabase-client.js";
 import { renderAuthNavigation } from "./auth-state.js?v=3";
 
+const ALLOWED_PAGE_SIZES = new Set([10, 25, 50, 100]);
+const DEFAULT_PAGE_SIZE = 10;
+
 const castGrid = document.querySelector("#cast-grid");
 const statusText = document.querySelector("#status-text");
 const searchInput = document.querySelector("#archive-search");
 const styleFilter = document.querySelector("#archive-style-filter");
 const playerFilter = document.querySelector("#archive-player-filter");
 const sortSelect = document.querySelector("#archive-sort");
+const pageSizeSelect = document.querySelector("#archive-page-size");
 const resetButton = document.querySelector("#archive-reset");
 const resultCount = document.querySelector("#archive-result-count");
+const pagination = document.querySelector("#archive-pagination");
+const pageStatus = document.querySelector("#archive-page-status");
+const previousPageButton = document.querySelector("#archive-page-prev");
+const nextPageButton = document.querySelector("#archive-page-next");
 
 let allCharacters = [];
+let filteredCharacters = [];
+let currentPage = 1;
 
 initialize();
 
@@ -26,16 +36,26 @@ async function initialize() {
 }
 
 function setupControls() {
-  searchInput?.addEventListener("input", applyFilters);
-  styleFilter?.addEventListener("change", applyFilters);
-  playerFilter?.addEventListener("change", applyFilters);
-  sortSelect?.addEventListener("change", applyFilters);
+  const applyFromFirstPage = () => {
+    currentPage = 1;
+    applyFilters();
+  };
+
+  searchInput?.addEventListener("input", applyFromFirstPage);
+  styleFilter?.addEventListener("change", applyFromFirstPage);
+  playerFilter?.addEventListener("change", applyFromFirstPage);
+  sortSelect?.addEventListener("change", applyFromFirstPage);
+  pageSizeSelect?.addEventListener("change", applyFromFirstPage);
+  previousPageButton?.addEventListener("click", () => changePage(-1));
+  nextPageButton?.addEventListener("click", () => changePage(1));
 
   resetButton?.addEventListener("click", () => {
     searchInput.value = "";
     styleFilter.value = "";
     playerFilter.value = "";
     sortSelect.value = "updated-desc";
+    pageSizeSelect.value = String(DEFAULT_PAGE_SIZE);
+    currentPage = 1;
     applyFilters();
   });
 }
@@ -60,13 +80,17 @@ async function loadCharacters() {
     if (error) throw error;
 
     allCharacters = data ?? [];
+    currentPage = 1;
     populateFilters(allCharacters);
     applyFilters();
     statusText.textContent = `${allCharacters.length}件の公開キャストを読み込みました。`;
   } catch (error) {
     console.error(error);
+    allCharacters = [];
+    filteredCharacters = [];
     statusText.textContent = "データベースへの接続に失敗しました。";
     resultCount.textContent = "0件表示";
+    if (pagination) pagination.hidden = true;
     castGrid.innerHTML = `<p class="error-message">キャスト情報を取得できませんでした。</p>`;
   }
 }
@@ -104,8 +128,53 @@ function applyFilters() {
   });
 
   sortCharacters(filtered, sortSelect.value);
-  renderCharacters(filtered);
-  resultCount.textContent = `${allCharacters.length}件中 ${filtered.length}件を表示`;
+  filteredCharacters = filtered;
+  renderCurrentPage();
+}
+
+function getPageSize() {
+  const value = Number(pageSizeSelect?.value ?? DEFAULT_PAGE_SIZE);
+  return ALLOWED_PAGE_SIZES.has(value) ? value : DEFAULT_PAGE_SIZE;
+}
+
+function changePage(offset) {
+  const pageCount = Math.max(1, Math.ceil(filteredCharacters.length / getPageSize()));
+  const nextPage = Math.min(pageCount, Math.max(1, currentPage + offset));
+  if (nextPage === currentPage) return;
+  currentPage = nextPage;
+  renderCurrentPage(true);
+}
+
+function renderCurrentPage(scrollToList = false) {
+  const pageSize = getPageSize();
+  const pageCount = Math.max(1, Math.ceil(filteredCharacters.length / pageSize));
+  currentPage = Math.min(pageCount, Math.max(1, currentPage));
+
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = Math.min(startIndex + pageSize, filteredCharacters.length);
+  const pageCharacters = filteredCharacters.slice(startIndex, endIndex);
+
+  renderCharacters(pageCharacters);
+  updatePagination(pageCount);
+
+  if (filteredCharacters.length) {
+    resultCount.textContent = `${allCharacters.length}件中 ${filteredCharacters.length}件該当・${startIndex + 1}〜${endIndex}件を表示`;
+  } else {
+    resultCount.textContent = `${allCharacters.length}件中 0件該当`;
+  }
+
+  if (scrollToList) {
+    document.querySelector(".archive-summary")?.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
+function updatePagination(pageCount) {
+  if (!pagination || !pageStatus || !previousPageButton || !nextPageButton) return;
+  const hasMultiplePages = filteredCharacters.length > getPageSize();
+  pagination.hidden = !hasMultiplePages;
+  pageStatus.textContent = `${currentPage} / ${pageCount}`;
+  previousPageButton.disabled = currentPage <= 1;
+  nextPageButton.disabled = currentPage >= pageCount;
 }
 
 function sortCharacters(characters, mode) {
