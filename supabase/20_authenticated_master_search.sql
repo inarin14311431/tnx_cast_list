@@ -1,5 +1,5 @@
--- Authenticated-only SKD / OFC master search tables.
--- Run this once in the Supabase SQL Editor before deploying sync-master-data.
+-- Explicit-allowlist SKD / OFC master search tables.
+-- Fresh installations should run this file before deploying sync-master-data.
 
 create extension if not exists pg_trgm;
 
@@ -55,6 +55,13 @@ create table if not exists public.ofc_master (
   updated_at timestamptz not null default now()
 );
 
+-- Only UIDs explicitly inserted here may search SKD / OFC.
+create table if not exists public.master_search_users (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  memo text not null default '',
+  created_at timestamptz not null default now()
+);
+
 create index if not exists skd_master_style_idx on public.skd_master(style);
 create index if not exists skd_master_type_idx on public.skd_master(type_label);
 create index if not exists skd_master_name_idx on public.skd_master(name);
@@ -68,32 +75,59 @@ create index if not exists ofc_master_search_trgm_idx on public.ofc_master using
 
 alter table public.skd_master enable row level security;
 alter table public.ofc_master enable row level security;
+alter table public.master_search_users enable row level security;
 
 revoke all on table public.skd_master from anon;
 revoke all on table public.ofc_master from anon;
+revoke all on table public.master_search_users from anon;
 revoke all on table public.skd_master from authenticated;
 revoke all on table public.ofc_master from authenticated;
+revoke all on table public.master_search_users from authenticated;
 
 grant select on table public.skd_master to authenticated;
 grant select on table public.ofc_master to authenticated;
 grant all on table public.skd_master to service_role;
 grant all on table public.ofc_master to service_role;
+grant all on table public.master_search_users to service_role;
 grant usage, select on sequence public.skd_master_id_seq to service_role;
 grant usage, select on sequence public.ofc_master_id_seq to service_role;
 
+create or replace function public.can_use_master_search()
+returns boolean
+language sql
+stable
+security definer
+set search_path = public
+as $$
+  select auth.uid() is not null
+    and exists (
+      select 1
+      from public.master_search_users allowed
+      where allowed.user_id = auth.uid()
+    );
+$$;
+
+revoke all on function public.can_use_master_search() from public;
+revoke all on function public.can_use_master_search() from anon;
+grant execute on function public.can_use_master_search() to authenticated;
+
 drop policy if exists skd_master_authenticated_select on public.skd_master;
-create policy skd_master_authenticated_select
+drop policy if exists skd_master_allowed_select on public.skd_master;
+create policy skd_master_allowed_select
 on public.skd_master
 for select
 to authenticated
-using (auth.uid() is not null);
+using (public.can_use_master_search());
 
 drop policy if exists ofc_master_authenticated_select on public.ofc_master;
-create policy ofc_master_authenticated_select
+drop policy if exists ofc_master_allowed_select on public.ofc_master;
+create policy ofc_master_allowed_select
 on public.ofc_master
 for select
 to authenticated
-using (auth.uid() is not null);
+using (public.can_use_master_search());
 
-comment on table public.skd_master is 'SKD search master. Authenticated users may read; service role synchronizes source data.';
-comment on table public.ofc_master is 'OFC search master. Authenticated users may read; service role synchronizes source data.';
+comment on table public.skd_master is 'SKD search master. Only explicitly allowed authenticated UIDs may read; service role synchronizes source data.';
+comment on table public.ofc_master is 'OFC search master. Only explicitly allowed authenticated UIDs may read; service role synchronizes source data.';
+comment on table public.master_search_users is 'Explicit UID allowlist for SKD / OFC master search.';
+comment on function public.can_use_master_search() is 'Returns true only when the current authenticated UID is registered in master_search_users.';
