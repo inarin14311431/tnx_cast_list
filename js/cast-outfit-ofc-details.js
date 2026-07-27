@@ -7,7 +7,9 @@ const LABELS = {
   manufacturer: "メーカー",
   concealment: "隠匿値",
   concealment_penalty: "隠匿ペナ",
+  attack: "攻",
   parry: "受",
+  range_text: "射",
   speed: "ス",
   control_value: "制御値",
   electronic_control: "電制",
@@ -25,7 +27,8 @@ const LABELS = {
   sf: "SF",
   residence_entry: "住宅 登",
   residence_electric: "住宅 電",
-  residence_area: "住宅 ア"
+  residence_area: "住宅 ア",
+  slot: "部位"
 };
 
 initialize();
@@ -43,7 +46,7 @@ async function initialize() {
 
   const { data, error } = await supabase
     .from("character_outfits")
-    .select("category,name,sort_order,concealment,defense,description,ofc_details")
+    .select("category,name,sort_order,concealment,attack,defense,range,slot,description,ofc_details")
     .eq("character_id", character.id)
     .order("category")
     .order("sort_order")
@@ -103,6 +106,13 @@ function detailsForDisplay(outfit) {
     Object.assign(source, parseDefense(outfit.defense || ""));
   }
 
+  // These values are already visible in the base row when that category has
+  // a dedicated column. Keep them in the detail row only for categories whose
+  // base table cannot display the OFC field.
+  if (String(outfit.attack || "").trim()) delete source.attack;
+  if (String(outfit.range || "").trim()) delete source.range_text;
+  if (String(outfit.slot || "").trim()) delete source.slot;
+
   return Object.entries(LABELS)
     .map(([key, label]) => [label, source[key]])
     .filter(([, value]) => String(value || "").trim());
@@ -116,7 +126,8 @@ function normalizeDetails(value) {
 function parseLegacyDescription(text) {
   const fields = {
     "メーカー": "manufacturer", "大分類": "major_category", "小分類": "minor_category",
-    "受": "parry", "ス": "speed", "制御値": "control_value", "電制": "electronic_control",
+    "攻": "attack", "受": "parry", "射": "range_text", "ス": "speed",
+    "制御値": "control_value", "電制": "electronic_control", "部位": "slot",
     "参照P": "page_number"
   };
   const output = {};
