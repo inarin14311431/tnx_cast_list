@@ -41,7 +41,7 @@ function applyStyleAlignment(source) {
 
   const style = documentNode.createElement("style");
   style.setAttribute(`data-${STYLE_MARKER}`, "true");
-  style.textContent = ".cast-card__styles{align-items:center}";
+  style.textContent = ".cast-card__styles{align-items:center}.cast-card__image img{object-position:50% 0}";
   documentNode.head.append(style);
 
   return `<!doctype html>\n${documentNode.documentElement.outerHTML}`;
