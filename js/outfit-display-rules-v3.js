@@ -38,12 +38,12 @@
         cell.textContent = "制御";
         cell.title = "CONTROL";
       });
+      table.querySelectorAll('.outfit-table-head--control_modifier').forEach(cell => {
+        cell.textContent = "制御";
+        cell.title = "CONTROL";
+      });
 
-      const hasBaseControl = Boolean(table.querySelector('.outfit-table-head--control_modifier:not(.outfit-rule-hidden)'));
-      if (hasBaseControl) {
-        table.querySelectorAll('[data-ofc-head="control_value"],[data-ofc-cell="control_value"]')
-          .forEach(cell => cell.classList.add("outfit-rule-hidden"));
-      }
+      hideRightmostDuplicateControl(table);
 
       if (category === "tron") {
         table.querySelectorAll('[data-ofc-head="slot"],[data-ofc-cell="slot"]')
@@ -52,9 +52,26 @@
     });
   }
 
+  function hideRightmostDuplicateControl(table) {
+    const headers = [...table.querySelectorAll("thead tr > th")]
+      .filter(cell => cell.textContent.trim() === "制御")
+      .filter(cell => !cell.classList.contains("outfit-rule-hidden"));
+    if (headers.length < 2) return;
+
+    const rightmost = headers[headers.length - 1];
+    const index = [...rightmost.parentElement.children].indexOf(rightmost);
+    rightmost.classList.add("outfit-rule-hidden");
+
+    table.querySelectorAll("tbody tr").forEach(row => {
+      if (row.children[index]) row.children[index].classList.add("outfit-rule-hidden");
+    });
+  }
+
   function applyCastRules() {
     document.querySelectorAll(`${CAST_ROOT} .outfit-section`).forEach(section => {
       const category = categoryFromHeading(section.querySelector("h2")?.textContent || "");
+      const controlItems = [];
+
       section.querySelectorAll(".cast-outfit-ofc-details > div").forEach(item => {
         const dt = item.querySelector("dt");
         if (!dt) return;
@@ -62,10 +79,15 @@
 
         if (label === "制御値") dt.textContent = "制御";
         if (label === "スロット") dt.textContent = "ス";
+        if (dt.textContent.trim() === "制御") controlItems.push(item);
         if (category === "tron" && label === "部位") {
           item.classList.add("cast-outfit-detail-hidden");
         }
       });
+
+      if (controlItems.length > 1) {
+        controlItems[controlItems.length - 1].classList.add("cast-outfit-detail-hidden");
+      }
     });
   }
 
