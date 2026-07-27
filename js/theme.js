@@ -77,6 +77,7 @@
     if(document.querySelector(".sheet-layout")){
       appendScript("./js/sheet-open-at-top.js?v=1","data-sheet-open-at-top");
       appendModuleScript("./js/outfit-ofc-fields.js?v=1","data-outfit-ofc-fields-script");
+      appendModuleScript("./js/outfit-ofc-tsv-category-fix.js?v=1","data-outfit-ofc-tsv-category-fix-script");
     }
     if(document.querySelector("#outfit-container"))appendModuleScript("./js/cast-outfit-ofc-details.js?v=1","data-cast-outfit-ofc-details-script");
   }
