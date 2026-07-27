@@ -1,7 +1,6 @@
 /* Restore the full style-skill editor fields used by the original sheet. */
 (function(){
   const PREFIX="@@TNX_STYLE_DETAIL_V1@@";
-  const KIND_PREFIXES={secret:"†",ultimate:"※",direction:"＠"};
   const SUITS=[
     ["reason","♠"],
     ["passion","♣"],
@@ -41,42 +40,6 @@
 
   function encode(data){return PREFIX+"\n"+JSON.stringify(data);}
 
-  function formatSkillName(value,kind){
-    const base=String(value||"").trim().replace(/^(?:[†※＠][\s　]*)+/,"");
-    if(!base)return "";
-    return `${KIND_PREFIXES[kind]||""}${base}`;
-  }
-
-  function synchronizeSkillName(row){
-    const name=row.querySelector('input[data-f="name"]');
-    const kind=row.querySelector('select[data-f="skill_kind"]');
-    if(!name||!kind)return false;
-    const next=formatSkillName(name.value,kind.value);
-    if(next===name.value)return false;
-    name.value=next;
-    name.dispatchEvent(new Event("input",{bubbles:true}));
-    name.dispatchEvent(new Event("change",{bubbles:true}));
-    return true;
-  }
-
-  function bindSkillNamePrefix(row){
-    const name=row.querySelector('input[data-f="name"]');
-    const kind=row.querySelector('select[data-f="skill_kind"]');
-    if(!name||!kind)return;
-
-    if(!kind.dataset.kindPrefixBound){
-      kind.dataset.kindPrefixBound="1";
-      kind.addEventListener("input",()=>synchronizeSkillName(row));
-      kind.addEventListener("change",()=>synchronizeSkillName(row));
-    }
-    if(!name.dataset.kindPrefixBound){
-      name.dataset.kindPrefixBound="1";
-      name.addEventListener("change",()=>synchronizeSkillName(row));
-      name.addEventListener("blur",()=>synchronizeSkillName(row));
-    }
-    synchronizeSkillName(row);
-  }
-
   function ensureKindOptions(row){
     const select=row.querySelector('select[data-f="skill_kind"]');
     const definitions=window.TNXStyleSkillKinds?.definitions||[
@@ -104,10 +67,7 @@
 
   function rebuildRow(row){
     ensureKindOptions(row);
-    if(row.dataset.fullStyleFields==="1"){
-      bindSkillNamePrefix(row);
-      return;
-    }
+    if(row.dataset.fullStyleFields==="1")return;
     const nameCell=row.children[0];
     const typeCell=row.children[1];
     const levelCell=row.children[2];
@@ -152,7 +112,6 @@
     cells.push(deleteCell);
     row.replaceChildren(...cells);
     row.dataset.fullStyleFields="1";
-    bindSkillNamePrefix(row);
   }
 
   function enhance(){
@@ -193,8 +152,6 @@
           if(!select||!kind)return;
           select.value=kind;
           select.dispatchEvent(new Event("input",{bubbles:true}));
-          select.dispatchEvent(new Event("change",{bubbles:true}));
-          synchronizeSkillName(row);
         });
         window.TNXExperience?.queue?.();
       },0);
@@ -214,8 +171,6 @@
     bindTsvImport();
     queue();
   }
-
-  window.TNXStyleSkillFieldEditor={enhance,formatSkillName,synchronizeSkillName};
 
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initialize,{once:true});
   else initialize();
