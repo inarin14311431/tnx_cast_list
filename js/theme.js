@@ -69,7 +69,7 @@
     appendStylesheet("./css/character-image-top-align.css?v=1", "data-character-image-top-align");
     appendStylesheet("./css/mobile-auth-navigation-fix.css?v=1", "data-mobile-auth-navigation-fix");
     appendStylesheet("./css/outfit-ofc-fields.css?v=1", "data-outfit-ofc-fields");
-    appendStylesheet("./css/outfit-display-rules.css?v=2", "data-outfit-display-rules");
+    appendStylesheet("./css/outfit-display-rules-v2.css?v=1", "data-outfit-display-rules-v2");
   }
 
   function loadPageEnhancements(){
@@ -80,11 +80,11 @@
       appendModuleScript("./js/outfit-ofc-fields.js?v=1","data-outfit-ofc-fields-script");
       appendModuleScript("./js/outfit-ofc-extra-columns.js?v=1","data-outfit-ofc-extra-columns-script");
       appendModuleScript("./js/outfit-ofc-tsv-category-fix.js?v=1","data-outfit-ofc-tsv-category-fix-script");
-      appendScript("./js/outfit-display-rules.js?v=2","data-outfit-display-rules-script");
+      appendScript("./js/outfit-display-rules-v2.js?v=1","data-outfit-display-rules-v2-script");
     }
     if(document.querySelector("#outfit-container")){
       appendModuleScript("./js/cast-outfit-ofc-details.js?v=1","data-cast-outfit-ofc-details-script");
-      appendScript("./js/outfit-display-rules.js?v=2","data-outfit-display-rules-script");
+      appendScript("./js/outfit-display-rules-v2.js?v=1","data-outfit-display-rules-v2-script");
     }
   }
 
