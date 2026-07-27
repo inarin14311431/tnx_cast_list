@@ -45,6 +45,15 @@
     document.head.append(script);
   }
 
+  function appendModuleScript(src, marker) {
+    if (document.querySelector(`script[${marker}]`)) return;
+    const script = document.createElement("script");
+    script.type = "module";
+    script.src = src;
+    script.setAttribute(marker, "1");
+    document.head.append(script);
+  }
+
   function loadLateOverrides() {
     appendStylesheet("./css/theme-runtime.css?v=2", "data-theme-runtime");
     appendStylesheet("./css/theme-polish.css?v=2", "data-theme-polish");
@@ -59,12 +68,17 @@
     appendStylesheet("./css/theme-inagaki-select-fix.css?v=1", "data-theme-inagaki-select-fix");
     appendStylesheet("./css/character-image-top-align.css?v=1", "data-character-image-top-align");
     appendStylesheet("./css/mobile-auth-navigation-fix.css?v=1", "data-mobile-auth-navigation-fix");
+    appendStylesheet("./css/outfit-ofc-fields.css?v=1", "data-outfit-ofc-fields");
   }
 
   function loadPageEnhancements(){
     if(document.querySelector("#style-skills"))appendScript("./js/style-skill-separators.js?v=1","data-style-skill-separators-script");
     if(document.querySelector("#skills-container"))appendScript("./js/cast-style-skill-separators.js?v=1","data-cast-style-skill-separators-script");
-    if(document.querySelector(".sheet-layout"))appendScript("./js/sheet-open-at-top.js?v=1","data-sheet-open-at-top");
+    if(document.querySelector(".sheet-layout")){
+      appendScript("./js/sheet-open-at-top.js?v=1","data-sheet-open-at-top");
+      appendModuleScript("./js/outfit-ofc-fields.js?v=1","data-outfit-ofc-fields-script");
+    }
+    if(document.querySelector("#outfit-container"))appendModuleScript("./js/cast-outfit-ofc-details.js?v=1","data-cast-outfit-ofc-details-script");
   }
 
   function normalizeOrderButtons(root = document) {
