@@ -92,7 +92,14 @@ function enhanceAll() {
     if (!fields.length) return;
     addHeaders(table, fields);
     table.querySelectorAll("tbody [data-outfit-key]").forEach(row => addCells(row, fields));
+    if (category === "armor") updateArmorFooter(table);
   });
+}
+
+function updateArmorFooter(table) {
+  const totalHeading = table.querySelector("tfoot th");
+  const headerCount = table.querySelectorAll("thead tr > th").length;
+  if (totalHeading && headerCount) totalHeading.colSpan = Math.max(1, headerCount - 4);
 }
 
 function addHeaders(table, fields) {
