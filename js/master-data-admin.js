@@ -91,7 +91,14 @@ function renderStatus(panel, status) {
 
 async function invoke(body) {
   const { data, error } = await supabase.functions.invoke(FUNCTION_NAME, { body });
-  if (error) throw error;
+  if (error) {
+    let message = error.message || String(error);
+    try {
+      const payload = await error.context?.json?.();
+      if (payload?.error) message = payload.error;
+    } catch {}
+    throw new Error(message);
+  }
   if (data?.error) throw new Error(data.error);
   return data || {};
 }
@@ -105,11 +112,14 @@ function formatDate(value) {
 
 function formatError(error) {
   const message = String(error?.message || error || "");
-  if (/Failed to send|FunctionsHttpError|not found|404/i.test(message)) {
+  if (/Failed to send|not found|404/i.test(message)) {
     return "sync-master-data Edge Functionをデプロイしてください。";
   }
-  if (/HTMLが返されました|HTTP 401|HTTP 403|Googleスプレッドシート/i.test(message)) {
+  if (/HTMLが返されました|HTTP 401|HTTP 403|Googleスプレッドシート|共有設定/i.test(message)) {
     return `${message} 同期時だけでも、対象スプレッドシートをリンク閲覧可能にしてください。`;
+  }
+  if (/skd_master|ofc_master|schema cache|does not exist/i.test(message)) {
+    return "Supabaseで supabase/20_authenticated_master_search.sql を実行してください。";
   }
   return message ? `同期に失敗しました：${message}` : "同期に失敗しました。Edge Functionのログを確認してください。";
 }
