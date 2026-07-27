@@ -264,11 +264,14 @@
 
         cleanCastDescription(row, category, details);
         const hidden = new Set(CAST_HIDDEN_DETAIL_LABELS[category] || []);
+        let visibleCount = 0;
         detailRow.querySelectorAll(".cast-outfit-ofc-details > div").forEach(item => {
           const label = item.querySelector("dt")?.textContent?.trim() || "";
-          if (hidden.has(label)) item.remove();
+          const isHidden = hidden.has(label);
+          item.classList.toggle("cast-outfit-detail-hidden", isHidden);
+          if (!isHidden) visibleCount += 1;
         });
-        if (!detailRow.querySelector(".cast-outfit-ofc-details > div")) detailRow.remove();
+        detailRow.classList.toggle("cast-outfit-detail-row-hidden", visibleCount === 0);
       });
     });
   }
