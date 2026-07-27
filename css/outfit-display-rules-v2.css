@@ -11,7 +11,7 @@
 .outfit-table[data-outfit-schema="armor"]{min-width:1160px}
 .outfit-table[data-outfit-schema="cyberware"]{min-width:1080px}
 .outfit-table[data-outfit-schema="tron"]{min-width:1180px}
-.outfit-table[data-outfit-schema="vehicle"]{min-width:1480px}
+.outfit-table[data-outfit-schema="vehicle"]{min-width:0}
 .outfit-table[data-outfit-schema="residence"]{min-width:1040px}
 .outfit-table[data-outfit-schema="other"]{min-width:820px}
 
@@ -19,17 +19,55 @@
 .outfit-table-cell--page_number{width:68px}
 
 .outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--speed,
-.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--speed{width:42px;min-width:42px;max-width:42px;text-align:center}
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--speed{width:38px;min-width:38px;max-width:38px;text-align:center}
 .outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--defense_s,
 .outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--defense_s,
 .outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--defense_p,
 .outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--defense_p,
 .outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--defense_i,
-.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--defense_i{width:46px;min-width:46px;max-width:46px;text-align:center}
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--defense_i{width:38px;min-width:38px;max-width:38px;text-align:center}
 
 .outfit-table:not([data-outfit-schema="vehicle"]) .outfit-table-head--speed,
 .outfit-table:not([data-outfit-schema="vehicle"]) .outfit-table-cell--speed{width:86px}
 .outfit-table-head--residence_entry,.outfit-table-cell--residence_entry{width:72px}
+
+/* Keep narrow controls aligned with the action buttons when a description has been resized vertically. */
+.outfit-table[data-outfit-schema="tron"] td,
+.outfit-table[data-outfit-schema="residence"] td{vertical-align:top}
+.outfit-table[data-outfit-schema="tron"] .outfit-table-cell--actions,
+.outfit-table[data-outfit-schema="residence"] .outfit-table-cell--actions{align-items:flex-start}
+
+/* Vehicle fields are deliberately compact so the desktop table fits without a horizontal scrollbar. */
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--category,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--category{width:76px}
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--name,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--name{width:125px}
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--purchase_value,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--purchase_value,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--experience_cost,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--experience_cost{width:54px}
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--attack,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--attack,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--control_modifier,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--control_modifier{width:50px}
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--page_number,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--page_number{width:58px}
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--control_value,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--control_value,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--electronic_control,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--electronic_control{width:52px}
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--crew,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--crew{width:48px}
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--sf,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--sf{width:42px}
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--description,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--description{width:150px}
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--actions,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--actions{width:96px}
+
+@media(min-width:861px){
+  .outfit-table-group--vehicle .outfit-table-scroll{overflow-x:hidden}
+}
 
 .outfit-table-group--armor .armor-defense-total-row th,
 .outfit-table-group--armor .armor-defense-total-row td{box-sizing:border-box}
