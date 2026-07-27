@@ -1,0 +1,48 @@
+/* Complete OFC catalogue fields for the editor and cast view. */
+.outfit-table-head--ofc,.outfit-table-cell--ofc{width:84px}
+.outfit-table-head--major_category,.outfit-table-cell--major_category,
+.outfit-table-head--minor_category,.outfit-table-cell--minor_category,
+.outfit-table-head--manufacturer,.outfit-table-cell--manufacturer{width:112px}
+.outfit-table-head--page_number,.outfit-table-cell--page_number{width:70px}
+.outfit-table-head--concealment_penalty,.outfit-table-cell--concealment_penalty,
+.outfit-table-head--parry,.outfit-table-cell--parry,
+.outfit-table-head--speed,.outfit-table-cell--speed,
+.outfit-table-head--control_value,.outfit-table-cell--control_value,
+.outfit-table-head--electronic_control,.outfit-table-cell--electronic_control,
+.outfit-table-head--defense_s,.outfit-table-cell--defense_s,
+.outfit-table-head--defense_p,.outfit-table-cell--defense_p,
+.outfit-table-head--defense_i,.outfit-table-cell--defense_i,
+.outfit-table-head--ianus_surface,.outfit-table-cell--ianus_surface,
+.outfit-table-head--ianus_deep,.outfit-table-cell--ianus_deep,
+.outfit-table-head--ianus_none,.outfit-table-cell--ianus_none,
+.outfit-table-head--tron_software,.outfit-table-cell--tron_software,
+.outfit-table-head--tron_support,.outfit-table-cell--tron_support,
+.outfit-table-head--tron_hardware,.outfit-table-cell--tron_hardware,
+.outfit-table-head--cs_value,.outfit-table-cell--cs_value,
+.outfit-table-head--crew,.outfit-table-cell--crew,
+.outfit-table-head--sf,.outfit-table-cell--sf,
+.outfit-table-head--residence_entry,.outfit-table-cell--residence_entry,
+.outfit-table-head--residence_electric,.outfit-table-cell--residence_electric,
+.outfit-table-head--residence_area,.outfit-table-cell--residence_area{width:68px;text-align:center}
+.outfit-table-cell--ofc input{text-align:center}
+.outfit-table-head--major_category,.outfit-table-head--minor_category,.outfit-table-head--manufacturer{text-align:left}
+.outfit-table-cell--major_category input,.outfit-table-cell--minor_category input,.outfit-table-cell--manufacturer input{text-align:left}
+.outfit-table-head--ofc{color:var(--line);background:rgba(65,232,255,.055)}
+.outfit-table-cell--ofc{background:rgba(65,232,255,.018)}
+.outfit-table[data-outfit-schema="weapon"]{min-width:1740px}
+.outfit-table[data-outfit-schema="armor"]{min-width:1540px}
+.outfit-table[data-outfit-schema="cyberware"],.outfit-table[data-outfit-schema="tron"]{min-width:1740px}
+.outfit-table[data-outfit-schema="vehicle"]{min-width:2140px}
+.outfit-table[data-outfit-schema="residence"]{min-width:1600px}
+.outfit-table[data-outfit-schema="other"]{min-width:1600px}
+.outfit-table-scroll{overflow-x:auto}
+
+.cast-outfit-ofc-detail-row td{padding:0 10px 12px!important;border-top:0!important;background:rgba(65,232,255,.025)}
+.cast-outfit-ofc-details{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:7px 12px;margin:0;padding:11px;border:1px solid rgba(65,232,255,.18);background:rgba(0,0,0,.18)}
+.cast-outfit-ofc-details div{display:grid;grid-template-columns:minmax(72px,.8fr) minmax(0,1fr);gap:7px;align-items:start}
+.cast-outfit-ofc-details dt{color:var(--text-muted);font:.62rem/1.45 monospace;letter-spacing:.03em}
+.cast-outfit-ofc-details dd{margin:0;color:var(--text);font-size:.72rem;line-height:1.45;overflow-wrap:anywhere}
+
+@media(max-width:700px){
+  .cast-outfit-ofc-details{grid-template-columns:1fr}
+}
