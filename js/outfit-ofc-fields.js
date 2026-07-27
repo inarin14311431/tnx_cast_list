@@ -59,10 +59,11 @@ let loadedQueues = new Map();
 let restoreQueues = null;
 let enhanceQueued = false;
 let suppressDirty = false;
+let detailsReady = false;
 
 initialize();
 
-function initialize() {
+async function initialize() {
   wrapSaveRpc();
   const root = document.querySelector(ROOT_SELECTOR);
   if (!root) return;
@@ -74,8 +75,12 @@ function initialize() {
   document.addEventListener("click", handleMasterCopy, true);
   document.addEventListener("click", handleTsvImport, true);
 
-  loadStoredDetails().finally(queueEnhance);
-  queueEnhance();
+  try {
+    await loadStoredDetails();
+  } finally {
+    detailsReady = true;
+    queueEnhance();
+  }
 }
 
 function wrapSaveRpc() {
@@ -161,7 +166,7 @@ function normalizeStoredRecord(row) {
 }
 
 function queueEnhance() {
-  if (enhanceQueued) return;
+  if (!detailsReady || enhanceQueued) return;
   enhanceQueued = true;
   requestAnimationFrame(() => {
     enhanceQueued = false;
