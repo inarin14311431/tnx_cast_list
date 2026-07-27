@@ -57,12 +57,14 @@
     appendStylesheet("./css/theme-special-brands.css?v=2", "data-theme-special-brands");
     appendStylesheet("./css/theme-inagaki-gaudy.css?v=1", "data-theme-inagaki-gaudy");
     appendStylesheet("./css/theme-inagaki-select-fix.css?v=1", "data-theme-inagaki-select-fix");
+    appendStylesheet("./css/character-image-top-align.css?v=1", "data-character-image-top-align");
     appendStylesheet("./css/mobile-auth-navigation-fix.css?v=1", "data-mobile-auth-navigation-fix");
   }
 
   function loadPageEnhancements(){
     if(document.querySelector("#style-skills"))appendScript("./js/style-skill-separators.js?v=1","data-style-skill-separators-script");
     if(document.querySelector("#skills-container"))appendScript("./js/cast-style-skill-separators.js?v=1","data-cast-style-skill-separators-script");
+    if(document.querySelector(".sheet-layout"))appendScript("./js/sheet-open-at-top.js?v=1","data-sheet-open-at-top");
   }
 
   function normalizeOrderButtons(root = document) {
