@@ -1,8 +1,11 @@
 /* Category-specific outfit tables. Loaded after the general sheet styles. */
 #outfit-list{display:grid;gap:16px;min-width:0}
 .outfit-table-group{min-width:0}
-.outfit-table-title{margin:4px 0 7px;color:var(--line);font-family:monospace;font-size:.9rem}
+.outfit-table-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0 7px}
+.outfit-table-title{margin:0;color:var(--line);font-family:monospace;font-size:.9rem}
 .outfit-table-title small{color:var(--text-muted);font-size:.68rem}
+.outfit-table-heading .outfit-category-add{flex:0 0 auto}
+.outfit-table-empty{margin:0;padding:12px;border:1px dashed var(--line-muted);color:var(--text-muted);font-size:.76rem;text-align:center;background:rgba(65,232,255,.025)}
 .outfit-table-scroll{width:100%;min-width:0;overflow:visible}
 .outfit-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:.74rem}
 .outfit-table th,.outfit-table td{box-sizing:border-box;padding:5px 3px;border-bottom:1px solid var(--line-muted);vertical-align:middle}
@@ -11,8 +14,7 @@
 .outfit-table input,.outfit-table select,.outfit-table textarea{box-sizing:border-box;width:100%;min-width:0;height:36px;margin:0;padding:6px 5px;font-size:.76rem}
 .outfit-table textarea[data-o="description"]{height:36px;min-height:36px;resize:vertical;line-height:1.35;overflow:auto}
 
-.outfit-category-adds{display:flex;flex-wrap:wrap;gap:7px}
-.outfit-category-adds button{min-height:36px;padding:7px 10px}
+.outfit-import-toolbar #add-outfit[hidden]{display:none!important}
 .outfit-table-cell--actions{display:flex;align-items:center;justify-content:center;gap:4px}
 .outfit-table .outfit-order-button,.outfit-table .outfit-delete-button{width:28px;min-width:28px;height:30px;padding:0;border:1px solid var(--line);color:var(--line);background:rgba(65,232,255,.05);cursor:pointer}
 .outfit-table .outfit-order-button:disabled{opacity:.25;cursor:default}
@@ -54,9 +56,12 @@
 }
 
 @media(max-width:860px){
-  .outfit-category-adds{width:100%}
-  .outfit-category-adds button{flex:1 1 150px}
   .outfit-table-scroll{overflow-x:auto}
   .outfit-table{min-width:1040px}
   .outfit-table-group--armor .outfit-table{min-width:1100px}
+}
+
+@media(max-width:760px){
+  .outfit-table-heading{align-items:center;gap:8px}
+  .outfit-table-title{font-size:.82rem}
 }
