@@ -4,20 +4,13 @@
   if(!root)return;
 
   const CATEGORIES=[
-    ['weapon','武器','WEAPONS'],
-    ['armor','防具','ARMOR'],
-    ['cyberware','サイバーウェア','CYBERWARE'],
-    ['tron','トロン','TRON'],
-    ['vehicle','ヴィークル','VEHICLES'],
-    ['residence','住居','RESIDENCES'],
-    ['other','その他','OTHER']
-  ];
-  const QUICK_ADD=[
-    ['weapon','武器を追加'],
-    ['armor','防具を追加'],
-    ['cyberware','サイバーウェアを追加'],
-    ['vehicle','ヴィークルを追加'],
-    ['residence','住居を追加']
+    ['weapon','武器','WEAPONS','ADD WEAPON'],
+    ['armor','防具','ARMOR','ADD ARMOR'],
+    ['cyberware','サイバーウェア','CYBERWARE','ADD CYBERWARE'],
+    ['tron','トロン','TRON','ADD TRON'],
+    ['vehicle','ヴィークル','VEHICLES','ADD VEHICLE'],
+    ['residence','住居','RESIDENCES','ADD RESIDENCE'],
+    ['other','その他','OTHER','ADD OTHER']
   ];
 
   const LABELS={
@@ -176,12 +169,36 @@
     });
   }
 
-  function makeTable(category,cards,label,en){
+  function makeCategoryAddButton(category,label,addLabel){
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='skill-inline-add outfit-category-add';
+    button.dataset.addOutfitCategory=category;
+    button.innerHTML=`${label}を追加 <small>${addLabel}</small>`;
+    return button;
+  }
+
+  function makeTable(category,cards,label,en,addLabel){
     const section=document.createElement('section');
     section.className=`outfit-table-group outfit-table-group--${category}`;
     section.dataset.outfitCategory=category;
+
+    const heading=document.createElement('div');
+    heading.className='outfit-table-heading';
     const title=document.createElement('h3');
-    title.className='outfit-table-title'; title.innerHTML=`${label} <small>${en}</small>`;
+    title.className='outfit-table-title';
+    title.innerHTML=`${label} <small>${en}</small>`;
+    heading.append(title,makeCategoryAddButton(category,label,addLabel));
+    section.append(heading);
+
+    if(!cards.length){
+      const empty=document.createElement('p');
+      empty.className='outfit-table-empty';
+      empty.textContent=`${label}は未登録です。`;
+      section.append(empty);
+      return section;
+    }
+
     const scroll=document.createElement('div'); scroll.className='outfit-table-scroll';
     const table=document.createElement('table'); table.className='outfit-table'; table.dataset.outfitSchema=category;
     const thead=document.createElement('thead'); const headRow=document.createElement('tr');
@@ -191,7 +208,7 @@
     thead.append(headRow);
     const tbody=document.createElement('tbody'); cards.forEach(card=>tbody.append(makeRow(card,category)));
     table.append(thead,tbody); if(category==='armor')table.append(makeArmorFooter());
-    scroll.append(table); section.append(title,scroll);
+    scroll.append(table); section.append(scroll);
     requestAnimationFrame(()=>{updateMoveStates(section);if(category==='armor')updateArmorTotals(section);});
     return section;
   }
@@ -246,7 +263,7 @@
   }
 
   function moveOutfit(key,direction){
-    const rows=[...root.querySelectorAll(`.outfit-table-row[data-outfit-key]`)];
+    const rows=[...root.querySelectorAll('.outfit-table-row[data-outfit-key]')];
     const row=rows.find(item=>item.dataset.outfitKey===key);
     if(!row)return;
     const siblings=[...row.closest('tbody').querySelectorAll('.outfit-table-row[data-outfit-key]')];
@@ -265,39 +282,42 @@
     addRawOutfit({category,data:{category}});
     queue();
     requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      const rows=[...root.querySelectorAll(`.outfit-table-group--${category} .outfit-table-row` )];
+      const rows=[...root.querySelectorAll(`.outfit-table-group--${category} .outfit-table-row`)];
       rows[rows.length-1]?.querySelector('[data-o="name"]')?.focus();
     }));
   }
 
-  function installQuickAddButtons(){
+  function configureToolbar(){
     const generic=document.querySelector('#add-outfit');
     const toolbar=generic?.closest('.toolbar');
-    if(!generic||!toolbar||toolbar.querySelector('.outfit-category-adds'))return;
-    generic.innerHTML='その他を追加 <small>ADD OTHER</small>';
-    const group=document.createElement('div'); group.className='outfit-category-adds';
-    for(const [category,label] of QUICK_ADD){
-      const button=document.createElement('button');
-      button.type='button'; button.dataset.addOutfitCategory=category; button.textContent=label;
-      group.append(button);
-    }
-    toolbar.insertBefore(group,generic);
+    if(!generic||!toolbar)return;
+    toolbar.querySelector('.outfit-category-adds')?.remove();
+    generic.hidden=true;
+    generic.tabIndex=-1;
+    generic.setAttribute('aria-hidden','true');
+    toolbar.classList.add('outfit-import-toolbar');
   }
 
   function enhance(){
     const cards=[...root.querySelectorAll(':scope > .outfit-card[data-outfit-key]')];
-    if(!cards.length)return;
+    if(!cards.length&&root.querySelector('.outfit-table-group'))return;
+
     const grouped=new Map(CATEGORIES.map(([key])=>[key,[]]));
     for(const card of cards){
       const category=card.querySelector('[data-o="category"]')?.value||'other';
       (grouped.get(category)||grouped.get('other')).push(card);
     }
+
     observer.disconnect();
     try{
       const fragment=document.createDocumentFragment();
-      for(const [key,label,en] of CATEGORIES){const items=grouped.get(key)||[];if(items.length)fragment.append(makeTable(key,items,label,en));}
+      for(const [key,label,en,addLabel] of CATEGORIES){
+        fragment.append(makeTable(key,grouped.get(key)||[],label,en,addLabel));
+      }
       root.replaceChildren(fragment);
-    }finally{observer.observe(root,{childList:true,subtree:true});}
+    }finally{
+      observer.observe(root,{childList:true,subtree:true});
+    }
   }
 
   document.addEventListener('click',event=>{
@@ -307,7 +327,7 @@
     if(move){event.preventDefault();moveOutfit(move.dataset.outfitKey,move.dataset.outfitMove);}
   });
 
-  installQuickAddButtons();
+  configureToolbar();
   observer.observe(root,{childList:true,subtree:true});
   queue();
 })();
