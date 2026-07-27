@@ -83,12 +83,7 @@
   root.addEventListener('change',event=>{
     if(event.target.matches('[data-armor-defense]'))queue();
   },true);
-  new MutationObserver(queue).observe(root,{
-    childList:true,
-    subtree:true,
-    attributes:true,
-    attributeFilter:['class','colspan','hidden']
-  });
+  new MutationObserver(queue).observe(root,{childList:true,subtree:true});
   queue();
   window.setTimeout(queue,120);
   window.setTimeout(queue,500);
