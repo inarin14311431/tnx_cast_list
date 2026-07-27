@@ -49,10 +49,13 @@ async function initialize() {
 
 function refreshDeleteState(panel, deleteButton) {
   const selected = getSelectedUser(panel);
-  deleteButton.disabled = !selected || isProtectedAdmin(selected);
-  deleteButton.title = isProtectedAdmin(selected)
+  const protectedAdmin = isProtectedAdmin(selected);
+  deleteButton.disabled = !selected || protectedAdmin;
+  deleteButton.title = protectedAdmin
     ? "管理者本人のアカウントは削除できません。"
-    : "選択したAuthユーザーと関連データを完全削除します。";
+    : selected
+      ? "選択したAuthユーザーと関連データを完全削除します。"
+      : "削除する登録メールアドレスを選択してください。";
 }
 
 function getSelectedUser(panel) {
@@ -99,6 +102,7 @@ async function deleteSelectedUser(panel, deleteButton) {
   status.textContent = `${selected.email} の関連データとAuthユーザーを削除しています…`;
   status.className = "is-loading";
 
+  let completed = false;
   try {
     const result = await invoke({
       action: "delete",
@@ -109,28 +113,37 @@ async function deleteSelectedUser(panel, deleteButton) {
     panel.querySelector("#master-search-user-email").value = "";
     panel.querySelector("#master-search-user-id").value = "";
     panel.querySelector("#master-search-user-sql-preview").value = "";
-    panel.querySelector("#master-search-user-reload")?.click();
 
     status.textContent = `${result.deletedEmail || selected.email} を完全削除しました。` +
       ` キャスト${Number(result.deletedCharacterCount || 0)}件、画像${Number(result.storageDeletedCount || 0)}件を削除しました。`;
     status.className = "is-success";
+    completed = true;
+    window.setTimeout(() => location.reload(), 1300);
   } catch (error) {
     console.error(error);
     status.textContent = formatDeleteError(error);
     status.className = "is-error";
   } finally {
-    setBusy(panel, false);
-    refreshDeleteState(panel, deleteButton);
+    if (!completed) {
+      setBusy(panel, false);
+      refreshDeleteState(panel, deleteButton);
+    }
   }
 }
 
 function setBusy(panel, busy) {
-  const controls = panel.querySelectorAll(
-    "#master-search-user-email,#master-search-user-reload,#master-search-user-sql-copy,#master-search-user-delete"
-  );
-  controls.forEach(control => {
-    control.disabled = busy || (control.id === "master-search-user-delete" && !getSelectedUser(panel));
-  });
+  const emailInput = panel.querySelector("#master-search-user-email");
+  const reloadButton = panel.querySelector("#master-search-user-reload");
+  const copyButton = panel.querySelector("#master-search-user-sql-copy");
+  const deleteButton = panel.querySelector("#master-search-user-delete");
+
+  if (emailInput) emailInput.disabled = busy;
+  if (reloadButton) reloadButton.disabled = busy;
+  if (copyButton) copyButton.disabled = busy || !panel.querySelector("#master-search-user-sql-preview")?.value;
+  if (deleteButton) {
+    const selected = getSelectedUser(panel);
+    deleteButton.disabled = busy || !selected || isProtectedAdmin(selected);
+  }
 }
 
 async function invoke(body) {
