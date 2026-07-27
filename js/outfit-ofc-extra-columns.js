@@ -94,7 +94,6 @@ function enhanceAll() {
       if (fields.length) addCells(row, fields);
       fillDerivedValues(row);
     });
-    if (category === "armor") updateArmorFooter(table);
   });
 }
 
@@ -104,12 +103,6 @@ function fillDerivedValues(row) {
   const concealment = row.querySelector('[data-o="concealment"]')?.value || "";
   const parts = String(concealment).split(/[\/／]/);
   if (parts.length > 1 && parts[1] !== "") penalty.value = parts.slice(1).join("/").trim();
-}
-
-function updateArmorFooter(table) {
-  const totalHeading = table.querySelector("tfoot th");
-  const headerCount = table.querySelectorAll("thead tr > th").length;
-  if (totalHeading && headerCount) totalHeading.colSpan = Math.max(1, headerCount - 4);
 }
 
 function addHeaders(table, fields) {
