@@ -6,9 +6,8 @@ SupabaseとGitHub Pagesを使用した、トーキョーN◎VA用キャスト管
 
 - `index.html`：キャスト一覧・検索
 - `cast.html`：キャスト閲覧
-- `sheet.html`：キャストシート編集
+- `sheet.html`：キャストシート作成・編集・画像登録
 - `account.html`：アカウント・所有キャスト管理
-- `image.html`：キャスト画像編集
 - `combos.html`：コンボ編集
 - `backup.html`：バックアップ／復元
 - `login.html`：ログイン・アカウント作成
@@ -20,14 +19,18 @@ SupabaseとGitHub Pagesを使用した、トーキョーN◎VA用キャスト管
 `sheet.html`で次を同一画面から編集できます。
 
 - プロフィール
+- キャスト画像
 - スタイルと神業（ヨミガナ付き）
 - 能力値・制御値・CSと補正
 - 一般技能・スタイル技能
 - アウトフィット
 - SKD/OFC TSV取り込み
-- 旧キャラクターシートJSON取り込み
+- キャラシ倉庫JSON取り込み
 - 消費経験点の自動計算
-- ブラウザ内の一時保存
+- 編集後約1.2秒でのDB自動保存
+- 保存ボタンによる即時保存
+
+キャスト名とプレイヤー名が入力されている場合、入力・選択・取込による変更は約1.2秒後に`save_character_bundle`で自動保存されます。画面上部が「保存中…」から「保存済み」へ変わるまでページを閉じないでください。保存ボタンは、自動保存を待たずに今すぐ保存する場合に使用できます。
 
 アカウント画面の「新規キャスト作成」および「シート編集」から利用します。
 
@@ -77,10 +80,9 @@ SupabaseとGitHub Pagesを使用した、トーキョーN◎VA用キャスト管
 - `css/sheet-ja.css`：編集画面の日本語表示
 - `css/sheet-layout.css`：ヘッダー、能力値、神業、ツールバー等
 - `css/sheet-features.css`：技能表、アウトフィット、操作部品
-- `js/sheet.js`：DB読込・保存・基本描画
-- `js/sheet-draft.js`：ブラウザ内一時保存
-- `js/sheet-features.js`：スタイル技能詳細、経験点補正、初期スロット等
-- `js/sheet-import.js`：旧キャラクターシートJSON取り込み
+- `js/sheet.js`：DB読込、編集後約1.2秒の自動保存、即時保存、基本描画
+- `js/sheet-features.js`：保存状態表示、スタイル技能表示補助、空状態表示、アウトフィット解説欄補助
+- `js/sheet-import.js`：キャラシ倉庫JSON取り込み
 
 旧`sheet-ux-v*.css`、`sheet-v*.css`、`style-skill-details-v32.*`、`skill-layout-v33.css`、各種`*-fix-v*.js`は統合・削除済みです。
 
