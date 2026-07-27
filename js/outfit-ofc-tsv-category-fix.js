@@ -11,7 +11,10 @@ function handleImport(event) {
   if (!button || !/OFC/i.test(document.querySelector("#tsv-title")?.textContent || "")) return;
 
   const sources = parseTsv(document.querySelector("#tsv-text")?.value || "")
-    .map(row => ({ name: String(row.name || "").trim(), category: targetToCategory(row.target) }))
+    .map(row => ({
+      name: String(row.name || "").trim(),
+      category: targetToCategory(row.target, row.major_category)
+    }))
     .filter(row => row.name && ["cyberware", "tron"].includes(row.category));
   if (!sources.length) return;
 
@@ -29,7 +32,7 @@ async function restoreCategories(sources, before) {
     const row = available.splice(index, 1)[0];
     if (!row) continue;
     const key = row.dataset.outfitKey || "";
-    let current = document.querySelector(`${ROOT_SELECTOR} [data-outfit-key="${cssEscape(key)}"]`);
+    const current = document.querySelector(`${ROOT_SELECTOR} [data-outfit-key="${cssEscape(key)}"]`);
     const select = current?.querySelector('[data-o="category"]');
     if (!select || select.value === source.category) continue;
     select.value = source.category;
@@ -68,12 +71,18 @@ function parseTsv(text) {
   });
 }
 
-function targetToCategory(target) {
+function targetToCategory(target, majorCategory) {
   const key = String(target || "").trim().toLowerCase();
-  return ({
+  const explicit = ({
     cyberware: "cyberware", cyberwares: "cyberware", "サイバーウェア": "cyberware",
     tron: "tron", trons: "tron", "トロン": "tron"
-  })[key] || "other";
+  })[key];
+  if (explicit) return explicit;
+
+  const major = String(majorCategory || "").normalize("NFKC");
+  if (/サイバーウェア|サイバー|IANUS|義体|義肢/i.test(major)) return "cyberware";
+  if (/トロン|タップ|ソフトウェア|ウェブ/i.test(major)) return "tron";
+  return "other";
 }
 
 function wait(milliseconds) {
