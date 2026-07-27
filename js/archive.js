@@ -1,8 +1,8 @@
 import { supabase } from "./supabase-client.js";
 import { renderAuthNavigation } from "./auth-state.js?v=3";
 
-const ALLOWED_PAGE_SIZES = new Set([10, 25, 50, 100]);
-const DEFAULT_PAGE_SIZE = 10;
+const ALLOWED_PAGE_SIZES = new Set([12, 25, 50, 100]);
+const DEFAULT_PAGE_SIZE = 12;
 
 const castGrid = document.querySelector("#cast-grid");
 const statusText = document.querySelector("#status-text");
