@@ -24,17 +24,19 @@
 .outfit-table-head--residence_entry,.outfit-table-cell--residence_entry,
 .outfit-table-head--residence_electric,.outfit-table-cell--residence_electric,
 .outfit-table-head--residence_area,.outfit-table-cell--residence_area{width:68px;text-align:center}
+.outfit-table-head--slot,.outfit-table-cell--slot{width:110px}
 .outfit-table-cell--ofc input{text-align:center}
-.outfit-table-head--major_category,.outfit-table-head--minor_category,.outfit-table-head--manufacturer{text-align:left}
-.outfit-table-cell--major_category input,.outfit-table-cell--minor_category input,.outfit-table-cell--manufacturer input{text-align:left}
+.outfit-table-head--major_category,.outfit-table-head--minor_category,.outfit-table-head--manufacturer,.outfit-table-head--slot{text-align:left}
+.outfit-table-cell--major_category input,.outfit-table-cell--minor_category input,.outfit-table-cell--manufacturer input,.outfit-table-cell--slot input{text-align:left}
 .outfit-table-head--ofc{color:var(--line);background:rgba(65,232,255,.055)}
 .outfit-table-cell--ofc{background:rgba(65,232,255,.018)}
-.outfit-table[data-outfit-schema="weapon"]{min-width:1740px}
-.outfit-table[data-outfit-schema="armor"]{min-width:1540px}
-.outfit-table[data-outfit-schema="cyberware"],.outfit-table[data-outfit-schema="tron"]{min-width:1740px}
-.outfit-table[data-outfit-schema="vehicle"]{min-width:2140px}
-.outfit-table[data-outfit-schema="residence"]{min-width:1600px}
-.outfit-table[data-outfit-schema="other"]{min-width:1600px}
+.outfit-table[data-outfit-schema="weapon"]{min-width:1780px}
+.outfit-table[data-outfit-schema="armor"]{min-width:1700px}
+.outfit-table[data-outfit-schema="cyberware"]{min-width:2500px}
+.outfit-table[data-outfit-schema="tron"]{min-width:2300px}
+.outfit-table[data-outfit-schema="vehicle"]{min-width:2200px}
+.outfit-table[data-outfit-schema="residence"]{min-width:1780px}
+.outfit-table[data-outfit-schema="other"]{min-width:2350px}
 .outfit-table-scroll{overflow-x:auto}
 
 .cast-outfit-ofc-detail-row td{padding:0 10px 12px!important;border-top:0!important;background:rgba(65,232,255,.025)}
