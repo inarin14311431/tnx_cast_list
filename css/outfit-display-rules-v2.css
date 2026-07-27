@@ -1,0 +1,40 @@
+/* Final category-specific outfit visibility and alignment rules. */
+.outfit-rule-hidden,
+.cast-outfit-rule-hidden,
+.cast-outfit-detail-hidden,
+.cast-outfit-detail-row-hidden{display:none!important}
+
+.outfit-table-head--mundane_modifier,
+.outfit-table-cell--mundane_modifier{display:none!important}
+
+.outfit-table[data-outfit-schema="weapon"]{min-width:1120px}
+.outfit-table[data-outfit-schema="armor"]{min-width:1160px}
+.outfit-table[data-outfit-schema="cyberware"]{min-width:1080px}
+.outfit-table[data-outfit-schema="tron"]{min-width:1180px}
+.outfit-table[data-outfit-schema="vehicle"]{min-width:1480px}
+.outfit-table[data-outfit-schema="residence"]{min-width:1040px}
+.outfit-table[data-outfit-schema="other"]{min-width:820px}
+
+.outfit-table-head--page_number,
+.outfit-table-cell--page_number{width:68px}
+
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--speed,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--speed{width:42px;min-width:42px;max-width:42px;text-align:center}
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--defense_s,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--defense_s,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--defense_p,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--defense_p,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--defense_i,
+.outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--defense_i{width:46px;min-width:46px;max-width:46px;text-align:center}
+
+.outfit-table:not([data-outfit-schema="vehicle"]) .outfit-table-head--speed,
+.outfit-table:not([data-outfit-schema="vehicle"]) .outfit-table-cell--speed{width:86px}
+.outfit-table-head--residence_entry,.outfit-table-cell--residence_entry{width:72px}
+
+.outfit-table-group--armor .armor-defense-total-row th,
+.outfit-table-group--armor .armor-defense-total-row td{box-sizing:border-box}
+.outfit-table-group--armor .armor-defense-total-row th{text-align:right;padding-right:10px}
+.outfit-table-group--armor .armor-defense-total-row [data-armor-total]{text-align:center}
+
+.outfit-table-cell--description textarea,
+#outfit-container .data-table td:last-child{white-space:pre-wrap}
