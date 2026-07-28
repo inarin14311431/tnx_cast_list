@@ -72,7 +72,7 @@
     appendStylesheet("./css/outfit-display-rules-v2.css?v=2", "data-outfit-display-rules-v2");
     appendStylesheet("./css/outfit-display-rules-v3.css?v=1", "data-outfit-display-rules-v3");
     appendStylesheet("./css/outfit-display-rules-v4.css?v=1", "data-outfit-display-rules-v4");
-    appendStylesheet("./css/outfit-display-rules-v5.css?v=2", "data-outfit-display-rules-v5");
+    appendStylesheet("./css/outfit-display-rules-v5.css?v=3", "data-outfit-display-rules-v5");
   }
 
   function loadPageEnhancements(){
@@ -84,6 +84,7 @@
       appendModuleScript("./js/outfit-ofc-extra-columns.js?v=2","data-outfit-ofc-extra-columns-script");
       appendModuleScript("./js/outfit-ofc-tsv-category-fix.js?v=1","data-outfit-ofc-tsv-category-fix-script");
       appendScript("./js/outfit-display-rules-v5.js?v=2","data-outfit-display-rules-v5-script");
+      appendScript("./js/outfit-text-limits.js?v=1","data-outfit-text-limits-script");
     }
     if(document.querySelector("#outfit-container")){
       appendModuleScript("./js/cast-outfit-ofc-details.js?v=1","data-cast-outfit-ofc-details-script");
