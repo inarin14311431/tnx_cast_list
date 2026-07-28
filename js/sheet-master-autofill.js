@@ -1,6 +1,5 @@
 import { supabase } from "./supabase-client.js";
 
-const ADMIN_UID = "f44d74d1-5f09-425f-8de8-a7fb6b46ea79";
 const EMPTY_MARKS = new Set(["", "-", "－", "—", "―"]);
 const MASTER_PAGE_SIZE = 1000;
 
@@ -11,9 +10,9 @@ async function initialize() {
   if (!host || !document.querySelector("#style-skills") || !document.querySelector("#outfit-list")) return;
 
   try {
-    const { data, error } = await supabase.auth.getUser();
+    const { data, error } = await supabase.rpc("can_use_master_search");
     if (error) throw error;
-    if (data?.user?.id !== ADMIN_UID) return;
+    if (data !== true) return;
 
     const button = document.createElement("button");
     button.id = "master-autofill-button";
