@@ -1,0 +1,7 @@
+.ability-card--cs .ability-card__numbers{
+  grid-template-columns:1fr;
+}
+
+.ability-card--cs .ability-card__numbers>div{
+  text-align:center;
+}
