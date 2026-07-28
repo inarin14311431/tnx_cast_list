@@ -13,7 +13,7 @@
     .replace(/\[\s*["']?([^\]"']+)["']?\s*\]/g,".$1")
     .replace(/^[.#]+|[.]$/g,"")
     .replace(/\.{2,}/g,".");
-  const cleanName=value=>normalize(value).replace(/^[★†※■┗]+\s*/,"");
+  const cleanName=value=>normalize(value).replace(/^[★■┗]+\s*/,"");
   const isNone=value=>/^(?:なし|none)$/i.test(normalize(value));
   const isExplicitZero=value=>{
     const text=normalize(value);
