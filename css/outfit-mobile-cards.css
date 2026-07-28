@@ -1,0 +1,190 @@
+/* Mobile editor layout: turn wide outfit tables into readable field cards. */
+@media (max-width: 700px) {
+  #outfit-list,
+  #outfit-list .outfit-table-group,
+  #outfit-list .outfit-table-scroll {
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    overflow: visible;
+  }
+
+  #outfit-list .outfit-table-heading {
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 22px;
+  }
+
+  #outfit-list .outfit-table-heading .outfit-category-add {
+    width: auto !important;
+    max-width: 55%;
+    padding: 8px 10px;
+    font-size: .72rem;
+  }
+
+  #outfit-list .outfit-table {
+    display: block;
+    width: 100%;
+    min-width: 0 !important;
+    table-layout: auto;
+  }
+
+  #outfit-list .outfit-table thead {
+    display: none;
+  }
+
+  #outfit-list .outfit-table tbody {
+    display: grid;
+    gap: 12px;
+  }
+
+  #outfit-list .outfit-table-row {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    width: 100%;
+    height: auto !important;
+    min-height: 0 !important;
+    padding: 10px;
+    border: 1px solid var(--line-muted);
+    background: rgba(0, 0, 0, .16);
+    box-sizing: border-box;
+  }
+
+  #outfit-list .outfit-table-row > td {
+    display: grid !important;
+    grid-template-columns: minmax(4.5rem, 38%) minmax(0, 1fr);
+    align-items: center;
+    gap: 6px;
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    height: auto !important;
+    min-height: 46px !important;
+    max-height: none !important;
+    padding: 5px !important;
+    border: 0 !important;
+    border-bottom: 1px solid color-mix(in srgb, var(--line-muted) 65%, transparent) !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    box-sizing: border-box !important;
+  }
+
+  #outfit-list .outfit-table-row > td::before {
+    content: "項目";
+    color: var(--text-muted);
+    font: 700 .65rem/1.2 monospace;
+    letter-spacing: .02em;
+  }
+
+  #outfit-list .outfit-table-row > td input,
+  #outfit-list .outfit-table-row > td select,
+  #outfit-list .outfit-table-row > td textarea {
+    width: 100%;
+    min-width: 0;
+    height: 38px;
+    font-size: .8rem;
+  }
+
+  #outfit-list .outfit-table-row > td textarea {
+    min-height: 58px;
+    height: 58px;
+  }
+
+  #outfit-list .outfit-table-cell--category::before { content: "分類"; }
+  #outfit-list .outfit-table-cell--name::before { content: "名称"; }
+  #outfit-list .outfit-table-cell--purchase_value::before { content: "購入"; }
+  #outfit-list .outfit-table-cell--experience_cost::before { content: "常備化"; }
+  #outfit-list .outfit-table-cell--concealment::before { content: "隠匿"; }
+  #outfit-list .outfit-table-cell--attack::before { content: "攻撃"; }
+  #outfit-list .outfit-table-cell--parry::before { content: "受け"; }
+  #outfit-list .outfit-table-cell--defense::before { content: "防御"; }
+  #outfit-list .outfit-table-cell--defense_s::before { content: "防S"; }
+  #outfit-list .outfit-table-cell--defense_i::before { content: "防I"; }
+  #outfit-list .outfit-table-cell--defense_p::before { content: "防P"; }
+  #outfit-list .outfit-table-cell--range::before,
+  #outfit-list .outfit-table-cell--range_text::before { content: "射程"; }
+  #outfit-list .outfit-table-cell--speed::before { content: "スピード"; }
+  #outfit-list .outfit-table-cell--slot::before { content: "部位"; }
+  #outfit-list .outfit-table-cell--electronic_control::before { content: "電制"; }
+  #outfit-list .outfit-table-cell--control_value::before { content: "制御"; }
+  #outfit-list .outfit-table-cell--control_modifier::before { content: "制御修正"; }
+  #outfit-list .outfit-table-cell--cs_modifier::before { content: "CS修正"; }
+  #outfit-list .outfit-table-cell--cs_value::before { content: "CS値"; }
+  #outfit-list .outfit-table-cell--mundane_modifier::before { content: "一般修正"; }
+  #outfit-list .outfit-table-cell--crew::before { content: "乗員"; }
+  #outfit-list .outfit-table-cell--sf::before { content: "SF"; }
+  #outfit-list .outfit-table-cell--tron_software::before { content: "ソ"; }
+  #outfit-list .outfit-table-cell--tron_support::before { content: "サ"; }
+  #outfit-list .outfit-table-cell--tron_hardware::before { content: "ハ"; }
+  #outfit-list .outfit-table-cell--ianus_surface::before { content: "IANUS表"; }
+  #outfit-list .outfit-table-cell--ianus_deep::before { content: "IANUS深"; }
+  #outfit-list .outfit-table-cell--ianus_none::before { content: "IANUS無"; }
+  #outfit-list .outfit-table-cell--residence_entry::before { content: "登場"; }
+  #outfit-list .outfit-table-cell--residence_electric::before { content: "電"; }
+  #outfit-list .outfit-table-cell--residence_area::before { content: "ア"; }
+  #outfit-list .outfit-table-cell--page_number::before { content: "参照P"; }
+  #outfit-list .outfit-table-cell--major_category::before { content: "大分類"; }
+  #outfit-list .outfit-table-cell--minor_category::before { content: "小分類"; }
+  #outfit-list .outfit-table-cell--manufacturer::before { content: "メーカー"; }
+
+  #outfit-list .outfit-table-cell--description {
+    grid-column: 1 / -1;
+    grid-template-columns: minmax(4.5rem, 18%) minmax(0, 1fr) !important;
+  }
+  #outfit-list .outfit-table-cell--description::before { content: "解説"; }
+
+  #outfit-list .outfit-table-cell--actions {
+    grid-column: 1 / -1;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    gap: 6px;
+    min-height: 44px !important;
+    border-bottom: 0 !important;
+  }
+  #outfit-list .outfit-table-cell--actions::before { content: none !important; }
+  #outfit-list .outfit-table-cell--actions > button {
+    width: 42px !important;
+    min-width: 42px !important;
+    max-width: 42px !important;
+    height: 38px !important;
+    margin: 0 !important;
+  }
+
+  #outfit-list .outfit-table-row > td.outfit-rule-v4-hidden,
+  #outfit-list .outfit-table-row > td[hidden] {
+    display: none !important;
+  }
+
+  #outfit-list .outfit-table tfoot {
+    display: block;
+    margin-top: 10px;
+  }
+  #outfit-list .outfit-table tfoot tr {
+    display: grid;
+    grid-template-columns: 1fr repeat(3, minmax(48px, 64px));
+  }
+  #outfit-list .outfit-table tfoot th,
+  #outfit-list .outfit-table tfoot td {
+    display: block;
+    width: auto !important;
+    height: auto !important;
+    min-height: 40px;
+    padding: 10px 6px !important;
+    box-sizing: border-box;
+  }
+}
+
+@media (max-width: 430px) {
+  #outfit-list .outfit-table-row {
+    grid-template-columns: 1fr;
+  }
+  #outfit-list .outfit-table-cell--description,
+  #outfit-list .outfit-table-cell--actions {
+    grid-column: auto;
+  }
+  #outfit-list .outfit-table-row > td,
+  #outfit-list .outfit-table-cell--description {
+    grid-template-columns: 5rem minmax(0, 1fr) !important;
+  }
+}
