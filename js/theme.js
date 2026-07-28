@@ -85,10 +85,12 @@
       appendScript("./js/outfit-footer-fix.js?v=1","data-outfit-footer-fix-script");
       appendScript("./js/sheet-import-style-skill-compat.js?v=1","data-sheet-import-style-skill-compat-script");
       appendScript("./js/sheet-import-outfit-compat.js?v=5","data-sheet-import-outfit-compat-script");
+      appendModuleScript("./js/transfer-tsv-outfit-fix.js?v=1","data-transfer-tsv-outfit-fix-script");
     }
     if(document.querySelector("#outfit-container")){
       appendModuleScript("./js/cast-outfit-ofc-details.js?v=1","data-cast-outfit-ofc-details-script");
       appendScript("./js/outfit-display-rules-v5.js?v=3","data-outfit-display-rules-script");
+      appendModuleScript("./js/transfer-tsv-outfit-fix.js?v=1","data-transfer-tsv-outfit-fix-script");
     }
   }
 
