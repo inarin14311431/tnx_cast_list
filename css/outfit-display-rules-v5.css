@@ -41,14 +41,19 @@
 #outfit-list .outfit-table-cell--category{width:68px!important}
 #outfit-list .outfit-table-head--name,
 #outfit-list .outfit-table-cell--name{width:112px!important}
+
+/* Three numeric characters. */
 #outfit-list .outfit-table-head--purchase_value,
 #outfit-list .outfit-table-cell--purchase_value,
 #outfit-list .outfit-table-head--experience_cost,
 #outfit-list .outfit-table-cell--experience_cost,
 #outfit-list .outfit-table-head--page_number,
-#outfit-list .outfit-table-cell--page_number{width:46px!important}
+#outfit-list .outfit-table-cell--page_number{width:44px!important}
+
+/* Six characters: two digits, slash, three digits. */
 #outfit-list .outfit-table-head--concealment,
-#outfit-list .outfit-table-cell--concealment{width:48px!important}
+#outfit-list .outfit-table-cell--concealment{width:68px!important}
+
 #outfit-list .outfit-table-head--attack,
 #outfit-list .outfit-table-cell--attack,
 #outfit-list .outfit-table-head--range,
@@ -57,18 +62,23 @@
 #outfit-list .outfit-table-cell--slot{width:54px!important}
 #outfit-list .outfit-table-head--speed,
 #outfit-list .outfit-table-cell--speed{width:38px!important}
+
+/* Two numeric characters. */
+#outfit-list .outfit-table-head--parry,
+#outfit-list .outfit-table-cell--parry,
+#outfit-list .outfit-table-head--defense_s,
+#outfit-list .outfit-table-cell--defense_s,
+#outfit-list .outfit-table-head--defense_i,
+#outfit-list .outfit-table-cell--defense_i,
+#outfit-list .outfit-table-head--defense_p,
+#outfit-list .outfit-table-cell--defense_p{width:38px!important}
+
 #outfit-list .outfit-table-head--control_modifier,
 #outfit-list .outfit-table-cell--control_modifier,
 #outfit-list .outfit-table-head--control_value,
 #outfit-list .outfit-table-cell--control_value,
 #outfit-list .outfit-table-head--electronic_control,
 #outfit-list .outfit-table-cell--electronic_control,
-#outfit-list .outfit-table-head--defense_s,
-#outfit-list .outfit-table-cell--defense_s,
-#outfit-list .outfit-table-head--defense_i,
-#outfit-list .outfit-table-cell--defense_i,
-#outfit-list .outfit-table-head--defense_p,
-#outfit-list .outfit-table-cell--defense_p,
 #outfit-list .outfit-table-head--crew,
 #outfit-list .outfit-table-cell--crew,
 #outfit-list .outfit-table-head--sf,
@@ -88,24 +98,15 @@
 #outfit-list .outfit-table-head--actions,
 #outfit-list .outfit-table-cell--actions{width:92px!important}
 
-/* Description is the primary flexible column, but is intentionally kept narrow. */
+/* Description receives all width left after fixed columns. */
 #outfit-list .outfit-table-head--description,
 #outfit-list .outfit-table-cell--description{
-  width:110px!important;
-  max-width:110px!important;
+  width:auto!important;
+  max-width:none!important;
 }
 #outfit-list .outfit-table-cell--description textarea{
   overflow-wrap:anywhere;
   white-space:pre-wrap;
-}
-
-/* Dense categories need an even shorter description to remain within the panel. */
-#outfit-list .outfit-table[data-outfit-schema="tron"] .outfit-table-head--description,
-#outfit-list .outfit-table[data-outfit-schema="tron"] .outfit-table-cell--description,
-#outfit-list .outfit-table[data-outfit-schema="vehicle"] .outfit-table-head--description,
-#outfit-list .outfit-table[data-outfit-schema="vehicle"] .outfit-table-cell--description{
-  width:82px!important;
-  max-width:82px!important;
 }
 
 @media(max-width:860px){
