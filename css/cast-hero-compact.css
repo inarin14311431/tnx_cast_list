@@ -130,23 +130,23 @@
 
   .identity-grid div{
     min-width:0;
-    min-height:42px;
-    padding:6px 8px!important;
+    min-height:48px;
+    padding:7px 9px!important;
     border-left-width:1px!important;
   }
 
   .identity-grid dt{
-    font-size:.57rem!important;
-    line-height:1.1;
+    font-size:.66rem!important;
+    line-height:1.15;
     white-space:nowrap;
   }
 
   .identity-grid dd{
     display:-webkit-box;
-    margin:2px 0 0!important;
+    margin:3px 0 0!important;
     overflow:hidden;
     color:#edfaff;
-    font-size:.76rem;
+    font-size:.9rem!important;
     line-height:1.25;
     overflow-wrap:anywhere;
     -webkit-box-orient:vertical;
