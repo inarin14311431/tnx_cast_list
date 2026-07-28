@@ -1,35 +1,22 @@
-/* Final visual sizing and visibility for the stable v5 outfit layout. */
+/* Single authoritative outfit table layout. */
 
-/* v5 owns the hidden state. Do not depend on retired v2-v4 stylesheets. */
-.outfit-rule-v4-hidden,
-#outfit-list [data-ofc-head="major_category"],
-#outfit-list [data-ofc-cell="major_category"],
-#outfit-list [data-ofc-head="minor_category"],
-#outfit-list [data-ofc-cell="minor_category"],
-#outfit-list [data-ofc-head="manufacturer"],
-#outfit-list [data-ofc-cell="manufacturer"],
-#outfit-list [data-ofc-head="concealment_penalty"],
-#outfit-list [data-ofc-cell="concealment_penalty"],
-#outfit-list .outfit-table-head--major_category,
-#outfit-list .outfit-table-cell--major_category,
-#outfit-list .outfit-table-head--minor_category,
-#outfit-list .outfit-table-cell--minor_category,
-#outfit-list .outfit-table-head--manufacturer,
-#outfit-list .outfit-table-cell--manufacturer,
-#outfit-list .outfit-table-head--concealment_penalty,
-#outfit-list .outfit-table-cell--concealment_penalty{
-  display:none!important;
-  width:0!important;
-  min-width:0!important;
-  max-width:0!important;
-  height:0!important;
-  min-height:0!important;
-  padding:0!important;
-  border:0!important;
-}
+/* Hidden state used by the layout controller. */
+.outfit-rule-v4-hidden{display:none!important}
+
+/* OFC columns are hidden by default. Only explicitly permitted fields are shown. */
+#outfit-list [data-ofc-head],
+#outfit-list [data-ofc-cell]{display:none!important}
+
+#outfit-list table[data-outfit-schema="weapon"] :is([data-ofc-head="parry"],[data-ofc-cell="parry"],[data-ofc-head="speed"],[data-ofc-cell="speed"],[data-ofc-head="electronic_control"],[data-ofc-cell="electronic_control"],[data-ofc-head="page_number"],[data-ofc-cell="page_number"]),
+#outfit-list table[data-outfit-schema="armor"] :is([data-ofc-head="electronic_control"],[data-ofc-cell="electronic_control"],[data-ofc-head="control_value"],[data-ofc-cell="control_value"],[data-ofc-head="page_number"],[data-ofc-cell="page_number"]),
+#outfit-list table[data-outfit-schema="cyberware"] :is([data-ofc-head="electronic_control"],[data-ofc-cell="electronic_control"],[data-ofc-head="page_number"],[data-ofc-cell="page_number"]),
+#outfit-list table[data-outfit-schema="tron"] :is([data-ofc-head="speed"],[data-ofc-cell="speed"],[data-ofc-head="electronic_control"],[data-ofc-cell="electronic_control"],[data-ofc-head="tron_software"],[data-ofc-cell="tron_software"],[data-ofc-head="tron_support"],[data-ofc-cell="tron_support"],[data-ofc-head="tron_hardware"],[data-ofc-cell="tron_hardware"],[data-ofc-head="cs_value"],[data-ofc-cell="cs_value"],[data-ofc-head="page_number"],[data-ofc-cell="page_number"]),
+#outfit-list table[data-outfit-schema="vehicle"] :is([data-ofc-head="speed"],[data-ofc-cell="speed"],[data-ofc-head="electronic_control"],[data-ofc-cell="electronic_control"],[data-ofc-head="defense_s"],[data-ofc-cell="defense_s"],[data-ofc-head="defense_p"],[data-ofc-cell="defense_p"],[data-ofc-head="defense_i"],[data-ofc-cell="defense_i"],[data-ofc-head="crew"],[data-ofc-cell="crew"],[data-ofc-head="sf"],[data-ofc-cell="sf"],[data-ofc-head="page_number"],[data-ofc-cell="page_number"]),
+#outfit-list table[data-outfit-schema="residence"] :is([data-ofc-head="speed"],[data-ofc-cell="speed"],[data-ofc-head="electronic_control"],[data-ofc-cell="electronic_control"],[data-ofc-head="residence_entry"],[data-ofc-cell="residence_entry"],[data-ofc-head="page_number"],[data-ofc-cell="page_number"]),
+#outfit-list table[data-outfit-schema="other"] :is([data-ofc-head="page_number"],[data-ofc-cell="page_number"]){display:table-cell!important}
 
 #outfit-list .outfit-table-scroll{width:100%;min-width:0;overflow-x:hidden!important}
-#outfit-list .outfit-table{width:100%!important;min-width:0!important;max-width:100%!important;table-layout:fixed!important}
+#outfit-list .outfit-table{width:100%!important;min-width:0!important;max-width:100%!important;table-layout:fixed!important;border-collapse:collapse!important}
 #outfit-list .outfit-table thead th{color:var(--text-muted)!important;background:rgba(65,232,255,.055)!important;border-top:1px solid rgba(65,232,255,.14)!important;border-bottom:1px solid var(--line-muted)!important;box-shadow:none!important}
 #outfit-list .outfit-table th,#outfit-list .outfit-table td{box-sizing:border-box!important;min-width:0!important;padding-left:2px!important;padding-right:2px!important}
 #outfit-list .outfit-table input,#outfit-list .outfit-table select,#outfit-list .outfit-table textarea{box-sizing:border-box!important;width:100%!important;min-width:0!important;padding-left:3px!important;padding-right:3px!important}
@@ -49,45 +36,16 @@
 #outfit-list .outfit-table-head--residence-electric-area,#outfit-list .outfit-table-cell--residence-electric-area{width:58px!important;min-width:58px!important;max-width:58px!important}
 #outfit-list .outfit-table-head--actions,#outfit-list .outfit-table-cell--actions{width:92px!important;min-width:92px!important;max-width:92px!important}
 
-/* A td must remain a table-cell. Flex on td breaks fixed-table column calculation. */
-#outfit-list .outfit-table-cell--actions{
-  display:table-cell!important;
-  box-sizing:border-box!important;
-  height:48px!important;
-  min-height:48px!important;
-  max-height:48px!important;
-  padding:5px 3px!important;
-  overflow:hidden!important;
-  vertical-align:middle!important;
-  text-align:center!important;
-  font-size:0!important;
-  border-top:0!important;
-  border-right:0!important;
-  border-left:0!important;
-  border-bottom:1px solid var(--line-muted)!important;
-  background:transparent!important;
-  box-shadow:none!important;
-}
-#outfit-list .outfit-table-cell--actions > button{
-  display:inline-flex!important;
-  align-items:center!important;
-  justify-content:center!important;
-  box-sizing:border-box!important;
-  width:26px!important;
-  min-width:26px!important;
-  max-width:26px!important;
-  height:36px!important;
-  min-height:36px!important;
-  max-height:36px!important;
-  margin:0 2px!important;
-  padding:0!important;
-  line-height:1!important;
-  vertical-align:middle!important;
-  font-size:.76rem!important;
-}
-#outfit-list .outfit-table-cell--actions::before,#outfit-list .outfit-table-cell--actions::after,#outfit-list .outfit-table-cell--actions > button::before,#outfit-list .outfit-table-cell--actions > button::after{content:none!important;display:none!important;border:0!important;box-shadow:none!important}
+/* Keep table semantics intact; only the buttons are flex items. */
+#outfit-list .outfit-table-cell--actions{display:table-cell!important;height:48px!important;padding:5px 3px!important;overflow:hidden!important;vertical-align:middle!important;text-align:center!important;font-size:0!important;border-left:0!important;border-right:0!important;border-bottom:1px solid var(--line-muted)!important;background:transparent!important;box-shadow:none!important;white-space:nowrap!important}
+#outfit-list .outfit-table-cell--actions>button{display:inline-flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;width:26px!important;min-width:26px!important;max-width:26px!important;height:36px!important;min-height:36px!important;max-height:36px!important;margin:0 1px!important;padding:0!important;line-height:1!important;vertical-align:middle!important;font-size:.76rem!important}
+#outfit-list .outfit-table-cell--actions::before,#outfit-list .outfit-table-cell--actions::after,#outfit-list .outfit-table-cell--actions>button::before,#outfit-list .outfit-table-cell--actions>button::after{content:none!important;display:none!important;border:0!important;box-shadow:none!important}
 
 #outfit-list .outfit-table-head--description,#outfit-list .outfit-table-cell--description{width:auto!important;min-width:0!important;max-width:none!important}
 #outfit-list .outfit-table-cell--description textarea{overflow-wrap:anywhere;white-space:pre-wrap}
+
+/* Armor footer follows the 14 visible columns: 5 + S/I/P + 6. */
+#outfit-list .outfit-table-group--armor .armor-defense-total-row>th,#outfit-list .outfit-table-group--armor .armor-defense-total-row>td{box-sizing:border-box!important}
+#outfit-list .outfit-table-group--armor .armor-defense-total-row>td:last-child{border-right:0!important}
 
 @media(max-width:860px){#outfit-list .outfit-table-scroll{overflow-x:auto!important}#outfit-list .outfit-table{min-width:900px!important}}
