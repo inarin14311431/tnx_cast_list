@@ -26,22 +26,24 @@
     display: block;
     width: 100%;
     min-width: 0 !important;
+    max-width: 100% !important;
     table-layout: auto;
   }
 
-  #outfit-list .outfit-table thead {
-    display: none;
-  }
+  #outfit-list .outfit-table thead { display: none; }
 
   #outfit-list .outfit-table tbody {
     display: grid;
+    width: 100%;
     gap: 12px;
   }
 
   #outfit-list .outfit-table-row {
     display: grid !important;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    width: 100%;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
     height: auto !important;
     min-height: 0 !important;
     padding: 10px;
@@ -52,19 +54,19 @@
 
   #outfit-list .outfit-table-row > td {
     display: grid !important;
-    grid-template-columns: minmax(4.5rem, 38%) minmax(0, 1fr);
+    grid-template-columns: 5.5rem minmax(0, 1fr);
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     width: auto !important;
     min-width: 0 !important;
-    max-width: none !important;
+    max-width: 100% !important;
     height: auto !important;
-    min-height: 46px !important;
+    min-height: 50px !important;
     max-height: none !important;
-    padding: 5px !important;
+    padding: 6px 4px !important;
     border: 0 !important;
     border-bottom: 1px solid color-mix(in srgb, var(--line-muted) 65%, transparent) !important;
-    overflow: visible !important;
+    overflow: hidden !important;
     white-space: normal !important;
     box-sizing: border-box !important;
   }
@@ -72,66 +74,121 @@
   #outfit-list .outfit-table-row > td::before {
     content: "項目";
     color: var(--text-muted);
-    font: 700 .65rem/1.2 monospace;
+    font: 700 .68rem/1.25 monospace;
     letter-spacing: .02em;
+    overflow-wrap: anywhere;
   }
 
   #outfit-list .outfit-table-row > td input,
   #outfit-list .outfit-table-row > td select,
   #outfit-list .outfit-table-row > td textarea {
-    width: 100%;
-    min-width: 0;
-    height: 38px;
-    font-size: .8rem;
+    display: block !important;
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
+    margin: 0 !important;
+    padding: 7px 8px !important;
+    font-size: .86rem !important;
+    line-height: 1.25 !important;
+    box-sizing: border-box !important;
   }
 
   #outfit-list .outfit-table-row > td textarea {
-    min-height: 58px;
-    height: 58px;
+    height: 72px !important;
+    min-height: 72px !important;
+    max-height: 160px !important;
+    resize: vertical !important;
   }
 
-  #outfit-list .outfit-table-cell--category::before { content: "分類"; }
-  #outfit-list .outfit-table-cell--name::before { content: "名称"; }
-  #outfit-list .outfit-table-cell--purchase_value::before { content: "購入"; }
-  #outfit-list .outfit-table-cell--experience_cost::before { content: "常備化"; }
-  #outfit-list .outfit-table-cell--concealment::before { content: "隠匿"; }
-  #outfit-list .outfit-table-cell--attack::before { content: "攻撃"; }
-  #outfit-list .outfit-table-cell--parry::before { content: "受け"; }
-  #outfit-list .outfit-table-cell--defense::before { content: "防御"; }
-  #outfit-list .outfit-table-cell--defense_s::before { content: "防S"; }
-  #outfit-list .outfit-table-cell--defense_i::before { content: "防I"; }
-  #outfit-list .outfit-table-cell--defense_p::before { content: "防P"; }
-  #outfit-list .outfit-table-cell--range::before,
-  #outfit-list .outfit-table-cell--range_text::before { content: "射程"; }
-  #outfit-list .outfit-table-cell--speed::before { content: "スピード"; }
-  #outfit-list .outfit-table-cell--slot::before { content: "部位"; }
-  #outfit-list .outfit-table-cell--electronic_control::before { content: "電制"; }
-  #outfit-list .outfit-table-cell--control_value::before { content: "制御"; }
-  #outfit-list .outfit-table-cell--control_modifier::before { content: "制御修正"; }
-  #outfit-list .outfit-table-cell--cs_modifier::before { content: "CS修正"; }
-  #outfit-list .outfit-table-cell--cs_value::before { content: "CS値"; }
-  #outfit-list .outfit-table-cell--mundane_modifier::before { content: "一般修正"; }
-  #outfit-list .outfit-table-cell--crew::before { content: "乗員"; }
-  #outfit-list .outfit-table-cell--sf::before { content: "SF"; }
-  #outfit-list .outfit-table-cell--tron_software::before { content: "ソ"; }
-  #outfit-list .outfit-table-cell--tron_support::before { content: "サ"; }
-  #outfit-list .outfit-table-cell--tron_hardware::before { content: "ハ"; }
-  #outfit-list .outfit-table-cell--ianus_surface::before { content: "IANUS表"; }
-  #outfit-list .outfit-table-cell--ianus_deep::before { content: "IANUS深"; }
-  #outfit-list .outfit-table-cell--ianus_none::before { content: "IANUS無"; }
-  #outfit-list .outfit-table-cell--residence_entry::before { content: "登場"; }
-  #outfit-list .outfit-table-cell--residence_electric::before { content: "電"; }
-  #outfit-list .outfit-table-cell--residence_area::before { content: "ア"; }
-  #outfit-list .outfit-table-cell--page_number::before { content: "参照P"; }
-  #outfit-list .outfit-table-cell--major_category::before { content: "大分類"; }
-  #outfit-list .outfit-table-cell--minor_category::before { content: "小分類"; }
-  #outfit-list .outfit-table-cell--manufacturer::before { content: "メーカー"; }
+  /* Base columns: class and control selectors are both used because themes may rewrite cell classes. */
+  #outfit-list td.outfit-table-cell--category::before,
+  #outfit-list td:has(> [data-o="category"])::before { content: "分類"; }
+  #outfit-list td.outfit-table-cell--name::before,
+  #outfit-list td:has(> [data-o="name"])::before { content: "名称"; }
+  #outfit-list td.outfit-table-cell--purchase_value::before,
+  #outfit-list td:has(> [data-o="purchase_value"])::before { content: "購入"; }
+  #outfit-list td.outfit-table-cell--experience_cost::before,
+  #outfit-list td:has(> [data-o="experience_cost"])::before { content: "常備化"; }
+  #outfit-list td.outfit-table-cell--concealment::before,
+  #outfit-list td:has(> [data-o="concealment"])::before { content: "隠匿"; }
+  #outfit-list td.outfit-table-cell--attack::before,
+  #outfit-list td:has(> [data-o="attack"])::before,
+  #outfit-list td:has(> [data-ofc="attack"])::before { content: "攻撃"; }
+  #outfit-list td.outfit-table-cell--parry::before,
+  #outfit-list td:has(> [data-ofc="parry"])::before { content: "受け"; }
+  #outfit-list td.outfit-table-cell--defense::before,
+  #outfit-list td:has(> [data-o="defense"])::before { content: "防御"; }
+  #outfit-list td.outfit-table-cell--defense_s::before,
+  #outfit-list td:has(> [data-armor-defense="S"])::before,
+  #outfit-list td:has(> [data-ofc="defense_s"])::before { content: "S"; }
+  #outfit-list td.outfit-table-cell--defense_i::before,
+  #outfit-list td:has(> [data-armor-defense="I"])::before,
+  #outfit-list td:has(> [data-ofc="defense_i"])::before { content: "I"; }
+  #outfit-list td.outfit-table-cell--defense_p::before,
+  #outfit-list td:has(> [data-armor-defense="P"])::before,
+  #outfit-list td:has(> [data-ofc="defense_p"])::before { content: "P"; }
+  #outfit-list td.outfit-table-cell--range::before,
+  #outfit-list td.outfit-table-cell--range_text::before,
+  #outfit-list td:has(> [data-o="range"])::before,
+  #outfit-list td:has(> [data-ofc="range_text"])::before { content: "射程"; }
+  #outfit-list td.outfit-table-cell--speed::before,
+  #outfit-list td:has(> [data-ofc="speed"])::before { content: "スピード"; }
+  #outfit-list td.outfit-table-cell--slot::before,
+  #outfit-list td:has(> [data-o="slot"])::before,
+  #outfit-list td:has(> [data-ofc="slot"])::before { content: "部位"; }
+  #outfit-list td.outfit-table-cell--electronic_control::before,
+  #outfit-list td:has(> [data-ofc="electronic_control"])::before { content: "電制"; }
+  #outfit-list td.outfit-table-cell--control_value::before,
+  #outfit-list td:has(> [data-ofc="control_value"])::before { content: "制御"; }
+  #outfit-list td.outfit-table-cell--control_modifier::before,
+  #outfit-list td:has(> [data-o="control_modifier"])::before { content: "制御修正"; }
+  #outfit-list td.outfit-table-cell--cs_modifier::before,
+  #outfit-list td:has(> [data-o="cs_modifier"])::before { content: "CS修正"; }
+  #outfit-list td.outfit-table-cell--cs_value::before,
+  #outfit-list td:has(> [data-ofc="cs_value"])::before { content: "CS値"; }
+  #outfit-list td.outfit-table-cell--mundane_modifier::before,
+  #outfit-list td:has(> [data-o="mundane_modifier"])::before { content: "一般修正"; }
+  #outfit-list td.outfit-table-cell--crew::before,
+  #outfit-list td:has(> [data-ofc="crew"])::before { content: "乗員"; }
+  #outfit-list td.outfit-table-cell--sf::before,
+  #outfit-list td:has(> [data-ofc="sf"])::before { content: "SF"; }
+  #outfit-list td.outfit-table-cell--tron_software::before,
+  #outfit-list td:has(> [data-ofc="tron_software"])::before { content: "ソ"; }
+  #outfit-list td.outfit-table-cell--tron_support::before,
+  #outfit-list td:has(> [data-ofc="tron_support"])::before { content: "サ"; }
+  #outfit-list td.outfit-table-cell--tron_hardware::before,
+  #outfit-list td:has(> [data-ofc="tron_hardware"])::before { content: "ハ"; }
+  #outfit-list td.outfit-table-cell--ianus_surface::before,
+  #outfit-list td:has(> [data-ofc="ianus_surface"])::before { content: "IANUS表"; }
+  #outfit-list td.outfit-table-cell--ianus_deep::before,
+  #outfit-list td:has(> [data-ofc="ianus_deep"])::before { content: "IANUS深"; }
+  #outfit-list td.outfit-table-cell--ianus_none::before,
+  #outfit-list td:has(> [data-ofc="ianus_none"])::before { content: "IANUS無"; }
+  #outfit-list td.outfit-table-cell--residence_entry::before,
+  #outfit-list td:has(> [data-ofc="residence_entry"])::before { content: "登場"; }
+  #outfit-list td.outfit-table-cell--residence_electric::before,
+  #outfit-list td:has(> [data-ofc="residence_electric"])::before { content: "電"; }
+  #outfit-list td.outfit-table-cell--residence_area::before,
+  #outfit-list td:has(> [data-ofc="residence_area"])::before { content: "ア"; }
+  #outfit-list td.outfit-table-cell--page_number::before,
+  #outfit-list td:has(> [data-ofc="page_number"])::before { content: "参照P"; }
+  #outfit-list td.outfit-table-cell--major_category::before,
+  #outfit-list td:has(> [data-ofc="major_category"])::before { content: "大分類"; }
+  #outfit-list td.outfit-table-cell--minor_category::before,
+  #outfit-list td:has(> [data-ofc="minor_category"])::before { content: "小分類"; }
+  #outfit-list td.outfit-table-cell--manufacturer::before,
+  #outfit-list td:has(> [data-ofc="manufacturer"])::before { content: "メーカー"; }
 
-  #outfit-list .outfit-table-cell--description {
+  #outfit-list .outfit-table-cell--description,
+  #outfit-list td:has(> [data-o="description"]) {
     grid-column: 1 / -1;
-    grid-template-columns: minmax(4.5rem, 18%) minmax(0, 1fr) !important;
+    grid-template-columns: 5.5rem minmax(0, 1fr) !important;
   }
-  #outfit-list .outfit-table-cell--description::before { content: "解説"; }
+  #outfit-list .outfit-table-cell--description::before,
+  #outfit-list td:has(> [data-o="description"])::before { content: "解説"; }
 
   #outfit-list .outfit-table-cell--actions {
     grid-column: 1 / -1;
@@ -139,7 +196,7 @@
     justify-content: flex-end !important;
     align-items: center !important;
     gap: 6px;
-    min-height: 44px !important;
+    min-height: 48px !important;
     border-bottom: 0 !important;
   }
   #outfit-list .outfit-table-cell--actions::before { content: none !important; }
@@ -147,14 +204,14 @@
     width: 42px !important;
     min-width: 42px !important;
     max-width: 42px !important;
-    height: 38px !important;
+    height: 40px !important;
+    min-height: 40px !important;
+    max-height: 40px !important;
     margin: 0 !important;
   }
 
   #outfit-list .outfit-table-row > td.outfit-rule-v4-hidden,
-  #outfit-list .outfit-table-row > td[hidden] {
-    display: none !important;
-  }
+  #outfit-list .outfit-table-row > td[hidden] { display: none !important; }
 
   #outfit-list .outfit-table tfoot {
     display: block;
@@ -176,15 +233,11 @@
 }
 
 @media (max-width: 430px) {
-  #outfit-list .outfit-table-row {
-    grid-template-columns: 1fr;
-  }
+  #outfit-list .outfit-table-row { grid-template-columns: 1fr; }
   #outfit-list .outfit-table-cell--description,
-  #outfit-list .outfit-table-cell--actions {
-    grid-column: auto;
-  }
+  #outfit-list .outfit-table-cell--actions { grid-column: auto; }
   #outfit-list .outfit-table-row > td,
   #outfit-list .outfit-table-cell--description {
-    grid-template-columns: 5rem minmax(0, 1fr) !important;
+    grid-template-columns: 5.5rem minmax(0, 1fr) !important;
   }
 }
