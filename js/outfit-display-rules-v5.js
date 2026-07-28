@@ -171,11 +171,32 @@
     });
   }
 
+  function limitConcealment(root) {
+    root.querySelectorAll('[data-o="concealment"]').forEach(field => {
+      field.maxLength = 6;
+      field.inputMode = "numeric";
+      if (field.dataset.stableConcealmentLimit === "1") return;
+      field.dataset.stableConcealmentLimit = "1";
+      field.addEventListener("input",() => {
+        const raw = String(field.value || "").replace(/[^0-9/／]/g,"").replace(/／/g,"/");
+        const [left = "", ...rest] = raw.split("/");
+        const right = rest.join("");
+        const next = rest.length ? `${left.slice(0,2)}/${right.slice(0,3)}` : left.slice(0,2);
+        if (field.value !== next) field.value = next;
+      });
+    });
+  }
+
   function applyInputLimits(table,category) {
     limitDigits(table,'[data-o="purchase_value"]',3);
     limitDigits(table,'[data-o="experience_cost"]',3);
     limitDigits(table,'[data-ofc="page_number"]',3);
     limitDigits(table,'[data-ofc="speed"]',1);
+    limitDigits(table,'[data-ofc="parry"]',2);
+    limitDigits(table,'[data-armor-defense="s"],[data-ofc="defense_s"]',2);
+    limitDigits(table,'[data-armor-defense="i"],[data-ofc="defense_i"]',2);
+    limitDigits(table,'[data-armor-defense="p"],[data-ofc="defense_p"]',2);
+    limitConcealment(table);
     if (category === "tron") ["tron_software","tron_support","tron_hardware"].forEach(key => limitDigits(table,`[data-ofc="${key}"]`,2));
   }
 
