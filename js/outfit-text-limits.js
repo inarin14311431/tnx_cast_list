@@ -5,9 +5,9 @@
   if (!root) return;
 
   const LIMITS = [
-    ['[data-o="category"]', 7],
+    ['[data-o="category"]', 9],
     ['[data-o="name"]', 12],
-    ['[data-o="slot"]', 6],
+    ['[data-o="slot"]', 9],
     ['[data-o="attack"]', 6]
   ];
 
