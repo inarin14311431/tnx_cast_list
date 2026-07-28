@@ -69,7 +69,7 @@
     appendStylesheet("./css/character-image-top-align.css?v=1", "data-character-image-top-align");
     appendStylesheet("./css/mobile-auth-navigation-fix.css?v=1", "data-mobile-auth-navigation-fix");
     appendStylesheet("./css/outfit-ofc-fields.css?v=1", "data-outfit-ofc-fields");
-    appendStylesheet("./css/outfit-display-rules-v5.css?v=5", "data-outfit-display-rules-v5");
+    appendStylesheet("./css/outfit-display-rules-v5.css?v=6", "data-outfit-display-rules-v5");
   }
 
   function loadPageEnhancements(){
