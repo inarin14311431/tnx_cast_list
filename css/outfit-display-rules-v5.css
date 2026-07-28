@@ -36,11 +36,15 @@
   padding-right:3px!important;
 }
 
-/* Shared compact columns. */
+/* Text columns sized by their intended character capacity. */
 #outfit-list .outfit-table-head--category,
-#outfit-list .outfit-table-cell--category{width:68px!important}
+#outfit-list .outfit-table-cell--category{width:7em!important}
 #outfit-list .outfit-table-head--name,
-#outfit-list .outfit-table-cell--name{width:112px!important}
+#outfit-list .outfit-table-cell--name{width:12em!important}
+#outfit-list .outfit-table-head--slot,
+#outfit-list .outfit-table-cell--slot{width:6em!important}
+#outfit-list .outfit-table-head--attack,
+#outfit-list .outfit-table-cell--attack{width:6ch!important}
 
 /* Three numeric characters. */
 #outfit-list .outfit-table-head--purchase_value,
@@ -54,12 +58,8 @@
 #outfit-list .outfit-table-head--concealment,
 #outfit-list .outfit-table-cell--concealment{width:68px!important}
 
-#outfit-list .outfit-table-head--attack,
-#outfit-list .outfit-table-cell--attack,
 #outfit-list .outfit-table-head--range,
 #outfit-list .outfit-table-cell--range{width:52px!important}
-#outfit-list .outfit-table-head--slot,
-#outfit-list .outfit-table-cell--slot{width:54px!important}
 #outfit-list .outfit-table-head--speed,
 #outfit-list .outfit-table-cell--speed{width:38px!important}
 
