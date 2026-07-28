@@ -77,11 +77,19 @@
 
   const rows=()=>[...document.querySelectorAll(`${ROOT} [data-outfit-key]`)];
   const rowName=row=>clean(row?.querySelector('[data-o="name"]')?.value);
+  const rowCategory=row=>row?.querySelector('[data-o="category"]')?.value||row?.closest("table")?.dataset.outfitSchema||"";
 
-  async function findRow(item,used){
+  function categoryMatches(row,item){
+    const category=rowCategory(row);
+    if(category===item.category)return true;
+    return (item.category==="cyberware"||item.category==="tron")&&category==="other";
+  }
+
+  async function findRow(item,reserved){
     for(let attempt=0;attempt<300;attempt++){
-      const row=rows().find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name);
-      if(row)return row;
+      const candidates=rows().filter(candidate=>!reserved.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name);
+      const row=candidates.find(candidate=>categoryMatches(candidate,item))||candidates[0];
+      if(row){reserved.add(row.dataset.outfitKey);return row}
       await sleep(20);
     }
     return null;
@@ -131,13 +139,21 @@
   }
 
   async function convertAsRowsAppear(items){
-    const used=new Set();let done=0;
-    for(const item of items){
-      progress(55+(done/Math.max(items.length,1))*35,"アウトフィット変換中",`${done}/${items.length}件完了`);
-      const row=await findRow(item,used);
-      if(row){used.add(row.dataset.outfitKey);await applyCurrentSchema(row,item)}
+    const reserved=new Set();
+    let done=0;
+    let activeLabel="行の生成を待っています";
+    progress(55,"アウトフィット変換中",`0/${items.length}件完了`);
+
+    await Promise.all(items.map(async item=>{
+      const row=await findRow(item,reserved);
+      if(row){
+        activeLabel=`${item.category}：${item.name}`;
+        await applyCurrentSchema(row,item);
+      }
       done++;
-    }
+      progress(55+(done/Math.max(items.length,1))*35,"アウトフィット変換中",`${done}/${items.length}件完了　${activeLabel}`);
+    }));
+
     progress(92,"最終調整中","列配置と経験点を更新しています");
     document.querySelector(ROOT)?.dispatchEvent(new Event("input",{bubbles:true}));
     window.TNXExperience?.queue?.();
