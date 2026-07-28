@@ -87,7 +87,6 @@
       });
 
       applyInputLimits(table,category);
-      applyArmorFooter(table,category);
     });
   }
 
@@ -227,19 +226,6 @@
     limitDigits(table,'[data-armor-defense="p"],[data-ofc="defense_p"]',2);
     limitConcealment(table);
     if (category === "tron") ["tron_software","tron_support","tron_hardware"].forEach(key => limitDigits(table,`[data-ofc="${key}"]`,2));
-  }
-
-  function applyArmorFooter(table,category) {
-    if (category !== "armor") return;
-    const row = table.querySelector("tfoot .armor-defense-total-row");
-    if (!row) return;
-    const cells = [...row.children];
-    const label = cells[0];
-    const tail = cells[cells.length - 1];
-    if (!label || !tail) return;
-    if (label.colSpan !== 5) label.colSpan = 5;
-    if (tail.colSpan !== 6) tail.colSpan = 6;
-    tail.classList.add("armor-defense-total-tail");
   }
 
   function applyCastLabels() {
