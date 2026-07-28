@@ -12,7 +12,6 @@
   table-layout:fixed!important;
 }
 
-/* All field-name cells use one visual treatment, including OFC and synthetic fields. */
 #outfit-list .outfit-table thead th{
   color:var(--text-muted)!important;
   background:rgba(65,232,255,.055)!important;
@@ -23,6 +22,7 @@
 
 #outfit-list .outfit-table th,
 #outfit-list .outfit-table td{
+  box-sizing:border-box!important;
   min-width:0!important;
   padding-left:2px!important;
   padding-right:2px!important;
@@ -31,39 +31,72 @@
 #outfit-list .outfit-table input,
 #outfit-list .outfit-table select,
 #outfit-list .outfit-table textarea{
+  box-sizing:border-box!important;
+  width:100%!important;
   min-width:0!important;
   padding-left:3px!important;
   padding-right:3px!important;
 }
 
-/* Text columns sized by their intended character capacity. */
+/* Fixed text capacities. */
 #outfit-list .outfit-table-head--category,
-#outfit-list .outfit-table-cell--category{width:9em!important}
+#outfit-list .outfit-table-cell--category{
+  width:9em!important;
+  min-width:9em!important;
+  max-width:9em!important;
+}
 #outfit-list .outfit-table-head--name,
-#outfit-list .outfit-table-cell--name{width:12em!important}
+#outfit-list .outfit-table-cell--name{
+  width:12em!important;
+  min-width:12em!important;
+  max-width:12em!important;
+}
 #outfit-list .outfit-table-head--slot,
-#outfit-list .outfit-table-cell--slot{width:9em!important}
-#outfit-list .outfit-table[data-outfit-schema="weapon"] .outfit-table-head--attack,
-#outfit-list .outfit-table[data-outfit-schema="weapon"] .outfit-table-cell--attack{width:calc(6ch + 10px)!important}
+#outfit-list .outfit-table-cell--slot{
+  width:9em!important;
+  min-width:9em!important;
+  max-width:9em!important;
+}
 
-/* Three numeric characters. */
+/* Weapon attack: six half-width characters plus input padding and borders. */
+#outfit-list .outfit-table[data-outfit-schema="weapon"] .outfit-table-head--attack,
+#outfit-list .outfit-table[data-outfit-schema="weapon"] .outfit-table-cell--attack{
+  width:78px!important;
+  min-width:78px!important;
+  max-width:78px!important;
+}
+
 #outfit-list .outfit-table-head--purchase_value,
 #outfit-list .outfit-table-cell--purchase_value,
 #outfit-list .outfit-table-head--experience_cost,
 #outfit-list .outfit-table-cell--experience_cost,
 #outfit-list .outfit-table-head--page_number,
-#outfit-list .outfit-table-cell--page_number{width:44px!important}
+#outfit-list .outfit-table-cell--page_number{
+  width:44px!important;
+  min-width:44px!important;
+  max-width:44px!important;
+}
 
-/* Six characters: two digits, slash, three digits. */
 #outfit-list .outfit-table-head--concealment,
-#outfit-list .outfit-table-cell--concealment{width:68px!important}
+#outfit-list .outfit-table-cell--concealment{
+  width:68px!important;
+  min-width:68px!important;
+  max-width:68px!important;
+}
 
 #outfit-list .outfit-table-head--range,
-#outfit-list .outfit-table-cell--range{width:52px!important}
+#outfit-list .outfit-table-cell--range{
+  width:52px!important;
+  min-width:52px!important;
+  max-width:52px!important;
+}
 #outfit-list .outfit-table-head--speed,
-#outfit-list .outfit-table-cell--speed{width:38px!important}
+#outfit-list .outfit-table-cell--speed{
+  width:38px!important;
+  min-width:38px!important;
+  max-width:38px!important;
+}
 
-/* Two numeric characters. */
 #outfit-list .outfit-table-head--parry,
 #outfit-list .outfit-table-cell--parry,
 #outfit-list .outfit-table-head--defense_s,
@@ -71,7 +104,11 @@
 #outfit-list .outfit-table-head--defense_i,
 #outfit-list .outfit-table-cell--defense_i,
 #outfit-list .outfit-table-head--defense_p,
-#outfit-list .outfit-table-cell--defense_p{width:38px!important}
+#outfit-list .outfit-table-cell--defense_p{
+  width:38px!important;
+  min-width:38px!important;
+  max-width:38px!important;
+}
 
 #outfit-list .outfit-table-head--control_modifier,
 #outfit-list .outfit-table-cell--control_modifier,
@@ -84,24 +121,47 @@
 #outfit-list .outfit-table-head--sf,
 #outfit-list .outfit-table-cell--sf,
 #outfit-list .outfit-table-head--cs_value,
-#outfit-list .outfit-table-cell--cs_value{width:42px!important}
+#outfit-list .outfit-table-cell--cs_value{
+  width:42px!important;
+  min-width:42px!important;
+  max-width:42px!important;
+}
+
 #outfit-list .outfit-table-head--tron_software,
 #outfit-list .outfit-table-cell--tron_software,
 #outfit-list .outfit-table-head--tron_support,
 #outfit-list .outfit-table-cell--tron_support,
 #outfit-list .outfit-table-head--tron_hardware,
-#outfit-list .outfit-table-cell--tron_hardware{width:38px!important}
-#outfit-list .outfit-table-head--residence_entry,
-#outfit-list .outfit-table-cell--residence_entry{width:48px!important}
-#outfit-list .outfit-table-head--residence-electric-area,
-#outfit-list .outfit-table-cell--residence-electric-area{width:58px!important}
-#outfit-list .outfit-table-head--actions,
-#outfit-list .outfit-table-cell--actions{width:92px!important}
+#outfit-list .outfit-table-cell--tron_hardware{
+  width:38px!important;
+  min-width:38px!important;
+  max-width:38px!important;
+}
 
-/* Description receives only the width left after all fixed columns. */
+#outfit-list .outfit-table-head--residence_entry,
+#outfit-list .outfit-table-cell--residence_entry{
+  width:48px!important;
+  min-width:48px!important;
+  max-width:48px!important;
+}
+#outfit-list .outfit-table-head--residence-electric-area,
+#outfit-list .outfit-table-cell--residence-electric-area{
+  width:58px!important;
+  min-width:58px!important;
+  max-width:58px!important;
+}
+#outfit-list .outfit-table-head--actions,
+#outfit-list .outfit-table-cell--actions{
+  width:92px!important;
+  min-width:92px!important;
+  max-width:92px!important;
+}
+
+/* Description is the only flexible column and absorbs every remaining pixel. */
 #outfit-list .outfit-table-head--description,
 #outfit-list .outfit-table-cell--description{
   width:auto!important;
+  min-width:0!important;
   max-width:none!important;
 }
 #outfit-list .outfit-table-cell--description textarea{
