@@ -109,7 +109,7 @@ async function fetchBundle(id) {
   ]);
   if (skillError) throw skillError;
   if (outfitError) throw outfitError;
-  return { character, skills: skills || [], outfits: outfits || [] };
+  return { character, skills: skills || [], outfits: (outfits || []).map(normalizeOutfit) };
 }
 
 function value(id) {
@@ -192,25 +192,43 @@ function collectEditorBundle() {
 
   const outfits = [...document.querySelectorAll('[data-outfit-key]')].map((card, sortOrder) => {
     const field = name => card.querySelector(`[data-o="${name}"]`);
-    return {
+    const ofc = name => card.querySelector(`[data-ofc="${name}"]`)?.value || "";
+    return normalizeOutfit({
       category: field("category")?.value || "other",
       name: field("name")?.value || "",
       purchase_value: field("purchase_value")?.value || "",
-      experience_cost: Number(field("experience_cost")?.value || 0),
+      experience_cost: field("experience_cost")?.value || "",
       concealment: field("concealment")?.value || "",
       attack: field("attack")?.value || "",
       defense: field("defense")?.value || "",
       range: field("range")?.value || "",
       slot: field("slot")?.value || "",
-      control_modifier: Number(field("control_modifier")?.value || 0),
-      cs_modifier: Number(field("cs_modifier")?.value || 0),
-      mundane_modifier: Number(field("mundane_modifier")?.value || 0),
+      control_modifier: field("control_modifier")?.value || "",
+      cs_modifier: field("cs_modifier")?.value || "",
+      mundane_modifier: field("mundane_modifier")?.value || "",
       description: field("description")?.value || card.querySelector("textarea[data-description-proxy]")?.value || "",
+      ofc_details: {
+        parry: ofc("parry"), speed: ofc("speed"), electronic_control: ofc("electronic_control"), control_value: ofc("control_value"),
+        defense_s: ofc("defense_s"), defense_p: ofc("defense_p"), defense_i: ofc("defense_i"), crew: ofc("crew"), sf: ofc("sf"),
+        tron_software: ofc("tron_software"), tron_support: ofc("tron_support"), tron_hardware: ofc("tron_hardware"), cs_value: ofc("cs_value"),
+        residence_entry: ofc("residence_entry"), residence_electric: ofc("residence_electric"), residence_area: ofc("residence_area"),
+        page_number: ofc("page_number")
+      },
       sort_order: sortOrder
-    };
+    });
   }).filter(outfit => outfit.name.trim());
 
   return { character, skills, outfits };
+}
+
+function normalizeOutfit(outfit) {
+  const details = outfit?.ofc_details && typeof outfit.ofc_details === "object" && !Array.isArray(outfit.ofc_details)
+    ? outfit.ofc_details
+    : {};
+  return {
+    ...outfit,
+    ofc_details: Object.fromEntries(Object.entries(details).map(([key, item]) => [key, String(item ?? "")]))
+  };
 }
 
 function parseStyleDetail(skill) {
@@ -247,6 +265,59 @@ function parseOutfitExtra(description) {
   }
   extras.notes = plain.join("\n").trim();
   return extras;
+}
+
+function parseDefense(value) {
+  const result = { s: "", p: "", i: "" };
+  const text = String(value || "").trim();
+  for (const match of text.matchAll(/(?:^|[\s,，/／])([SPI])\s*[:：]?\s*([^/／,，\s]+)/gi)) result[match[1].toLowerCase()] = match[2];
+  if (Object.values(result).some(Boolean)) return result;
+  const parts = text.split(/[\/／,，\s]+/).filter(Boolean);
+  result.s = parts[0] || "";
+  result.i = parts[1] || "";
+  result.p = parts[2] || "";
+  return result;
+}
+
+function outfitTransferFields(outfit) {
+  const item = normalizeOutfit(outfit);
+  const details = item.ofc_details;
+  const legacy = parseOutfitExtra(item.description);
+  const [concealA = "", concealB = ""] = String(item.concealment || "").split(/[\/／]/);
+  const defense = parseDefense(item.defense);
+  const category = String(item.category || "other");
+  const fields = {
+    category,
+    name: item.name || "",
+    purchase: item.purchase_value ?? "",
+    permanent: item.experience_cost ?? "",
+    concealA: legacy.concealA ?? concealA,
+    concealB: legacy.concealB ?? concealB,
+    attack: item.attack || legacy.attack || "",
+    defense: category === "weapon" ? (details.parry || legacy.defense || "") : (item.defense || legacy.defense || ""),
+    range: item.range || legacy.range || "",
+    slot: details.speed || legacy.slot || "",
+    control: category === "armor" ? (details.control_value || legacy.control || "") : (item.control_modifier ?? legacy.control ?? ""),
+    electrical_control: details.electronic_control || legacy.electrical_control || "",
+    protecS: details.defense_s || legacy.protecS || defense.s,
+    protecP: details.defense_p || legacy.protecP || defense.p,
+    protecI: details.defense_i || legacy.protecI || defense.i,
+    crew: details.crew || legacy.crew || "",
+    sf: details.sf || legacy.sf || "",
+    entry: details.residence_entry || legacy.entry || "",
+    part: item.slot || legacy.part || "",
+    notes: legacy.notes || item.description || "",
+    page: details.page_number || legacy.page || "",
+    mundane: item.mundane_modifier ?? "",
+    tron_software: details.tron_software || "",
+    tron_support: details.tron_support || "",
+    tron_hardware: details.tron_hardware || "",
+    cs_value: details.cs_value || "",
+    residence_electric: details.residence_electric || "",
+    residence_area: details.residence_area || ""
+  };
+  if (category === "other") fields.slot = "";
+  return fields;
 }
 
 function escapeCell(value) {
@@ -316,22 +387,8 @@ function createTransferTsv({ character, skills, outfits }) {
     });
   }
 
-  outfits.forEach((outfit, index) => {
-    const extra = parseOutfitExtra(outfit.description);
-    const [concealA = "", concealB = ""] = String(outfit.concealment || "").split("/");
-    const [protecS = "", protecP = "", protecI = ""] = String(outfit.defense || "").split("/");
-    const fields = {
-      category: outfit.category, name: outfit.name, purchase: outfit.purchase_value, permanent: outfit.experience_cost,
-      concealA: extra.concealA ?? concealA, concealB: extra.concealB ?? concealB,
-      attack: outfit.attack || extra.attack, defense: outfit.defense || extra.defense, range: outfit.range || extra.range,
-      slot: outfit.slot || extra.slot, control: extra.control ?? outfit.control_modifier,
-      electrical_control: extra.electrical_control, protecS: extra.protecS ?? protecS,
-      protecP: extra.protecP ?? protecP, protecI: extra.protecI ?? protecI,
-      crew: extra.crew, sf: extra.sf ?? outfit.cs_modifier, entry: extra.entry,
-      part: extra.part || outfit.slot, notes: extra.notes, page: extra.page,
-      mundane: outfit.mundane_modifier
-    };
-    Object.entries(fields).forEach(([field, val]) => add("outfit", index, field, val));
+  outfits.map(normalizeOutfit).forEach((outfit, index) => {
+    Object.entries(outfitTransferFields(outfit)).forEach(([field, val]) => add("outfit", index, field, val));
   });
 
   return rows.map(row => row.join("\t")).join("\n");
