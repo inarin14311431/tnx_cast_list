@@ -2,7 +2,7 @@
 (() => {
   const SHEET_ROOT = "#outfit-list";
   const CAST_ROOT = "#outfit-container";
-  const HIDDEN = "outfit-rule-v4-hidden";
+  const HIDDEN = "outfit-layout-hidden";
   const root = document.querySelector(SHEET_ROOT) || document.querySelector(CAST_ROOT);
   if (!root) return;
 
@@ -54,13 +54,13 @@
       table.querySelectorAll("thead tr > th").forEach(cell => {
         const id = identifyHeader(cell);
         cell.classList.toggle(HIDDEN, !id || !allowed.has(id));
-        cell.classList.remove("outfit-rule-hidden");
+        cell.classList.remove("outfit-rule-hidden", "outfit-rule-v4-hidden");
       });
       table.querySelectorAll("tbody > tr").forEach(row => {
         [...row.children].forEach(cell => {
           const id = identifyCell(cell);
           cell.classList.toggle(HIDDEN, !id || !allowed.has(id));
-          cell.classList.remove("outfit-rule-hidden");
+          cell.classList.remove("outfit-rule-hidden", "outfit-rule-v4-hidden");
         });
       });
 
