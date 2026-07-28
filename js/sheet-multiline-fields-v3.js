@@ -176,6 +176,10 @@ styleRoot&&new MutationObserver(queue).observe(styleRoot,{childList:true,subtree
 outfitRoot&&new MutationObserver(queue).observe(outfitRoot,{childList:true,subtree:true});
 document.addEventListener("input",event=>{
   const field=event.target;
+  if(field instanceof HTMLInputElement&&field.matches('input[data-o="description"]')){
+    const proxy=field.closest("label")?.querySelector("textarea[data-description-proxy]");
+    if(proxy&&proxy.value!==field.value)proxy.value=field.value;
+  }
   if(!(field instanceof HTMLTextAreaElement)||isImportSource(field))return;
   normalizeTextarea(field);
   if(field.matches('#style-skills textarea[data-f="name"]'))fitStyle(field);
