@@ -15,6 +15,12 @@
     residence: [["base","category","分類"],["base","name","名称"],["base","purchase_value","購入"],["base","experience_cost","常備化"],["base","slot","部位"],["ofc","speed","スロ"],["ofc","electronic_control","電制"],["ofc","residence_entry","登場"],["synthetic","residence_electric_area","電/ア"],["base","description","解説"],["ofc","page_number","参照P"],["base","actions",""]],
     other: [["base","category","分類"],["base","name","名称"],["base","purchase_value","購入"],["base","experience_cost","常備化"],["base","concealment","隠匿"],["base","slot","部位"],["base","description","解説"],["ofc","page_number","参照P"],["base","actions",""]]
   };
+  const TEXT_LIMITS = [
+    ['[data-o="category"]',9],
+    ['[data-o="name"]',12],
+    ['[data-o="slot"]',9],
+    ['[data-o="attack"]',6]
+  ];
 
   let queued = false;
   let applying = false;
@@ -78,6 +84,7 @@
       });
 
       applyInputLimits(table,category);
+      applyArmorFooter(table,category);
     });
   }
 
@@ -171,6 +178,21 @@
     });
   }
 
+  function limitText(root,selector,maxLength) {
+    root.querySelectorAll(selector).forEach(field => {
+      if (!(field instanceof HTMLInputElement || field instanceof HTMLTextAreaElement)) return;
+      field.maxLength = maxLength;
+      if (field.dataset.outfitTextLimit === String(maxLength)) return;
+      field.dataset.outfitTextLimit = String(maxLength);
+      field.addEventListener("input",() => {
+        const value = String(field.value || "");
+        if ([...value].length <= maxLength) return;
+        field.value = [...value].slice(0,maxLength).join("");
+        field.dispatchEvent(new Event("change",{bubbles:true}));
+      });
+    });
+  }
+
   function limitConcealment(root) {
     root.querySelectorAll('[data-o="concealment"]').forEach(field => {
       field.maxLength = 6;
@@ -188,6 +210,7 @@
   }
 
   function applyInputLimits(table,category) {
+    TEXT_LIMITS.forEach(([selector,maxLength]) => limitText(table,selector,maxLength));
     limitDigits(table,'[data-o="purchase_value"]',3);
     limitDigits(table,'[data-o="experience_cost"]',3);
     limitDigits(table,'[data-ofc="page_number"]',3);
@@ -198,6 +221,19 @@
     limitDigits(table,'[data-armor-defense="p"],[data-ofc="defense_p"]',2);
     limitConcealment(table);
     if (category === "tron") ["tron_software","tron_support","tron_hardware"].forEach(key => limitDigits(table,`[data-ofc="${key}"]`,2));
+  }
+
+  function applyArmorFooter(table,category) {
+    if (category !== "armor") return;
+    const row = table.querySelector("tfoot .armor-defense-total-row");
+    if (!row) return;
+    const cells = [...row.children];
+    const label = cells[0];
+    const tail = cells[cells.length - 1];
+    if (!label || !tail) return;
+    label.colSpan = 5;
+    tail.colSpan = 6;
+    tail.classList.add("armor-defense-total-tail");
   }
 
   function applyCastLabels() {
