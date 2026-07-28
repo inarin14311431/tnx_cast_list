@@ -73,14 +73,17 @@
       const headRow = table.querySelector("thead tr");
       const desiredHeads = layout.map(([type,key,label]) => {
         const cell = findHeader(table,type,key);
-        if (cell) { cell.textContent = label; cell.classList.remove(HIDDEN); }
+        if (cell) {
+          if (cell.textContent !== label) cell.textContent = label;
+          cell.classList.remove(HIDDEN);
+        }
         return cell;
       }).filter(Boolean);
-      desiredHeads.forEach((cell,index) => moveToIndex(headRow,cell,index));
+      reorderOnce(headRow, desiredHeads);
 
       table.querySelectorAll("tbody > tr").forEach(row => {
         const desired = layout.map(([type,key]) => findCell(row,type,key)).filter(Boolean);
-        desired.forEach((cell,index) => moveToIndex(row,cell,index));
+        reorderOnce(row, desired);
       });
 
       applyInputLimits(table,category);
@@ -88,10 +91,13 @@
     });
   }
 
-  function moveToIndex(parent,node,index) {
-    const current = parent.children[index];
-    if (current === node) return;
-    parent.insertBefore(node,current || null);
+  function reorderOnce(parent, desired) {
+    if (!parent || !desired.length) return;
+    const current = [...parent.children];
+    const desiredSet = new Set(desired);
+    const ordered = [...desired, ...current.filter(node => !desiredSet.has(node))];
+    if (ordered.length === current.length && ordered.every((node,index) => node === current[index])) return;
+    parent.replaceChildren(...ordered);
   }
 
   function identifyHeader(cell) {
@@ -231,8 +237,8 @@
     const label = cells[0];
     const tail = cells[cells.length - 1];
     if (!label || !tail) return;
-    label.colSpan = 5;
-    tail.colSpan = 6;
+    if (label.colSpan !== 5) label.colSpan = 5;
+    if (tail.colSpan !== 6) tail.colSpan = 6;
     tail.classList.add("armor-defense-total-tail");
   }
 
