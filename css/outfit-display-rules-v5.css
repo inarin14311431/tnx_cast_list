@@ -38,13 +38,13 @@
 
 /* Text columns sized by their intended character capacity. */
 #outfit-list .outfit-table-head--category,
-#outfit-list .outfit-table-cell--category{width:7em!important}
+#outfit-list .outfit-table-cell--category{width:9em!important}
 #outfit-list .outfit-table-head--name,
 #outfit-list .outfit-table-cell--name{width:12em!important}
 #outfit-list .outfit-table-head--slot,
-#outfit-list .outfit-table-cell--slot{width:6em!important}
-#outfit-list .outfit-table-head--attack,
-#outfit-list .outfit-table-cell--attack{width:6ch!important}
+#outfit-list .outfit-table-cell--slot{width:9em!important}
+#outfit-list .outfit-table[data-outfit-schema="weapon"] .outfit-table-head--attack,
+#outfit-list .outfit-table[data-outfit-schema="weapon"] .outfit-table-cell--attack{width:calc(6ch + 10px)!important}
 
 /* Three numeric characters. */
 #outfit-list .outfit-table-head--purchase_value,
@@ -98,7 +98,7 @@
 #outfit-list .outfit-table-head--actions,
 #outfit-list .outfit-table-cell--actions{width:92px!important}
 
-/* Description receives all width left after fixed columns. */
+/* Description receives only the width left after all fixed columns. */
 #outfit-list .outfit-table-head--description,
 #outfit-list .outfit-table-cell--description{
   width:auto!important;
