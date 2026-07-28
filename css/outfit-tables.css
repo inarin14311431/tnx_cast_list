@@ -63,3 +63,66 @@
   .outfit-table-heading{align-items:center;gap:8px}
   .outfit-table-title{font-size:.82rem}
 }
+
+/* Final action-cell normalization. */
+#outfit-list .outfit-table-cell--actions{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:4px!important;
+  box-sizing:border-box!important;
+  height:48px!important;
+  min-height:48px!important;
+  max-height:48px!important;
+  padding:5px 3px!important;
+  margin:0!important;
+  overflow:hidden!important;
+  border-top:0!important;
+  border-right:0!important;
+  border-left:0!important;
+  border-bottom:1px solid var(--line-muted)!important;
+  background:transparent!important;
+  box-shadow:none!important;
+}
+#outfit-list .outfit-table-cell--actions > button{
+  box-sizing:border-box!important;
+  flex:0 0 26px!important;
+  width:26px!important;
+  min-width:26px!important;
+  max-width:26px!important;
+  height:36px!important;
+  min-height:36px!important;
+  max-height:36px!important;
+  margin:0!important;
+  padding:0!important;
+  line-height:34px!important;
+  vertical-align:middle!important;
+}
+#outfit-list .outfit-table-cell--actions::before,
+#outfit-list .outfit-table-cell--actions::after,
+#outfit-list .outfit-table-cell--actions > button::before,
+#outfit-list .outfit-table-cell--actions > button::after{
+  content:none!important;
+  display:none!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+#outfit-list .outfit-table-row{
+  height:48px!important;
+}
+#outfit-list .outfit-table-row > td{
+  height:48px!important;
+  min-height:48px!important;
+  max-height:48px!important;
+}
+#outfit-list .outfit-table-row > td.outfit-rule-v4-hidden{
+  display:none!important;
+  width:0!important;
+  min-width:0!important;
+  max-width:0!important;
+  height:0!important;
+  min-height:0!important;
+  max-height:0!important;
+  padding:0!important;
+  border:0!important;
+}
