@@ -85,7 +85,7 @@
       appendScript("./js/outfit-footer-fix.js?v=1","data-outfit-footer-fix-script");
       appendScript("./js/sheet-import-style-skill-compat.js?v=1","data-sheet-import-style-skill-compat-script");
       appendScript("./js/sheet-import-outfit-compat.js?v=5","data-sheet-import-outfit-compat-script");
-      appendModuleScript("./js/sheet-master-autofill.js?v=1","data-sheet-master-autofill-script");
+      appendModuleScript("./js/sheet-master-autofill.js?v=2","data-sheet-master-autofill-script");
     }
     if(document.querySelector("#outfit-container")){
       appendModuleScript("./js/cast-outfit-ofc-details.js?v=1","data-cast-outfit-ofc-details-script");
