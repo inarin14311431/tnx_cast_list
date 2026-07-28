@@ -3,6 +3,12 @@
 /* Hidden state used by the layout controller. */
 .outfit-layout-hidden{display:none!important}
 
+/* Retired base columns are never part of the current outfit layouts. */
+#outfit-list .outfit-table-head--cs_modifier,
+#outfit-list .outfit-table-cell--cs_modifier,
+#outfit-list .outfit-table-head--mundane_modifier,
+#outfit-list .outfit-table-cell--mundane_modifier{display:none!important}
+
 /* OFC columns are hidden by default. Only explicitly permitted fields are shown. */
 #outfit-list [data-ofc-head],
 #outfit-list [data-ofc-cell]{display:none!important}
