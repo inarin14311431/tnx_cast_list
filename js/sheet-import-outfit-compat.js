@@ -1,4 +1,4 @@
-/* Convert warehouse outfits to the current schema while showing live progress. */
+/* Convert warehouse outfits to the current schema with event-driven progress. */
 (()=>{
   const APPLY="#legacy-import-apply";
   const TEXT="#legacy-import-json";
@@ -77,26 +77,22 @@
 
   const rows=()=>[...document.querySelectorAll(`${ROOT} [data-outfit-key]`)];
   const rowName=row=>clean(row?.querySelector('[data-o="name"]')?.value);
-  const rowCategory=row=>row?.querySelector('[data-o="category"]')?.value||row?.closest("table")?.dataset.outfitSchema||"";
+  const rowCategory=row=>row?.querySelector('[data-o="category"]')?.value||row?.closest("table")?.dataset.outfitSchema||"other";
+  const categoryMatches=(row,item)=>rowCategory(row)===item.category||((item.category==="cyberware"||item.category==="tron")&&rowCategory(row)==="other");
 
-  function categoryMatches(row,item){
-    const category=rowCategory(row);
-    if(category===item.category)return true;
-    return (item.category==="cyberware"||item.category==="tron")&&category==="other";
-  }
+  const REQUIRED={
+    weapon:['[data-o="name"]','[data-o="description"]','[data-ofc="parry"]','[data-ofc="speed"]','[data-ofc="electronic_control"]','[data-ofc="page_number"]'],
+    armor:['[data-o="name"]','[data-o="description"]','[data-ofc="control_value"]','[data-ofc="electronic_control"]','[data-ofc="page_number"]'],
+    cyberware:['[data-o="name"]','[data-o="description"]','[data-ofc="electronic_control"]','[data-ofc="page_number"]'],
+    tron:['[data-o="name"]','[data-o="description"]','[data-ofc="speed"]','[data-ofc="electronic_control"]','[data-ofc="tron_software"]','[data-ofc="tron_support"]','[data-ofc="tron_hardware"]','[data-ofc="cs_value"]','[data-ofc="page_number"]'],
+    vehicle:['[data-o="name"]','[data-o="description"]','[data-ofc="speed"]','[data-ofc="electronic_control"]','[data-ofc="defense_s"]','[data-ofc="defense_i"]','[data-ofc="defense_p"]','[data-ofc="crew"]','[data-ofc="sf"]','[data-ofc="page_number"]'],
+    residence:['[data-o="name"]','[data-o="description"]','[data-ofc="speed"]','[data-ofc="electronic_control"]','[data-ofc="residence_entry"]','[data-ofc="page_number"]'],
+    other:['[data-o="name"]','[data-o="description"]','[data-ofc="page_number"]']
+  };
 
-  async function findRow(item,reserved){
-    for(let attempt=0;attempt<300;attempt++){
-      const candidates=rows().filter(candidate=>!reserved.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name);
-      const row=candidates.find(candidate=>categoryMatches(candidate,item))||candidates[0];
-      if(row){reserved.add(row.dataset.outfitKey);return row}
-      await sleep(20);
-    }
-    return null;
-  }
-
-  async function waitFields(key,selectors){
-    for(let attempt=0;attempt<80;attempt++){
+  async function waitForRequiredFields(key,category){
+    const selectors=REQUIRED[category]||REQUIRED.other;
+    for(let attempt=0;attempt<180;attempt++){
       const row=document.querySelector(`${ROOT} [data-outfit-key="${CSS.escape(key)}"]`);
       if(row&&selectors.every(selector=>row.querySelector(selector)))return row;
       await frame();
@@ -107,7 +103,7 @@
   async function applyCurrentSchema(row,item){
     const key=row.dataset.outfitKey;
     setValue(row.querySelector('[data-o="category"]'),item.category);
-    row=await waitFields(key,['[data-o="name"]','[data-o="description"]']);
+    row=await waitForRequiredFields(key,item.category);
     if(!row)return false;
     const data=item.data;
     const base=(field,value)=>setValue(row.querySelector(`[data-o="${field}"]`),value);
@@ -116,11 +112,11 @@
     base("name",item.name);
     base("purchase_value",first(data,"purchase","purchaseValue"));
     base("experience_cost",first(data,"permanent","experienceCost"));
-    const concealA=first(data,"concealA","concealment");const concealB=first(data,"concealB","concealmentPenalty");
+    const concealA=first(data,"concealA","concealment"),concealB=first(data,"concealB","concealmentPenalty");
     base("concealment",[concealA,concealB].filter(value=>String(value??"")!=="").join("/"));
     base("description",first(data,"notes","description"));
     ofc("page_number",first(data,"page","pageNumber"));
-    ofc("electronic_control",first(data,"electrical_control","electronic_control","electricalControl"));
+    ofc("electronic_control",first(data,"electrical_control","electronic_control","electricalControl","electronicControl"));
 
     if(item.category==="weapon"){
       base("attack",first(data,"attack"));base("range",first(data,"range"));base("slot",first(data,"slot","part"));ofc("parry",first(data,"parry","defense"));ofc("speed",first(data,"speed"));
@@ -131,77 +127,74 @@
     }else if(item.category==="tron"){
       base("control_modifier",first(data,"control","controlModifier"));base("slot",first(data,"slot"));ofc("speed",first(data,"speed"));const capacity=parseTronCapacity(first(data,"part","capacity","notes"));ofc("tron_software",first(data,"software","tron_software")||capacity.tron_software);ofc("tron_support",first(data,"support","tron_support")||capacity.tron_support);ofc("tron_hardware",first(data,"hardware","tron_hardware")||capacity.tron_hardware);ofc("cs_value",first(data,"cs","csValue"));
     }else if(item.category==="vehicle"){
-      base("attack",first(data,"attack"));base("control_modifier",first(data,"control","controlModifier"));ofc("speed",first(data,"speed"));ofc("defense_s",first(data,"protecS","defenseS"));ofc("defense_i",first(data,"protecI","defenseI"));ofc("defense_p",first(data,"protecP","defenseP"));ofc("crew",first(data,"crew"));ofc("sf",first(data,"sf"));
+      base("attack",first(data,"attack"));base("control_modifier",first(data,"control","controlModifier"));ofc("speed",first(data,"speed","slot"));ofc("defense_s",first(data,"protecS","defenseS"));ofc("defense_i",first(data,"protecI","defenseI"));ofc("defense_p",first(data,"protecP","defenseP"));ofc("crew",first(data,"crew","passenger","passengers"));ofc("sf",first(data,"sf","speedFactor"));
     }else if(item.category==="residence"){
       base("slot",first(data,"part","slot"));ofc("speed",first(data,"speed"));ofc("residence_entry",first(data,"entry"));ofc("residence_electric",first(data,"electric","residence_electric"));ofc("residence_area",first(data,"area","residence_area"));
     }else base("slot",first(data,"slot","part"));
     return true;
   }
 
-  async function convertAsRowsAppear(items){
-    const reserved=new Set();
-    let done=0;
-    let activeLabel="行の生成を待っています";
-    progress(55,"アウトフィット変換中",`0/${items.length}件完了`);
+  function convertAsRowsAppear(items){
+    return new Promise(resolve=>{
+      const pending=items.map((item,index)=>({...item,index,state:"pending"}));
+      const used=new Set();
+      let completed=0;
+      let scheduled=false;
+      let observer;
 
-    await Promise.all(items.map(async item=>{
-      const row=await findRow(item,reserved);
-      if(row){
-        activeLabel=`${item.category}：${item.name}`;
-        await applyCurrentSchema(row,item);
-      }
-      done++;
-      progress(55+(done/Math.max(items.length,1))*35,"アウトフィット変換中",`${done}/${items.length}件完了　${activeLabel}`);
-    }));
+      const updateProgress=item=>progress(55+(completed/Math.max(items.length,1))*37,"アウトフィット変換中",`${completed}/${items.length}件完了${item?`　${item.category}：${item.name}`:""}`);
+      const finish=()=>{observer?.disconnect();progress(93,"最終調整中","列配置と経験点を更新しています");document.querySelector(ROOT)?.dispatchEvent(new Event("input",{bubbles:true}));window.TNXExperience?.queue?.();resolve({completed,total:items.length,missing:pending.filter(item=>item.state!=="done")})};
 
-    progress(92,"最終調整中","列配置と経験点を更新しています");
-    document.querySelector(ROOT)?.dispatchEvent(new Event("input",{bubbles:true}));
-    window.TNXExperience?.queue?.();
+      const reconcile=()=>{
+        scheduled=false;
+        const currentRows=rows();
+        for(const item of pending){
+          if(item.state!=="pending")continue;
+          const row=currentRows.find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name&&categoryMatches(candidate,item));
+          if(!row)continue;
+          item.state="processing";
+          used.add(row.dataset.outfitKey);
+          updateProgress(item);
+          applyCurrentSchema(row,item).then(ok=>{item.state=ok?"done":"failed";completed++;updateProgress(item);if(completed===items.length)finish();else schedule()}).catch(()=>{item.state="failed";completed++;if(completed===items.length)finish();else schedule()});
+        }
+      };
+      const schedule=()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(reconcile)};
+      observer=new MutationObserver(schedule);
+      const root=document.querySelector(ROOT);
+      if(root)observer.observe(root,{childList:true,subtree:true});
+      schedule();
+      if(!items.length)finish();
+      window.setTimeout(()=>{for(const item of pending){if(item.state==="pending"){item.state="failed";completed++}}if(completed===items.length)finish()},45000);
+    });
   }
 
-  function observeBaseImport(button){
-    const message=document.querySelector(MESSAGE);
-    if(!message)return ()=>{};
-    const observer=new MutationObserver(()=>{
-      const text=message.textContent||"";
-      if(/基本情報/.test(text))progress(12,"基本情報を取込中",text);
-      else if(/スタイルと能力値/.test(text))progress(28,"スタイル・能力値を取込中",text);
-      else if(/技能/.test(text))progress(42,"技能を取込中",text);
-      else if(/アウトフィット/.test(text))progress(55,"アウトフィットを取込中",text);
-    });
-    observer.observe(message,{childList:true,subtree:true,characterData:true});
-    return ()=>observer.disconnect();
+  function observeBaseImport(){
+    const message=document.querySelector(MESSAGE);if(!message)return ()=>{};
+    const observer=new MutationObserver(()=>{const text=message.textContent||"";if(/基本情報/.test(text))progress(12,"基本情報を取込中",text);else if(/スタイルと能力値/.test(text))progress(28,"スタイル・能力値を取込中",text);else if(/技能/.test(text))progress(42,"技能を取込中",text);else if(/アウトフィット/.test(text))progress(55,"アウトフィットを取込中",text)});
+    observer.observe(message,{childList:true,subtree:true,characterData:true});return ()=>observer.disconnect();
   }
 
   document.addEventListener("click",event=>{
     const button=event.target.closest?.(APPLY);if(!button)return;
     let data;try{data=JSON.parse(document.querySelector(TEXT)?.value||"")}catch{return}
-    const items=sourceOutfits(data);
-    const dialog=document.querySelector("#legacy-import-dialog");
-    dialog?.setAttribute("data-importing","1");
-    progress(3,"JSONを解析中",`アウトフィット${items.length}件を検出`);
-    const stopObserver=observeBaseImport(button);
-
+    const items=sourceOutfits(data),dialog=document.querySelector("#legacy-import-dialog");
+    dialog?.setAttribute("data-importing","1");progress(3,"JSONを解析中",`アウトフィット${items.length}件を検出`);
+    const stopObserver=observeBaseImport();
     (async()=>{
       try{
-        const convertPromise=convertAsRowsAppear(items);
-        for(let attempt=0;attempt<1200;attempt++){
+        const conversion=convertAsRowsAppear(items);
+        for(let attempt=0;attempt<1800;attempt++){
           const text=document.querySelector(MESSAGE)?.textContent||"";
           if(/取込エラー/.test(text))throw new Error(text.replace(/^.*取込エラー：?/,""));
           if(!button.disabled&&/反映しました/.test(text))break;
           await sleep(25);
         }
-        await convertPromise;
+        const result=await conversion;
+        if(result.missing.length)throw new Error(`アウトフィット${result.missing.length}件を変換できませんでした：${result.missing.map(item=>item.name).join("、")}`);
         progress(100,"取込完了",`アウトフィット${items.length}件を現行形式へ変換しました`);
-        const message=document.querySelector(MESSAGE);
-        if(message&&/反映しました/.test(message.textContent)&&!/現行分類/.test(message.textContent))message.textContent += " アウトフィットを現行分類・項目へ変換しました。";
-        await sleep(900);
-      }catch(error){
-        progress(100,"取込エラー",error.message||String(error));
-      }finally{
-        stopObserver();
-        dialog?.removeAttribute("data-importing");
-      }
+        const message=document.querySelector(MESSAGE);if(message&&/反映しました/.test(message.textContent)&&!/現行分類/.test(message.textContent))message.textContent += " アウトフィットを現行分類・項目へ変換しました。";
+      }catch(error){progress(100,"取込エラー",error.message||String(error));}
+      finally{stopObserver();dialog?.removeAttribute("data-importing")}
     })();
   },true);
 })();
