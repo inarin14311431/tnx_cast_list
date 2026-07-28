@@ -128,6 +128,7 @@ function fillOutfits(index) {
     const rangeValue = firstPresent(source.range_text, raw.range_text, raw.range, raw.rangeText);
     const electronicValue = firstPresent(source.electronic_control, raw.electronic_control, raw.electrical_control, raw.electronicControl, raw.electricalControl);
     const residence = readResidenceValues(raw);
+    const defense = readDefenseValues(source, raw);
 
     changed += fillControl(base("purchase_value"), source.purchase_target);
     changed += fillControl(base("experience_cost"), source.permanent_cost);
@@ -140,9 +141,15 @@ function fillOutfits(index) {
     changed += fillControl(ofc("speed"), source.speed);
     changed += fillControl(ofc("electronic_control"), electronicValue);
     changed += fillControl(ofc("control_value"), source.control_value);
-    changed += fillControl(ofc("defense_s"), source.defense_s);
-    changed += fillControl(ofc("defense_p"), source.defense_p);
-    changed += fillControl(ofc("defense_i"), source.defense_i);
+
+    if (category === "armor") {
+      changed += fillArmorDefense(row, defense);
+    } else {
+      changed += fillControl(ofc("defense_s"), defense.s);
+      changed += fillControl(ofc("defense_i"), defense.i);
+      changed += fillControl(ofc("defense_p"), defense.p);
+    }
+
     changed += fillControl(ofc("page_number"), source.page_number);
     changed += fillControl(ofc("major_category"), source.major_category);
     changed += fillControl(ofc("minor_category"), source.minor_category);
@@ -162,6 +169,37 @@ function fillOutfits(index) {
   return { changed, unmatched, ambiguous };
 }
 
+function fillArmorDefense(row, defense) {
+  let changed = 0;
+  const visible = {
+    s: row.querySelector('[data-armor-defense="S"]'),
+    i: row.querySelector('[data-armor-defense="I"]'),
+    p: row.querySelector('[data-armor-defense="P"]')
+  };
+
+  changed += fillControl(visible.s, defense.s);
+  changed += fillControl(visible.i, defense.i);
+  changed += fillControl(visible.p, defense.p);
+
+  if (!visible.s && !visible.i && !visible.p) {
+    const original = row.querySelector('[data-o="defense"]');
+    if (original && isMissing(original.value) && [defense.s, defense.i, defense.p].some(value => !isMissing(value))) {
+      const encoded = [defense.s, defense.i, defense.p].map(value => isMissing(value) ? "" : String(value).trim()).join("/");
+      changed += fillControl(original, encoded);
+    }
+  }
+
+  return changed;
+}
+
+function readDefenseValues(source, raw) {
+  return {
+    s: firstPresent(source.defense_s, raw.defense_s, raw.defS, raw["S"], raw["防S"]),
+    i: firstPresent(source.defense_i, raw.defense_i, raw.defI, raw["I"], raw["防I"]),
+    p: firstPresent(source.defense_p, raw.defense_p, raw.defP, raw["P"], raw["防P"])
+  };
+}
+
 function chooseBestSkillMatch(row, matches) {
   return chooseBestMatch(matches, source => scoreExistingPairs([
     [row.querySelector('[data-f="skill_kind"]')?.value, source.type_label],
@@ -176,6 +214,7 @@ function chooseBestSkillMatch(row, matches) {
 function chooseBestOutfitMatch(row, matches) {
   const base = key => row.querySelector(`[data-o="${key}"]`)?.value;
   const ofc = key => row.querySelector(`[data-ofc="${key}"]`)?.value;
+  const armor = key => row.querySelector(`[data-armor-defense="${key}"]`)?.value;
   return chooseBestMatch(matches, source => scoreExistingPairs([
     [base("purchase_value"), source.purchase_target],
     [base("experience_cost"), source.permanent_cost],
@@ -183,6 +222,9 @@ function chooseBestOutfitMatch(row, matches) {
     [base("range") || ofc("range_text"), source.range_text],
     [ofc("parry"), source.parry],
     [ofc("electronic_control"), source.electronic_control],
+    [armor("S") || ofc("defense_s"), source.defense_s],
+    [armor("I") || ofc("defense_i"), source.defense_i],
+    [armor("P") || ofc("defense_p"), source.defense_p],
     [ofc("page_number"), source.page_number]
   ]) + completenessScore(source));
 }
