@@ -9,22 +9,22 @@ function bindWhenReady(){
   const button=document.querySelector("#transfer-tsv-copy-button");
   if(button&&!bound){
     bound=true;
-    button.addEventListener("click",()=>void enrichClipboardAfterExport(),false);
+    button.addEventListener("click",()=>void enrichClipboardAfterExport(button),false);
     return;
   }
   const observer=new MutationObserver(()=>{
     const current=document.querySelector("#transfer-tsv-copy-button");
     if(!current||bound)return;
     bound=true;
-    current.addEventListener("click",()=>void enrichClipboardAfterExport(),false);
+    current.addEventListener("click",()=>void enrichClipboardAfterExport(current),false);
     observer.disconnect();
   });
   observer.observe(document.documentElement,{childList:true,subtree:true});
 }
 
-async function enrichClipboardAfterExport(){
+async function enrichClipboardAfterExport(button){
   try{
-    const original=await waitForTransferTsv();
+    const original=await waitForTransferTsv(button);
     if(!original)return;
     const outfits=document.querySelector("#outfit-list")?collectEditorOutfits():await fetchOutfits();
     if(!outfits.length)return;
@@ -35,9 +35,10 @@ async function enrichClipboardAfterExport(){
   }
 }
 
-async function waitForTransferTsv(){
-  for(let attempt=0;attempt<30;attempt++){
+async function waitForTransferTsv(button){
+  for(let attempt=0;attempt<50;attempt++){
     await new Promise(resolve=>setTimeout(resolve,100));
+    if(button?.dataset.copyState!=="success")continue;
     try{
       const text=await navigator.clipboard.readText();
       if(text.startsWith(`${FORMAT}\t`))return text;
@@ -51,18 +52,9 @@ function collectEditorOutfits(){
     const base=key=>row.querySelector(`[data-o="${key}"]`)?.value??"";
     const ofc=key=>row.querySelector(`[data-ofc="${key}"]`)?.value??"";
     return normalizeOutfit({
-      category:base("category")||"other",
-      name:base("name"),
-      purchase_value:base("purchase_value"),
-      experience_cost:base("experience_cost"),
-      concealment:base("concealment"),
-      attack:base("attack"),
-      defense:base("defense"),
-      range:base("range"),
-      slot:base("slot"),
-      control_modifier:base("control_modifier"),
-      description:base("description")||row.querySelector("textarea[data-description-proxy]")?.value||"",
-      sort_order,
+      category:base("category")||"other",name:base("name"),purchase_value:base("purchase_value"),experience_cost:base("experience_cost"),
+      concealment:base("concealment"),attack:base("attack"),defense:base("defense"),range:base("range"),slot:base("slot"),
+      control_modifier:base("control_modifier"),description:base("description")||row.querySelector("textarea[data-description-proxy]")?.value||"",sort_order,
       ofc_details:{
         parry:ofc("parry"),speed:ofc("speed"),electronic_control:ofc("electronic_control"),control_value:ofc("control_value"),
         defense_s:ofc("defense_s"),defense_p:ofc("defense_p"),defense_i:ofc("defense_i"),crew:ofc("crew"),sf:ofc("sf"),
@@ -89,8 +81,7 @@ function normalizeOutfit(item){
 }
 
 function enrichTransferTsv(text,outfits){
-  const lines=String(text).replace(/\r/g,"").split("\n");
-  const rows=lines.map(line=>line.split("\t"));
+  const rows=String(text).replace(/\r/g,"").split("\n").map(line=>line.split("\t"));
   const records=new Map();
   for(const columns of rows){
     if(columns[0]!==FORMAT||columns[2]!=="outfit")continue;
@@ -98,26 +89,21 @@ function enrichTransferTsv(text,outfits){
     if(!records.has(index))records.set(index,{});
     records.get(index)[columns[4]||""]=unescapeCell(columns.slice(5).join("\t"));
   }
-
   const queues=new Map();
   for(const outfit of outfits){
     const key=signature(outfit.category,outfit.name);
     if(!queues.has(key))queues.set(key,[]);
     queues.get(key).push(outfit);
   }
-
   const additions=[];
   for(const [index,record] of records){
-    const queue=queues.get(signature(record.category,record.name));
-    const outfit=queue?.shift()||outfits[Number(index)];
+    const outfit=queues.get(signature(record.category,record.name))?.shift()||outfits[Number(index)];
     if(!outfit)continue;
-    const fields=transferFields(outfit);
-    for(const [field,value] of Object.entries(fields)){
+    for(const [field,value] of Object.entries(transferFields(outfit))){
       let replaced=false;
       for(const columns of rows){
         if(columns[0]===FORMAT&&columns[2]==="outfit"&&(columns[3]||"0")===index&&columns[4]===field){
-          columns.splice(5,columns.length-5,escapeCell(value));
-          replaced=true;
+          columns.splice(5,columns.length-5,escapeCell(value));replaced=true;
         }
       }
       if(!replaced)additions.push([FORMAT,"1","outfit",index,field,escapeCell(value)]);
@@ -131,16 +117,14 @@ function transferFields(outfit){
   const [concealA="",concealB=""]=String(outfit.concealment||"").split(/[\/／]/);
   const defense=parseDefense(outfit.defense||"");
   const category=String(outfit.category||"other");
-  const speed=d.speed||"";
   const fields={
-    category,name:outfit.name||"",purchase:outfit.purchase_value??"",permanent:outfit.experience_cost??"",
-    concealA,concealB,attack:outfit.attack||"",defense:d.parry||outfit.defense||"",range:outfit.range||"",
-    control:category==="armor"?(d.control_value||""):(outfit.control_modifier??""),
-    electrical_control:d.electronic_control||"",protecS:d.defense_s||defense.s,protecP:d.defense_p||defense.p,protecI:d.defense_i||defense.i,
+    category,name:outfit.name||"",purchase:outfit.purchase_value??"",permanent:outfit.experience_cost??"",concealA,concealB,
+    attack:outfit.attack||"",defense:d.parry||outfit.defense||"",range:outfit.range||"",
+    control:category==="armor"?(d.control_value||""):(outfit.control_modifier??""),electrical_control:d.electronic_control||"",
+    protecS:d.defense_s||defense.s,protecP:d.defense_p||defense.p,protecI:d.defense_i||defense.i,
     crew:d.crew||"",sf:d.sf||"",entry:d.residence_entry||"",part:outfit.slot||"",notes:outfit.description||"",page:d.page_number||"",
-    slot:speed,mundane:"",
-    tron_software:d.tron_software||"",tron_support:d.tron_support||"",tron_hardware:d.tron_hardware||"",cs_value:d.cs_value||"",
-    residence_electric:d.residence_electric||"",residence_area:d.residence_area||""
+    slot:d.speed||"",mundane:"",tron_software:d.tron_software||"",tron_support:d.tron_support||"",tron_hardware:d.tron_hardware||"",
+    cs_value:d.cs_value||"",residence_electric:d.residence_electric||"",residence_area:d.residence_area||""
   };
   if(category==="weapon")fields.defense=d.parry||"";
   if(category==="other")fields.slot="";
