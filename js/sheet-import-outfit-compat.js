@@ -1,9 +1,10 @@
-/* Convert warehouse outfits to the current schema with event-driven progress. */
+/* Convert warehouse outfits after the base import has finished. */
 (()=>{
   const APPLY="#legacy-import-apply";
   const TEXT="#legacy-import-json";
   const ROOT="#outfit-list";
   const MESSAGE="#legacy-import-message";
+  const DIALOG="#legacy-import-dialog";
   const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const frame=()=>new Promise(resolve=>requestAnimationFrame(resolve));
   const clean=value=>String(value??"").trim().replace(/^[★†※■┗]+\s*/,"");
@@ -48,7 +49,7 @@
   }
 
   function groups(map,prefixes){
-    const list=Array.isArray(prefixes)?prefixes:[prefixes];const output=new Map();
+    const list=Array.isArray(prefixes)?prefixes:[prefixes],output=new Map();
     for(const [id,value] of map){for(const prefix of list){const escaped=canonical(prefix).replace(/[.*+?^${}()|[\]\\]/g,"\\$&");const match=id.match(new RegExp(`^${escaped}\\.([^.]*)\\.(.+)$`));if(!match)continue;const [,index,key]=match;if(!output.has(index))output.set(index,{});output.get(index)[key]=value;break}}
     return [...output.entries()].sort(([a],[b])=>Number(a)-Number(b)||String(a).localeCompare(String(b),"ja")).map(([,value])=>value);
   }
@@ -75,36 +76,33 @@
     return {tron_software:read(["ソ","software"]),tron_support:read(["サ","support"]),tron_hardware:read(["ハ","hardware"])};
   }
 
-  const rows=()=>[...document.querySelectorAll(`${ROOT} [data-outfit-key]`)];
-  const rowName=row=>clean(row?.querySelector('[data-o="name"]')?.value);
-  const rowCategory=row=>row?.querySelector('[data-o="category"]')?.value||row?.closest("table")?.dataset.outfitSchema||"other";
-  const categoryMatches=(row,item)=>rowCategory(row)===item.category||((item.category==="cyberware"||item.category==="tron")&&rowCategory(row)==="other");
-
-  const REQUIRED={
-    weapon:['[data-o="name"]','[data-o="description"]','[data-ofc="parry"]','[data-ofc="speed"]','[data-ofc="electronic_control"]','[data-ofc="page_number"]'],
-    armor:['[data-o="name"]','[data-o="description"]','[data-ofc="control_value"]','[data-ofc="electronic_control"]','[data-ofc="page_number"]'],
-    cyberware:['[data-o="name"]','[data-o="description"]','[data-ofc="electronic_control"]','[data-ofc="page_number"]'],
-    tron:['[data-o="name"]','[data-o="description"]','[data-ofc="speed"]','[data-ofc="electronic_control"]','[data-ofc="tron_software"]','[data-ofc="tron_support"]','[data-ofc="tron_hardware"]','[data-ofc="cs_value"]','[data-ofc="page_number"]'],
-    vehicle:['[data-o="name"]','[data-o="description"]','[data-ofc="speed"]','[data-ofc="electronic_control"]','[data-ofc="defense_s"]','[data-ofc="defense_i"]','[data-ofc="defense_p"]','[data-ofc="crew"]','[data-ofc="sf"]','[data-ofc="page_number"]'],
-    residence:['[data-o="name"]','[data-o="description"]','[data-ofc="speed"]','[data-ofc="electronic_control"]','[data-ofc="residence_entry"]','[data-ofc="page_number"]'],
-    other:['[data-o="name"]','[data-o="description"]','[data-ofc="page_number"]']
+  const required={
+    weapon:["parry","speed","electronic_control","page_number"],
+    armor:["control_value","electronic_control","page_number"],
+    cyberware:["electronic_control","page_number"],
+    tron:["speed","electronic_control","tron_software","tron_support","tron_hardware","cs_value","page_number"],
+    vehicle:["speed","electronic_control","defense_s","defense_i","defense_p","crew","sf","page_number"],
+    residence:["speed","electronic_control","residence_entry","page_number"],
+    other:["page_number"]
   };
 
-  async function waitForRequiredFields(key,category){
-    const selectors=REQUIRED[category]||REQUIRED.other;
-    for(let attempt=0;attempt<180;attempt++){
-      const row=document.querySelector(`${ROOT} [data-outfit-key="${CSS.escape(key)}"]`);
-      if(row&&selectors.every(selector=>row.querySelector(selector)))return row;
+  async function waitForColumns(row,category){
+    const fields=required[category]||required.other;
+    for(let attempt=0;attempt<120;attempt++){
+      const key=row?.dataset.outfitKey;
+      const current=key?document.querySelector(`${ROOT} [data-outfit-key="${CSS.escape(key)}"]`):row;
+      if(current&&fields.every(field=>current.querySelector(`[data-ofc="${field}"]`)))return current;
       await frame();
     }
-    return document.querySelector(`${ROOT} [data-outfit-key="${CSS.escape(key)}"]`);
+    return row;
   }
 
-  async function applyCurrentSchema(row,item){
-    const key=row.dataset.outfitKey;
+  function rowCategory(row){return row.querySelector('[data-o="category"]')?.value||row.closest("table")?.dataset.outfitSchema||"other"}
+  function rowName(row){return clean(row.querySelector('[data-o="name"]')?.value)}
+
+  async function applyItem(row,item){
     setValue(row.querySelector('[data-o="category"]'),item.category);
-    row=await waitForRequiredFields(key,item.category);
-    if(!row)return false;
+    row=await waitForColumns(row,item.category);
     const data=item.data;
     const base=(field,value)=>setValue(row.querySelector(`[data-o="${field}"]`),value);
     const ofc=(field,value)=>String(value??"")!==""&&setValue(row.querySelector(`[data-ofc="${field}"]`),value);
@@ -127,74 +125,73 @@
     }else if(item.category==="tron"){
       base("control_modifier",first(data,"control","controlModifier"));base("slot",first(data,"slot"));ofc("speed",first(data,"speed"));const capacity=parseTronCapacity(first(data,"part","capacity","notes"));ofc("tron_software",first(data,"software","tron_software")||capacity.tron_software);ofc("tron_support",first(data,"support","tron_support")||capacity.tron_support);ofc("tron_hardware",first(data,"hardware","tron_hardware")||capacity.tron_hardware);ofc("cs_value",first(data,"cs","csValue"));
     }else if(item.category==="vehicle"){
-      base("attack",first(data,"attack"));base("control_modifier",first(data,"control","controlModifier"));ofc("speed",first(data,"speed","slot"));ofc("defense_s",first(data,"protecS","defenseS"));ofc("defense_i",first(data,"protecI","defenseI"));ofc("defense_p",first(data,"protecP","defenseP"));ofc("crew",first(data,"crew","passenger","passengers"));ofc("sf",first(data,"sf","speedFactor"));
+      base("attack",first(data,"attack"));
+      base("control_modifier",first(data,"control","controlModifier"));
+      ofc("speed",first(data,"slot","speed"));
+      ofc("electronic_control",first(data,"electrical_control","electronic_control","electricalControl","electronicControl"));
+      ofc("defense_s",first(data,"protecS","defenseS"));
+      ofc("defense_p",first(data,"protecP","defenseP"));
+      ofc("defense_i",first(data,"protecI","defenseI"));
+      ofc("crew",first(data,"crew","passenger","passengers"));
+      ofc("sf",first(data,"sf","speedFactor"));
     }else if(item.category==="residence"){
       base("slot",first(data,"part","slot"));ofc("speed",first(data,"speed"));ofc("residence_entry",first(data,"entry"));ofc("residence_electric",first(data,"electric","residence_electric"));ofc("residence_area",first(data,"area","residence_area"));
     }else base("slot",first(data,"slot","part"));
-    return true;
   }
 
-  function convertAsRowsAppear(items){
-    return new Promise(resolve=>{
-      const pending=items.map((item,index)=>({...item,index,state:"pending"}));
-      const used=new Set();
-      let completed=0;
-      let scheduled=false;
-      let observer;
-
-      const updateProgress=item=>progress(55+(completed/Math.max(items.length,1))*37,"アウトフィット変換中",`${completed}/${items.length}件完了${item?`　${item.category}：${item.name}`:""}`);
-      const finish=()=>{observer?.disconnect();progress(93,"最終調整中","列配置と経験点を更新しています");document.querySelector(ROOT)?.dispatchEvent(new Event("input",{bubbles:true}));window.TNXExperience?.queue?.();resolve({completed,total:items.length,missing:pending.filter(item=>item.state!=="done")})};
-
-      const reconcile=()=>{
-        scheduled=false;
-        const currentRows=rows();
-        for(const item of pending){
-          if(item.state!=="pending")continue;
-          const row=currentRows.find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name&&categoryMatches(candidate,item));
-          if(!row)continue;
-          item.state="processing";
-          used.add(row.dataset.outfitKey);
-          updateProgress(item);
-          applyCurrentSchema(row,item).then(ok=>{item.state=ok?"done":"failed";completed++;updateProgress(item);if(completed===items.length)finish();else schedule()}).catch(()=>{item.state="failed";completed++;if(completed===items.length)finish();else schedule()});
-        }
-      };
-      const schedule=()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(reconcile)};
-      observer=new MutationObserver(schedule);
-      const root=document.querySelector(ROOT);
-      if(root)observer.observe(root,{childList:true,subtree:true});
-      schedule();
-      if(!items.length)finish();
-      window.setTimeout(()=>{for(const item of pending){if(item.state==="pending"){item.state="failed";completed++}}if(completed===items.length)finish()},45000);
-    });
+  async function convertAll(items){
+    const rows=[...document.querySelectorAll(`${ROOT} [data-outfit-key]`)];
+    const used=new Set();
+    const missing=[];
+    for(let index=0;index<items.length;index++){
+      const item=items[index];
+      progress(72+(index/Math.max(items.length,1))*25,"アウトフィットを最終変換中",`${index+1}/${items.length}件　${item.category}：${item.name}`);
+      let row=rows.find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name&&rowCategory(candidate)===item.category);
+      if(!row&&["cyberware","tron"].includes(item.category))row=rows.find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name&&rowCategory(candidate)==="other");
+      if(!row){missing.push(item);continue}
+      used.add(row.dataset.outfitKey);
+      await applyItem(row,item);
+    }
+    document.querySelector(ROOT)?.dispatchEvent(new Event("input",{bubbles:true}));
+    window.TNXExperience?.queue?.();
+    return missing;
   }
 
   function observeBaseImport(){
     const message=document.querySelector(MESSAGE);if(!message)return ()=>{};
-    const observer=new MutationObserver(()=>{const text=message.textContent||"";if(/基本情報/.test(text))progress(12,"基本情報を取込中",text);else if(/スタイルと能力値/.test(text))progress(28,"スタイル・能力値を取込中",text);else if(/技能/.test(text))progress(42,"技能を取込中",text);else if(/アウトフィット/.test(text))progress(55,"アウトフィットを取込中",text)});
+    const observer=new MutationObserver(()=>{const text=message.textContent||"";if(/基本情報/.test(text))progress(12,"基本情報を取込中",text);else if(/スタイルと能力値/.test(text))progress(28,"スタイル・能力値を取込中",text);else if(/技能/.test(text))progress(45,"技能を取込中",text);else if(/アウトフィット/.test(text))progress(65,"アウトフィットを取込中",text)});
     observer.observe(message,{childList:true,subtree:true,characterData:true});return ()=>observer.disconnect();
   }
 
   document.addEventListener("click",event=>{
     const button=event.target.closest?.(APPLY);if(!button)return;
     let data;try{data=JSON.parse(document.querySelector(TEXT)?.value||"")}catch{return}
-    const items=sourceOutfits(data),dialog=document.querySelector("#legacy-import-dialog");
-    dialog?.setAttribute("data-importing","1");progress(3,"JSONを解析中",`アウトフィット${items.length}件を検出`);
+    const items=sourceOutfits(data),dialog=document.querySelector(DIALOG);
+    dialog?.setAttribute("data-importing","1");
+    progress(3,"JSONを解析中",`アウトフィット${items.length}件を検出`);
     const stopObserver=observeBaseImport();
+
     (async()=>{
       try{
-        const conversion=convertAsRowsAppear(items);
-        for(let attempt=0;attempt<1800;attempt++){
+        for(let attempt=0;attempt<2400;attempt++){
           const text=document.querySelector(MESSAGE)?.textContent||"";
           if(/取込エラー/.test(text))throw new Error(text.replace(/^.*取込エラー：?/,""));
           if(!button.disabled&&/反映しました/.test(text))break;
           await sleep(25);
         }
-        const result=await conversion;
-        if(result.missing.length)throw new Error(`アウトフィット${result.missing.length}件を変換できませんでした：${result.missing.map(item=>item.name).join("、")}`);
+        const missing=await convertAll(items);
+        if(missing.length)throw new Error(`アウトフィット${missing.length}件を変換できませんでした：${missing.map(item=>item.name).join("、")}`);
         progress(100,"取込完了",`アウトフィット${items.length}件を現行形式へ変換しました`);
-        const message=document.querySelector(MESSAGE);if(message&&/反映しました/.test(message.textContent)&&!/現行分類/.test(message.textContent))message.textContent += " アウトフィットを現行分類・項目へ変換しました。";
-      }catch(error){progress(100,"取込エラー",error.message||String(error));}
-      finally{stopObserver();dialog?.removeAttribute("data-importing")}
+        const message=document.querySelector(MESSAGE);
+        if(message)message.textContent="取込が完了しました。画面へ反映し、自動保存を開始しました。";
+        await sleep(250);
+        if(dialog?.open)dialog.close();
+      }catch(error){
+        progress(100,"取込エラー",error.message||String(error));
+      }finally{
+        stopObserver();
+        dialog?.removeAttribute("data-importing");
+      }
     })();
   },true);
 })();
