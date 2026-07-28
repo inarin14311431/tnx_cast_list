@@ -6,8 +6,11 @@
 .cast-outfit-title small{margin-left:5px;color:var(--text-muted);font-size:.68rem}
 .cast-outfit-table-scroll{width:100%;min-width:0;overflow-x:auto}
 .cast-outfit-table{width:100%;min-width:1180px;border-collapse:collapse;table-layout:fixed;font-size:.74rem}
-.cast-outfit-table th,.cast-outfit-table td{box-sizing:border-box;height:32px;padding:4px;border-bottom:1px solid var(--line-muted);vertical-align:middle;line-height:1}
+.cast-outfit-table th,.cast-outfit-table td{box-sizing:border-box;height:32px;padding:4px;border-bottom:1px solid var(--line-muted);border-right:1px solid var(--line-muted);vertical-align:middle;line-height:1}
+.cast-outfit-table th:first-child,.cast-outfit-table td:first-child{border-left:1px solid var(--line-muted)}
 .cast-outfit-table th{height:34px;color:var(--text-muted);background:rgba(65,232,255,.045);font:700 .74rem/1 monospace;white-space:nowrap}
+.cast-outfit-table thead th{border-right-color:var(--line)}
+.cast-outfit-table .cast-outfit-col--description{border-left-color:var(--line);border-right-color:var(--line)}
 .cast-outfit-value{display:block;width:100%;overflow:hidden;color:#d7eef2;white-space:nowrap;text-overflow:ellipsis}
 .cast-outfit-col--category{width:92px}
 .cast-outfit-col--name{width:150px}
