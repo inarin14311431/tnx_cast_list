@@ -77,8 +77,7 @@
     if(document.querySelector("#skills-container"))appendScript("./js/cast-style-skill-separators.js?v=1","data-cast-style-skill-separators-script");
     if(document.querySelector(".sheet-layout")){
       appendScript("./js/sheet-open-at-top.js?v=1","data-sheet-open-at-top");
-      appendModuleScript("./js/outfit-ofc-fields.js?v=1","data-outfit-ofc-fields-script");
-      appendModuleScript("./js/outfit-ofc-extra-columns.js?v=2","data-outfit-ofc-extra-columns-script");
+      appendModuleScript("./js/outfit-ofc-fields.js?v=2","data-outfit-ofc-fields-script");
       appendModuleScript("./js/outfit-ofc-tsv-category-fix.js?v=1","data-outfit-ofc-tsv-category-fix-script");
       appendScript("./js/outfit-display-rules-v5.js?v=4","data-outfit-display-rules-script");
       appendScript("./js/sheet-import-style-skill-compat.js?v=1","data-sheet-import-style-skill-compat-script");
