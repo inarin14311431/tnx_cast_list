@@ -2,6 +2,7 @@ import { supabase } from "./supabase-client.js";
 
 const ADMIN_UID = "f44d74d1-5f09-425f-8de8-a7fb6b46ea79";
 const EMPTY_MARKS = new Set(["", "-", "－", "—", "―"]);
+const MASTER_PAGE_SIZE = 1000;
 
 initialize();
 
@@ -33,19 +34,13 @@ async function runAutofill(button) {
   button.innerHTML = `補完中… <small>READING MASTER</small>`;
 
   try {
-    const [{ data: skdRows, error: skdError }, { data: ofcRows, error: ofcError }] = await Promise.all([
-      supabase.from("skd_master")
-        .select("name,style,type_label,skill,limit_text,timing,target,range_text,difficulty,confrontation,description,page_number")
-        .range(0, 4999),
-      supabase.from("ofc_master")
-        .select("name,site_category,major_category,minor_category,manufacturer,purchase_target,permanent_cost,concealment,concealment_penalty,attack,parry,range_text,speed,control_value,electronic_control,defense_s,defense_p,defense_i,slot,description,page_number,raw_data")
-        .range(0, 4999)
+    const [skdRows, ofcRows] = await Promise.all([
+      fetchAllRows("skd_master", "name,style,type_label,skill,limit_text,timing,target,range_text,difficulty,confrontation,description,page_number", "source_row"),
+      fetchAllRows("ofc_master", "name,site_category,major_category,minor_category,manufacturer,purchase_target,permanent_cost,concealment,concealment_penalty,attack,parry,range_text,speed,control_value,electronic_control,defense_s,defense_p,defense_i,slot,description,page_number,raw_data", "source_row")
     ]);
-    if (skdError) throw skdError;
-    if (ofcError) throw ofcError;
 
-    const skillResult = fillStyleSkills(buildIndex(skdRows || [], row => normalizeStyleName(row.name)));
-    const outfitResult = fillOutfits(buildIndex(ofcRows || [], row => normalizeName(row.name)));
+    const skillResult = fillStyleSkills(buildIndex(skdRows, row => normalizeStyleName(row.name)));
+    const outfitResult = fillOutfits(buildIndex(ofcRows, row => normalizeName(row.name)));
 
     alert([
       "SKD・OFC補完が完了しました。",
@@ -62,6 +57,20 @@ async function runAutofill(button) {
     button.disabled = false;
     button.innerHTML = original;
   }
+}
+
+async function fetchAllRows(table, columns, orderColumn) {
+  const rows = [];
+  for (let from = 0; ; from += MASTER_PAGE_SIZE) {
+    let query = supabase.from(table).select(columns).range(from, from + MASTER_PAGE_SIZE - 1);
+    if (orderColumn) query = query.order(orderColumn, { ascending: true });
+    const { data, error } = await query;
+    if (error) throw error;
+    const page = data || [];
+    rows.push(...page);
+    if (page.length < MASTER_PAGE_SIZE) break;
+  }
+  return rows;
 }
 
 function fillStyleSkills(index) {
