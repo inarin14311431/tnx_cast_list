@@ -127,6 +127,7 @@ function fillOutfits(index) {
     const concealment = [source.concealment, source.concealment_penalty].filter(value => !isMissing(value)).join("/");
     const rangeValue = firstPresent(source.range_text, raw.range_text, raw.range, raw.rangeText);
     const electronicValue = firstPresent(source.electronic_control, raw.electronic_control, raw.electrical_control, raw.electronicControl, raw.electricalControl);
+    const residence = readResidenceValues(raw);
 
     changed += fillControl(base("purchase_value"), source.purchase_target);
     changed += fillControl(base("experience_cost"), source.permanent_cost);
@@ -153,9 +154,9 @@ function fillOutfits(index) {
     changed += fillControl(ofc("tron_support"), firstPresent(raw.tron_support, raw.support));
     changed += fillControl(ofc("tron_hardware"), firstPresent(raw.tron_hardware, raw.hardware, raw.hard));
     changed += fillControl(ofc("cs_value"), firstPresent(raw.cs_value, raw.cs));
-    changed += fillControl(ofc("residence_entry"), firstPresent(raw.entry, raw.appearance));
-    changed += fillControl(ofc("residence_electric"), firstPresent(raw.residence_electric, raw.electric));
-    changed += fillControl(ofc("residence_area"), firstPresent(raw.residence_area, raw.area));
+    changed += fillControl(ofc("residence_entry"), residence.entry);
+    changed += fillControl(ofc("residence_electric"), residence.electric);
+    changed += fillControl(ofc("residence_area"), residence.area);
   }
 
   return { changed, unmatched, ambiguous };
@@ -241,6 +242,31 @@ function normalizeCategory(value) {
   if (/vehicle|ヴィークル|車両/.test(text)) return "vehicle";
   if (/residence|住居/.test(text)) return "residence";
   return "other";
+}
+
+function readResidenceValues(raw) {
+  const entry = firstPresent(
+    raw.residence_entry, raw.entry, raw.appearance, raw.appear,
+    raw["登場"], raw["登場値"], raw["登"]
+  );
+  let electric = firstPresent(
+    raw.residence_electric, raw.electric, raw.electricity, raw.electric_value,
+    raw["電"], raw["電制"], raw["電力"]
+  );
+  let area = firstPresent(
+    raw.residence_area, raw.area, raw.area_value,
+    raw["ア"], raw["エリア"], raw["区域"]
+  );
+  const combined = firstPresent(
+    raw.electric_area, raw.residence_electric_area, raw.electricArea,
+    raw["電/ア"], raw["電／ア"], raw["電ア"]
+  );
+  if (!isMissing(combined)) {
+    const parts = String(combined).split(/[\/／]/).map(value => value.trim());
+    if (isMissing(electric) && parts[0] !== undefined) electric = parts[0];
+    if (isMissing(area) && parts[1] !== undefined) area = parts.slice(1).join("/");
+  }
+  return { entry, electric, area };
 }
 
 function parseRawData(value) {
