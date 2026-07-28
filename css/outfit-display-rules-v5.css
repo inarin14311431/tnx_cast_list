@@ -1,4 +1,26 @@
-/* Final visual sizing for the stable v5 outfit layout. */
+/* Final visual sizing and visibility for the stable v5 outfit layout. */
+
+/* v5 owns the hidden state. Do not depend on retired v2-v4 stylesheets. */
+.outfit-rule-v4-hidden,
+#outfit-list [data-ofc-head="major_category"],
+#outfit-list [data-ofc-cell="major_category"],
+#outfit-list [data-ofc-head="minor_category"],
+#outfit-list [data-ofc-cell="minor_category"],
+#outfit-list [data-ofc-head="manufacturer"],
+#outfit-list [data-ofc-cell="manufacturer"],
+#outfit-list [data-ofc-head="concealment_penalty"],
+#outfit-list [data-ofc-cell="concealment_penalty"],
+#outfit-list .outfit-table-head--major_category,
+#outfit-list .outfit-table-cell--major_category,
+#outfit-list .outfit-table-head--minor_category,
+#outfit-list .outfit-table-cell--minor_category,
+#outfit-list .outfit-table-head--manufacturer,
+#outfit-list .outfit-table-cell--manufacturer,
+#outfit-list .outfit-table-head--concealment_penalty,
+#outfit-list .outfit-table-cell--concealment_penalty{
+  display:none!important;
+}
+
 #outfit-list .outfit-table-scroll{
   width:100%;
   min-width:0;
