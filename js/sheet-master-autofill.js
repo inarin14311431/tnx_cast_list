@@ -1,7 +1,7 @@
 import { supabase } from "./supabase-client.js";
 
 const ADMIN_UID = "f44d74d1-5f09-425f-8de8-a7fb6b46ea79";
-const EMPTY_MARKS = new Set(["", "-", "－", "—"]);
+const EMPTY_MARKS = new Set(["", "-", "－", "—", "―"]);
 
 initialize();
 
@@ -35,28 +35,25 @@ async function runAutofill(button) {
   try {
     const [{ data: skdRows, error: skdError }, { data: ofcRows, error: ofcError }] = await Promise.all([
       supabase.from("skd_master")
-        .select("name,type_label,skill,limit_text,timing,target,range_text,difficulty,confrontation,description,page_number")
+        .select("name,style,type_label,skill,limit_text,timing,target,range_text,difficulty,confrontation,description,page_number")
         .range(0, 4999),
       supabase.from("ofc_master")
-        .select("name,site_category,purchase_target,permanent_cost,concealment,concealment_penalty,attack,parry,range_text,speed,control_value,electronic_control,defense_s,defense_p,defense_i,slot,description,page_number,raw_data")
+        .select("name,site_category,major_category,minor_category,manufacturer,purchase_target,permanent_cost,concealment,concealment_penalty,attack,parry,range_text,speed,control_value,electronic_control,defense_s,defense_p,defense_i,slot,description,page_number,raw_data")
         .range(0, 4999)
     ]);
     if (skdError) throw skdError;
     if (ofcError) throw ofcError;
 
-    const skdIndex = buildIndex(skdRows || [], row => normalizeStyleName(row.name));
-    const ofcIndex = buildIndex(ofcRows || [], row => normalizeName(row.name));
-
-    const skillResult = fillStyleSkills(skdIndex);
-    const outfitResult = fillOutfits(ofcIndex);
+    const skillResult = fillStyleSkills(buildIndex(skdRows || [], row => normalizeStyleName(row.name)));
+    const outfitResult = fillOutfits(buildIndex(ofcRows || [], row => normalizeName(row.name)));
 
     alert([
       "SKD・OFC補完が完了しました。",
       "",
-      `スタイル技能：${skillResult.changed}項目補完 / ${skillResult.unmatched}件未一致 / ${skillResult.ambiguous}件候補複数`,
-      `アウトフィット：${outfitResult.changed}項目補完 / ${outfitResult.unmatched}件未一致 / ${outfitResult.ambiguous}件候補複数`,
+      `スタイル技能：${skillResult.changed}項目補完 / ${skillResult.unmatched}件未一致 / ${skillResult.ambiguous}件複数候補から選択`,
+      `アウトフィット：${outfitResult.changed}項目補完 / ${outfitResult.unmatched}件未一致 / ${outfitResult.ambiguous}件複数候補から選択`,
       "",
-      "既存の入力値は上書きしていません。"
+      "空欄・ハイフン類の項目だけを補完し、既存値は上書きしていません。"
     ].join("\n"));
   } catch (error) {
     console.error("Master autofill failed.", error);
@@ -72,14 +69,15 @@ function fillStyleSkills(index) {
   let unmatched = 0;
   let ambiguous = 0;
 
-  for (const row of document.querySelectorAll("#style-skills tr[data-skill-key]")) {
-    const nameControl = row.querySelector('[data-f="name"]');
-    const key = normalizeStyleName(nameControl?.value || "");
+  for (const row of document.querySelectorAll("#style-skills [data-skill-key]")) {
+    const key = normalizeStyleName(row.querySelector('[data-f="name"]')?.value || "");
     if (!key) continue;
+
     const matches = index.get(key) || [];
     if (!matches.length) { unmatched += 1; continue; }
-    if (matches.length !== 1) { ambiguous += 1; continue; }
-    const source = matches[0];
+    if (matches.length > 1) ambiguous += 1;
+    const source = chooseBestSkillMatch(row, matches);
+    if (!source) continue;
 
     changed += fillControl(row.querySelector('[data-f="skill_kind"]'), source.type_label);
     changed += fillControl(row.querySelector('[data-style-field="skill"]'), source.skill);
@@ -104,12 +102,18 @@ function fillOutfits(index) {
   for (const row of document.querySelectorAll("#outfit-list [data-outfit-key]")) {
     const base = key => row.querySelector(`[data-o="${key}"]`);
     const ofc = key => row.querySelector(`[data-ofc="${key}"]`);
-    const name = base("name")?.value || "";
-    const category = base("category")?.value || "other";
-    const matches = (index.get(normalizeName(name)) || []).filter(item => !item.site_category || normalizeCategory(item.site_category) === category);
+    const category = base("category")?.value || row.closest("table")?.dataset.outfitSchema || "other";
+    const key = normalizeName(base("name")?.value || "");
+    if (!key) continue;
+
+    const named = index.get(key) || [];
+    const categoryMatches = named.filter(item => !item.site_category || normalizeCategory(item.site_category) === category);
+    const matches = categoryMatches.length ? categoryMatches : named;
     if (!matches.length) { unmatched += 1; continue; }
-    if (matches.length !== 1) { ambiguous += 1; continue; }
-    const source = matches[0];
+    if (matches.length > 1) ambiguous += 1;
+    const source = chooseBestOutfitMatch(row, matches);
+    if (!source) continue;
+
     const raw = parseRawData(source.raw_data);
     const concealment = [source.concealment, source.concealment_penalty].filter(value => !isMissing(value)).join("/");
     const rangeValue = firstPresent(source.range_text, raw.range_text, raw.range, raw.rangeText);
@@ -130,6 +134,9 @@ function fillOutfits(index) {
     changed += fillControl(ofc("defense_p"), source.defense_p);
     changed += fillControl(ofc("defense_i"), source.defense_i);
     changed += fillControl(ofc("page_number"), source.page_number);
+    changed += fillControl(ofc("major_category"), source.major_category);
+    changed += fillControl(ofc("minor_category"), source.minor_category);
+    changed += fillControl(ofc("manufacturer"), source.manufacturer);
 
     changed += fillControl(ofc("crew"), firstPresent(raw.crew, raw.passenger, raw.passengers));
     changed += fillControl(ofc("sf"), firstPresent(raw.sf, raw.speedFactor));
@@ -143,6 +150,48 @@ function fillOutfits(index) {
   }
 
   return { changed, unmatched, ambiguous };
+}
+
+function chooseBestSkillMatch(row, matches) {
+  return chooseBestMatch(matches, source => scoreExistingPairs([
+    [row.querySelector('[data-f="skill_kind"]')?.value, source.type_label],
+    [row.querySelector('[data-style-field="skill"]')?.value, source.skill],
+    [row.querySelector('[data-style-field="timing"]')?.value, source.timing],
+    [row.querySelector('[data-style-field="target"]')?.value, source.target],
+    [row.querySelector('[data-style-field="range"]')?.value, source.range_text],
+    [row.querySelector('[data-style-field="page"]')?.value, source.page_number]
+  ]) + completenessScore(source));
+}
+
+function chooseBestOutfitMatch(row, matches) {
+  const base = key => row.querySelector(`[data-o="${key}"]`)?.value;
+  const ofc = key => row.querySelector(`[data-ofc="${key}"]`)?.value;
+  return chooseBestMatch(matches, source => scoreExistingPairs([
+    [base("purchase_value"), source.purchase_target],
+    [base("experience_cost"), source.permanent_cost],
+    [base("attack"), source.attack],
+    [base("range") || ofc("range_text"), source.range_text],
+    [ofc("parry"), source.parry],
+    [ofc("electronic_control"), source.electronic_control],
+    [ofc("page_number"), source.page_number]
+  ]) + completenessScore(source));
+}
+
+function chooseBestMatch(matches, scoreFn) {
+  return [...matches].sort((a, b) => scoreFn(b) - scoreFn(a))[0] || null;
+}
+
+function scoreExistingPairs(pairs) {
+  let score = 0;
+  for (const [current, candidate] of pairs) {
+    if (isMissing(current) || isMissing(candidate)) continue;
+    score += normalizeName(current) === normalizeName(candidate) ? 100 : -25;
+  }
+  return score;
+}
+
+function completenessScore(source) {
+  return Object.values(source || {}).reduce((score, value) => score + (isMissing(value) ? 0 : 1), 0);
 }
 
 function fillControl(control, value) {
