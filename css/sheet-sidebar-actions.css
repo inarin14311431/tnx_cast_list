@@ -23,7 +23,6 @@
   transition: border-color .18s ease, color .18s ease, background .18s ease, box-shadow .18s ease, transform .18s ease;
 }
 
-/* hidden属性を共通のdisplay:gridより優先し、権限外機能の空きを残さない。 */
 .exp-panel > [hidden] {
   display: none !important;
   margin: 0 !important;
@@ -73,13 +72,12 @@
   transform: none;
 }
 
-/* 用途別の左レール。data-action-groupはJSで動的追加ボタンにも付与する。 */
+/* 用途別の左レール。Cはマゼンタ、Dはアンバーにして明確に分離する。 */
 .exp-panel > [data-action-group="a"] { border-left-color: #70efa9 !important; }
 .exp-panel > [data-action-group="b"] { border-left-color: #35d7ff !important; }
-.exp-panel > [data-action-group="c"] { border-left-color: #ff4fae !important; }
-.exp-panel > [data-action-group="d"] { border-left-color: #9a6cff !important; }
+.exp-panel > [data-action-group="c"] { border-left-color: #ff2f92 !important; }
+.exp-panel > [data-action-group="d"] { border-left-color: #ffd23f !important; }
 
-/* ID/Classでも補助指定し、JS読込前から色を出す。 */
 .exp-panel > #save-button { border-left-color: #70efa9 !important; }
 .exp-panel > #cast-view-button,
 .exp-panel > #legacy-import-open,
@@ -88,13 +86,12 @@
 .exp-panel > #cocofolia-copy-button,
 .exp-panel > #udonarium-export-button,
 .exp-panel > [id*="cocofolia"],
-.exp-panel > [id*="udonarium"] { border-left-color: #ff4fae !important; }
+.exp-panel > [id*="udonarium"] { border-left-color: #ff2f92 !important; }
 .exp-panel > .transfer-tsv-copy-button,
 .exp-panel > .transfer-bookmarklet-copy-button,
 .exp-panel > [id*="transfer-tsv"],
-.exp-panel > [id*="transfer-bookmarklet"] { border-left-color: #9a6cff !important; }
+.exp-panel > [id*="transfer-bookmarklet"] { border-left-color: #ffd23f !important; }
 
-/* 保存状態は意味を残し、左レールはAグループ色で固定する。 */
 .exp-panel > #save-button.is-saved,
 .exp-panel > #save-button[data-save-state="saved"] {
   color: #071610 !important;
