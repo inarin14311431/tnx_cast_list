@@ -1,4 +1,5 @@
-import { supabase } from "./supabase-client.js";
+const SUPABASE_URL = "https://koprmbkoftuuffslhsvt.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_Dsb9Boo4aP3c_v-Iaam4mw_F1szMdUi";
 
 const status = document.querySelector("#act-showcase-status");
 const root = document.querySelector("#act-showcase-root");
@@ -17,9 +18,10 @@ async function initialize() {
     const slug = normalizeSlug(new URLSearchParams(location.search).get("id"));
     if (!slug) throw new Error("アクト識別名が指定されていません。");
 
-    const { data, error } = await supabase.rpc("get_public_act_showcase", { p_slug: slug });
-    if (error) throw new Error(translateError(error));
-    if (!data || typeof data !== "object") throw new Error("指定されたアクト紹介は公開されていません。");
+    const data = await fetchPublicShowcase(slug);
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
+      throw new Error("指定されたアクト紹介は公開されていません。公開画面から再度『アクト紹介を公開』してください。");
+    }
 
     renderShowcase(data);
     status.hidden = true;
@@ -31,10 +33,43 @@ async function initialize() {
   }
 }
 
+async function fetchPublicShowcase(slug) {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_public_act_showcase`, {
+    method: "POST",
+    headers: {
+      apikey: SUPABASE_PUBLISHABLE_KEY,
+      Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ p_slug: slug }),
+    cache: "no-store"
+  });
+
+  const responseText = await response.text();
+  let payload = null;
+  if (responseText) {
+    try {
+      payload = JSON.parse(responseText);
+    } catch {
+      payload = responseText;
+    }
+  }
+
+  if (!response.ok) {
+    const message = typeof payload === "object" && payload
+      ? payload.message || payload.hint || payload.details
+      : String(payload || "");
+    throw new Error(translateError({ message }));
+  }
+
+  return payload;
+}
+
 function renderShowcase(data) {
   const pageTitle = text(data.pageTitle) || "ACT CAST FILE";
   document.title = pageTitle;
-  title.childNodes[0].textContent = text(data.heroTitle) || pageTitle;
+  const titleTextNode = [...title.childNodes].find(node => node.nodeType === Node.TEXT_NODE);
+  if (titleTextNode) titleTextNode.textContent = text(data.heroTitle) || pageTitle;
   subtitle.textContent = text(data.heroSubTitle) || "CAST SHOWCASE";
   actName.textContent = text(data.actName);
 
@@ -218,6 +253,9 @@ function translateError(error) {
   const message = String(error?.message || "");
   if (/get_public_act_showcase|function.*does not exist|schema cache/i.test(message)) {
     return "動的公開機能が未設定です。管理者がSupabaseの設定を確認してください。";
+  }
+  if (/failed to fetch|networkerror|load failed/i.test(message)) {
+    return "公開データの取得に失敗しました。通信状態を確認して再読み込みしてください。";
   }
   return message || "アクト紹介を読み込めませんでした。";
 }
