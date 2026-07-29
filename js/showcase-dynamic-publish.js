@@ -1,6 +1,5 @@
 import { supabase } from "./supabase-client.js";
 
-const publishButton = document.querySelector("#publish-button");
 const preview = document.querySelector("#showcase-preview");
 const status = document.querySelector("#generator-status");
 const slugField = document.querySelector("#publish-slug");
@@ -10,11 +9,18 @@ const MAX_SHOWCASE_BYTES = 500 * 1024;
 const TARGET_BACKGROUND_BYTES = 300 * 1024;
 let publishing = false;
 
-publishButton?.addEventListener("click", publishDynamicShowcase, true);
-
-async function publishDynamicShowcase(event) {
+// document のキャプチャ段階で処理することで、旧ジェネレーター側に残る
+// GitHub Pages公開リスナーより先にSupabase動的公開を実行する。
+document.addEventListener("click", event => {
+  const button = event.target.closest?.("#publish-button");
+  if (!button) return;
   event.preventDefault();
+  event.stopPropagation();
   event.stopImmediatePropagation();
+  publishDynamicShowcase(button);
+}, true);
+
+async function publishDynamicShowcase(button) {
   if (publishing) return;
 
   try {
@@ -37,7 +43,7 @@ async function publishDynamicShowcase(event) {
     if (!slug) throw new Error("アクト識別名を半角英数字とハイフンで入力してください。");
 
     publishing = true;
-    publishButton.disabled = true;
+    button.disabled = true;
     setStatus("公開用データを準備中…");
 
     const showcaseData = await extractShowcaseData(source);
@@ -67,7 +73,8 @@ async function publishDynamicShowcase(event) {
     setStatus(error?.message || "アクト紹介の公開に失敗しました。", "error");
   } finally {
     publishing = false;
-    if (publishButton) publishButton.disabled = !String(preview?.srcdoc || "").trim();
+    const currentButton = document.querySelector("#publish-button");
+    if (currentButton) currentButton.disabled = !String(preview?.srcdoc || "").trim();
   }
 }
 
