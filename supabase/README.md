@@ -2,10 +2,10 @@
 
 このディレクトリの番号付きSQLは、運用中のSupabaseへ適用した履歴です。
 
-現在置かれている番号付きSQLはすべて適用済みです。既存環境へ再実行する必要はありません。
+現在置かれている番号付きSQLは、`23_remove_legacy_github_pages_publish.sql`を除き適用済みです。
 新しい環境をゼロから構築する用途ではなく、変更内容の監査・復旧確認用として保持します。
 
-## 適用済みSQL
+## SQL一覧
 
 | 番号 | ファイル | 役割 | 状態 |
 |---:|---|---|---|
@@ -24,6 +24,7 @@
 | 20 | `20_dynamic_act_showcase.sql` | アクト紹介データの保存・動的表示 | 適用済み |
 | 21 | `21_master_search_uid_allowlist.sql` | SKD/OFCマスタ検索のUID許可リスト | 適用済み |
 | 22 | `22_outfit_ofc_details.sql` | OFC固有項目と保存RPC | 適用済み |
+| 23 | `23_remove_legacy_github_pages_publish.sql` | 旧GitHub Pages公開用RPCを削除 | 未適用 |
 
 ## 欠番について
 
@@ -38,7 +39,7 @@
 
 ## 今後の採番規則
 
-次のDB変更は`23_機能名.sql`から追加します。
+次のDB変更は`24_機能名.sql`から追加します。
 
 - 一つの番号は一つの変更目的に限定する
 - 適用済みファイルの内容・番号は原則変更しない
@@ -48,6 +49,17 @@
 - ファイル冒頭へ目的と依存する直前番号をコメントする
 - 適用後はこの一覧へ状態を追記する
 
-## Edge Functions
+## 旧GitHub Pages公開機能の削除
 
-`functions/`配下はSQLの採番対象外です。Edge Functionを変更した場合は、対象関数をSupabaseへ再デプロイしてください。
+`23_remove_legacy_github_pages_publish.sql`をSQL Editorで実行すると、旧`publish-showcase` Edge Function専用の`record_act_publication` RPCを削除します。
+
+Edge Function本体とSecretはSQLでは削除できません。Supabase CLIまたはDashboardで、次を別途削除してください。
+
+```bash
+supabase functions delete publish-showcase --project-ref koprmbkoftuuffslhsvt
+supabase secrets unset GITHUB_SHOWCASE_TOKEN --project-ref koprmbkoftuuffslhsvt
+```
+
+必要に応じて、`GITHUB_SHOWCASE_REPOSITORY`、`GITHUB_SHOWCASE_BRANCH`、`GITHUB_SHOWCASE_PAGES_BASE`、`SHOWCASE_ALLOWED_ORIGINS`、`SHOWCASE_ADMIN_USER_IDS`、`SHOWCASE_ADMIN_EMAILS`も削除します。
+
+現在のアクト紹介公開は、`publish_act_showcase_for_current_user`でSupabaseへJSONを保存し、`act-showcase.html`から動的に表示する方式です。
