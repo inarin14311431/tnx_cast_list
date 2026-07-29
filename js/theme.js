@@ -1,7 +1,23 @@
 /* Persistent color-theme controller shared by all active pages. */
 (() => {
   const STORAGE_KEY = "tnx-cast-site-theme";
-  const THEMES = new Set(["nova", "moon", "star", "eden", "vlad", "lutetia", "buena", "canberra", "intron", "axleraters", "inagaki"]);
+  const THEMES = new Set(["nova", "moon", "star", "eden", "vlad", "lutetia", "buena", "canberra", "intron", "axleraters", "inagaki", "astral", "orbital", "japanese-army"]);
+  const THEME_OPTIONS = [
+    ["nova", "トーキョーＮ◎ＶＡ"],
+    ["moon", "オーサカM○●N"],
+    ["star", "カムイST☆R"],
+    ["eden", "ミトラスEΔEN"],
+    ["vlad", "ヴラド・コロニー"],
+    ["lutetia", "ヴィル・ヌーヴ・ルテチア"],
+    ["buena", "ブエナIЯIA"],
+    ["canberra", "キャンベラAYYZ"],
+    ["intron", "イントロン"],
+    ["axleraters", "ニューロ！"],
+    ["inagaki", "稲垣 光平"],
+    ["astral", "アストラル"],
+    ["orbital", "軌道"],
+    ["japanese-army", "日本軍"]
+  ];
   let buttonObserver = null;
   let buttonRefreshQueued = false;
 
@@ -14,14 +30,46 @@
     }
   }
 
+  function ensureThemeOptions(select) {
+    const current = select.value;
+    THEME_OPTIONS.forEach(([value, label]) => {
+      let option = Array.from(select.options).find(item => item.value === value);
+      if (!option) {
+        option = document.createElement("option");
+        option.value = value;
+        select.append(option);
+      }
+      option.textContent = label;
+    });
+    if (THEMES.has(current)) select.value = current;
+  }
+
+  function ensureErrorOverlay() {
+    if (!document.body || document.querySelector("[data-japanese-army-overlay]")) return;
+    const overlay = document.createElement("section");
+    overlay.className = "japanese-army-overlay";
+    overlay.setAttribute("data-japanese-army-overlay", "1");
+    overlay.innerHTML = `
+      <label class="japanese-army-theme-picker">
+        <span>表示テーマ <small>COLOR THEME</small></span>
+        <select data-theme-select aria-label="表示テーマ"></select>
+      </label>
+      <div class="japanese-army-error" role="alert">ERROR</div>
+      <p class="japanese-army-error-code">SYSTEM ACCESS DENIED</p>`;
+    document.body.append(overlay);
+    const select = overlay.querySelector("[data-theme-select]");
+    ensureThemeOptions(select);
+  }
+
   function applyTheme(theme, persist = false) {
     const next = THEMES.has(theme) ? theme : "nova";
     document.documentElement.dataset.theme = next;
-    document.documentElement.style.colorScheme = next === "intron" ? "light" : "dark";
+    document.documentElement.style.colorScheme = ["intron", "orbital"].includes(next) ? "light" : "dark";
     if (persist) {
       try { localStorage.setItem(STORAGE_KEY, next); } catch {}
     }
     document.querySelectorAll("[data-theme-select]").forEach(select => {
+      ensureThemeOptions(select);
       if (select.value !== next) select.value = next;
     });
     window.dispatchEvent(new CustomEvent("tnx:theme-change", { detail: { theme: next } }));
@@ -63,6 +111,7 @@
     appendStylesheet("./css/theme-intron-light.css?v=2", "data-theme-intron-light");
     appendStylesheet("./css/theme-vlad-vampire.css?v=1", "data-theme-vlad-vampire");
     appendStylesheet("./css/theme-special-brands.css?v=2", "data-theme-special-brands");
+    appendStylesheet("./css/theme-new-worlds.css?v=1", "data-theme-new-worlds");
     appendStylesheet("./css/theme-inagaki-gaudy.css?v=1", "data-theme-inagaki-gaudy");
     appendStylesheet("./css/theme-inagaki-select-fix.css?v=1", "data-theme-inagaki-select-fix");
     appendStylesheet("./css/character-image-top-align.css?v=1", "data-character-image-top-align");
@@ -120,10 +169,12 @@
 
   function bindSelectors() {
     loadLateOverrides();
+    ensureErrorOverlay();
     loadPageEnhancements();
     normalizeOrderButtons();
     observeDynamicButtons();
     document.querySelectorAll("[data-theme-select]").forEach(select => {
+      ensureThemeOptions(select);
       if (select.dataset.themeBound === "1") return;
       select.dataset.themeBound = "1";
       select.value = document.documentElement.dataset.theme || "nova";
