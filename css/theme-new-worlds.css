@@ -1,0 +1,27 @@
+/* Additional display themes. */
+:root[data-theme="astral"]{
+  --background:#090814;--panel:rgba(20,20,48,.96);--line:#9b7cff;--line-muted:#514a83;--text:#e9e7f6;--text-muted:#aaa6c5;--alert:#e7c76a;
+  --theme-body-bg:radial-gradient(circle at 18% 12%,rgba(155,124,255,.22),transparent 30%),radial-gradient(circle at 86% 18%,rgba(69,214,197,.16),transparent 25%),linear-gradient(145deg,#080712,#111126 55%,#080914);
+  --theme-header-bg:linear-gradient(115deg,rgba(29,23,67,.98),rgba(10,11,31,.98) 55%,rgba(17,45,54,.92));--theme-panel-bg:linear-gradient(145deg,rgba(27,25,61,.97),rgba(13,15,39,.98));--theme-panel-flat:rgba(20,20,48,.96);--theme-input-bg:rgba(9,8,25,.94);--theme-button-bg:linear-gradient(120deg,rgba(155,124,255,.19),rgba(69,214,197,.12));--theme-button-hover:#b09aff;--theme-on-accent:#090814;--theme-grid-line:rgba(155,124,255,.055);--theme-scan-line:rgba(69,214,197,.10);--theme-scan-opacity:.035;--theme-shadow:rgba(155,124,255,.24);--theme-divine-bg:linear-gradient(135deg,rgba(52,37,80,.96),rgba(18,39,48,.96));--theme-divine-line:#e7c76a;
+}
+html[data-theme="astral"] body{background-image:radial-gradient(circle at 12% 28%,rgba(255,255,255,.7) 0 1px,transparent 1.5px),radial-gradient(circle at 73% 18%,rgba(255,255,255,.55) 0 1px,transparent 1.4px),var(--theme-body-bg)!important;background-size:180px 180px,240px 240px,cover!important}
+html[data-theme="astral"] .site-header,html[data-theme="astral"] .auth-header,html[data-theme="astral"] .cast-header,html[data-theme="astral"] .sheet-header,html[data-theme="astral"] .showcase-header{border-color:#9b7cff!important;box-shadow:0 10px 30px rgba(7,5,20,.44),0 0 18px rgba(155,124,255,.18)!important}
+html[data-theme="astral"] .hero-divine-panel,html[data-theme="astral"] .divine-card,html[data-theme="astral"] .style-divine-card,html[data-theme="astral"] .divine-field{border-color:#e7c76a!important}
+
+:root[data-theme="orbital"]{
+  --background:#eaf3f8;--panel:rgba(255,255,255,.94);--line:#3e9bc6;--line-muted:#afc9d6;--text:#243746;--text-muted:#607887;--alert:#f2a24a;
+  --theme-body-bg:radial-gradient(circle at 88% 10%,rgba(62,155,198,.18),transparent 27%),radial-gradient(circle at 10% 80%,rgba(72,193,181,.12),transparent 30%),linear-gradient(145deg,#f8fbfc,#eaf3f8 58%,#f3f8fa);
+  --theme-header-bg:linear-gradient(115deg,rgba(255,255,255,.98),rgba(232,244,249,.97) 58%,rgba(231,248,245,.96));--theme-panel-bg:linear-gradient(145deg,rgba(255,255,255,.97),rgba(235,245,249,.96));--theme-panel-flat:rgba(255,255,255,.94);--theme-input-bg:#fff;--theme-button-bg:linear-gradient(180deg,rgba(255,255,255,.98),rgba(220,238,245,.96));--theme-button-hover:#3e9bc6;--theme-on-accent:#fff;--theme-grid-line:rgba(62,155,198,.075);--theme-scan-line:rgba(62,155,198,.07);--theme-scan-opacity:.018;--theme-shadow:rgba(54,92,112,.16);--theme-divine-bg:linear-gradient(135deg,rgba(255,249,235,.98),rgba(231,246,248,.98));--theme-divine-line:#f2a24a;
+}
+html[data-theme="orbital"] body{color:#243746!important;background:radial-gradient(circle at 86% 14%,transparent 0 120px,rgba(62,155,198,.11) 121px 122px,transparent 123px 170px,rgba(62,155,198,.07) 171px 172px,transparent 173px),linear-gradient(rgba(62,155,198,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(62,155,198,.045) 1px,transparent 1px),var(--theme-body-bg)!important;background-size:auto,42px 42px,42px 42px,cover!important}
+html[data-theme="orbital"] input,html[data-theme="orbital"] textarea,html[data-theme="orbital"] select{color:#243746!important;background:#fff!important}
+html[data-theme="orbital"] option{color:#243746;background:#fff}
+
+.japanese-army-overlay{display:none}
+html[data-theme="japanese-army"] body{min-height:100vh!important;margin:0!important;overflow:hidden!important;background:#070807!important}
+html[data-theme="japanese-army"] body>:not(.japanese-army-overlay){display:none!important}
+html[data-theme="japanese-army"] .japanese-army-overlay{position:fixed;inset:0;z-index:2147483647;display:grid;grid-template-rows:auto 1fr auto;place-items:center;box-sizing:border-box;padding:clamp(20px,5vw,70px);color:#e8eadf;font-family:"Courier New",monospace}
+html[data-theme="japanese-army"] .japanese-army-theme-picker{justify-self:end;align-self:start;display:grid;gap:8px;min-width:min(320px,88vw);color:#aeb6a1;letter-spacing:.12em;font-weight:700}
+html[data-theme="japanese-army"] .japanese-army-theme-picker select{width:100%;padding:12px 14px;color:#e8eadf!important;background:#111310!important;border:1px solid #6c7562!important;border-radius:0!important;font:700 15px/1.2 "Courier New",monospace;box-shadow:none!important}
+html[data-theme="japanese-army"] .japanese-army-error{align-self:center;font-size:clamp(78px,22vw,360px);line-height:.8;font-weight:900;letter-spacing:-.08em;color:#d84b3f;text-shadow:0 0 4px rgba(216,75,63,.5),6px 0 0 rgba(90,22,18,.42);user-select:none}
+html[data-theme="japanese-army"] .japanese-army-error-code{align-self:end;margin:0;color:#89917e;font-size:clamp(12px,1.5vw,18px);letter-spacing:.42em}
