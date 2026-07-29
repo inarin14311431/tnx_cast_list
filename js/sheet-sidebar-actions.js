@@ -2,6 +2,13 @@
   const panel = document.querySelector('.exp-panel');
   if (!panel) return;
 
+  const GROUP_COLORS = {
+    a: '#70efa9',
+    b: '#35d7ff',
+    c: '#ff1493',
+    d: '#ffd000'
+  };
+
   const classify = () => {
     panel.querySelectorAll(':scope > button, :scope > a.sheet-view-link').forEach(element => {
       const label = String(element.textContent || '').replace(/\s+/g, ' ').trim();
@@ -17,12 +24,24 @@
         group = 'd';
       }
 
-      if (group) element.dataset.actionGroup = group;
-      else delete element.dataset.actionGroup;
+      if (!group) {
+        delete element.dataset.actionGroup;
+        element.style.removeProperty('--action-rail');
+        element.style.removeProperty('border-left-color');
+        return;
+      }
+
+      const color = GROUP_COLORS[group];
+      element.dataset.actionGroup = group;
+      element.style.setProperty('--action-rail', color);
+      element.style.setProperty('border-left-color', color, 'important');
     });
   };
 
   classify();
+  requestAnimationFrame(classify);
+  window.addEventListener('load', classify, { once: true });
+
   new MutationObserver(classify).observe(panel, {
     childList: true,
     subtree: true,
