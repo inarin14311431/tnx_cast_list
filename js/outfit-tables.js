@@ -219,6 +219,20 @@
     return section;
   }
 
+  function categoryMeta(category){return CATEGORIES.find(([key])=>key===category)||CATEGORIES[CATEGORIES.length-1];}
+
+  function renderCategory(category){
+    const [key,label,en,addLabel]=categoryMeta(category);
+    const current=root.querySelector(`:scope > .outfit-table-group--${key}`);
+    const rows=[...root.querySelectorAll(`:scope > .outfit-table-group--${key} .outfit-table-row[data-outfit-key]`)];
+    const cards=[...root.querySelectorAll(':scope > .outfit-card[data-outfit-key]')].filter(card=>(card.querySelector('[data-o="category"]')?.value||'other')===key);
+    const next=makeTable(key,[...rows,...cards],label,en,addLabel);
+    cards.forEach(card=>card.remove());
+    if(current)current.replaceWith(next);
+    else root.append(next);
+    return next;
+  }
+
   function readRow(row){
     const data={};
     row.querySelectorAll('[data-o]').forEach(control=>{
@@ -231,17 +245,17 @@
 
   function addRawOutfit(data){
     const generic=document.querySelector('#add-outfit');
-    if(!generic)return;
+    if(!generic)return null;
     generic.click();
     let cards=[...root.querySelectorAll(':scope > .outfit-card[data-outfit-key]')];
     let card=cards[cards.length-1];
-    if(!card)return;
+    if(!card)return null;
     const category=card.querySelector('[data-o="category"]');
     category.value=data.category||'other';
     category.dispatchEvent(new Event('input',{bubbles:true}));
     cards=[...root.querySelectorAll(':scope > .outfit-card[data-outfit-key]')];
     card=cards[cards.length-1];
-    if(!card)return;
+    if(!card)return null;
     for(const [field,value] of Object.entries(data.data||{})){
       if(field==='category')continue;
       const control=card.querySelector(`[data-o="${field}"]`);
@@ -249,6 +263,7 @@
       control.value=value??'';
       control.dispatchEvent(new Event('input',{bubbles:true}));
     }
+    return card;
   }
 
   function rebuildFrom(items,focusKey=''){
@@ -285,12 +300,20 @@
   }
 
   function addCategory(category){
-    addRawOutfit({category,data:{category}});
-    queue();
-    requestAnimationFrame(()=>requestAnimationFrame(()=>{
-      const rows=[...root.querySelectorAll(`.outfit-table-group--${category} .outfit-table-row`)];
-      rows[rows.length-1]?.querySelector('[data-o="name"]')?.focus();
-    }));
+    rebuilding=true;
+    observer.disconnect();
+    try{
+      const card=addRawOutfit({category,data:{category}});
+      if(!card)return;
+      const section=renderCategory(category);
+      requestAnimationFrame(()=>{
+        const rows=[...section.querySelectorAll('.outfit-table-row')];
+        rows[rows.length-1]?.querySelector('[data-o="name"]')?.focus();
+      });
+    }finally{
+      rebuilding=false;
+      observer.observe(root,{childList:true,subtree:true});
+    }
   }
 
   function configureToolbar(){
