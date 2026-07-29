@@ -59,7 +59,6 @@
     appendStylesheet("./css/theme-polish.css?v=2", "data-theme-polish");
     appendStylesheet("./css/theme-fixes-v3.css?v=2", "data-theme-fixes-v3");
     appendStylesheet("./css/theme-fixes-v4.css?v=4", "data-theme-fixes-v4");
-    appendStylesheet("./css/style-skill-separators.css?v=1", "data-style-skill-separators");
     appendStylesheet("./css/theme-city-expansion.css?v=2", "data-theme-city-expansion");
     appendStylesheet("./css/theme-intron-light.css?v=2", "data-theme-intron-light");
     appendStylesheet("./css/theme-vlad-vampire.css?v=1", "data-theme-vlad-vampire");
@@ -73,7 +72,6 @@
   }
 
   function loadPageEnhancements(){
-    if(document.querySelector("#style-skills"))appendScript("./js/style-skill-separators.js?v=1","data-style-skill-separators-script");
     if(document.querySelector("#skills-container"))appendScript("./js/cast-style-skill-separators.js?v=1","data-cast-style-skill-separators-script");
     if(document.querySelector(".sheet-layout")){
       appendScript("./js/sheet-open-at-top.js?v=1","data-sheet-open-at-top");
