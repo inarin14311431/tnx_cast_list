@@ -22,13 +22,14 @@ try {
   await import("./showcase-history-role.js?v=1");
 
   // showcase-generator-v3.js に残る旧GitHub Pages公開リスナーを破棄する。
-  // この後に読み込まれる showcase-dynamic-publish.js が、
-  // 新しいボタンへSupabase動的公開処理だけを登録する。
   const legacyPublishButton = document.querySelector("#publish-button");
   if (legacyPublishButton) {
     const dynamicPublishButton = legacyPublishButton.cloneNode(true);
     legacyPublishButton.replaceWith(dynamicPublishButton);
   }
+
+  // ボタン差し替え後に、Supabase動的公開処理を確実に登録する。
+  await import("./showcase-dynamic-publish.js?v=3");
 } catch (error) {
   console.error("Showcase generator could not be initialized.", error);
   reportRuntimeError(error?.message || "初期化に失敗しました。ページを再読み込みしてください。");
