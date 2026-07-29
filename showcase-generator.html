@@ -29,7 +29,7 @@
         <label>ページタイトル<input id="page-title" type="text" value="ACT CAST FILE"></label>
         <label>アクト名／サブタイトル<input id="act-name" type="text" value="トーキョーＮ◎ＶＡ アクト参加キャスト"></label>
         <label>RULER名<input id="ruler-name" type="text" placeholder="例：稲荷秋"></label>
-        <label>アクト識別名／公開ファイル名<input id="publish-slug" type="text" placeholder="自動設定：act-0001"><small>履歴登録とGitHub Pages公開に共通して使用します。同じ識別名は、登録した本人だけが更新できます。</small></label>
+        <label>アクト識別名<input id="publish-slug" type="text" placeholder="自動設定：act-0001"><small>履歴登録とアクト紹介の公開に共通して使用します。同じ識別名は、登録した本人だけが更新できます。</small></label>
         <label class="form-grid__wide">イントロ文<textarea id="intro-text" rows="4" placeholder="運命の扉を開く者たち。今夜、N◎VAの闇にアクセスする。"></textarea></label>
         <label>背景画像URL<input id="background-url" type="url" placeholder="https://... または ./assets/citymap.png"></label>
         <label>背景画像ファイル<input id="background-file" type="file" accept="image/*"><small>URLが入力されている場合はURLを優先します。</small></label>
@@ -46,7 +46,7 @@
             <h3 id="private-history-heading">自分の非公開キャスト <small>OWNED PRIVATE CAST / LOCAL OUTPUT</small></h3>
             <p><strong id="private-selected-count">0</strong> SELECTED</p>
           </header>
-          <p class="private-history-selector__lead">公開キャストと同じ出演枠へ追加し、出演順・参加枠・一言・ハンドアウトを編集してHTMLを生成できます。非公開キャストを含むHTMLはGitHub Pagesへ公開できません。</p>
+          <p class="private-history-selector__lead">公開キャストと同じ出演枠へ追加し、出演順・参加枠・一言・ハンドアウトを編集してHTMLを生成できます。非公開キャストを含むアクト紹介は公開できません。</p>
           <p id="private-library-status" class="generator-status">自分の非公開キャストを読み込み中…</p>
           <div id="owned-private-cast-grid" class="private-cast-grid" aria-live="polite"></div>
           <div id="private-selection-summary" class="private-selection-summary" aria-live="polite"><span>非公開キャストは未選択です。</span><small>NO PRIVATE CAST SELECTED</small></div>
@@ -58,15 +58,16 @@
       <div class="showcase-panel__body"><div id="selected-casts" class="selected-casts"><p class="empty-state">公開または非公開キャストを選択するか、「手動追加」からキャストを入力してください。</p></div></div>
     </section>
     <section class="showcase-panel">
-      <header class="showcase-panel__header"><div><span>04</span><h2>生成・公開 <small>GENERATE / DEPLOY</small></h2></div><p>ACT OUTPUT / HISTORY</p></header>
+      <header class="showcase-panel__header"><div><span>04</span><h2>生成・公開 <small>GENERATE / PUBLISH</small></h2></div><p>ACT OUTPUT / HISTORY</p></header>
       <div class="showcase-panel__body">
-        <div class="generator-actions"><button id="generate-button" type="button">HTML生成 <small>GENERATE</small></button><button id="download-button" type="button" disabled>ダウンロード <small>DOWNLOAD</small></button><button id="copy-button" type="button" disabled>HTMLコピー <small>COPY</small></button><button id="history-button" class="is-history" type="button">履歴のみ登録 <small>HISTORY ONLY</small></button><button id="publish-button" class="is-publish" type="button" disabled>GitHub Pagesへ公開 <small>DEPLOY &amp; HISTORY</small></button></div>
-        <p class="generator-action-note">HTMLには他人の公開キャスト、自分の公開・非公開キャスト、手動追加キャストを掲載できます。参加履歴と経験点の対象になるのは自分が所有する登録済みキャストだけです。他人の公開キャストと手動追加キャストは履歴対象外です。非公開キャストを含む場合はGitHub Pagesへ公開できません。</p>
+        <div class="generator-actions"><button id="generate-button" type="button">HTML生成 <small>GENERATE</small></button><button id="download-button" type="button" disabled>ダウンロード <small>DOWNLOAD</small></button><button id="copy-button" type="button" disabled>HTMLコピー <small>COPY</small></button><button id="history-button" class="is-history" type="button">履歴のみ登録 <small>HISTORY ONLY</small></button><button id="publish-button" class="is-publish" type="button" disabled>アクト紹介を公開 <small>PUBLISH SHOWCASE</small></button></div>
+        <p class="generator-action-note">HTML出力は従来どおりダウンロード・コピーできます。「アクト紹介を公開」ではHTMLファイルを配置せず、紹介データを保存し、閲覧時に共通テンプレートから都度生成します。参加履歴と経験点の対象になるのは自分が所有する登録済みキャストだけです。非公開キャストを含む場合は公開できません。</p>
         <p id="generator-status" class="generator-status">待機中</p><iframe id="showcase-preview" class="showcase-preview" title="生成HTMLプレビュー"></iframe>
       </div>
     </section>
   </main>
   <script type="module" src="./js/showcase-generator-loader.js?v=10"></script>
+  <script type="module" src="./js/showcase-dynamic-publish.js?v=1"></script>
   <script type="module" src="./js/showcase-auto-slug.js?v=1"></script>
   <script src="./js/showcase-remove-label.js?v=2"></script>
 </body>
