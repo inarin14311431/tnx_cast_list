@@ -16,7 +16,7 @@
     vehicle: ["major_category", "minor_category", "manufacturer", "concealment_penalty"],
     residence: [
       "major_category", "minor_category", "manufacturer", "concealment_penalty",
-      "residence_electric", "residence_area"
+      "residence_electric", "residence_area", "residence_electric_area"
     ],
     other: [
       "mundane_modifier", "attack", "parry", "range_text", "speed",
@@ -129,6 +129,7 @@
     for (const field of fields) {
       table.querySelectorAll(
         `[data-ofc-head="${cssEscape(field)}"],[data-ofc-cell="${cssEscape(field)}"],` +
+        `[data-synthetic-head="${cssEscape(field)}"],[data-synthetic-cell="${cssEscape(field)}"],` +
         `.outfit-table-head--${cssEscape(field)},.outfit-table-cell--${cssEscape(field)}`
       ).forEach(cell => {
         cell.hidden = true;
