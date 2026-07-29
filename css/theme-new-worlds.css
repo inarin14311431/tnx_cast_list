@@ -18,10 +18,16 @@ html[data-theme="orbital"] input,html[data-theme="orbital"] textarea,html[data-t
 html[data-theme="orbital"] option{color:#243746;background:#fff}
 
 .japanese-army-overlay{display:none}
-html[data-theme="japanese-army"] body{min-height:100vh!important;margin:0!important;overflow:hidden!important;background:#070807!important}
+html[data-theme="japanese-army"] body{min-height:100vh!important;margin:0!important;overflow:hidden!important;background:repeating-linear-gradient(135deg,rgba(150,20,14,.055) 0 12px,transparent 12px 24px),#050605!important}
 html[data-theme="japanese-army"] body>:not(.japanese-army-overlay){display:none!important}
-html[data-theme="japanese-army"] .japanese-army-overlay{position:fixed;inset:0;z-index:2147483647;display:grid;grid-template-rows:auto 1fr auto;place-items:center;box-sizing:border-box;padding:clamp(20px,5vw,70px);color:#e8eadf;font-family:"Courier New",monospace}
-html[data-theme="japanese-army"] .japanese-army-theme-picker{justify-self:end;align-self:start;display:grid;gap:8px;min-width:min(320px,88vw);color:#aeb6a1;letter-spacing:.12em;font-weight:700}
-html[data-theme="japanese-army"] .japanese-army-theme-picker select{width:100%;padding:12px 14px;color:#e8eadf!important;background:#111310!important;border:1px solid #6c7562!important;border-radius:0!important;font:700 15px/1.2 "Courier New",monospace;box-shadow:none!important}
-html[data-theme="japanese-army"] .japanese-army-error{align-self:center;font-size:clamp(78px,22vw,360px);line-height:.8;font-weight:900;letter-spacing:-.08em;color:#d84b3f;text-shadow:0 0 4px rgba(216,75,63,.5),6px 0 0 rgba(90,22,18,.42);user-select:none}
-html[data-theme="japanese-army"] .japanese-army-error-code{align-self:end;margin:0;color:#89917e;font-size:clamp(12px,1.5vw,18px);letter-spacing:.42em}
+html[data-theme="japanese-army"] .japanese-army-overlay{position:fixed;inset:0;z-index:2147483647;display:grid;grid-template-rows:auto 1fr auto;place-items:center;box-sizing:border-box;padding:clamp(18px,4vw,58px);color:#eceee6;font-family:"Courier New","Yu Gothic",monospace;border:clamp(6px,1vw,16px) solid #7f1611;box-shadow:inset 0 0 0 2px #d44738,inset 0 0 80px rgba(147,16,10,.28)}
+html[data-theme="japanese-army"] .japanese-army-theme-picker{justify-self:end;align-self:start;display:grid;gap:8px;min-width:min(320px,88vw);color:#b9bfae;letter-spacing:.12em;font-weight:700}
+html[data-theme="japanese-army"] .japanese-army-theme-picker select{width:100%;padding:12px 14px;color:#eceee6!important;background:#10120f!important;border:1px solid #78806f!important;border-radius:0!important;font:700 15px/1.2 "Courier New",monospace;box-shadow:none!important}
+html[data-theme="japanese-army"] .japanese-army-warning{align-self:center;width:min(1100px,94vw);text-align:center;border-block:3px double #d44738;padding:clamp(20px,4vw,52px) 0;background:linear-gradient(90deg,transparent,rgba(100,11,8,.18) 20%,rgba(100,11,8,.28) 50%,rgba(100,11,8,.18) 80%,transparent)}
+html[data-theme="japanese-army"] .japanese-army-seal{margin:0 0 12px;color:#c9cec0;font-size:clamp(14px,2vw,26px);font-weight:900;letter-spacing:.45em}
+html[data-theme="japanese-army"] .japanese-army-error{font-size:clamp(68px,17vw,250px);line-height:.88;font-weight:1000;letter-spacing:-.07em;color:#e04738;text-shadow:0 0 5px rgba(224,71,56,.65),7px 0 0 rgba(88,12,9,.62);user-select:none;animation:japan-warning-pulse 1.15s steps(2,end) infinite}
+html[data-theme="japanese-army"] .japanese-army-declaration{margin:clamp(18px,3vw,34px) 0 8px;color:#fff;font-size:clamp(18px,3vw,42px);font-weight:1000;letter-spacing:.12em}
+html[data-theme="japanese-army"] .japanese-army-order{margin:0;color:#d5d8cf;font-size:clamp(14px,1.7vw,23px);line-height:1.8;font-weight:800;letter-spacing:.06em}
+html[data-theme="japanese-army"] .japanese-army-error-code{align-self:end;margin:0;color:#9da594;font-size:clamp(10px,1.3vw,17px);letter-spacing:.28em;text-align:center}
+@keyframes japan-warning-pulse{0%,74%{opacity:1;filter:none}75%,100%{opacity:.72;filter:contrast(1.5)}}
+@media (prefers-reduced-motion:reduce){html[data-theme="japanese-army"] .japanese-army-error{animation:none}}
