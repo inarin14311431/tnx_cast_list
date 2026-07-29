@@ -1,7 +1,7 @@
-begin;
-
-alter table public.characters
-  add column if not exists handle_kana text not null default '';
-
-notify pgrst, 'reload schema';
-commit;
+-- RETIRED / APPLIED
+--
+-- この変更は `05_sheet_editor_migration.sql` に包含されています。
+-- 既存環境では適用済みであり、新規・既存のどちらでもこのファイルを
+-- 実行する必要はありません。
+--
+-- 適用履歴と旧参照を壊さないため、ファイル名だけを廃止済みスタブとして残します。
