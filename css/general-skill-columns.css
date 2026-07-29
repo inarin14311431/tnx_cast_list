@@ -13,11 +13,22 @@
 
 #general-skills .skill-group-title{white-space:nowrap}
 
-/* Reserve the same heading height in both General Skill columns. */
-#general-skills>.general-skill-column>.skill-group-heading{
+/* Keep every group heading on the same baseline so the table headers align. */
+#general-skills>.skill-group>.skill-group-heading{
   box-sizing:border-box;
   min-height:48px;
+  height:48px;
   align-items:center;
+}
+
+#general-skills>.skill-group>.skill-group-heading .skill-group-title{
+  margin-top:0;
+  margin-bottom:0;
+}
+
+#general-skills>.skill-group>.skill-group-heading .skill-group-actions,
+#general-skills>.skill-group>.skill-group-heading .skill-inline-add{
+  align-self:center;
 }
 
 #general-skills .skill-table{font-size:clamp(.74rem,.55vw,.82rem)}
@@ -56,5 +67,5 @@
   #general-skills>.skill-group:nth-child(3),
   #general-skills>.skill-group:nth-child(4){grid-column:1!important;grid-row:auto!important}
   #general-skills .skill-table .name-col{width:auto!important}
-  #general-skills>.general-skill-column>.skill-group-heading{min-height:0}
+  #general-skills>.skill-group>.skill-group-heading{height:auto;min-height:0}
 }
