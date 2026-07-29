@@ -9,7 +9,7 @@
   margin: 8px 0 0;
   padding: 9px 12px;
   border: 1px solid var(--line) !important;
-  border-left-width: 3px !important;
+  border-left-width: 4px !important;
   border-radius: 0;
   color: var(--text) !important;
   background: linear-gradient(180deg, rgba(65, 232, 255, .09), rgba(2, 13, 18, .94)) !important;
@@ -21,6 +21,11 @@
   text-shadow: none !important;
   cursor: pointer;
   transition: border-color .18s ease, color .18s ease, background .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+/* hidden属性をボタン共通のdisplay:gridより優先し、権限外機能の空きを残さない。 */
+.exp-panel > [hidden] {
+  display: none !important;
 }
 
 .exp-panel > button::before,
@@ -42,7 +47,9 @@
 .exp-panel > button:hover:not(:disabled),
 .exp-panel > a.sheet-view-link:hover {
   color: #fff !important;
-  border-color: #bffaff !important;
+  border-top-color: #bffaff !important;
+  border-right-color: #bffaff !important;
+  border-bottom-color: #bffaff !important;
   background: linear-gradient(180deg, rgba(65, 232, 255, .18), rgba(3, 21, 27, .98)) !important;
   box-shadow: 0 0 18px rgba(65, 232, 255, .16), inset 0 0 20px rgba(65, 232, 255, .07) !important;
   transform: translateY(-1px);
@@ -65,11 +72,43 @@
   transform: none;
 }
 
-/* 保存状態だけは意味を残し、形・文字組みは他ボタンと統一する。 */
+/* A：保存操作 */
+.exp-panel > #save-button {
+  border-left-color: #70efa9 !important;
+}
+
+/* B：閲覧・入力・補完 */
+.exp-panel > #cast-view-button,
+.exp-panel > #legacy-import-open,
+.exp-panel > .master-search-open,
+.exp-panel > [id*="master"] {
+  border-left-color: #46d8ff !important;
+}
+
+/* C：オンラインセッションツール出力 */
+.exp-panel > #cocofolia-copy-button,
+.exp-panel > #udonarium-export-button,
+.exp-panel > [id*="cocofolia"],
+.exp-panel > [id*="udonarium"] {
+  border-left-color: #ff54b5 !important;
+}
+
+/* D：転記・連携データ */
+.exp-panel > .transfer-tsv-copy-button,
+.exp-panel > .transfer-bookmarklet-copy-button,
+.exp-panel > [id*="transfer-tsv"],
+.exp-panel > [id*="transfer-bookmarklet"] {
+  border-left-color: #9c7cff !important;
+}
+
+/* 保存状態は意味を残し、左レールはAグループ色で固定する。 */
 .exp-panel > #save-button.is-saved,
 .exp-panel > #save-button[data-save-state="saved"] {
   color: #071610 !important;
-  border-color: #70efa9 !important;
+  border-top-color: #70efa9 !important;
+  border-right-color: #70efa9 !important;
+  border-bottom-color: #70efa9 !important;
+  border-left-color: #70efa9 !important;
   background: #70efa9 !important;
   box-shadow: 0 0 18px rgba(112, 239, 169, .24) !important;
 }
@@ -82,7 +121,10 @@
 .exp-panel > #save-button.is-unsaved,
 .exp-panel > #save-button[data-save-state="unsaved"] {
   color: #ffe4bd !important;
-  border-color: #ffad42 !important;
+  border-top-color: #ffad42 !important;
+  border-right-color: #ffad42 !important;
+  border-bottom-color: #ffad42 !important;
+  border-left-color: #70efa9 !important;
   background: linear-gradient(180deg, rgba(255, 173, 66, .16), rgba(30, 17, 4, .96)) !important;
   box-shadow: inset 0 0 18px rgba(255, 173, 66, .045) !important;
 }
@@ -90,25 +132,19 @@
 .exp-panel > #save-button.is-saving,
 .exp-panel > #save-button[data-save-state="saving"] {
   color: #fff1c4 !important;
-  border-color: #ffd166 !important;
+  border-top-color: #ffd166 !important;
+  border-right-color: #ffd166 !important;
+  border-bottom-color: #ffd166 !important;
+  border-left-color: #70efa9 !important;
 }
 
 .exp-panel > #save-button.is-error,
 .exp-panel > #save-button[data-save-state="error"] {
   color: #ffdce5 !important;
-  border-color: #ff6f91 !important;
-}
-
-/* 各出力機能が持っていた個別の色付きレールを打ち消す。 */
-.exp-panel > #cocofolia-copy-button,
-.exp-panel > #udonarium-export-button,
-.exp-panel > .transfer-tsv-copy-button,
-.exp-panel > .transfer-bookmarklet-copy-button,
-.exp-panel > .master-search-open,
-.exp-panel > [id*="master"],
-.exp-panel > [id*="export"],
-.exp-panel > [id*="copy"] {
-  border-left-color: var(--line) !important;
+  border-top-color: #ff6f91 !important;
+  border-right-color: #ff6f91 !important;
+  border-bottom-color: #ff6f91 !important;
+  border-left-color: #70efa9 !important;
 }
 
 @media (max-width: 980px) {
