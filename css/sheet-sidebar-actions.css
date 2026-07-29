@@ -1,0 +1,119 @@
+.exp-panel > button,
+.exp-panel > a.sheet-view-link {
+  position: relative;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  width: 100%;
+  min-height: 54px;
+  margin: 8px 0 0;
+  padding: 9px 12px;
+  border: 1px solid var(--line) !important;
+  border-left-width: 3px !important;
+  border-radius: 0;
+  color: var(--text) !important;
+  background: linear-gradient(180deg, rgba(65, 232, 255, .09), rgba(2, 13, 18, .94)) !important;
+  box-shadow: inset 0 0 18px rgba(65, 232, 255, .035) !important;
+  font: 800 1rem/1.12 "Noto Sans JP", "Yu Gothic", sans-serif;
+  letter-spacing: .01em;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: none !important;
+  cursor: pointer;
+  transition: border-color .18s ease, color .18s ease, background .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+
+.exp-panel > button::before,
+.exp-panel > a.sheet-view-link::before {
+  content: none !important;
+  display: none !important;
+}
+
+.exp-panel > button small,
+.exp-panel > a.sheet-view-link small {
+  display: block;
+  margin-top: 4px;
+  color: var(--text-muted) !important;
+  font: 700 .58rem/1 "Share Tech Mono", monospace;
+  letter-spacing: .12em;
+  opacity: 1 !important;
+}
+
+.exp-panel > button:hover:not(:disabled),
+.exp-panel > a.sheet-view-link:hover {
+  color: #fff !important;
+  border-color: #bffaff !important;
+  background: linear-gradient(180deg, rgba(65, 232, 255, .18), rgba(3, 21, 27, .98)) !important;
+  box-shadow: 0 0 18px rgba(65, 232, 255, .16), inset 0 0 20px rgba(65, 232, 255, .07) !important;
+  transform: translateY(-1px);
+}
+
+.exp-panel > button:hover:not(:disabled) small,
+.exp-panel > a.sheet-view-link:hover small {
+  color: #c9f8ff !important;
+}
+
+.exp-panel > button:focus-visible,
+.exp-panel > a.sheet-view-link:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.exp-panel > button:disabled {
+  opacity: .46;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* 保存状態だけは意味を残し、形・文字組みは他ボタンと統一する。 */
+.exp-panel > #save-button.is-saved,
+.exp-panel > #save-button[data-save-state="saved"] {
+  color: #071610 !important;
+  border-color: #70efa9 !important;
+  background: #70efa9 !important;
+  box-shadow: 0 0 18px rgba(112, 239, 169, .24) !important;
+}
+
+.exp-panel > #save-button.is-saved small,
+.exp-panel > #save-button[data-save-state="saved"] small {
+  color: rgba(7, 22, 16, .68) !important;
+}
+
+.exp-panel > #save-button.is-unsaved,
+.exp-panel > #save-button[data-save-state="unsaved"] {
+  color: #ffe4bd !important;
+  border-color: #ffad42 !important;
+  background: linear-gradient(180deg, rgba(255, 173, 66, .16), rgba(30, 17, 4, .96)) !important;
+  box-shadow: inset 0 0 18px rgba(255, 173, 66, .045) !important;
+}
+
+.exp-panel > #save-button.is-saving,
+.exp-panel > #save-button[data-save-state="saving"] {
+  color: #fff1c4 !important;
+  border-color: #ffd166 !important;
+}
+
+.exp-panel > #save-button.is-error,
+.exp-panel > #save-button[data-save-state="error"] {
+  color: #ffdce5 !important;
+  border-color: #ff6f91 !important;
+}
+
+/* 各出力機能が持っていた個別の色付きレールを打ち消す。 */
+.exp-panel > #cocofolia-copy-button,
+.exp-panel > #udonarium-export-button,
+.exp-panel > .transfer-tsv-copy-button,
+.exp-panel > .transfer-bookmarklet-copy-button,
+.exp-panel > .master-search-open,
+.exp-panel > [id*="master"],
+.exp-panel > [id*="export"],
+.exp-panel > [id*="copy"] {
+  border-left-color: var(--line) !important;
+}
+
+@media (max-width: 980px) {
+  .exp-panel > button,
+  .exp-panel > a.sheet-view-link {
+    min-height: 50px;
+  }
+}
