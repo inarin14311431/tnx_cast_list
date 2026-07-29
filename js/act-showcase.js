@@ -38,8 +38,8 @@ async function fetchPublicShowcase(slug) {
     method: "POST",
     headers: {
       apikey: SUPABASE_PUBLISHABLE_KEY,
-      Authorization: `Bearer ${SUPABASE_PUBLISHABLE_KEY}`,
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
+      Accept: "application/json"
     },
     body: JSON.stringify({ p_slug: slug }),
     cache: "no-store"
@@ -56,10 +56,10 @@ async function fetchPublicShowcase(slug) {
   }
 
   if (!response.ok) {
-    const message = typeof payload === "object" && payload
-      ? payload.message || payload.hint || payload.details
+    const detail = typeof payload === "object" && payload
+      ? [payload.message, payload.hint, payload.details, payload.code].filter(Boolean).join(" / ")
       : String(payload || "");
-    throw new Error(translateError({ message }));
+    throw new Error(translateError({ message: detail, status: response.status }));
   }
 
   return payload;
@@ -251,8 +251,14 @@ function normalizeSlug(value) {
 
 function translateError(error) {
   const message = String(error?.message || "");
-  if (/get_public_act_showcase|function.*does not exist|schema cache/i.test(message)) {
+  if (/invalid jwt|jwt.*invalid|expected 3 parts/i.test(message)) {
+    return "公開データ取得用の認証ヘッダーが不正でした。ページを再読み込みしてください。";
+  }
+  if (/get_public_act_showcase|function.*does not exist|schema cache|PGRST202/i.test(message)) {
     return "動的公開機能が未設定です。管理者がSupabaseの設定を確認してください。";
+  }
+  if (/permission denied|not authorized|401|403/i.test(`${error?.status || ""} ${message}`)) {
+    return "公開アクト紹介の参照権限がありません。Supabaseの公開RPC権限を確認してください。";
   }
   if (/failed to fetch|networkerror|load failed/i.test(message)) {
     return "公開データの取得に失敗しました。通信状態を確認して再読み込みしてください。";
