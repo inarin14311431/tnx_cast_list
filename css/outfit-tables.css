@@ -2,16 +2,16 @@
 #outfit-list{display:grid;gap:16px;min-width:0}
 .outfit-table-group{min-width:0}
 .outfit-table-heading{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:14px 0 7px}
-.outfit-table-title{margin:0;color:var(--line);font-family:monospace;font-size:.9rem}
-.outfit-table-title small{color:var(--text-muted);font-size:.68rem}
+.outfit-table-title{margin:0;color:var(--line);font-family:monospace;font-size:1rem}
+.outfit-table-title small{color:var(--text-muted);font-size:.76rem}
 .outfit-table-heading .outfit-category-add{flex:0 0 auto}
-.outfit-table-empty{margin:0;padding:12px;border:1px dashed var(--line-muted);color:var(--text-muted);font-size:.76rem;text-align:center;background:rgba(65,232,255,.025)}
+.outfit-table-empty{margin:0;padding:12px;border:1px dashed var(--line-muted);color:var(--text-muted);font-size:.82rem;text-align:center;background:rgba(65,232,255,.025)}
 .outfit-table-scroll{width:100%;min-width:0;overflow:visible}
-.outfit-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:.74rem}
+.outfit-table{width:100%;border-collapse:collapse;table-layout:fixed;font-size:.8rem}
 .outfit-table th,.outfit-table td{box-sizing:border-box;padding:5px 3px;border-bottom:1px solid var(--line-muted);vertical-align:middle}
-.outfit-table th{height:34px;color:var(--text-muted);font:700 .72rem monospace;white-space:nowrap}
+.outfit-table th{height:34px;color:var(--text-muted);font:700 .8rem monospace;white-space:nowrap}
 .outfit-table td{height:48px}
-.outfit-table input,.outfit-table select,.outfit-table textarea{box-sizing:border-box;width:100%;min-width:0;height:36px;margin:0;padding:6px 5px;font-size:.76rem}
+.outfit-table input,.outfit-table select,.outfit-table textarea{box-sizing:border-box;width:100%;min-width:0;height:36px;margin:0;padding:6px 5px;font-size:.84rem}
 .outfit-table textarea[data-o="description"]{height:36px;min-height:36px;resize:vertical;line-height:1.35;overflow:auto}
 
 .outfit-import-toolbar #add-outfit[hidden]{display:none!important}
@@ -50,8 +50,8 @@
   .outfit-table-head--defense_s,.outfit-table-cell--defense_s,
   .outfit-table-head--defense_i,.outfit-table-cell--defense_i,
   .outfit-table-head--defense_p,.outfit-table-cell--defense_p{width:48px}
-  .outfit-table{font-size:.7rem}
-  .outfit-table input,.outfit-table select,.outfit-table textarea{font-size:.7rem;padding:5px 3px}
+  .outfit-table{font-size:.74rem}
+  .outfit-table input,.outfit-table select,.outfit-table textarea{font-size:.78rem;padding:5px 3px}
 }
 
 @media(max-width:860px){
@@ -62,7 +62,7 @@
 
 @media(max-width:760px){
   .outfit-table-heading{align-items:center;gap:8px}
-  .outfit-table-title{font-size:.82rem}
+  .outfit-table-title{font-size:.9rem}
 }
 
 /* Preserve native table-cell layout; flex on TD breaks fixed-table column geometry. */
@@ -100,6 +100,7 @@
   padding:0!important;
   line-height:1!important;
   vertical-align:middle!important;
+  font-size:.9rem!important;
 }
 #outfit-list .outfit-table-cell--actions::before,
 #outfit-list .outfit-table-cell--actions::after,
@@ -119,10 +120,10 @@
 /* PC-first fit: keep active columns inside the sheet width without a horizontal scrollbar. */
 @media (min-width:701px){
   #outfit-list .outfit-table-scroll{width:100%;min-width:0;max-width:100%;overflow-x:hidden!important}
-  #outfit-list .outfit-table{width:100%!important;min-width:0!important;max-width:100%!important;table-layout:fixed;font-size:clamp(.62rem,.48vw,.72rem)}
+  #outfit-list .outfit-table{width:100%!important;min-width:0!important;max-width:100%!important;table-layout:fixed;font-size:clamp(.7rem,.56vw,.82rem)}
   #outfit-list .outfit-table th,#outfit-list .outfit-table td{min-width:0!important;padding-inline:2px;overflow:hidden}
-  #outfit-list .outfit-table th{white-space:normal;overflow-wrap:anywhere;line-height:1.15}
-  #outfit-list .outfit-table input,#outfit-list .outfit-table select,#outfit-list .outfit-table textarea{min-width:0!important;padding-inline:3px;font-size:inherit}
+  #outfit-list .outfit-table th{white-space:normal;overflow-wrap:anywhere;line-height:1.15;font-size:clamp(.7rem,.54vw,.8rem)}
+  #outfit-list .outfit-table input,#outfit-list .outfit-table select,#outfit-list .outfit-table textarea{min-width:0!important;padding-inline:3px;font-size:clamp(.74rem,.58vw,.86rem)}
   #outfit-list .outfit-table-head--category,#outfit-list .outfit-table-cell--category{width:5.5%}
   #outfit-list .outfit-table-head--name,#outfit-list .outfit-table-cell--name{width:11%}
   #outfit-list .outfit-table-head--purchase_value,#outfit-list .outfit-table-cell--purchase_value{width:4.1%}
