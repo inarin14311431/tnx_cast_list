@@ -10,7 +10,7 @@
     ["vlad", "ヴラド・コロニー"],
     ["lutetia", "ヴィル・ヌーヴ・ルテチア"],
     ["buena", "ブエナIЯIA"],
-    ["canberra", "キャンベラAYYZ"],
+    ["canberra", "キャンベラAXYZ"],
     ["intron", "イントロン"],
     ["axleraters", "ニューロ！"],
     ["inagaki", "稲垣 光平"],
@@ -113,6 +113,7 @@
     appendStylesheet("./css/theme-fixes-v3.css?v=2", "data-theme-fixes-v3");
     appendStylesheet("./css/theme-fixes-v4.css?v=4", "data-theme-fixes-v4");
     appendStylesheet("./css/theme-city-expansion.css?v=2", "data-theme-city-expansion");
+    appendStylesheet("./css/theme-canberra-yellow.css?v=1", "data-theme-canberra-yellow");
     appendStylesheet("./css/theme-intron-light.css?v=2", "data-theme-intron-light");
     appendStylesheet("./css/theme-vlad-vampire.css?v=1", "data-theme-vlad-vampire");
     appendStylesheet("./css/theme-special-brands.css?v=2", "data-theme-special-brands");
