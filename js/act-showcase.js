@@ -10,6 +10,8 @@ const ruler = document.querySelector("#showcase-ruler");
 const intro = document.querySelector("#showcase-intro");
 const navigation = document.querySelector("#showcase-navigation");
 const casts = document.querySelector("#showcase-casts");
+const cinematicIntro = document.querySelector("#cinematic-intro");
+const pageStartedAt = performance.now();
 
 initialize();
 
@@ -26,8 +28,10 @@ async function initialize() {
     renderShowcase(data);
     status.hidden = true;
     root.hidden = false;
+    initializeCinematicPresentation();
   } catch (error) {
     console.error(error);
+    hideCinematicIntro(0);
     status.textContent = error?.message || "アクト紹介を読み込めませんでした。";
     status.classList.add("is-error");
   }
@@ -93,6 +97,116 @@ function renderShowcase(data) {
   casts.replaceChildren(...castList.map((item, index) => createCastCard(item, index)));
 }
 
+function initializeCinematicPresentation() {
+  const elapsed = performance.now() - pageStartedAt;
+  const remainingIntroTime = Math.max(250, 1450 - elapsed);
+  hideCinematicIntro(remainingIntroTime);
+  initializeCastReveal();
+  initializeActiveNavigation();
+  initializeHeroParallax();
+}
+
+function hideCinematicIntro(delay = 0) {
+  if (!cinematicIntro) return;
+  window.setTimeout(() => cinematicIntro.classList.add("is-hidden"), delay);
+  window.setTimeout(() => cinematicIntro.remove(), delay + 950);
+}
+
+function initializeCastReveal() {
+  const cards = [...document.querySelectorAll(".cast-card")];
+  if (!cards.length) return;
+
+  if (!("IntersectionObserver" in window) || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    cards.forEach(card => card.classList.add("is-visible"));
+    return;
+  }
+
+  const observer = new IntersectionObserver(entries => {
+    for (const entry of entries) {
+      if (!entry.isIntersecting) continue;
+      entry.target.classList.add("is-visible");
+      observer.unobserve(entry.target);
+    }
+  }, {
+    threshold: 0.16,
+    rootMargin: "0px 0px -7% 0px"
+  });
+
+  cards.forEach((card, index) => {
+    card.style.transitionDelay = `${Math.min(index * 55, 280)}ms`;
+    observer.observe(card);
+  });
+
+  window.setTimeout(() => {
+    const firstCard = cards[0];
+    if (firstCard && firstCard.getBoundingClientRect().top < innerHeight * .92) {
+      firstCard.classList.add("is-visible");
+      observer.unobserve(firstCard);
+    }
+  }, 500);
+}
+
+function initializeActiveNavigation() {
+  const links = [...document.querySelectorAll(".cast-nav a")];
+  if (!links.length) return;
+
+  const sectionMap = new Map();
+  for (const link of links) {
+    const id = link.getAttribute("href")?.replace(/^#/, "");
+    const section = id ? document.getElementById(id) : null;
+    if (section) sectionMap.set(section, link);
+  }
+
+  links.forEach(link => {
+    link.addEventListener("click", event => {
+      const id = link.getAttribute("href")?.replace(/^#/, "");
+      const target = id ? document.getElementById(id) : null;
+      if (!target) return;
+      event.preventDefault();
+      target.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  if (!("IntersectionObserver" in window) || !sectionMap.size) return;
+
+  const navObserver = new IntersectionObserver(entries => {
+    const visible = entries
+      .filter(entry => entry.isIntersecting)
+      .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+    if (!visible) return;
+    const activeLink = sectionMap.get(visible.target);
+    if (!activeLink) return;
+    links.forEach(link => link.classList.toggle("is-active", link === activeLink));
+    activeLink.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }, {
+    threshold: [0.2, 0.42, 0.65],
+    rootMargin: "-18% 0px -48% 0px"
+  });
+
+  sectionMap.forEach((_, section) => navObserver.observe(section));
+}
+
+function initializeHeroParallax() {
+  const hero = document.querySelector(".hero");
+  if (!hero || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  let frame = 0;
+  const update = () => {
+    frame = 0;
+    const y = Math.min(window.scrollY, 520);
+    hero.style.transform = `translate3d(0, ${y * .055}px, 0)`;
+    hero.style.opacity = String(Math.max(.42, 1 - y / 1050));
+  };
+
+  const onScroll = () => {
+    if (frame) return;
+    frame = requestAnimationFrame(update);
+  };
+
+  update();
+  addEventListener("scroll", onScroll, { passive: true });
+}
+
 function createNavigationItem(item, index) {
   const anchor = document.createElement("a");
   anchor.href = `#cast-${index + 1}`;
@@ -110,7 +224,8 @@ function createCastCard(item, index) {
   const image = document.createElement("img");
   image.src = safeImageUrl(item.imageUrl) || "./assets/placeholders/scan-failed.webp";
   image.alt = text(item.imageAlt) || text(item.fullName);
-  image.loading = "lazy";
+  image.loading = index === 0 ? "eager" : "lazy";
+  image.decoding = "async";
   imageWrap.append(image);
 
   const body = element("div", "cast-card__body");
