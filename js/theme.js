@@ -16,7 +16,7 @@
     ["inagaki", "稲垣 光平"],
     ["astral", "アストラル"],
     ["orbital", "軌道"],
-    ["japanese-army", "日本軍"]
+    ["japanese-army", "日本"]
   ];
   let buttonObserver = null;
   let buttonRefreshQueued = false;
@@ -54,8 +54,13 @@
         <span>表示テーマ <small>COLOR THEME</small></span>
         <select data-theme-select aria-label="表示テーマ"></select>
       </label>
-      <div class="japanese-army-error" role="alert">ERROR</div>
-      <p class="japanese-army-error-code">SYSTEM ACCESS DENIED</p>`;
+      <div class="japanese-army-warning" role="alert">
+        <p class="japanese-army-seal">日本国電脳鎖国結界</p>
+        <div class="japanese-army-error">不法接続</div>
+        <p class="japanese-army-declaration">国外網からの未承認アクセスを検知</p>
+        <p class="japanese-army-order">本接続は国家防衛規定に基づき強制遮断された。<br>直ちに回線を切断せよ。再接続を厳禁する。</p>
+      </div>
+      <p class="japanese-army-error-code">NATIONAL BORDER FIREWALL // ACCESS VIOLATION RECORDED</p>`;
     document.body.append(overlay);
     const select = overlay.querySelector("[data-theme-select]");
     ensureThemeOptions(select);
@@ -111,7 +116,7 @@
     appendStylesheet("./css/theme-intron-light.css?v=2", "data-theme-intron-light");
     appendStylesheet("./css/theme-vlad-vampire.css?v=1", "data-theme-vlad-vampire");
     appendStylesheet("./css/theme-special-brands.css?v=2", "data-theme-special-brands");
-    appendStylesheet("./css/theme-new-worlds.css?v=1", "data-theme-new-worlds");
+    appendStylesheet("./css/theme-new-worlds.css?v=2", "data-theme-new-worlds");
     appendStylesheet("./css/theme-inagaki-gaudy.css?v=1", "data-theme-inagaki-gaudy");
     appendStylesheet("./css/theme-inagaki-select-fix.css?v=1", "data-theme-inagaki-select-fix");
     appendStylesheet("./css/character-image-top-align.css?v=1", "data-character-image-top-align");
