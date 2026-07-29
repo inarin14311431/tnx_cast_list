@@ -1,16 +1,18 @@
 /* Persistent color-theme controller shared by all active pages. */
 (() => {
   const STORAGE_KEY = "tnx-cast-site-theme";
-  const THEMES = new Set(["nova", "moon", "star", "eden", "vlad", "lutetia", "buena", "canberra", "intron", "axleraters", "inagaki", "astral", "orbital", "japanese-army"]);
+  const THEMES = new Set(["nova", "moon", "star", "eden", "vlad", "lutetia", "buena", "canberra", "hongkong", "fesler", "intron", "axleraters", "inagaki", "astral", "orbital", "japanese-army"]);
   const THEME_OPTIONS = [
     ["nova", "トーキョーＮ◎ＶＡ"],
     ["moon", "オーサカM○●N"],
     ["star", "カムイST☆R"],
-    ["eden", "ミトラスEΔEN"],
+    ["eden", "ミトラスGARDEN"],
     ["vlad", "ヴラド・コロニー"],
     ["lutetia", "ヴィル・ヌーヴ・ルテチア"],
-    ["buena", "ブエナIЯIA"],
+    ["buena", "ブエナIЯA"],
     ["canberra", "キャンベラAXYZ"],
+    ["hongkong", "ホンコンHEAVEN"],
+    ["fesler", "フェスラー公国"],
     ["intron", "イントロン"],
     ["axleraters", "ニューロ！"],
     ["inagaki", "稲垣 光平"],
@@ -114,6 +116,7 @@
     appendStylesheet("./css/theme-fixes-v4.css?v=4", "data-theme-fixes-v4");
     appendStylesheet("./css/theme-city-expansion.css?v=2", "data-theme-city-expansion");
     appendStylesheet("./css/theme-canberra-yellow.css?v=1", "data-theme-canberra-yellow");
+    appendStylesheet("./css/theme-hongkong-fesler.css?v=1", "data-theme-hongkong-fesler");
     appendStylesheet("./css/theme-intron-light.css?v=2", "data-theme-intron-light");
     appendStylesheet("./css/theme-vlad-vampire.css?v=1", "data-theme-vlad-vampire");
     appendStylesheet("./css/theme-special-brands.css?v=2", "data-theme-special-brands");
