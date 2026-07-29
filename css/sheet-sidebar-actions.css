@@ -5,16 +5,16 @@
   place-items: center;
   align-content: center;
   width: 100%;
-  min-height: 54px;
-  margin: 8px 0 0;
-  padding: 9px 12px;
+  min-height: 42px;
+  margin: 5px 0 0;
+  padding: 5px 10px;
   border: 1px solid var(--line) !important;
-  border-left-width: 4px !important;
+  border-left-width: 5px !important;
   border-radius: 0;
   color: var(--text) !important;
   background: linear-gradient(180deg, rgba(65, 232, 255, .09), rgba(2, 13, 18, .94)) !important;
-  box-shadow: inset 0 0 18px rgba(65, 232, 255, .035) !important;
-  font: 800 1rem/1.12 "Noto Sans JP", "Yu Gothic", sans-serif;
+  box-shadow: inset 0 0 14px rgba(65, 232, 255, .03) !important;
+  font: 800 .92rem/1.05 "Noto Sans JP", "Yu Gothic", sans-serif;
   letter-spacing: .01em;
   text-align: center;
   text-decoration: none;
@@ -23,9 +23,10 @@
   transition: border-color .18s ease, color .18s ease, background .18s ease, box-shadow .18s ease, transform .18s ease;
 }
 
-/* hidden属性をボタン共通のdisplay:gridより優先し、権限外機能の空きを残さない。 */
+/* hidden属性を共通のdisplay:gridより優先し、権限外機能の空きを残さない。 */
 .exp-panel > [hidden] {
   display: none !important;
+  margin: 0 !important;
 }
 
 .exp-panel > button::before,
@@ -37,10 +38,10 @@
 .exp-panel > button small,
 .exp-panel > a.sheet-view-link small {
   display: block;
-  margin-top: 4px;
+  margin-top: 2px;
   color: var(--text-muted) !important;
-  font: 700 .58rem/1 "Share Tech Mono", monospace;
-  letter-spacing: .12em;
+  font: 700 .52rem/1 "Share Tech Mono", monospace;
+  letter-spacing: .1em;
   opacity: 1 !important;
 }
 
@@ -51,7 +52,7 @@
   border-right-color: #bffaff !important;
   border-bottom-color: #bffaff !important;
   background: linear-gradient(180deg, rgba(65, 232, 255, .18), rgba(3, 21, 27, .98)) !important;
-  box-shadow: 0 0 18px rgba(65, 232, 255, .16), inset 0 0 20px rgba(65, 232, 255, .07) !important;
+  box-shadow: 0 0 14px rgba(65, 232, 255, .14), inset 0 0 16px rgba(65, 232, 255, .06) !important;
   transform: translateY(-1px);
 }
 
@@ -72,34 +73,26 @@
   transform: none;
 }
 
-/* A：保存操作 */
-.exp-panel > #save-button {
-  border-left-color: #70efa9 !important;
-}
+/* 用途別の左レール。data-action-groupはJSで動的追加ボタンにも付与する。 */
+.exp-panel > [data-action-group="a"] { border-left-color: #70efa9 !important; }
+.exp-panel > [data-action-group="b"] { border-left-color: #35d7ff !important; }
+.exp-panel > [data-action-group="c"] { border-left-color: #ff4fae !important; }
+.exp-panel > [data-action-group="d"] { border-left-color: #9a6cff !important; }
 
-/* B：閲覧・入力・補完 */
+/* ID/Classでも補助指定し、JS読込前から色を出す。 */
+.exp-panel > #save-button { border-left-color: #70efa9 !important; }
 .exp-panel > #cast-view-button,
 .exp-panel > #legacy-import-open,
 .exp-panel > .master-search-open,
-.exp-panel > [id*="master"] {
-  border-left-color: #46d8ff !important;
-}
-
-/* C：オンラインセッションツール出力 */
+.exp-panel > [id*="master"] { border-left-color: #35d7ff !important; }
 .exp-panel > #cocofolia-copy-button,
 .exp-panel > #udonarium-export-button,
 .exp-panel > [id*="cocofolia"],
-.exp-panel > [id*="udonarium"] {
-  border-left-color: #ff54b5 !important;
-}
-
-/* D：転記・連携データ */
+.exp-panel > [id*="udonarium"] { border-left-color: #ff4fae !important; }
 .exp-panel > .transfer-tsv-copy-button,
 .exp-panel > .transfer-bookmarklet-copy-button,
 .exp-panel > [id*="transfer-tsv"],
-.exp-panel > [id*="transfer-bookmarklet"] {
-  border-left-color: #9c7cff !important;
-}
+.exp-panel > [id*="transfer-bookmarklet"] { border-left-color: #9a6cff !important; }
 
 /* 保存状態は意味を残し、左レールはAグループ色で固定する。 */
 .exp-panel > #save-button.is-saved,
@@ -110,7 +103,7 @@
   border-bottom-color: #70efa9 !important;
   border-left-color: #70efa9 !important;
   background: #70efa9 !important;
-  box-shadow: 0 0 18px rgba(112, 239, 169, .24) !important;
+  box-shadow: 0 0 14px rgba(112, 239, 169, .22) !important;
 }
 
 .exp-panel > #save-button.is-saved small,
@@ -126,7 +119,7 @@
   border-bottom-color: #ffad42 !important;
   border-left-color: #70efa9 !important;
   background: linear-gradient(180deg, rgba(255, 173, 66, .16), rgba(30, 17, 4, .96)) !important;
-  box-shadow: inset 0 0 18px rgba(255, 173, 66, .045) !important;
+  box-shadow: inset 0 0 14px rgba(255, 173, 66, .04) !important;
 }
 
 .exp-panel > #save-button.is-saving,
@@ -147,9 +140,20 @@
   border-left-color: #70efa9 !important;
 }
 
+@media (min-width: 981px) {
+  .exp-panel {
+    scrollbar-width: none;
+  }
+
+  .exp-panel::-webkit-scrollbar {
+    width: 0;
+    height: 0;
+  }
+}
+
 @media (max-width: 980px) {
   .exp-panel > button,
   .exp-panel > a.sheet-view-link {
-    min-height: 50px;
+    min-height: 40px;
   }
 }
