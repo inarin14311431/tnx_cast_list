@@ -6,6 +6,8 @@ const status = document.querySelector("#generator-status");
 const slugField = document.querySelector("#publish-slug");
 const actNameField = document.querySelector("#act-name");
 const rulerField = document.querySelector("#ruler-name");
+const MAX_SHOWCASE_BYTES = 500 * 1024;
+const TARGET_BACKGROUND_BYTES = 300 * 1024;
 let publishing = false;
 
 publishButton?.addEventListener("click", publishDynamicShowcase, true);
@@ -34,14 +36,20 @@ async function publishDynamicShowcase(event) {
     const slug = normalizeSlug(slugField?.value);
     if (!slug) throw new Error("アクト識別名を半角英数字とハイフンで入力してください。");
 
-    const showcaseData = extractShowcaseData(source);
+    publishing = true;
+    publishButton.disabled = true;
+    setStatus("公開用データを準備中…");
+
+    const showcaseData = await extractShowcaseData(source);
     const actName = String(actNameField?.value || showcaseData.actName || slug).trim();
     const rulerName = String(rulerField?.value || showcaseData.rulerName || "").trim();
 
-    publishing = true;
-    publishButton.disabled = true;
-    setStatus("アクト紹介データと参加履歴を公開中…");
+    const payloadBytes = getJsonByteLength(showcaseData);
+    if (payloadBytes > MAX_SHOWCASE_BYTES) {
+      throw new Error(`公開データが大きすぎます（${formatBytes(payloadBytes)}）。背景画像URLを使用するか、背景画像を小さくして再生成してください。`);
+    }
 
+    setStatus("アクト紹介データと参加履歴を公開中…");
     const { data: actId, error } = await supabase.rpc("publish_act_showcase_for_current_user", {
       p_slug: slug,
       p_act_name: actName,
@@ -63,10 +71,15 @@ async function publishDynamicShowcase(event) {
   }
 }
 
-function extractShowcaseData(source) {
+async function extractShowcaseData(source) {
   const doc = new DOMParser().parseFromString(source, "text/html");
   const styleText = [...doc.querySelectorAll("style")].map(node => node.textContent || "").join("\n");
-  const background = extractBackgroundUrl(styleText);
+  let background = extractBackgroundUrl(styleText);
+  if (background.startsWith("data:image/")) {
+    setStatus("背景画像を公開用に圧縮中…");
+    background = await compressBackgroundDataUrl(background);
+  }
+
   const cards = [...doc.querySelectorAll(".cast-card")].map(card => {
     const meta = [...card.querySelectorAll(".cast-card__meta > div")].map(item => ({
       label: item.querySelector("small")?.textContent?.trim() || "",
@@ -117,6 +130,69 @@ function extractShowcaseData(source) {
   };
 }
 
+async function compressBackgroundDataUrl(source) {
+  const image = await loadImage(source);
+  let maxWidth = 1600;
+  let maxHeight = 1000;
+  const qualities = [0.82, 0.72, 0.62, 0.52, 0.42];
+
+  for (let scaleStep = 0; scaleStep < 4; scaleStep += 1) {
+    const scale = Math.min(1, maxWidth / image.naturalWidth, maxHeight / image.naturalHeight);
+    const width = Math.max(1, Math.round(image.naturalWidth * scale));
+    const height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const context = canvas.getContext("2d", { alpha: false });
+    if (!context) throw new Error("背景画像の圧縮処理を開始できませんでした。");
+    context.fillStyle = "#02080c";
+    context.fillRect(0, 0, width, height);
+    context.drawImage(image, 0, 0, width, height);
+
+    for (const quality of qualities) {
+      const compressed = canvas.toDataURL("image/webp", quality);
+      if (getUtf8ByteLength(compressed) <= TARGET_BACKGROUND_BYTES) return compressed;
+    }
+
+    maxWidth = Math.round(maxWidth * 0.78);
+    maxHeight = Math.round(maxHeight * 0.78);
+  }
+
+  const fallbackCanvas = document.createElement("canvas");
+  const fallbackScale = Math.min(1, 720 / image.naturalWidth, 450 / image.naturalHeight);
+  fallbackCanvas.width = Math.max(1, Math.round(image.naturalWidth * fallbackScale));
+  fallbackCanvas.height = Math.max(1, Math.round(image.naturalHeight * fallbackScale));
+  const fallbackContext = fallbackCanvas.getContext("2d", { alpha: false });
+  if (!fallbackContext) return "";
+  fallbackContext.fillStyle = "#02080c";
+  fallbackContext.fillRect(0, 0, fallbackCanvas.width, fallbackCanvas.height);
+  fallbackContext.drawImage(image, 0, 0, fallbackCanvas.width, fallbackCanvas.height);
+  return fallbackCanvas.toDataURL("image/webp", 0.36);
+}
+
+function loadImage(source) {
+  return new Promise((resolve, reject) => {
+    const image = new Image();
+    image.onload = () => resolve(image);
+    image.onerror = () => reject(new Error("背景画像を読み込めなかったため、公開用に圧縮できませんでした。"));
+    image.src = source;
+  });
+}
+
+function getJsonByteLength(value) {
+  return getUtf8ByteLength(JSON.stringify(value));
+}
+
+function getUtf8ByteLength(value) {
+  return new TextEncoder().encode(String(value || "")).byteLength;
+}
+
+function formatBytes(bytes) {
+  return bytes >= 1024 * 1024
+    ? `${(bytes / 1024 / 1024).toFixed(2)}MB`
+    : `${Math.ceil(bytes / 1024)}KB`;
+}
+
 function extractBackgroundUrl(styleText) {
   const bodyRule = styleText.match(/body\s*\{[^}]*background-image\s*:[^;}]*url\((['"]?)(.*?)\1\)/is);
   return bodyRule?.[2] || "";
@@ -124,6 +200,9 @@ function extractBackgroundUrl(styleText) {
 
 function translateError(error) {
   const message = String(error?.message || "");
+  if (/showcase data is too large/i.test(message)) {
+    return "公開データが容量上限を超えました。背景画像を小さくするか、画像ファイルではなく背景画像URLを指定して再生成してください。";
+  }
   if (/publish_act_showcase_for_current_user|function.*does not exist|schema cache/i.test(message)) {
     return "動的公開機能が未設定です。Supabaseで supabase/20_dynamic_act_showcase.sql を実行してください。";
   }
