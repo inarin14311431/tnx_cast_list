@@ -1,0 +1,67 @@
+/* Canberra AXYZ: yellow-based control-system palette. */
+:root[data-theme="canberra"]{
+  --background:#120f03;
+  --panel:rgba(38,31,7,.97);
+  --line:#ffd84a;
+  --line-muted:#9c7d27;
+  --text:#fff9dc;
+  --text-muted:#d2c27f;
+  --alert:#ff9f2f;
+  --theme-body-bg:
+    radial-gradient(circle at 50% -14%,rgba(255,216,74,.30),transparent 42%),
+    radial-gradient(circle at 88% 18%,rgba(255,159,47,.18),transparent 30%),
+    radial-gradient(circle at 8% 72%,rgba(255,239,145,.10),transparent 34%),
+    linear-gradient(180deg,#2a2208,#120f03 68%,#080601);
+  --theme-header-bg:linear-gradient(180deg,rgba(67,53,10,.98),rgba(31,24,4,.97));
+  --theme-panel-bg:linear-gradient(180deg,rgba(75,59,11,.96),rgba(33,25,4,.98));
+  --theme-panel-flat:rgba(38,31,7,.97);
+  --theme-input-bg:rgba(18,13,2,.95);
+  --theme-button-bg:rgba(255,216,74,.11);
+  --theme-button-hover:#ffd84a;
+  --theme-on-accent:#201700;
+  --theme-grid-line:rgba(255,216,74,.055);
+  --theme-scan-line:rgba(255,239,145,.11);
+  --theme-scan-opacity:.05;
+  --theme-shadow:rgba(255,196,24,.24);
+  --theme-divine-bg:rgba(72,39,4,.88);
+  --theme-divine-line:#ffb23f;
+}
+
+html[data-theme="canberra"] body{
+  background:
+    linear-gradient(120deg,transparent 0 46%,rgba(255,216,74,.035) 47% 48%,transparent 49% 100%),
+    var(--theme-body-bg)!important;
+}
+
+html[data-theme="canberra"] .site-header,
+html[data-theme="canberra"] .auth-header,
+html[data-theme="canberra"] .cast-header,
+html[data-theme="canberra"] .sheet-header,
+html[data-theme="canberra"] .showcase-header{
+  border-color:#ffd84a!important;
+  box-shadow:0 8px 28px rgba(255,190,0,.22),inset 0 1px 0 rgba(255,244,168,.36)!important;
+}
+
+html[data-theme="canberra"] .cast-card,
+html[data-theme="canberra"] .owned-cast,
+html[data-theme="canberra"] .showcase-panel,
+html[data-theme="canberra"] .sheet-section,
+html[data-theme="canberra"] .data-panel,
+html[data-theme="canberra"] .account-panel{
+  border-color:rgba(255,216,74,.72)!important;
+  box-shadow:inset 0 0 18px rgba(255,216,74,.055),0 0 13px rgba(255,190,0,.10)!important;
+}
+
+html[data-theme="canberra"] button:hover,
+html[data-theme="canberra"] a:hover,
+html[data-theme="canberra"] select:focus,
+html[data-theme="canberra"] input:focus,
+html[data-theme="canberra"] textarea:focus{
+  border-color:#ffd84a!important;
+  box-shadow:0 0 0 1px rgba(255,216,74,.55),0 0 15px rgba(255,190,0,.25)!important;
+}
+
+html[data-theme="canberra"] ::selection{
+  color:#211700;
+  background:#ffd84a;
+}
