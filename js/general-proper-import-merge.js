@@ -1,7 +1,10 @@
 /*
- * Move the first imported 芸術：／製作：／操縦： specialization into the
- * corresponding built-in master row. Additional specializations remain as
- * user-added rows.
+ * Bind the first saved 製作：／芸術：／操縦： specialization to the built-in
+ * 0Lv master slot once after the editor has finished its initial render.
+ *
+ * This script deliberately does not observe ordinary input changes. Re-running
+ * the merge while the user types would replace table rows and steal focus.
+ * Additional specializations with the same prefix remain independent rows.
  */
 (()=>{
   const PREFIXES=["製作：","芸術：","操縦："];
@@ -10,14 +13,14 @@
   const importMessage=document.querySelector("#legacy-import-message");
   if(!root)return;
 
-  let importing=false;
-  let queued=false;
-  let merging=false;
+  const suits=["reason","passion","life","mundane"];
+  let running=false;
+  let initialDone=false;
 
+  const nextFrame=()=>new Promise(resolve=>requestAnimationFrame(resolve));
   const rows=()=>[...root.querySelectorAll('tr[data-skill-key]')];
   const nameOf=row=>String(row?.querySelector('[data-f="name"]')?.value||"").trim();
   const levelOf=row=>Math.max(0,Number(row?.querySelector('[data-f="level"]')?.value||0));
-  const suits=["reason","passion","life","mundane"];
   const hasSuit=row=>suits.some(suit=>row?.querySelector(`[data-f="${suit}"]`)?.checked);
   const isBlankMaster=row=>levelOf(row)===0&&!hasSuit(row);
 
@@ -48,67 +51,67 @@
         currentSource.querySelector(`[data-f="${field}"]`),
         currentTarget.querySelector(`[data-f="${field}"]`)
       );
-      await new Promise(resolve=>requestAnimationFrame(resolve));
     }
 
     const currentSource=locateSource();
     const deleteButton=currentSource?.querySelector("[data-delete-skill]");
     if(!deleteButton)return false;
     deleteButton.click();
+    await nextFrame();
     return true;
   }
 
-  async function normalize(){
-    queued=false;
-    if(importing||merging)return;
-    merging=true;
+  async function normalizeOnce(){
+    if(running)return;
+    running=true;
     try{
       for(const prefix of PREFIXES){
         const family=rows().filter(row=>nameOf(row).startsWith(prefix));
         const target=family.find(row=>nameOf(row)===prefix&&isBlankMaster(row));
         if(!target)continue;
 
+        /* DOM order follows saved sort_order. Only the first saved
+         * specialization is assigned to the built-in slot. */
         const source=family.find(row=>{
           if(row===target)return false;
           const name=nameOf(row);
           return name!==prefix&&name.startsWith(prefix)&&levelOf(row)>0;
         });
-        if(!source)continue;
-
-        await mergeRow(source,target);
-        await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+        if(source)await mergeRow(source,target);
       }
     }finally{
-      merging=false;
+      running=false;
     }
   }
 
-  function queueNormalize(delay=0){
-    if(queued)return;
-    queued=true;
-    window.setTimeout(()=>requestAnimationFrame(normalize),delay);
+  async function runAfterStableRender(){
+    await nextFrame();
+    await nextFrame();
+    await normalizeOnce();
   }
 
+  function initialize(){
+    if(initialDone)return;
+    if(!root.querySelector('tr[data-skill-key]')){
+      setTimeout(initialize,80);
+      return;
+    }
+    initialDone=true;
+    runAfterStableRender();
+  }
+
+  window.addEventListener("tnx:general-master-ready",initialize,{once:true});
+  setTimeout(initialize,500);
+
   applyButton?.addEventListener("click",()=>{
-    importing=true;
+    /* Import itself rebuilds the rows. Wait for its completion message, then
+     * perform one explicit normalization pass. */
   },true);
 
   if(importMessage){
     new MutationObserver(()=>{
       const message=importMessage.textContent||"";
-      if(message.startsWith("反映しました。")){
-        importing=false;
-        queueNormalize();
-      }else if(message.startsWith("取込エラー：")){
-        importing=false;
-      }
+      if(message.startsWith("反映しました。"))runAfterStableRender();
     }).observe(importMessage,{childList:true,subtree:true,characterData:true});
   }
-
-  new MutationObserver(()=>{
-    if(!importing)queueNormalize(80);
-  }).observe(root,{childList:true,subtree:true});
-
-  window.addEventListener("tnx:general-master-ready",()=>queueNormalize(80));
-  queueNormalize(500);
 })();
