@@ -2,21 +2,34 @@
 (() => {
   const apply = document.querySelector('#legacy-import-apply');
   const message = document.querySelector('#legacy-import-message');
-  if (!apply || !message) return;
+  const outfitRoot = document.querySelector('#outfit-list');
+  if (!apply || !message || !outfitRoot) return;
 
   let finalizing = false;
   let completionText = '';
+  let nativeReplaceChildren = null;
 
   const nextFrame = () => new Promise(resolve => requestAnimationFrame(resolve));
-  const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
 
-  async function waitForOutfitTables(timeout = 5000) {
-    const started = performance.now();
-    while (!window.TNXOutfitTables?.flush) {
-      if (performance.now() - started > timeout) return false;
-      await wait(50);
-    }
-    return true;
+  function suspendOutfitRendering() {
+    if (nativeReplaceChildren) return;
+    nativeReplaceChildren = outfitRoot.replaceChildren.bind(outfitRoot);
+    outfitRoot.replaceChildren = (...nodes) => {
+      if (window.__tnxBatchImportActive) return;
+      nativeReplaceChildren(...nodes);
+    };
+  }
+
+  function resumeOutfitRendering() {
+    if (!nativeReplaceChildren) return;
+    outfitRoot.replaceChildren = nativeReplaceChildren;
+    nativeReplaceChildren = null;
+
+    // The outfit-table observer listens for child-list changes. A temporary marker
+    // requests exactly one rebuild after all imported cards have been populated.
+    const marker = document.createComment('batch-import-finished');
+    outfitRoot.append(marker);
+    marker.remove();
   }
 
   function startBatch() {
@@ -24,6 +37,7 @@
     finalizing = false;
     window.__tnxBatchImportActive = true;
     document.documentElement.dataset.batchImport = '1';
+    suspendOutfitRendering();
   }
 
   async function finishBatch(text) {
@@ -33,14 +47,14 @@
     message.textContent = 'アウトフィットを分類別テーブルへ最終変換しています…';
 
     try {
-      await waitForOutfitTables();
       window.__tnxBatchImportActive = false;
       delete document.documentElement.dataset.batchImport;
+      resumeOutfitRendering();
 
-      await window.TNXOutfitTables?.flush?.();
+      await nextFrame();
+      await nextFrame();
+      await nextFrame();
       window.TNXExperience?.queue?.();
-      await nextFrame();
-      await nextFrame();
 
       message.textContent = '最終変換が完了しました。DBへ保存しています…';
       window.TNXSaveWatchdog?.flush?.();
@@ -53,6 +67,7 @@
       console.error(error);
       window.__tnxBatchImportActive = false;
       delete document.documentElement.dataset.batchImport;
+      resumeOutfitRendering();
       message.textContent = `最終変換エラー：${error.message}`;
     } finally {
       finalizing = false;
@@ -77,6 +92,7 @@
     if (text.includes('取込エラー')) {
       window.__tnxBatchImportActive = false;
       delete document.documentElement.dataset.batchImport;
+      resumeOutfitRendering();
     }
   }).observe(message, { childList: true, subtree: true, characterData: true });
 })();
