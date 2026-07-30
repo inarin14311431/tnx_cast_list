@@ -87,12 +87,27 @@
     return String(value || "")
       .normalize("NFKC")
       .trim()
-      .replace(/^[★■┗]+\s*/, "")
+      .replace(/^[★■┗†※＠@]+\s*/, "")
       .replace(/\s+/g, "")
       .toLowerCase();
   }
 
+  function markerRank(value) {
+    const name = String(value || "").trim();
+    if (/^[†※＠@]/.test(name)) return 2;
+    if (/^[★■┗]/.test(name)) return 1;
+    return 0;
+  }
+
   function mergeRow(target, duplicate) {
+    const targetName = target.querySelector('[data-f="name"]');
+    const duplicateName = duplicate.querySelector('[data-f="name"]');
+    if (targetName && duplicateName && markerRank(duplicateName.value) > markerRank(targetName.value)) {
+      targetName.value = duplicateName.value;
+      targetName.dispatchEvent(new Event("input", { bubbles: true }));
+      targetName.dispatchEvent(new Event("change", { bubbles: true }));
+    }
+
     const targetLevel = target.querySelector('[data-f="level"]');
     const duplicateLevel = duplicate.querySelector('[data-f="level"]');
     const mergedLevel = Math.max(Number(targetLevel?.value || 0), Number(duplicateLevel?.value || 0));
