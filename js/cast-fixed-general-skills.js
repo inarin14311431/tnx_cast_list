@@ -1,4 +1,5 @@
-/* Ensure fixed proper General skills remain visible on the cast view. */
+/* Ensure fixed proper General skills remain visible on the cast view.
+ * Runs once after cast.js has rendered, then disconnects to avoid render loops. */
 (() => {
   const container = document.querySelector('#skills-container');
   if (!container) return;
@@ -7,14 +8,18 @@
     '医療', '射撃', '知覚', '電脳', '製作：', '心理', '自我', '交渉',
     '芸術：', '運動', '回避', '白兵', '操縦：', '信用', '圧力', '隠密'
   ];
-  const REQUIRED_ZERO_LEVEL = new Set(['製作：', '芸術：', '操縦：']);
-  let queued = false;
-  let applying = false;
+  const REQUIRED_FAMILIES = ['製作：', '芸術：', '操縦：'];
+  let observer = null;
+  let completed = false;
 
   const normalizeName = value => String(value || '')
     .trim()
-    .replace(/[;；]/g, '：')
-    .replace(/:+$/g, '：');
+    .replace(/[;；]/g, '：');
+
+  const familyName = value => {
+    const name = normalizeName(value);
+    return REQUIRED_FAMILIES.find(prefix => name.startsWith(prefix)) || name;
+  };
 
   function createGeneralSection() {
     const section = document.createElement('section');
@@ -24,12 +29,9 @@
       <div class="data-table-wrapper">
         <table class="data-table skill-data-table skill-data-table--general">
           <colgroup>
-            <col class="skill-col-name">
-            <col class="skill-col-level">
-            <col class="skill-col-suit">
-            <col class="skill-col-suit">
-            <col class="skill-col-suit">
-            <col class="skill-col-suit">
+            <col class="skill-col-name"><col class="skill-col-level">
+            <col class="skill-col-suit"><col class="skill-col-suit">
+            <col class="skill-col-suit"><col class="skill-col-suit">
             <col class="skill-col-detail">
           </colgroup>
           <thead><tr><th>NAME</th><th>LV</th><th>♠</th><th>♣</th><th>♥</th><th>♦</th><th>DETAIL</th></tr></thead>
@@ -49,58 +51,49 @@
   }
 
   function enhance() {
-    if (applying) return;
-    applying = true;
-    try {
-      let section = container.querySelector('.skill-section--general');
-      if (!section) section = createGeneralSection();
+    if (completed) return true;
 
-      const tbody = section.querySelector('tbody');
-      if (!tbody) return;
+    let section = container.querySelector('.skill-section--general');
+    const rendered = section || container.querySelector('.empty-data') || document.querySelector('#cast-content:not([hidden])');
+    if (!rendered) return false;
+    if (!section) section = createGeneralSection();
 
-      const rows = [...tbody.querySelectorAll(':scope > tr')];
-      const existing = new Map();
-      rows.forEach((row, index) => {
-        row.dataset.originalGeneralOrder ??= String(index);
-        const name = normalizeName(row.cells?.[0]?.textContent);
-        if (name && !existing.has(name)) existing.set(name, row);
-      });
+    const tbody = section.querySelector('tbody');
+    if (!tbody) return false;
 
-      for (const name of REQUIRED_ZERO_LEVEL) {
-        if (!existing.has(name)) {
-          const row = createZeroLevelRow(name);
-          row.dataset.originalGeneralOrder = String(rows.length + existing.size);
-          existing.set(name, row);
-          tbody.append(row);
-        }
-      }
+    const rows = [...tbody.querySelectorAll(':scope > tr')];
+    const presentFamilies = new Set(rows.map(row => familyName(row.cells?.[0]?.textContent)).filter(Boolean));
 
-      const orderIndex = new Map(DEFAULT_ORDER.map((name, index) => [name, index]));
-      const sorted = [...tbody.querySelectorAll(':scope > tr')].sort((a, b) => {
-        const aName = normalizeName(a.cells?.[0]?.textContent);
-        const bName = normalizeName(b.cells?.[0]?.textContent);
-        const aIndex = orderIndex.has(aName) ? orderIndex.get(aName) : Number.MAX_SAFE_INTEGER;
-        const bIndex = orderIndex.has(bName) ? orderIndex.get(bName) : Number.MAX_SAFE_INTEGER;
-        if (aIndex !== bIndex) return aIndex - bIndex;
-        return Number(a.dataset.originalGeneralOrder || 0) - Number(b.dataset.originalGeneralOrder || 0);
-      });
-
-      sorted.forEach(row => tbody.append(row));
-    } finally {
-      applying = false;
+    for (const prefix of REQUIRED_FAMILIES) {
+      if (!presentFamilies.has(prefix)) tbody.append(createZeroLevelRow(prefix));
     }
-  }
 
-  function queue() {
-    if (queued || applying) return;
-    queued = true;
-    queueMicrotask(() => {
-      queued = false;
-      enhance();
+    const orderIndex = new Map(DEFAULT_ORDER.map((name, index) => [name, index]));
+    const sorted = [...tbody.querySelectorAll(':scope > tr')]
+      .map((row, index) => ({ row, index, family: familyName(row.cells?.[0]?.textContent) }))
+      .sort((a, b) => {
+        const ai = orderIndex.has(a.family) ? orderIndex.get(a.family) : Number.MAX_SAFE_INTEGER;
+        const bi = orderIndex.has(b.family) ? orderIndex.get(b.family) : Number.MAX_SAFE_INTEGER;
+        return ai - bi || a.index - b.index;
+      })
+      .map(item => item.row);
+
+    sorted.forEach((row, index) => {
+      if (tbody.rows[index] !== row) tbody.insertBefore(row, tbody.rows[index] || null);
     });
+
+    completed = true;
+    observer?.disconnect();
+    return true;
   }
 
-  new MutationObserver(queue).observe(container, { childList: true, subtree: true });
-  queue();
-  window.addEventListener('load', queue, { once: true });
+  function tryEnhance() {
+    if (!enhance()) return;
+    observer?.disconnect();
+  }
+
+  observer = new MutationObserver(tryEnhance);
+  observer.observe(container, { childList: true, subtree: true });
+  tryEnhance();
+  window.addEventListener('load', tryEnhance, { once: true });
 })();
