@@ -1,6 +1,7 @@
-/* Keep the built-in General-skill rows in their default positions.
+/* Keep the built-in General-skill rows in their default positions without
+ * rebuilding or repeatedly moving rows while the user is typing.
  * 製作：・芸術：・操縦： may contain a specialization after the colon;
- * the earliest saved row for each prefix is treated as the built-in slot.
+ * the first saved row for each prefix is treated as the built-in slot.
  * Additional rows with the same prefix remain ordinary added skills. */
 (() => {
   const LEFT_MASTER = ["医療", "射撃", "知覚", "電脳", "製作：", "心理", "自我", "交渉"];
@@ -9,48 +10,43 @@
 
   let queued = false;
   let arranging = false;
+  let observer = null;
 
   const rowName = row => row?.querySelector('[data-f="name"]')?.value?.trim() || "";
-
-  function isMatch(name, master) {
-    return PROPER_PREFIXES.has(master) ? name.startsWith(master) : name === master;
-  }
+  const isMatch = (name, master) => PROPER_PREFIXES.has(master) ? name.startsWith(master) : name === master;
 
   function removeDelete(row) {
     row.dataset.fixedGeneralMaster = "1";
     row.querySelector('[data-delete-skill]')?.remove();
   }
 
-  function arrangeColumn(body, masters, allRows, used) {
-    if (!body) return;
+  function selectMasterRow(master, rows, used) {
+    const matches = rows.filter(row => !used.has(row) && isMatch(rowName(row), master));
+    if (!matches.length) return null;
+    if (!PROPER_PREFIXES.has(master)) return matches[0];
+    return matches.find(row => rowName(row) !== master) || matches[0];
+  }
 
-    const fixedRows = [];
+  function orderedRows(body, masters, allRows, used) {
+    const fixed = [];
     for (const master of masters) {
-      const matches = allRows.filter(row => !used.has(row) && isMatch(rowName(row), master));
-      if (!matches.length) continue;
-
-      let selected = matches[0];
-      if (PROPER_PREFIXES.has(master)) {
-        selected = matches.find(row => rowName(row) !== master) || matches[0];
-
-        /* When a specialized saved row exists, hide the generated 0Lv
-         * placeholder with the bare prefix. It remains only in sheet.js's
-         * temporary state and is excluded from saving. */
-        if (rowName(selected) !== master) {
-          matches
-            .filter(row => row !== selected && rowName(row) === master)
-            .forEach(row => row.remove());
-        }
-      }
-
+      const selected = selectMasterRow(master, allRows, used);
+      if (!selected) continue;
       used.add(selected);
       removeDelete(selected);
-      fixedRows.push(selected);
+      fixed.push(selected);
     }
 
-    const remaining = [...body.rows].filter(row => !fixedRows.includes(row));
-    fixedRows.forEach(row => body.append(row));
-    remaining.forEach(row => body.append(row));
+    const remaining = [...body.rows].filter(row => !fixed.includes(row));
+    return [...fixed, ...remaining];
+  }
+
+  function applyOrder(body, desired) {
+    if (!body) return;
+    desired.forEach((row, index) => {
+      const current = body.rows[index];
+      if (current !== row) body.insertBefore(row, current || null);
+    });
   }
 
   function arrange() {
@@ -68,37 +64,24 @@
     }
 
     arranging = true;
+    observer?.disconnect();
     try {
       const allRows = [...root.querySelectorAll('tr[data-skill-key]')];
       const used = new Set();
-
-      /* Pull every built-in row into the correct column before ordering. */
-      for (const master of LEFT_MASTER) {
-        const candidates = allRows.filter(row => !used.has(row) && isMatch(rowName(row), master));
-        const selected = PROPER_PREFIXES.has(master)
-          ? candidates.find(row => rowName(row) !== master) || candidates[0]
-          : candidates[0];
-        if (selected) firstBody.append(selected);
-      }
-      for (const master of RIGHT_MASTER) {
-        const candidates = allRows.filter(row => !used.has(row) && isMatch(rowName(row), master));
-        const selected = PROPER_PREFIXES.has(master)
-          ? candidates.find(row => rowName(row) !== master) || candidates[0]
-          : candidates[0];
-        if (selected) secondBody.append(selected);
-      }
-
-      arrangeColumn(firstBody, LEFT_MASTER, allRows, used);
-      arrangeColumn(secondBody, RIGHT_MASTER, allRows, used);
+      const leftOrder = orderedRows(firstBody, LEFT_MASTER, allRows, used);
+      const rightOrder = orderedRows(secondBody, RIGHT_MASTER, allRows, used);
+      applyOrder(firstBody, leftOrder);
+      applyOrder(secondBody, rightOrder);
     } finally {
       arranging = false;
+      observer?.observe(root, { childList: true, subtree: true });
     }
   }
 
   function queue() {
-    if (queued) return;
+    if (queued || arranging) return;
     queued = true;
-    requestAnimationFrame(() => requestAnimationFrame(arrange));
+    requestAnimationFrame(arrange);
   }
 
   function initialize() {
@@ -108,7 +91,8 @@
       return;
     }
 
-    new MutationObserver(queue).observe(root, { childList: true, subtree: true });
+    observer = new MutationObserver(queue);
+    observer.observe(root, { childList: true, subtree: true });
     window.addEventListener("tnx:general-master-ready", queue);
     queue();
   }
