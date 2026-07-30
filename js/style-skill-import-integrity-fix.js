@@ -26,7 +26,7 @@
     return "";
   }
 
-  function decodeDetail(value) {
+  function detailCandidates(value) {
     const source = String(value || "").replaceAll("¥", "\\");
     const candidates = [];
     let offset = 0;
@@ -40,35 +40,67 @@
       }
       offset += PREFIX.length;
     }
-    if (!candidates.length) return null;
+    return candidates;
+  }
 
+  function decodeDetail(value) {
+    const candidates = detailCandidates(value);
+    if (!candidates.length) return null;
     let detail = candidates[candidates.length - 1];
-    for (let guard = 0; guard < 5; guard += 1) {
-      const nested = decodeDetail(detail?.description);
-      if (!nested) break;
-      detail = { ...detail, ...nested };
+    for (let guard = 0; guard < 8; guard += 1) {
+      const nested = detailCandidates(detail?.description);
+      if (!nested.length) break;
+      detail = { ...detail, ...nested[nested.length - 1] };
     }
     return detail;
   }
 
-  function canonical(detail) {
+  function cleanDescription(value) {
+    let text = String(value ?? "");
+    for (let guard = 0; guard < 8 && text.includes(PREFIX); guard += 1) {
+      const nested = decodeDetail(text);
+      if (!nested) break;
+      text = String(nested.description ?? "");
+    }
+    if (!text.includes(PREFIX)) return text;
+
+    /* A malformed historical payload may contain valid prose before the marker. */
+    const before = text.slice(0, text.indexOf(PREFIX)).trim();
+    return before;
+  }
+
+  function sanitizeDetail(detail) {
     const clean = Object.fromEntries(DETAIL_KEYS.map(key => [key, String(detail?.[key] ?? "")]));
-    return `${PREFIX}\n${JSON.stringify(clean)}`;
+    clean.description = cleanDescription(clean.description);
+    return clean;
+  }
+
+  function canonical(detail) {
+    return `${PREFIX}\n${JSON.stringify(sanitizeDetail(detail))}`;
+  }
+
+  function currentVisibleDetail(row) {
+    return Object.fromEntries(DETAIL_KEYS.map(key => {
+      const control = row.querySelector(`[data-style-field="${key}"]`);
+      return [key, String(control?.value ?? "")];
+    }));
   }
 
   function repairRow(row) {
     if (!row || row.dataset.styleIntegrityRepairing === "1") return;
     const original = row.querySelector('[data-f="description"]');
     const visible = row.querySelector('[data-style-field="description"]');
-    const detail = decodeDetail(visible?.value) || decodeDetail(original?.value);
-    if (!detail) return;
+    const decoded = decodeDetail(visible?.value) || decodeDetail(original?.value);
 
+    if (!decoded && !String(visible?.value || "").includes(PREFIX)) return;
+
+    const detail = sanitizeDetail(decoded || currentVisibleDetail(row));
     row.dataset.styleIntegrityRepairing = "1";
     try {
       for (const key of DETAIL_KEYS) {
         const control = row.querySelector(`[data-style-field="${key}"]`);
         if (!control) continue;
-        const value = String(detail[key] ?? "");
+        const value = key === "description" ? cleanDescription(detail[key]) : String(detail[key] ?? "");
         if (control.value !== value) control.value = value;
       }
       if (original) {
