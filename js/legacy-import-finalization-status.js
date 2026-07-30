@@ -1,75 +1,82 @@
-/* Keep legacy-import completion text in sync with the outfit table final conversion. */
+/* Coordinate batch import, one final outfit-table render, and one final save. */
 (() => {
+  const apply = document.querySelector('#legacy-import-apply');
   const message = document.querySelector('#legacy-import-message');
-  if (!message) return;
+  if (!apply || !message) return;
 
-  let deferredCompletion = '';
-  let stableTimer = 0;
-  let lastSignature = '';
+  let finalizing = false;
+  let completionText = '';
 
-  function visible(element) {
-    if (!(element instanceof HTMLElement)) return false;
-    const style = getComputedStyle(element);
-    return style.display !== 'none' && style.visibility !== 'hidden' && element.getClientRects().length > 0;
+  const nextFrame = () => new Promise(resolve => requestAnimationFrame(resolve));
+  const wait = milliseconds => new Promise(resolve => setTimeout(resolve, milliseconds));
+
+  async function waitForOutfitTables(timeout = 5000) {
+    const started = performance.now();
+    while (!window.TNXOutfitTables?.flush) {
+      if (performance.now() - started > timeout) return false;
+      await wait(50);
+    }
+    return true;
   }
 
-  function finalizationPanel() {
-    return [...document.querySelectorAll('body *')].find(element => {
-      if (element === message || !visible(element)) return false;
-      const own = [...element.childNodes]
-        .filter(node => node.nodeType === Node.TEXT_NODE)
-        .map(node => node.textContent || '')
-        .join(' ');
-      return own.includes('アウトフィットを最終変換中');
-    }) || null;
+  function startBatch() {
+    completionText = '';
+    finalizing = false;
+    window.__tnxBatchImportActive = true;
+    document.documentElement.dataset.batchImport = '1';
   }
 
-  function outfitSignature() {
-    const rows = [...document.querySelectorAll('#outfit-list [data-outfit-key]')];
-    return rows.map(row => {
-      const key = row.dataset.outfitKey || '';
-      const category = row.querySelector('[data-o="category"]')?.value || '';
-      const name = row.querySelector('[data-o="name"]')?.value || '';
-      return `${key}:${category}:${name}`;
-    }).join('|');
+  async function finishBatch(text) {
+    if (finalizing) return;
+    finalizing = true;
+    completionText = text;
+    message.textContent = 'アウトフィットを分類別テーブルへ最終変換しています…';
+
+    try {
+      await waitForOutfitTables();
+      window.__tnxBatchImportActive = false;
+      delete document.documentElement.dataset.batchImport;
+
+      await window.TNXOutfitTables?.flush?.();
+      window.TNXExperience?.queue?.();
+      await nextFrame();
+      await nextFrame();
+
+      message.textContent = '最終変換が完了しました。DBへ保存しています…';
+      window.TNXSaveWatchdog?.flush?.();
+
+      message.textContent = completionText.replace(
+        /反映内容は約1\.2秒後にDBへ自動保存されます。[^。]*。?/, 
+        '最終変換後の内容をDBへ保存しています。画面上部が「保存済み」になるまでページを閉じないでください。'
+      );
+    } catch (error) {
+      console.error(error);
+      window.__tnxBatchImportActive = false;
+      delete document.documentElement.dataset.batchImport;
+      message.textContent = `最終変換エラー：${error.message}`;
+    } finally {
+      finalizing = false;
+    }
   }
 
-  function waitForStableCompletion() {
-    clearTimeout(stableTimer);
-    const check = () => {
-      const panel = finalizationPanel();
-      const signature = outfitSignature();
-      if (panel || signature !== lastSignature) {
-        lastSignature = signature;
-        stableTimer = setTimeout(check, 250);
-        return;
-      }
-      if (deferredCompletion) {
-        message.textContent = deferredCompletion;
-        deferredCompletion = '';
-      }
-    };
-    lastSignature = outfitSignature();
-    stableTimer = setTimeout(check, 250);
-  }
+  apply.addEventListener('click', startBatch, true);
 
-  const observer = new MutationObserver(() => {
+  document.addEventListener('click', event => {
+    if (!window.__tnxBatchImportActive) return;
+    if (!event.target.closest('#save-button')) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+  }, true);
+
+  new MutationObserver(() => {
     const text = message.textContent || '';
-    const panel = finalizationPanel();
-
-    if (text.startsWith('反映しました') && panel) {
-      deferredCompletion = text;
-      message.textContent = 'アウトフィットの最終変換が完了するまでお待ちください。';
-      waitForStableCompletion();
+    if (text.startsWith('反映しました')) {
+      finishBatch(text);
       return;
     }
-
-    if (deferredCompletion) {
-      const progress = panel?.textContent?.trim();
-      if (progress) message.textContent = progress;
-      waitForStableCompletion();
+    if (text.includes('取込エラー')) {
+      window.__tnxBatchImportActive = false;
+      delete document.documentElement.dataset.batchImport;
     }
-  });
-
-  observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+  }).observe(message, { childList: true, subtree: true, characterData: true });
 })();
