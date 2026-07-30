@@ -14,7 +14,7 @@
   const compact=value=>normalizeLineBreaks(value).replace(/\s+/g,"");
   const cleanName=value=>normalizeLineBreaks(value)
     .trim()
-    .replace(/^[★†※■┗]+\s*/,"")
+    .replace(/^[★■┗]+\s*/,"")
     .replace(/Ｎ◎ＶＡ/g,"N◎VA");
   const number=value=>{
     const match=String(value??"").match(/-?\d+/);
