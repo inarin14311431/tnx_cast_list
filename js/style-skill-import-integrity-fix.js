@@ -87,7 +87,7 @@
     return String(value || "")
       .normalize("NFKC")
       .trim()
-      .replace(/^[★†※＠@■┗]+\s*/, "")
+      .replace(/^[★■┗]+\s*/, "")
       .replace(/\s+/g, "")
       .toLowerCase();
   }
