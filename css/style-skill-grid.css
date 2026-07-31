@@ -1,5 +1,5 @@
-/* Stable CSS Grid layout for the style-skill editor.
- * Fixed columns stay compact; description receives all remaining width.
+/* Authoritative layout for the style-skill editor.
+ * Column widths for this table must be defined only in this file.
  */
 
 #style-skills{
@@ -102,6 +102,16 @@
   padding:6px 4px;
   font-size:clamp(.8rem,.6vw,.88rem);
   line-height:1.25;
+}
+
+/* Flex cells need an explicit flexible control; otherwise multiline name fields
+ * can collapse to their intrinsic width even when the grid column is wide. */
+#style-skills .style-skill-full-table td:first-child > input[data-f="name"],
+#style-skills .style-skill-full-table td:first-child > textarea[data-f="name"]{
+  flex:1 1 100%;
+  width:100%!important;
+  min-width:0!important;
+  max-width:none!important;
 }
 
 #style-skills .style-skill-full-table .style-suit-head,
