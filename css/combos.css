@@ -3,9 +3,43 @@
   margin: 36px auto 80px;
 }
 
+.combo-page-header h1 small,
+.combo-page-header a small,
+.combo-editor-panel__header small,
+.combo-dialog__header small,
+.combo-form-grid small,
+.combo-dialog__actions small,
+#add-combo-button small {
+  color: var(--text-muted);
+  font-family: monospace;
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+.combo-page-header h1 small {
+  margin-left: 0.45em;
+}
+
+.combo-page-header a,
+#add-combo-button,
+.combo-dialog__actions button {
+  display: inline-grid;
+  gap: 2px;
+  align-content: center;
+}
+
+.combo-page-header a small,
+#add-combo-button small,
+.combo-dialog__actions small {
+  display: block;
+}
+
 .combo-editor-panel {
   border: 1px solid var(--line-muted);
-  background: var(--panel);
+  color: var(--text);
+  background: var(--theme-panel-bg, var(--panel));
+  box-shadow: 0 12px 30px var(--theme-shadow, transparent);
 }
 
 .combo-editor-panel__header {
@@ -32,15 +66,33 @@
   color: var(--line);
 }
 
+.combo-editor-panel__header h2 small,
+.combo-dialog__header h2 small {
+  margin-left: 0.45em;
+}
+
 .combo-editor-panel__header button,
 .combo-dialog__actions button,
 .combo-dialog__header button {
   padding: 11px 16px;
   border: 1px solid var(--line);
-  color: var(--line);
-  background: rgba(65, 232, 255, 0.06);
+  color: var(--text);
+  background: var(--theme-button-bg, transparent);
   cursor: pointer;
   font-family: monospace;
+}
+
+.combo-editor-panel__header button:hover,
+.combo-dialog__actions button:hover,
+.combo-dialog__header button:hover {
+  color: var(--theme-on-accent, var(--background));
+  background: var(--theme-button-hover, var(--line));
+}
+
+.combo-editor-panel__header button:hover small,
+.combo-dialog__actions button:hover small,
+.combo-dialog__header button:hover small {
+  color: inherit;
 }
 
 .combo-message {
@@ -49,6 +101,10 @@
   border-bottom: 1px solid var(--line-muted);
   color: var(--text-muted);
   font-family: monospace;
+}
+
+.combo-message small {
+  margin-left: 0.5em;
 }
 
 .combo-message--success {
@@ -63,21 +119,27 @@
   display: grid;
   gap: 14px;
   padding: 22px;
+  color: var(--text-muted);
+}
+
+.combo-list > small {
+  margin-left: 0.4em;
 }
 
 .combo-card {
   width: 100%;
   padding: 18px;
-  border: 1px solid rgba(65, 232, 255, 0.2);
+  border: 1px solid var(--line-muted);
   color: var(--text);
-  background: rgba(0, 0, 0, 0.22);
+  background: color-mix(in srgb, var(--theme-panel-flat, var(--panel)) 88%, transparent);
   cursor: pointer;
   text-align: left;
 }
 
 .combo-card:hover {
   border-color: var(--line);
-  background: rgba(65, 232, 255, 0.06);
+  background: color-mix(in srgb, var(--theme-panel-flat, var(--panel)) 88%, var(--line) 12%);
+  box-shadow: 0 0 18px var(--theme-shadow, transparent);
 }
 
 .combo-card__head {
@@ -87,6 +149,7 @@
 }
 
 .combo-card__head strong {
+  color: var(--text);
   font-size: 1.15rem;
 }
 
@@ -117,11 +180,18 @@
 .combo-card dt {
   color: var(--text-muted);
   font-family: monospace;
-  font-size: 0.68rem;
+  font-size: 0.72rem;
+}
+
+.combo-card dt small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.58rem;
 }
 
 .combo-card dd {
   margin: 4px 0 0;
+  color: var(--text);
 }
 
 .combo-dialog {
@@ -129,11 +199,12 @@
   padding: 0;
   border: 1px solid var(--line);
   color: var(--text);
-  background: #071015;
+  background: var(--theme-panel-bg, var(--panel));
+  box-shadow: 0 18px 48px var(--theme-shadow, rgba(0, 0, 0, 0.3));
 }
 
 .combo-dialog::backdrop {
-  background: rgba(0, 0, 0, 0.78);
+  background: rgba(0, 0, 0, 0.68);
   backdrop-filter: blur(3px);
 }
 
@@ -177,10 +248,15 @@
   grid-column: 1 / -1;
 }
 
-.combo-form-grid span {
-  color: var(--text-muted);
-  font-family: monospace;
-  font-size: 0.75rem;
+.combo-form-grid label > span {
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.combo-form-grid label > span small {
+  display: block;
+  margin-top: 2px;
 }
 
 .combo-form-grid input,
@@ -191,7 +267,7 @@
   border: 1px solid var(--line-muted);
   color: var(--text);
   outline: none;
-  background: rgba(0, 0, 0, 0.35);
+  background: var(--theme-input-bg, rgba(0, 0, 0, 0.35));
   font: inherit;
 }
 
@@ -199,6 +275,7 @@
 .combo-form-grid select:focus,
 .combo-form-grid textarea:focus {
   border-color: var(--line);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--line) 28%, transparent);
 }
 
 .combo-dialog__actions {
@@ -213,12 +290,28 @@
   margin-right: auto;
   color: var(--alert);
   border-color: var(--alert);
-  background: rgba(255, 61, 103, 0.06);
+  background: color-mix(in srgb, var(--alert) 8%, transparent);
+}
+
+.empty-data {
+  color: var(--text-muted);
+}
+
+.empty-data small {
+  display: block;
+  margin-top: 4px;
 }
 
 @media (max-width: 700px) {
   .combo-editor-layout {
     width: min(100% - 20px, 1100px);
+  }
+
+  .combo-page-header h1 small,
+  .combo-editor-panel__header h2 small,
+  .combo-dialog__header h2 small {
+    display: block;
+    margin: 3px 0 0;
   }
 
   .combo-editor-panel__header,
@@ -236,6 +329,10 @@
   }
 
   .combo-card dl {
+    flex-wrap: wrap;
+  }
+
+  .combo-dialog__actions {
     flex-wrap: wrap;
   }
 }
