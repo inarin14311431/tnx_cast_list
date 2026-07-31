@@ -1,5 +1,45 @@
 /* Persistent color-theme controller shared by all active pages. */
 (() => {
+  const isSheetEditor = /(?:^|\/)sheet\.html$/.test(location.pathname);
+  if (isSheetEditor && !window.__tnxManualSaveMode) {
+    window.__tnxManualSaveMode = true;
+    const nativeSetTimeout = window.setTimeout.bind(window);
+    window.setTimeout = (callback, delay, ...args) => {
+      const source = typeof callback === "function" ? Function.prototype.toString.call(callback) : String(callback || "");
+      if (Number(delay) === 1200 && /saveAll\s*\(\s*false\s*\)/.test(source)) return 0;
+      return nativeSetTimeout(callback, delay, ...args);
+    };
+
+    document.addEventListener("DOMContentLoaded", () => {
+      let unsaved = false;
+      const status = document.querySelector("#save-status");
+      const saveButton = document.querySelector("#save-button");
+
+      const syncStatus = () => {
+        const label = String(status?.textContent || "").trim();
+        if (/^未保存/.test(label)) unsaved = true;
+        else if (/^保存済み/.test(label)) unsaved = false;
+      };
+
+      if (status) {
+        new MutationObserver(syncStatus).observe(status, { childList: true, subtree: true, characterData: true });
+        syncStatus();
+      }
+
+      document.addEventListener("click", event => {
+        if (!saveButton || event.target !== saveButton || event.isTrusted) return;
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }, true);
+
+      window.addEventListener("beforeunload", event => {
+        if (!unsaved) return;
+        event.preventDefault();
+        event.returnValue = "";
+      });
+    }, { once: true });
+  }
+
   const STORAGE_KEY = "tnx-cast-site-theme";
   const THEMES = new Set(["nova", "moon", "star", "eden", "vlad", "lutetia", "buena", "canberra", "hongkong", "fesler", "intron", "axleraters", "inagaki", "astral", "orbital", "japanese-army"]);
   const THEME_OPTIONS = [
