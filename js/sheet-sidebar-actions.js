@@ -90,6 +90,10 @@
       .ability-matrix--cs .ability-matrix__row{grid-template-columns:42px minmax(0,1fr);padding-left:4px;padding-right:4px}
       .ability-matrix--cs input[readonly]{cursor:default;background:rgba(65,232,255,.04)}
       #ability-grid .ability-matrix__row input[type="number"]{padding-left:19px}
+      #outfit-list input[type="number"]{-moz-appearance:textfield;appearance:textfield}
+      #outfit-list input[type="number"]::-webkit-inner-spin-button,
+      #outfit-list input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
+      #outfit-list .armor-defense-total{padding-right:0!important}
       @media(min-width:1181px){.ability-grid{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(110px,.5fr)!important}}
       @media(max-width:760px){
         .ability-matrix--cs .ability-matrix__header,
