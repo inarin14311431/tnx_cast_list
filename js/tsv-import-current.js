@@ -118,7 +118,15 @@
     }
     if (!target) return false;
 
-    setControl(target.querySelector('[data-o="category"]'), category);
+    const key = target.dataset.outfitKey;
+    const categoryControl = target.querySelector('[data-o="category"]');
+    if (categoryControl && categoryControl.value !== category) {
+      setControl(categoryControl, category);
+      await wait();
+      target = root.querySelector(`[data-outfit-key="${CSS.escape(key)}"]`);
+      if (!target) return false;
+    }
+
     setControl(target.querySelector('[data-o="name"]'), row.name || row['名称']);
     setControl(target.querySelector('[data-o="purchase_value"]'), row.purchase);
     setControl(target.querySelector('[data-o="experience_cost"]'), number(row.permanent));
@@ -132,7 +140,7 @@
 
     if (category === 'armor') {
       const defense = armorDefense(row).split('/');
-      const controls = ['S', 'I', 'P'].map(key => target.querySelector(`[data-armor-defense="${key}"]`));
+      const controls = ['S', 'I', 'P'].map(part => target.querySelector(`[data-armor-defense="${part}"]`));
       if (controls.some(Boolean)) controls.forEach((control, index) => setControl(control, defense[index] ?? ''));
       else setControl(target.querySelector('[data-o="defense"]'), armorDefense(row));
     } else {
