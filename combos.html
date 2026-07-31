@@ -3,43 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>COMBO EDITOR // N◎VA ARCHIVE</title>
-
-  <link rel="stylesheet" href="./css/base.css">
-  <link rel="stylesheet" href="./css/auth.css">
-  <link rel="stylesheet" href="./css/combos.css">
+  <title>コンボ編集 // N◎VA ARCHIVE</title>
+  <script src="./js/theme.js?v=31"></script>
+  <link rel="stylesheet" href="./css/base.css?v=69">
+  <link rel="stylesheet" href="./css/auth.css?v=32">
+  <link rel="stylesheet" href="./css/combos.css?v=2">
+  <link rel="stylesheet" href="./css/themes.css?v=1">
 </head>
 
 <body>
   <div class="background-grid"></div>
   <div class="scanlines"></div>
 
-  <header class="auth-header">
+  <header class="auth-header combo-page-header">
     <a id="return-to-cast" href="./account.html">
-      &lt; RETURN TO CAST
+      <span>&lt; キャストへ戻る</span>
+      <small>RETURN TO CAST</small>
     </a>
 
     <p>N◎VA MUNICIPAL DATABASE</p>
-    <h1>COMBO DATA EDITOR</h1>
+    <h1>コンボ編集 <small>COMBO DATA EDITOR</small></h1>
   </header>
 
   <main class="combo-editor-layout">
     <section class="combo-editor-panel">
       <header class="combo-editor-panel__header">
         <div>
-          <p id="character-id">ACCESSING...</p>
-          <h2 id="character-name">CAST DATA</h2>
+          <p id="character-id">キャスト情報を読み込み中… <small>ACCESSING...</small></p>
+          <h2 id="character-name">キャストデータ <small>CAST DATA</small></h2>
         </div>
 
         <button id="add-combo-button" type="button">
-          + ADD COMBO
+          <span>コンボを追加</span>
+          <small>ADD COMBO</small>
         </button>
       </header>
 
       <div id="combo-message" class="combo-message" aria-live="polite"></div>
 
       <div id="combo-list" class="combo-list">
-        SCANNING COMBO DATA...
+        コンボデータを読み込み中… <small>SCANNING COMBO DATA...</small>
       </div>
     </section>
   </main>
@@ -48,8 +51,8 @@
     <form id="combo-form" method="dialog">
       <header class="combo-dialog__header">
         <div>
-          <p>CAST COMBO DATABASE</p>
-          <h2 id="combo-dialog-title">ADD COMBO</h2>
+          <p>キャスト・コンボデータベース <small>CAST COMBO DATABASE</small></p>
+          <h2 id="combo-dialog-title">コンボを追加 <small>ADD COMBO</small></h2>
         </div>
 
         <button id="close-dialog-button" type="button" aria-label="閉じる">
@@ -61,86 +64,86 @@
 
       <div class="combo-form-grid">
         <label>
-          <span>コンボ名 *</span>
+          <span>コンボ名 * <small>COMBO NAME</small></span>
           <input id="combo-name" name="name" type="text" maxlength="120" required>
         </label>
 
         <label>
-          <span>使用能力</span>
+          <span>使用能力 <small>ABILITY</small></span>
           <select id="ability" name="ability">
-            <option value="">未指定</option>
-            <option value="reason">♠ 理性</option>
-            <option value="passion">♣ 感情</option>
-            <option value="life">♥ 生命</option>
-            <option value="mundane">♦ 外界</option>
+            <option value="">未指定 / NOT SET</option>
+            <option value="reason">♠ 理性 / REASON</option>
+            <option value="passion">♣ 感情 / PASSION</option>
+            <option value="life">♥ 生命 / LIFE</option>
+            <option value="mundane">♦ 外界 / MUNDANE</option>
           </select>
         </label>
 
         <label class="combo-form-grid__wide">
-          <span>組み合わせ技能</span>
+          <span>組み合わせ技能 <small>SKILL COMBINATION</small></span>
           <input id="skills" name="skills" type="text" maxlength="500"
             placeholder="例：白兵＋居合い＋修羅">
         </label>
 
         <label>
-          <span>判定修正</span>
+          <span>判定修正 <small>MODIFIER</small></span>
           <input id="modifier" name="modifier" type="text" maxlength="60"
             placeholder="例：+3">
         </label>
 
         <label>
-          <span>達成値目安</span>
+          <span>達成値目安 <small>EXPECTED VALUE</small></span>
           <input id="target-value" name="target_value" type="text" maxlength="60"
             placeholder="例：18">
         </label>
 
         <label>
-          <span>タイミング</span>
+          <span>タイミング <small>TIMING</small></span>
           <input id="timing" name="timing" type="text" maxlength="100">
         </label>
 
         <label>
-          <span>対象</span>
+          <span>対象 <small>TARGET</small></span>
           <input id="target" name="target" type="text" maxlength="100">
         </label>
 
         <label>
-          <span>射程</span>
+          <span>射程 <small>RANGE</small></span>
           <input id="range" name="range" type="text" maxlength="100">
         </label>
 
         <label>
-          <span>コスト</span>
+          <span>コスト <small>COST</small></span>
           <input id="cost" name="cost" type="text" maxlength="100">
         </label>
 
         <label>
-          <span>表示順</span>
+          <span>表示順 <small>DISPLAY ORDER</small></span>
           <input id="sort-order" name="sort_order" type="number" min="0" value="0">
         </label>
 
         <label class="combo-form-grid__wide">
-          <span>効果・解説</span>
+          <span>効果・解説 <small>EFFECT / DESCRIPTION</small></span>
           <textarea id="description" name="description" rows="6" maxlength="5000"></textarea>
         </label>
       </div>
 
       <footer class="combo-dialog__actions">
         <button id="delete-combo-button" type="button" class="danger" hidden>
-          DELETE
+          <span>削除</span><small>DELETE</small>
         </button>
 
         <button id="cancel-combo-button" type="button">
-          CANCEL
+          <span>キャンセル</span><small>CANCEL</small>
         </button>
 
         <button id="save-combo-button" type="submit">
-          SAVE
+          <span>保存</span><small>SAVE</small>
         </button>
       </footer>
     </form>
   </dialog>
 
-  <script type="module" src="./js/combos.js"></script>
+  <script type="module" src="./js/combos.js?v=2"></script>
 </body>
 </html>
