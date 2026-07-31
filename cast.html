@@ -5,7 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="index, follow">
   <title>キャストデータ // N◎VA ARCHIVE</title>
-  <script src="./js/theme.js?v=30"></script>
+  <script>
+    (() => {
+      const key = "tnx-cast-site-theme";
+      const themes = new Set(["nova", "moon", "star", "eden", "vlad", "lutetia", "buena", "canberra", "hongkong", "fesler", "intron", "axleraters", "inagaki", "astral", "orbital", "japanese-army"]);
+      let theme = "nova";
+      try {
+        const stored = localStorage.getItem(key);
+        if (themes.has(stored)) theme = stored;
+      } catch {}
+      document.documentElement.dataset.theme = theme;
+      document.documentElement.style.colorScheme = ["intron", "orbital"].includes(theme) ? "light" : "dark";
+    })();
+  </script>
+  <script src="./js/theme.js?v=31"></script>
   <link rel="stylesheet" href="./css/base.css?v=68">
   <link rel="stylesheet" href="./css/cast.css?v=68">
   <link rel="stylesheet" href="./css/session.css?v=68">
@@ -33,6 +46,19 @@
   <link rel="stylesheet" href="./css/cast-hero-compact.css?v=2">
   <link rel="stylesheet" href="./css/cast-cs-center.css?v=1">
   <link rel="stylesheet" href="./css/cast-personal-data-columns.css?v=1">
+  <link rel="stylesheet" href="./css/theme-runtime.css?v=2" data-theme-runtime="1">
+  <link rel="stylesheet" href="./css/theme-polish.css?v=2" data-theme-polish="1">
+  <link rel="stylesheet" href="./css/theme-fixes-v3.css?v=2" data-theme-fixes-v3="1">
+  <link rel="stylesheet" href="./css/theme-fixes-v4.css?v=4" data-theme-fixes-v4="1">
+  <link rel="stylesheet" href="./css/theme-city-expansion.css?v=2" data-theme-city-expansion="1">
+  <link rel="stylesheet" href="./css/theme-canberra-yellow.css?v=1" data-theme-canberra-yellow="1">
+  <link rel="stylesheet" href="./css/theme-hongkong-fesler.css?v=1" data-theme-hongkong-fesler="1">
+  <link rel="stylesheet" href="./css/theme-intron-light.css?v=2" data-theme-intron-light="1">
+  <link rel="stylesheet" href="./css/theme-vlad-vampire.css?v=1" data-theme-vlad-vampire="1">
+  <link rel="stylesheet" href="./css/theme-special-brands.css?v=2" data-theme-special-brands="1">
+  <link rel="stylesheet" href="./css/theme-new-worlds.css?v=2" data-theme-new-worlds="1">
+  <link rel="stylesheet" href="./css/theme-inagaki-gaudy.css?v=1" data-theme-inagaki-gaudy="1">
+  <link rel="stylesheet" href="./css/theme-inagaki-select-fix.css?v=1" data-theme-inagaki-select-fix="1">
 </head>
 <body>
   <div class="background-grid"></div><div class="scanlines"></div>
