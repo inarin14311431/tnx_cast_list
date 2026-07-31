@@ -79,3 +79,63 @@ body.cast-scan-mode::before{
 @keyframes data-rain{to{transform:translateY(170vh)}}
 @media(max-width:800px){.cast-access-terminal{padding:20px}.cast-header{position:relative}.cast-tabs{top:0}.cast-hero{padding:10px}.cast-hero::before{display:none}.cast-name-readings{margin-top:28px}.cast-name-primary{align-items:flex-start;gap:.35em;font-size:clamp(1.15rem,5.2vw,1.6rem)}.cast-name-primary .cast-handle,.cast-name-primary .cast-name{white-space:normal;overflow-wrap:anywhere}}
 @media(prefers-reduced-motion:reduce){.cast-data-rain span,.cast-hero__image-scan{animation:none!important}.cast-access-overlay{transition:none}}
+
+/* The loading scan inherits the active site theme. */
+html[data-theme] body.cast-scan-mode{
+  background:var(--theme-body-bg)!important;
+}
+html[data-theme] body.cast-scan-mode::before{
+  background-image:
+    linear-gradient(var(--theme-grid-line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--theme-grid-line) 1px,transparent 1px)!important;
+}
+html[data-theme] .cast-data-rain{
+  color:var(--line)!important;
+}
+html[data-theme] .cast-access-overlay{
+  color:var(--text)!important;
+  background:
+    repeating-linear-gradient(0deg,color-mix(in srgb,var(--text) 3%,transparent) 0 1px,transparent 1px 4px),
+    radial-gradient(circle at center,color-mix(in srgb,var(--line) 18%,transparent),transparent 44%),
+    var(--background)!important;
+}
+html[data-theme] .cast-access-terminal{
+  color:var(--text)!important;
+  border-color:var(--line)!important;
+  background:color-mix(in srgb,var(--theme-panel-flat) 92%,transparent)!important;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb,var(--line) 10%,transparent) inset,
+    0 0 50px var(--theme-shadow)!important;
+}
+html[data-theme] .cast-access-terminal::before,
+html[data-theme] .cast-access-terminal::after{
+  background:var(--line)!important;
+  box-shadow:0 0 14px var(--line)!important;
+}
+html[data-theme] .cast-access-kicker,
+html[data-theme] .cast-access-log .ok{
+  color:var(--theme-divine-line)!important;
+}
+html[data-theme] .cast-access-title{
+  color:var(--text)!important;
+  text-shadow:0 0 18px var(--theme-shadow)!important;
+}
+html[data-theme] .cast-access-target,
+html[data-theme] .cast-access-log{
+  color:var(--text-muted)!important;
+}
+html[data-theme] .cast-access-progress{
+  border-color:var(--line-muted)!important;
+  background:var(--theme-input-bg)!important;
+}
+html[data-theme] .cast-access-progress span{
+  background:linear-gradient(90deg,var(--line-muted),var(--line),var(--theme-divine-line))!important;
+  box-shadow:0 0 16px var(--theme-shadow)!important;
+}
+html[data-theme] .cast-access-log{
+  border-left-color:var(--line)!important;
+  background:color-mix(in srgb,var(--theme-input-bg) 82%,transparent)!important;
+}
+html[data-theme] .cast-access-log strong{
+  color:var(--line)!important;
+}
