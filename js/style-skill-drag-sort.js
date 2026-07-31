@@ -35,7 +35,6 @@
     if (control.type === 'checkbox') control.checked = Boolean(value);
     else control.value = value ?? '';
     control.dispatchEvent(new Event('input', { bubbles: true }));
-    control.dispatchEvent(new Event('change', { bubbles: true }));
   }
 
   async function populate(row, data) {
@@ -55,9 +54,45 @@
     }
   }
 
+  function makeVisualCover() {
+    const rect = root.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
+
+    const cover = root.cloneNode(true);
+    cover.removeAttribute('id');
+    cover.setAttribute('aria-hidden', 'true');
+    cover.querySelectorAll('[id]').forEach(element => element.removeAttribute('id'));
+    cover.querySelectorAll('button,input,select,textarea').forEach(element => {
+      element.tabIndex = -1;
+      element.style.pointerEvents = 'none';
+    });
+    Object.assign(cover.style, {
+      position: 'absolute',
+      left: `${rect.left + window.scrollX}px`,
+      top: `${rect.top + window.scrollY}px`,
+      width: `${rect.width}px`,
+      minHeight: `${rect.height}px`,
+      margin: '0',
+      zIndex: '10000',
+      pointerEvents: 'none',
+      background: getComputedStyle(root).backgroundColor || 'var(--panel)'
+    });
+    document.body.append(cover);
+    root.style.visibility = 'hidden';
+    return cover;
+  }
+
+  function removeVisualCover(cover) {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      root.style.removeProperty('visibility');
+      cover?.remove();
+    }));
+  }
+
   async function rebuildInOrder(items) {
     if (rebuilding) return;
     rebuilding = true;
+    const cover = makeVisualCover();
     root.classList.add('style-skill-sort-rebuilding');
     try {
       let guard = 0;
@@ -82,6 +117,7 @@
       root.classList.remove('style-skill-sort-rebuilding');
       rebuilding = false;
       enhance();
+      removeVisualCover(cover);
     }
   }
 
