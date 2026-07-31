@@ -9,13 +9,15 @@
   };
 
   function parseTsv(source) {
-    const lines = String(source || '').replace(/\r/g, '').split('\n').filter(line => line.trim() !== '');
+    const lines = String(source || '').replace(/^\uFEFF/, '').replace(/\r/g, '').split('\n').filter(line => line.trim() !== '');
     if (lines.length < 2) return [];
     const headers = lines.shift().split('\t').map(item => item.trim());
-    return lines.map(line => {
-      const columns = line.split('\t');
-      return Object.fromEntries(headers.map((header, index) => [header, columns[index] ?? '']));
-    });
+    return lines
+      .map(line => {
+        const columns = line.split('\t');
+        return Object.fromEntries(headers.map((header, index) => [header, columns[index] ?? '']));
+      })
+      .filter(row => text(row['名称'] || row.name));
   }
 
   function dispatch(control) {
@@ -26,6 +28,17 @@
   function setControl(control, value) {
     if (!control) return;
     control.value = value ?? '';
+    dispatch(control);
+  }
+
+  function truthy(value) {
+    const normalized = text(value).toLowerCase();
+    return ['1', 'true', 'yes', 'on', '○', '〇', '●', '✓', '✔', 'あり'].includes(normalized);
+  }
+
+  function setCheckbox(control, value) {
+    if (!control) return;
+    control.checked = truthy(value);
     dispatch(control);
   }
 
@@ -44,23 +57,35 @@
     const target = [...root.querySelectorAll('tr[data-skill-key]')].find(item => !before.has(item.dataset.skillKey));
     if (!target) return false;
 
-    setControl(target.querySelector('[data-f="name"]'), row['名称']);
-    setControl(target.querySelector('[data-f="skill_kind"]'), skillKind(row['種別']));
-    setControl(target.querySelector('[data-f="level"]'), Math.max(0, number(row['レベル'] || 1)));
+    setControl(target.querySelector('[data-f="name"]'), row['名称'] || row.name);
+    setControl(target.querySelector('[data-f="skill_kind"]'), skillKind(row['種別'] || row.kind));
+    setControl(target.querySelector('[data-f="level"]'), Math.max(0, number(row['レベル'] || row.level || 1)));
+
+    const suitMap = {
+      reason: ['理性', '♠', 'reason'],
+      passion: ['感情', '♣', 'passion'],
+      life: ['生命', '♥', 'life'],
+      mundane: ['外界', '♦', 'mundane']
+    };
+    for (const [field, headers] of Object.entries(suitMap)) {
+      const header = headers.find(name => Object.prototype.hasOwnProperty.call(row, name));
+      setCheckbox(target.querySelector(`[data-f="${field}"]`), header ? row[header] : '');
+    }
 
     const detailMap = {
-      skill: '技能',
-      limit: '上限',
-      timing: 'タイミング',
-      target: '対象',
-      range: '射程',
-      difficulty: '目標値',
-      confrontation: '対決',
-      description: '解説',
-      page: '参照P'
+      skill: ['技能', 'skill'],
+      limit: ['上限', 'limit'],
+      timing: ['タイミング', 'timing'],
+      target: ['対象', 'target'],
+      range: ['射程', 'range'],
+      difficulty: ['目標値', 'difficulty'],
+      confrontation: ['対決', 'confrontation'],
+      description: ['解説', 'description'],
+      page: ['参照P', 'ページ番号', 'page']
     };
-    for (const [field, header] of Object.entries(detailMap)) {
-      setControl(target.querySelector(`[data-style-field="${field}"]`), row[header]);
+    for (const [field, headers] of Object.entries(detailMap)) {
+      const header = headers.find(name => Object.prototype.hasOwnProperty.call(row, name));
+      setControl(target.querySelector(`[data-style-field="${field}"]`), header ? row[header] : '');
     }
     return true;
   }
@@ -163,8 +188,6 @@
 
     $('#tsv-dialog')?.close();
     window.TNXExperience?.queue?.();
-    const saveButton = $('#save-button');
-    if (saveButton) saveButton.click();
     console.info(`[TSV import] ${mode.toUpperCase()}: ${imported}/${rows.length}`);
   }
 
