@@ -121,3 +121,19 @@
   }, 400);
   window.addEventListener('pagehide', () => clearInterval(urlObserver), { once: true });
 })();
+
+/* Style-skill drag sorting. */
+(() => {
+  if (!document.querySelector('link[data-style-skill-drag-sort-style]')) {
+    const style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.href = './css/style-skill-drag-sort.css?v=1';
+    style.dataset.styleSkillDragSortStyle = '1';
+    document.head.append(style);
+  }
+  if (document.querySelector('script[data-style-skill-drag-sort]')) return;
+  const script = document.createElement('script');
+  script.src = './js/style-skill-drag-sort.js?v=1';
+  script.dataset.styleSkillDragSort = '1';
+  document.head.append(script);
+})();
