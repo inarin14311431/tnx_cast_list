@@ -87,15 +87,21 @@
     style.textContent = `
       .ability-card--cs{grid-column:auto!important}
       .ability-matrix--cs .ability-matrix__header,
-      .ability-matrix--cs .ability-matrix__row{grid-template-columns:52px minmax(0,1fr)}
+      .ability-matrix--cs .ability-matrix__row{grid-template-columns:42px minmax(0,1fr);padding-left:4px;padding-right:4px}
       .ability-matrix--cs input[readonly]{cursor:default;background:rgba(65,232,255,.04)}
-      @media(min-width:1181px){.ability-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important}}
+      @media(min-width:1181px){.ability-grid{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(110px,.5fr)!important}}
       @media(max-width:760px){
         .ability-matrix--cs .ability-matrix__header,
         .ability-matrix--cs .ability-matrix__row{grid-template-columns:70px minmax(0,1fr)}
       }
     `;
     document.head.append(style);
+  };
+
+  const renameBaseLabels = () => {
+    document.querySelectorAll('#ability-grid .ability-matrix__row > span').forEach(label => {
+      if (label.textContent.trim() === '現在値') label.textContent = '基礎値';
+    });
   };
 
   const abilityValue = key => {
@@ -137,7 +143,7 @@
     card.innerHTML = `
       <h3>CS <small>COMBAT SPEED</small></h3>
       <div class="ability-matrix__header"><span></span><strong>CS</strong></div>
-      <div class="ability-matrix__row"><span>現在値</span><input id="cs-base-display" type="number" value="0" readonly tabindex="-1"></div>
+      <div class="ability-matrix__row"><span>基礎値</span><input id="cs-base-display" type="number" value="0" readonly tabindex="-1"></div>
       <div class="ability-matrix__row"><span>補正値</span><input id="cs-mod" type="number" step="1" value="${oldModifier}"></div>
       <div class="ability-matrix__row ability-matrix__result"><span>最終値</span><strong id="cs-final">0</strong></div>
       <input id="cs-base" type="hidden" value="0">
@@ -148,6 +154,7 @@
       modifierInput.value = toInteger(modifierInput.value);
       recalculateCs();
     });
+    renameBaseLabels();
     recalculateCs();
     return true;
   };
@@ -155,6 +162,7 @@
   const init = () => {
     ensureStyle();
     if (!patchCsCard()) return false;
+    renameBaseLabels();
 
     document.addEventListener('input', event => {
       if (event.target.matches('#reason-base,#reason-mod,#passion-base,#passion-mod,#life-base,#life-mod,#cs-mod')) {
@@ -170,6 +178,7 @@
     const abilityGrid = document.querySelector('#ability-grid');
     if (abilityGrid) {
       new MutationObserver(records => {
+        renameBaseLabels();
         if (records.some(record => ['reason-final', 'passion-final', 'life-final'].includes(record.target?.id))) {
           queueMicrotask(recalculateCs);
         }
