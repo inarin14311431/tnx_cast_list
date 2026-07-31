@@ -50,17 +50,6 @@ html[data-theme] #style-skills .suit-check input:checked+span{
   box-shadow:0 0 8px var(--theme-shadow)!important;
 }
 
-/* Style-skill editor: give the name about four more full-width characters. */
-html[data-theme] #style-skills .skill-table.has-detail .name-col,
-html[data-theme] #style-skills .skill-table.has-detail th:first-child,
-html[data-theme] #style-skills .skill-table.has-detail td:first-child{
-  width:30%!important;
-}
-html[data-theme] #style-skills .skill-table.has-detail th:nth-child(8),
-html[data-theme] #style-skills .skill-table.has-detail td:nth-child(8){
-  width:24%!important;
-}
-
 /* Reorder labels are supplied by JavaScript. Never add a second glyph in CSS. */
 html[data-theme] [data-skill-move],
 html[data-theme] [data-outfit-move]{
