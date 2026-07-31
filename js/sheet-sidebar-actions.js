@@ -169,10 +169,13 @@
 
     const abilityGrid = document.querySelector('#ability-grid');
     if (abilityGrid) {
-      new MutationObserver(() => queueMicrotask(recalculateCs)).observe(abilityGrid, {
+      new MutationObserver(records => {
+        if (records.some(record => ['reason-final', 'passion-final', 'life-final'].includes(record.target?.id))) {
+          queueMicrotask(recalculateCs);
+        }
+      }).observe(abilityGrid, {
         childList: true,
-        subtree: true,
-        characterData: true
+        subtree: true
       });
     }
     return true;
