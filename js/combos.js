@@ -10,10 +10,10 @@ const dialogTitle = document.querySelector("#combo-dialog-title");
 const deleteButton = document.querySelector("#delete-combo-button");
 
 const ABILITY_LABELS = {
-  reason: "♠ 理性",
-  passion: "♣ 感情",
-  life: "♥ 生命",
-  mundane: "♦ 外界"
+  reason: "♠ 理性 / REASON",
+  passion: "♣ 感情 / PASSION",
+  life: "♥ 生命 / LIFE",
+  mundane: "♦ 外界 / MUNDANE"
 };
 
 let currentUser = null;
@@ -72,7 +72,7 @@ function setupEvents() {
 }
 
 async function loadCharacter(publicId) {
-  setMessage("ACCESSING CAST DATA...", "loading");
+  setMessage("キャストデータへアクセス中…", "loading", "ACCESSING CAST DATA...");
 
   const { data, error } = await supabase
     .from("characters")
@@ -103,7 +103,7 @@ async function loadCharacter(publicId) {
 }
 
 async function loadCombos() {
-  comboList.textContent = "SCANNING COMBO DATA...";
+  comboList.innerHTML = "コンボデータを読み込み中… <small>SCANNING COMBO DATA...</small>";
 
   const { data, error } = await supabase
     .from("character_combos")
@@ -114,18 +114,18 @@ async function loadCombos() {
 
   if (error) {
     console.error(error);
-    setMessage("コンボ情報を取得できませんでした。", "error");
+    setMessage("コンボ情報を取得できませんでした。", "error", "COMBO DATA LOAD FAILED");
     return;
   }
 
   combos = data ?? [];
   renderCombos();
-  setMessage(`${combos.length} COMBO DATA DETECTED`, "success");
+  setMessage(`${combos.length}件のコンボを読み込みました。`, "success", `${combos.length} COMBO DATA DETECTED`);
 }
 
 function renderCombos() {
   if (!combos.length) {
-    comboList.innerHTML = `<p class="empty-data">NO COMBO DATA</p>`;
+    comboList.innerHTML = `<p class="empty-data">コンボは登録されていません。<small>NO COMBO DATA</small></p>`;
     return;
   }
 
@@ -133,13 +133,13 @@ function renderCombos() {
 }
 
 function createComboCard(combo) {
-  const ability = ABILITY_LABELS[combo.ability] ?? "能力未指定";
+  const ability = ABILITY_LABELS[combo.ability] ?? "能力未指定 / NOT SET";
 
   const detail = [
-    combo.timing,
-    combo.target,
-    combo.range,
-    combo.cost
+    combo.timing ? `タイミング：${combo.timing}` : "",
+    combo.target ? `対象：${combo.target}` : "",
+    combo.range ? `射程：${combo.range}` : "",
+    combo.cost ? `コスト：${combo.cost}` : ""
   ].filter(Boolean).join(" / ");
 
   return `
@@ -154,23 +154,23 @@ function createComboCard(combo) {
       </div>
 
       <p class="combo-card__skills">
-        ${escapeHtml(combo.skills || "NO SKILL COMBINATION")}
+        ${escapeHtml(combo.skills || "組み合わせ技能なし / NO SKILL COMBINATION")}
       </p>
 
       <dl>
         <div>
-          <dt>MODIFIER</dt>
+          <dt>判定修正 <small>MODIFIER</small></dt>
           <dd>${escapeHtml(combo.modifier || "—")}</dd>
         </div>
 
         <div>
-          <dt>VALUE</dt>
+          <dt>達成値目安 <small>EXPECTED VALUE</small></dt>
           <dd>${escapeHtml(combo.target_value || "—")}</dd>
         </div>
       </dl>
 
       <p class="combo-card__detail">
-        ${escapeHtml(detail || "NO DETAIL")}
+        ${escapeHtml(detail || "詳細未登録 / NO DETAIL")}
       </p>
 
       <p class="combo-card__description">
@@ -185,7 +185,7 @@ function openComboDialog(combo = null) {
   setField("sort_order", 0);
 
   if (combo) {
-    dialogTitle.textContent = "EDIT COMBO";
+    setDialogTitle("コンボを編集", "EDIT COMBO");
     deleteButton.hidden = false;
 
     setField("id", combo.id);
@@ -201,12 +201,16 @@ function openComboDialog(combo = null) {
     setField("description", combo.description);
     setField("sort_order", combo.sort_order);
   } else {
-    dialogTitle.textContent = "ADD COMBO";
+    setDialogTitle("コンボを追加", "ADD COMBO");
     deleteButton.hidden = true;
     setField("id", "");
   }
 
   dialog.showModal();
+}
+
+function setDialogTitle(japanese, english) {
+  dialogTitle.innerHTML = `${escapeHtml(japanese)} <small>${escapeHtml(english)}</small>`;
 }
 
 function closeDialog() {
@@ -265,7 +269,7 @@ async function saveCombo(event) {
     await loadCombos();
   } catch (error) {
     console.error(error);
-    setMessage("コンボ情報の保存に失敗しました。", "error");
+    setMessage("コンボ情報の保存に失敗しました。", "error", "COMBO SAVE FAILED");
   } finally {
     saving = false;
     setDialogDisabled(false);
@@ -303,7 +307,7 @@ async function deleteCurrentCombo() {
     await loadCombos();
   } catch (error) {
     console.error(error);
-    setMessage("コンボ情報の削除に失敗しました。", "error");
+    setMessage("コンボ情報の削除に失敗しました。", "error", "COMBO DELETE FAILED");
   } finally {
     saving = false;
     setDialogDisabled(false);
@@ -340,8 +344,8 @@ function setDialogDisabled(disabled) {
     });
 }
 
-function setMessage(message, type = "") {
-  messageArea.textContent = message;
+function setMessage(message, type = "", english = "") {
+  messageArea.innerHTML = `${escapeHtml(message)}${english ? ` <small>${escapeHtml(english)}</small>` : ""}`;
   messageArea.className = "combo-message";
 
   if (type) {
@@ -350,9 +354,9 @@ function setMessage(message, type = "") {
 }
 
 function showFatalError(message) {
-  setMessage(message, "error");
+  setMessage(message, "error", "ACCESS DENIED");
   document.querySelector("#add-combo-button").disabled = true;
-  comboList.innerHTML = `<p class="empty-data">${escapeHtml(message)}</p>`;
+  comboList.innerHTML = `<p class="empty-data">${escapeHtml(message)}<small>COMBO EDITOR UNAVAILABLE</small></p>`;
 }
 
 function escapeHtml(value) {
