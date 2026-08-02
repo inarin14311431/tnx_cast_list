@@ -1,56 +1,58 @@
-/* Ensure both manual and automatic saves are triggered reliably.
- * This layer does not replace the transactional save implementation in sheet.js;
- * it only makes sure sheet.js sees a dirty edit before save and retries the normal
- * save button after user changes have settled. */
+/* Manual-save guard for the sheet editor.
+ * sheet.js historically schedules saveAll(false) 1.2 seconds after edits.
+ * Until that legacy closure is removed, suppress only that exact timer here.
+ * All other timers, including UI updates and image processing, continue normally.
+ */
 (() => {
-  let timer = 0;
-  let internal = false;
+  const nativeSetTimeout = window.setTimeout.bind(window);
+  const nativeClearTimeout = window.clearTimeout.bind(window);
+  const suppressedTimers = new Set();
+  let nextSuppressedId = -1;
 
-  function saveButton() {
-    return document.querySelector('#save-button');
+  window.setTimeout = function manualSaveSetTimeout(handler, delay, ...args) {
+    const source = typeof handler === 'function' ? Function.prototype.toString.call(handler) : '';
+    const isLegacyAutoSave = Number(delay) === 1200 && /saveAll\s*\(\s*false\s*\)/.test(source);
+
+    if (isLegacyAutoSave) {
+      const id = nextSuppressedId--;
+      suppressedTimers.add(id);
+      return id;
+    }
+
+    return nativeSetTimeout(handler, delay, ...args);
+  };
+
+  window.clearTimeout = function manualSaveClearTimeout(id) {
+    if (suppressedTimers.delete(id)) return;
+    nativeClearTimeout(id);
+  };
+
+  function applyManualSaveLabels() {
+    const saveButton = document.querySelector('#save-button');
+    if (saveButton) {
+      saveButton.title = '編集内容は自動保存されません。クリックして保存してください。';
+    }
+
+    const importGuide = document.querySelector('#legacy-import-dialog p');
+    if (importGuide) {
+      importGuide.textContent = 'キャラシ倉庫で取得したJSONを貼り付けてください。反映後に内容を確認し、画面左の保存ボタンを押すまでDBには保存されません。';
+    }
+
+    const statuses = [
+      document.querySelector('#personal-data-status'),
+      document.querySelector('#life-path-status')
+    ].filter(Boolean);
+    for (const status of statuses) {
+      if (!status.textContent || /保存|登録/.test(status.textContent)) {
+        status.textContent = '保存ボタンで保存されます。';
+        status.className = '';
+      }
+    }
   }
 
-  function requiredFieldsReady() {
-    return Boolean(
-      document.querySelector('#character-name')?.value.trim() &&
-      document.querySelector('#player-name')?.value.trim()
-    );
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', applyManualSaveLabels, { once: true });
+  } else {
+    applyManualSaveLabels();
   }
-
-  function markDirtyForSheet() {
-    const field = document.querySelector('#character-name');
-    if (!field) return;
-    internal = true;
-    field.dispatchEvent(new Event('input', { bubbles: true }));
-    internal = false;
-  }
-
-  function requestSave(delay = 1500) {
-    clearTimeout(timer);
-    timer = window.setTimeout(() => {
-      if (!requiredFieldsReady()) return;
-      const button = saveButton();
-      if (!button || button.disabled) return;
-      button.click();
-    }, delay);
-  }
-
-  document.addEventListener('input', event => {
-    if (internal || !event.target.matches('input, select, textarea')) return;
-    requestSave();
-  }, true);
-
-  document.addEventListener('change', event => {
-    if (internal || !event.target.matches('input, select, textarea')) return;
-    requestSave();
-  }, true);
-
-  document.addEventListener('click', event => {
-    const button = event.target.closest('#save-button');
-    if (!button) return;
-    clearTimeout(timer);
-    markDirtyForSheet();
-  }, true);
-
-  window.addEventListener('beforeunload', () => clearTimeout(timer));
 })();
