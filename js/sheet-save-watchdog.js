@@ -1,7 +1,6 @@
 /* Manual-save guard for the sheet editor.
  * sheet.js historically schedules saveAll(false) 1.2 seconds after edits.
- * Until that legacy closure is removed, suppress only that exact timer here.
- * All other timers, including UI updates and image processing, continue normally.
+ * Suppress only that exact timer. All other timers continue normally.
  */
 (() => {
   const nativeSetTimeout = window.setTimeout.bind(window);
@@ -26,6 +25,22 @@
     if (suppressedTimers.delete(id)) return;
     nativeClearTimeout(id);
   };
+
+  function hasUnsavedChanges() {
+    const status = document.querySelector('#save-status');
+    const button = document.querySelector('#save-button');
+    return Boolean(
+      status?.classList.contains('unsaved') ||
+      button?.dataset.saveState === 'unsaved' ||
+      /未保存/.test(status?.textContent || '')
+    );
+  }
+
+  window.addEventListener('beforeunload', event => {
+    if (!hasUnsavedChanges()) return;
+    event.preventDefault();
+    event.returnValue = '';
+  });
 
   function applyManualSaveLabels() {
     const saveButton = document.querySelector('#save-button');
