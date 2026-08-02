@@ -1,6 +1,4 @@
-/* Legacy import finalization overlay disabled.
- * The original importer now owns progress reporting, including the outfit name
- * currently being converted, and performs the normal per-outfit redraw cycle. */
+/* Load the current SKD/OFC TSV importer. */
 (() => {
   if (document.querySelector('script[data-current-tsv-import]')) return;
   const script = document.createElement('script');
@@ -9,12 +7,11 @@
   document.head.append(script);
 })();
 
-/* Birthplace field for the sheet editor. */
+/* Birthplace field integrated into the main transactional manual save.
+ * No independent debounce, retry loop, or direct UPDATE is performed here.
+ */
 (async () => {
   const DEFAULT_BIRTHPLACE = 'Ｎ◎ＶＡ';
-  const SAVE_DELAY = 700;
-  const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
-
   const citizenRank = document.querySelector('#citizen-rank');
   const grid = citizenRank?.closest('.basic-profile-grid');
   if (!citizenRank || !grid || document.querySelector('#birthplace')) return;
@@ -31,27 +28,15 @@
   citizenRank.closest('label')?.insertAdjacentElement('afterend', label);
 
   let supabase;
-  let loadedPublicId = '';
-  let saveTimer = 0;
-  let loading = true;
-
   try {
     ({ supabase } = await import('./supabase-client.js'));
   } catch (error) {
     console.error('[birthplace] Supabase client could not be loaded.', error);
-    loading = false;
     return;
   }
 
-  const currentPublicId = () => new URLSearchParams(location.search).get('id') || '';
-
-  async function loadBirthplace() {
-    const publicId = currentPublicId();
-    if (!publicId || publicId === loadedPublicId) {
-      loading = false;
-      return;
-    }
-
+  const publicId = new URLSearchParams(location.search).get('id') || '';
+  if (publicId) {
     const { data, error } = await supabase
       .from('characters')
       .select('birthplace')
@@ -60,64 +45,32 @@
 
     if (error) {
       console.error('[birthplace] Failed to load birthplace.', error);
-      loading = false;
-      return;
+    } else {
+      input.value = String(data?.birthplace || DEFAULT_BIRTHPLACE);
     }
-
-    loadedPublicId = publicId;
-    input.value = String(data?.birthplace || DEFAULT_BIRTHPLACE);
-    loading = false;
   }
 
-  async function saveBirthplace() {
-    const publicId = currentPublicId();
-    if (!publicId) return false;
-
-    const value = input.value.trim() || DEFAULT_BIRTHPLACE;
-    input.value = value;
-
-    const { error } = await supabase
-      .from('characters')
-      .update({ birthplace: value })
-      .eq('public_id', publicId);
-
-    if (error) {
-      console.error('[birthplace] Failed to save birthplace.', error);
-      return false;
-    }
-
-    loadedPublicId = publicId;
-    return true;
-  }
-
-  function queueSave() {
-    if (loading) return;
-    clearTimeout(saveTimer);
-    saveTimer = window.setTimeout(async () => {
-      if (await saveBirthplace()) return;
-      for (let attempt = 0; attempt < 8; attempt += 1) {
-        await wait(500);
-        if (await saveBirthplace()) return;
+  const originalRpc = supabase.rpc.bind(supabase);
+  if (!supabase.__tnxManualSaveBirthplacePatched) {
+    supabase.rpc = function patchedRpc(functionName, args, options) {
+      if (functionName === 'save_character_bundle' && args?.p_character) {
+        args.p_character.birthplace = input.value.trim() || DEFAULT_BIRTHPLACE;
       }
-    }, SAVE_DELAY);
+      return originalRpc(functionName, args, options);
+    };
+    Object.defineProperty(supabase, '__tnxManualSaveBirthplacePatched', {
+      value: true,
+      configurable: false,
+      enumerable: false,
+      writable: false
+    });
   }
 
-  input.addEventListener('input', queueSave);
-  input.addEventListener('change', queueSave);
-  document.querySelector('#save-button')?.addEventListener('click', () => {
-    clearTimeout(saveTimer);
-    window.setTimeout(saveBirthplace, 250);
-    window.setTimeout(saveBirthplace, 1000);
+  input.addEventListener('input', () => {
+    const status = document.querySelector('#save-status');
+    if (status) {
+      status.textContent = '未保存';
+      status.className = 'unsaved';
+    }
   });
-
-  await loadBirthplace();
-
-  let lastUrl = location.href;
-  const urlObserver = window.setInterval(() => {
-    if (location.href === lastUrl) return;
-    lastUrl = location.href;
-    loading = false;
-    queueSave();
-  }, 400);
-  window.addEventListener('pagehide', () => clearInterval(urlObserver), { once: true });
 })();
