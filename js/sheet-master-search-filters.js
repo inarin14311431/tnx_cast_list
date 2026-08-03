@@ -1,11 +1,24 @@
 import { supabase } from "./supabase-client.js";
 
 const PAGE_SIZE = 1000;
+const RESULT_PAGE_SIZE = 50;
+const MASTER_TABLES = new Set(["skd_master", "ofc_master"]);
 const cache = { skd: null, ofc: null };
 let activeMode = "";
+let currentPage = 0;
+let totalResults = 0;
+let navigating = false;
+let paginationBusy = false;
+let countRequestId = 0;
+let paginationRefreshQueued = false;
+
+const originalFrom = supabase.from.bind(supabase);
+installResultPaginationQueryPatch();
 
 bind("#search-skd-master", "skd");
 bind("#search-ofc-master", "ofc");
+bindPaginationEvents();
+installPaginationUi();
 
 function bind(selector, mode) {
   document.querySelector(selector)?.addEventListener("click", () => {
@@ -82,4 +95,275 @@ function unique(values) {
 
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character]));
+}
+
+function installResultPaginationQueryPatch() {
+  if (supabase.__tnxMasterPaginationPatched) return;
+
+  Object.defineProperty(supabase, "__tnxMasterPaginationPatched", {
+    configurable: false,
+    enumerable: false,
+    value: true
+  });
+
+  supabase.from = (table, ...args) => {
+    const builder = originalFrom(table, ...args);
+    return MASTER_TABLES.has(table) ? wrapMasterBuilder(builder) : builder;
+  };
+}
+
+function wrapMasterBuilder(builder) {
+  if (!builder || typeof builder !== "object") return builder;
+
+  return new Proxy(builder, {
+    get(target, property) {
+      const value = Reflect.get(target, property, target);
+
+      if (property === "then" && typeof value === "function") {
+        return value.bind(target);
+      }
+
+      if (property === "limit") {
+        return () => {
+          const from = currentPage * RESULT_PAGE_SIZE;
+          return wrapMasterBuilder(target.range(from, from + RESULT_PAGE_SIZE - 1));
+        };
+      }
+
+      if (typeof value !== "function") return value;
+      return (...args) => {
+        const result = value.apply(target, args);
+        return isQueryBuilder(result) ? wrapMasterBuilder(result) : result;
+      };
+    }
+  });
+}
+
+function isQueryBuilder(value) {
+  return Boolean(value && typeof value === "object" && (
+    typeof value.then === "function" ||
+    typeof value.select === "function" ||
+    typeof value.eq === "function"
+  ));
+}
+
+function bindPaginationEvents() {
+  document.addEventListener("click", event => {
+    if (event.target.closest("#search-skd-master, #search-ofc-master")) {
+      resetPagination();
+      return;
+    }
+
+    if (event.target.closest("#master-search-run")) {
+      if (!navigating) currentPage = 0;
+      navigating = false;
+      paginationBusy = true;
+      updatePaginationUi();
+      return;
+    }
+
+    const previous = event.target.closest("#master-search-page-prev");
+    if (previous) {
+      if (currentPage <= 0 || paginationBusy) return;
+      currentPage -= 1;
+      requestPage();
+      return;
+    }
+
+    const next = event.target.closest("#master-search-page-next");
+    if (next) {
+      const totalPages = pageCount();
+      if (currentPage + 1 >= totalPages || paginationBusy) return;
+      currentPage += 1;
+      requestPage();
+    }
+  }, true);
+
+  document.addEventListener("keydown", event => {
+    if (event.key !== "Enter" || !event.target.closest("#master-search-keyword")) return;
+    currentPage = 0;
+    navigating = false;
+    paginationBusy = true;
+    updatePaginationUi();
+  }, true);
+}
+
+function resetPagination() {
+  currentPage = 0;
+  totalResults = 0;
+  navigating = false;
+  paginationBusy = true;
+  countRequestId += 1;
+  updatePaginationUi();
+}
+
+function requestPage() {
+  navigating = true;
+  paginationBusy = true;
+  updatePaginationUi();
+  document.querySelector("#master-search-results")?.scrollTo({ top: 0, behavior: "auto" });
+  document.querySelector("#master-search-run")?.click();
+}
+
+function installPaginationUi() {
+  const dialog = document.querySelector("#master-search-dialog");
+  const results = dialog?.querySelector("#master-search-results");
+  if (!dialog || !results) {
+    const observer = new MutationObserver(() => {
+      if (!document.querySelector("#master-search-dialog #master-search-results")) return;
+      observer.disconnect();
+      installPaginationUi();
+    });
+    observer.observe(document.documentElement, { childList: true, subtree: true });
+    return;
+  }
+
+  if (!document.querySelector("#master-search-pagination")) {
+    const pagination = document.createElement("nav");
+    pagination.id = "master-search-pagination";
+    pagination.className = "master-search-pagination";
+    pagination.setAttribute("aria-label", "検索結果のページ送り");
+    pagination.hidden = true;
+    pagination.innerHTML = `
+      <button id="master-search-page-prev" type="button">&lt; 前へ <small>PREVIOUS</small></button>
+      <p><span id="master-search-page-range">0件</span><strong id="master-search-page-current">1</strong> / <span id="master-search-page-total">1</span></p>
+      <button id="master-search-page-next" type="button">次へ &gt; <small>NEXT</small></button>`;
+    results.insertAdjacentElement("afterend", pagination);
+  }
+
+  installPaginationStyles();
+  new MutationObserver(queuePaginationRefresh).observe(results, { childList: true });
+  updatePaginationUi();
+}
+
+function installPaginationStyles() {
+  if (document.querySelector("#master-search-pagination-style")) return;
+  const style = document.createElement("style");
+  style.id = "master-search-pagination-style";
+  style.textContent = `
+    .master-search-shell{grid-template-rows:auto auto auto minmax(180px,1fr) auto auto}
+    .master-search-pagination{display:flex;align-items:center;justify-content:center;gap:14px;padding:9px 18px;border-top:1px solid var(--line-muted);background:rgba(0,0,0,.22)}
+    .master-search-pagination[hidden]{display:none!important}
+    .master-search-pagination p{display:flex;align-items:center;gap:8px;margin:0;color:var(--text-muted);font:700 .68rem/1.3 monospace}
+    .master-search-pagination strong{color:var(--line);font-size:.9rem}
+    .master-search-pagination button{min-width:116px;min-height:38px;padding:6px 12px;border:1px solid var(--line-muted);color:var(--text);background:rgba(65,232,255,.045);cursor:pointer;font-weight:800}
+    .master-search-pagination button:hover:not(:disabled){border-color:var(--line);color:var(--line);background:rgba(65,232,255,.11)}
+    .master-search-pagination button:disabled{opacity:.35;cursor:not-allowed}
+    .master-search-pagination button small{display:block;margin-top:2px;color:var(--text-muted);font-size:.5rem}
+    @media(max-width:520px){.master-search-pagination{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;padding:8px 10px}.master-search-pagination button{min-width:0;width:100%}.master-search-pagination p{justify-content:center;flex-wrap:wrap;text-align:center}}
+  `;
+  document.head.append(style);
+}
+
+function queuePaginationRefresh() {
+  if (paginationRefreshQueued) return;
+  paginationRefreshQueued = true;
+  queueMicrotask(() => {
+    paginationRefreshQueued = false;
+    refreshPagination();
+  });
+}
+
+async function refreshPagination() {
+  const dialog = document.querySelector("#master-search-dialog");
+  if (!dialog?.open) return;
+
+  const requestId = ++countRequestId;
+  try {
+    const count = await fetchResultCount();
+    if (requestId !== countRequestId) return;
+
+    totalResults = count;
+    const totalPages = pageCount();
+    if (totalResults > 0 && currentPage >= totalPages) {
+      currentPage = totalPages - 1;
+      requestPage();
+      return;
+    }
+
+    paginationBusy = false;
+    updatePaginationUi();
+    updateResultStatus();
+  } catch (error) {
+    if (requestId !== countRequestId) return;
+    paginationBusy = false;
+    updatePaginationUi();
+    console.warn("Master search result count failed.", error);
+  }
+}
+
+async function fetchResultCount() {
+  const dialog = document.querySelector("#master-search-dialog");
+  const table = currentSearchMode() === "ofc" ? "ofc_master" : "skd_master";
+  const keyword = normalizeSearch(dialog?.querySelector("#master-search-keyword")?.value);
+  const primary = dialog?.querySelector("#master-search-filter-primary")?.value || "";
+  const secondary = dialog?.querySelector("#master-search-filter-secondary")?.value || "";
+
+  let query = originalFrom(table).select("id", { count: "exact", head: true });
+  if (table === "skd_master") {
+    if (primary) query = query.eq("style", primary);
+    if (secondary) query = query.eq("type_label", secondary);
+  } else {
+    if (primary) query = query.eq("major_category", primary);
+    if (secondary) query = query.eq("minor_category", secondary);
+  }
+
+  for (const token of keyword.split(" ").filter(Boolean)) {
+    query = query.ilike("search_text", `%${escapeLike(token)}%`);
+  }
+
+  const { count, error } = await query;
+  if (error) throw error;
+  return Number(count || 0);
+}
+
+function currentSearchMode() {
+  const title = document.querySelector("#master-search-title")?.textContent || "";
+  return title.includes("OFC") ? "ofc" : "skd";
+}
+
+function pageCount() {
+  return Math.max(1, Math.ceil(totalResults / RESULT_PAGE_SIZE));
+}
+
+function updatePaginationUi() {
+  const pagination = document.querySelector("#master-search-pagination");
+  if (!pagination) return;
+
+  const totalPages = pageCount();
+  const cards = document.querySelectorAll("#master-search-results .master-result-card").length;
+  const first = totalResults && cards ? currentPage * RESULT_PAGE_SIZE + 1 : 0;
+  const last = totalResults && cards ? Math.min(first + cards - 1, totalResults) : 0;
+
+  pagination.hidden = totalResults <= RESULT_PAGE_SIZE;
+  pagination.querySelector("#master-search-page-current").textContent = String(totalResults ? currentPage + 1 : 1);
+  pagination.querySelector("#master-search-page-total").textContent = String(totalPages);
+  pagination.querySelector("#master-search-page-range").textContent = totalResults ? `${first}～${last} / ${totalResults}件` : "0件";
+  pagination.querySelector("#master-search-page-prev").disabled = paginationBusy || currentPage <= 0;
+  pagination.querySelector("#master-search-page-next").disabled = paginationBusy || currentPage + 1 >= totalPages;
+}
+
+function updateResultStatus() {
+  const status = document.querySelector("#master-search-status");
+  if (!status) return;
+
+  const cards = document.querySelectorAll("#master-search-results .master-result-card").length;
+  if (!totalResults || !cards) {
+    status.textContent = "条件に一致するデータはありません。";
+    status.className = "";
+    return;
+  }
+
+  const first = currentPage * RESULT_PAGE_SIZE + 1;
+  const last = Math.min(first + cards - 1, totalResults);
+  status.textContent = `${totalResults}件中 ${first}～${last}件を表示しています。1ページ${RESULT_PAGE_SIZE}件です。`;
+  status.className = "is-success";
+}
+
+function normalizeSearch(value) {
+  return String(value || "").normalize("NFKC").toLowerCase().replace(/\s+/g, " ").trim();
+}
+
+function escapeLike(value) {
+  return String(value).replace(/[\\%_]/g, character => `\\${character}`);
 }
