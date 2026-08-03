@@ -1,6 +1,7 @@
 /* Bad-status tooltips for SKD / OFC master-search results only. */
 (() => {
   const RESULT_SELECTOR = "#master-search-results";
+  const DIALOG_SELECTOR = "#master-search-dialog";
   const TERM_CLASS = "master-bs-term";
   const TOOLTIP_ID = "master-bs-tooltip";
   const STYLE_ID = "master-bs-tooltip-style";
@@ -83,14 +84,23 @@
     document.head.append(style);
   }
 
+  function tooltipHost() {
+    return document.querySelector(DIALOG_SELECTOR) || document.body;
+  }
+
   function ensureTooltip() {
-    if (tooltip?.isConnected) return tooltip;
-    tooltip = document.createElement("aside");
-    tooltip.id = TOOLTIP_ID;
-    tooltip.hidden = true;
-    tooltip.setAttribute("role", "tooltip");
-    tooltip.innerHTML = "<strong></strong><p></p>";
-    document.body.append(tooltip);
+    const host = tooltipHost();
+    tooltip = tooltip?.isConnected ? tooltip : document.getElementById(TOOLTIP_ID);
+
+    if (!tooltip) {
+      tooltip = document.createElement("aside");
+      tooltip.id = TOOLTIP_ID;
+      tooltip.hidden = true;
+      tooltip.setAttribute("role", "tooltip");
+      tooltip.innerHTML = "<strong></strong><p></p>";
+    }
+
+    if (tooltip.parentElement !== host) host.append(tooltip);
     return tooltip;
   }
 
