@@ -155,7 +155,7 @@
 
 /* Load bad-status tooltips without adding another hard-coded script tag to sheet.html. */
 (() => {
-  const source = new URL("./sheet-master-search-bs-tooltips.js?v=1", document.currentScript?.src || document.baseURI).href;
+  const source = new URL("./sheet-master-search-bs-tooltips.js?v=2", document.currentScript?.src || document.baseURI).href;
   if ([...document.scripts].some(script => script.src === source)) return;
   const script = document.createElement("script");
   script.src = source;
