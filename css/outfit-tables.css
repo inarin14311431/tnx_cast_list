@@ -34,7 +34,7 @@
 .outfit-table-head--cs_modifier,.outfit-table-cell--cs_modifier{width:54px}
 .outfit-table-head--mundane_modifier,.outfit-table-cell--mundane_modifier{width:58px}
 .outfit-table-head--description,.outfit-table-cell--description{width:auto}
-.outfit-table-head--actions,.outfit-table-cell--actions{width:100px;text-align:center}
+.outfit-table-head--actions,.outfit-table-cell--actions{width:96px;text-align:center}
 
 .outfit-table-group--armor [data-armor-defense]{text-align:center;font-weight:800}
 .outfit-table-group--armor tfoot th,
@@ -90,12 +90,12 @@
   display:inline-flex!important;
   align-items:center!important;
   justify-content:center!important;
-  width:26px!important;
-  min-width:26px!important;
-  max-width:26px!important;
-  height:36px!important;
-  min-height:36px!important;
-  max-height:36px!important;
+  width:28px!important;
+  min-width:28px!important;
+  max-width:28px!important;
+  height:30px!important;
+  min-height:30px!important;
+  max-height:30px!important;
   margin:0 1px!important;
   padding:0!important;
   line-height:1!important;
@@ -152,7 +152,7 @@
   #outfit-list .outfit-table-head--mundane_modifier,#outfit-list .outfit-table-cell--mundane_modifier{width:4.5%}
   #outfit-list .outfit-table-head--slot,#outfit-list .outfit-table-cell--slot{width:7.5%}
   #outfit-list .outfit-table-head--page_number,#outfit-list .outfit-table-cell--page_number{width:4.5%}
-  #outfit-list .outfit-table-head--actions,#outfit-list .outfit-table-cell--actions{width:78px!important}
+  #outfit-list .outfit-table-head--actions,#outfit-list .outfit-table-cell--actions{width:96px!important}
   #outfit-list .outfit-table-head--description,#outfit-list .outfit-table-cell--description{width:auto}
   #outfit-list .outfit-table-cell--description input,#outfit-list .outfit-table-cell--description textarea{text-overflow:ellipsis}
   #outfit-list .outfit-layout-hidden{display:none!important}
