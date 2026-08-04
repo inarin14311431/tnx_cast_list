@@ -47,7 +47,6 @@
         if(deleteButton)actions.append(deleteButton);
       }
     });
-    actions?.classList.add("row-action-group");
     if(category)updateDisabled(group);
   }
 
