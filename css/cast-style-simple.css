@@ -322,7 +322,7 @@
   display:none!important;
 }
 
-@media(max-width:980px){
+@media(max-width:1199px){
   #cast-styles.cast-style-grid-simple,
   .cast-divine-authority .hero-divine-list{
     grid-template-columns:1fr;

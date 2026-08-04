@@ -103,7 +103,7 @@
   text-shadow:0 0 12px rgba(65,232,255,.34);
 }
 
-@media(max-width:760px){
+@media(max-width:767px){
   #style-grid .style-card{padding:14px 10px 0}
   #style-grid .style-fields>label:first-child select{min-height:52px;font-size:1.08rem;padding-left:11px}
 }

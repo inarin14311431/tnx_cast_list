@@ -155,7 +155,7 @@
   min-height:0!important;
 }
 
-@media(max-width:720px){
+@media(max-width:767px){
   #style-skill-panel .style-skill-view-table col.style-col-description{
     width:280px!important;
   }

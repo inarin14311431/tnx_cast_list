@@ -318,7 +318,7 @@
 .row-action-group>.skill-action-button::after{content:none!important;display:none!important}
 
 /* Fit policy: never replace the editor with a horizontal scroller. */
-@media(max-width:1280px){
+@media(max-width:1199px){
   :root{--row-action-size:27px;--row-action-column:93px}
   #style-skills{--style-level-column:36px;--style-suit-column:30px;--style-page-column:38px}
   #general-skills{gap:8px!important}
@@ -327,7 +327,7 @@
   #style-skills .style-skill-full-table select,
   #style-skills .style-skill-full-table textarea{font-size:.68rem;padding-inline:2px}
 }
-@media(max-width:900px){
+@media(max-width:1199px){
   :root{--row-action-size:24px;--row-action-gap:1px;--row-action-column:78px}
   #style-skills{--style-level-column:30px;--style-suit-column:25px;--style-page-column:32px}
   #general-skills{grid-template-columns:1fr!important;grid-template-rows:auto!important}

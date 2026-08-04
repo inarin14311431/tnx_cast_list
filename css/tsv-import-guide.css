@@ -179,7 +179,7 @@
   font:.76rem/1.5 monospace;
 }
 
-@media(max-width:680px){
+@media(max-width:767px){
   #tsv-dialog>form{padding:14px}
   .tsv-import-guide__header{display:grid}
   #tsv-sample-insert{width:100%}

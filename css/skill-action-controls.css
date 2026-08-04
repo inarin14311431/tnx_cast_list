@@ -159,7 +159,7 @@
   display:none!important;
 }
 
-@media(max-width:700px){
+@media(max-width:767px){
   :root{
     --row-action-width:40px;
     --row-action-height:40px;

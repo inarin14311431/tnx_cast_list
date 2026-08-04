@@ -306,7 +306,7 @@ html[data-theme] .cast-card__image{
   display:none!important;
 }
 
-@media(max-width:700px){
+@media(max-width:767px){
   .site-header__operator{width:100%;justify-items:stretch}
   .theme-picker{grid-template-columns:1fr}
 }

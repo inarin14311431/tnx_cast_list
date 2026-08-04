@@ -43,7 +43,7 @@
 .outfit-table-group--armor .armor-defense-total{box-sizing:border-box;color:var(--line);font:800 1rem monospace;text-align:center;padding-right:16px}
 .outfit-table-group--armor .armor-defense-total-tail{padding:0!important;border-left:0!important;border-right:0!important}
 
-@media(max-width:1180px){
+@media(max-width:1199px){
   .outfit-table-head--category,.outfit-table-cell--category{width:84px}
   .outfit-table-head--name,.outfit-table-cell--name{width:132px}
   .outfit-table-head--slot,.outfit-table-cell--slot{width:96px}
@@ -54,13 +54,13 @@
   .outfit-table input,.outfit-table select,.outfit-table textarea{font-size:.78rem;padding:5px 3px}
 }
 
-@media(max-width:860px){
+@media(max-width:1199px){
   .outfit-table-scroll{overflow-x:auto}
   .outfit-table{min-width:1040px}
   .outfit-table-group--armor .outfit-table{min-width:1100px}
 }
 
-@media(max-width:760px){
+@media(max-width:767px){
   .outfit-table-heading{align-items:center;gap:8px}
   .outfit-table-title{font-size:.9rem}
 }
@@ -118,7 +118,7 @@
 }
 
 /* PC-first fit: keep active columns inside the sheet width without a horizontal scrollbar. */
-@media (min-width:701px){
+@media (min-width:768px){
   #outfit-list .outfit-table-scroll{width:100%;min-width:0;max-width:100%;overflow-x:hidden!important}
   #outfit-list .outfit-table{width:100%!important;min-width:0!important;max-width:100%!important;table-layout:fixed;font-size:clamp(.7rem,.56vw,.82rem)}
   #outfit-list .outfit-table th,#outfit-list .outfit-table td{min-width:0!important;padding-inline:2px;overflow:hidden}

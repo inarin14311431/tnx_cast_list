@@ -126,6 +126,6 @@ button:disabled,
   filter:saturate(.55);
 }
 
-@media(max-width:980px){
+@media(max-width:1199px){
   .app-header{min-height:0}
 }

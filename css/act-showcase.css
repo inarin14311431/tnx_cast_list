@@ -563,7 +563,7 @@ body::after {
 
 .footer { padding: 24px 0 50px; border-top: 1px solid rgba(0,239,255,.18); color: #668b94; font: 600 .65rem/1.7 "Share Tech Mono",monospace; text-align: center; }
 
-@media (max-width: 760px) {
+@media (max-width:767px) {
   body { background-attachment: scroll; }
   .hero { min-height: 72vh; padding: 62px 0 68px; }
   .hero__scroll-cue { bottom: 18px; }

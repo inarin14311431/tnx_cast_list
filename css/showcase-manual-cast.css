@@ -62,14 +62,14 @@
   letter-spacing:.08em;
 }
 
-@media(max-width:1000px){
+@media(max-width:1199px){
   .showcase-panel__header-actions{align-items:flex-end!important;flex-direction:column!important;gap:6px!important}
   .selected-cast__manual-fields{grid-column:1/-1;grid-template-columns:repeat(2,minmax(0,1fr))}
   .selected-cast__manual-fields .manual-field--quote,
   .selected-cast__manual-fields .manual-field--description{grid-column:1/-1}
 }
 
-@media(max-width:680px){
+@media(max-width:767px){
   .showcase-panel__header-actions{width:100%;align-items:stretch!important}
   .manual-cast-add{width:100%}
   .selected-cast__manual-fields{grid-template-columns:1fr}

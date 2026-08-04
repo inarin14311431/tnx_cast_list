@@ -203,7 +203,7 @@
   letter-spacing:.16em;
 }
 
-@media(max-width:1100px){
+@media(max-width:1199px){
   #style-skills .style-skill-separator-row{
     min-width:1316px;
   }

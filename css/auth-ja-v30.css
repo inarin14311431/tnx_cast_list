@@ -145,7 +145,7 @@
   font-family:inherit;
   font-size:.82rem;
 }
-@media(max-width:560px){
+@media(max-width:767px){
   .auth-header h1{display:grid;gap:8px}
   .auth-header h1>small{font-size:.58rem}
   .auth-panel h2{display:grid;gap:6px}

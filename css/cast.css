@@ -613,7 +613,7 @@
   }
 }
 
-@media (max-width: 800px) {
+@media (max-width:1199px) {
   .cast-hero {
     grid-template-columns: 1fr;
   }
@@ -641,7 +641,7 @@
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width:767px) {
   .cast-content,
   .cast-header {
     width: min(100% - 20px, 1400px);
@@ -661,7 +661,7 @@
     gap: 4px;
   }
 }
-@media (max-width: 520px) {
+@media (max-width:767px) {
   .session-combo-card__header {
     flex-direction: column;
   }
