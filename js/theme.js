@@ -1,3 +1,16 @@
+/* Apply the saved color theme before any page stylesheet can paint. */
+(() => {
+  const STORAGE_KEY = "tnx-cast-site-theme";
+  const THEMES = new Set(["nova", "moon", "star", "eden", "vlad", "lutetia", "buena", "canberra", "hongkong", "fesler", "intron", "axleraters", "inagaki", "astral", "orbital", "japanese-army"]);
+  let theme = "nova";
+  try {
+    const stored = localStorage.getItem(STORAGE_KEY);
+    if (THEMES.has(stored)) theme = stored;
+  } catch {}
+  document.documentElement.dataset.theme = theme;
+  document.documentElement.style.colorScheme = ["intron", "orbital"].includes(theme) ? "light" : "dark";
+})();
+
 /* Persistent color-theme controller shared by all active pages. */
 (() => {
   const isSheetEditor = /(?:^|\/)sheet\.html$/.test(location.pathname);
@@ -127,6 +140,7 @@
     const link = document.createElement("link");
     link.rel = "stylesheet";
     link.href = href;
+    link.setAttribute("blocking", "render");
     link.setAttribute(marker, "1");
     document.head.append(link);
   }
@@ -213,6 +227,8 @@
     buttonObserver.observe(document.documentElement, { childList: true, subtree: true });
   }
 
+  /* Start loading all theme layers while the parser is still in <head>. */
+  loadLateOverrides();
   appendScript("./js/handle-format.js?v=2", "data-handle-format");
   applyTheme(readTheme());
 
