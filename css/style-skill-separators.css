@@ -1,32 +1,33 @@
-/* Compact editable and public-view separator rows for style skills. */
+/* Prominent editable and public-view separator rows for style skills. */
 #style-skills .style-skill-separator-row{
   display:grid!important;
   grid-template-columns:minmax(0,1fr) 104px!important;
   align-items:center!important;
   width:100%;
-  min-height:38px!important;
-  height:38px!important;
-  margin:6px 0 2px;
-  border-top:1px solid color-mix(in srgb,var(--line) 68%,transparent)!important;
-  border-bottom:1px solid color-mix(in srgb,var(--line) 48%,transparent)!important;
+  min-height:50px!important;
+  height:50px!important;
+  margin:10px 0 4px;
+  border-top:2px solid var(--line)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--line) 78%,var(--line-muted))!important;
   background:
     linear-gradient(
       90deg,
-      color-mix(in srgb,var(--background) 76%,var(--line) 24%),
-      color-mix(in srgb,var(--background) 88%,var(--line) 12%) 54%,
-      color-mix(in srgb,var(--background) 96%,var(--line) 4%)
+      color-mix(in srgb,var(--panel) 58%,var(--line) 42%),
+      color-mix(in srgb,var(--panel) 70%,var(--line) 30%) 58%,
+      color-mix(in srgb,var(--panel) 82%,var(--line) 18%)
     )!important;
   box-shadow:
-    inset 4px 0 0 var(--line),
-    inset 0 1px 0 color-mix(in srgb,var(--line) 22%,transparent),
-    0 0 12px color-mix(in srgb,var(--line) 10%,transparent);
+    inset 7px 0 0 var(--line),
+    inset 0 1px 0 color-mix(in srgb,var(--line) 58%,#fff 42%),
+    inset 0 -1px 0 color-mix(in srgb,var(--line) 34%,transparent),
+    0 3px 10px color-mix(in srgb,var(--line) 16%,transparent)!important;
 }
 
 #style-skills .style-skill-separator-row > td{
   box-sizing:border-box!important;
   min-width:0!important;
-  min-height:36px!important;
-  height:36px!important;
+  min-height:48px!important;
+  height:48px!important;
   border:0!important;
   background:transparent!important;
 }
@@ -39,19 +40,21 @@
   grid-column:1;
   display:flex!important;
   align-items:center!important;
-  gap:12px;
-  padding:2px 8px 2px 15px!important;
+  gap:16px;
+  padding:4px 10px 4px 20px!important;
   overflow:hidden!important;
 }
 
 #style-skills .style-skill-separator-row > td:first-child::before{
   content:"STYLE SECTION";
   flex:0 0 auto;
-  color:color-mix(in srgb,var(--line) 68%,var(--text-muted));
-  font:700 .58rem/1 monospace;
-  letter-spacing:.14em;
+  padding:5px 7px;
+  border:1px solid color-mix(in srgb,var(--line) 68%,transparent);
+  color:var(--line);
+  background:color-mix(in srgb,var(--panel) 72%,var(--line) 28%);
+  font:800 .64rem/1 monospace;
+  letter-spacing:.16em;
   white-space:nowrap;
-  opacity:.9;
 }
 
 #style-skills .style-skill-separator-row > td:last-child{
@@ -63,7 +66,7 @@
   gap:4px;
   width:104px!important;
   min-width:104px!important;
-  padding:2px 5px 2px 0!important;
+  padding:4px 5px 4px 0!important;
   overflow:visible!important;
 }
 
@@ -71,28 +74,28 @@
   flex:1 1 auto;
   width:auto!important;
   min-width:0!important;
-  height:28px!important;
-  min-height:28px!important;
+  height:38px!important;
+  min-height:38px!important;
   margin:0!important;
-  padding:3px 7px!important;
+  padding:5px 9px!important;
   border:0!important;
-  color:var(--line)!important;
+  color:var(--text)!important;
   background:transparent!important;
   box-shadow:none!important;
-  font-size:.82rem!important;
-  font-weight:850!important;
-  line-height:1!important;
-  letter-spacing:.08em;
+  font-size:1.08rem!important;
+  font-weight:900!important;
+  line-height:1.1!important;
+  letter-spacing:.1em;
 }
 
 #style-skills .style-skill-separator-row input[data-f="name"]:focus{
-  outline:1px solid color-mix(in srgb,var(--line) 56%,transparent)!important;
-  background:color-mix(in srgb,var(--background) 82%,var(--line) 18%)!important;
+  outline:2px solid color-mix(in srgb,var(--line) 68%,transparent)!important;
+  background:color-mix(in srgb,var(--panel) 68%,var(--line) 32%)!important;
 }
 
 #style-skills .style-skill-separator-row input[data-f="name"]::placeholder{
   color:var(--text-muted);
-  opacity:.72;
+  opacity:.86;
 }
 
 #style-skills .style-skill-separator-row .skill-sort-controls{
@@ -106,8 +109,8 @@
   flex:0 0 28px!important;
   width:28px!important;
   min-width:28px!important;
-  height:28px!important;
-  min-height:28px!important;
+  height:30px!important;
+  min-height:30px!important;
   padding:0!important;
 }
 
@@ -150,29 +153,29 @@
 
 #style-skill-panel .style-skill-public-separator td{
   box-sizing:border-box!important;
-  height:38px!important;
-  min-height:38px!important;
-  padding:5px 14px!important;
-  border-top:1px solid color-mix(in srgb,var(--line) 68%,transparent)!important;
-  border-bottom:1px solid color-mix(in srgb,var(--line) 48%,transparent)!important;
-  color:var(--line)!important;
+  height:48px!important;
+  min-height:48px!important;
+  padding:7px 16px!important;
+  border-top:2px solid var(--line)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--line) 72%,var(--line-muted))!important;
+  color:var(--text)!important;
   background:
     linear-gradient(
       90deg,
-      color-mix(in srgb,var(--background) 76%,var(--line) 24%),
-      color-mix(in srgb,var(--background) 91%,var(--line) 9%) 58%,
-      transparent
+      color-mix(in srgb,var(--panel) 58%,var(--line) 42%),
+      color-mix(in srgb,var(--panel) 74%,var(--line) 26%) 62%,
+      color-mix(in srgb,var(--panel) 88%,var(--line) 12%)
     )!important;
-  box-shadow:inset 4px 0 0 var(--line);
+  box-shadow:inset 7px 0 0 var(--line),0 3px 10px color-mix(in srgb,var(--line) 14%,transparent);
 }
 
 #style-skill-panel .style-skill-public-separator:hover td{
   background:
     linear-gradient(
       90deg,
-      color-mix(in srgb,var(--background) 70%,var(--line) 30%),
-      color-mix(in srgb,var(--background) 87%,var(--line) 13%) 58%,
-      transparent
+      color-mix(in srgb,var(--panel) 50%,var(--line) 50%),
+      color-mix(in srgb,var(--panel) 68%,var(--line) 32%) 62%,
+      color-mix(in srgb,var(--panel) 84%,var(--line) 16%)
     )!important;
 }
 
@@ -180,10 +183,10 @@
   display:inline-block;
   max-width:calc(100% - 140px);
   overflow:hidden;
-  color:var(--line)!important;
-  font-size:.84rem;
-  font-weight:800;
-  letter-spacing:.09em;
+  color:var(--text)!important;
+  font-size:1.02rem;
+  font-weight:900;
+  letter-spacing:.1em;
   text-overflow:ellipsis;
   vertical-align:middle;
   white-space:nowrap;
@@ -191,9 +194,9 @@
 
 .style-skill-public-separator small{
   margin-left:.9em;
-  color:var(--text-muted)!important;
-  font:700 .56rem monospace;
-  letter-spacing:.14em;
+  color:var(--line)!important;
+  font:800 .6rem monospace;
+  letter-spacing:.16em;
 }
 
 @media(max-width:1100px){
