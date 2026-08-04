@@ -105,7 +105,10 @@ function addSortControls(rows,kind){
   rows.forEach((row,index)=>{
     const cell=row.lastElementChild;if(!cell)return;
     let controls=cell.querySelector(`.skill-sort-controls[data-kind="${kind}"]`);
-    if(!controls){controls=document.createElement("span");controls.className="skill-sort-controls skill-row-actions";controls.dataset.kind=kind;controls.innerHTML=`<button type="button" class="skill-action-button skill-order-button" data-skill-move="up" data-kind="${kind}" title="上へ移動" aria-label="上へ移動">▲</button><button type="button" class="skill-action-button skill-order-button" data-skill-move="down" data-kind="${kind}" title="下へ移動" aria-label="下へ移動">▼</button>`;cell.prepend(controls);}
+    if(!controls){controls=document.createElement("span");controls.className="row-action-group skill-sort-controls skill-row-actions";controls.dataset.kind=kind;controls.innerHTML=`<button type="button" class="skill-action-button skill-order-button" data-skill-move="up" data-kind="${kind}" title="上へ移動" aria-label="上へ移動">▲</button><button type="button" class="skill-action-button skill-order-button" data-skill-move="down" data-kind="${kind}" title="下へ移動" aria-label="下へ移動">▼</button>`;cell.prepend(controls);}
+    controls.classList.add("row-action-group");
+    const remove=cell.querySelector(":scope > .row-delete");
+    if(remove)controls.append(remove);
     controls.querySelector('[data-skill-move="up"]').disabled=index===0;
     controls.querySelector('[data-skill-move="down"]').disabled=index===rows.length-1;
   });
