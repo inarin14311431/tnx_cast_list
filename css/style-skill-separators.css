@@ -106,9 +106,9 @@
 }
 
 #style-skills .style-skill-separator-row td:last-child button{
-  flex:0 0 28px!important;
-  width:28px!important;
-  min-width:28px!important;
+  flex:0 0 30px!important;
+  width:30px!important;
+  min-width:30px!important;
   height:30px!important;
   min-height:30px!important;
   padding:0!important;
