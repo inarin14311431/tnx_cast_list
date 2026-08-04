@@ -30,10 +30,11 @@
   <link rel="stylesheet" href="./css/sheet-sidebar-actions.css?v=4">
   <link rel="stylesheet" href="./css/editor-table-layout.css?v=3">
   <link rel="stylesheet" href="./css/sheet-desktop-readability.css?v=1">
+  <link rel="stylesheet" href="./css/app-chrome.css?v=1">
 </head>
 <body>
   <div class="background-grid"></div><div class="scanlines"></div>
-  <header class="sheet-header"><a href="./account.html">&lt; アカウントへ <small>RETURN TO ACCOUNT</small></a><div><p>N◎VA MUNICIPAL DATABASE</p><h1>キャストシート編集 <small>CAST SHEET EDITOR</small></h1></div><div id="save-status">初期化中…</div></header>
+  <header class="sheet-header app-header"><a href="./account.html">&lt; アカウントへ <small>RETURN TO ACCOUNT</small></a><div><p>N◎VA MUNICIPAL DATABASE</p><h1>キャストシート編集 <small>CAST SHEET EDITOR</small></h1></div><div id="save-status">初期化中…</div></header>
   <main class="sheet-layout">
     <aside class="exp-panel"><p>消費経験点 <small>EXPERIENCE POINTS</small></p><strong id="exp-total">0</strong><dl id="exp-breakdown"></dl><label>公開状態 <small>VISIBILITY</small><select id="visibility"><option value="public">公開 / PUBLIC</option><option value="private">非公開 / PRIVATE</option></select></label><button id="save-button" type="button" data-save-state="unsaved" title="通常は編集後に自動保存されます。クリックすると今すぐ保存します。">未保存 <small>NOT SAVED</small></button><button id="legacy-import-open" type="button">データ取込 <small>IMPORT DATA</small></button><a id="cast-view-button" class="sheet-view-link" target="_blank" rel="noopener">キャストを閲覧 <small>VIEW CAST</small></a></aside>
     <section class="sheet-main">
