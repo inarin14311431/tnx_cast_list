@@ -164,6 +164,7 @@
   }
 
   function loadLateOverrides() {
+    appendStylesheet("./css/app-structure.css?v=1", "data-app-structure");
     appendStylesheet("./css/theme-runtime.css?v=2", "data-theme-runtime");
     appendStylesheet("./css/theme-polish.css?v=2", "data-theme-polish");
     appendStylesheet("./css/theme-fixes-v3.css?v=2", "data-theme-fixes-v3");
