@@ -1,9 +1,9 @@
 /*
  * Canonical row action controls.
  *
- * Outfit controls are the visual source of truth. Keep dimensions, spacing and
- * state colours here so older section-specific and theme rules cannot make the
- * general-skill and style-skill controls diverge again.
+ * General-skill controls are the visual source of truth. Keep dimensions,
+ * spacing and state colours here so older section-specific and theme rules
+ * cannot make the three editors diverge again.
  */
 
 :root{
@@ -11,6 +11,9 @@
   --row-action-height:30px;
   --row-action-gap:2px;
   --row-action-column:100px;
+  --row-action-order-color:#bfeef5;
+  --row-action-order-border:rgba(105,235,255,.42);
+  --row-action-order-bg:rgba(7,26,33,.92);
 }
 
 #general-skills .skill-group--ordered .skill-table th:last-child,
@@ -70,10 +73,10 @@
   max-height:var(--row-action-height)!important;
   margin:0!important;
   padding:0!important;
-  border:1px solid var(--line-muted)!important;
+  border:1px solid var(--row-action-order-border)!important;
   border-radius:4px!important;
-  color:var(--text)!important;
-  background:var(--theme-input-bg,rgba(7,26,33,.92))!important;
+  color:var(--row-action-order-color)!important;
+  background:var(--row-action-order-bg)!important;
   box-shadow:0 0 10px var(--theme-shadow,rgba(65,232,255,.08))!important;
   font-size:.9rem!important;
   font-weight:700!important;
@@ -82,6 +85,7 @@
   text-shadow:none!important;
   vertical-align:middle!important;
   opacity:1!important;
+  cursor:pointer!important;
 }
 
 /* Delete buttons use the same white-on-alert treatment as outfit deletion. */
@@ -115,10 +119,12 @@
 #general-skills .skill-sort-controls > button:disabled,
 #style-skills .skill-sort-controls > button:disabled,
 #outfit-list .outfit-table-cell--actions > [data-outfit-move]:disabled{
-  color:var(--text-muted)!important;
-  background:color-mix(in srgb,var(--theme-input-bg,rgba(7,26,33,.92)) 92%,var(--text-muted) 8%)!important;
+  color:var(--row-action-order-color)!important;
+  border-color:var(--row-action-order-border)!important;
+  background:var(--row-action-order-bg)!important;
   box-shadow:none!important;
   opacity:.38!important;
+  cursor:default!important;
 }
 
 /* Legacy pseudo-elements duplicated or replaced the visible glyph in themes. */
