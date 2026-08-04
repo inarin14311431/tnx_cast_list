@@ -66,6 +66,24 @@ body {
     overflow-wrap: anywhere;
   }
 
+  /* Keep the three row controls in one stable column.  The generic mobile
+   * cell reset above must not collapse the ▲ / ▼ / × action group. */
+  #general-skills .skill-group--ordered .skill-table th:last-child,
+  #general-skills .skill-group--ordered .skill-table td:last-child,
+  #style-skills .style-skill-full-table th:last-child,
+  #style-skills .style-skill-full-table td:last-child {
+    width: var(--row-action-column) !important;
+    min-width: var(--row-action-column) !important;
+    max-width: var(--row-action-column) !important;
+    overflow-wrap: normal;
+  }
+
+  #general-skills .skill-group--ordered .row-action-group,
+  #style-skills .row-action-group {
+    grid-template-columns: repeat(3, var(--row-action-size)) !important;
+    width: calc(var(--row-action-size) * 3 + var(--row-action-gap) * 2) !important;
+  }
+
   .skill-table input,
   .skill-table select,
   .skill-table textarea,
