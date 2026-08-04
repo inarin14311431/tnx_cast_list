@@ -4,25 +4,10 @@
 html[data-theme] #style-skill-panel .style-suit-mark,
 html[data-theme] #style-skill-panel .style-skill-view-table .style-suit-mark,
 html[data-theme] #tab-session .style-skill-view-table .style-suit-mark{
-  display:grid!important;
-  place-items:center!important;
-  box-sizing:border-box!important;
-  width:27px!important;
-  min-width:27px!important;
-  max-width:27px!important;
-  height:27px!important;
-  min-height:27px!important;
-  max-height:27px!important;
-  margin:auto!important;
-  padding:0!important;
-  border:1px solid var(--line-muted)!important;
-  border-radius:6px!important;
+  border-color:var(--line-muted)!important;
   color:var(--text-muted)!important;
   background:color-mix(in srgb,var(--theme-input-bg) 90%,var(--line) 10%)!important;
   box-shadow:none!important;
-  font-size:21px!important;
-  font-weight:400!important;
-  line-height:1!important;
   text-shadow:none!important;
 }
 html[data-theme] #style-skill-panel .style-suit-mark.is-active,
@@ -51,21 +36,6 @@ html[data-theme] #style-skills .suit-check input:checked+span{
 }
 
 /* Reorder labels are supplied by JavaScript. Never add a second glyph in CSS. */
-html[data-theme] [data-skill-move],
-html[data-theme] [data-outfit-move]{
-  font-size:.78rem!important;
-  font-weight:700!important;
-  line-height:1!important;
-  text-indent:0!important;
-}
-html[data-theme] [data-skill-move]::before,
-html[data-theme] [data-skill-move]::after,
-html[data-theme] [data-outfit-move]::before,
-html[data-theme] [data-outfit-move]::after{
-  display:none!important;
-  content:none!important;
-}
-
 /* Keep delete marks readable on every world theme. */
 html[data-theme] #general-skills .row-delete,
 html[data-theme] #style-skills .row-delete,
@@ -94,43 +64,17 @@ html[data-theme] #outfit-list .outfit-delete-button:hover:not(:disabled){
 
 /* Public-view return link matches the plain two-line editor-header link. */
 html[data-theme] .cast-header__actions .cast-header__back{
-  display:grid!important;
-  grid-template-columns:1fr!important;
-  gap:4px!important;
-  align-items:start!important;
-  justify-content:start!important;
-  min-width:0!important;
-  width:auto!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  border-radius:0!important;
   color:var(--text)!important;
   background:transparent!important;
   box-shadow:none!important;
-  font-family:inherit!important;
-  text-align:left!important;
-  text-decoration:none!important;
   text-shadow:none!important;
-  white-space:nowrap!important;
 }
 html[data-theme] .cast-header__actions .cast-header__back span{
   color:var(--text)!important;
-  font-size:1rem!important;
-  font-weight:400!important;
-  line-height:1.25!important;
-  letter-spacing:.035em!important;
   text-shadow:none!important;
 }
 html[data-theme] .cast-header__actions .cast-header__back small{
-  display:block!important;
-  margin:0!important;
   color:var(--text-muted)!important;
-  font-family:monospace!important;
-  font-size:.68rem!important;
-  font-weight:700!important;
-  line-height:1.15!important;
-  letter-spacing:.075em!important;
   text-shadow:none!important;
 }
 html[data-theme] .cast-header__actions .cast-header__back:hover,
