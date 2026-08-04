@@ -1,0 +1,330 @@
+/*
+ * Canonical editor-table layout.
+ *
+ * General skills, style skills, separator rows and row controls share this
+ * file so column geometry and controls cannot drift through load-order fixes.
+ * Desktop tables always fit the sheet width; narrow widths trade font size
+ * before they introduce horizontal scrolling.
+ */
+
+:root{
+  --row-action-size:30px;
+  --row-action-gap:2px;
+  --row-action-column:102px;
+  --row-action-order-color:#bfeef5;
+  --row-action-order-border:rgba(105,235,255,.42);
+  --row-action-order-bg:rgba(7,26,33,.92);
+}
+
+/* General skills --------------------------------------------------------- */
+#general-skills{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  grid-template-rows:auto auto!important;
+  gap:12px!important;
+  min-width:0;
+  align-items:start;
+}
+#general-skills>.skill-group{min-width:0}
+#general-skills>.skill-group:nth-child(1){grid-column:1!important;grid-row:1/span 2!important}
+#general-skills>.skill-group:nth-child(2){grid-column:2!important;grid-row:1/span 2!important}
+#general-skills>.skill-group:nth-child(3){grid-column:3!important;grid-row:1!important}
+#general-skills>.skill-group:nth-child(4){grid-column:3!important;grid-row:2!important}
+#general-skills>.skill-group>.skill-group-heading{
+  box-sizing:border-box;
+  min-height:48px;
+  height:48px;
+  align-items:center;
+}
+#general-skills .skill-group-title{margin-block:0;white-space:nowrap}
+#general-skills .skill-group-actions,
+#general-skills .skill-inline-add{align-self:center}
+#general-skills .skill-table{
+  width:100%!important;
+  min-width:0!important;
+  table-layout:fixed;
+  font-size:clamp(.7rem,.55vw,.82rem);
+}
+#general-skills .skill-table th,
+#general-skills .skill-table td{padding:4px 2px!important;min-width:0;overflow:hidden}
+#general-skills .skill-table .name-col{width:clamp(72px,8.5em,116px)!important}
+#general-skills .skill-table .type-col{width:clamp(46px,4vw,58px)!important}
+#general-skills .skill-table .lv-col{width:34px!important}
+#general-skills .skill-table .suit-col{width:30px!important}
+#general-skills input,
+#general-skills select{min-width:0;padding:5px 3px;font-size:clamp(.72rem,.58vw,.86rem)}
+#general-skills .suit-check,
+#general-skills .suit-check input{width:28px!important;height:28px!important}
+#general-skills .suit-check span{width:26px!important;height:26px!important;font-size:1.08rem!important}
+
+/* Style skills ----------------------------------------------------------- */
+#style-skills{
+  --style-skill-columns:
+    minmax(0,2.8fr) minmax(0,1.05fr) minmax(0,.7fr)
+    repeat(4,minmax(0,.62fr)) minmax(0,.76fr) minmax(0,.68fr)
+    minmax(0,1.08fr) minmax(0,.82fr) minmax(0,.78fr)
+    minmax(0,.86fr) minmax(0,.78fr) minmax(0,2.1fr)
+    minmax(34px,.72fr) var(--row-action-column);
+  width:100%;
+  min-width:0;
+  overflow:hidden;
+}
+#style-skills .skill-group,
+#style-skills .skill-table-scroll{
+  width:100%;
+  min-width:0;
+  max-width:100%;
+  overflow:hidden!important;
+}
+#style-skills .style-skill-full-table{
+  display:block;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  table-layout:auto;
+  border-collapse:separate;
+  border-spacing:0;
+  font-size:clamp(.64rem,.56vw,.84rem);
+}
+#style-skills .style-skill-full-table thead,
+#style-skills .style-skill-full-table tbody{display:block;width:100%;min-width:0}
+#style-skills .style-skill-full-table thead tr,
+#style-skills .style-skill-full-table tbody tr[data-skill-key]{
+  display:grid;
+  grid-template-columns:var(--style-skill-columns);
+  align-items:center;
+  width:100%;
+  min-width:0;
+}
+#style-skills .style-skill-full-table th,
+#style-skills .style-skill-full-table td{
+  box-sizing:border-box;
+  display:flex;
+  align-items:center;
+  width:auto!important;
+  min-width:0!important;
+  min-height:50px;
+  padding:5px 2px;
+  border-bottom:1px solid var(--line-muted);
+  overflow:hidden;
+}
+#style-skills .style-skill-full-table th{
+  justify-content:center;
+  min-height:38px;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  line-height:1.08;
+  text-align:center;
+  font-size:clamp(.58rem,.52vw,.8rem);
+}
+#style-skills .style-skill-full-table input,
+#style-skills .style-skill-full-table select,
+#style-skills .style-skill-full-table textarea{
+  box-sizing:border-box;
+  width:100%;
+  min-width:0!important;
+  max-width:100%;
+  height:38px;
+  min-height:38px;
+  margin:0;
+  padding:5px 3px;
+  font-size:clamp(.62rem,.56vw,.86rem);
+  line-height:1.2;
+}
+#style-skills .style-skill-full-table td:first-child>[data-f="name"]{flex:1 1 100%;width:100%!important}
+#style-skills .style-suit-head,
+#style-skills .style-suit-cell{justify-content:center;padding-inline:1px}
+#style-skills .style-suit-cell .suit-check,
+#style-skills .style-suit-cell .suit-check input{width:30px!important;height:30px!important;min-height:30px}
+#style-skills .style-suit-cell .suit-check span{width:28px;height:28px;font-size:1.08rem!important}
+#style-skills textarea[data-style-field="description"]{resize:vertical;overflow-y:auto;white-space:pre-wrap}
+#style-skills .style-skill-empty-row{display:block!important;width:100%}
+#style-skills .style-skill-empty-row td{display:block;width:100%!important;padding:20px 12px;text-align:center}
+
+/* Editable STYLE SECTION rows use exactly the same final two columns. */
+#style-skills .style-skill-separator-row{
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) var(--row-action-column)!important;
+  align-items:center!important;
+  width:100%!important;
+  min-width:0!important;
+  max-width:100%!important;
+  min-height:50px!important;
+  height:50px!important;
+  margin:10px 0 4px;
+  border-top:2px solid var(--line)!important;
+  border-bottom:1px solid color-mix(in srgb,var(--line) 78%,var(--line-muted))!important;
+  background:linear-gradient(90deg,
+    color-mix(in srgb,var(--panel) 58%,var(--line) 42%),
+    color-mix(in srgb,var(--panel) 70%,var(--line) 30%) 58%,
+    color-mix(in srgb,var(--panel) 82%,var(--line) 18%))!important;
+  box-shadow:inset 7px 0 0 var(--line),
+    inset 0 1px 0 color-mix(in srgb,var(--line) 58%,#fff 42%),
+    inset 0 -1px 0 color-mix(in srgb,var(--line) 34%,transparent)!important;
+  overflow:hidden!important;
+}
+#style-skills .style-skill-separator-row>td{
+  box-sizing:border-box;
+  min-width:0!important;
+  min-height:48px!important;
+  height:48px!important;
+  border:0!important;
+  background:transparent!important;
+}
+#style-skills .style-skill-separator-row>td:not(:first-child):not(:last-child){display:none!important}
+#style-skills .style-skill-separator-row>td:first-child{
+  grid-column:1;
+  display:flex!important;
+  align-items:center!important;
+  gap:clamp(6px,1vw,16px);
+  padding:4px 8px 4px 20px!important;
+  overflow:hidden!important;
+}
+#style-skills .style-skill-separator-row>td:first-child::before{
+  content:"STYLE SECTION";
+  flex:0 0 auto;
+  padding:5px 7px;
+  border:1px solid color-mix(in srgb,var(--line) 68%,transparent);
+  color:var(--line);
+  background:color-mix(in srgb,var(--panel) 72%,var(--line) 28%);
+  font:800 .64rem/1 monospace;
+  letter-spacing:.16em;
+  white-space:nowrap;
+}
+#style-skills .style-skill-separator-row>td:last-child{
+  grid-column:2;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:var(--row-action-column)!important;
+  min-width:0!important;
+  max-width:var(--row-action-column)!important;
+  padding:5px 3px!important;
+  overflow:hidden!important;
+}
+#style-skills .style-skill-separator-row input[data-f="name"]{
+  flex:1 1 auto;
+  width:100%!important;
+  min-width:0!important;
+  height:38px!important;
+  min-height:38px!important;
+  margin:0!important;
+  padding:5px 9px!important;
+  border:0!important;
+  color:var(--text)!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  font-size:clamp(.82rem,1vw,1.08rem)!important;
+  font-weight:900!important;
+  line-height:1.1!important;
+  letter-spacing:.1em;
+}
+#style-skills .style-skill-separator-row input[data-f="name"]:focus{
+  outline:2px solid color-mix(in srgb,var(--line) 68%,transparent)!important;
+  background:color-mix(in srgb,var(--panel) 68%,var(--line) 32%)!important;
+}
+#style-skills .style-skill-separator-row .skill-sort-controls{display:inline-flex!important}
+#style-skills .style-separator-add{border-style:dashed!important}
+
+/* Shared row actions ----------------------------------------------------- */
+#general-skills .skill-group--ordered .skill-table th:last-child,
+#general-skills .skill-group--ordered .skill-table td:last-child,
+#general-skills>.skill-group:nth-child(3) .skill-table th:last-child,
+#general-skills>.skill-group:nth-child(3) .skill-table td:last-child,
+#general-skills>.skill-group:nth-child(4) .skill-table th:last-child,
+#general-skills>.skill-group:nth-child(4) .skill-table td:last-child,
+#style-skills .style-skill-full-table th:last-child,
+#style-skills .style-skill-full-table td:last-child,
+#outfit-list .outfit-table-head--actions,
+#outfit-list .outfit-table-cell--actions{
+  box-sizing:border-box!important;
+  width:var(--row-action-column)!important;
+  min-width:var(--row-action-column)!important;
+  max-width:var(--row-action-column)!important;
+}
+#general-skills .skill-table td:last-child,
+#style-skills .style-skill-full-table td:last-child,
+#outfit-list .outfit-table-cell--actions{
+  height:48px!important;
+  min-height:48px!important;
+  padding:5px 3px!important;
+  overflow:hidden!important;
+  text-align:center!important;
+  font-size:0!important;
+  white-space:nowrap!important;
+}
+#general-skills .skill-sort-controls,
+#style-skills .skill-sort-controls{display:inline-flex!important;align-items:center!important;gap:var(--row-action-gap)!important;margin:0 var(--row-action-gap) 0 0!important}
+#general-skills .skill-group--ordered .skill-table td:last-child,
+#general-skills>.skill-group:nth-child(3) .skill-table td:last-child,
+#general-skills>.skill-group:nth-child(4) .skill-table td:last-child,
+#style-skills .style-skill-full-table td:last-child{display:flex!important;align-items:center!important;justify-content:center!important}
+#general-skills .skill-sort-controls>button,
+#general-skills .skill-table td:last-child>.row-delete,
+#style-skills .skill-sort-controls>button,
+#style-skills .style-skill-full-table td:last-child>.row-delete,
+#outfit-list .outfit-table-cell--actions>button{
+  box-sizing:border-box!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 var(--row-action-size)!important;
+  width:var(--row-action-size)!important;
+  min-width:var(--row-action-size)!important;
+  max-width:var(--row-action-size)!important;
+  height:var(--row-action-size)!important;
+  min-height:var(--row-action-size)!important;
+  max-height:var(--row-action-size)!important;
+  margin:0!important;
+  padding:0!important;
+  border:1px solid var(--row-action-order-border)!important;
+  border-radius:4px!important;
+  color:var(--row-action-order-color)!important;
+  background:var(--row-action-order-bg)!important;
+  box-shadow:0 0 10px var(--theme-shadow,rgba(65,232,255,.08))!important;
+  font-size:.9rem!important;
+  font-weight:700!important;
+  line-height:1!important;
+  cursor:pointer!important;
+}
+#general-skills .row-delete,
+#style-skills .row-delete,
+#outfit-list .outfit-delete-button{
+  color:#fff!important;
+  border-color:var(--alert)!important;
+  background:color-mix(in srgb,var(--alert) 86%,#111 14%)!important;
+}
+#general-skills .skill-sort-controls>button:disabled,
+#style-skills .skill-sort-controls>button:disabled,
+#outfit-list [data-outfit-move]:disabled{opacity:.38!important;cursor:default!important;box-shadow:none!important}
+#general-skills .skill-action-button::before,
+#general-skills .skill-action-button::after,
+#style-skills .skill-action-button::before,
+#style-skills .skill-action-button::after,
+#outfit-list .outfit-table-cell--actions>button::before,
+#outfit-list .outfit-table-cell--actions>button::after{content:none!important;display:none!important}
+
+/* Fit policy: never replace the editor with a horizontal scroller. */
+@media(max-width:1280px){
+  :root{--row-action-size:27px;--row-action-column:93px}
+  #general-skills{gap:8px!important}
+  #style-skills .style-skill-full-table th{font-size:.58rem}
+  #style-skills .style-skill-full-table input,
+  #style-skills .style-skill-full-table select,
+  #style-skills .style-skill-full-table textarea{font-size:.68rem;padding-inline:2px}
+}
+@media(max-width:900px){
+  :root{--row-action-size:24px;--row-action-gap:1px;--row-action-column:78px}
+  #general-skills{grid-template-columns:1fr!important;grid-template-rows:auto!important}
+  #general-skills>.skill-group:nth-child(n){grid-column:1!important;grid-row:auto!important}
+  #general-skills>.skill-group>.skill-group-heading{height:auto;min-height:0}
+  #general-skills .skill-table .name-col{width:auto!important}
+  #style-skills .style-skill-full-table th{font-size:.5rem;padding-inline:0}
+  #style-skills .style-skill-full-table input,
+  #style-skills .style-skill-full-table select,
+  #style-skills .style-skill-full-table textarea{font-size:.58rem;padding-inline:1px}
+  #style-skills .style-suit-cell .suit-check,
+  #style-skills .style-suit-cell .suit-check input{width:24px!important;height:24px!important;min-height:24px}
+  #style-skills .style-suit-cell .suit-check span{width:22px;height:22px;font-size:.9rem!important}
+}
