@@ -224,7 +224,7 @@
   outline:2px solid color-mix(in srgb,var(--line) 68%,transparent)!important;
   background:color-mix(in srgb,var(--panel) 68%,var(--line) 32%)!important;
 }
-#style-skills .style-skill-separator-row .skill-sort-controls{display:inline-flex!important}
+#style-skills .style-skill-separator-row .row-action-group{display:inline-grid!important}
 #style-skills .style-separator-add{border-style:dashed!important}
 
 /* Shared row actions ----------------------------------------------------- */
@@ -254,17 +254,23 @@
   font-size:0!important;
   white-space:nowrap!important;
 }
-#general-skills .skill-sort-controls,
-#style-skills .skill-sort-controls{display:inline-flex!important;align-items:center!important;gap:var(--row-action-gap)!important;margin:0 var(--row-action-gap) 0 0!important}
+.row-action-group{
+  box-sizing:border-box!important;
+  display:inline-grid!important;
+  grid-template-columns:repeat(3,var(--row-action-size));
+  align-items:center!important;
+  justify-content:center!important;
+  gap:var(--row-action-gap)!important;
+  width:calc(var(--row-action-size) * 3 + var(--row-action-gap) * 2)!important;
+  min-width:0!important;
+  margin:0!important;
+  white-space:nowrap!important;
+}
 #general-skills .skill-group--ordered .skill-table td:last-child,
 #general-skills>.skill-group:nth-child(3) .skill-table td:last-child,
 #general-skills>.skill-group:nth-child(4) .skill-table td:last-child,
 #style-skills .style-skill-full-table td:last-child{display:flex!important;align-items:center!important;justify-content:center!important}
-#general-skills .skill-sort-controls>button,
-#general-skills .skill-table td:last-child>.row-delete,
-#style-skills .skill-sort-controls>button,
-#style-skills .style-skill-full-table td:last-child>.row-delete,
-#outfit-list .outfit-table-cell--actions>button{
+.row-action-group>.skill-action-button{
   box-sizing:border-box!important;
   display:inline-flex!important;
   align-items:center!important;
@@ -288,22 +294,24 @@
   line-height:1!important;
   cursor:pointer!important;
 }
-#general-skills .row-delete,
-#style-skills .row-delete,
-#outfit-list .outfit-delete-button{
+.row-action-group>.skill-action-delete{
   color:#fff!important;
   border-color:var(--alert)!important;
   background:color-mix(in srgb,var(--alert) 86%,#111 14%)!important;
 }
-#general-skills .skill-sort-controls>button:disabled,
-#style-skills .skill-sort-controls>button:disabled,
-#outfit-list [data-outfit-move]:disabled{opacity:.38!important;cursor:default!important;box-shadow:none!important}
-#general-skills .skill-action-button::before,
-#general-skills .skill-action-button::after,
-#style-skills .skill-action-button::before,
-#style-skills .skill-action-button::after,
-#outfit-list .outfit-table-cell--actions>button::before,
-#outfit-list .outfit-table-cell--actions>button::after{content:none!important;display:none!important}
+.row-action-group>.skill-order-button:hover:not(:disabled){
+  color:var(--theme-on-accent,#06151a)!important;
+  border-color:var(--line)!important;
+  background:var(--line)!important;
+}
+.row-action-group>.skill-action-delete:hover:not(:disabled){
+  color:#fff!important;
+  border-color:color-mix(in srgb,var(--alert) 78%,#fff 22%)!important;
+  background:var(--alert)!important;
+}
+.row-action-group>.skill-action-button:disabled{opacity:.38!important;cursor:default!important;box-shadow:none!important}
+.row-action-group>.skill-action-button::before,
+.row-action-group>.skill-action-button::after{content:none!important;display:none!important}
 
 /* Fit policy: never replace the editor with a horizontal scroller. */
 @media(max-width:1280px){

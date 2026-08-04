@@ -107,6 +107,8 @@
   function makeActionsCell(card){
     const td=document.createElement('td');
     td.className='outfit-table-cell outfit-table-cell--actions';
+    const controls=document.createElement('span');
+    controls.className='row-action-group outfit-row-actions';
     const key=card.dataset.outfitKey||'';
     const remove=card.querySelector('[data-delete-outfit]');
     if(remove){
@@ -115,8 +117,9 @@
       remove.setAttribute('aria-label','削除');
       remove.title='削除';
     }
-    td.append(moveButton('up',key),moveButton('down',key));
-    if(remove)td.append(remove);
+    controls.append(moveButton('up',key),moveButton('down',key));
+    if(remove)controls.append(remove);
+    td.append(controls);
     return td;
   }
 

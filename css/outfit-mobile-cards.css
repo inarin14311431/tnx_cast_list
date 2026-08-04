@@ -200,7 +200,10 @@
     border-bottom: 0 !important;
   }
   #outfit-list .outfit-table-cell--actions::before { content: none !important; }
-  #outfit-list .outfit-table-cell--actions > button {
+  #outfit-list .outfit-table-cell--actions .row-action-group {
+    width: auto !important;
+  }
+  #outfit-list .outfit-table-cell--actions .row-action-group > button {
     width: 40px !important;
     min-width: 40px !important;
     max-width: 40px !important;
