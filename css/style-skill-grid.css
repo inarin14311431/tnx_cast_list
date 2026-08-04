@@ -149,21 +149,39 @@
   line-height:1.25;
 }
 
+/* Match the outfit action controls: equal spacing for ▲, ▼ and ×. */
 #style-skills .style-skill-full-table td:last-child{
   display:flex;
   align-items:center;
-  justify-content:flex-end;
-  gap:4px;
+  justify-content:center;
+  gap:2px;
+  padding:5px 3px;
   overflow:visible;
+  white-space:nowrap;
 }
 
-#style-skills .style-skill-full-table td:last-child button{
+#style-skills .style-skill-full-table td:last-child > button{
+  box-sizing:border-box;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
   flex:0 0 28px;
   width:28px;
   min-width:28px;
+  max-width:28px;
   height:30px;
   min-height:30px;
+  max-height:30px;
+  margin:0 1px!important;
   padding:0;
+  line-height:1;
+  vertical-align:middle;
+}
+
+#style-skills .style-skill-full-table td:last-child > button:last-child,
+#style-skills .style-skill-full-table td:last-child > .row-delete{
+  margin-left:1px!important;
+  margin-right:1px!important;
 }
 
 #style-skills .style-skill-full-table .style-field-cell--description{
