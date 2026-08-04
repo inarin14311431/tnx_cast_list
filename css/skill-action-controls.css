@@ -46,6 +46,15 @@
   white-space:nowrap!important;
 }
 
+/* The section frame owns the far-right edge.  Leaving a cell border here
+ * paints a second one-pixel line beside the frame and makes that edge look
+ * thicker (especially on fractional-width layouts). */
+#style-skills .style-skill-full-table th:last-child,
+#style-skills .style-skill-full-table td:last-child,
+#style-skills .style-skill-separator-row > td:last-child{
+  border-right:0!important;
+}
+
 #general-skills .skill-sort-controls,
 #style-skills .skill-sort-controls{
   display:inline-flex!important;
