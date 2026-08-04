@@ -10,7 +10,8 @@
   --row-action-width:30px;
   --row-action-height:30px;
   --row-action-gap:2px;
-  --row-action-column:100px;
+  /* 30px x 3 + two 2px gaps + 6px cell padding + 2px control spacing. */
+  --row-action-column:102px;
   --row-action-order-color:#bfeef5;
   --row-action-order-border:rgba(105,235,255,.42);
   --row-action-order-bg:rgba(7,26,33,.92);
@@ -53,6 +54,17 @@
   gap:var(--row-action-gap)!important;
   margin:0 var(--row-action-gap) 0 0!important;
   vertical-align:middle!important;
+}
+
+/* Apply one layout model to the general- and style-skill action cells. */
+#general-skills .skill-group--ordered .skill-table td:last-child,
+#general-skills > .skill-group:nth-child(3) .skill-table td:last-child,
+#general-skills > .skill-group:nth-child(4) .skill-table td:last-child,
+#style-skills .style-skill-full-table td:last-child{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
 }
 
 #general-skills .skill-sort-controls > button,
