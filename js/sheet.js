@@ -551,7 +551,7 @@ function skillRow(skill, detail) {
     <td><input data-f="level" type="number" min="0" value="${Number(skill.level) || 0}"></td>
     ${SUITS.map((suit, index) => `<td class="suit-cell"><label class="suit-check"><input data-f="${suit}" type="checkbox" ${skill[suit] ? "checked" : ""}><span>${MARKS[index]}</span></label></td>`).join("")}
     ${detail ? `<td><textarea data-f="description" rows="2">${esc(skill.description || skill.timing || "")}</textarea></td>` : ""}
-    <td><button class="row-delete" data-delete-skill="${skill._key}" type="button">×</button></td>
+    <td><button class="row-delete skill-action-button skill-action-delete" data-delete-skill="${skill._key}" type="button">×</button></td>
   </tr>`;
 }
 
