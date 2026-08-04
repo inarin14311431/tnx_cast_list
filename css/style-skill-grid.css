@@ -18,9 +18,9 @@
     54px
     58px
     54px
-    minmax(104px,1fr)
+    minmax(102px,1fr)
     50px
-    var(--style-action-column,96px);
+    var(--style-action-column,var(--row-action-column,102px));
   width:100%;
   min-width:0;
 }
@@ -218,9 +218,9 @@
       46px
       50px
       46px
-      minmax(84px,1fr)
+      minmax(82px,1fr)
       44px
-      var(--style-action-column,92px);
+      var(--style-action-column,var(--row-action-column,102px));
   }
   #style-skills .style-skill-full-table{font-size:.74rem}
   #style-skills .style-skill-full-table input,
