@@ -1,7 +1,7 @@
 /* Prominent editable and public-view separator rows for style skills. */
 #style-skills .style-skill-separator-row{
   display:grid!important;
-  grid-template-columns:minmax(0,1fr) 104px!important;
+  grid-template-columns:minmax(0,1fr) var(--row-action-column,100px)!important;
   align-items:center!important;
   width:100%;
   min-height:50px!important;
@@ -59,15 +59,17 @@
 
 #style-skills .style-skill-separator-row > td:last-child{
   grid-column:2;
-  justify-self:end;
-  display:flex!important;
+  justify-self:stretch;
+  display:grid!important;
+  grid-template-columns:repeat(3,var(--row-action-width,30px));
   align-items:center!important;
-  justify-content:flex-end!important;
-  gap:4px;
-  width:104px!important;
-  min-width:104px!important;
-  padding:4px 5px 4px 0!important;
-  overflow:visible!important;
+  justify-content:center!important;
+  gap:var(--row-action-gap,2px)!important;
+  width:var(--row-action-column,100px)!important;
+  min-width:var(--row-action-column,100px)!important;
+  max-width:var(--row-action-column,100px)!important;
+  padding:5px 3px!important;
+  overflow:hidden!important;
 }
 
 #style-skills .style-skill-separator-row input[data-f="name"]{
@@ -99,18 +101,19 @@
 }
 
 #style-skills .style-skill-separator-row .skill-sort-controls{
-  display:flex!important;
-  flex:0 0 auto;
-  gap:4px;
+  display:contents!important;
   margin:0!important;
 }
 
 #style-skills .style-skill-separator-row td:last-child button{
-  flex:0 0 30px!important;
-  width:30px!important;
-  min-width:30px!important;
-  height:30px!important;
-  min-height:30px!important;
+  box-sizing:border-box!important;
+  width:var(--row-action-width,30px)!important;
+  min-width:var(--row-action-width,30px)!important;
+  max-width:var(--row-action-width,30px)!important;
+  height:var(--row-action-height,30px)!important;
+  min-height:var(--row-action-height,30px)!important;
+  max-height:var(--row-action-height,30px)!important;
+  margin:0!important;
   padding:0!important;
 }
 
