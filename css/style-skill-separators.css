@@ -1,9 +1,11 @@
 /* Prominent editable and public-view separator rows for style skills. */
 #style-skills .style-skill-separator-row{
+  box-sizing:border-box!important;
   display:grid!important;
   grid-template-columns:minmax(0,1fr) var(--row-action-column,100px)!important;
   align-items:center!important;
   width:100%;
+  max-width:100%;
   min-height:50px!important;
   height:50px!important;
   margin:10px 0 4px;
@@ -19,8 +21,7 @@
   box-shadow:
     inset 7px 0 0 var(--line),
     inset 0 1px 0 color-mix(in srgb,var(--line) 58%,#fff 42%),
-    inset 0 -1px 0 color-mix(in srgb,var(--line) 34%,transparent),
-    0 3px 10px color-mix(in srgb,var(--line) 16%,transparent)!important;
+    inset 0 -1px 0 color-mix(in srgb,var(--line) 34%,transparent)!important;
 }
 
 #style-skills .style-skill-separator-row > td{
@@ -204,6 +205,6 @@
 
 @media(max-width:1100px){
   #style-skills .style-skill-separator-row{
-    min-width:1260px;
+    min-width:1316px;
   }
 }
