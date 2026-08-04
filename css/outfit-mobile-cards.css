@@ -201,9 +201,9 @@
   }
   #outfit-list .outfit-table-cell--actions::before { content: none !important; }
   #outfit-list .outfit-table-cell--actions > button {
-    width: 42px !important;
-    min-width: 42px !important;
-    max-width: 42px !important;
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 40px !important;
     height: 40px !important;
     min-height: 40px !important;
     max-height: 40px !important;
