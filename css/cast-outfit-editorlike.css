@@ -35,4 +35,4 @@
 .cast-outfit-table[data-outfit-category="vehicle"]{min-width:1420px}
 .cast-outfit-table[data-outfit-category="residence"]{min-width:1080px}
 .cast-outfit-table[data-outfit-category="other"]{min-width:920px}
-@media(max-width:860px){.cast-outfit-table{font-size:.72rem}}
+@media(max-width:1199px){.cast-outfit-table{font-size:.72rem}}

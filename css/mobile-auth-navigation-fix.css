@@ -1,5 +1,5 @@
 /* Keep index account controls fully inside narrow mobile viewports. */
-@media (max-width:700px){
+@media (max-width:767px){
   html[data-theme] .site-header__top{
     display:grid!important;
     grid-template-columns:minmax(0,1fr)!important;
@@ -57,7 +57,7 @@
   }
 }
 
-@media (max-width:420px){
+@media (max-width:767px){
   html[data-theme] .auth-navigation{
     grid-template-columns:minmax(0,1fr)!important;
   }

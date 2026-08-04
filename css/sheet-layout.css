@@ -108,13 +108,13 @@
 @keyframes status-pulse{from{box-shadow:0 0 0 rgba(65,232,255,0)}to{box-shadow:0 0 18px rgba(65,232,255,.35)}}
 @keyframes button-error{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 
-@media(max-width:1180px){.ability-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:1000px){.skill-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.outfit-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:760px){.sheet-header{grid-template-columns:1fr;padding-top:24px!important}.ability-grid{grid-template-columns:1fr}.ability-card--cs{grid-column:auto}.ability-line{grid-template-columns:64px 1fr 1fr 58px}.ability-matrix__header,.ability-matrix__row{grid-template-columns:70px 1fr 1fr}.cs-row{grid-template-columns:1fr 1fr}.cs-row strong{grid-column:1/-1}.divine-field{grid-template-columns:auto minmax(0,1fr);column-gap:9px;min-height:68px;padding:14px 10px 10px!important}#style-skills .skill-table{font-size:.64rem}#style-skills .skill-table th,#style-skills .skill-table td{padding:3px 2px}#style-skills .skill-table input,#style-skills .skill-table select,#style-skills .skill-table textarea{padding:5px 2px;font-size:.7rem}}
-@media(max-width:680px){.skill-toolbar,.outfit-fields{grid-template-columns:1fr}.outfit-wide{grid-column:auto}}
+@media(max-width:1199px){.ability-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:1199px){.skill-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))}.outfit-fields{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:767px){.sheet-header{grid-template-columns:1fr;padding-top:24px!important}.ability-grid{grid-template-columns:1fr}.ability-card--cs{grid-column:auto}.ability-line{grid-template-columns:64px 1fr 1fr 58px}.ability-matrix__header,.ability-matrix__row{grid-template-columns:70px 1fr 1fr}.cs-row{grid-template-columns:1fr 1fr}.cs-row strong{grid-column:1/-1}.divine-field{grid-template-columns:auto minmax(0,1fr);column-gap:9px;min-height:68px;padding:14px 10px 10px!important}#style-skills .skill-table{font-size:.64rem}#style-skills .skill-table th,#style-skills .skill-table td{padding:3px 2px}#style-skills .skill-table input,#style-skills .skill-table select,#style-skills .skill-table textarea{padding:5px 2px;font-size:.7rem}}
+@media(max-width:767px){.skill-toolbar,.outfit-fields{grid-template-columns:1fr}.outfit-wide{grid-column:auto}}
 
 /* Sticky, compact experience panel. */
-@media (min-width:761px){
+@media (min-width:768px){
   .exp-panel{position:sticky;top:18px;align-self:start;max-height:none;overflow:visible;padding:14px}
   .exp-panel>p{margin:0 0 6px}
   .exp-panel #exp-total{margin-bottom:8px}
@@ -122,4 +122,4 @@
   .exp-panel #exp-breakdown>div{padding:3px 0}
   .exp-panel button,.exp-panel .sheet-view-link,.exp-panel>label{margin-top:7px}
 }
-@media (max-width:760px){.exp-panel{position:static;max-height:none;overflow:visible}}
+@media (max-width:767px){.exp-panel{position:static;max-height:none;overflow:visible}}

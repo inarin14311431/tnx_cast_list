@@ -3,7 +3,7 @@
  * changing the no-horizontal-scroll table geometry.
  */
 
-@media (min-width:821px){
+@media (min-width:1200px){
   .sheet-main{gap:18px}
   .sheet-section{border-radius:5px}
   .section-toggle{
@@ -106,7 +106,7 @@
   .exp-panel small{font-size:.62rem;letter-spacing:.08em;opacity:.72}
 }
 
-@media (min-width:821px) and (max-width:1280px){
+@media (min-width:768px) and (max-width:1199px){
   .sheet-main{gap:15px}
   .section-body{padding:13px}
   .form-grid,.profile-top-grid,.profile-media-grid{gap:10px}

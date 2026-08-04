@@ -219,7 +219,7 @@
   min-height:35px!important;
 }
 
-@media(max-width:720px){
+@media(max-width:767px){
   #skills-container .skill-data-table--general col.skill-col-name,
   #skills-container .skill-data-table--social col.skill-col-name,
   #skills-container .skill-data-table--connection col.skill-col-name{

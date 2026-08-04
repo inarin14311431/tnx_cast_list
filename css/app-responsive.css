@@ -1,0 +1,86 @@
+/* Canonical responsive tiers
+ * PC: 1200px and wider
+ * Tablet: 768px–1199px
+ * Mobile: 767px and narrower
+ */
+
+html,
+body {
+  max-width: 100%;
+  overflow-x: clip;
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+  .app-header,
+  .site-header,
+  .sheet-header {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .sheet-layout,
+  .sheet-main,
+  .sheet-section,
+  .section-body,
+  .skill-group,
+  #skills-container,
+  #skills-container .skill-section,
+  .style-skill-panel__body,
+  .style-skill-view-wrapper,
+  .outfit-container,
+  .outfit-table-scroll,
+  .cast-outfit-table-scroll {
+    min-width: 0 !important;
+    max-width: 100%;
+    overflow-x: hidden !important;
+  }
+
+  .skill-table,
+  #style-skills .skill-table,
+  #style-skills .skill-table.has-detail,
+  .style-skill-detail-table,
+  .style-skill-view-table,
+  .outfit-table,
+  .cast-outfit-table,
+  .outfit-section .data-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    max-width: 100%;
+    table-layout: fixed !important;
+  }
+
+  .skill-table,
+  .style-skill-view-table {
+    font-size: clamp(.46rem, 1.75vw, .68rem) !important;
+  }
+
+  .skill-table th,
+  .skill-table td,
+  .style-skill-view-table th,
+  .style-skill-view-table td {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: none !important;
+    padding: 3px 2px !important;
+    overflow-wrap: anywhere;
+  }
+
+  .skill-table input,
+  .skill-table select,
+  .skill-table textarea,
+  .style-skill-view-table input,
+  .style-skill-view-table select,
+  .style-skill-view-table textarea {
+    min-width: 0 !important;
+    padding-inline: 2px !important;
+    font-size: inherit !important;
+  }
+
+  .cast-tabs,
+  .auth-navigation {
+    max-width: 100%;
+    flex-wrap: wrap;
+    overflow-x: hidden !important;
+  }
+}

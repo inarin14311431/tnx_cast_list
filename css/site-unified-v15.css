@@ -80,7 +80,7 @@ small{color:var(--panel-muted)}
 .outfit-section .data-table th:nth-child(7),.outfit-section .data-table td:nth-child(7){width:12%}
 .outfit-section .data-table th:nth-child(8),.outfit-section .data-table td:nth-child(8){width:22%;white-space:normal;overflow-wrap:anywhere}
 
-@media(max-width:760px){
+@media(max-width:767px){
   .skill-group-heading{align-items:flex-start;flex-direction:column}
   .skill-group-actions{justify-content:flex-start}
   .skill-table .suit-col{width:42px!important;min-width:42px!important;font-size:.66rem!important}

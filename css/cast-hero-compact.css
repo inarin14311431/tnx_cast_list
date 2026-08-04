@@ -2,7 +2,7 @@
  * Keep style/divine cards visually dominant while matching the identity panel
  * to the portrait height and reducing secondary profile fields.
  */
-@media (min-width:801px){
+@media (min-width:1200px){
   .cast-hero{
     --cast-hero-compact-height:clamp(540px,40vw,590px);
     align-items:start;
@@ -173,7 +173,7 @@
   }
 }
 
-@media (min-width:801px) and (max-width:1100px){
+@media (min-width:768px) and (max-width:1199px){
   .cast-hero{
     --cast-hero-compact-height:clamp(520px,52vw,560px);
   }

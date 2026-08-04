@@ -40,7 +40,7 @@
   font-weight:800;
 }
 
-@media(max-width:600px){
+@media(max-width:767px){
   .act-record__role{
     grid-template-columns:1fr;
     width:100%;

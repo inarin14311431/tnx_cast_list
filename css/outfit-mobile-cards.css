@@ -1,5 +1,5 @@
 /* Mobile editor layout: turn wide outfit tables into readable field cards. */
-@media (max-width: 700px) {
+@media (max-width:767px) {
   #outfit-list,
   #outfit-list .outfit-table-group,
   #outfit-list .outfit-table-scroll {
@@ -235,7 +235,7 @@
   }
 }
 
-@media (max-width: 430px) {
+@media (max-width:767px) {
   #outfit-list .outfit-table-row { grid-template-columns: 1fr; }
   #outfit-list .outfit-table-cell--description,
   #outfit-list .outfit-table-cell--actions { grid-column: auto; }

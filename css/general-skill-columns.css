@@ -55,12 +55,12 @@
 #general-skills>.skill-group:nth-child(4) .skill-table th:last-child,
 #general-skills>.skill-group:nth-child(4) .skill-table td:last-child{width:86px!important}
 
-@media(max-width:1180px){
+@media(max-width:1199px){
   #general-skills .skill-table{font-size:.74rem}
   #general-skills input,#general-skills select{font-size:.78rem}
 }
 
-@media(max-width:820px){
+@media(max-width:1199px){
   #general-skills{grid-template-columns:1fr!important;grid-template-rows:auto!important}
   #general-skills>.skill-group:nth-child(1),
   #general-skills>.skill-group:nth-child(2),

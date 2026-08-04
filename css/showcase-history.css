@@ -175,7 +175,7 @@ html[data-theme="intron"] .selected-cast--private{
 }
 html[data-theme="intron"] .selected-cast--private .selected-cast__slot,
 html[data-theme="intron"] .selected-cast__privacy{color:#222!important}
-@media(max-width:680px){
+@media(max-width:767px){
   .private-history-selector__header{align-items:flex-start;flex-direction:column;gap:8px}
   .private-history-selector__header h3 small{display:block;margin:5px 0 0}
   .private-cast-grid{grid-template-columns:1fr}

@@ -84,6 +84,6 @@
 #outfit-list .outfit-description textarea[data-o="description"]{display:block;width:100%!important;height:30px!important;min-height:30px!important;max-height:none!important;resize:vertical!important;overflow:auto!important;box-sizing:border-box;line-height:1.35}
 #outfit-list .outfit-description input[data-o="description"]{display:none!important}
 
-@media(max-width:1100px){.outfit-fields{grid-template-columns:repeat(4,minmax(90px,1fr))!important}.outfit-description,.outfit-fields .outfit-description{grid-column:1 / -1!important}}
-@media(max-width:900px){#general-skills{grid-template-columns:1fr}#general-skills>.skill-group:nth-child(n){grid-column:1;grid-row:auto}#style-skills{overflow-x:auto!important}#style-skills .skill-table.has-detail,.style-skill-detail-table{min-width:1120px!important}}
-@media(max-width:720px){.outfit-fields{grid-template-columns:repeat(2,minmax(0,1fr))!important}.outfit-description{grid-column:1/-1!important}}
+@media(max-width:1199px){.outfit-fields{grid-template-columns:repeat(4,minmax(90px,1fr))!important}.outfit-description,.outfit-fields .outfit-description{grid-column:1 / -1!important}}
+@media(max-width:1199px){#general-skills{grid-template-columns:1fr}#general-skills>.skill-group:nth-child(n){grid-column:1;grid-row:auto}#style-skills{overflow-x:auto!important}#style-skills .skill-table.has-detail,.style-skill-detail-table{min-width:1120px!important}}
+@media(max-width:767px){.outfit-fields{grid-template-columns:repeat(2,minmax(0,1fr))!important}.outfit-description{grid-column:1/-1!important}}

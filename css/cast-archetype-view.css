@@ -277,13 +277,13 @@
   font-size:22px;
 }
 
-@media(max-width:980px){
+@media(max-width:1199px){
   #cast-styles.cast-archetype-grid,
   .cast-divine-authority .hero-divine-list{grid-template-columns:1fr}
   .cast-archetype-heading{align-items:start;flex-direction:column}
   .cast-archetype-heading small{text-align:left}
 }
-@media(max-width:700px){
+@media(max-width:767px){
   .cast-divine-authority>header{align-items:start;flex-direction:column}
   .cast-style-skill-analysis>.data-panel__header::after{display:none}
 }

@@ -54,4 +54,4 @@
 #outfit-list .outfit-table-group--armor .armor-defense-total-row>th,#outfit-list .outfit-table-group--armor .armor-defense-total-row>td{box-sizing:border-box!important}
 #outfit-list .outfit-table-group--armor .armor-defense-total-row>td:last-child{border-right:0!important}
 
-@media(max-width:860px){#outfit-list .outfit-table-scroll{overflow-x:auto!important}#outfit-list .outfit-table{min-width:900px!important}}
+@media(max-width:1199px){#outfit-list .outfit-table-scroll{overflow-x:auto!important}#outfit-list .outfit-table{min-width:900px!important}}

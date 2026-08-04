@@ -22,7 +22,7 @@
   grid-column:1 / -1;
 }
 
-@media(max-width:1000px){
+@media(max-width:1199px){
   .selected-cast__fields{
     grid-template-columns:minmax(160px,.55fr) minmax(240px,1.45fr);
   }
@@ -34,7 +34,7 @@
   }
 }
 
-@media(max-width:680px){
+@media(max-width:767px){
   .selected-cast__fields{
     grid-template-columns:1fr;
   }

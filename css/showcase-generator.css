@@ -326,11 +326,11 @@ textarea{resize:vertical;line-height:1.6}
   border:1px solid rgba(95,234,255,.25);
   background:#02070a;
 }
-@media(max-width:900px){
+@media(max-width:1199px){
   .showcase-header{grid-template-columns:1fr auto}.showcase-header>div{grid-column:1/-1;grid-row:1;text-align:left}.showcase-header__back{grid-row:2}.showcase-header__archive{grid-row:2}
   .selected-cast{grid-template-columns:70px 1fr auto}.selected-cast__fields{grid-column:1/-1}
 }
-@media(max-width:680px){
+@media(max-width:767px){
   .showcase-header,.showcase-layout{width:min(100% - 18px,1440px)}
   .form-grid,.publish-grid,.selector-controls{grid-template-columns:1fr}
   .form-grid__wide{grid-column:auto}

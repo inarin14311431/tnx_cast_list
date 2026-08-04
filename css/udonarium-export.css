@@ -42,6 +42,6 @@
 .udonarium-export-button[data-export-state="error"]::before{background:#ff6f91;box-shadow:0 0 12px #ff6f91}
 .cast-header__actions .udonarium-export-button{min-width:170px}
 .exp-panel>.udonarium-export-button{width:100%;margin-top:10px}
-@media(max-width:620px){
+@media(max-width:767px){
   .cast-header__actions .udonarium-export-button{min-width:0}
 }
