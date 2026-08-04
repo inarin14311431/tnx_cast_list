@@ -1,0 +1,78 @@
+/*
+ * Canonical action controls for skill and outfit rows.
+ * The outfit controls are the design source of truth for ▲, ▼ and ×.
+ */
+
+#general-skills .skill-table td:last-child,
+#style-skills .style-skill-full-table td:last-child,
+#outfit-list .outfit-table-cell--actions{
+  box-sizing:border-box!important;
+  height:48px!important;
+  padding:5px 3px!important;
+  overflow:hidden!important;
+  vertical-align:middle!important;
+  text-align:center!important;
+  font-size:0!important;
+  white-space:nowrap!important;
+}
+
+#general-skills .skill-sort-controls,
+#style-skills .skill-sort-controls{
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:0!important;
+  margin:0!important;
+  vertical-align:middle!important;
+}
+
+#general-skills .skill-sort-controls > button,
+#general-skills .skill-table td:last-child > .row-delete,
+#style-skills .skill-sort-controls > button,
+#style-skills .style-skill-full-table td:last-child > .row-delete,
+#outfit-list .outfit-table-cell--actions > button{
+  box-sizing:border-box!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  flex:0 0 26px!important;
+  width:26px!important;
+  min-width:26px!important;
+  max-width:26px!important;
+  height:36px!important;
+  min-height:36px!important;
+  max-height:36px!important;
+  margin:0 1px!important;
+  padding:0!important;
+  line-height:1!important;
+  vertical-align:middle!important;
+  font-size:.76rem!important;
+}
+
+/* Three outfit-sized controls plus their horizontal margins. */
+#general-skills .skill-group--ordered .skill-table th:last-child,
+#general-skills .skill-group--ordered .skill-table td:last-child,
+#general-skills > .skill-group:nth-child(3) .skill-table th:last-child,
+#general-skills > .skill-group:nth-child(3) .skill-table td:last-child,
+#general-skills > .skill-group:nth-child(4) .skill-table th:last-child,
+#general-skills > .skill-group:nth-child(4) .skill-table td:last-child{
+  width:92px!important;
+  min-width:92px!important;
+}
+
+@media(max-width:700px){
+  #general-skills .skill-sort-controls > button,
+  #general-skills .skill-table td:last-child > .row-delete,
+  #style-skills .skill-sort-controls > button,
+  #style-skills .style-skill-full-table td:last-child > .row-delete,
+  #outfit-list .outfit-table-cell--actions > button{
+    flex-basis:42px!important;
+    width:42px!important;
+    min-width:42px!important;
+    max-width:42px!important;
+    height:40px!important;
+    min-height:40px!important;
+    max-height:40px!important;
+    margin:0 3px!important;
+  }
+}
