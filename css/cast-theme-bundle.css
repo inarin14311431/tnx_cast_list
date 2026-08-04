@@ -262,44 +262,6 @@ html[data-theme="eden"] .divine-list .divine-card{
 /* Source: css/theme-polish.css */
 /* Final theme-specific corrections loaded after all legacy page styles. */
 
-/* Index header: keep account controls and theme selector inside the viewport. */
-html[data-theme] .site-header__top{
-  align-items:flex-start!important;
-}
-html[data-theme] .site-header__operator{
-  display:grid!important;
-  justify-items:end!important;
-  gap:8px!important;
-  min-width:0!important;
-  width:min(100%,420px)!important;
-  max-width:100%!important;
-}
-html[data-theme] .auth-navigation{
-  display:flex!important;
-  flex-wrap:wrap!important;
-  justify-content:flex-end!important;
-  gap:8px!important;
-  width:100%!important;
-  min-width:0!important;
-}
-html[data-theme] .auth-navigation__account,
-html[data-theme] .auth-navigation__logout{
-  box-sizing:border-box!important;
-  min-width:0!important;
-}
-html[data-theme] .auth-navigation__account{
-  flex:1 1 190px!important;
-}
-html[data-theme] .auth-navigation__logout{
-  flex:0 1 96px!important;
-  min-width:96px!important;
-}
-html[data-theme] .theme-picker,
-html[data-theme] .theme-picker select{
-  min-width:0!important;
-  width:100%!important;
-}
-
 /* Current public-view style cards use fixed dark-theme backgrounds and text. */
 html[data-theme] .cast-style-heading-simple strong,
 html[data-theme] #cast-styles .cast-style-card-simple .style-chip__name,
@@ -645,29 +607,6 @@ html[data-theme] .row-delete:hover:not(:disabled){
   background:var(--alert)!important;
 }
 
-@media(max-width:900px){
-  html[data-theme] .site-header__top{align-items:stretch!important}
-  html[data-theme] .site-header__operator{
-    min-width:0!important;
-    width:100%!important;
-    justify-items:stretch!important;
-  }
-  html[data-theme] .auth-navigation{justify-content:stretch!important}
-}
-@media(max-width:700px){
-  html[data-theme] .auth-navigation__account{
-    flex-basis:calc(100% - 104px)!important;
-  }
-}
-@media(max-width:430px){
-  html[data-theme] .auth-navigation{flex-direction:column!important}
-  html[data-theme] .auth-navigation__account,
-  html[data-theme] .auth-navigation__logout{
-    width:100%!important;
-    min-width:0!important;
-  }
-}
-
 /* Source: css/theme-fixes-v3.css */
 /* High-specificity theme corrections for legacy cyber-scan and table styles. */
 
@@ -739,28 +678,6 @@ html[data-theme] .cast-outfit-title{
 html[data-theme] .profile-text{
   color:var(--text)!important;
   background:repeating-linear-gradient(180deg,transparent 0 27px,color-mix(in srgb,var(--line) 5%,transparent) 27px 28px)!important;
-}
-
-/* 4: Give the public-view header button group breathing room on the left. */
-html[data-theme] .cast-header__actions{
-  margin-left:12px!important;
-}
-
-/* 5: Keep the index account controls away from the right edge. */
-html[data-theme] .site-header__operator{
-  box-sizing:border-box!important;
-  width:min(100%,440px)!important;
-  padding-right:14px!important;
-}
-html[data-theme] .auth-navigation{
-  box-sizing:border-box!important;
-  padding-right:2px!important;
-}
-html[data-theme] .auth-navigation__logout{
-  flex-basis:108px!important;
-  min-width:108px!important;
-  padding-left:12px!important;
-  padding-right:12px!important;
 }
 
 /* 6: Summary label and body use firm theme contrast. */
@@ -875,46 +792,10 @@ html[data-theme] #outfit-container .cast-armor-total{
   color:var(--text)!important;
 }
 
-/* 3: Present reorder controls as ▲ ▼ × and keep all three visible. */
-html[data-theme] [data-skill-move="up"],
-html[data-theme] [data-skill-move="down"]{
-  font-size:.72rem!important;
-  line-height:1!important;
-  text-indent:0!important;
-}
-html[data-theme] [data-skill-move="up"]::before,
-html[data-theme] [data-skill-move="down"]::before,
-html[data-theme] [data-skill-move="up"]::after,
-html[data-theme] [data-skill-move="down"]::after{
-  content:none!important;
-  display:none!important;
-}
-html[data-theme] [data-outfit-move="up"],
-html[data-theme] [data-outfit-move="down"]{
-  font-size:0!important;
-}
-html[data-theme] [data-outfit-move="up"]::before{
-  content:"▲";
-  display:inline!important;
-  font-size:.72rem;
-}
-html[data-theme] [data-outfit-move="down"]::before{
-  content:"▼";
-  display:inline!important;
-  font-size:.72rem;
-}
-html[data-theme] [data-outfit-move="up"]::after,
-html[data-theme] [data-outfit-move="down"]::after{
-  content:none!important;
-  display:none!important;
-}
 html[data-theme] .skill-sort-controls button,
 html[data-theme] .row-delete,
 html[data-theme] .outfit-order-button,
 html[data-theme] .outfit-delete-button{
-  min-width:28px!important;
-  height:28px!important;
-  padding:0 6px!important;
   color:var(--text)!important;
   border:1px solid var(--line-muted)!important;
   background:var(--theme-input-bg)!important;
@@ -954,14 +835,6 @@ html[data-theme="eden"] .owned-cast__links .action-label__en{
   text-shadow:none!important;
 }
 
-@media(max-width:760px){
-  html[data-theme] .cast-header__actions{margin-left:0!important}
-}
-@media(max-width:900px){
-  html[data-theme] .site-header__operator{padding-right:0!important}
-  html[data-theme] .auth-navigation{padding-right:0!important}
-}
-
 /* Source: css/theme-fixes-v4.css */
 /* Final suit-color normalization for public and editor skill tables. */
 
@@ -969,25 +842,10 @@ html[data-theme="eden"] .owned-cast__links .action-label__en{
 html[data-theme] #style-skill-panel .style-suit-mark,
 html[data-theme] #style-skill-panel .style-skill-view-table .style-suit-mark,
 html[data-theme] #tab-session .style-skill-view-table .style-suit-mark{
-  display:grid!important;
-  place-items:center!important;
-  box-sizing:border-box!important;
-  width:27px!important;
-  min-width:27px!important;
-  max-width:27px!important;
-  height:27px!important;
-  min-height:27px!important;
-  max-height:27px!important;
-  margin:auto!important;
-  padding:0!important;
-  border:1px solid var(--line-muted)!important;
-  border-radius:6px!important;
+  border-color:var(--line-muted)!important;
   color:var(--text-muted)!important;
   background:color-mix(in srgb,var(--theme-input-bg) 90%,var(--line) 10%)!important;
   box-shadow:none!important;
-  font-size:21px!important;
-  font-weight:400!important;
-  line-height:1!important;
   text-shadow:none!important;
 }
 html[data-theme] #style-skill-panel .style-suit-mark.is-active,
@@ -1016,21 +874,6 @@ html[data-theme] #style-skills .suit-check input:checked+span{
 }
 
 /* Reorder labels are supplied by JavaScript. Never add a second glyph in CSS. */
-html[data-theme] [data-skill-move],
-html[data-theme] [data-outfit-move]{
-  font-size:.78rem!important;
-  font-weight:700!important;
-  line-height:1!important;
-  text-indent:0!important;
-}
-html[data-theme] [data-skill-move]::before,
-html[data-theme] [data-skill-move]::after,
-html[data-theme] [data-outfit-move]::before,
-html[data-theme] [data-outfit-move]::after{
-  display:none!important;
-  content:none!important;
-}
-
 /* Keep delete marks readable on every world theme. */
 html[data-theme] #general-skills .row-delete,
 html[data-theme] #style-skills .row-delete,
@@ -1059,43 +902,17 @@ html[data-theme] #outfit-list .outfit-delete-button:hover:not(:disabled){
 
 /* Public-view return link matches the plain two-line editor-header link. */
 html[data-theme] .cast-header__actions .cast-header__back{
-  display:grid!important;
-  grid-template-columns:1fr!important;
-  gap:4px!important;
-  align-items:start!important;
-  justify-content:start!important;
-  min-width:0!important;
-  width:auto!important;
-  margin:0!important;
-  padding:0!important;
-  border:0!important;
-  border-radius:0!important;
   color:var(--text)!important;
   background:transparent!important;
   box-shadow:none!important;
-  font-family:inherit!important;
-  text-align:left!important;
-  text-decoration:none!important;
   text-shadow:none!important;
-  white-space:nowrap!important;
 }
 html[data-theme] .cast-header__actions .cast-header__back span{
   color:var(--text)!important;
-  font-size:1rem!important;
-  font-weight:400!important;
-  line-height:1.25!important;
-  letter-spacing:.035em!important;
   text-shadow:none!important;
 }
 html[data-theme] .cast-header__actions .cast-header__back small{
-  display:block!important;
-  margin:0!important;
   color:var(--text-muted)!important;
-  font-family:monospace!important;
-  font-size:.68rem!important;
-  font-weight:700!important;
-  line-height:1.15!important;
-  letter-spacing:.075em!important;
   text-shadow:none!important;
 }
 html[data-theme] .cast-header__actions .cast-header__back:hover,
