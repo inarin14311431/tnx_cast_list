@@ -70,28 +70,6 @@ html[data-theme] .profile-text{
   background:repeating-linear-gradient(180deg,transparent 0 27px,color-mix(in srgb,var(--line) 5%,transparent) 27px 28px)!important;
 }
 
-/* 4: Give the public-view header button group breathing room on the left. */
-html[data-theme] .cast-header__actions{
-  margin-left:12px!important;
-}
-
-/* 5: Keep the index account controls away from the right edge. */
-html[data-theme] .site-header__operator{
-  box-sizing:border-box!important;
-  width:min(100%,440px)!important;
-  padding-right:14px!important;
-}
-html[data-theme] .auth-navigation{
-  box-sizing:border-box!important;
-  padding-right:2px!important;
-}
-html[data-theme] .auth-navigation__logout{
-  flex-basis:108px!important;
-  min-width:108px!important;
-  padding-left:12px!important;
-  padding-right:12px!important;
-}
-
 /* 6: Summary label and body use firm theme contrast. */
 html[data-theme] .cast-summary{
   color:var(--text)!important;
@@ -204,46 +182,10 @@ html[data-theme] #outfit-container .cast-armor-total{
   color:var(--text)!important;
 }
 
-/* 3: Present reorder controls as ▲ ▼ × and keep all three visible. */
-html[data-theme] [data-skill-move="up"],
-html[data-theme] [data-skill-move="down"]{
-  font-size:.72rem!important;
-  line-height:1!important;
-  text-indent:0!important;
-}
-html[data-theme] [data-skill-move="up"]::before,
-html[data-theme] [data-skill-move="down"]::before,
-html[data-theme] [data-skill-move="up"]::after,
-html[data-theme] [data-skill-move="down"]::after{
-  content:none!important;
-  display:none!important;
-}
-html[data-theme] [data-outfit-move="up"],
-html[data-theme] [data-outfit-move="down"]{
-  font-size:0!important;
-}
-html[data-theme] [data-outfit-move="up"]::before{
-  content:"▲";
-  display:inline!important;
-  font-size:.72rem;
-}
-html[data-theme] [data-outfit-move="down"]::before{
-  content:"▼";
-  display:inline!important;
-  font-size:.72rem;
-}
-html[data-theme] [data-outfit-move="up"]::after,
-html[data-theme] [data-outfit-move="down"]::after{
-  content:none!important;
-  display:none!important;
-}
 html[data-theme] .skill-sort-controls button,
 html[data-theme] .row-delete,
 html[data-theme] .outfit-order-button,
 html[data-theme] .outfit-delete-button{
-  min-width:28px!important;
-  height:28px!important;
-  padding:0 6px!important;
   color:var(--text)!important;
   border:1px solid var(--line-muted)!important;
   background:var(--theme-input-bg)!important;
@@ -281,12 +223,4 @@ html[data-theme="eden"] .owned-cast__links .action-label__jp,
 html[data-theme="eden"] .owned-cast__links .action-label__en{
   color:var(--text)!important;
   text-shadow:none!important;
-}
-
-@media(max-width:760px){
-  html[data-theme] .cast-header__actions{margin-left:0!important}
-}
-@media(max-width:900px){
-  html[data-theme] .site-header__operator{padding-right:0!important}
-  html[data-theme] .auth-navigation{padding-right:0!important}
 }
