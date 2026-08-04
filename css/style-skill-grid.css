@@ -20,7 +20,7 @@
     54px
     minmax(104px,1fr)
     50px
-    96px;
+    var(--style-action-column,96px);
   width:100%;
   min-width:0;
 }
@@ -220,7 +220,7 @@
       46px
       minmax(84px,1fr)
       44px
-      92px;
+      var(--style-action-column,92px);
   }
   #style-skills .style-skill-full-table{font-size:.74rem}
   #style-skills .style-skill-full-table input,
