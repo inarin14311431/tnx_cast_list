@@ -7,10 +7,10 @@
  */
 
 :root{
-  --row-action-width:28px;
+  --row-action-width:30px;
   --row-action-height:30px;
   --row-action-gap:2px;
-  --row-action-column:96px;
+  --row-action-column:100px;
 }
 
 #general-skills .skill-group--ordered .skill-table th:last-child,
@@ -134,7 +134,7 @@
 
 @media(max-width:700px){
   :root{
-    --row-action-width:42px;
+    --row-action-width:40px;
     --row-action-height:40px;
     --row-action-gap:6px;
     --row-action-column:150px;
