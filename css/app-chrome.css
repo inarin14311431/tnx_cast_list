@@ -1,0 +1,131 @@
+/* Shared application chrome: headers and semantic action buttons. */
+:root{
+  --app-control-height:40px;
+  --app-control-radius:2px;
+  --app-control-gap:8px;
+  --app-danger:#ff6677;
+  --app-danger-bg:rgba(255,70,92,.08);
+}
+
+.app-header{
+  box-sizing:border-box;
+  min-height:106px;
+}
+.app-header__system,
+.app-header > p:not([id]),
+.app-header .site-header__system,
+.app-header .cast-header__system{
+  color:var(--panel-muted,var(--text-muted));
+  font:700 .72rem/1.25 monospace;
+  letter-spacing:.14em;
+}
+.app-header h1{
+  line-height:1.12;
+}
+.app-header h1 small,
+.app-header a small{
+  display:block;
+  margin-top:3px;
+  color:var(--panel-muted,var(--text-muted));
+  font:600 .56rem/1.15 monospace;
+  letter-spacing:.08em;
+}
+.app-header a{
+  text-decoration:none;
+}
+
+.ui-button,
+.toolbar button,
+.account-actions > a,
+.account-actions > button,
+.cast-header__actions > a,
+.exp-panel > button,
+.sheet-view-link,
+.archive-pagination button,
+.generator-actions button,
+.dialog-actions button{
+  box-sizing:border-box;
+  min-height:var(--app-control-height);
+  border:1px solid var(--panel-line,var(--line));
+  border-radius:var(--app-control-radius);
+  color:var(--line);
+  background:linear-gradient(180deg,rgba(65,232,255,.09),rgba(65,232,255,.035));
+  font-family:inherit;
+  font-weight:700;
+  line-height:1.15;
+  cursor:pointer;
+  transition:border-color .16s ease,background-color .16s ease,color .16s ease,box-shadow .16s ease,opacity .16s ease;
+}
+.ui-button:hover:not(:disabled),
+.toolbar button:hover:not(:disabled),
+.account-actions > a:hover,
+.account-actions > button:hover:not(:disabled),
+.cast-header__actions > a:hover,
+.exp-panel > button:hover:not(:disabled),
+.sheet-view-link:hover,
+.archive-pagination button:hover:not(:disabled),
+.generator-actions button:hover:not(:disabled),
+.dialog-actions button:hover:not(:disabled){
+  border-color:var(--panel-line-strong,var(--line));
+  background:rgba(65,232,255,.14);
+  box-shadow:0 0 18px rgba(65,232,255,.16);
+}
+.ui-button:focus-visible,
+.toolbar button:focus-visible,
+.account-actions > a:focus-visible,
+.account-actions > button:focus-visible,
+.cast-header__actions > a:focus-visible,
+.exp-panel > button:focus-visible,
+.sheet-view-link:focus-visible{
+  outline:2px solid var(--line);
+  outline-offset:2px;
+}
+.ui-button--primary,
+#save-button[data-save-state="unsaved"],
+#generate-button,
+#publish-button:not(:disabled),
+#save-combo-button{
+  color:#031116;
+  border-color:var(--line);
+  background:var(--line);
+  box-shadow:0 0 18px rgba(65,232,255,.18);
+}
+.ui-button--danger,
+button[data-delete],
+button[data-delete-skill],
+button[data-delete-outfit],
+.act-record__delete,
+[data-delete-participation],
+[data-delete-spending],
+#clear-image-button,
+#delete-combo-button{
+  color:var(--app-danger)!important;
+  border-color:rgba(255,102,119,.65)!important;
+  background:var(--app-danger-bg)!important;
+}
+.ui-button--danger:hover:not(:disabled),
+button[data-delete]:hover:not(:disabled),
+button[data-delete-skill]:hover:not(:disabled),
+button[data-delete-outfit]:hover:not(:disabled),
+.act-record__delete:hover:not(:disabled),
+[data-delete-participation]:hover:not(:disabled),
+[data-delete-spending]:hover:not(:disabled),
+#clear-image-button:hover:not(:disabled),
+#delete-combo-button:hover:not(:disabled){
+  color:#fff!important;
+  border-color:var(--app-danger)!important;
+  background:rgba(255,70,92,.24)!important;
+  box-shadow:0 0 18px rgba(255,70,92,.18)!important;
+}
+.ui-button:disabled,
+button:disabled,
+.is-disabled{
+  opacity:.38;
+  cursor:not-allowed;
+  box-shadow:none!important;
+  filter:saturate(.55);
+}
+
+@media(max-width:980px){
+  .app-header{min-height:0}
+}
