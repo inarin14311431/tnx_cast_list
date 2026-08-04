@@ -102,3 +102,67 @@ body {
     overflow-x: hidden !important;
   }
 }
+
+
+/* Social / Connection row actions
+ * These rows place ▲, ▼ and × inside one .row-action-group.  Keep the
+ * controls visible independently of older cell-direct-child assumptions. */
+#general-skills .skill-group--ordered{
+  --row-action-size:30px;
+  --row-action-gap:2px;
+  --row-action-column:102px;
+}
+#general-skills .skill-group--ordered .skill-table th:last-child,
+#general-skills .skill-group--ordered .skill-table td:last-child{
+  box-sizing:border-box!important;
+  width:var(--row-action-column)!important;
+  min-width:var(--row-action-column)!important;
+  max-width:var(--row-action-column)!important;
+}
+#general-skills .skill-group--ordered .row-action-group{
+  box-sizing:border-box!important;
+  display:grid!important;
+  grid-template-columns:repeat(3,var(--row-action-size))!important;
+  align-items:center!important;
+  justify-content:center!important;
+  gap:var(--row-action-gap)!important;
+  width:calc(var(--row-action-size) * 3 + var(--row-action-gap) * 2)!important;
+  min-width:calc(var(--row-action-size) * 3 + var(--row-action-gap) * 2)!important;
+  margin:0 auto!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+#general-skills .skill-group--ordered .row-action-group > button{
+  box-sizing:border-box!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  width:var(--row-action-size)!important;
+  min-width:var(--row-action-size)!important;
+  max-width:var(--row-action-size)!important;
+  height:var(--row-action-size)!important;
+  min-height:var(--row-action-size)!important;
+  max-height:var(--row-action-size)!important;
+  margin:0!important;
+  padding:0!important;
+  font-size:.9rem!important;
+  line-height:1!important;
+  text-indent:0!important;
+  visibility:visible!important;
+  opacity:1!important;
+}
+#general-skills .skill-group--ordered .row-action-group > button:disabled{
+  opacity:.38!important;
+}
+#general-skills .skill-group--ordered .row-action-group > .row-delete{
+  color:#fff!important;
+  border-color:var(--alert)!important;
+  background:color-mix(in srgb,var(--alert) 86%,#111 14%)!important;
+}
+@media(max-width:767px){
+  #general-skills .skill-group--ordered{
+    --row-action-size:40px;
+    --row-action-gap:6px;
+    --row-action-column:150px;
+  }
+}
