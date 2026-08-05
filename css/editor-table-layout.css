@@ -274,7 +274,7 @@
 #general-skills>.skill-group:nth-child(3) .skill-table td:last-child,
 #general-skills>.skill-group:nth-child(4) .skill-table td:last-child,
 #style-skills .style-skill-full-table td:last-child{display:flex!important;align-items:center!important;justify-content:center!important}
-.row-action-group>.skill-action-button{
+:is(#general-skills,#style-skills,#outfit-list) .skill-action-button{
   box-sizing:border-box!important;
   display:inline-flex!important;
   align-items:center!important;
@@ -298,24 +298,26 @@
   line-height:1!important;
   cursor:pointer!important;
 }
-.row-action-group>.skill-action-delete{
+:is(#general-skills,#style-skills,#outfit-list) .skill-action-delete,
+#outfit-list .outfit-delete-button{
   color:#fff!important;
   border-color:var(--alert)!important;
   background:color-mix(in srgb,var(--alert) 86%,#111 14%)!important;
 }
-.row-action-group>.skill-order-button:hover:not(:disabled){
+:is(#general-skills,#style-skills,#outfit-list) .skill-order-button:hover:not(:disabled){
   color:var(--theme-on-accent,#06151a)!important;
   border-color:var(--line)!important;
   background:var(--line)!important;
 }
-.row-action-group>.skill-action-delete:hover:not(:disabled){
+:is(#general-skills,#style-skills,#outfit-list) .skill-action-delete:hover:not(:disabled),
+#outfit-list .outfit-delete-button:hover:not(:disabled){
   color:#fff!important;
   border-color:color-mix(in srgb,var(--alert) 78%,#fff 22%)!important;
   background:var(--alert)!important;
 }
-.row-action-group>.skill-action-button:disabled{opacity:.38!important;cursor:default!important;box-shadow:none!important}
-.row-action-group>.skill-action-button::before,
-.row-action-group>.skill-action-button::after{content:none!important;display:none!important}
+:is(#general-skills,#style-skills,#outfit-list) .skill-action-button:disabled{opacity:.38!important;cursor:default!important;box-shadow:none!important}
+:is(#general-skills,#style-skills,#outfit-list) .skill-action-button::before,
+:is(#general-skills,#style-skills,#outfit-list) .skill-action-button::after{content:none!important;display:none!important}
 
 /* Fit policy: never replace the editor with a horizontal scroller. */
 @media(max-width:1199px){
@@ -327,7 +329,7 @@
   #style-skills .style-skill-full-table select,
   #style-skills .style-skill-full-table textarea{font-size:.68rem;padding-inline:2px}
 }
-@media(max-width:1199px){
+@media(max-width:767px){
   :root{--row-action-size:24px;--row-action-gap:1px;--row-action-column:78px}
   #style-skills{--style-level-column:30px;--style-suit-column:25px;--style-page-column:32px}
   #general-skills{grid-template-columns:1fr!important;grid-template-rows:auto!important}
