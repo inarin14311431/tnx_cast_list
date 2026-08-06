@@ -2,7 +2,7 @@ import { supabase } from "./supabase-client.js";
 
 const FORMAT = "TNX_CAST_TRANSFER_TSV";
 const VERSION = "1";
-const BOOKMARKLET_URL = "https://inarin14311431.github.io/tnx_cast_list/js/tnx-transfer-bookmarklet.js?v=1";
+const BOOKMARKLET_URL = new URL("./js/tnx-transfer-bookmarklet.js?v=2", location.href).href;
 const STYLE_DETAIL_PREFIX = "@@TNX_STYLE_DETAIL_V1@@";
 const GENERAL_ORDER = ["医療","射撃","知覚","電脳","製作：","心理","自我","交渉","芸術：","運動","回避","白兵","操縦：","信用","圧力","隠密"];
 
@@ -366,8 +366,11 @@ function createTransferTsv({ character, skills, outfits }) {
   for (const [section, records] of skillSets) {
     records.forEach((skill, index) => {
       const detail = section === "style_skill" ? parseStyleDetail(skill) : {};
+      const transferKind = section === "style_skill" && String(skill.skill_kind || "").trim().toLowerCase() === "none"
+        ? "なし"
+        : skill.skill_kind;
       const fields = {
-        name: skill.name, kind: skill.skill_kind, level: skill.level,
+        name: skill.name, kind: transferKind, level: skill.level,
         reason: skill.reason ? 1 : 0, passion: skill.passion ? 1 : 0, life: skill.life ? 1 : 0, mundane: skill.mundane ? 1 : 0,
         skill: detail.skill, limit: detail.limit, timing: detail.timing || skill.timing, target: detail.target || skill.target,
         range: detail.range || skill.range, difficulty: detail.difficulty || skill.difficulty,

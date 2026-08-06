@@ -34,10 +34,10 @@ button:hover small, .account-actions a:hover small, .owned-cast__links a:hover s
   letter-spacing: .06em;
   text-align: left;
 }
-.cocofolia-copy-button { --export-accent: #ff72b9; --export-text: #ffe8f5; }
-.udonarium-export-button { --export-accent: #75ffb4; --export-text: #e4fff1; }
-.transfer-tsv-copy-button { --export-accent: #65eaff; --export-text: #eaffff; }
-.transfer-bookmarklet-copy-button { --export-accent: #b58bff; --export-text: #f2eaff; }
+.cocofolia-copy-button { --export-accent: var(--color-export-cocofolia); }
+.udonarium-export-button { --export-accent: var(--color-export-udonarium); }
+.transfer-tsv-copy-button { --export-accent: var(--color-export-tsv); }
+.transfer-bookmarklet-copy-button { --export-accent: var(--color-export-bookmarklet); }
 .cocofolia-copy-button::before,
 .udonarium-export-button::before,
 .transfer-tsv-copy-button::before,
@@ -52,15 +52,15 @@ button:hover small, .account-actions a:hover small, .owned-cast__links a:hover s
 .cocofolia-copy-button[data-copy-state="copying"],
 .transfer-tsv-copy-button[data-copy-state="copying"],
 .transfer-bookmarklet-copy-button[data-copy-state="copying"],
-.udonarium-export-button[data-export-state="building"] { --export-accent: #ffd166; --export-text: #fff1c4; }
+.udonarium-export-button[data-export-state="building"] { --export-accent: var(--color-export-building); }
 .cocofolia-copy-button[data-copy-state="success"],
 .transfer-tsv-copy-button[data-copy-state="success"],
-.transfer-bookmarklet-copy-button[data-copy-state="success"] { --export-accent: #75ffb4; --export-text: #dffff0; }
-.udonarium-export-button[data-export-state="success"] { --export-accent: #5feaff; --export-text: #e3fcff; }
+.transfer-bookmarklet-copy-button[data-copy-state="success"] { --export-accent: var(--color-export-success); }
+.udonarium-export-button[data-export-state="success"] { --export-accent: var(--color-export-success); }
 .cocofolia-copy-button[data-copy-state="error"],
 .udonarium-export-button[data-export-state="error"],
 .transfer-tsv-copy-button[data-copy-state="error"],
-.transfer-bookmarklet-copy-button[data-copy-state="error"] { --export-accent: #ff6f91; --export-text: #ffdce5; }
+.transfer-bookmarklet-copy-button[data-copy-state="error"] { --export-accent: var(--color-export-error); }
 .cast-header__actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; margin-bottom: 18px; }
 .cast-header__actions .cocofolia-copy-button,
 .cast-header__actions .transfer-tsv-copy-button,

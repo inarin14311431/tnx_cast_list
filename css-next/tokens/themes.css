@@ -131,14 +131,39 @@
 }
 
 :root[data-theme="intron"] {
+  color-scheme: light;
   --color-bg: #f2f2f0;
   --color-surface: #ffffff;
   --color-surface-alt: #e7e7e4;
+  --color-field: #f7f7f4;
   --color-text: #111111;
   --color-muted: #5f5f5b;
+  --color-placeholder: #686863;
   --color-accent: #111111;
   --color-accent-strong: #111111;
   --color-danger: #4b4b48;
+  --color-success: #236b49;
+  --color-warning: #725000;
+  --color-feature: #9b3268;
+  --color-border: #777772;
+  --color-border-muted: #8f8f89;
+  --color-overlay: rgb(17 17 17 / 42%);
+  --color-section-profile: #176b85;
+  --color-section-styles: #9b3268;
+  --color-section-ability: #176b85;
+  --color-section-skills: #1f704b;
+  --color-section-style-skills: #5d48a0;
+  --color-section-outfits: #7f3f99;
+  --color-style-persona: #a12f68;
+  --color-style-key: #6743a8;
+  --color-style-dual: #9a316b;
+  --color-export-cocofolia: #9b3268;
+  --color-export-udonarium: #236b49;
+  --color-export-tsv: #176b85;
+  --color-export-bookmarklet: #5d48a0;
+  --color-export-building: #725000;
+  --color-export-success: #236b49;
+  --color-export-error: #9b334c;
   --theme-body-bg: radial-gradient(circle at 50% -18%, rgba(0,0,0,.055), transparent 42%), linear-gradient(180deg, #fff, #f3f3f1 58%, #e9e9e6);
   --theme-panel-bg: linear-gradient(180deg, rgba(255,255,255,.99), rgba(241,241,238,.99));
 }
@@ -194,7 +219,28 @@
   --color-accent: #206f95;
   --color-accent-strong: #175f82;
   --color-danger: #a55300;
+  --color-success: #176a4a;
+  --color-warning: #765100;
+  --color-feature: #963064;
+  --color-border: #5e8294;
+  --color-border-muted: #7894a2;
   --color-overlay: rgb(36 55 70 / 48%);
+  --color-section-profile: #176b85;
+  --color-section-styles: #9b3268;
+  --color-section-ability: #176b85;
+  --color-section-skills: #1f704b;
+  --color-section-style-skills: #5d48a0;
+  --color-section-outfits: #7f3f99;
+  --color-style-persona: #a12f68;
+  --color-style-key: #6743a8;
+  --color-style-dual: #9a316b;
+  --color-export-cocofolia: #963064;
+  --color-export-udonarium: #176a4a;
+  --color-export-tsv: #176b85;
+  --color-export-bookmarklet: #5d48a0;
+  --color-export-building: #765100;
+  --color-export-success: #176a4a;
+  --color-export-error: #9b334c;
   --theme-body-bg: radial-gradient(circle at 88% 10%, rgba(62,155,198,.18), transparent 27%), radial-gradient(circle at 10% 80%, rgba(72,193,181,.12), transparent 30%), linear-gradient(145deg, #f8fbfc, #eaf3f8 58%, #f3f8fa);
   --theme-panel-bg: linear-gradient(145deg, rgba(255,255,255,.97), rgba(235,245,249,.96));
 }

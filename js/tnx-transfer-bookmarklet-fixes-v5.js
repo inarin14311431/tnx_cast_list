@@ -31,8 +31,7 @@
   }
 
   function isSeparator(record){
-    const kind=clean(record?.kind).toLowerCase();
-    return kind==="none"||kind==="なし"||String(record?.description||"").includes(MARKER);
+    return String(record?.description||"").includes(MARKER);
   }
 
   function notify(element){

@@ -17,12 +17,12 @@ body[data-page="sheet.html"] .sheet-header > div:nth-child(2) h1 small { margin-
 }
 .sheet-main { grid-column: 2; display: grid; min-width: 0; gap: 18px; }
 .sheet-section { --sheet-section-accent: var(--color-accent); overflow: hidden; border: 1px solid color-mix(in srgb, var(--sheet-section-accent) 42%, var(--color-border-muted)); border-radius: 5px; background: color-mix(in srgb, var(--color-surface) 94%, transparent); box-shadow: inset 0 3px 0 color-mix(in srgb, var(--sheet-section-accent) 72%, transparent), 0 8px 28px rgb(0 0 0 / 18%), inset 2px 0 0 color-mix(in srgb, var(--sheet-section-accent) 22%, transparent); }
-.sheet-section--profile { --sheet-section-accent: #5fe7ff; }
-.sheet-section--styles { --sheet-section-accent: #ff7bc8; }
-.sheet-section--ability { --sheet-section-accent: #5fe7ff; }
-.sheet-section--skills { --sheet-section-accent: #82f2b0; }
-.sheet-section--style-skills { --sheet-section-accent: #9f8cff; }
-.sheet-section--outfits { --sheet-section-accent: #d998ff; }
+.sheet-section--profile { --sheet-section-accent: var(--color-section-profile); }
+.sheet-section--styles { --sheet-section-accent: var(--color-section-styles); }
+.sheet-section--ability { --sheet-section-accent: var(--color-section-ability); }
+.sheet-section--skills { --sheet-section-accent: var(--color-section-skills); }
+.sheet-section--style-skills { --sheet-section-accent: var(--color-section-style-skills); }
+.sheet-section--outfits { --sheet-section-accent: var(--color-section-outfits); }
 .section-toggle { display: flex; position: relative; width: 100%; min-height: 50px; align-items: baseline; gap: .55rem; padding: 13px 48px 13px 17px; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--sheet-section-accent) 34%, var(--color-border-muted)); color: var(--sheet-section-accent); background: linear-gradient(90deg, color-mix(in srgb, var(--sheet-section-accent) 16%, transparent), color-mix(in srgb, var(--sheet-section-accent) 3.5%, transparent) 48%, transparent 78%); box-shadow: inset 3px 0 0 color-mix(in srgb, var(--sheet-section-accent) 66%, transparent); cursor: pointer; text-align: left; font-size: 1rem; font-weight: 800; line-height: 1.2; letter-spacing: .025em; }
 .section-toggle small { color: var(--color-muted); font: 600 .68rem/1.1 var(--font-data); letter-spacing: .12em; opacity: .72; }
 .section-toggle::after { content: "⌄"; position: absolute; top: 50%; right: 18px; color: var(--color-muted); font-size: 1.35rem; transform: translateY(-50%) rotate(-90deg); transition: transform var(--transition-fast), color var(--transition-fast); }
@@ -90,19 +90,19 @@ body[data-page="sheet.html"] .form-grid { display: grid; grid-template-columns: 
 .sheet-image-editor .image-message { min-height: 18px; margin-top: 9px; color: var(--color-muted); font: .66rem/1.4 var(--font-data); }
 .sheet-image-editor .image-message--success { color: var(--color-accent); }
 .sheet-image-editor .image-message--error { color: var(--color-danger); }
-.sheet-image-editor .image-message--loading { color: #ffd166; }
+.sheet-image-editor .image-message--loading { color: var(--color-warning); }
 @keyframes sheet-image-scan { from { transform: translateY(0); } to { transform: translateY(770%); } }
 
 .style-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; min-width: 0; padding: 4px; }
 .style-card { position: relative; min-width: 0; padding: 16px 14px 0; overflow: hidden; border: 2px solid color-mix(in srgb, var(--color-accent) 42%, transparent); background: linear-gradient(145deg, color-mix(in srgb, var(--color-accent) 8%, transparent), color-mix(in srgb, var(--color-bg) 82%, #020a0f) 52%), rgb(0 0 0 / 28%); box-shadow: inset 0 0 24px color-mix(in srgb, var(--color-accent) 4.5%, transparent); transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease, background .2s ease; }
-.style-card::before { position: absolute; top: 8px; right: 10px; color: color-mix(in srgb, var(--color-accent) 34%, transparent); font: 800 .67rem/1 var(--font-data); letter-spacing: .14em; pointer-events: none; }
+.style-card::before { position: absolute; top: 8px; right: 10px; color: color-mix(in srgb, var(--color-accent) 55%, var(--color-muted)); font: 800 .67rem/1 var(--font-data); letter-spacing: .14em; pointer-events: none; }
 .style-card:nth-child(1)::before { content: "STYLE 01"; }
 .style-card:nth-child(2)::before { content: "STYLE 02"; }
 .style-card:nth-child(3)::before { content: "STYLE 03"; }
 .style-card h3 { margin: 0 0 8px; color: var(--color-accent); }
 .style-card label { display: grid; gap: 3px; color: var(--color-muted); font-size: .76rem; }
 .style-card .style-fields { position: relative; z-index: 1; }
-.style-card .style-fields > label:first-child { gap: 8px; color: color-mix(in srgb, var(--color-accent) 42%, white); font-size: .82rem; font-weight: 800; letter-spacing: .08em; }
+.style-card .style-fields > label:first-child { gap: 8px; color: color-mix(in srgb, var(--color-accent) 42%, var(--color-text)); font-size: .82rem; font-weight: 800; letter-spacing: .08em; }
 .style-card .style-fields > label:first-child select { min-height: 56px; padding: 0 42px 0 14px; border: 2px solid color-mix(in srgb, var(--color-accent) 68%, transparent); color: var(--color-text); background: linear-gradient(90deg, color-mix(in srgb, var(--color-surface) 96%, var(--color-accent) 4%), color-mix(in srgb, var(--color-bg) 96%, transparent)); font-size: 1.18rem; font-weight: 900; line-height: normal; letter-spacing: .045em; text-shadow: var(--shadow-glow); box-shadow: inset 0 0 18px color-mix(in srgb, var(--color-accent) 6%, transparent); cursor: pointer; transition: border-color .18s ease, box-shadow .18s ease, background .18s ease; }
 .style-card .style-fields > label:first-child select:hover { border-color: var(--color-accent-strong); background: linear-gradient(90deg, color-mix(in srgb, var(--color-surface) 88%, var(--color-accent) 12%), var(--color-surface)); }
 .style-card .style-fields > label:first-child select:focus { border-color: var(--color-text); outline: 0; box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 30%, transparent), var(--shadow-glow), inset 0 0 20px color-mix(in srgb, var(--color-accent) 10%, transparent); }

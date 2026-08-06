@@ -139,7 +139,7 @@
     const value=clean(kind).toLowerCase();
     if(["secret","秘技"].includes(value))return"20";
     if(["ultimate","奥義"].includes(value))return"50";
-    if(["direction","演出","なし"].includes(value))return"0";
+    if(["none","direction","演出","なし"].includes(value))return"0";
     return"10";
   }
 

@@ -1,6 +1,7 @@
 (async()=>{
   const FORMAT="TNX_CAST_TRANSFER_TSV";
   const STYLE_SEPARATOR_MARKER="[[STYLE_SEPARATOR]]";
+  const RESOURCE_BASE=new URL(".",document.currentScript?.src||"https://inarin14311431.github.io/tnx_cast_list/js/tnx-transfer-bookmarklet.js");
   const load=src=>new Promise((resolve,reject)=>{
     const script=document.createElement("script");
     script.src=src;
@@ -8,6 +9,11 @@
     script.onerror=()=>{script.remove();reject(new Error(`転記スクリプトを読み込めませんでした: ${src}`))};
     document.documentElement.append(script);
   });
+  const localResource=name=>{
+    const url=new URL(name,RESOURCE_BASE);
+    url.searchParams.set("t",Date.now());
+    return url.href;
+  };
 
   function normalizeStyleSeparatorLevels(text){
     const lines=String(text||"").replace(/\r/g,"").split("\n");
@@ -25,10 +31,7 @@
 
     const separatorIndexes=new Set(
       [...styleRecords]
-        .filter(([,record])=>{
-          const kind=String(record.kind||"").trim().toLowerCase();
-          return kind==="none"||kind==="なし"||String(record.description||"").includes(STYLE_SEPARATOR_MARKER);
-        })
+        .filter(([,record])=>String(record.description||"").includes(STYLE_SEPARATOR_MARKER))
         .map(([index])=>index)
     );
 
@@ -72,10 +75,10 @@
     }
 
     await load("https://cdn.jsdelivr.net/gh/inarin14311431/tnx_cast_list@893d5243ca5dedd2f525f23d6a4536f96d9fd772/js/tnx-transfer-bookmarklet.js");
-    await load(`https://inarin14311431.github.io/tnx_cast_list/js/tnx-transfer-bookmarklet-fixes.js?t=${Date.now()}`);
-    await load(`https://inarin14311431.github.io/tnx_cast_list/js/tnx-transfer-bookmarklet-fixes-v3.js?t=${Date.now()}`);
-    await load(`https://inarin14311431.github.io/tnx_cast_list/js/tnx-transfer-bookmarklet-fixes-v4.js?t=${Date.now()}`);
-    await load(`https://inarin14311431.github.io/tnx_cast_list/js/tnx-transfer-bookmarklet-fixes-v5.js?t=${Date.now()}`);
+    await load(localResource("tnx-transfer-bookmarklet-fixes.js"));
+    await load(localResource("tnx-transfer-bookmarklet-fixes-v3.js"));
+    await load(localResource("tnx-transfer-bookmarklet-fixes-v4.js"));
+    await load(localResource("tnx-transfer-bookmarklet-fixes-v5.js"));
 
     if(overridden&&clipboard&&originalReadText){
       window.setTimeout(()=>{

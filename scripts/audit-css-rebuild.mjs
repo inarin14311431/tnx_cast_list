@@ -17,6 +17,18 @@ async function filesUnder(directory, extension) {
 }
 
 const relative = file => path.relative(root, file).replaceAll(path.sep, "/");
+const themeBlock = (source, theme) => source.match(new RegExp(`:root\\[data-theme="${theme}"\\]\\s*\\{([\\s\\S]*?)\\}`))?.[1] || "";
+const themeHexToken = (block, token) => block.match(new RegExp(`--${token}\\s*:\\s*(#[0-9a-fA-F]{6})\\s*;`))?.[1];
+const relativeLuminance = hex => {
+  const channels = hex.slice(1).match(/.{2}/g).map(value => parseInt(value, 16) / 255);
+  const linear = channels.map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4);
+  return .2126 * linear[0] + .7152 * linear[1] + .0722 * linear[2];
+};
+const contrastRatio = (foreground, background) => {
+  const a = relativeLuminance(foreground);
+  const b = relativeLuminance(background);
+  return (Math.max(a, b) + .05) / (Math.min(a, b) + .05);
+};
 const violations = [];
 const cssFiles = await filesUnder(path.join(root, "css-next"), ".css");
 const selectorOwners = new Map();
@@ -68,6 +80,58 @@ const invalidThemeSelectorLine = themeTokenSource
   .find(line => !/^:root(?:\[data-theme="[a-z-]+"\])?(?:\s*,)?\s*\{$/.test(line));
 if (invalidThemeSelectorLine) {
   violations.push(`css-next/tokens/themes.css: component selector found: ${invalidThemeSelectorLine}`);
+}
+
+const lightThemeTextChecks = [
+  ["color-text", "color-surface", 4.5],
+  ["color-muted", "color-surface", 4.5],
+  ["color-placeholder", "color-field", 4.5],
+  ["color-accent", "color-surface", 4.5],
+  ["color-danger", "color-surface", 4.5],
+  ["color-success", "color-surface", 4.5],
+  ["color-warning", "color-surface", 4.5],
+  ["color-feature", "color-surface", 4.5],
+  ["color-border-muted", "color-surface", 3]
+];
+const lightThemeSectionTokens = [
+  "color-section-profile", "color-section-styles", "color-section-ability",
+  "color-section-skills", "color-section-style-skills", "color-section-outfits"
+];
+const lightThemeAccentTokens = [
+  "color-style-persona", "color-style-key", "color-style-dual",
+  "color-export-cocofolia", "color-export-udonarium", "color-export-tsv",
+  "color-export-bookmarklet", "color-export-building", "color-export-success", "color-export-error"
+];
+for (const theme of ["intron", "orbital"]) {
+  const block = themeBlock(themeTokenSource, theme);
+  if (!/color-scheme:\s*light\s*;/.test(block)) {
+    violations.push(`css-next/tokens/themes.css: ${theme} is missing color-scheme: light`);
+  }
+  for (const [foregroundToken, backgroundToken, minimum] of lightThemeTextChecks) {
+    const foreground = themeHexToken(block, foregroundToken);
+    const background = themeHexToken(block, backgroundToken);
+    if (!foreground || !background) {
+      violations.push(`css-next/tokens/themes.css: ${theme} light-theme contrast token missing ${foregroundToken}/${backgroundToken}`);
+      continue;
+    }
+    const ratio = contrastRatio(foreground, background);
+    if (ratio < minimum) {
+      violations.push(`css-next/tokens/themes.css: ${theme} ${foregroundToken}/${backgroundToken} contrast ${ratio.toFixed(2)} < ${minimum}`);
+    }
+  }
+  const surface = themeHexToken(block, "color-surface");
+  for (const token of lightThemeSectionTokens) {
+    const color = themeHexToken(block, token);
+    if (!color || contrastRatio(color, surface) < 4.5) {
+      violations.push(`css-next/tokens/themes.css: ${theme} section token ${token} is below 4.5:1 on surface`);
+    }
+  }
+  for (const token of lightThemeAccentTokens) {
+    const color = themeHexToken(block, token);
+    if (!color || contrastRatio(color, surface) < 3) {
+      violations.push(`css-next/tokens/themes.css: ${theme} accent token ${token} is below 3:1 on surface`);
+    }
+  }
 }
 
 const nextThemeControllerSource = await readFile(path.join(root, "js", "css-next-theme.js"), "utf8");
@@ -136,23 +200,43 @@ if (!/body\[data-page="cast\.html"\] \.ability-grid\s*\{[^}]*repeat\(4[^}]*minma
 const castGeometry = {
   anchor: Number(castPageSource.match(/--cast-suit-anchor:\s*(\d+)px/)?.[1]),
   suit: Number(castPageSource.match(/--cast-suit-column:\s*(\d+)px/)?.[1]),
+  compactWidth: Number(castPageSource.match(/--cast-compact-skill-width:\s*(\d+)px/)?.[1]),
+  generalSlotWidth: Number(castPageSource.match(/\.cast-general-columns\s*\{[^}]*repeat\(2,\s*(\d+)px\)/s)?.[1]),
+  sideSlotWidth: Number(castPageSource.match(/\.cast-skill-layout\s*\{[^}]*minmax\(0,\s*1fr\)\s+(\d+)px/s)?.[1]),
   generalName: Number(castPageSource.match(/col\.skill-col-name\s*\{\s*width:\s*(\d+)px/)?.[1]),
   generalLevel: Number(castPageSource.match(/col\.skill-col-level\s*\{\s*width:\s*(\d+)px/)?.[1]),
   styleName: Number(castPageSource.match(/col\.style-col-name\s*\{\s*width:\s*(\d+)px/)?.[1]),
   styleKind: Number(castPageSource.match(/col\.style-col-kind\s*\{\s*width:\s*(\d+)px/)?.[1]),
   styleLevel: Number(castPageSource.match(/col\.style-col-level\s*\{\s*width:\s*(\d+)px/)?.[1])
 };
-if (castGeometry.anchor !== 260 ||
+if (castGeometry.anchor !== 240 ||
     castGeometry.suit !== 48 ||
+    castGeometry.compactWidth !== 432 ||
+    castGeometry.generalName + castGeometry.generalLevel + (castGeometry.suit * 4) !== castGeometry.compactWidth ||
+    castGeometry.generalSlotWidth - castGeometry.compactWidth < 8 ||
+    castGeometry.sideSlotWidth - castGeometry.compactWidth < 8 ||
     castGeometry.generalName + castGeometry.generalLevel !== castGeometry.anchor ||
+    castGeometry.styleName !== 144 ||
+    castGeometry.styleKind !== 48 ||
+    castGeometry.styleLevel !== 48 ||
     castGeometry.styleName + castGeometry.styleKind + castGeometry.styleLevel !== castGeometry.anchor) {
   violations.push(`css-next/pages/cast.css: skill suit anchor mismatch ${JSON.stringify(castGeometry)}`);
 }
-if (!castPageSource.includes(".cast-general-columns") ||
-    !/\.cast-general-columns\s*\{[^}]*452px/s.test(castPageSource) ||
-    !/\.cast-general-column--left \.skill-data-table--general col\.skill-col-name\s*\{\s*width:\s*212px/s.test(castPageSource) ||
-    !/\.cast-general-column--left \.skill-data-table--general col\.skill-col-level\s*\{\s*width:\s*48px/s.test(castPageSource)) {
-  violations.push("css-next/pages/cast.css: two-column public General-skill layout or left 260px suit anchor missing");
+if (!/\.style-skill-view-table \.style-suit-cell\s*\{[^}]*text-align:\s*center/s.test(castPageSource)) {
+  violations.push("css-next/pages/cast.css: public Style-skill suit marks are not centered on the General-skill suit columns");
+}
+if (!/\.cast-general-columns\s*\{[^}]*grid-template-columns:\s*repeat\(2,\s*440px\)[^}]*overflow-x:\s*hidden/s.test(castPageSource) ||
+    !/\.cast-skill-layout\s*\{[^}]*grid-template-columns:\s*minmax\(0,\s*1fr\)\s+440px/s.test(castPageSource) ||
+    !/@media \(max-width:\s*1409px\)[\s\S]*?\.cast-skill-layout\s*\{\s*grid-template-columns:\s*1fr/s.test(castPageSource) ||
+    !/--cast-compact-skill-width:\s*432px/s.test(castPageSource) ||
+    !/\.cast-general-column \.data-table, \.cast-skill-layout :is\(\.skill-data-table--social, \.skill-data-table--connection\)\s*\{[^}]*width:\s*var\(--cast-compact-skill-width\)[^}]*min-width:\s*var\(--cast-compact-skill-width\)[^}]*max-width:\s*var\(--cast-compact-skill-width\)/s.test(castPageSource) ||
+    !/\.cast-skill-layout :is\(\.skill-data-table--general, \.skill-data-table--social, \.skill-data-table--connection\) col\.skill-col-name\s*\{\s*width:\s*192px/s.test(castPageSource) ||
+    !/\.cast-skill-layout :is\(\.skill-data-table--general, \.skill-data-table--social, \.skill-data-table--connection\) col\.skill-col-level\s*\{\s*width:\s*48px/s.test(castPageSource) ||
+    !/\.cast-skill-layout :is\(\.skill-data-table--general, \.skill-data-table--social, \.skill-data-table--connection\) col\.skill-col-suit\s*\{\s*width:\s*var\(--cast-suit-column\)/s.test(castPageSource)) {
+  violations.push("css-next/pages/cast.css: General / Social / Connection fields do not share the 432px scroll-free geometry with border slack");
+}
+if (!/\.style-skill-view-table\s*\{[^}]*width:\s*1328px[^}]*min-width:\s*1328px[^}]*max-width:\s*1328px/s.test(castPageSource)) {
+  violations.push("css-next/pages/cast.css: public Style-skill table can stretch and redistribute the fixed suit columns");
 }
 if (!/\.cast-tab\s*\{[^}]*color:\s*var\(--color-accent\)[^}]*background:/s.test(castPageSource) ||
     !/\.cast-tab\.is-active small\s*\{\s*color:\s*inherit/s.test(castPageSource)) {

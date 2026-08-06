@@ -198,7 +198,7 @@
     const text=clean(value).toLowerCase();
     if(["secret","秘技"].includes(text))return{label:"秘技",expbase:20};
     if(["ultimate","奥義"].includes(text))return{label:"奥義",expbase:50};
-    if(["direction","演出","なし"].includes(text))return{label:"なし",expbase:1};
+    if(["none","direction","演出","なし"].includes(text))return{label:"なし",expbase:1};
     return{label:"特技",expbase:10};
   }
 
