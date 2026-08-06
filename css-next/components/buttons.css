@@ -1,0 +1,72 @@
+button, .account-actions a, .owned-cast__links a {
+  min-height: 42px;
+  padding: 9px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-control);
+  color: var(--color-accent);
+  background: linear-gradient(135deg, var(--color-accent-soft), color-mix(in srgb, var(--color-surface) 85%, transparent));
+  cursor: pointer;
+  text-decoration: none;
+  transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+button:hover, .account-actions a:hover, .owned-cast__links a:hover { color: var(--color-bg); border-color: var(--color-accent-strong); background: var(--color-accent); box-shadow: var(--shadow-glow); }
+button:active, .account-actions a:active, .owned-cast__links a:active { transform: translateY(1px); }
+button:disabled { opacity: .38; cursor: not-allowed; }
+button small, .account-actions small, .owned-cast__links small { display: block; margin-top: 2px; color: var(--color-muted); font-size: .54rem; }
+button:hover small, .account-actions a:hover small, .owned-cast__links a:hover small { color: color-mix(in srgb, var(--color-bg) 68%, transparent); }
+
+.cocofolia-copy-button,
+.udonarium-export-button,
+.transfer-tsv-copy-button,
+.transfer-bookmarklet-copy-button {
+  --export-accent: var(--color-accent);
+  --export-text: var(--color-text);
+  position: relative;
+  display: grid;
+  gap: 3px;
+  min-height: 44px;
+  padding: 9px 14px;
+  overflow: hidden;
+  border-color: var(--export-accent);
+  color: var(--export-text);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--export-accent) 18%, transparent), var(--color-accent-soft));
+  font: 800 .76rem/1.1 monospace;
+  letter-spacing: .06em;
+  text-align: left;
+}
+.cocofolia-copy-button { --export-accent: #ff72b9; --export-text: #ffe8f5; }
+.udonarium-export-button { --export-accent: #75ffb4; --export-text: #e4fff1; }
+.transfer-tsv-copy-button { --export-accent: #65eaff; --export-text: #eaffff; }
+.transfer-bookmarklet-copy-button { --export-accent: #b58bff; --export-text: #f2eaff; }
+.cocofolia-copy-button::before,
+.udonarium-export-button::before,
+.transfer-tsv-copy-button::before,
+.transfer-bookmarklet-copy-button::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  content: "";
+  background: var(--export-accent);
+  box-shadow: 0 0 12px var(--export-accent);
+}
+.cocofolia-copy-button[data-copy-state="copying"],
+.transfer-tsv-copy-button[data-copy-state="copying"],
+.transfer-bookmarklet-copy-button[data-copy-state="copying"],
+.udonarium-export-button[data-export-state="building"] { --export-accent: #ffd166; --export-text: #fff1c4; }
+.cocofolia-copy-button[data-copy-state="success"],
+.transfer-tsv-copy-button[data-copy-state="success"],
+.transfer-bookmarklet-copy-button[data-copy-state="success"] { --export-accent: #75ffb4; --export-text: #dffff0; }
+.udonarium-export-button[data-export-state="success"] { --export-accent: #5feaff; --export-text: #e3fcff; }
+.cocofolia-copy-button[data-copy-state="error"],
+.udonarium-export-button[data-export-state="error"],
+.transfer-tsv-copy-button[data-copy-state="error"],
+.transfer-bookmarklet-copy-button[data-copy-state="error"] { --export-accent: #ff6f91; --export-text: #ffdce5; }
+.cast-header__actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; margin-bottom: 18px; }
+.cast-header__actions .cocofolia-copy-button,
+.cast-header__actions .transfer-tsv-copy-button,
+.cast-header__actions .transfer-bookmarklet-copy-button { min-width: 158px; }
+.cast-header__actions .udonarium-export-button { min-width: 170px; }
+.exp-panel > .cocofolia-copy-button,
+.exp-panel > .udonarium-export-button,
+.exp-panel > .transfer-tsv-copy-button,
+.exp-panel > .transfer-bookmarklet-copy-button { width: 100%; margin-top: 10px; }

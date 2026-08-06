@@ -1,7 +1,7 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js";
+import { requireAuth } from "./auth-state.js?v=4";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
-import { SITE_BASE_PATH } from "./config.js";
+import { SITE_BASE_PATH } from "./config.js?v=2";
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];
@@ -91,6 +91,23 @@ function bind() {
     const deleteSkill = event.target.closest("[data-delete-skill]");
     if (deleteSkill) {
       skills = skills.filter(item => item._key !== deleteSkill.dataset.deleteSkill);
+      renderSkills();
+      recalc();
+      markDirty();
+      return;
+    }
+
+    const moveSkill = event.target.closest("[data-skill-move]");
+    if (moveSkill) {
+      const key = moveSkill.dataset.skillKey;
+      const index = skills.findIndex(item => item._key === key);
+      if (index < 0) return;
+      const category = skills[index].category;
+      const step = moveSkill.dataset.skillMove === "up" ? -1 : 1;
+      let other = index + step;
+      while (other >= 0 && other < skills.length && skills[other].category !== category) other += step;
+      if (other < 0 || other >= skills.length) return;
+      [skills[index], skills[other]] = [skills[other], skills[index]];
       renderSkills();
       recalc();
       markDirty();
@@ -503,20 +520,26 @@ function mergedGeneral() {
 }
 
 function renderSkills() {
-  $("#general-skills").innerHTML = [
-    skillTable("一般技能", "GENERAL SKILLS", mergedGeneral(), false),
-    skillTable("社会", "SOCIAL", skills.filter(item => item.category === "social"), false),
-    skillTable("コネクション", "CONNECTIONS", skills.filter(item => item.category === "connection"), false)
-  ].join("");
+  const general = mergedGeneral();
+  const splitIndex = general.findIndex(item => item.name === "交渉") + 1;
+  const firstGeneral = splitIndex > 0 ? general.slice(0, splitIndex) : general;
+  const secondGeneral = splitIndex > 0 ? general.slice(splitIndex) : [];
+  $("#general-skills").innerHTML = `
+    <div class="general-skill-columns">
+      ${skillTable("一般技能", "GENERAL SKILLS", firstGeneral, false, "general general-skill-column general-skill-column--first")}
+      ${skillTable("一般技能", "GENERAL SKILLS", secondGeneral, false, "general general-skill-column general-skill-column--second")}
+    </div>
+    ${skillTable("社会", "SOCIAL", skills.filter(item => item.category === "social"), false, "social skill-group--ordered")}
+    ${skillTable("コネクション", "CONNECTIONS", skills.filter(item => item.category === "connection"), false, "connection skill-group--ordered")}`;
   $("#style-skills").innerHTML =
-    skillTable("スタイル技能", "STYLE SKILLS", skills.filter(item => item.category === "style"), true);
+    skillTable("スタイル技能", "STYLE SKILLS", skills.filter(item => item.category === "style"), true, "style");
   bindSkillRows();
 }
 
-function skillTable(jp, en, rows, detail) {
-  if (!rows.length) return "";
+function skillTable(jp, en, rows, detail, category = "") {
+  if (!rows.length && !category.startsWith("general")) return "";
   return `
-    <section class="skill-group">
+    <section class="skill-group ${esc(category)}" data-skill-category="${esc(category.split(" ")[0])}">
       <h3 class="skill-group-title">${jp} <small>${en}</small></h3>
       <table class="skill-table ${detail ? "has-detail" : "no-detail"}">
         <thead><tr><th class="name-col">名称</th><th class="type-col">種別</th><th class="lv-col">LV</th>${MARKS.map(mark => `<th class="suit-col">${mark}</th>`).join("")}${detail ? "<th>詳細</th>" : ""}<th></th></tr></thead>
@@ -545,13 +568,21 @@ function skillRow(skill, detail) {
     ? ` data-general-slot-column="${esc(skill._slotColumn || "right")}"`
     : "";
 
+  const ordered = skill.category === "social" || skill.category === "connection";
+  const categoryRows = ordered ? skills.filter(item => item.category === skill.category) : [];
+  const categoryIndex = ordered ? categoryRows.findIndex(item => item._key === skill._key) : -1;
+  const actions = `<div class="row-actions skill-row-actions">
+    ${ordered ? `<button class="row-action row-action--up" data-action="move-up" data-skill-move="up" data-skill-key="${skill._key}" type="button" aria-label="上へ移動" ${categoryIndex === 0 ? "disabled" : ""}>▲</button><button class="row-action row-action--down" data-action="move-down" data-skill-move="down" data-skill-key="${skill._key}" type="button" aria-label="下へ移動" ${categoryIndex === categoryRows.length - 1 ? "disabled" : ""}>▼</button>` : ""}
+    <button class="row-action row-action--delete" data-action="delete" data-delete-skill="${skill._key}" type="button" aria-label="削除">×</button>
+  </div>`;
+
   return `<tr data-skill-key="${skill._key}"${slotAttribute}>
     <td><input data-f="name" value="${esc(skill.name)}"></td>
     <td><select data-f="skill_kind">${kinds.map(value => `<option value="${value}" ${skill.skill_kind === value ? "selected" : ""}>${labels[value]}</option>`).join("")}</select></td>
     <td><input data-f="level" type="number" min="0" value="${Number(skill.level) || 0}"></td>
     ${SUITS.map((suit, index) => `<td class="suit-cell"><label class="suit-check"><input data-f="${suit}" type="checkbox" ${skill[suit] ? "checked" : ""}><span>${MARKS[index]}</span></label></td>`).join("")}
     ${detail ? `<td><textarea data-f="description" rows="2">${esc(skill.description || skill.timing || "")}</textarea></td>` : ""}
-    <td><button class="row-delete skill-action-button skill-action-delete" data-delete-skill="${skill._key}" type="button">×</button></td>
+    <td>${actions}</td>
   </tr>`;
 }
 

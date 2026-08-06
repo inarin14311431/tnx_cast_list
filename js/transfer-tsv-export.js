@@ -6,21 +6,11 @@ const BOOKMARKLET_URL = "https://inarin14311431.github.io/tnx_cast_list/js/tnx-t
 const STYLE_DETAIL_PREFIX = "@@TNX_STYLE_DETAIL_V1@@";
 const GENERAL_ORDER = ["医療","射撃","知覚","電脳","製作：","心理","自我","交渉","芸術：","運動","回避","白兵","操縦：","信用","圧力","隠密"];
 
-ensureStylesheet();
 const { transferButton, bookmarkletButton } = ensureButtons();
 const publicId = new URLSearchParams(location.search).get("id")?.trim() || "";
 const isSheetEditor = Boolean(document.querySelector("#character-name"));
 
 if (transferButton) initialize();
-
-function ensureStylesheet() {
-  if (document.querySelector('link[data-transfer-tsv-style]')) return;
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = "./css/transfer-tsv-export.css?v=1";
-  link.dataset.transferTsvStyle = "1";
-  document.head.append(link);
-}
 
 function createButton(id, className, main, sub) {
   const button = document.createElement("button");

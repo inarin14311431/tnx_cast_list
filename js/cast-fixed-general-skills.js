@@ -50,6 +50,45 @@
     return row;
   }
 
+  function splitGeneralColumns(section) {
+    if (section.querySelector('.cast-general-columns')) return;
+    const wrapper = section.querySelector(':scope > .data-table-wrapper');
+    const table = wrapper?.querySelector(':scope > table');
+    const body = table?.tBodies?.[0];
+    if (!wrapper || !table || !body) return;
+
+    const rows = [...body.rows];
+    const splitIndex = rows.findIndex(row => familyName(row.cells?.[0]?.textContent) === '交渉');
+    const splitAt = splitIndex >= 0 ? splitIndex + 1 : Math.ceil(rows.length / 2);
+    if (splitAt <= 0 || splitAt >= rows.length) return;
+
+    const columns = document.createElement('div');
+    columns.className = 'cast-general-columns';
+    const left = document.createElement('div');
+    left.className = 'cast-general-column cast-general-column--left';
+    const right = document.createElement('div');
+    right.className = 'cast-general-column cast-general-column--right';
+
+    wrapper.classList.add('cast-general-table-wrapper');
+    left.append(wrapper);
+
+    const rightWrapper = wrapper.cloneNode(false);
+    const rightTable = table.cloneNode(false);
+    rightTable.classList.add('skill-data-table--general-secondary');
+    const colgroup = table.querySelector(':scope > colgroup')?.cloneNode(true);
+    const thead = table.tHead?.cloneNode(true);
+    const rightBody = document.createElement('tbody');
+    if (colgroup) rightTable.append(colgroup);
+    if (thead) rightTable.append(thead);
+    rightTable.append(rightBody);
+    rows.slice(splitAt).forEach(row => rightBody.append(row));
+    rightWrapper.append(rightTable);
+    right.append(rightWrapper);
+
+    columns.append(left, right);
+    section.querySelector(':scope > h3')?.insertAdjacentElement('afterend', columns);
+  }
+
   function enhance() {
     if (completed) return true;
 
@@ -81,6 +120,8 @@
     sorted.forEach((row, index) => {
       if (tbody.rows[index] !== row) tbody.insertBefore(row, tbody.rows[index] || null);
     });
+
+    splitGeneralColumns(section);
 
     completed = true;
     observer?.disconnect();

@@ -53,16 +53,9 @@
       importGuide.textContent = 'キャラシ倉庫で取得したJSONを貼り付けてください。反映後に内容を確認し、画面左の保存ボタンを押すまでDBには保存されません。';
     }
 
-    const statuses = [
-      document.querySelector('#personal-data-status'),
-      document.querySelector('#life-path-status')
-    ].filter(Boolean);
-    for (const status of statuses) {
-      if (!status.textContent || /保存|登録/.test(status.textContent)) {
-        status.textContent = '保存ボタンで保存されます。';
-        status.className = '';
-      }
-    }
+    document.querySelectorAll('#personal-data-status,#life-path-status').forEach(status => {
+      if (status.textContent.trim() === '保存ボタンで保存されます。') status.textContent = '';
+    });
   }
 
   if (document.readyState === 'loading') {

@@ -1,0 +1,87 @@
+.act-history-layout,
+.combo-editor-layout {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  padding-block: 24px 60px;
+}
+
+.act-history-panel,
+.combo-editor-panel {
+  margin-bottom: 18px;
+  border: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface) 94%, transparent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--color-accent) 8%, transparent);
+}
+
+.act-history-panel__header,
+.combo-editor-panel__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--color-border);
+  background: var(--color-surface-alt);
+}
+.act-history-panel__header > div,
+.combo-editor-panel__header > div { display: flex; align-items: center; gap: 10px; }
+.act-history-panel__header span { color: var(--color-accent); font-size: 1.4rem; }
+.act-history-panel__header h2,
+.combo-editor-panel__header h2 { margin: 0; color: var(--color-accent); font-size: 1.05rem; }
+.act-history-panel__header p,
+.combo-editor-panel__header p { margin: 0; color: var(--color-muted); font-size: .72rem; }
+.act-history-panel__body { padding: 16px; }
+.act-history-filters { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)) auto; gap: 12px; align-items: end; }
+.act-history-filters label,
+.experience-spending-form label { color: var(--color-muted); font-size: .78rem; }
+.act-history-filters select,
+.experience-spending-form :is(input, select) { width: 100%; margin-top: 5px; }
+.act-history-summary { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-bottom: 18px; }
+.act-history-summary article { display: grid; gap: 3px; min-height: 112px; align-content: center; padding: 12px; border: 1px solid var(--color-border); background: var(--color-surface); text-align: center; }
+.act-history-summary span { color: var(--color-muted); font-size: .75rem; }
+.act-history-summary strong { color: var(--color-accent-strong); font-size: 2rem; line-height: 1; }
+.act-history-summary small { color: var(--color-muted); font-size: .62rem; letter-spacing: .12em; }
+.act-history-list,
+.experience-spending-list { display: grid; gap: 10px; }
+.act-history-list > article,
+.experience-spending-list > article { padding: 13px; border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent); background: var(--color-surface-alt); }
+.experience-balance-note,
+.experience-spending-status { color: var(--color-muted); }
+.experience-spending-form { display: grid; grid-template-columns: 1.2fr .6fr .8fr 1.6fr auto; gap: 10px; align-items: end; margin-block: 14px; }
+
+.combo-editor-panel__header { padding: 16px; }
+.combo-list { display: grid; gap: 12px; padding: 16px; }
+.combo-list > article,
+.combo-list > button { border: 1px solid var(--color-border); background: var(--color-surface-alt); }
+.combo-message { min-height: 1.4em; padding-inline: 16px; color: var(--color-accent); }
+.combo-dialog { width: min(760px, calc(100% - 24px)); max-height: calc(100dvh - 32px); padding: 0; border: 1px solid var(--color-border); background: var(--color-surface); color: var(--color-text); box-shadow: var(--shadow-glow); }
+.combo-dialog::backdrop { background: rgb(0 4 8 / 78%); backdrop-filter: blur(3px); }
+.combo-dialog form { max-height: calc(100dvh - 34px); overflow: auto; }
+.combo-dialog__header { position: sticky; top: 0; z-index: 1; display: flex; justify-content: space-between; gap: 12px; padding: 15px 18px; border-bottom: 1px solid var(--color-border); background: var(--color-surface-alt); }
+.combo-dialog__header p,
+.combo-dialog__header h2 { margin: 0; }
+.combo-dialog__header p { color: var(--color-muted); font-size: .7rem; }
+.combo-dialog__header h2 { color: var(--color-accent); }
+.combo-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 13px; padding: 18px; }
+.combo-form-grid label { color: var(--color-muted); font-size: .78rem; }
+.combo-form-grid :is(input, select, textarea) { width: 100%; margin-top: 5px; }
+.combo-form-grid__wide { grid-column: 1 / -1; }
+.combo-dialog__actions { position: sticky; bottom: 0; display: flex; justify-content: flex-end; gap: 10px; padding: 13px 18px; border-top: 1px solid var(--color-border); background: var(--color-surface-alt); }
+.combo-dialog__actions .danger { margin-right: auto; border-color: var(--color-danger); color: var(--color-danger); }
+
+@media (max-width: 799px) {
+  .act-history-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .act-history-filters,
+  .experience-spending-form { grid-template-columns: 1fr 1fr; }
+  .act-history-filters button,
+  .experience-spending-form button { grid-column: 1 / -1; }
+}
+@media (max-width: 560px) {
+  .act-history-panel__header,
+  .combo-editor-panel__header { align-items: flex-start; flex-direction: column; }
+  .act-history-summary,
+  .act-history-filters,
+  .experience-spending-form,
+  body[data-page="combos.html"] .combo-form-grid { grid-template-columns: 1fr; }
+  body[data-page="combos.html"] .combo-form-grid__wide { grid-column: auto; }
+}

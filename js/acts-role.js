@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js";
+import { requireAuth } from "./auth-state.js?v=4";
 
 const list = document.querySelector("#act-history-list");
 const roleByParticipationId = new Map();

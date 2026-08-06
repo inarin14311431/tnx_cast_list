@@ -95,7 +95,8 @@
   function moveButton(direction,key){
     const button=document.createElement('button');
     button.type='button';
-    button.className='skill-action-button skill-order-button outfit-order-button';
+    button.className=`row-action row-action--${direction} outfit-order-button`;
+    button.dataset.action=direction==='up'?'move-up':'move-down';
     button.dataset.outfitMove=direction;
     button.dataset.outfitKey=key;
     button.textContent=direction==='up'?'▲':'▼';
@@ -108,11 +109,12 @@
     const td=document.createElement('td');
     td.className='outfit-table-cell outfit-table-cell--actions';
     const controls=document.createElement('span');
-    controls.className='row-action-group outfit-row-actions';
+    controls.className='row-actions outfit-row-actions';
     const key=card.dataset.outfitKey||'';
     const remove=card.querySelector('[data-delete-outfit]');
     if(remove){
-      remove.classList.add('skill-action-button','skill-action-delete','outfit-delete-button');
+      remove.className='row-action row-action--delete outfit-delete-button';
+      remove.dataset.action='delete';
       remove.textContent='×';
       remove.setAttribute('aria-label','削除');
       remove.title='削除';

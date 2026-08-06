@@ -1,21 +1,11 @@
 import { supabase } from "./supabase-client.js";
 import { STYLE_DATA } from "./style-data.js";
 
-ensureStylesheet();
 const button = ensureButton();
 const publicId = new URLSearchParams(location.search).get("id")?.trim() || "";
 const isSheetEditor = Boolean(document.querySelector("#character-name"));
 
 if (button) initialize();
-
-function ensureStylesheet() {
-  if (document.querySelector('link[data-cocofolia-export-style]')) return;
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = "./css/cocofolia-export.css?v=1";
-  link.dataset.cocofoliaExportStyle = "1";
-  document.head.append(link);
-}
 
 function ensureButton() {
   const existing = document.querySelector("#cocofolia-copy-button");

@@ -1,0 +1,69 @@
+.row-actions,
+.row-action-group {
+  box-sizing: border-box;
+  display: inline-grid;
+  grid-auto-flow: column;
+  grid-auto-columns: var(--row-action-size);
+  align-items: center;
+  justify-content: center;
+  gap: var(--row-action-gap);
+  min-width: 0;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.row-action-group,
+.row-actions:has(.row-action--up),
+.outfit-row-actions {
+  grid-template-columns: repeat(3, var(--row-action-size));
+  width: calc(var(--row-action-size) * 3 + var(--row-action-gap) * 2);
+}
+
+:is(.row-action, .skill-action-button) {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: 0 0 var(--row-action-size);
+  align-items: center;
+  justify-content: center;
+  width: var(--row-action-size);
+  min-width: var(--row-action-size);
+  max-width: var(--row-action-size);
+  height: var(--row-action-size);
+  min-height: var(--row-action-size);
+  max-height: var(--row-action-size);
+  margin: 0;
+  padding: 0;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 42%, transparent);
+  border-radius: 4px;
+  color: color-mix(in srgb, var(--color-accent) 58%, var(--color-text));
+  background: color-mix(in srgb, var(--color-surface-alt) 92%, transparent);
+  box-shadow: 0 0 10px color-mix(in srgb, var(--color-accent) 8%, transparent);
+  font: 700 .9rem/1 var(--font-data);
+  cursor: pointer;
+}
+
+:is(.row-action, .skill-action-button):is(:hover, :focus-visible):not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+  background: var(--color-accent);
+  box-shadow: var(--shadow-glow);
+}
+
+:is(.row-action, .skill-action-button):disabled {
+  opacity: .38;
+  cursor: default;
+  box-shadow: none;
+}
+
+:is(.row-action--delete, .skill-action-delete, .outfit-delete-button) {
+  border-color: var(--color-danger);
+  color: #fff;
+  background: color-mix(in srgb, var(--color-danger) 86%, #111 14%);
+}
+
+:is(.row-action--delete, .skill-action-delete, .outfit-delete-button):is(:hover, :focus-visible):not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-danger) 78%, #fff 22%);
+  color: #fff;
+  background: var(--color-danger);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--color-danger) 28%, transparent);
+}

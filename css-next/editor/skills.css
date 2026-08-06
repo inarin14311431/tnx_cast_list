@@ -1,0 +1,37 @@
+/* General / social / connection skills in the editor. */
+#general-skills { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); grid-template-rows: auto auto; gap: 12px; min-width: 0; align-items: start; }
+#general-skills > .general-skill-columns { display: grid; grid-column: 1 / span 2; grid-row: 1 / span 2; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; min-width: 0; align-items: start; }
+#general-skills :is(.general-skill-column, .skill-group--ordered) { min-width: 0; margin: 0; overflow: hidden; }
+#general-skills > .skill-group.social { grid-column: 3; grid-row: 1; }
+#general-skills > .skill-group.connection { grid-column: 3; grid-row: 2; }
+#general-skills .skill-group-heading { box-sizing: border-box; display: flex; min-height: 48px; align-items: center; justify-content: space-between; gap: 8px; margin: 0; }
+#general-skills .skill-group-title { box-sizing: border-box; display: flex; min-width: 0; min-height: 48px; align-items: center; margin: 0; white-space: nowrap; }
+#general-skills .skill-group-actions { display: flex; flex: 0 0 auto; align-items: center; justify-content: flex-end; gap: 6px; margin-left: auto; }
+#general-skills .skill-inline-add { min-height: 34px; padding: 6px 9px; white-space: nowrap; font-size: .72rem; line-height: 1.05; }
+#general-skills .skill-inline-add small { margin-top: 2px; font-size: .54rem; letter-spacing: .05em; }
+body[data-page="sheet.html"] .skill-toolbar--three { display: none; }
+#general-skills .skill-table { width: 100%; min-width: 0; table-layout: fixed; font-size: clamp(.78rem, .66vw, .94rem); }
+#general-skills .skill-table :is(th, td) { min-width: 0; padding: 4px 2px; overflow: hidden; }
+#general-skills .skill-table .name-col { width: clamp(72px, 8.5em, 116px); }
+#general-skills .skill-table .type-col { width: clamp(46px, 4vw, 58px); }
+#general-skills .skill-table .lv-col { width: 34px; }
+#general-skills .skill-table .suit-col, #general-skills .skill-table .suit-cell { width: 30px; }
+#general-skills .general-skill-column .skill-table :is(th, td):last-child { width: 30px; }
+#general-skills > .skill-group--ordered .skill-table :is(th, td):last-child { width: var(--row-action-column); min-width: var(--row-action-column); max-width: var(--row-action-column); }
+#general-skills .skill-table :is(input, select) { min-width: 0; height: 34px; min-height: 34px; padding: 0 3px; font-size: clamp(.8rem, .7vw, .96rem); line-height: normal; }
+#general-skills .suit-check { display: grid; position: relative; width: 28px; height: 28px; margin: auto; place-items: center; cursor: pointer; }
+#general-skills .suit-check input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+#general-skills .suit-check span { display: grid; width: 26px; height: 26px; place-items: center; border: 1px solid var(--color-border); color: var(--color-muted); background: var(--color-field); font: 900 1.08rem/1 var(--font-data); }
+#general-skills .suit-check input:checked + span { border-color: var(--color-accent); color: var(--color-bg); background: var(--color-accent); box-shadow: var(--shadow-glow); }
+#general-skills input[data-f="level"] { text-align: center; font-weight: 800; }
+#general-skills .is-fixed-general .row-action--delete { visibility: hidden; }
+
+/* General, social and connection skills do not need a separate type control in the editor. */
+#general-skills :is(.general-skill-column, .skill-group.social, .skill-group.connection) .type-col,
+#general-skills :is(.general-skill-column, .skill-group.social, .skill-group.connection) .skill-table tbody tr > td:nth-child(2) { display: none; }
+
+@media (max-width: 900px) {
+  body[data-page="sheet.html"] #general-skills { grid-template-columns: 1fr; grid-template-rows: auto; }
+  body[data-page="sheet.html"] #general-skills > .general-skill-columns { grid-column: 1; grid-row: auto; grid-template-columns: 1fr; }
+  body[data-page="sheet.html"] #general-skills > :is(.skill-group.social, .skill-group.connection) { grid-column: 1; grid-row: auto; }
+}

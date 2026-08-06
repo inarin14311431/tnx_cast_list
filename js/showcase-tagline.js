@@ -246,15 +246,6 @@ function applyShowcaseEnhancements(source) {
 
   if (!changed) return source;
 
-  const style = documentNode.createElement("style");
-  style.dataset.showcaseEnhancementStyle = "true";
-  style.textContent = `
-.cast-card__tagline{margin:24px 0 0;padding:14px 16px;border-left:3px solid var(--pink);color:#ffd8eb;background:rgba(255,84,181,.045);font-size:1.05rem;font-weight:900;line-height:1.75;white-space:pre-wrap}
-.style.style--handout-role{display:inline-grid;gap:5px;min-width:112px;padding:9px 14px 10px;border-width:2px;color:#fff!important;background:linear-gradient(135deg,rgba(255,255,255,.13),rgba(255,84,181,.14));box-shadow:0 0 0 1px var(--style-color),0 0 24px rgba(255,84,181,.34),inset 0 0 18px rgba(255,255,255,.05);font-size:.82rem;transform:translateY(-2px)}
-.style__handout-role-label{display:block;color:var(--style-color);font:900 .46rem/1 Orbitron,"Share Tech Mono",monospace;letter-spacing:.16em;text-shadow:0 0 10px currentColor}
-@media(max-width:760px){.style.style--handout-role{min-width:104px;padding:8px 12px 9px}}
-`;
-  documentNode.head.append(style);
   documentNode.documentElement.dataset.showcaseEnhancementSignature = signature;
   return `<!doctype html>\n${documentNode.documentElement.outerHTML}`;
 }

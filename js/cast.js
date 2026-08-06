@@ -197,12 +197,18 @@ function renderStyles(character) {
             ${escapeHtml(style.name)}
           </span>
 
-          <span class="style-chip__mark">
-            ${escapeHtml(style.mark)}
-          </span>
+          ${style.mark ? `<span class="style-chip__mark" aria-label="${escapeHtml(style.mark)}">${renderStyleMark(style.mark)}</span>` : ""}
         </article>
       `)
       .join("");
+}
+
+function renderStyleMark(mark) {
+  const value = String(mark || "");
+  const glyphs = [];
+  if (value.includes("◎")) glyphs.push('<span class="style-mark-glyph style-mark-glyph--persona" aria-hidden="true"></span>');
+  if (value.includes("●")) glyphs.push('<span class="style-mark-glyph style-mark-glyph--key" aria-hidden="true"></span>');
+  return glyphs.length ? glyphs.join("") : escapeHtml(value);
 }
 
 function renderAbilities(character) {

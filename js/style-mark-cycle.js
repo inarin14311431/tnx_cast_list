@@ -13,6 +13,28 @@
   function button(index){return document.querySelector(`[data-style-mark-cycle="${index}"]`);}
   function labelFor(value){return value||"なし";}
 
+  function renderMark(control,value){
+    const label=labelFor(value);
+    if(control.dataset.renderedMark===value&&control.textContent===label)return;
+
+    if(!value){
+      control.textContent=label;
+      control.dataset.renderedMark=value;
+      return;
+    }
+
+    const fragment=document.createDocumentFragment();
+    [...value].forEach(mark=>{
+      const symbol=document.createElement("span");
+      symbol.className=`style-mark-symbol ${mark==="◎"?"style-mark-symbol--persona":"style-mark-symbol--key"}`;
+      symbol.textContent=mark;
+      symbol.setAttribute("aria-hidden","true");
+      fragment.append(symbol);
+    });
+    control.replaceChildren(fragment);
+    control.dataset.renderedMark=value;
+  }
+
   function syncButton(index){
     const select=source(index);
     const control=button(index);
@@ -24,7 +46,7 @@
     const title="クリックで ◎ → ● → ◎● → なし の順に切り替え";
 
     if(select.value!==value)select.value=value;
-    if(control.textContent!==label)control.textContent=label;
+    renderMark(control,value);
     if(control.dataset.mark!==value)control.dataset.mark=value;
     if(control.getAttribute("aria-label")!==aria)control.setAttribute("aria-label",aria);
     if(control.title!==title)control.title=title;

@@ -35,7 +35,7 @@ function fitStyle(field){
 function prepareOutfit(field){
   if(!(field instanceof HTMLTextAreaElement)||field.dataset.manualResizeReady==="1")return;
   field.rows=1;
-  field.style.height="36px";
+  field.style.height="34px";
   field.dataset.manualResizeReady="1";
 }
 

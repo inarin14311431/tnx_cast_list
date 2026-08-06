@@ -61,7 +61,12 @@ import { supabase } from "./supabase-client.js";
   }
   function localizeSkillTables(){
     const headers=['名称','LV','理性','感情','生命','外界','詳細'];
-    document.querySelectorAll('#skills-container .data-table thead tr').forEach(row=>[...row.children].forEach((cell,index)=>{if(headers[index])setJapanese(cell,headers[index]);}));
+    document.querySelectorAll('#skills-container .data-table thead tr').forEach(row=>{
+      // The style-skill table owns a wider, dedicated schema.  Re-labelling it
+      // with the seven-column general-skill headings shifts every field name.
+      if(row.closest('.style-skill-view-table'))return;
+      [...row.children].forEach((cell,index)=>{if(headers[index])setJapanese(cell,headers[index]);});
+    });
   }
   function localizeOutfitTables(){
     const labels={NAME:'名称',PURCHASE:'購入',EXP:'常備化',SLOT:'部位',RANGE:'射程',ATTACK:'攻撃',DEFENSE:'防御',DESCRIPTION:'解説'};
@@ -106,7 +111,10 @@ import { supabase } from "./supabase-client.js";
 
 (() => {
   let attempts=0;
-  function removeDetailColumn(section){section.querySelectorAll('tr').forEach(row=>{if(row.children.length>=7)row.children[6].remove();});}
+  function removeDetailColumn(section){
+    section.querySelectorAll('colgroup').forEach(group=>{if(group.children.length>=7)group.children[6].remove();});
+    section.querySelectorAll('tr').forEach(row=>{if(row.children.length>=7)row.children[6].remove();});
+  }
   function applyLayout(){
     const container=document.querySelector('#skills-container');
     const sections=[...document.querySelectorAll('#skills-container .skill-section')];

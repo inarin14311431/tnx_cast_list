@@ -71,8 +71,7 @@ function ensureGroupActions(){
       heading.append(actions);
       addAction(actions,"コネを追加","ADD CONNECTION","#add-connection");
     }else if(text.includes("スタイル技能")){
-      heading.append(actions);
-      addAction(actions,"スタイル技能を追加","ADD STYLE SKILL","#add-style-skill");
+      return;
     }
   });
 }
@@ -105,10 +104,22 @@ function addSortControls(rows,kind){
   rows.forEach((row,index)=>{
     const cell=row.lastElementChild;if(!cell)return;
     let controls=cell.querySelector(`.skill-sort-controls[data-kind="${kind}"]`);
-    if(!controls){controls=document.createElement("span");controls.className="row-action-group skill-sort-controls skill-row-actions";controls.dataset.kind=kind;controls.innerHTML=`<button type="button" class="skill-action-button skill-order-button" data-skill-move="up" data-kind="${kind}" title="上へ移動" aria-label="上へ移動">▲</button><button type="button" class="skill-action-button skill-order-button" data-skill-move="down" data-kind="${kind}" title="下へ移動" aria-label="下へ移動">▼</button>`;cell.prepend(controls);}
-    controls.classList.add("row-action-group");
-    const remove=cell.querySelector(":scope > .row-delete");
-    if(remove)controls.append(remove);
+    if(!controls){
+      controls=cell.querySelector(":scope > .row-actions.skill-row-actions")||document.createElement("span");
+      if(!controls.isConnected)cell.append(controls);
+      controls.className="row-actions row-action-group skill-sort-controls skill-row-actions";
+      controls.dataset.kind=kind;
+      const remove=controls.querySelector(".row-action--delete,.row-delete,[data-delete-skill]");
+      controls.insertAdjacentHTML("afterbegin",`<button type="button" class="skill-action-button skill-order-button" data-skill-move="up" data-kind="${kind}" title="上へ移動" aria-label="上へ移動">▲</button><button type="button" class="skill-action-button skill-order-button" data-skill-move="down" data-kind="${kind}" title="下へ移動" aria-label="下へ移動">▼</button>`);
+      if(remove)controls.append(remove);
+    }
+    controls.classList.add("row-actions","row-action-group");
+    cell.querySelectorAll(":scope > .row-actions.skill-row-actions").forEach(extra=>{
+      if(extra===controls)return;
+      const remove=extra.querySelector(".row-action--delete,.row-delete,[data-delete-skill]");
+      if(remove)controls.append(remove);
+      extra.remove();
+    });
     controls.querySelector('[data-skill-move="up"]').disabled=index===0;
     controls.querySelector('[data-skill-move="down"]').disabled=index===rows.length-1;
   });

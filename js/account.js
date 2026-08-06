@@ -1,6 +1,6 @@
-import { SITE_BASE_PATH } from "./config.js";
+import { SITE_BASE_PATH } from "./config.js?v=2";
 import { supabase } from "./supabase-client.js";
-import { requireAuth, signOut } from "./auth-state.js?v=3";
+import { requireAuth, signOut } from "./auth-state.js?v=4";
 
 const VISIBILITY_LABELS = {
   public: "公開 / PUBLIC",

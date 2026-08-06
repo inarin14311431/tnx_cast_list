@@ -68,22 +68,6 @@
   let activeTerm = null;
   let processQueued = false;
 
-  function installStyles() {
-    if (document.getElementById(STYLE_ID)) return;
-    const style = document.createElement("style");
-    style.id = STYLE_ID;
-    style.textContent = `
-      .${TERM_CLASS}{display:inline;padding:0 .12em;border-bottom:1px dotted #ffd166;color:#ffe7a3;background:rgba(255,209,102,.07);cursor:help;font-weight:800;text-underline-offset:2px}
-      .${TERM_CLASS}:hover,.${TERM_CLASS}:focus-visible{outline:none;color:#fff4c9;background:rgba(255,209,102,.18);box-shadow:0 0 0 1px rgba(255,209,102,.22)}
-      #${TOOLTIP_ID}{position:fixed;z-index:100000;width:min(380px,calc(100vw - 24px));padding:12px 14px;border:1px solid #ffd166;color:#eefcff;background:rgba(2,10,14,.98);box-shadow:0 12px 34px rgba(0,0,0,.58),0 0 18px rgba(255,209,102,.12);pointer-events:none}
-      #${TOOLTIP_ID}[hidden]{display:none}
-      #${TOOLTIP_ID} strong{display:block;margin-bottom:6px;color:#ffd166;font-size:.82rem;letter-spacing:.04em}
-      #${TOOLTIP_ID} p{margin:0;color:#d5e9ed;font-size:.74rem;line-height:1.65;white-space:normal}
-      @media(max-width:520px){#${TOOLTIP_ID}{padding:10px 12px}#${TOOLTIP_ID} p{font-size:.72rem}}
-    `;
-    document.head.append(style);
-  }
-
   function tooltipHost() {
     return document.querySelector(DIALOG_SELECTOR) || document.body;
   }
@@ -235,7 +219,6 @@
     if (!nextRoot || nextRoot.dataset.bsTooltipReady === "1") return false;
     root = nextRoot;
     root.dataset.bsTooltipReady = "1";
-    installStyles();
     ensureTooltip();
     bindEvents();
     new MutationObserver(queueDecoration).observe(root, { childList: true, subtree: true });

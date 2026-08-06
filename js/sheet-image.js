@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js";
+import { requireAuth } from "./auth-state.js?v=4";
 
 const BUCKET_NAME="character-images";
 const MAX_SOURCE_FILE_SIZE=20*1024*1024;

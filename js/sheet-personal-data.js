@@ -37,7 +37,7 @@ function initialize() {
   }
 
   bindLegacyImportSeparation();
-  setStatus("保存ボタンで保存されます。", "");
+  setStatus("", "");
 }
 
 function setStatus(text, state) {

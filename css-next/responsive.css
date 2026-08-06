@@ -1,0 +1,24 @@
+@media (max-width: 1199px) {
+  :where(.archive-controls) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  :where(.archive-control--search) { grid-column: 1 / -1; }
+  :where(#archive-reset) { width: 100%; }
+  :where(.owned-cast__links) { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 767px) {
+  :root { --page-gutter: 20px; }
+  :where(.site-header__top, .auth-header h1) { flex-direction: column; }
+  :where(.site-title) { font-size: clamp(2.2rem, 10vw, 3.2rem); }
+  :where(.site-header__operator, .theme-picker) { width: 100%; justify-items: stretch; }
+  :where(.archive-controls) { grid-template-columns: 1fr; }
+  body :where(.archive-control--search) { grid-column: auto; }
+  :where(.account-data, .account-actions, .owned-cast) { grid-template-columns: 1fr; }
+  body :where(.owned-cast__links) { grid-template-columns: repeat(2, 1fr); }
+  :where(.auth-panel) { padding: 24px 18px; }
+  .cast-header__actions > * { flex: 1 1 150px; }
+  .cast-header__actions .cocofolia-copy-button,
+  .cast-header__actions .udonarium-export-button,
+  .cast-header__actions .transfer-tsv-copy-button,
+  .cast-header__actions .transfer-bookmarklet-copy-button { min-width: 0; }
+  body .ability-matrix--cs .ability-matrix__header,
+  body .ability-matrix--cs .ability-matrix__row { grid-template-columns: 70px minmax(0, 1fr); }
+}

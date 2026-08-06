@@ -3,15 +3,16 @@
   if (!panel) return;
 
   const ensureHelpLink = () => {
-    if (!document.querySelector('link[data-sheet-help-link-style]')) {
-      const style = document.createElement('link');
-      style.rel = 'stylesheet';
-      style.href = './css/sheet-help-link.css?v=1';
-      style.setAttribute('data-sheet-help-link-style', '1');
-      document.head.append(style);
-    }
-
     if (document.querySelector('[data-sheet-help-link]')) return;
+    const importButton = panel.querySelector('#legacy-import-open');
+    if (!importButton) return;
+    let control = importButton.closest('.sheet-import-control');
+    if (!control) {
+      control = document.createElement('div');
+      control.className = 'sheet-import-control';
+      importButton.before(control);
+      control.append(importButton);
+    }
     const link = document.createElement('a');
     link.href = './manual-data-import.html';
     link.target = '_blank';
@@ -20,8 +21,8 @@
     link.setAttribute('data-sheet-help-link', '1');
     link.setAttribute('aria-label', 'データ取込マニュアルを開く');
     link.title = 'データ取込マニュアル';
-    link.innerHTML = '<img src="./assets/help-cyberpunk.svg" alt="" class="floating-help-link__icon"><span class="floating-help-link__label">HELP</span>';
-    document.body.append(link);
+    link.innerHTML = '<span class="floating-help-link__label">HELP</span>';
+    control.append(link);
   };
 
   const GROUP_COLORS = {
@@ -32,7 +33,7 @@
   };
 
   const classify = () => {
-    panel.querySelectorAll(':scope > button, :scope > a.sheet-view-link').forEach(element => {
+    panel.querySelectorAll(':scope > button, :scope > a.sheet-view-link, :scope > .sheet-import-control > button').forEach(element => {
       const label = String(element.textContent || '').replace(/\s+/g, ' ').trim();
       let group = '';
 
@@ -56,7 +57,6 @@
       const color = GROUP_COLORS[group];
       element.dataset.actionGroup = group;
       element.style.setProperty('--action-rail', color);
-      element.style.setProperty('border-left-color', color, 'important');
     });
   };
 
@@ -78,29 +78,6 @@
   const toInteger = value => {
     const number = Number(value);
     return Number.isFinite(number) ? Math.trunc(number) : 0;
-  };
-
-  const ensureStyle = () => {
-    if (document.querySelector('style[data-cs-auto-style]')) return;
-    const style = document.createElement('style');
-    style.dataset.csAutoStyle = '1';
-    style.textContent = `
-      .ability-card--cs{grid-column:auto!important}
-      .ability-matrix--cs .ability-matrix__header,
-      .ability-matrix--cs .ability-matrix__row{grid-template-columns:42px minmax(0,1fr);padding-left:4px;padding-right:4px}
-      .ability-matrix--cs input[readonly]{cursor:default;background:rgba(65,232,255,.04)}
-      #ability-grid .ability-matrix__row input[type="number"]{padding-left:19px}
-      #outfit-list input[type="number"]{-moz-appearance:textfield;appearance:textfield}
-      #outfit-list input[type="number"]::-webkit-inner-spin-button,
-      #outfit-list input[type="number"]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
-      #outfit-list .armor-defense-total{padding-right:0!important}
-      @media(min-width:1181px){.ability-grid{grid-template-columns:repeat(4,minmax(0,1fr)) minmax(110px,.5fr)!important}}
-      @media(max-width:760px){
-        .ability-matrix--cs .ability-matrix__header,
-        .ability-matrix--cs .ability-matrix__row{grid-template-columns:70px minmax(0,1fr)}
-      }
-    `;
-    document.head.append(style);
   };
 
   const renameBaseLabels = () => {
@@ -165,7 +142,6 @@
   };
 
   const init = () => {
-    ensureStyle();
     if (!patchCsCard()) return false;
     renameBaseLabels();
 

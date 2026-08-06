@@ -1,0 +1,25 @@
+:root {
+  --color-bg: #02070d;
+  --color-surface: #06131f;
+  --color-surface-alt: #0a1d2b;
+  --color-text: #e8fbff;
+  --color-muted: #83a8b3;
+  --color-accent: #00eaff;
+  --color-accent-strong: #55f6ff;
+  --color-danger: #ff4d78;
+  --color-border: color-mix(in srgb, var(--color-accent) 45%, transparent);
+  --shadow-glow: 0 0 18px color-mix(in srgb, var(--color-accent) 28%, transparent);
+  --color-accent-soft: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  --color-border-muted: color-mix(in srgb, var(--color-accent) 22%, transparent);
+  --color-field: color-mix(in srgb, #000 72%, var(--color-surface));
+  --color-overlay: color-mix(in srgb, var(--color-bg) 80%, transparent);
+  --font-sans: "Yu Gothic UI", "Yu Gothic", Meiryo, sans-serif;
+  --font-data: Consolas, "Roboto Mono", "Noto Sans Mono", monospace;
+  --page-width: 1200px;
+  --page-gutter: 32px;
+  --radius-control: 2px;
+  --transition-fast: 160ms ease;
+  --row-action-size: 30px;
+  --row-action-gap: 2px;
+  --row-action-column: 106px;
+}

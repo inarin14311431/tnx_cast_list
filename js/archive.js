@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { renderAuthNavigation } from "./auth-state.js?v=3";
+import { renderAuthNavigation } from "./auth-state.js?v=4";
 
 const ALLOWED_PAGE_SIZES = new Set([12, 25, 50, 100]);
 const DEFAULT_PAGE_SIZE = 12;
@@ -26,12 +26,19 @@ initialize();
 
 async function initialize() {
   setupControls();
-  await renderAuthNavigation();
-  await loadCharacters();
+  // Public character loading must not be blocked by a stale or unavailable
+  // authentication session. Run both initializers independently.
+  const authInitialization = renderAuthNavigation().catch(error => {
+    console.error("Authentication navigation initialization failed:", error);
+  });
+  const characterInitialization = loadCharacters();
+  await Promise.allSettled([authInitialization, characterInitialization]);
 
-  supabase.auth.onAuthStateChange(async () => {
-    await renderAuthNavigation();
-    await loadCharacters();
+  supabase.auth.onAuthStateChange((_event, session) => {
+    // Do not call getSession from inside this callback. Supabase holds its auth
+    // lock while notifying listeners, so doing so can leave the callback waiting.
+    void renderAuthNavigation(session);
+    void loadCharacters();
   });
 }
 

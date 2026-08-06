@@ -5,6 +5,8 @@
   const ROOT="#outfit-list";
   const MESSAGE="#legacy-import-message";
   const DIALOG="#legacy-import-dialog";
+  const FINAL_START=52;
+  const FINAL_END=98;
   const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const frame=()=>new Promise(resolve=>requestAnimationFrame(resolve));
   const clean=value=>String(value??"").trim().replace(/^[★†※■┗]+\s*/,"");
@@ -18,9 +20,6 @@
     root.id="legacy-import-progress";
     root.hidden=true;
     root.innerHTML='<p><strong data-import-progress-label>取込準備中</strong><span data-import-progress-percent>0%</span></p><progress max="100" value="0"></progress><small data-import-progress-detail></small>';
-    const style=document.createElement("style");
-    style.textContent=`#legacy-import-progress{margin:12px 0;padding:12px;border:1px solid rgba(65,232,255,.45);background:rgba(4,18,38,.9)}#legacy-import-progress p{display:flex;justify-content:space-between;gap:12px;margin:0 0 8px}#legacy-import-progress progress{display:block;width:100%;height:12px;accent-color:#41e8ff}#legacy-import-progress small{display:block;margin-top:8px;color:var(--text-muted)}#legacy-import-dialog[data-importing="1"] #legacy-import-apply{cursor:progress}`;
-    document.head.append(style);
     document.querySelector(MESSAGE)?.before(root);
     return root;
   }
@@ -32,6 +31,15 @@
     root.querySelector("[data-import-progress-percent]").textContent=`${Math.round(percent)}%`;
     root.querySelector("[data-import-progress-label]").textContent=label;
     root.querySelector("[data-import-progress-detail]").textContent=detail;
+  }
+
+  window.TNXLegacyImportProgress={update:progress};
+
+  function setImportLock(dialog,locked){
+    if(!dialog)return;
+    if(locked)dialog.setAttribute("data-importing","1");else dialog.removeAttribute("data-importing");
+    const close=dialog.querySelector('[value="cancel"]');
+    if(close)close.disabled=locked;
   }
 
   function flatten(value,prefix,map){
@@ -100,9 +108,10 @@
   function rowCategory(row){return row.querySelector('[data-o="category"]')?.value||row.closest("table")?.dataset.outfitSchema||"other"}
   function rowName(row){return clean(row.querySelector('[data-o="name"]')?.value)}
 
-  async function applyItem(row,item){
+  async function applyItem(row,item,onColumnsReady){
     setValue(row.querySelector('[data-o="category"]'),item.category);
     row=await waitForColumns(row,item.category);
+    onColumnsReady?.();
     const data=item.data;
     const base=(field,value)=>setValue(row.querySelector(`[data-o="${field}"]`),value);
     const ofc=(field,value)=>String(value??"")!==""&&setValue(row.querySelector(`[data-ofc="${field}"]`),value);
@@ -143,14 +152,17 @@
     const rows=[...document.querySelectorAll(`${ROOT} [data-outfit-key]`)];
     const used=new Set();
     const missing=[];
+    if(!items.length){progress(FINAL_END,"アウトフィットを最終変換中","変換対象のアウトフィットはありません");return missing}
+    const step=(index,fraction=0)=>FINAL_START+((index+fraction)/items.length)*(FINAL_END-FINAL_START);
     for(let index=0;index<items.length;index++){
       const item=items[index];
-      progress(72+(index/Math.max(items.length,1))*25,"アウトフィットを最終変換中",`${index+1}/${items.length}件　${item.category}：${item.name}`);
+      progress(step(index),"アウトフィットを最終変換中",`${index+1}/${items.length}件　${item.category}：${item.name}`);
       let row=rows.find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name&&rowCategory(candidate)===item.category);
       if(!row&&["cyberware","tron"].includes(item.category))row=rows.find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name&&rowCategory(candidate)==="other");
-      if(!row){missing.push(item);continue}
+      if(!row){missing.push(item);progress(step(index,1),"アウトフィットを最終変換中",`${index+1}/${items.length}件を確認`);continue}
       used.add(row.dataset.outfitKey);
-      await applyItem(row,item);
+      await applyItem(row,item,()=>progress(step(index,.55),"アウトフィット列を調整中",`${index+1}/${items.length}件　${item.name}`));
+      progress(step(index,1),"アウトフィットを最終変換中",`${index+1}/${items.length}件を反映`);
     }
     document.querySelector(ROOT)?.dispatchEvent(new Event("input",{bubbles:true}));
     window.TNXExperience?.queue?.();
@@ -159,26 +171,35 @@
 
   function observeBaseImport(){
     const message=document.querySelector(MESSAGE);if(!message)return ()=>{};
-    const observer=new MutationObserver(()=>{const text=message.textContent||"";if(/基本情報/.test(text))progress(12,"基本情報を取込中",text);else if(/スタイルと能力値/.test(text))progress(28,"スタイル・能力値を取込中",text);else if(/技能/.test(text))progress(45,"技能を取込中",text);else if(/アウトフィット/.test(text))progress(65,"アウトフィットを取込中",text)});
+    const observer=new MutationObserver(()=>{const text=message.textContent||"";if(/基本情報/.test(text))progress(8,"基本情報を取込中",text);else if(/スタイルと能力値/.test(text))progress(18,"スタイル・能力値を取込中",text);else if(/技能/.test(text))progress(28,"技能を取込中",text);else if(/アウトフィット/.test(text))progress(44,"アウトフィットを取込中",text)});
     observer.observe(message,{childList:true,subtree:true,characterData:true});return ()=>observer.disconnect();
   }
+
+  const importDialog=document.querySelector(DIALOG);
+  importDialog?.addEventListener("cancel",event=>{
+    if(importDialog.getAttribute("data-importing")==="1")event.preventDefault();
+  });
 
   document.addEventListener("click",event=>{
     const button=event.target.closest?.(APPLY);if(!button)return;
     let data;try{data=JSON.parse(document.querySelector(TEXT)?.value||"")}catch{return}
     const items=sourceOutfits(data),dialog=document.querySelector(DIALOG);
-    dialog?.setAttribute("data-importing","1");
+    setImportLock(dialog,true);
     progress(3,"JSONを解析中",`アウトフィット${items.length}件を検出`);
     const stopObserver=observeBaseImport();
 
     (async()=>{
       try{
-        for(let attempt=0;attempt<2400;attempt++){
+        let baseComplete=false;
+        for(let attempt=0;attempt<6000;attempt++){
           const text=document.querySelector(MESSAGE)?.textContent||"";
           if(/取込エラー/.test(text))throw new Error(text.replace(/^.*取込エラー：?/,""));
-          if(!button.disabled&&/反映しました/.test(text))break;
+          if(!button.disabled&&/反映しました/.test(text)){baseComplete=true;break}
           await sleep(25);
         }
+        if(!baseComplete)throw new Error("基本取込の完了を確認できませんでした。データ量を確認して再実行してください。");
+        if(window.TNXLegacyStyleSkillRepair){progress(50,"技能データを確認中","スタイル技能の互換調整を確認しています");await window.TNXLegacyStyleSkillRepair}
+        progress(FINAL_START,"アウトフィットを最終変換中",`アウトフィット${items.length}件を現行列へ調整します`);
         const missing=await convertAll(items);
         if(missing.length)throw new Error(`アウトフィット${missing.length}件を変換できませんでした：${missing.map(item=>item.name).join("、")}`);
         progress(100,"取込完了",`アウトフィット${items.length}件を現行形式へ変換しました`);
@@ -190,7 +211,7 @@
         progress(100,"取込エラー",error.message||String(error));
       }finally{
         stopObserver();
-        dialog?.removeAttribute("data-importing");
+        setImportLock(dialog,false);
       }
     })();
   },true);

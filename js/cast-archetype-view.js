@@ -58,7 +58,8 @@
     chips.forEach((chip,index)=>{
       chip.querySelectorAll(".cast-archetype-card__scan,.cast-archetype-card__role").forEach(element=>element.remove());
       chip.classList.remove("cast-archetype-card","is-persona","is-key","is-dual","is-standard");
-      const mark=chip.querySelector(".style-chip__mark")?.textContent||"";
+      const markElement=chip.querySelector(".style-chip__mark");
+      const mark=markElement?.getAttribute("aria-label")||markElement?.textContent||"";
       chip.classList.add("cast-style-card-simple",stateFor(mark));
       chip.dataset.styleRole=roleFor(mark);
       chip.dataset.castStyleSlot=String(index+1).padStart(2,"0");
@@ -123,7 +124,7 @@
     const heading=panel.querySelector(".data-panel__header h2");
     if(heading&&!heading.dataset.enhanced){
       heading.dataset.enhanced="true";
-      heading.innerHTML='スタイル技能解析 <small>STYLE SKILL ANALYSIS</small>';
+      heading.innerHTML='スタイル技能 <small>STYLE SKILLS</small>';
     }
     return true;
   }

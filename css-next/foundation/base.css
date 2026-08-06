@@ -1,0 +1,25 @@
+html { min-height: 100%; background: var(--color-bg); font-size: 17px; }
+body {
+  min-width: 320px;
+  min-height: 100vh;
+  color: var(--color-text);
+  background: var(--theme-body-bg,
+    radial-gradient(circle at 18% 5%, color-mix(in srgb, var(--color-accent) 9%, transparent), transparent 34rem));
+  font-family: var(--font-sans);
+  line-height: 1.55;
+}
+::selection { color: var(--color-bg); background: var(--color-accent); }
+:focus-visible { outline: 2px solid var(--color-accent-strong); outline-offset: 3px; }
+:where(.background-grid, .scanlines) { position: fixed; inset: 0; pointer-events: none; }
+.background-grid {
+  z-index: -2;
+  opacity: .28;
+  background-image: linear-gradient(var(--color-border-muted) 1px, transparent 1px), linear-gradient(90deg, var(--color-border-muted) 1px, transparent 1px);
+  background-size: 48px 48px;
+  mask-image: linear-gradient(to bottom, #000, transparent 75%);
+}
+.scanlines {
+  z-index: 20;
+  opacity: .12;
+  background: repeating-linear-gradient(to bottom, transparent 0 3px, rgba(0, 0, 0, .3) 3px 4px);
+}

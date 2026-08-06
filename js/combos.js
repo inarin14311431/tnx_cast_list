@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js";
-import { SITE_BASE_PATH } from "./config.js";
+import { requireAuth } from "./auth-state.js?v=4";
+import { SITE_BASE_PATH } from "./config.js?v=2";
 
 const comboList = document.querySelector("#combo-list");
 const messageArea = document.querySelector("#combo-message");

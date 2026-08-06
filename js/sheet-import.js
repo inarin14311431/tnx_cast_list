@@ -9,6 +9,7 @@
   const text=$('#legacy-import-json');
   const msg=$('#legacy-import-message');
   if(!dialog||!open||!apply||!text||!msg)return;
+  const reportProgress=(percent,label,detail='')=>window.TNXLegacyImportProgress?.update?.(percent,label,detail);
 
   const exporter=`javascript:(()=>{const label=e=>{const id=e.id;const l=id&&document.querySelector('label[for="'+CSS.escape(id)+'"]');return(l?.innerText||e.closest('label')?.innerText||e.closest('th,td')?.innerText||'').trim()};const section=e=>{let n=e;while(n&&n!==document.body){const h=n.querySelector?.(':scope>h1,:scope>h2,:scope>h3,:scope>legend');if(h)return h.innerText.trim();n=n.parentElement}return''};const fields=[...document.querySelectorAll('input,select,textarea')].filter(e=>!['button','submit','password'].includes(e.type)).map(e=>({path:e.id||e.name||'',id:e.id||'',name:e.name||'',type:e.type||e.tagName.toLowerCase(),value:e.type==='checkbox'||e.type==='radio'?(e.checked?(e.value||true):false):e.value,checked:!!e.checked,label:label(e),section:section(e)}));const data={format:'tnx-character-sheets-v2',url:location.href,exportedAt:new Date().toISOString(),title:document.title,fields};const out=JSON.stringify(data,null,2);navigator.clipboard.writeText(out).then(()=>alert('キャラシJSONをコピーしました。')).catch(()=>prompt('JSONをコピーしてください',out));})();`;
   const wait=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
@@ -110,7 +111,7 @@
   };
   const click=async selector=>{const element=$(selector);if(!element)return false;element.click();await wait();return true};
   const rowName=row=>cleanName(row?.querySelector('[data-f="name"]')?.value);
-  const skillGroups=label=>[...document.querySelectorAll('#general-skills>.skill-group')].filter(group=>(group.querySelector('.skill-group-title')?.textContent||'').includes(label));
+  const skillGroups=label=>[...document.querySelectorAll('#general-skills .skill-group')].filter(group=>(group.querySelector('.skill-group-title')?.textContent||'').includes(label));
   const skillRows=label=>skillGroups(label).flatMap(group=>[...group.querySelectorAll('tbody>tr[data-skill-key]')]);
   const findRow=(label,name)=>skillRows(label).find(row=>rowName(row)===cleanName(name));
 
@@ -240,7 +241,15 @@
   }
 
   const FIXED_GENERAL=new Set(['医療','射撃','知覚','電脳','製作：','心理','自我','交渉','芸術：','運動','回避','白兵','操縦：','信用','圧力','隠密']);
+  const GENERAL_SPECIALIZATION_PREFIXES=['製作：','芸術：','操縦：'];
   const prefixed=(name,prefix)=>{const cleaned=cleanName(name);if(!cleaned)return '';return cleaned.startsWith(prefix)?cleaned:`${prefix}${cleaned}`};
+  const findGeneralRow=name=>{
+    const exact=findRow('一般技能',name);
+    if(exact)return exact;
+    const normalized=cleanName(name);
+    const prefix=GENERAL_SPECIALIZATION_PREFIXES.find(value=>normalized.startsWith(value));
+    return prefix?findRow('一般技能',prefix):null;
+  };
 
   async function importGeneral(map,stats){
     await clearRows(()=>skillRows('一般技能'),row=>!FIXED_GENERAL.has(rowName(row)));
@@ -248,7 +257,7 @@
       const name=cleanName(firstDefined(data,'name'));
       const level=skillLevel(data);
       if(!name||!level)continue;
-      const row=findRow('一般技能',name);
+      const row=findGeneralRow(name);
       const kind=name.includes('：')?'proper':'general';
       const done=row?await setSkillRow(row,{...data,name},kind):await addSkill('#add-general','一般技能',{...data,name},kind);
       if(done)stats.general++;
@@ -333,6 +342,7 @@
   apply.addEventListener('click',async()=>{
     apply.disabled=true;
     msg.textContent='JSONを解析しています…';
+    reportProgress(3,'JSONを解析中','取込データを検証しています');
     try{
       const data=JSON.parse(text.value);
       const supportedFields=Array.isArray(data.fields);
@@ -343,6 +353,7 @@
       const stats={general:0,social:0,connection:0,style:0,outfit:0};
 
       msg.textContent='基本情報を反映しています…';
+      reportProgress(8,'基本情報を取込中','プロフィールとライフパスを反映しています');
       await clearInitialSocialAndConnections();
       const castName=parseCastName(get(map,'base.name','name'));
       await setElement('#character-name',castName.name);
@@ -362,13 +373,19 @@
       await setElement('#profile',profileParts.join('\n\n'));
 
       msg.textContent='スタイルと能力値を反映しています…';
+      reportProgress(18,'スタイル・能力値を取込中','スタイル、能力値、CSを反映しています');
       await importStyles(map);
       await importAbilities(map);
       msg.textContent='技能を反映しています…';
+      reportProgress(28,'技能を取込中','一般技能・社会・コネを反映しています');
       await importGeneral(map,stats);
+      reportProgress(36,'技能を取込中',`一般技能${stats.general}件・社会${stats.social}件・コネ${stats.connection}件を反映`);
       await importStyleSkills(map,stats);
+      reportProgress(42,'スタイル技能を取込中',`スタイル技能${stats.style}件を反映しました`);
       msg.textContent='アウトフィットを反映しています…';
+      reportProgress(44,'アウトフィットを取込中','基本項目を現行シートへ配置しています');
       await importOutfits(map,stats);
+      reportProgress(50,'基本取込完了',`アウトフィット${stats.outfit}件の基本配置が完了しました`);
 
       document.dispatchEvent(new Event('input',{bubbles:true}));
       window.TNXExperience?.queue?.();

@@ -231,28 +231,8 @@ function installPaginationUi() {
     results.insertAdjacentElement("afterend", pagination);
   }
 
-  installPaginationStyles();
   new MutationObserver(queuePaginationRefresh).observe(results, { childList: true });
   updatePaginationUi();
-}
-
-function installPaginationStyles() {
-  if (document.querySelector("#master-search-pagination-style")) return;
-  const style = document.createElement("style");
-  style.id = "master-search-pagination-style";
-  style.textContent = `
-    .master-search-shell{grid-template-rows:auto auto auto minmax(180px,1fr) auto auto}
-    .master-search-pagination{display:flex;align-items:center;justify-content:center;gap:14px;padding:9px 18px;border-top:1px solid var(--line-muted);background:rgba(0,0,0,.22)}
-    .master-search-pagination[hidden]{display:none!important}
-    .master-search-pagination p{display:flex;align-items:center;gap:8px;margin:0;color:var(--text-muted);font:700 .68rem/1.3 monospace}
-    .master-search-pagination strong{color:var(--line);font-size:.9rem}
-    .master-search-pagination button{min-width:116px;min-height:38px;padding:6px 12px;border:1px solid var(--line-muted);color:var(--text);background:rgba(65,232,255,.045);cursor:pointer;font-weight:800}
-    .master-search-pagination button:hover:not(:disabled){border-color:var(--line);color:var(--line);background:rgba(65,232,255,.11)}
-    .master-search-pagination button:disabled{opacity:.35;cursor:not-allowed}
-    .master-search-pagination button small{display:block;margin-top:2px;color:var(--text-muted);font-size:.5rem}
-    @media(max-width:520px){.master-search-pagination{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;padding:8px 10px}.master-search-pagination button{min-width:0;width:100%}.master-search-pagination p{justify-content:center;flex-wrap:wrap;text-align:center}}
-  `;
-  document.head.append(style);
 }
 
 function queuePaginationRefresh() {

@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js";
+import { requireAuth } from "./auth-state.js?v=4";
 
 const MAX_CASTS = 6;
 const FUNCTION_NAME = "publish-showcase";

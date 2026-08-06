@@ -1,0 +1,7 @@
+*, *::before, *::after { box-sizing: border-box; }
+:where(html) { color-scheme: dark; }
+:where(body, h1, h2, h3, p, dl, dd) { margin: 0; }
+:where(button, input, select, textarea) { font: inherit; }
+img { display: block; max-width: 100%; }
+a { color: inherit; }
+[hidden] { display: none; }

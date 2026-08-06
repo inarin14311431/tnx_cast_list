@@ -1,13 +1,32 @@
-import { SITE_BASE_PATH } from "./config.js";
+import { SITE_BASE_PATH } from "./config.js?v=2";
 import { supabase } from "./supabase-client.js";
 
+let pendingSessionRequest = null;
+
 export async function getCurrentSession() {
-  const { data: { session }, error } = await supabase.auth.getSession();
-  if (error) {
+  if (pendingSessionRequest) return pendingSessionRequest;
+  pendingSessionRequest = readCurrentSession();
+  try {
+    return await pendingSessionRequest;
+  } finally {
+    pendingSessionRequest = null;
+  }
+}
+
+async function readCurrentSession() {
+  try {
+    const result = await withTimeout(
+      supabase.auth.getSession(),
+      5000,
+      "Authentication check timed out."
+    );
+    const { data: { session }, error } = result;
+    if (error) throw error;
+    return session;
+  } catch (error) {
     console.error("Failed to get current session:", error);
     return null;
   }
-  return session;
 }
 
 export async function getCurrentUser() {
@@ -35,11 +54,13 @@ export async function signOut() {
   window.location.replace(`${window.location.origin}${SITE_BASE_PATH}index.html`);
 }
 
-export async function renderAuthNavigation() {
+export async function renderAuthNavigation(knownSession) {
   const container = document.querySelector("#auth-navigation");
   if (!container) return;
 
-  const user = await getCurrentUser();
+  const user = knownSession === undefined
+    ? await getCurrentUser()
+    : knownSession?.user ?? null;
 
   if (user) {
     container.innerHTML = `
@@ -70,6 +91,14 @@ export async function renderAuthNavigation() {
       <small>LOGIN / CAST MANAGEMENT</small>
     </a>
   `;
+}
+
+function withTimeout(promise, timeoutMs, message) {
+  let timeoutId;
+  const timeout = new Promise((_, reject) => {
+    timeoutId = window.setTimeout(() => reject(new Error(message)), timeoutMs);
+  });
+  return Promise.race([promise, timeout]).finally(() => window.clearTimeout(timeoutId));
 }
 
 function escapeHtml(value) {

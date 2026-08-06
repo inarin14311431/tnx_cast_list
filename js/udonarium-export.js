@@ -4,21 +4,11 @@ import { STYLE_DATA } from "./style-data.js";
 const JSZIP_MODULE_URL = "https://cdn.jsdelivr.net/npm/jszip@3.10.1/+esm";
 const PLACEHOLDER = "./assets/placeholders/scan-failed.webp";
 
-ensureStylesheet();
 const button = ensureButton();
 const publicId = new URLSearchParams(location.search).get("id")?.trim() || "";
 const isSheetEditor = Boolean(document.querySelector("#character-name"));
 
 if (button) initialize();
-
-function ensureStylesheet() {
-  if (document.querySelector('link[data-udonarium-export-style]')) return;
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = "./css/udonarium-export.css?v=1";
-  link.dataset.udonariumExportStyle = "1";
-  document.head.append(link);
-}
 
 function ensureButton() {
   const existing = document.querySelector("#udonarium-export-button");

@@ -58,7 +58,7 @@ import { supabase } from "./supabase-client.js";
   function ensureAddButton(){
     const headingActions=container.querySelector('.skill-group-actions[data-v28],.skill-group-actions');
     const toolbar=document.querySelector("#add-style-skill")?.closest(".toolbar");
-    const target=headingActions||toolbar;
+    const target=toolbar||headingActions;
     if(!target)return;
 
     if(!addButton){
@@ -70,7 +70,7 @@ import { supabase } from "./supabase-client.js";
       addButton.addEventListener("click",createSeparator);
     }
     if(addButton.parentElement!==target)target.append(addButton);
-    if(target===toolbar)toolbar.style.gridTemplateColumns="repeat(3,minmax(0,1fr))";
+    if(target===toolbar)toolbar.classList.add("has-style-divider");
   }
 
   function decorate(row){

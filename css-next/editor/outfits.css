@@ -1,0 +1,47 @@
+/* Outfit editor. Cards exist briefly during render; the user-facing state is a category table. */
+#outfit-list { display: grid; gap: 14px; min-width: 0; }
+#outfit-list > p { margin: 0; padding: 1.4rem; border: 1px dashed var(--color-border-muted); color: var(--color-muted); background: var(--color-accent-soft); text-align: center; }
+.outfit-layout-hidden { display: none; }
+.outfit-card { overflow: hidden; border: 1px solid var(--color-border-muted); background: var(--color-surface); }
+.outfit-card > header { display: flex; align-items: end; justify-content: space-between; gap: 1rem; padding: .65rem .75rem; border-bottom: 1px solid var(--color-border-muted); background: var(--color-accent-soft); }
+.outfit-card > header label { display: grid; min-width: 220px; gap: .3rem; color: var(--color-accent); font: 700 .72rem/1.2 var(--font-data); }
+.outfit-fields { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .65rem; padding: .75rem; }
+.outfit-fields label { display: grid; min-width: 0; gap: .3rem; color: var(--color-muted); font-size: .72rem; }
+.outfit-fields .outfit-description { grid-column: 1 / -1; }
+.outfit-table-group { min-width: 0; overflow: hidden; border: 1px solid var(--color-border); background: var(--color-surface); box-shadow: inset 0 3px 0 color-mix(in srgb, var(--color-accent) 72%, transparent); }
+.outfit-table-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 12px; border-bottom: 1px solid var(--color-border); background: linear-gradient(90deg, var(--color-accent-soft), transparent); }
+.outfit-table-title { margin: 0; color: var(--color-accent); font-size: .9rem; letter-spacing: .04em; }
+.outfit-table-empty { margin: 0; padding: 16px; color: var(--color-muted); text-align: center; }
+.outfit-table-scroll { width: 100%; min-width: 0; overflow-x: auto; }
+.outfit-table { width: 100%; min-width: 920px; border-collapse: collapse; table-layout: fixed; font-size: clamp(.74rem, .62vw, .9rem); }
+.outfit-table :is(th, td) { box-sizing: border-box; height: 44px; padding: 4px 3px; overflow: hidden; border-right: 1px solid var(--color-border-muted); border-bottom: 1px solid var(--color-border-muted); vertical-align: middle; }
+.outfit-table th { height: 34px; color: var(--color-muted); background: var(--color-accent-soft); font: 700 .66rem/1.1 var(--font-data); text-align: center; white-space: normal; }
+.outfit-table td { color: var(--color-text); }
+.outfit-table :is(input, select, textarea) { display: block; box-sizing: border-box; width: 100%; min-width: 0; height: 34px; min-height: 34px; margin: 0; font-size: inherit; }
+.outfit-table :is(input, select) { padding: 0 4px; line-height: 32px; }
+.outfit-table textarea { padding: 8px 4px; resize: vertical; overflow-x: hidden; overflow-y: auto; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; line-height: 16px; }
+.outfit-table-cell--actions, .outfit-table-head--actions { width: var(--row-action-column); min-width: var(--row-action-column); max-width: var(--row-action-column); }
+.outfit-table-cell--actions { text-align: center; }
+.outfit-table :is(.outfit-table-head--category, .outfit-table-cell--category) { width: 5.5%; }
+.outfit-table :is(.outfit-table-head--name, .outfit-table-cell--name) { width: 11%; }
+.outfit-table :is(.outfit-table-head--purchase_value, .outfit-table-cell--purchase_value) { width: 4.1%; }
+.outfit-table :is(.outfit-table-head--experience_cost, .outfit-table-cell--experience_cost) { width: 4.8%; }
+.outfit-table :is(.outfit-table-head--concealment, .outfit-table-cell--concealment) { width: 5%; }
+.outfit-table :is(.outfit-table-head--attack, .outfit-table-cell--attack, .outfit-table-head--parry, .outfit-table-cell--parry, .outfit-table-head--range, .outfit-table-cell--range, .outfit-table-head--range_text, .outfit-table-cell--range_text) { width: 4.8%; }
+.outfit-table :is(.outfit-table-head--defense, .outfit-table-cell--defense, .outfit-table-head--defense_s, .outfit-table-cell--defense_s, .outfit-table-head--defense_i, .outfit-table-cell--defense_i, .outfit-table-head--defense_p, .outfit-table-cell--defense_p) { width: 4.6%; }
+.outfit-table :is(.outfit-table-head--control_modifier, .outfit-table-cell--control_modifier, .outfit-table-head--cs_modifier, .outfit-table-cell--cs_modifier, .outfit-table-head--mundane_modifier, .outfit-table-cell--mundane_modifier) { width: 4.5%; }
+.outfit-table :is(.outfit-table-head--speed, .outfit-table-cell--speed, .outfit-table-head--electronic_control, .outfit-table-cell--electronic_control, .outfit-table-head--control_value, .outfit-table-cell--control_value, .outfit-table-head--tron_software, .outfit-table-cell--tron_software, .outfit-table-head--tron_support, .outfit-table-cell--tron_support, .outfit-table-head--tron_hardware, .outfit-table-cell--tron_hardware, .outfit-table-head--cs_value, .outfit-table-cell--cs_value, .outfit-table-head--crew, .outfit-table-cell--crew, .outfit-table-head--sf, .outfit-table-cell--sf, .outfit-table-head--residence_entry, .outfit-table-cell--residence_entry, .outfit-table-head--residence-electric-area, .outfit-table-cell--residence-electric-area) { width: 3.8%; }
+.outfit-table :is(.outfit-table-head--slot, .outfit-table-cell--slot) { width: 7.5%; }
+.outfit-table :is(.outfit-table-head--page_number, .outfit-table-cell--page_number) { width: 4.5%; }
+.outfit-table :is(.outfit-table-head--description, .outfit-table-cell--description) { width: auto; min-width: 0; }
+.outfit-table-group--armor tfoot td { color: var(--color-accent); background: var(--color-accent-soft); font-weight: 800; }
+
+@media (min-width: 1100px) {
+  body[data-page="sheet.html"] .outfit-table { min-width: 0; }
+}
+@media (max-width: 1000px) {
+  body[data-page="sheet.html"] .outfit-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 620px) {
+  body[data-page="sheet.html"] .outfit-fields { grid-template-columns: 1fr; }
+}

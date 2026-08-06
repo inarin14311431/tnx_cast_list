@@ -1,23 +1,15 @@
 <!doctype html>
 <html lang="ja">
 <head>
+  <script src="./js/css-next-theme.js"></script>
+  <link rel="stylesheet" href="./css-next/index.css?v=7" data-css-system="next">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>アカウント // N◎VA CAST ARCHIVE</title>
-  <script src="./js/theme.js?v=18"></script>
-  <link rel="stylesheet" href="./css/base.css?v=30">
-  <link rel="stylesheet" href="./css/auth.css?v=31">
-  <link rel="stylesheet" href="./css/account.css?v=32">
-  <link rel="stylesheet" href="./css/master-data-admin.css?v=3">
-  <link rel="stylesheet" href="./css/site-unified-v15.css?v=30">
-  <link rel="stylesheet" href="./css/responsive-v29.css?v=30">
-  <link rel="stylesheet" href="./css/themes.css?v=1">
-  <link rel="stylesheet" href="./css/app-chrome.css?v=1">
-  <link rel="stylesheet" href="./css/app-responsive.css?v=1">
 </head>
-<body>
+<body data-page="account.html">
   <div class="background-grid"></div><div class="scanlines"></div>
-  <header class="auth-header app-header"><a href="./index.html">&lt; キャスト一覧へ <small>RETURN TO ARCHIVE</small></a><p>N◎VA MUNICIPAL DATABASE</p><h1>オペレーターアカウント <small>OPERATOR ACCOUNT</small></h1></header>
+  <header class="auth-header app-header"><a class="app-back-link" href="./index.html"><span>&lt; キャスト一覧へ</span><small>RETURN TO ARCHIVE</small></a><p>N◎VA MUNICIPAL DATABASE</p><h1>オペレーターアカウント <small>OPERATOR ACCOUNT</small></h1></header>
   <main class="account-layout">
     <section class="account-panel">
       <p class="account-panel__label">認証済みオペレーター <small>AUTHENTICATED OPERATOR</small></p>
@@ -27,7 +19,7 @@
     </section>
     <section class="account-panel"><header class="account-panel__header"><h2>登録キャスト <small>ASSIGNED CASTS</small></h2></header><div id="owned-casts">読み込み中…</div></section>
   </main>
-  <script type="module" src="./js/account.js?v=35"></script>
+  <script type="module" src="./js/account.js?v=36"></script>
   <script type="module" src="./js/master-data-admin.js?v=2"></script>
   <script type="module" src="./js/master-user-delete.js?v=2"></script>
 </body>

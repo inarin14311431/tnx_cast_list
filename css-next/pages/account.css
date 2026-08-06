@@ -1,0 +1,108 @@
+body[data-page="account.html"] .auth-header,
+body[data-page="account.html"] .account-layout { width: min(960px, calc(100% - 32px)); }
+body[data-page="account.html"] .auth-header { display: block; box-sizing: border-box; padding: 36px 28px 20px; border-bottom: 1px solid var(--color-border-muted); background: transparent; box-shadow: none; }
+body[data-page="account.html"] .auth-header > p { margin: 28px 0 4px; color: var(--color-accent); font: 700 .92rem/1.35 var(--font-data); letter-spacing: .14em; }
+body[data-page="account.html"] .auth-header > h1 { margin: 0; font-size: clamp(2rem, 7vw, 4rem); }
+body[data-page="account.html"] .auth-header > h1 small { margin-top: 5px; text-align: left; }
+body[data-page="account.html"] .account-layout { display: grid; gap: 16px; margin-inline: auto; padding: 24px 0 80px; }
+.account-layout > .account-panel { padding: 18px; border: 1px solid var(--color-border-muted); background: var(--color-surface); }
+.account-panel__label { margin: 0; color: var(--color-muted); font: .74rem/1.4 var(--font-data); }
+.account-panel > h2 { margin: 6px 0 0; overflow-wrap: anywhere; color: var(--color-accent); }
+.account-data { display: grid; gap: 10px; margin: 16px 0; }
+.account-data > div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 15px; padding: 10px 0; border-bottom: 1px solid var(--color-border-muted); }
+.account-data dt { color: var(--color-muted); font: .74rem/1.4 var(--font-data); }
+.account-data dd { margin: 0; overflow-wrap: anywhere; font-family: var(--font-data); }
+.account-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; align-items: stretch; margin-top: 18px; }
+.account-actions :where(a, button) { display: grid; min-height: 58px; gap: 2px; place-content: center; min-width: 0; text-align: center; white-space: nowrap; word-break: keep-all; }
+.account-panel__header { margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px solid var(--color-border-muted); }
+.account-panel__header h2 { margin: 0; color: var(--color-text); }
+.owned-cast-list { display: grid; gap: 12px; }
+.owned-cast { display: flex; justify-content: space-between; gap: 14px; min-width: 0; padding: 12px 14px; border-left: 2px solid var(--color-accent); background: color-mix(in srgb, var(--color-bg) 72%, transparent); }
+.owned-cast__identity { flex: 1 1 260px; min-width: 0; padding-right: 8px; }
+.owned-cast__identity h3 { margin: 2px 0 0; }
+.owned-cast__handle { margin: 2px 0 0; color: var(--color-accent); font-size: .78rem; }
+.owned-cast__meta { display: flex; flex: 0 1 610px; width: min(100%, 610px); min-width: 0; max-width: 610px; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 8px; }
+.owned-cast__status-row { display: flex; width: 100%; align-items: center; justify-content: flex-end; gap: 10px; color: var(--color-muted); font: .72rem/1 var(--font-data); }
+.owned-cast__visibility { color: var(--color-text); font-size: .82rem; font-weight: 800; white-space: nowrap; }
+.owned-cast__serial { display: inline-block; padding: 6px 10px 5px; border: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent); border-bottom-width: 2px; color: var(--color-accent); background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 14%, transparent), color-mix(in srgb, var(--color-accent) 3.5%, transparent)); font-size: .72rem; font-weight: 800; letter-spacing: .12em; line-height: 1; white-space: nowrap; box-shadow: 0 0 14px color-mix(in srgb, var(--color-accent) 12%, transparent), inset 0 0 10px color-mix(in srgb, var(--color-accent) 5%, transparent); clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px); }
+.owned-cast__links { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 6px; width: 100%; margin-top: 4px; }
+.owned-cast__links :where(a, button) { display: grid; width: 100%; min-width: 0; min-height: 50px; place-items: center; gap: 3px; padding: 7px 5px; border: 1px solid color-mix(in srgb, var(--color-accent) 85%, transparent); color: var(--color-text); background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 20%, var(--color-surface)), color-mix(in srgb, var(--color-bg) 76%, var(--color-accent) 8%)); text-align: center; white-space: nowrap; }
+.owned-cast__links button[data-delete] { border-color: color-mix(in srgb, var(--color-danger) 90%, transparent); color: #ffdbe3; background: linear-gradient(180deg, color-mix(in srgb, var(--color-danger) 28%, var(--color-surface)), color-mix(in srgb, var(--color-bg) 78%, var(--color-danger) 10%)); }
+.action-label__jp { display: block; font-size: .9rem; font-weight: 900; line-height: 1.15; letter-spacing: .01em; }
+.action-label__en { display: block; color: color-mix(in srgb, var(--color-muted) 72%, var(--color-text)); font: 700 .68rem/1.1 var(--font-data); letter-spacing: .1em; }
+:where(.empty-data, .auth-error) { padding: 24px; text-align: center; }
+
+.master-data-admin { border-color: color-mix(in srgb, var(--color-accent) 38%, transparent); }
+.master-data-admin__header { display: flex; align-items: center; justify-content: space-between; gap: 18px; }
+.master-data-admin__header :is(h2, p) { margin: 0; }
+.master-data-admin__header p { margin-top: 5px; color: var(--color-muted); font-size: .76rem; }
+#master-data-sync-button { min-width: 160px; padding: 10px 14px; border-color: var(--color-accent); color: var(--color-accent); background: var(--color-accent-soft); font-weight: 900; }
+#master-data-sync-button small { margin-top: 3px; color: var(--color-muted); font-size: .56rem; }
+#master-data-sync-button:disabled { opacity: .45; cursor: wait; }
+.master-data-admin__stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 16px 0 0; }
+.master-data-admin__stats div { padding: 14px; border: 1px solid var(--color-border-muted); background: rgb(0 0 0 / 20%); }
+.master-data-admin__stats dt { color: var(--color-muted); font: .68rem/1.4 var(--font-data); }
+.master-data-admin__stats dd { margin: 4px 0; color: var(--color-accent); font: 900 1.8rem/1 var(--font-data); }
+.master-data-admin__stats small { color: var(--color-muted); font-size: .64rem; }
+.master-data-admin__status { min-height: 1.5em; margin: 12px 0 0; color: var(--color-muted); font: .7rem/1.5 var(--font-data); }
+.master-data-admin__status.is-success { color: #75ffb4; }
+.master-data-admin__status.is-error { color: var(--color-danger); }
+.master-data-admin__status.is-loading { color: #ffd166; }
+.master-search-user-sql { margin-top: 22px; padding: 18px; border: 1px solid rgb(255 99 185 / 42%); background: linear-gradient(135deg, rgb(255 99 185 / 4.5%), color-mix(in srgb, var(--color-accent) 3.5%, transparent)); }
+.master-search-user-sql__header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
+.master-search-user-sql__header :is(h3, p) { margin: 0; }
+.master-search-user-sql__header h3 { color: #ff63b9; font-size: 1rem; }
+.master-search-user-sql__header h3 small { display: block; margin-top: 3px; color: var(--color-muted); font: .56rem/1.2 var(--font-data); letter-spacing: .12em; }
+.master-search-user-sql__header p { margin-top: 6px; color: var(--color-muted); font-size: .74rem; line-height: 1.6; }
+#master-search-user-reload { flex: 0 0 auto; padding: 9px 12px; border-color: var(--color-border-muted); color: var(--color-text); background: rgb(0 0 0 / 24%); font-weight: 800; }
+#master-search-user-reload small { margin-top: 3px; color: var(--color-muted); font-size: .52rem; }
+#master-search-user-reload:disabled { opacity: .45; cursor: wait; }
+.master-search-user-sql__fields { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(240px, .8fr); gap: 12px; }
+.master-search-user-sql__fields label { display: grid; gap: 6px; color: var(--color-muted); font-size: .7rem; font-weight: 800; }
+.master-search-user-sql__fields input { box-sizing: border-box; width: 100%; padding-inline: 12px; }
+.master-search-user-sql__fields input[readonly] { color: var(--color-accent); font-family: var(--font-data); }
+.master-search-user-sql__fields input:disabled { opacity: .5; cursor: wait; }
+#master-search-user-sql-preview { box-sizing: border-box; width: 100%; margin-top: 12px; padding: 12px; border: 1px solid var(--color-border-muted); resize: vertical; color: #dffcff; background: rgb(0 0 0 / 42%); font: .72rem/1.6 var(--font-data); }
+.master-search-user-sql__actions { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 12px; }
+.master-search-user-sql__actions p { margin: 0; color: var(--color-muted); font: .68rem/1.5 var(--font-data); }
+.master-search-user-sql__actions p.is-ready { color: var(--color-accent); }
+.master-search-user-sql__actions p.is-success { color: #75ffb4; }
+.master-search-user-sql__actions p.is-error { color: var(--color-danger); }
+.master-search-user-sql__actions p.is-loading { color: #ffd166; }
+.master-search-user-sql__button-group { display: flex; flex: 0 0 auto; align-items: stretch; justify-content: flex-end; gap: 10px; }
+#master-search-user-sql-copy, #master-search-user-delete { min-width: 190px; padding: 10px 14px; font-weight: 900; }
+#master-search-user-sql-copy small, #master-search-user-delete small { margin-top: 3px; color: var(--color-muted); font-size: .54rem; }
+#master-search-user-sql-copy { border-color: #ff63b9; color: #ff9dd2; background: rgb(255 99 185 / 8%); }
+#master-search-user-delete { border-color: #ff516b; color: #ff8c9d; background: rgb(255 37 70 / 8%); }
+#master-search-user-sql-copy:disabled, #master-search-user-delete:disabled { opacity: .4; cursor: not-allowed; box-shadow: none; }
+
+body[data-page="backup.html"] .account-layout { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: min(960px, calc(100% - 32px)); gap: 24px; margin-inline: auto; padding: 40px 0 80px; }
+body[data-page="backup.html"] .account-panel { display: grid; align-content: start; gap: 16px; min-height: 260px; }
+body[data-page="backup.html"] .account-panel h2 { margin: 0; padding-bottom: 10px; border-bottom: 1px solid var(--color-border-muted); }
+body[data-page="backup.html"] .account-panel button { min-height: 52px; margin-top: auto; }
+body[data-page="backup.html"] #import-file { width: 100%; padding: 12px; border: 1px dashed var(--color-border); background: var(--color-bg); }
+
+@media (max-width: 1199px) {
+  body[data-page="account.html"] .owned-cast__links { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  body[data-page="account.html"] .master-search-user-sql__actions { align-items: stretch; flex-direction: column; }
+  body[data-page="account.html"] .master-search-user-sql__button-group { width: 100%; }
+  body[data-page="account.html"] .master-search-user-sql__button-group button { flex: 1 1 0; }
+}
+@media (max-width: 767px) {
+  html body[data-page="account.html"] .auth-header, body[data-page="account.html"] .account-layout { width: min(100% - 20px, 960px); }
+  html body[data-page="account.html"] .auth-header { padding: 28px 14px 18px; }
+  body[data-page="account.html"] .account-data > div { grid-template-columns: 1fr; gap: 4px; }
+  body[data-page="account.html"] .account-actions { grid-template-columns: 1fr; }
+  body[data-page="account.html"] .owned-cast { flex-direction: column; padding: 10px; }
+  body[data-page="account.html"] .owned-cast__meta { align-items: flex-start; min-width: 0; }
+  body[data-page="account.html"] .owned-cast__status-row { justify-content: flex-start; flex-wrap: wrap; }
+  html body[data-page="account.html"] .owned-cast__links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body[data-page="account.html"] .action-label__jp { font-size: .94rem; }
+  body[data-page="account.html"] .owned-cast__serial { font-size: .66rem; }
+  body[data-page="account.html"] :is(.master-data-admin__header, .master-search-user-sql__header) { align-items: stretch; flex-direction: column; }
+  body[data-page="account.html"] :is(#master-data-sync-button, #master-search-user-reload) { width: 100%; }
+  body[data-page="account.html"] :is(.master-data-admin__stats, .master-search-user-sql__fields) { grid-template-columns: 1fr; }
+  html body[data-page="account.html"] .master-search-user-sql__button-group { flex-direction: column; }
+  body[data-page="account.html"] :is(#master-search-user-sql-copy, #master-search-user-delete) { width: 100%; }
+  html body[data-page="backup.html"] .account-layout { grid-template-columns: 1fr; }
+}

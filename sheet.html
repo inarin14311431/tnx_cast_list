@@ -1,67 +1,41 @@
 <!doctype html>
 <html lang="ja">
 <head>
+  <script src="./js/css-next-theme.js"></script>
+  <link rel="stylesheet" href="./css-next/index.css?v=14" data-css-system="next">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>キャストシート編集 // N◎VA ARCHIVE</title>
   <script>if(!new URLSearchParams(location.search).get("id")){if("scrollRestoration" in history)history.scrollRestoration="manual";scrollTo(0,0);}</script>
-  <script src="./js/theme.js?v=38"></script>
-  <link rel="stylesheet" href="./css/base.css?v=99">
-  <link rel="stylesheet" href="./css/sheet.css?v=100">
-  <link rel="stylesheet" href="./css/sheet-ja.css?v=99">
-  <link rel="stylesheet" href="./css/sheet-layout.css?v=100">
-  <link rel="stylesheet" href="./css/sheet-sticky-exp-panel.css?v=3">
-  <link rel="stylesheet" href="./css/ui-ja-v11.css?v=99">
-  <link rel="stylesheet" href="./css/site-unified-v15.css?v=100">
-  <link rel="stylesheet" href="./css/ui-v25.css?v=99">
-  <link rel="stylesheet" href="./css/responsive-v29.css?v=99">
-  <link rel="stylesheet" href="./css/sheet-features.css?v=100">
-  <link rel="stylesheet" href="./css/sheet-image.css?v=101">
-  <link rel="stylesheet" href="./css/sheet-personal-data.css?v=99">
-  <link rel="stylesheet" href="./css/sheet-balance.css?v=99">
-  <link rel="stylesheet" href="./css/style-mark-cycle.css?v=100">
-  <link rel="stylesheet" href="./css/outfit-tables.css?v=106">
-  <link rel="stylesheet" href="./css/outfit-mobile-cards.css?v=4">
-  <link rel="stylesheet" href="./css/sheet-multiline-fields.css?v=2">
-  <link rel="stylesheet" href="./css/tsv-import-guide.css?v=2">
-  <link rel="stylesheet" href="./css/sheet-master-search.css?v=1">
-  <link rel="stylesheet" href="./css/themes.css?v=1">
-  <link rel="stylesheet" href="./css/image-preview-layer-fix.css?v=1">
-  <link rel="stylesheet" href="./css/sheet-sidebar-actions.css?v=4">
-  <link rel="stylesheet" href="./css/editor-table-layout.css?v=4">
-  <link rel="stylesheet" href="./css/sheet-desktop-readability.css?v=1">
-  <link rel="stylesheet" href="./css/app-chrome.css?v=1">
-  <link rel="stylesheet" href="./css/app-responsive.css?v=2">
 </head>
-<body>
+<body data-page="sheet.html">
   <div class="background-grid"></div><div class="scanlines"></div>
-  <header class="sheet-header app-header"><a href="./account.html">&lt; アカウントへ <small>RETURN TO ACCOUNT</small></a><div><p>N◎VA MUNICIPAL DATABASE</p><h1>キャストシート編集 <small>CAST SHEET EDITOR</small></h1></div><div id="save-status">初期化中…</div></header>
+  <header class="sheet-header app-header"><a class="app-back-link" href="./account.html"><span>&lt; アカウントへ</span><small>RETURN TO ACCOUNT</small></a><div><p>N◎VA MUNICIPAL DATABASE</p><h1>キャストシート編集 <small>CAST SHEET EDITOR</small></h1></div><div id="save-status">初期化中…</div></header>
   <main class="sheet-layout">
-    <aside class="exp-panel"><p>消費経験点 <small>EXPERIENCE POINTS</small></p><strong id="exp-total">0</strong><dl id="exp-breakdown"></dl><label>公開状態 <small>VISIBILITY</small><select id="visibility"><option value="public">公開 / PUBLIC</option><option value="private">非公開 / PRIVATE</option></select></label><button id="save-button" type="button" data-save-state="unsaved" title="通常は編集後に自動保存されます。クリックすると今すぐ保存します。">未保存 <small>NOT SAVED</small></button><button id="legacy-import-open" type="button">データ取込 <small>IMPORT DATA</small></button><a id="cast-view-button" class="sheet-view-link" target="_blank" rel="noopener">キャストを閲覧 <small>VIEW CAST</small></a></aside>
+    <aside class="exp-panel"><p>消費経験点 <small>EXPERIENCE POINTS</small></p><strong id="exp-total">0</strong><dl id="exp-breakdown"></dl><label>公開状態 <small>VISIBILITY</small><select id="visibility"><option value="public">公開 / PUBLIC</option><option value="private">非公開 / PRIVATE</option></select></label><button id="save-button" type="button" data-save-state="unsaved" title="通常は編集後に自動保存されます。クリックすると今すぐ保存します。">未保存 <small>NOT SAVED</small></button><button id="legacy-import-open" type="button">データ取込 <small>IMPORT DATA</small></button><a id="cast-view-button" class="sheet-view-link">キャストを閲覧 <small>VIEW CAST</small></a></aside>
     <section class="sheet-main">
-      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>01 プロフィール</span><small>PROFILE</small></button><div class="section-body"><div class="form-grid"><div class="profile-top-grid wide"><section class="basic-profile-panel" aria-labelledby="basic-profile-heading"><header class="basic-profile-panel__header"><h3 id="basic-profile-heading">基本情報</h3><small>BASIC PROFILE</small></header><div class="basic-profile-grid"><label>キャスト名<input id="character-name" required></label><label>名前ルビ<input id="character-kana"></label><label>ハンドル<input id="handle"></label><label>ハンドルルビ<input id="handle-kana" maxlength="160"></label><label>プレイヤー名<input id="player-name" required></label><label>所属<input id="affiliation"></label><label>市民ランク<input id="citizen-rank"></label><label class="basic-profile-summary">概要<textarea id="summary" rows="4"></textarea></label></div></section><section class="personal-data-panel" aria-labelledby="personal-data-heading"><header class="personal-data-panel__header"><h3 id="personal-data-heading">パーソナルデータ</h3><small>PERSONAL DATA</small></header><div class="personal-data-grid"><label>年齢<input id="age" type="text" maxlength="80" placeholder="例：24歳"></label><label>性別<input id="gender" type="text" maxlength="80" placeholder="例：女性"></label><label>身長<input id="height" type="text" maxlength="80" placeholder="例：168cm"></label><label>体重<input id="weight" type="text" maxlength="80" placeholder="例：54kg"></label><label>瞳<input id="eyes" type="text" maxlength="80" placeholder="例：青"></label><label>髪<input id="hair" type="text" maxlength="80" placeholder="例：黒・ロング"></label><label>肌<input id="skin" type="text" maxlength="80" placeholder="例：色白"></label></div><p id="personal-data-status" aria-live="polite"></p></section><section class="life-path-panel" aria-labelledby="life-path-heading"><header class="life-path-panel__header"><h3 id="life-path-heading">ライフパス</h3><small>LIFE PATH</small></header><div class="life-path-grid"><label>出自<input id="life-path-origin" type="text" maxlength="160" placeholder="出自を入力"></label><label>経験<input id="life-path-experience" type="text" maxlength="160" placeholder="経験を入力"></label><label>邂逅<input id="life-path-encounter" type="text" maxlength="160" placeholder="邂逅を入力"></label></div><p id="life-path-status" aria-live="polite"></p></section></div><div class="profile-media-grid wide"><label class="profile-text-field">プロフィール<textarea id="profile" rows="18"></textarea></label><section class="sheet-image-editor" aria-labelledby="sheet-image-heading"><header class="sheet-image-editor__header"><h3 id="sheet-image-heading">キャスト画像</h3><small>VISUAL IDENTITY</small></header><div class="sheet-image-grid"><section class="image-preview-panel"><div class="image-preview-frame"><img id="image-preview" src="./assets/placeholders/scan-failed.webp" alt="キャスト画像プレビュー"><span class="image-preview-scan"></span></div><p id="image-file-info" class="image-file-info">NO IMAGE SELECTED</p></section><section class="image-control-panel"><form id="image-form"><label class="image-drop-zone" for="image-file"><span><span class="image-drop-zone__main">画像ファイルを選択</span><span class="image-drop-zone__sub">JPEG / PNG / WEBP・圧縮前最大20MB</span></span><input id="image-file" name="image" type="file" accept="image/jpeg,image/png,image/webp"></label><div class="image-guidance"><p>縦長の立ち絵またはバストアップを推奨。</p><p>登録時に長辺1920px以下・500KB目標のWebPへ自動圧縮します。</p><p>圧縮後1MBを超える画像は登録できません。</p><p>一覧・閲覧・アクト紹介では上部基準でトリミングされます。</p></div><button id="upload-button" type="submit">画像を登録 <small>OPTIMIZE AND UPLOAD</small></button></form><button id="clear-image-button" type="button">画像を解除 <small>CLEAR IMAGE</small></button></section></div><p id="image-message" class="image-message" aria-live="polite"></p></section></div></div></div></section>
-      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>02 スタイル</span><small>STYLES</small></button><div class="section-body"><div id="style-grid" class="style-grid"></div><div id="style-warning" class="warning"></div></div></section>
-      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>03 能力値・制御値・CS</span><small>ABILITY / CONTROL / CS</small></button><div class="section-body"><div id="ability-grid" class="ability-grid"></div></div></section>
-      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>04 一般技能・社会・コネ</span><small>GENERAL / SOCIAL / CONNECTIONS</small></button><div class="section-body"><div class="toolbar skill-toolbar" style="grid-template-columns:repeat(3,minmax(0,1fr))"><button id="add-general" type="button">一般技能を追加 <small>ADD GENERAL</small></button><button id="add-social" type="button">社会を追加 <small>ADD SOCIAL</small></button><button id="add-connection" type="button">コネを追加 <small>ADD CONNECTION</small></button></div><div id="general-skills"></div></div></section>
-      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>05 スタイル技能</span><small>STYLE SKILLS</small></button><div class="section-body"><div class="toolbar skill-toolbar" style="grid-template-columns:repeat(2,minmax(0,1fr))"><button id="add-style-skill" type="button">スタイル技能を追加 <small>ADD STYLE SKILL</small></button><button id="import-skd" type="button">SKD TSV取込 <small>IMPORT</small></button></div><div id="style-skills"></div></div></section>
-      <section class="sheet-section is-open"><button class="section-toggle" type="button"><span>06 アウトフィット</span><small>OUTFITS</small></button><div class="section-body"><div class="toolbar"><button id="add-outfit" type="button">アウトフィットを追加 <small>ADD OUTFIT</small></button><button id="import-ofc" type="button">OFC TSV取込 <small>IMPORT</small></button></div><div id="outfit-list"></div></div></section>
+      <section class="sheet-section sheet-section--profile is-open"><button class="section-toggle" type="button"><span>01 プロフィール</span><small>PROFILE</small></button><div class="section-body"><div class="form-grid"><div class="profile-top-grid wide"><section class="basic-profile-panel" aria-labelledby="basic-profile-heading"><header class="basic-profile-panel__header"><h3 id="basic-profile-heading">基本情報</h3><small>BASIC PROFILE</small></header><div class="basic-profile-grid"><label>キャスト名<input id="character-name" required></label><label>名前ルビ<input id="character-kana"></label><label>ハンドル<input id="handle"></label><label>ハンドルルビ<input id="handle-kana" maxlength="160"></label><label>プレイヤー名<input id="player-name" required></label><label>所属<input id="affiliation"></label><label>市民ランク<input id="citizen-rank"></label><label class="basic-profile-summary">概要<textarea id="summary" rows="4"></textarea></label></div></section><section class="personal-data-panel" aria-labelledby="personal-data-heading"><header class="personal-data-panel__header"><h3 id="personal-data-heading">パーソナルデータ</h3><small>PERSONAL DATA</small></header><div class="personal-data-grid"><label>年齢<input id="age" type="text" maxlength="80" placeholder="例：24歳"></label><label>性別<input id="gender" type="text" maxlength="80" placeholder="例：女性"></label><label>身長<input id="height" type="text" maxlength="80" placeholder="例：168cm"></label><label>体重<input id="weight" type="text" maxlength="80" placeholder="例：54kg"></label><label>瞳<input id="eyes" type="text" maxlength="80" placeholder="例：青"></label><label>髪<input id="hair" type="text" maxlength="80" placeholder="例：黒・ロング"></label><label>肌<input id="skin" type="text" maxlength="80" placeholder="例：色白"></label></div><p id="personal-data-status" aria-live="polite"></p></section><section class="life-path-panel" aria-labelledby="life-path-heading"><header class="life-path-panel__header"><h3 id="life-path-heading">ライフパス</h3><small>LIFE PATH</small></header><div class="life-path-grid"><label>出自<input id="life-path-origin" type="text" maxlength="160" placeholder="出自を入力"></label><label>経験<input id="life-path-experience" type="text" maxlength="160" placeholder="経験を入力"></label><label>邂逅<input id="life-path-encounter" type="text" maxlength="160" placeholder="邂逅を入力"></label></div><p id="life-path-status" aria-live="polite"></p></section></div><div class="profile-media-grid wide"><label class="profile-text-field">プロフィール<textarea id="profile" rows="18"></textarea></label><section class="sheet-image-editor" aria-labelledby="sheet-image-heading"><header class="sheet-image-editor__header"><h3 id="sheet-image-heading">キャスト画像</h3><small>VISUAL IDENTITY</small></header><div class="sheet-image-grid"><section class="image-preview-panel"><div class="image-preview-frame"><img id="image-preview" src="./assets/placeholders/scan-failed.webp" alt="キャスト画像プレビュー"><span class="image-preview-scan"></span></div><p id="image-file-info" class="image-file-info">NO IMAGE SELECTED</p></section><section class="image-control-panel"><form id="image-form"><label class="image-drop-zone" for="image-file"><span><span class="image-drop-zone__main">画像ファイルを選択</span><span class="image-drop-zone__sub">JPEG / PNG / WEBP・圧縮前最大20MB</span></span><input id="image-file" name="image" type="file" accept="image/jpeg,image/png,image/webp"></label><div class="image-guidance"><p>縦長の立ち絵またはバストアップを推奨。</p><p>登録時に長辺1920px以下・500KB目標のWebPへ自動圧縮します。</p><p>圧縮後1MBを超える画像は登録できません。</p><p>一覧・閲覧・アクト紹介では上部基準でトリミングされます。</p></div><button id="upload-button" type="submit">画像を登録 <small>OPTIMIZE AND UPLOAD</small></button></form><button id="clear-image-button" type="button">画像を解除 <small>CLEAR IMAGE</small></button></section></div><p id="image-message" class="image-message" aria-live="polite"></p></section></div></div></div></section>
+      <section class="sheet-section sheet-section--styles is-open"><button class="section-toggle" type="button"><span>02 スタイル</span><small>STYLES</small></button><div class="section-body"><div id="style-grid" class="style-grid"></div><div id="style-warning" class="warning"></div></div></section>
+      <section class="sheet-section sheet-section--ability is-open"><button class="section-toggle" type="button"><span>03 能力値・制御値・CS</span><small>ABILITY / CONTROL / CS</small></button><div class="section-body"><div id="ability-grid" class="ability-grid"></div></div></section>
+      <section class="sheet-section sheet-section--skills is-open"><button class="section-toggle" type="button"><span>04 一般技能・社会・コネ</span><small>GENERAL / SOCIAL / CONNECTIONS</small></button><div class="section-body"><div class="toolbar skill-toolbar skill-toolbar--three"><button id="add-general" type="button">一般技能を追加 <small>ADD GENERAL</small></button><button id="add-social" type="button">社会を追加 <small>ADD SOCIAL</small></button><button id="add-connection" type="button">コネを追加 <small>ADD CONNECTION</small></button></div><div id="general-skills"></div></div></section>
+      <section class="sheet-section sheet-section--style-skills is-open"><button class="section-toggle" type="button"><span>05 スタイル技能</span><small>STYLE SKILLS</small></button><div class="section-body"><div class="toolbar skill-toolbar skill-toolbar--two"><button id="add-style-skill" type="button">スタイル技能を追加 <small>ADD STYLE SKILL</small></button><button id="import-skd" type="button">SKD TSV取込 <small>IMPORT</small></button></div><div id="style-skills"></div></div></section>
+      <section class="sheet-section sheet-section--outfits is-open"><button class="section-toggle" type="button"><span>06 アウトフィット</span><small>OUTFITS</small></button><div class="section-body"><div class="toolbar"><button id="add-outfit" type="button">アウトフィットを追加 <small>ADD OUTFIT</small></button><button id="import-ofc" type="button">OFC TSV取込 <small>IMPORT</small></button></div><div id="outfit-list"></div></div></section>
     </section>
   </main>
   <dialog id="tsv-dialog"><form method="dialog"><h2 id="tsv-title">TSV取込 <small>TSV IMPORT</small></h2><textarea id="tsv-text" rows="16"></textarea><div class="dialog-actions"><button value="cancel">キャンセル</button><button id="tsv-apply" value="default">取り込む</button></div></form></dialog>
   <dialog id="legacy-import-dialog"><form method="dialog"><h2>キャラシ倉庫JSON取込</h2><p>キャラシ倉庫で取得したJSONを貼り付けてください。キャスト名とプレイヤー名が入力されていれば、反映後は約1.2秒後にDBへ自動保存されます。画面上部が「保存済み」になるまでページを閉じないでください。</p><button id="legacy-bookmarklet-copy" type="button">ブックマークレットをコピー</button><textarea id="legacy-import-json" rows="14" placeholder="キャラシ倉庫JSONを貼り付け"></textarea><p id="legacy-import-message" aria-live="polite"></p><div class="dialog-actions"><button value="cancel">閉じる</button><button id="legacy-import-apply" type="button">編集画面へ反映</button></div></form></dialog>
   <script src="./js/style-skill-kinds.js?v=104"></script>
-  <script src="./js/social-connection-order.js?v=101"></script>
-  <script src="./js/general-skill-columns.js?v=105"></script>
-  <script type="module" src="./js/sheet.js?v=104"></script>
+  <script src="./js/handle-format.js?v=2"></script>
+  <script type="module" src="./js/sheet.js?v=105"></script>
   <script src="./js/general-initial-empty-slot-cleanup.js?v=2"></script>
   <script src="./js/style-mark-cycle.js?v=99"></script>
-  <script type="module" src="./js/sheet-image.js?v=100"></script>
-  <script type="module" src="./js/sheet-personal-data.js?v=100"></script>
+  <script type="module" src="./js/sheet-image.js?v=101"></script>
+  <script type="module" src="./js/sheet-personal-data.js?v=101"></script>
   <script src="./js/general-master-skills.js?v=113"></script>
-  <script type="module" src="./js/ui-v25.js?v=103"></script>
+  <script type="module" src="./js/ui-v25.js?v=104"></script>
   <script type="module" src="./js/sheet-features.js?v=100"></script>
   <script src="./js/sheet-json-import-repair.js?v=5"></script>
-  <script src="./js/sheet-import.js?v=99"></script>
+  <script src="./js/sheet-import.js?v=100"></script>
   <script src="./js/general-proper-import-merge.js?v=2"></script>
   <script src="./js/style-skill-recovery.js?v=99"></script>
   <script src="./js/style-skill-fields.js?v=101"></script>
@@ -73,13 +47,20 @@
   <script src="./js/tsv-import-guide.js?v=4"></script>
   <script src="./js/sheet-sticky-exp-panel.js?v=4"></script>
   <script type="module" src="./js/style-skill-separators.js?v=3"></script>
-  <script type="module" src="./js/sheet-multiline-fields-v3.js?v=3"></script>
+  <script type="module" src="./js/sheet-multiline-fields-v3.js?v=4"></script>
   <script type="module" src="./js/sheet-master-search.js?v=1"></script>
   <script src="./js/sheet-master-search-dash-fix.js?v=1"></script>
   <script type="module" src="./js/sheet-master-search-access.js?v=1"></script>
   <script type="module" src="./js/sheet-master-search-filters.js?v=1"></script>
-  <script src="./js/sheet-sidebar-actions.js?v=1"></script>
+  <script src="./js/sheet-sidebar-actions.js?v=3"></script>
   <script src="./js/legacy-import-finalization-status.js?v=1"></script>
-  <script src="./js/sheet-save-watchdog.js?v=1"></script>
+  <script src="./js/sheet-save-watchdog.js?v=2"></script>
+  <script src="./js/sheet-open-at-top.js?v=1"></script>
+  <script type="module" src="./js/outfit-ofc-fields.js?v=2"></script>
+  <script type="module" src="./js/outfit-ofc-tsv-category-fix.js?v=1"></script>
+  <script src="./js/outfit-display-rules-v5.js?v=6"></script>
+  <script src="./js/sheet-import-style-skill-compat.js?v=1"></script>
+  <script src="./js/sheet-import-outfit-compat.js?v=6"></script>
+  <script type="module" src="./js/sheet-master-autofill.js?v=8"></script>
 </body>
 </html>

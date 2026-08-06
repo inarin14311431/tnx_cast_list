@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="ja">
 <head>
+  <script src="./js/css-next-theme.js"></script>
+  <link rel="stylesheet" href="./css-next/index.css?v=16" data-css-system="next">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="index, follow">
@@ -18,19 +20,12 @@
       document.documentElement.style.colorScheme = ["intron", "orbital"].includes(theme) ? "light" : "dark";
     })();
   </script>
-  <link rel="stylesheet" href="./css/cast-view-bundle.css?v=75">
-  <link rel="stylesheet" href="./css/app-structure.css?v=1" data-app-structure="1">
-  <link rel="stylesheet" href="./css/cast-theme-bundle.css?v=76" data-theme-runtime="1" data-theme-polish="1" data-theme-fixes-v3="1" data-theme-fixes-v4="1" data-theme-city-expansion="1" data-theme-canberra-yellow="1" data-theme-hongkong-fesler="1" data-theme-intron-light="1" data-theme-vlad-vampire="1" data-theme-special-brands="1" data-theme-new-worlds="1" data-theme-inagaki-gaudy="1" data-theme-inagaki-select-fix="1">
-  <link rel="stylesheet" href="./css/app-chrome.css?v=1">
-  <link rel="stylesheet" href="./css/app-responsive.css?v=1">
-  <script src="./js/theme.js?v=31"></script>
 </head>
-<body>
+<body data-page="cast.html">
   <div class="background-grid"></div><div class="scanlines"></div>
   <header class="cast-header app-header">
-    <div class="cast-header__actions"><a class="cast-header__back" href="./account.html"><span>&lt; アカウントへ</span><small>RETURN TO ACCOUNT</small></a><a id="cast-edit-button" class="cast-edit-link" hidden><span>キャストを編集</span><small>EDIT CAST</small></a></div>
+    <div class="cast-header__actions"><a class="cast-header__back app-back-link" href="./index.html"><span>&lt; キャスト一覧へ</span><small>RETURN TO ARCHIVE</small></a><a id="cast-edit-button" class="cast-edit-link" hidden><span>キャストを編集</span><small>EDIT CAST</small></a></div>
     <div class="cast-header__record">
-      <p class="cast-header__system">N◎VA MUNICIPAL DATABASE</p>
       <p id="cast-status" class="cast-header__status">キャストデータへアクセス中…</p>
       <p id="cast-public-id" class="cast-public-id cast-header__public-id"></p>
     </div>
@@ -53,17 +48,18 @@
   </main>
   <section id="cast-error" class="cast-error" hidden><p class="cast-error__code">キャストデータが見つかりません <small>CAST DATA NOT FOUND</small></p><p id="cast-error-message"></p><a href="./index.html">キャスト一覧へ戻る</a></section>
   <script src="./js/cast-cyberscan.js?v=68"></script>
-  <script type="module" src="./js/cast.js?v=69"></script>
+  <script src="./js/handle-format.js?v=2"></script>
+  <script type="module" src="./js/cast.js?v=70"></script>
   <script src="./js/cast-fixed-general-skills.js?v=2"></script>
   <script src="./js/cast-id-display.js?v=1"></script>
   <script src="./js/cast-tabs.js?v=1"></script>
-  <script type="module" src="./js/cast-ui.js?v=69"></script>
+  <script type="module" src="./js/cast-ui.js?v=70"></script>
   <script type="module" src="./js/ui-v25.js?v=69"></script>
   <script type="module" src="./js/cast-style-details-v47.js?v=74"></script>
   <script type="module" src="./js/cast-style-name-multiline.js?v=1"></script>
   <script src="./js/cast-style-separators.js?v=1"></script>
   <script type="module" src="./js/cast-outfit-editorlike.js?v=69"></script>
   <script type="module" src="./js/cast-description-expand.js?v=1"></script>
-  <script src="./js/cast-archetype-view.js?v=74"></script>
+  <script src="./js/cast-archetype-view.js?v=75"></script>
 </body>
 </html>
