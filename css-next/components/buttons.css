@@ -64,8 +64,8 @@ button:hover small, .account-actions a:hover small, .owned-cast__links a:hover s
 .cast-header__actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: stretch; margin-bottom: 18px; }
 .cast-header__actions .cocofolia-copy-button,
 .cast-header__actions .transfer-tsv-copy-button,
-.cast-header__actions .transfer-bookmarklet-copy-button { min-width: 158px; }
-.cast-header__actions .udonarium-export-button { min-width: 170px; }
+.cast-header__actions .transfer-bookmarklet-copy-button { min-width: 132px; }
+.cast-header__actions .udonarium-export-button { min-width: 142px; }
 .exp-panel > .cocofolia-copy-button,
 .exp-panel > .udonarium-export-button,
 .exp-panel > .transfer-tsv-copy-button,

@@ -21,6 +21,9 @@ body[data-page="account.html"] .account-layout { display: grid; gap: 16px; margi
 .owned-cast__identity { flex: 1 1 260px; min-width: 0; padding-right: 8px; }
 .owned-cast__identity h3 { margin: 2px 0 0; }
 .owned-cast__handle { margin: 2px 0 0; color: var(--color-accent); font-size: .78rem; }
+.owned-cast__styles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; width: min(100%, 280px); margin-top: 9px; }
+.owned-cast__style { --style-color: var(--color-muted); display: flex; min-width: 0; min-height: 22px; align-items: center; justify-content: center; gap: 1px; padding: 3px 1px 2px; overflow: hidden; border-bottom: 2px solid color-mix(in srgb, var(--style-color) 78%, transparent); color: color-mix(in srgb, var(--style-color) 82%, var(--color-text)); background: color-mix(in srgb, var(--style-color) 7%, transparent); font: 800 .61rem/1 var(--font-data); white-space: nowrap; }
+.owned-cast__style b { flex: 0 0 auto; color: var(--style-color); font-size: .67rem; line-height: 1; }
 .owned-cast__meta { display: flex; flex: 0 1 610px; width: min(100%, 610px); min-width: 0; max-width: 610px; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 8px; }
 .owned-cast__status-row { display: flex; width: 100%; align-items: center; justify-content: flex-end; gap: 10px; color: var(--color-muted); font: .72rem/1 var(--font-data); }
 .owned-cast__visibility { color: var(--color-text); font-size: .82rem; font-weight: 800; white-space: nowrap; }

@@ -28,7 +28,7 @@ function ensureButtons() {
   if (!bookmarklet) bookmarklet = createButton("transfer-bookmarklet-copy-button", "transfer-bookmarklet-copy-button", "転記BM", "COPY BOOKMARKLET");
 
   const editorPanel = document.querySelector(".exp-panel");
-  const headerActions = document.querySelector(".cast-header__actions");
+  const headerActions = document.querySelector(".cast-header__export-actions") || document.querySelector(".cast-header__actions");
   const container = editorPanel || headerActions;
   if (!container) return { transferButton: null, bookmarkletButton: null };
 

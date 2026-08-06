@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { renderAuthNavigation } from "./auth-state.js?v=4";
+import { getStyleColor } from "./style-colors.js";
 
 const ALLOWED_PAGE_SIZES = new Set([12, 25, 50, 100]);
 const DEFAULT_PAGE_SIZE = 12;
@@ -213,7 +214,10 @@ function createCharacterCard(character) {
     [character.style_1, character.style_1_mark],
     [character.style_2, character.style_2_mark],
     [character.style_3, character.style_3_mark]
-  ].filter(([name]) => name).map(([name, mark]) => `${escapeHtml(name)}${escapeHtml(mark)}`).join("、");
+  ].filter(([name]) => name).map(([name, mark]) => `
+    <span class="cast-card__style-chip" style="--style-color:${getStyleColor(name)}">
+      <span>${escapeHtml(name)}</span>${mark ? `<b>${escapeHtml(mark)}</b>` : ""}
+    </span>`).join("");
 
   return `
     <article class="cast-card">
@@ -226,7 +230,7 @@ function createCharacterCard(character) {
           <div class="cast-card__meta"><p class="cast-card__exp">${escapeHtml(character.experience_points ?? 0)} EXP</p></div>
           <p class="cast-card__handle">${escapeHtml(character.handle || "ハンドル未登録")}</p>
           <h2 class="cast-card__name">${escapeHtml(character.character_name)}</h2>
-          <p class="cast-card__styles">${styles}</p>
+          <div class="cast-card__styles" aria-label="スタイル">${styles}</div>
           <p class="cast-card__player">プレイヤー：${escapeHtml(character.player_name || "—")}</p>
           <p class="cast-card__affiliation">${escapeHtml(character.affiliation)}</p>
           <p class="cast-card__summary">${escapeHtml(character.summary)}</p>

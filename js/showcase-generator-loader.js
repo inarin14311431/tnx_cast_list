@@ -15,7 +15,7 @@ window.addEventListener("unhandledrejection", event => {
 });
 
 try {
-  await import("./showcase-generator-v3.js?v=3");
+  await import("./showcase-generator-v3.js?v=4");
   await import("./showcase-tagline.js?v=2");
   await import("./showcase-tagline-auto.js?v=1");
   await import("./showcase-history-role.js?v=1");

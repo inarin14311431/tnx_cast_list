@@ -2,6 +2,10 @@
 (function(){
   document.body.classList.add('cast-scan-mode');
   const publicId=new URLSearchParams(location.search).get('id')?.trim()||'UNKNOWN';
+  const scanSessionKey='tnx-cast-scan-complete-v1';
+  let fastScan=false;
+  try{fastScan=sessionStorage.getItem(scanSessionKey)==='1';}catch{}
+  if(fastScan)document.body.classList.add('cast-scan-fast');
 
   const rain=document.createElement('div');
   rain.className='cast-data-rain';
@@ -22,6 +26,7 @@
 
   const overlay=document.createElement('section');
   overlay.className='cast-access-overlay';
+  if(fastScan)overlay.classList.add('is-fast-scan');
   overlay.setAttribute('aria-live','polite');
   overlay.innerHTML=`
     <div class="cast-access-terminal">
@@ -53,14 +58,14 @@
     log.append(p);
   }
 
-  addLog('LINK','暗号化経路を確立中…');
+  addLog('LINK',fastScan?'既存の認証経路を再接続中…':'暗号化経路を確立中…');
   const timer=setInterval(()=>{
     const content=document.querySelector('#cast-content');
     const error=document.querySelector('#cast-error');
     const dataReady=content&&!content.hidden;
     const failed=error&&!error.hidden;
     const cap=dataReady?100:failed?100:88;
-    progress=Math.min(cap,progress+Math.max(2,Math.round((cap-progress)*.16)));
+    progress=Math.min(cap,progress+Math.max(fastScan?12:2,Math.round((cap-progress)*(fastScan ? 0.44 : 0.16))));
     bar.style.width=`${progress}%`;
 
     const threshold=[18,36,56,76,91];
@@ -80,18 +85,19 @@
     if(dataReady&&progress>=100&&!resolved){
       resolved=true;
       addLog('ACCESS GRANTED','パーソナルデータ取得完了',true);
+      try{sessionStorage.setItem(scanSessionKey,'1');}catch{}
       document.querySelector('#cast-status')?.setAttribute('data-scan-state','complete');
-      setTimeout(()=>overlay.classList.add('is-complete'),520);
-      setTimeout(()=>overlay.remove(),1300);
+      setTimeout(()=>overlay.classList.add('is-complete'),fastScan?90:520);
+      setTimeout(()=>overlay.remove(),fastScan?460:1300);
       clearInterval(timer);
     }
-  },120);
+  },fastScan?45:120);
 
   setTimeout(()=>{
     if(resolved)return;
     const content=document.querySelector('#cast-content');
     if(content&&!content.hidden){progress=100;bar.style.width='100%';}
-  },2600);
+  },fastScan?850:2600);
 
   function escapeHtml(value){
     return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));

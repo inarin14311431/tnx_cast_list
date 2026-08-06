@@ -30,7 +30,7 @@ function ensureButton() {
     return created;
   }
 
-  const headerActions = document.querySelector(".cast-header__actions");
+  const headerActions = document.querySelector(".cast-header__export-actions") || document.querySelector(".cast-header__actions");
   if (headerActions) {
     const cocofoliaButton = headerActions.querySelector("#cocofolia-copy-button");
     if (cocofoliaButton) cocofoliaButton.insertAdjacentElement("afterend", created);

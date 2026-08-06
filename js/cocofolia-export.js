@@ -25,7 +25,7 @@ function ensureButton() {
     return created;
   }
 
-  const headerActions = document.querySelector(".cast-header__actions");
+  const headerActions = document.querySelector(".cast-header__export-actions") || document.querySelector(".cast-header__actions");
   if (headerActions) {
     headerActions.append(created);
     return created;

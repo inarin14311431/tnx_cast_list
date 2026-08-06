@@ -21,6 +21,9 @@
 .cast-card__handle { margin-top: 10px; color: var(--color-accent); }
 .cast-card__name { margin: 4px 0 12px; }
 .cast-card__styles, .cast-card__player { color: var(--color-muted); }
+.cast-card__styles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; min-height: 24px; }
+.cast-card__style-chip { --style-color: var(--color-muted); display: flex; min-width: 0; min-height: 24px; align-items: center; justify-content: center; gap: 1px; padding: 4px 1px 3px; overflow: hidden; border-bottom: 2px solid color-mix(in srgb, var(--style-color) 78%, transparent); color: color-mix(in srgb, var(--style-color) 82%, var(--color-text)); background: color-mix(in srgb, var(--style-color) 7%, transparent); font: 800 .58rem/1 var(--font-data); letter-spacing: -.03em; white-space: nowrap; }
+.cast-card__style-chip b { flex: 0 0 auto; color: var(--style-color); font-size: .58rem; line-height: 1; text-shadow: 0 0 7px color-mix(in srgb, var(--style-color) 45%, transparent); }
 .cast-card__player { margin-top: 12px; font-size: .74rem; }
 .cast-card__affiliation { margin-top: 8px; }
 .cast-card__summary { display: -webkit-box; margin-top: 12px; overflow: hidden; color: var(--color-muted); line-height: 1.7; -webkit-box-orient: vertical; -webkit-line-clamp: 4; }

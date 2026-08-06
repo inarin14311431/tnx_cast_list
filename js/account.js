@@ -1,6 +1,7 @@
 import { SITE_BASE_PATH } from "./config.js?v=2";
 import { supabase } from "./supabase-client.js";
 import { requireAuth, signOut } from "./auth-state.js?v=4";
+import { getStyleColor } from "./style-colors.js";
 
 const VISIBILITY_LABELS = {
   public: "公開 / PUBLIC",
@@ -28,7 +29,7 @@ async function loadOwnedCharacters() {
 
   const { data, error } = await supabase
     .from("characters")
-    .select("id, public_id, character_name, handle, visibility, updated_at")
+    .select("id, public_id, character_name, handle, style_1, style_1_mark, style_2, style_2_mark, style_3, style_3_mark, visibility, updated_at")
     .eq("owner_id", currentUser.id)
     .order("updated_at", { ascending: false });
 
@@ -66,11 +67,20 @@ function visibilityLabel(value) {
 function createOwnedCastItem(character) {
   const id = encodeURIComponent(character.public_id);
   const displayId = obfuscatePublicId(character.public_id);
+  const styles = [
+    [character.style_1, character.style_1_mark],
+    [character.style_2, character.style_2_mark],
+    [character.style_3, character.style_3_mark]
+  ].filter(([name]) => name).map(([name, mark]) => `
+    <span class="owned-cast__style" style="--style-color:${getStyleColor(name)}">
+      <span>${escapeHtml(name)}</span>${mark ? `<b>${escapeHtml(mark)}</b>` : ""}
+    </span>`).join("");
   return `
     <article class="owned-cast">
       <div class="owned-cast__identity">
         <p class="owned-cast__handle">${escapeHtml(character.handle ? `“${character.handle}”` : "ハンドル未登録")}</p>
         <h3>${escapeHtml(character.character_name)}</h3>
+        ${styles ? `<div class="owned-cast__styles" aria-label="スタイル">${styles}</div>` : ""}
       </div>
       <div class="owned-cast__meta">
         <div class="owned-cast__status-row">

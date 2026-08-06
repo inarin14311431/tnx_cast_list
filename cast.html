@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <script src="./js/css-next-theme.js"></script>
-  <link rel="stylesheet" href="./css-next/index.css?v=25" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/index.css?v=26" data-css-system="next">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="index, follow">
@@ -24,7 +24,7 @@
 <body data-page="cast.html">
   <div class="background-grid"></div><div class="scanlines"></div>
   <header class="cast-header app-header">
-    <div class="cast-header__actions"><a class="cast-header__back app-back-link" href="./index.html"><span>&lt; キャスト一覧へ</span><small>RETURN TO ARCHIVE</small></a><a id="cast-edit-button" class="cast-edit-link" hidden><span>キャストを編集</span><small>EDIT CAST</small></a></div>
+    <div class="cast-header__actions"><div class="cast-header__primary-actions"><a class="cast-header__back app-back-link" href="./index.html"><span>&lt; キャスト一覧へ</span><small>RETURN TO ARCHIVE</small></a><a id="cast-edit-button" class="cast-edit-link" hidden><span>キャストを編集</span><small>EDIT CAST</small></a></div><div class="cast-header__export-panel"><span class="cast-header__export-label">データ出力 <small>EXPORT / TRANSFER</small></span><div class="cast-header__export-actions"></div></div></div>
     <div class="cast-header__record">
       <p id="cast-status" class="cast-header__status">キャストデータへアクセス中…</p>
       <p id="cast-public-id" class="cast-public-id cast-header__public-id"></p>
@@ -47,7 +47,7 @@
     <section id="tab-outfits" class="cast-tab-panel" data-panel="outfits"><div id="outfit-container" class="outfit-container"></div></section>
   </main>
   <section id="cast-error" class="cast-error" hidden><p class="cast-error__code">キャストデータが見つかりません <small>CAST DATA NOT FOUND</small></p><p id="cast-error-message"></p><a href="./index.html">キャスト一覧へ戻る</a></section>
-  <script src="./js/cast-cyberscan.js?v=68"></script>
+  <script src="./js/cast-cyberscan.js?v=69"></script>
   <script src="./js/handle-format.js?v=2"></script>
   <script type="module" src="./js/cast.js?v=70"></script>
   <script src="./js/cast-fixed-general-skills.js?v=2"></script>

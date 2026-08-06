@@ -1,7 +1,12 @@
 /* Public cast view. Rebuilt from the verified cyber-scan screen specification. */
 .cast-header, .cast-content { --cast-suit-anchor: 240px; --cast-suit-column: 48px; --cast-compact-skill-width: 432px; width: min(1400px, calc(100% - 32px)); margin-inline: auto; }
 .cast-header { position: sticky; top: 0; z-index: 50; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 16px; align-items: center; min-height: 106px; padding: 12px 0; border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 28%, transparent); background: color-mix(in srgb, var(--color-bg) 84%, transparent); backdrop-filter: blur(14px); box-shadow: 0 10px 30px rgb(0 0 0 / 28%); }
-body[data-page="cast.html"] .cast-header__actions { display: flex; align-items: center; gap: 10px; margin: 0 0 0 12px; }
+body[data-page="cast.html"] .cast-header__actions { display: flex; min-width: 0; align-items: stretch; gap: 15px; margin: 0 0 0 12px; }
+.cast-header__primary-actions { display: flex; flex: 0 0 auto; align-items: center; gap: 8px; }
+.cast-header__export-panel { display: grid; min-width: 0; align-content: center; gap: 5px; padding-left: 14px; border-left: 1px solid color-mix(in srgb, var(--color-accent) 28%, transparent); }
+.cast-header__export-label { color: var(--color-muted); font: 700 .58rem/1 var(--font-data); letter-spacing: .12em; }
+.cast-header__export-label small { margin-left: 5px; color: color-mix(in srgb, var(--color-muted) 72%, transparent); font-size: .5rem; }
+.cast-header__export-actions { display: flex; min-width: 0; align-items: stretch; gap: 6px; }
 .cast-header__actions .cast-edit-link { display: grid; min-width: 150px; gap: 2px; padding: 9px 14px; border: 1px solid var(--color-border); color: var(--color-accent); background: var(--color-accent-soft); text-decoration: none; white-space: nowrap; }
 .cast-header__actions .cast-edit-link small { color: var(--color-muted); font: .62rem/1.1 var(--font-data); letter-spacing: .08em; }
 .cast-header__record { display: grid; min-width: 0; align-content: center; justify-items: start; }
@@ -253,6 +258,12 @@ body[data-page="cast.html"] .ability-grid { display: grid; grid-template-columns
 .cast-data-rain span { position: absolute; top: -35%; white-space: pre; animation: cast-data-rain-fall linear infinite; filter: drop-shadow(0 0 4px currentColor); }
 .cast-access-overlay { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; padding: 24px; color: var(--color-text); background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--color-text) 3%, transparent) 0 1px, transparent 1px 4px), radial-gradient(circle at center, var(--color-accent-soft), transparent 44%), var(--color-bg); transition: opacity .5s ease, visibility .5s ease; }
 .cast-access-overlay.is-complete { visibility: hidden; opacity: 0; pointer-events: none; }
+.cast-access-overlay.is-fast-scan { background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--color-text) 2%, transparent) 0 1px, transparent 1px 4px), radial-gradient(circle at center, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 42%), var(--color-bg); transition-duration: .18s; }
+.cast-access-overlay.is-fast-scan .cast-access-terminal { width: min(620px, 100%); padding: 20px 24px; }
+.cast-access-overlay.is-fast-scan .cast-access-title { font-size: clamp(1.35rem, 4vw, 2.2rem); }
+.cast-access-overlay.is-fast-scan .cast-access-target { margin-bottom: 14px; }
+.cast-access-overlay.is-fast-scan .cast-access-progress { margin-bottom: 10px; }
+.cast-access-overlay.is-fast-scan .cast-access-log { min-height: 0; max-height: 66px; padding: 9px 12px; overflow: hidden; }
 .cast-access-terminal { position: relative; width: min(760px, 100%); padding: 28px; border: 1px solid var(--color-border); background: color-mix(in srgb, var(--color-surface) 92%, transparent); box-shadow: 0 0 50px color-mix(in srgb, var(--color-accent) 12%, transparent); clip-path: polygon(0 0, calc(100% - 26px) 0, 100% 26px, 100% 100%, 26px 100%, 0 calc(100% - 26px)); }
 .cast-access-terminal::before, .cast-access-terminal::after { position: absolute; content: ""; background: var(--color-accent); box-shadow: 0 0 14px var(--color-accent); }
 .cast-access-terminal::before { top: 0; left: 0; width: 110px; height: 2px; }
@@ -310,11 +321,14 @@ body[data-page="cast.html"] .ability-grid { display: grid; grid-template-columns
   body[data-page="cast.html"] nav.cast-tabs { top: 0; }
   body[data-page="cast.html"] section.cast-hero { padding: 10px; }
   body[data-page="cast.html"] section.cast-hero::before { display: none; }
+  body[data-page="cast.html"] header.cast-header .cast-header__actions { flex-wrap: wrap; }
+  body[data-page="cast.html"] .cast-header__export-panel { flex: 1 1 100%; padding: 8px 0 0; border-top: 1px solid color-mix(in srgb, var(--color-accent) 22%, transparent); border-left: 0; }
 }
 @media (max-width: 767px) {
   body[data-page="cast.html"] .cast-header { position: relative; grid-template-columns: 1fr; align-items: start; }
   body[data-page="cast.html"] .cast-header__record { width: 100%; justify-self: stretch; text-align: left; }
   html body[data-page="cast.html"] .cast-header__actions { margin-left: 0; }
+  body[data-page="cast.html"] .cast-header__primary-actions, body[data-page="cast.html"] .cast-header__export-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); width: 100%; }
   body[data-page="cast.html"] .cast-header__record .cast-header__public-id { font-size: .68rem; }
   body[data-page="cast.html"] .cast-hero { grid-template-columns: 1fr; padding: 10px; }
   body[data-page="cast.html"] .cast-hero::before { display: none; }

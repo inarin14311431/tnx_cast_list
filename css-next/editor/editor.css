@@ -35,7 +35,7 @@ body[data-page="sheet.html"] .sheet-header > div:nth-child(2) h1 small { margin-
 .toolbar button small { display: block; margin-top: .15rem; color: var(--color-muted); font-size: .64rem; letter-spacing: .09em; opacity: .72; }
 #add-style-skill { min-width: 190px; }
 
-.exp-panel { grid-column: 1; grid-row: 1; position: sticky; top: 18px; align-self: start; box-sizing: border-box; width: 220px; padding: 13px; overflow: hidden; border: 1px solid var(--color-border); background: color-mix(in srgb, var(--color-surface) 96%, transparent); box-shadow: var(--shadow-glow); }
+.exp-panel { grid-column: 1; grid-row: 1; position: sticky; top: 18px; align-self: start; box-sizing: border-box; width: 220px; max-height: calc(100vh - 36px); padding: 13px; overflow-x: hidden; overflow-y: auto; border: 1px solid var(--color-border); background: color-mix(in srgb, var(--color-surface) 96%, transparent); box-shadow: var(--shadow-glow); scrollbar-color: color-mix(in srgb, var(--color-accent) 50%, transparent) transparent; scrollbar-width: thin; }
 .exp-panel > p { margin: 0 0 6px; color: var(--color-muted); font: 700 .72rem/1.3 var(--font-data); }
 .exp-panel > strong { display: block; margin: 5px 0 10px; color: var(--color-accent); font: 800 2.35rem/1 var(--font-data); text-shadow: var(--shadow-glow); }
 .exp-panel dl { margin: 0 0 10px; }
@@ -46,6 +46,21 @@ body[data-page="sheet.html"] .sheet-header > div:nth-child(2) h1 small { margin-
 .exp-panel :is(button, select, .sheet-view-link) { box-sizing: border-box; width: 100%; min-height: 38px; margin-top: 7px; padding: 8px 9px; }
 .exp-panel .sheet-view-link { display: grid; place-content: center; border: 1px solid var(--color-border); color: var(--color-accent); background: var(--color-accent-soft); text-align: center; text-decoration: none; }
 .exp-panel small { display: block; color: var(--color-muted); font: 600 .62rem/1.2 var(--font-data); letter-spacing: .08em; opacity: .72; }
+.sheet-section-nav { display: grid; gap: 3px; margin: 12px -5px 13px; padding: 10px 5px 11px; border-block: 1px solid var(--color-border-muted); }
+.sheet-section-nav > p { margin: 0 5px 5px; color: var(--color-muted); font: 700 .62rem/1.25 var(--font-data); letter-spacing: .08em; }
+.sheet-section-nav > p small { display: block; margin-top: 2px; font-size: .48rem; letter-spacing: .12em; }
+.sheet-section-nav a { --section-nav-color: var(--color-accent); display: grid; grid-template-columns: 28px minmax(0, 1fr); align-items: center; gap: 7px; min-height: 36px; padding: 5px 7px; border: 1px solid transparent; border-left: 2px solid color-mix(in srgb, var(--section-nav-color) 34%, transparent); color: var(--color-muted); background: transparent; text-decoration: none; transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast); }
+.sheet-section-nav a:nth-of-type(1) { --section-nav-color: var(--color-section-profile); }
+.sheet-section-nav a:nth-of-type(2) { --section-nav-color: var(--color-section-styles); }
+.sheet-section-nav a:nth-of-type(3) { --section-nav-color: var(--color-section-ability); }
+.sheet-section-nav a:nth-of-type(4) { --section-nav-color: var(--color-section-skills); }
+.sheet-section-nav a:nth-of-type(5) { --section-nav-color: var(--color-section-style-skills); }
+.sheet-section-nav a:nth-of-type(6) { --section-nav-color: var(--color-section-outfits); }
+.sheet-section-nav a b { color: color-mix(in srgb, var(--section-nav-color) 72%, var(--color-muted)); font: 800 .62rem/1 var(--font-data); }
+.sheet-section-nav a span { min-width: 0; overflow: hidden; font-size: .68rem; font-weight: 800; line-height: 1.15; text-overflow: ellipsis; white-space: nowrap; }
+.sheet-section-nav a small { margin-top: 2px; overflow: hidden; font-size: .46rem; text-overflow: ellipsis; white-space: nowrap; }
+.sheet-section-nav a:is(:hover, .is-active) { border-color: color-mix(in srgb, var(--section-nav-color) 40%, transparent); border-left-color: var(--section-nav-color); color: var(--color-text); background: linear-gradient(90deg, color-mix(in srgb, var(--section-nav-color) 15%, transparent), transparent); box-shadow: inset 3px 0 10px color-mix(in srgb, var(--section-nav-color) 7%, transparent); }
+.sheet-section-nav a.is-active b { color: var(--section-nav-color); text-shadow: 0 0 9px color-mix(in srgb, var(--section-nav-color) 55%, transparent); }
 
 body[data-page="sheet.html"] .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 .form-grid > .wide { grid-column: 1 / -1; }
@@ -169,8 +184,11 @@ body[data-page="sheet.html"] .exp-panel .sheet-import-control .floating-help-lin
 @media (max-width: 1199px) {
   body[data-page="sheet.html"] .sheet-layout { grid-template-columns: 1fr; width: min(100% - 20px, 1500px); }
   body[data-page="sheet.html"] .sheet-main { grid-column: 1; grid-row: 2; }
-  body[data-page="sheet.html"] .exp-panel { grid-column: 1; grid-row: 1; position: sticky; top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: end; width: auto; background: color-mix(in srgb, var(--color-surface) 97%, transparent); }
+  body[data-page="sheet.html"] .exp-panel { grid-column: 1; grid-row: 1; position: sticky; top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; align-items: end; width: auto; max-height: none; overflow: visible; background: color-mix(in srgb, var(--color-surface) 97%, transparent); }
   body[data-page="sheet.html"] .exp-panel > :is(p, strong, dl, label) { grid-column: 1 / -1; }
+  body[data-page="sheet.html"] .exp-panel > .sheet-section-nav { grid-column: 1 / -1; grid-template-columns: repeat(6, minmax(0, 1fr)); margin-inline: 0; padding-inline: 0; }
+  body[data-page="sheet.html"] .sheet-section-nav > p { grid-column: 1 / -1; }
+  body[data-page="sheet.html"] .sheet-section-nav a { grid-template-columns: 22px minmax(0, 1fr); padding-inline: 5px; }
   body[data-page="sheet.html"] .profile-top-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   body[data-page="sheet.html"] .profile-top-grid .life-path-panel { grid-column: 1 / -1; }
   body[data-page="sheet.html"] .life-path-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -182,6 +200,7 @@ body[data-page="sheet.html"] .exp-panel .sheet-import-control .floating-help-lin
   body[data-page="sheet.html"] .form-grid, body[data-page="sheet.html"] .profile-top-grid, body[data-page="sheet.html"] .basic-profile-grid, body[data-page="sheet.html"] .personal-data-grid, body[data-page="sheet.html"] .life-path-grid, body[data-page="sheet.html"] .style-grid, body[data-page="sheet.html"] .ability-grid, body[data-page="sheet.html"] .skill-toolbar--three, body[data-page="sheet.html"] .skill-toolbar--two { grid-template-columns: 1fr; }
   body[data-page="sheet.html"] .ability-card--cs { grid-column: auto; }
   body[data-page="sheet.html"] main.sheet-layout > .exp-panel { position: static; z-index: auto; }
+  body[data-page="sheet.html"] main.sheet-layout .sheet-section-nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   body[data-page="sheet.html"] .sheet-image-grid { grid-template-columns: 1fr; }
   body[data-page="sheet.html"] .sheet-image-editor .image-preview-panel { width: min(100%, 280px); margin-inline: auto; }
   body[data-page="sheet.html"] #style-grid .style-card { padding: 14px 10px 0; }
