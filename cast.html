@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <script src="./js/css-next-theme.js"></script>
-  <link rel="stylesheet" href="./css-next/index.css?v=29" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/index.css?v=30" data-css-system="next">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="index, follow">
@@ -11,7 +11,7 @@
 <body data-page="cast.html">
   <div class="background-grid"></div><div class="scanlines"></div>
   <header class="cast-header app-header">
-    <div class="cast-header__actions"><div class="cast-header__primary-actions"><a class="cast-header__back app-back-link" href="./index.html"><span>&lt; キャスト一覧へ</span><small>RETURN TO ARCHIVE</small></a><a id="cast-edit-button" class="cast-edit-link" hidden><span>キャストを編集</span><small>EDIT CAST</small></a></div><div class="cast-header__export-panel"><span class="cast-header__export-label">データ出力 <small>EXPORT / TRANSFER</small></span><div class="cast-header__export-actions"></div></div></div>
+    <div class="cast-header__actions"><div class="cast-header__primary-actions"><a class="cast-header__back app-back-link" href="./index.html"><span>&lt; キャスト一覧へ</span><small>RETURN TO ARCHIVE</small></a><a id="cast-edit-button" class="cast-edit-link" hidden><span>キャストを編集</span><small>EDIT CAST</small></a></div><div class="cast-header__export-panel" role="group" aria-label="データ出力"><span class="cast-header__export-label">データ出力 <small>EXPORT / TRANSFER</small></span><div class="cast-header__export-actions"></div></div></div>
     <div class="cast-header__record">
       <p id="cast-status" class="cast-header__status">キャストデータへアクセス中…</p>
       <p id="cast-public-id" class="cast-public-id cast-header__public-id"></p>
@@ -24,8 +24,8 @@
         <div class="cast-name-readings"><span id="cast-handle-kana" class="cast-handle-kana"></span><span id="cast-kana" class="cast-kana"></span></div><div class="cast-name-primary"><span id="cast-handle" class="cast-handle"></span><h1 id="cast-name" class="cast-name"></h1></div>
         <div id="cast-styles" class="cast-styles"></div>
         <section class="hero-divine-panel" aria-label="神業"><header><h2>神業 <small>DIVINE WORK</small></h2></header><div id="divine-list" class="divine-list hero-divine-list"></div></section>
-        <dl class="identity-grid"><div><dt>プレイヤー</dt><dd id="cast-player"></dd></div><div><dt>所属</dt><dd id="cast-affiliation"></dd></div><div><dt>市民ランク</dt><dd id="cast-rank"></dd></div><div><dt>消費経験点</dt><dd id="cast-exp"></dd></div></dl>
-        <p id="cast-summary" class="cast-summary"></p>
+        <dl class="identity-grid"><div><dt>プレイヤー <small>PLAYER</small></dt><dd id="cast-player"></dd></div><div><dt>所属 <small>AFFILIATION</small></dt><dd id="cast-affiliation"></dd></div><div><dt>市民ランク <small>CITIZEN RANK</small></dt><dd id="cast-rank"></dd></div><div><dt>消費経験点 <small>EXP SPENT</small></dt><dd id="cast-exp"></dd></div></dl>
+        <section id="cast-summary-panel" class="cast-summary-panel" aria-labelledby="cast-summary-heading" hidden><div id="cast-summary-heading" class="cast-summary-heading">SCAN SUMMARY <small>抽出概要</small></div><p id="cast-summary" class="cast-summary"></p><button id="cast-summary-toggle" class="cast-summary-toggle" type="button" aria-controls="cast-summary" aria-expanded="false" hidden><span>全文表示</span><small>EXPAND</small></button></section>
       </div>
     </section>
     <nav class="cast-tabs" aria-label="キャスト情報"><button class="cast-tab is-active" type="button" data-tab="session"><span>アクトデータ</span><small>ACT DATA</small></button><button class="cast-tab" type="button" data-tab="profile"><span>プロフィール</span><small>PROFILE</small></button><button class="cast-tab" type="button" data-tab="outfits"><span>アウトフィット</span><small>OUTFITS</small></button></nav>
@@ -40,6 +40,7 @@
   <script src="./js/cast-fixed-general-skills.js?v=2"></script>
   <script src="./js/cast-id-display.js?v=1"></script>
   <script src="./js/cast-tabs.js?v=1"></script>
+  <script src="./js/cast-summary-expand.js?v=1"></script>
   <script type="module" src="./js/cast-ui.js?v=71"></script>
   <script type="module" src="./js/ui-v25.js?v=70"></script>
   <script type="module" src="./js/cast-style-details-v47.js?v=75"></script>
