@@ -75,10 +75,11 @@ body[data-page="cast.html"] .cast-header__actions { display: flex; min-width: 0;
 .cast-divine-card .divine-card__yomi { grid-column: 2; grid-row: 2; align-self: start; min-width: 0; padding-right: 68px; color: color-mix(in srgb, var(--divine-local) 42%, var(--color-text)); font: 700 .68rem/1.2 var(--font-data); letter-spacing: .08em; }
 .cast-divine-card__seal { position: absolute; right: 9px; bottom: 9px; padding: 3px 5px; border: 1px solid color-mix(in srgb, var(--divine-local) 45%, transparent); color: color-mix(in srgb, var(--divine-local) 75%, var(--color-text)); background: color-mix(in srgb, var(--color-bg) 35%, transparent); font: 800 .5rem/1 var(--font-data); letter-spacing: .08em; }
 
-.identity-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; margin: 16px 0; border: 1px solid var(--color-border); background: var(--color-border); }
-.identity-grid > div { padding: 8px 10px; border-left: 2px solid var(--color-accent); background: linear-gradient(90deg, var(--color-accent-soft), var(--color-surface)); }
-.identity-grid dt { color: var(--color-muted); font-size: .68rem; letter-spacing: .08em; }
-.identity-grid dd { margin: 2px 0 0; color: var(--color-text); }
+.identity-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; margin: 16px 0; }
+.identity-grid > div { position: relative; min-width: 0; padding: 9px 11px 10px; overflow: hidden; border: 1px solid var(--color-border); border-left: 2px solid var(--color-accent); background: linear-gradient(90deg, var(--color-accent-soft), transparent 48%), linear-gradient(180deg, color-mix(in srgb, var(--color-surface-alt) 82%, var(--color-accent) 18%), var(--color-surface)); box-shadow: inset 0 1px color-mix(in srgb, var(--color-accent) 18%, transparent); }
+.identity-grid > div::after { position: absolute; top: -1px; right: -1px; width: 18px; height: 8px; border-top: 1px solid var(--color-accent); border-right: 1px solid var(--color-accent); content: ""; opacity: .55; }
+.identity-grid dt { color: var(--color-muted); font: 700 .68rem/1.15 var(--font-data); letter-spacing: .1em; }
+.identity-grid dd { margin: 4px 0 0; color: var(--color-text); font-size: .96rem; font-weight: 700; line-height: 1.25; }
 .cast-summary { box-sizing: border-box; min-height: 126px; margin: 0; padding: 13px 15px; border: 1px solid var(--color-border-muted); color: var(--color-text); background: color-mix(in srgb, var(--color-bg) 42%, transparent); white-space: pre-wrap; font-size: 1.06rem; line-height: 1.7; }
 .cast-summary::before { display: block; margin-bottom: 9px; content: "SCAN SUMMARY / 抽出概要"; color: var(--color-accent); font: 800 .78rem/1 var(--font-data); letter-spacing: .12em; }
 
@@ -307,8 +308,8 @@ body[data-page="cast.html"] .ability-grid { display: grid; grid-template-columns
   body[data-page="cast.html"] .cast-divine-authority .cast-divine-card__code { top: 5px; right: 7px; font-size: .52rem; }
   body[data-page="cast.html"] .cast-divine-authority .divine-card__name { font-size: clamp(.98rem, 1.2vw, 1.12rem); line-height: 1.08; }
   body[data-page="cast.html"] .cast-divine-authority .divine-card__yomi { font-size: .61rem; line-height: 1.05; }
-  body[data-page="cast.html"] .identity-grid { grid-template-columns: 1fr 1.45fr .9fr .9fr; gap: 6px; margin: 12px 4px 0; }
-  body[data-page="cast.html"] .identity-grid > div { min-width: 0; min-height: 48px; padding: 7px 9px; border-left-width: 1px; }
+  body[data-page="cast.html"] .identity-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin: 12px 4px 0; }
+  body[data-page="cast.html"] .identity-grid > div { min-width: 0; min-height: 50px; padding: 8px 10px; }
   body[data-page="cast.html"] .identity-grid dt { font-size: .66rem; line-height: 1.15; white-space: nowrap; }
   body[data-page="cast.html"] .identity-grid dd { display: -webkit-box; margin: 3px 0 0; overflow: hidden; font-size: .9rem; line-height: 1.25; overflow-wrap: anywhere; -webkit-box-orient: vertical; -webkit-line-clamp: 2; }
   body[data-page="cast.html"] .cast-summary { box-sizing: border-box; min-height: 118px; max-height: 132px; margin: 9px 4px 0; padding: 9px 11px; overflow: auto; font-size: .92rem; line-height: 1.5; }
