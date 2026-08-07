@@ -6,6 +6,19 @@ import { supabase } from "./supabase-client.js";
  */
 
 (() => {
+  const returnValue = new URLSearchParams(location.search).get('return')?.trim() || '';
+  if (!returnValue) return;
+  try {
+    const returnUrl = new URL(returnValue, location.href);
+    const isArchive = returnUrl.origin === location.origin && /\/index\.html$/.test(returnUrl.pathname);
+    if (!isArchive) return;
+    document.querySelectorAll('.cast-header__back, #cast-error a[href="./index.html"]').forEach(link => {
+      link.href = `${returnUrl.pathname}${returnUrl.search}${returnUrl.hash}`;
+    });
+  } catch {}
+})();
+
+(() => {
   const suits = ['♠','♣','♥','♦'];
   let attempts = 0;
   function enhanceSkillSuits(){

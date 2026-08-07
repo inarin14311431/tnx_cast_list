@@ -2,24 +2,11 @@
 <html lang="ja">
 <head>
   <script src="./js/css-next-theme.js"></script>
-  <link rel="stylesheet" href="./css-next/index.css?v=26" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/index.css?v=29" data-css-system="next">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="index, follow">
   <title>キャストデータ // N◎VA ARCHIVE</title>
-  <script>
-    (() => {
-      const key = "tnx-cast-site-theme";
-      const themes = new Set(["nova", "moon", "star", "eden", "vlad", "lutetia", "buena", "canberra", "hongkong", "fesler", "intron", "axleraters", "inagaki", "astral", "orbital", "japanese-army"]);
-      let theme = "nova";
-      try {
-        const stored = localStorage.getItem(key);
-        if (themes.has(stored)) theme = stored;
-      } catch {}
-      document.documentElement.dataset.theme = theme;
-      document.documentElement.style.colorScheme = ["intron", "orbital"].includes(theme) ? "light" : "dark";
-    })();
-  </script>
 </head>
 <body data-page="cast.html">
   <div class="background-grid"></div><div class="scanlines"></div>
@@ -49,17 +36,17 @@
   <section id="cast-error" class="cast-error" hidden><p class="cast-error__code">キャストデータが見つかりません <small>CAST DATA NOT FOUND</small></p><p id="cast-error-message"></p><a href="./index.html">キャスト一覧へ戻る</a></section>
   <script src="./js/cast-cyberscan.js?v=69"></script>
   <script src="./js/handle-format.js?v=2"></script>
-  <script type="module" src="./js/cast.js?v=70"></script>
+  <script type="module" src="./js/cast.js?v=73"></script>
   <script src="./js/cast-fixed-general-skills.js?v=2"></script>
   <script src="./js/cast-id-display.js?v=1"></script>
   <script src="./js/cast-tabs.js?v=1"></script>
-  <script type="module" src="./js/cast-ui.js?v=70"></script>
-  <script type="module" src="./js/ui-v25.js?v=69"></script>
-  <script type="module" src="./js/cast-style-details-v47.js?v=74"></script>
+  <script type="module" src="./js/cast-ui.js?v=71"></script>
+  <script type="module" src="./js/ui-v25.js?v=70"></script>
+  <script type="module" src="./js/cast-style-details-v47.js?v=75"></script>
   <script type="module" src="./js/cast-style-name-multiline.js?v=1"></script>
   <script src="./js/cast-style-separators.js?v=1"></script>
   <script type="module" src="./js/cast-outfit-editorlike.js?v=69"></script>
-  <script type="module" src="./js/cast-description-expand.js?v=1"></script>
+  <script type="module" src="./js/cast-description-expand.js?v=2"></script>
   <script src="./js/cast-archetype-view.js?v=75"></script>
 </body>
 </html>

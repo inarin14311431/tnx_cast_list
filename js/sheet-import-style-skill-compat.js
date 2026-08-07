@@ -5,7 +5,7 @@
   const MESSAGE="#legacy-import-message";
   const ROOT="#style-skills";
   const ADD="#add-style-skill";
-  const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
+  const BASE_IMPORT_EVENT="tnx:legacy-import-base-finished";
   const frame=()=>new Promise(resolve=>requestAnimationFrame(resolve));
   const canonical=value=>String(value||"").trim()
     .replace(/\[\s*["']?([^\]"']+)["']?\s*\]/g,".$1")
@@ -114,6 +114,24 @@
   const rowValue=row=>exactName(row?.querySelector('[data-f="name"]')?.value);
   const comparable=value=>matchName(value);
 
+  function alignImportedOrder(orderedKeys){
+    for(let targetIndex=0;targetIndex<orderedKeys.length;targetIndex++){
+      const key=orderedKeys[targetIndex];
+      let guard=rows().length+1;
+      while(guard-->0){
+        const currentRows=rows();
+        const currentIndex=currentRows.findIndex(row=>row.dataset.skillKey===key);
+        if(currentIndex===targetIndex)break;
+        if(currentIndex<targetIndex||currentIndex<0)return false;
+        const up=currentRows[currentIndex].querySelector('[data-skill-move="up"]');
+        if(!up||up.disabled)return false;
+        up.click();
+      }
+      if(rows()[targetIndex]?.dataset.skillKey!==key)return false;
+    }
+    return true;
+  }
+
   async function waitForNewRow(before,timeout=10000){
     const existing=rows().find(row=>!before.has(row.dataset.skillKey));
     if(existing)return existing;
@@ -175,34 +193,49 @@
     return applySkill(row,data);
   }
 
-  async function waitBaseImport(button){
-    for(let attempt=0;attempt<2400;attempt++){
-      const message=document.querySelector(MESSAGE)?.textContent||"";
-      if(/取込エラー/.test(message))throw new Error(message);
-      if(!button.disabled&&/反映しました/.test(message))return;
-      await sleep(25);
-    }
-    throw new Error("基本取込の完了を確認できませんでした。");
+  function waitBaseImport(){
+    return new Promise((resolve,reject)=>{
+      let settled=false,timer=0;
+      const finish=(callback,value)=>{
+        if(settled)return;
+        settled=true;
+        window.clearTimeout(timer);
+        document.removeEventListener(BASE_IMPORT_EVENT,onFinished);
+        callback(value);
+      };
+      const onFinished=event=>{
+        if(event.detail?.ok)finish(resolve,event.detail);
+        else finish(reject,new Error(event.detail?.error||"基本取込に失敗しました。"));
+      };
+      document.addEventListener(BASE_IMPORT_EVENT,onFinished,{once:true});
+      timer=window.setTimeout(()=>finish(reject,new Error("基本取込の完了を確認できませんでした。")),150000);
+    });
   }
 
-  async function repair(data,button){
+  async function repair(data){
     const expected=sourceSkills(data);
-    await waitBaseImport(button);
+    await waitBaseImport();
     const used=new Set();
+    const orderedKeys=[];
     let repaired=0;
     for(const skill of expected){
       let row=rows().find(candidate=>!used.has(candidate.dataset.skillKey)&&comparable(rowValue(candidate))===comparable(skill.name));
       if(row){
         used.add(row.dataset.skillKey);
+        orderedKeys.push(row.dataset.skillKey);
         if(await applySkill(row,skill))repaired++;
       }else if(await addMissingSkill(skill)){
         row=rows().find(candidate=>!used.has(candidate.dataset.skillKey)&&rowValue(candidate)===skill.name);
-        if(row)used.add(row.dataset.skillKey);
+        if(row){
+          used.add(row.dataset.skillKey);
+          orderedKeys.push(row.dataset.skillKey);
+        }
         repaired++;
       }
     }
     const missing=expected.filter(skill=>!rows().some(row=>rowValue(row)===skill.name));
     if(missing.length)throw new Error(`スタイル技能${missing.length}件を取込できませんでした：${missing.map(item=>item.name).join("、")}`);
+    if(orderedKeys.length!==expected.length||!alignImportedOrder(orderedKeys))throw new Error("スタイル技能をJSONの並び順に復元できませんでした。");
     document.querySelector(ROOT)?.dispatchEvent(new Event("input",{bubbles:true}));
     window.TNXExperience?.queue?.();
     return {total:expected.length,repaired};
@@ -214,7 +247,7 @@
     let data;
     try{data=JSON.parse(document.querySelector(TEXT)?.value||"")}catch{return}
     window.TNXLegacyStyleSkillRepair=(async()=>{
-      try{return await repair(data,button)}
+      try{return await repair(data)}
       catch(error){
         console.error(error);
         const message=document.querySelector(MESSAGE);

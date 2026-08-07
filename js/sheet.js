@@ -59,7 +59,6 @@ let loading = false;
 let dirty = false;
 let saving = false;
 let pending = false;
-let saveTimer;
 let importMode = "";
 const styleBaseline = {};
 
@@ -81,6 +80,11 @@ async function init() {
 function bind() {
   document.addEventListener("input", onEdit);
   document.addEventListener("change", onEdit);
+  window.addEventListener("beforeunload", event => {
+    if (!dirty) return;
+    event.preventDefault();
+    event.returnValue = "";
+  });
   document.addEventListener("click", event => {
     const toggle = event.target.closest(".section-toggle");
     if (toggle) {
@@ -568,7 +572,7 @@ function skillRow(skill, detail) {
     ? ` data-general-slot-column="${esc(skill._slotColumn || "right")}"`
     : "";
 
-  const ordered = skill.category === "social" || skill.category === "connection";
+  const ordered = skill.category === "social" || skill.category === "connection" || skill.category === "style";
   const categoryRows = ordered ? skills.filter(item => item.category === skill.category) : [];
   const categoryIndex = ordered ? categoryRows.findIndex(item => item._key === skill._key) : -1;
   const actions = `<div class="row-actions skill-row-actions">
@@ -714,8 +718,6 @@ function markDirty() {
   if (loading) return;
   dirty = true;
   setStatus("未保存", "unsaved");
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(() => saveAll(false), 1200);
 }
 
 function collectCharacter() {

@@ -10,8 +10,6 @@
   const sections = [...document.querySelectorAll(".sheet-main > .sheet-section")].slice(0, sectionIds.length);
   const links = [...nav.querySelectorAll("[data-sheet-section]")];
 
-  sections.forEach((section, index) => { section.id = sectionIds[index]; });
-
   function setActive(id) {
     links.forEach(link => {
       const active = link.dataset.sheetSection === id;

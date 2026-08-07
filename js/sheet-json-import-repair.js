@@ -212,13 +212,6 @@
     new MutationObserver(()=>{
       if(message.textContent.includes("旧キャラシ"))message.textContent=message.textContent.replaceAll("旧キャラシ","キャラシ倉庫");
       if(message.textContent.includes("旧サイト"))message.textContent=message.textContent.replaceAll("旧サイト","キャラシ倉庫");
-      if(message.textContent.includes("保存ボタンでDBへ保存してください。")){
-        message.textContent=message.textContent.replace(
-          "内容を確認し、保存ボタンでDBへ保存してください。",
-          "反映内容は約1.2秒後にDBへ自動保存されます。画面上部が「保存済み」になるまでページを閉じないでください。保存ボタンは、必要な場合に今すぐ保存するためにも使用できます。"
-        );
-        return;
-      }
       if(message.textContent.includes("反映しました")){
         window.__tnxLegacyImportInProgress=false;
         scheduleCompletedSync();

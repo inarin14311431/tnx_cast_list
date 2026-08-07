@@ -1,5 +1,3 @@
-import { supabase } from "./supabase-client.js";
-
 /* Style-skill separator rows, stored as zero-cost style skills with an internal marker. */
 (()=>{
   const MARKER="[[STYLE_SEPARATOR]]";
@@ -7,8 +5,6 @@ import { supabase } from "./supabase-client.js";
   const container=document.querySelector("#style-skills");
   if(!container)return;
 
-  let persistTimer=0;
-  let persistRetries=0;
   let addButton=null;
 
   const wait=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
@@ -132,101 +128,13 @@ import { supabase } from "./supabase-client.js";
       decorate(row);
       name?.focus();
       name?.select();
-      schedulePersist(2400);
     }finally{
       addButton.disabled=false;
     }
   }
 
-  function domRecord(row){
-    const name=row.querySelector('[data-f="name"]')?.value?.trim()||"";
-    if(!name)return null;
-    return {
-      name,
-      skill_kind:isSeparator(row)?"none":row.querySelector('[data-f="skill_kind"]')?.value||"normal",
-      level:Number(row.querySelector('[data-f="level"]')?.value||0),
-      reason:!!row.querySelector('[data-f="reason"]')?.checked,
-      passion:!!row.querySelector('[data-f="passion"]')?.checked,
-      life:!!row.querySelector('[data-f="life"]')?.checked,
-      mundane:!!row.querySelector('[data-f="mundane"]')?.checked,
-      description:row.querySelector('[data-f="description"]')?.value||""
-    };
-  }
-
-  function fingerprint(item){
-    return JSON.stringify([
-      String(item.name||"").trim(),
-      String(item.skill_kind||""),
-      Number(item.level||0),
-      !!item.reason,!!item.passion,!!item.life,!!item.mundane,
-      String(item.description||"")
-    ]);
-  }
-
-  async function persistStyleOrder(){
-    const publicId=new URLSearchParams(location.search).get("id")?.trim();
-    if(!publicId)return false;
-
-    const domItems=rows().map(domRecord).filter(Boolean);
-    if(!domItems.length)return true;
-
-    const {data:character,error:characterError}=await supabase
-      .from("characters")
-      .select("id")
-      .eq("public_id",publicId)
-      .maybeSingle();
-    if(characterError||!character)return false;
-
-    const {data:stored,error}=await supabase
-      .from("character_skills")
-      .select("id,name,skill_kind,level,reason,passion,life,mundane,description,sort_order")
-      .eq("character_id",character.id)
-      .eq("category","style")
-      .order("sort_order");
-    if(error)return false;
-
-    const queues=new Map();
-    for(const item of stored||[]){
-      const key=fingerprint(item);
-      if(!queues.has(key))queues.set(key,[]);
-      queues.get(key).push(item);
-    }
-
-    const desired=[];
-    for(const item of domItems){
-      const queue=queues.get(fingerprint(item));
-      const storedItem=queue?.shift();
-      if(!storedItem)return false;
-      desired.push(storedItem);
-    }
-    if(desired.length!==(stored||[]).length)return false;
-    if(desired.every((item,index)=>item.id===stored[index]?.id&&Number(stored[index]?.sort_order)===index))return true;
-
-    const temporary=await Promise.all(desired.map((item,index)=>supabase
-      .from("character_skills")
-      .update({sort_order:10000+index})
-      .eq("id",item.id)));
-    if(temporary.some(result=>result.error))return false;
-
-    const finalized=await Promise.all(desired.map((item,index)=>supabase
-      .from("character_skills")
-      .update({sort_order:index})
-      .eq("id",item.id)));
-    return !finalized.some(result=>result.error);
-  }
-
-  function schedulePersist(delay=700){
-    clearTimeout(persistTimer);
-    persistTimer=window.setTimeout(async()=>{
-      const saved=await persistStyleOrder();
-      if(saved){persistRetries=0;return;}
-      if(persistRetries++<8)schedulePersist(900);
-    },delay);
-  }
-
-  const observer=new MutationObserver(mutations=>{
+  const observer=new MutationObserver(()=>{
     decorateAll();
-    if(mutations.some(mutation=>mutation.type==="childList"))schedulePersist(900);
   });
   observer.observe(container,{childList:true,subtree:true});
 
@@ -239,13 +147,6 @@ import { supabase } from "./supabase-client.js";
     const row=event.target.closest?.('tr[data-skill-key]');
     if(row)decorate(row);
   });
-
-  const saveStatus=document.querySelector("#save-status");
-  if(saveStatus){
-    new MutationObserver(()=>{
-      if(saveStatus.classList.contains("saved")||/保存済み/.test(saveStatus.textContent||""))schedulePersist(250);
-    }).observe(saveStatus,{attributes:true,attributeFilter:["class"],childList:true,subtree:true,characterData:true});
-  }
 
   decorateAll();
 })();

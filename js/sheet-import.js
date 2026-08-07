@@ -9,6 +9,7 @@
   const text=$('#legacy-import-json');
   const msg=$('#legacy-import-message');
   if(!dialog||!open||!apply||!text||!msg)return;
+  const BASE_IMPORT_EVENT='tnx:legacy-import-base-finished';
   const reportProgress=(percent,label,detail='')=>window.TNXLegacyImportProgress?.update?.(percent,label,detail);
 
   const exporter=`javascript:(()=>{const label=e=>{const id=e.id;const l=id&&document.querySelector('label[for="'+CSS.escape(id)+'"]');return(l?.innerText||e.closest('label')?.innerText||e.closest('th,td')?.innerText||'').trim()};const section=e=>{let n=e;while(n&&n!==document.body){const h=n.querySelector?.(':scope>h1,:scope>h2,:scope>h3,:scope>legend');if(h)return h.innerText.trim();n=n.parentElement}return''};const fields=[...document.querySelectorAll('input,select,textarea')].filter(e=>!['button','submit','password'].includes(e.type)).map(e=>({path:e.id||e.name||'',id:e.id||'',name:e.name||'',type:e.type||e.tagName.toLowerCase(),value:e.type==='checkbox'||e.type==='radio'?(e.checked?(e.value||true):false):e.value,checked:!!e.checked,label:label(e),section:section(e)}));const data={format:'tnx-character-sheets-v2',url:location.href,exportedAt:new Date().toISOString(),title:document.title,fields};const out=JSON.stringify(data,null,2);navigator.clipboard.writeText(out).then(()=>alert('キャラシJSONをコピーしました。')).catch(()=>prompt('JSONをコピーしてください',out));})();`;
@@ -381,7 +382,7 @@
       await importGeneral(map,stats);
       reportProgress(36,'技能を取込中',`一般技能${stats.general}件・社会${stats.social}件・コネ${stats.connection}件を反映`);
       await importStyleSkills(map,stats);
-      reportProgress(42,'スタイル技能を取込中',`スタイル技能${stats.style}件を反映しました`);
+      reportProgress(42,'スタイル技能を取込中',`スタイル技能${stats.style}件の取込を完了`);
       msg.textContent='アウトフィットを反映しています…';
       reportProgress(44,'アウトフィットを取込中','基本項目を現行シートへ配置しています');
       await importOutfits(map,stats);
@@ -389,12 +390,19 @@
 
       document.dispatchEvent(new Event('input',{bubbles:true}));
       window.TNXExperience?.queue?.();
-      msg.textContent=`反映しました。一般技能${stats.general}件、社会${stats.social}件、コネ${stats.connection}件、スタイル技能${stats.style}件、アウトフィット${stats.outfit}件です。内容を確認し、保存ボタンでDBへ保存してください。`;
+      const summary=`一般技能${stats.general}件、社会${stats.social}件、コネ${stats.connection}件、スタイル技能${stats.style}件、アウトフィット${stats.outfit}件`;
+      const finalizing=dialog.getAttribute('data-importing')==='1';
+      msg.textContent=finalizing
+        ?`基本取込が完了しました（${summary}）。引き続き最終変換を行っています…`
+        :`取込が完了し、編集画面へ反映しました。${summary}です。内容を確認し、保存ボタンでDBへ保存してください。`;
+      document.dispatchEvent(new CustomEvent(BASE_IMPORT_EVENT,{detail:{ok:true,stats}}));
     }catch(error){
       console.error(error);
-      msg.textContent='取込エラー：'+error.message;
+      const reason=error?.message||String(error);
+      msg.textContent='取込エラー：'+reason;
+      document.dispatchEvent(new CustomEvent(BASE_IMPORT_EVENT,{detail:{ok:false,error:reason}}));
     }finally{
-      apply.disabled=false;
+      if(dialog.getAttribute('data-importing')!=='1')apply.disabled=false;
     }
   });
 })();

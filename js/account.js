@@ -9,7 +9,14 @@ const VISIBILITY_LABELS = {
 };
 
 const ownedCastsContainer = document.querySelector("#owned-casts");
+const ownedCastSearch = document.querySelector("#owned-cast-search");
+const ownedCastVisibility = document.querySelector("#owned-cast-visibility");
+const ownedCastStyle = document.querySelector("#owned-cast-style");
+const ownedCastSort = document.querySelector("#owned-cast-sort");
+const ownedCastReset = document.querySelector("#owned-cast-reset");
+const ownedCastResultCount = document.querySelector("#owned-cast-result-count");
 let currentUser = null;
+let ownedCharacters = [];
 
 initializeAccount();
 
@@ -21,7 +28,22 @@ async function initializeAccount() {
   document.querySelector("#account-user-id").textContent = currentUser.id;
   document.querySelector("#account-last-sign-in").textContent = formatDate(currentUser.last_sign_in_at);
   document.querySelector("#logout-button").addEventListener("click", signOut);
+  setupOwnedCastControls();
   await loadOwnedCharacters();
+}
+
+function setupOwnedCastControls() {
+  ownedCastSearch?.addEventListener("input", renderOwnedCharacters);
+  ownedCastVisibility?.addEventListener("change", renderOwnedCharacters);
+  ownedCastStyle?.addEventListener("change", renderOwnedCharacters);
+  ownedCastSort?.addEventListener("change", renderOwnedCharacters);
+  ownedCastReset?.addEventListener("click", () => {
+    ownedCastSearch.value = "";
+    ownedCastVisibility.value = "";
+    ownedCastStyle.value = "";
+    ownedCastSort.value = "updated-desc";
+    renderOwnedCharacters();
+  });
 }
 
 async function loadOwnedCharacters() {
@@ -29,22 +51,62 @@ async function loadOwnedCharacters() {
 
   const { data, error } = await supabase
     .from("characters")
-    .select("id, public_id, character_name, handle, style_1, style_1_mark, style_2, style_2_mark, style_3, style_3_mark, visibility, updated_at")
+    .select("id, public_id, character_name, character_kana, handle, style_1, style_1_mark, style_2, style_2_mark, style_3, style_3_mark, visibility, updated_at")
     .eq("owner_id", currentUser.id)
     .order("updated_at", { ascending: false });
 
   if (error) {
     console.error(error);
+    ownedCharacters = [];
     ownedCastsContainer.innerHTML = `<p class="auth-error">キャスト情報を取得できませんでした。</p>`;
+    if (ownedCastResultCount) ownedCastResultCount.textContent = "";
     return;
   }
 
-  if (!data.length) {
+  ownedCharacters = data ?? [];
+  populateOwnedCastStyles();
+
+  if (!ownedCharacters.length) {
     ownedCastsContainer.innerHTML = `<p class="empty-data">登録済みキャストはありません。<small>NO ASSIGNED CAST</small></p>`;
+    if (ownedCastResultCount) ownedCastResultCount.textContent = "登録 0件";
     return;
   }
 
-  ownedCastsContainer.innerHTML = `<div class="owned-cast-list">${data.map(createOwnedCastItem).join("")}</div>`;
+  renderOwnedCharacters();
+}
+
+function populateOwnedCastStyles() {
+  if (!ownedCastStyle) return;
+  const selected = ownedCastStyle.value;
+  const styles = [...new Set(ownedCharacters.flatMap(character => [character.style_1, character.style_2, character.style_3]).filter(Boolean))]
+    .sort(localeCompareJa);
+  ownedCastStyle.innerHTML = `<option value="">すべてのスタイル</option>${styles.map(style => `<option value="${escapeHtml(style)}">${escapeHtml(style)}</option>`).join("")}`;
+  if (styles.includes(selected)) ownedCastStyle.value = selected;
+}
+
+function renderOwnedCharacters() {
+  const keyword = normalizeText(ownedCastSearch?.value);
+  const visibility = ownedCastVisibility?.value ?? "";
+  const style = ownedCastStyle?.value ?? "";
+  const sort = ownedCastSort?.value ?? "updated-desc";
+
+  const filtered = ownedCharacters.filter(character => {
+    const searchable = normalizeText([character.character_name, character.character_kana, character.handle].join(" "));
+    const styles = [character.style_1, character.style_2, character.style_3];
+    return (!keyword || searchable.includes(keyword)) &&
+      (!visibility || character.visibility === visibility) &&
+      (!style || styles.includes(style));
+  });
+
+  sortOwnedCharacters(filtered, sort);
+  if (ownedCastResultCount) ownedCastResultCount.textContent = `登録 ${ownedCharacters.length}件 / 表示 ${filtered.length}件`;
+
+  if (!filtered.length) {
+    ownedCastsContainer.innerHTML = `<p class="empty-data">条件に一致するキャストはありません。<small>NO MATCHING CAST</small></p>`;
+    return;
+  }
+
+  ownedCastsContainer.innerHTML = `<div class="owned-cast-list">${filtered.map(createOwnedCastItem).join("")}</div>`;
 
   ownedCastsContainer.querySelectorAll("[data-delete]").forEach(button => {
     button.addEventListener("click", () => deleteCharacter(button.dataset.delete));
@@ -52,6 +114,17 @@ async function loadOwnedCharacters() {
 
   ownedCastsContainer.querySelectorAll("[data-duplicate]").forEach(button => {
     button.addEventListener("click", () => duplicateCharacter(button.dataset.duplicate));
+  });
+}
+
+function sortOwnedCharacters(characters, mode) {
+  characters.sort((a, b) => {
+    switch (mode) {
+      case "updated-asc": return new Date(a.updated_at) - new Date(b.updated_at);
+      case "name-asc": return localeCompareJa(a.character_kana || a.character_name, b.character_kana || b.character_name);
+      case "name-desc": return localeCompareJa(b.character_kana || b.character_name, a.character_kana || a.character_name);
+      default: return new Date(b.updated_at) - new Date(a.updated_at);
+    }
   });
 }
 
@@ -92,6 +165,9 @@ function createOwnedCastItem(character) {
           <a href="${SITE_BASE_PATH}sheet.html?id=${id}">${actionLabel("シート編集", "EDIT SHEET")}</a>
           <a href="${SITE_BASE_PATH}acts.html?character=${id}">${actionLabel("参加アクト", "ACTS")}</a>
           <a href="${SITE_BASE_PATH}combos.html?id=${id}">${actionLabel("コンボ", "COMBOS")}</a>
+        </div>
+        <div class="owned-cast__management" aria-label="管理操作">
+          <span class="owned-cast__management-label">管理操作 <small>MANAGEMENT</small></span>
           <button type="button" data-duplicate="${escapeHtml(character.public_id)}">${actionLabel("複製", "DUPLICATE")}</button>
           <button type="button" data-delete="${escapeHtml(character.public_id)}">${actionLabel("削除", "DELETE")}</button>
         </div>
@@ -176,6 +252,14 @@ function obfuscatePublicId(value) {
 function formatDate(value) {
   if (!value) return "—";
   return new Intl.DateTimeFormat("ja-JP", { dateStyle: "medium", timeStyle: "short" }).format(new Date(value));
+}
+
+function normalizeText(value) {
+  return String(value ?? "").normalize("NFKC").toLocaleLowerCase("ja-JP").replace(/\s+/g, " ").trim();
+}
+
+function localeCompareJa(a, b) {
+  return String(a ?? "").localeCompare(String(b ?? ""), "ja", { sensitivity: "base", numeric: true });
 }
 
 function escapeHtml(value) {

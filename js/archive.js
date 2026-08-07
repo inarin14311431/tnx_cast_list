@@ -1,9 +1,13 @@
 import { supabase } from "./supabase-client.js";
 import { renderAuthNavigation } from "./auth-state.js?v=4";
 import { getStyleColor } from "./style-colors.js";
+import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=3";
 
 const ALLOWED_PAGE_SIZES = new Set([12, 25, 50, 100]);
+const ALLOWED_SORTS = new Set(["updated-desc", "updated-asc", "name-asc", "name-desc", "exp-desc", "exp-asc"]);
 const DEFAULT_PAGE_SIZE = 12;
+const DEFAULT_SORT = "updated-desc";
+const ARCHIVE_SCROLL_KEY = "tnx-cast-archive-return-scroll";
 
 const castGrid = document.querySelector("#cast-grid");
 const statusText = document.querySelector("#status-text");
@@ -44,6 +48,8 @@ async function initialize() {
 }
 
 function setupControls() {
+  restoreArchiveStateFromUrl();
+
   const applyFromFirstPage = () => {
     currentPage = 1;
     applyFilters();
@@ -61,10 +67,16 @@ function setupControls() {
     searchInput.value = "";
     styleFilter.value = "";
     playerFilter.value = "";
-    sortSelect.value = "updated-desc";
+    sortSelect.value = DEFAULT_SORT;
     pageSizeSelect.value = String(DEFAULT_PAGE_SIZE);
     currentPage = 1;
     applyFilters();
+  });
+
+  castGrid?.addEventListener("click", event => {
+    if (!event.target.closest("a[data-archive-cast-link]")) return;
+    if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+    rememberArchiveScrollPosition();
   });
 }
 
@@ -88,9 +100,10 @@ async function loadCharacters() {
     if (error) throw error;
 
     allCharacters = data ?? [];
-    currentPage = 1;
     populateFilters(allCharacters);
+    restoreArchiveStateFromUrl();
     applyFilters();
+    restoreArchiveScrollPosition();
     statusText.textContent = `${allCharacters.length}件の公開キャストを読み込みました。`;
   } catch (error) {
     console.error(error);
@@ -162,6 +175,7 @@ function renderCurrentPage(scrollToList = false) {
   const endIndex = Math.min(startIndex + pageSize, filteredCharacters.length);
   const pageCharacters = filteredCharacters.slice(startIndex, endIndex);
 
+  syncArchiveStateToUrl();
   renderCharacters(pageCharacters);
   updatePagination(pageCount);
 
@@ -209,7 +223,10 @@ function renderCharacters(characters) {
 
 function createCharacterCard(character) {
   const imageUrl = character.image_url || "./assets/placeholders/scan-failed.webp";
+  const imagePosition = getImageObjectPosition(character.image_url);
   const displayId = obfuscatePublicId(character.public_id);
+  const archiveReturnUrl = `./index.html${window.location.search}`;
+  const castUrl = `./cast.html?id=${encodeURIComponent(character.public_id)}&return=${encodeURIComponent(archiveReturnUrl)}`;
   const styles = [
     [character.style_1, character.style_1_mark],
     [character.style_2, character.style_2_mark],
@@ -221,9 +238,9 @@ function createCharacterCard(character) {
 
   return `
     <article class="cast-card">
-      <a href="./cast.html?id=${encodeURIComponent(character.public_id)}">
+      <a href="${escapeAttribute(castUrl)}" data-archive-cast-link>
         <div class="cast-card__image">
-          <img src="${escapeAttribute(imageUrl)}" alt="${escapeAttribute(character.character_name)}" loading="lazy">
+          <img src="${escapeAttribute(imageUrl)}" alt="${escapeAttribute(character.character_name)}" loading="lazy" style="object-position:${escapeAttribute(imagePosition)};--tnx-image-scale:${getImageScale(character.image_url)};--tnx-image-origin:${escapeAttribute(getImageTransformOrigin(character.image_url))}">
           <span class="cast-card__scanline"></span>
         </div>
         <div class="cast-card__body">
@@ -253,6 +270,65 @@ function obfuscatePublicId(value) {
 function normalizeText(value) {
   return String(value ?? "").normalize("NFKC").toLocaleLowerCase("ja-JP").replace(/\s+/g, " ").trim();
 }
+
+function restoreArchiveStateFromUrl() {
+  const params = new URLSearchParams(location.search);
+
+  if (searchInput) searchInput.value = params.get("q") ?? "";
+  if (sortSelect) {
+    const sort = params.get("sort");
+    sortSelect.value = ALLOWED_SORTS.has(sort) ? sort : DEFAULT_SORT;
+  }
+  if (pageSizeSelect) {
+    const size = Number(params.get("size"));
+    pageSizeSelect.value = ALLOWED_PAGE_SIZES.has(size) ? String(size) : String(DEFAULT_PAGE_SIZE);
+  }
+
+  const style = params.get("style") ?? "";
+  const player = params.get("player") ?? "";
+  if (styleFilter && [...styleFilter.options].some(option => option.value === style)) styleFilter.value = style;
+  if (playerFilter && [...playerFilter.options].some(option => option.value === player)) playerFilter.value = player;
+
+  const requestedPage = Number.parseInt(params.get("page") ?? "1", 10);
+  currentPage = Number.isFinite(requestedPage) && requestedPage > 0 ? requestedPage : 1;
+}
+
+function syncArchiveStateToUrl() {
+  const url = new URL(location.href);
+  const setOrDelete = (name, value, defaultValue = "") => {
+    if (String(value ?? "") && String(value) !== String(defaultValue)) url.searchParams.set(name, String(value));
+    else url.searchParams.delete(name);
+  };
+
+  setOrDelete("q", searchInput?.value.trim());
+  setOrDelete("style", styleFilter?.value);
+  setOrDelete("player", playerFilter?.value);
+  setOrDelete("sort", sortSelect?.value, DEFAULT_SORT);
+  setOrDelete("size", getPageSize(), DEFAULT_PAGE_SIZE);
+  setOrDelete("page", currentPage, 1);
+  history.replaceState(history.state, "", `${url.pathname}${url.search}${url.hash}`);
+}
+
+function rememberArchiveScrollPosition() {
+  try {
+    sessionStorage.setItem(ARCHIVE_SCROLL_KEY, JSON.stringify({
+      url: `${location.pathname}${location.search}`,
+      y: Math.max(0, Math.round(window.scrollY))
+    }));
+  } catch {}
+}
+
+function restoreArchiveScrollPosition() {
+  try {
+    const stored = JSON.parse(sessionStorage.getItem(ARCHIVE_SCROLL_KEY) || "null");
+    if (!stored || stored.url !== `${location.pathname}${location.search}` || !Number.isFinite(Number(stored.y))) return;
+    sessionStorage.removeItem(ARCHIVE_SCROLL_KEY);
+    requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo({ top: Number(stored.y), behavior: "auto" })));
+  } catch {
+    try { sessionStorage.removeItem(ARCHIVE_SCROLL_KEY); } catch {}
+  }
+}
+
 function localeCompareJa(a, b) {
   return String(a ?? "").localeCompare(String(b ?? ""), "ja", { sensitivity: "base", numeric: true });
 }

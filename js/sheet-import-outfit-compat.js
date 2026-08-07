@@ -5,6 +5,7 @@
   const ROOT="#outfit-list";
   const MESSAGE="#legacy-import-message";
   const DIALOG="#legacy-import-dialog";
+  const BASE_IMPORT_EVENT="tnx:legacy-import-base-finished";
   const FINAL_START=52;
   const FINAL_END=98;
   const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -40,6 +41,30 @@
     if(locked)dialog.setAttribute("data-importing","1");else dialog.removeAttribute("data-importing");
     const close=dialog.querySelector('[value="cancel"]');
     if(close)close.disabled=locked;
+    const apply=dialog.querySelector(APPLY);
+    if(apply){
+      if(locked)apply.setAttribute("aria-busy","true");
+      else{apply.removeAttribute("aria-busy");apply.disabled=false}
+    }
+  }
+
+  function waitBaseImport(){
+    return new Promise((resolve,reject)=>{
+      let settled=false,timer=0;
+      const finish=(callback,value)=>{
+        if(settled)return;
+        settled=true;
+        window.clearTimeout(timer);
+        document.removeEventListener(BASE_IMPORT_EVENT,onFinished);
+        callback(value);
+      };
+      const onFinished=event=>{
+        if(event.detail?.ok)finish(resolve,event.detail);
+        else finish(reject,new Error(event.detail?.error||"基本取込に失敗しました。"));
+      };
+      document.addEventListener(BASE_IMPORT_EVENT,onFinished,{once:true});
+      timer=window.setTimeout(()=>finish(reject,new Error("基本取込の完了を確認できませんでした。データ量を確認して再実行してください。")),150000);
+    });
   }
 
   function flatten(value,prefix,map){
@@ -162,7 +187,7 @@
       if(!row){missing.push(item);progress(step(index,1),"アウトフィットを最終変換中",`${index+1}/${items.length}件を確認`);continue}
       used.add(row.dataset.outfitKey);
       await applyItem(row,item,()=>progress(step(index,.55),"アウトフィット列を調整中",`${index+1}/${items.length}件　${item.name}`));
-      progress(step(index,1),"アウトフィットを最終変換中",`${index+1}/${items.length}件を反映`);
+      progress(step(index,1),"アウトフィットを最終変換中",`${index+1}/${items.length}件の変換完了`);
     }
     document.querySelector(ROOT)?.dispatchEvent(new Event("input",{bubbles:true}));
     window.TNXExperience?.queue?.();
@@ -190,25 +215,20 @@
 
     (async()=>{
       try{
-        let baseComplete=false;
-        for(let attempt=0;attempt<6000;attempt++){
-          const text=document.querySelector(MESSAGE)?.textContent||"";
-          if(/取込エラー/.test(text))throw new Error(text.replace(/^.*取込エラー：?/,""));
-          if(!button.disabled&&/反映しました/.test(text)){baseComplete=true;break}
-          await sleep(25);
-        }
-        if(!baseComplete)throw new Error("基本取込の完了を確認できませんでした。データ量を確認して再実行してください。");
+        await waitBaseImport();
         if(window.TNXLegacyStyleSkillRepair){progress(50,"技能データを確認中","スタイル技能の互換調整を確認しています");await window.TNXLegacyStyleSkillRepair}
         progress(FINAL_START,"アウトフィットを最終変換中",`アウトフィット${items.length}件を現行列へ調整します`);
         const missing=await convertAll(items);
         if(missing.length)throw new Error(`アウトフィット${missing.length}件を変換できませんでした：${missing.map(item=>item.name).join("、")}`);
         progress(100,"取込完了",`アウトフィット${items.length}件を現行形式へ変換しました`);
         const message=document.querySelector(MESSAGE);
-        if(message)message.textContent="取込が完了しました。画面へ反映し、自動保存を開始しました。";
+        if(message)message.textContent="取込が完了し、編集画面へ反映しました。内容を確認し、保存ボタンでDBへ保存してください。";
         await sleep(250);
         if(dialog?.open)dialog.close();
       }catch(error){
         progress(100,"取込エラー",error.message||String(error));
+        const message=document.querySelector(MESSAGE);
+        if(message)message.textContent=`取込エラー：${error.message||String(error)}`;
       }finally{
         stopObserver();
         setImportLock(dialog,false);

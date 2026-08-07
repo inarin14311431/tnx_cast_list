@@ -52,28 +52,6 @@ function headerCell(key,label){
   return `<th class="style-description-heading"><span>${label}</span><button type="button" class="style-description-toggle-all" aria-pressed="false" aria-label="すべての解説を表示">全表示</button></th>`;
 }
 
-function measureDescriptionWidth(field){
-  const style=getComputedStyle(field);
-  const probe=document.createElement("span");
-  probe.style.position="fixed";
-  probe.style.left="-10000px";
-  probe.style.top="-10000px";
-  probe.style.visibility="hidden";
-  probe.style.pointerEvents="none";
-  probe.style.whiteSpace="pre";
-  probe.style.fontFamily=style.fontFamily;
-  probe.style.fontSize=style.fontSize;
-  probe.style.fontStyle=style.fontStyle;
-  probe.style.fontWeight=style.fontWeight;
-  probe.style.letterSpacing=style.letterSpacing;
-  probe.textContent=String(field.value||"").split(/\r?\n/).reduce((longest,line)=>line.length>longest.length?line:longest,"")||" ";
-  document.body.append(probe);
-  const padding=(parseFloat(style.paddingLeft)||0)+(parseFloat(style.paddingRight)||0)+28;
-  const width=Math.ceil(probe.getBoundingClientRect().width+padding);
-  probe.remove();
-  return width;
-}
-
 function collapseAllDescriptions(section){
   const table=section.querySelector(".style-skill-view-table");
   const descriptionColumn=table?.querySelector("col.style-col-description");
@@ -101,27 +79,24 @@ function collapseAllDescriptions(section){
 
 function expandAllDescriptions(section){
   const table=section.querySelector(".style-skill-view-table");
-  const descriptionColumn=table?.querySelector("col.style-col-description");
   const fields=[...section.querySelectorAll(".style-description-expandable")];
   const button=section.querySelector(".style-description-toggle-all");
-  if(!table||!descriptionColumn||!fields.length)return;
+  if(!table||!fields.length)return;
 
-  const baseWidth=Math.max(1,fields[0].closest("td")?.getBoundingClientRect().width||320);
-  const measuredWidth=Math.max(baseWidth,...fields.map(measureDescriptionWidth));
-  const viewportLimit=Math.max(baseWidth,Math.min(960,window.innerWidth*.85));
-  const targetWidth=Math.max(baseWidth,Math.min(measuredWidth,viewportLimit));
-  const tableWidth=table.getBoundingClientRect().width;
-
-  descriptionColumn.style.setProperty("width",`${targetWidth}px`,"important");
-  table.style.setProperty("min-width",`${Math.ceil(tableWidth+(targetWidth-baseWidth))}px`,"important");
+  table.style.removeProperty("min-width");
+  table.querySelector("col.style-col-description")?.style.removeProperty("width");
   section.classList.add("is-description-all-expanded");
 
   fields.forEach(field=>{
     field.classList.add("is-expanded");
     field.style.setProperty("height","auto","important");
-    const height=Math.max(35,field.scrollHeight+2);
-    field.style.setProperty("height",`${height}px`,"important");
     field.closest("tr")?.classList.add("is-description-expanded");
+  });
+  requestAnimationFrame(()=>{
+    fields.forEach(field=>{
+      const height=Math.max(35,field.scrollHeight+2);
+      field.style.setProperty("height",`${height}px`,"important");
+    });
   });
 
   if(button){

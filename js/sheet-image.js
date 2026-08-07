@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=4";
+import { getImageFocusX, getImageFocusY, getImageObjectPosition, getImageScale, getImageTransformOrigin, getImageZoom, setImageFocusX, setImageFocusY, setImageZoom } from "./image-focus.js?v=3";
 
 const BUCKET_NAME="character-images";
 const MAX_SOURCE_FILE_SIZE=20*1024*1024;
@@ -18,6 +19,12 @@ const fileInfo=document.querySelector("#image-file-info");
 const messageArea=document.querySelector("#image-message");
 const uploadButton=document.querySelector("#upload-button");
 const clearButton=document.querySelector("#clear-image-button");
+const focusXInput=document.querySelector("#image-focus-x");
+const focusYInput=document.querySelector("#image-focus-y");
+const zoomInput=document.querySelector("#image-zoom");
+const focusXValue=document.querySelector("#image-focus-x-value");
+const focusYValue=document.querySelector("#image-focus-y-value");
+const zoomValue=document.querySelector("#image-zoom-value");
 
 let currentUser=null;
 let character=null;
@@ -26,7 +33,7 @@ let uploadFile=null;
 let previewObjectUrl="";
 let processing=false;
 
-if(form&&fileInput&&preview&&fileInfo&&messageArea&&uploadButton&&clearButton)initialize();
+if(form&&fileInput&&preview&&fileInfo&&messageArea&&uploadButton&&clearButton&&focusXInput&&focusYInput&&zoomInput&&focusXValue&&focusYValue&&zoomValue)initialize();
 
 async function initialize(){
   currentUser=await requireAuth();
@@ -35,6 +42,16 @@ async function initialize(){
   fileInput.addEventListener("change",handleFileSelection);
   form.addEventListener("submit",uploadImage);
   clearButton.addEventListener("click",clearImageReference);
+  for(const input of [focusXInput,focusYInput,zoomInput]){
+    input.addEventListener("input",event=>{
+      event.stopPropagation();
+      previewImageFocus();
+    });
+    input.addEventListener("change",event=>{
+      event.stopPropagation();
+      void saveImageFocus();
+    });
+  }
   preview.addEventListener("error",()=>{
     if(!preview.src.endsWith("/assets/placeholders/scan-failed.webp"))preview.src=PLACEHOLDER;
   });
@@ -61,11 +78,14 @@ async function loadCharacter(publicId){
   if(!data)throw new Error("指定されたキャストを編集する権限がありません。");
 
   character=data;
+  setFocusControl(character.image_url);
   if(character.image_url){
     preview.src=character.image_url;
+    applyPreviewFocus();
     fileInfo.textContent="CURRENT IMAGE DATA";
   }else if(!sourceFile){
     preview.src=PLACEHOLDER;
+    applyPreviewFocus();
     fileInfo.textContent="NO IMAGE DATA";
   }
   return character;
@@ -80,6 +100,8 @@ async function handleFileSelection(){
 
   if(!sourceFile){
     preview.src=character?.image_url||PLACEHOLDER;
+    setFocusControl(character?.image_url||"");
+    applyPreviewFocus();
     fileInfo.textContent=character?.image_url?"CURRENT IMAGE DATA":"NO IMAGE SELECTED";
     setMessage("","");
     return;
@@ -102,6 +124,7 @@ async function handleFileSelection(){
     uploadFile=optimized.file;
     previewObjectUrl=URL.createObjectURL(uploadFile);
     preview.src=previewObjectUrl;
+    applyPreviewFocus();
 
     const reduction=Math.max(0,Math.round((1-uploadFile.size/sourceFile.size)*100));
     const sizeText=sourceFile===uploadFile
@@ -298,7 +321,16 @@ async function uploadImage(event){
   setControlsDisabled(true);
   let uploadedPath="";
   try{
+    const requestedFocusX=focusXInput.value;
+    const requestedFocusY=focusYInput.value;
+    const requestedZoom=zoomInput.value;
     const target=await ensureCharacter();
+    focusXInput.value=requestedFocusX;
+    focusYInput.value=requestedFocusY;
+    zoomInput.value=requestedZoom;
+    updateFocusValues(requestedFocusX,requestedFocusY);
+    updateZoomValue(requestedZoom);
+    applyPreviewFocus();
     const previousImageUrl=target.image_url||"";
     setMessage("圧縮済み画像をアップロードしています…","loading");
 
@@ -310,8 +342,15 @@ async function uploadImage(event){
     if(uploadError)throw uploadError;
 
     const {data:publicUrlData}=supabase.storage.from(BUCKET_NAME).getPublicUrl(uploadedPath);
-    const imageUrl=publicUrlData.publicUrl;
-    if(!imageUrl)throw new Error("公開URLを取得できませんでした。");
+    const publicImageUrl=publicUrlData.publicUrl;
+    if(!publicImageUrl)throw new Error("公開URLを取得できませんでした。");
+    const imageUrl=setImageZoom(
+      setImageFocusY(
+        setImageFocusX(publicImageUrl,requestedFocusX),
+        requestedFocusY
+      ),
+      requestedZoom
+    );
 
     const {error:updateError}=await supabase
       .from("characters")
@@ -329,6 +368,8 @@ async function uploadImage(event){
     uploadFile=null;
     fileInput.value="";
     preview.src=imageUrl;
+    applyPreviewFocus();
+    setFocusControl(imageUrl);
     fileInfo.textContent=`CURRENT IMAGE DATA / ${formatBytes(uploadedSize)} / OPTIMIZED`;
     setMessage("キャスト画像を圧縮して登録しました。","success");
     document.dispatchEvent(new CustomEvent("tnx-image-updated",{detail:{imageUrl}}));
@@ -378,6 +419,7 @@ async function clearImageReference(){
     character.image_url="";
     await removeOwnedStorageObject(previousImageUrl);
     resetSelection();
+    setFocusControl("");
     setMessage("キャスト画像を解除しました。","success");
     document.dispatchEvent(new CustomEvent("tnx-image-updated",{detail:{imageUrl:""}}));
   }catch(error){
@@ -404,7 +446,7 @@ function getStorageObjectPath(imageUrl){
   const marker=`/storage/v1/object/public/${BUCKET_NAME}/`;
   const index=String(imageUrl||"").indexOf(marker);
   if(index<0)return"";
-  const encodedPath=String(imageUrl).slice(index+marker.length).split("?")[0];
+  const encodedPath=String(imageUrl).slice(index+marker.length).split(/[?#]/)[0];
   try{return decodeURIComponent(encodedPath);}catch{return encodedPath;}
 }
 
@@ -416,6 +458,9 @@ function setControlsDisabled(disabled){
   uploadButton.disabled=disabled;
   clearButton.disabled=disabled;
   fileInput.disabled=disabled;
+  focusXInput.disabled=disabled||(!character?.image_url&&!uploadFile);
+  focusYInput.disabled=disabled||(!character?.image_url&&!uploadFile);
+  zoomInput.disabled=disabled||(!character?.image_url&&!uploadFile);
 }
 
 function resetSelection(){
@@ -424,7 +469,98 @@ function resetSelection(){
   fileInput.value="";
   releasePreviewUrl();
   preview.src=character?.image_url||PLACEHOLDER;
+  applyPreviewFocus();
   fileInfo.textContent=character?.image_url?"CURRENT IMAGE DATA":"NO IMAGE SELECTED";
+}
+
+function setFocusControl(imageUrl){
+  const focusX=getImageFocusX(imageUrl);
+  const focusY=getImageFocusY(imageUrl);
+  const zoom=getImageZoom(imageUrl);
+  focusXInput.value=String(focusX);
+  focusYInput.value=String(focusY);
+  zoomInput.value=String(zoom);
+  focusXInput.disabled=!imageUrl||processing;
+  focusYInput.disabled=!imageUrl||processing;
+  zoomInput.disabled=!imageUrl||processing;
+  updateFocusValues(focusX,focusY);
+  updateZoomValue(zoom);
+  applyPreviewFocus();
+}
+
+function previewImageFocus(){
+  updateFocusValues(focusXInput.value,focusYInput.value);
+  updateZoomValue(zoomInput.value);
+  applyPreviewFocus();
+}
+
+function applyPreviewFocus(){
+  const position=`${Number(focusXInput.value||50)}% ${Number(focusYInput.value||0)}%`;
+  preview.style.objectPosition=position;
+  preview.style.setProperty("--tnx-image-scale",String(Math.min(200,Math.max(100,Number(zoomInput.value)||100))/100));
+  preview.style.setProperty("--tnx-image-origin",position);
+}
+
+function updateFocusValues(xValue,yValue){
+  const focusX=Math.min(100,Math.max(0,Number(xValue)||0));
+  const focusY=Math.min(100,Math.max(0,Number(yValue)||0));
+  const xLabel=focusX===0?"左端":focusX===100?"右端":focusX<35?"左寄せ":focusX>65?"右寄せ":"中央";
+  const yLabel=focusY===0?"上端":focusY===100?"下端":focusY<35?"上寄せ":focusY>65?"下寄せ":"中央";
+  focusXValue.textContent=`${xLabel} / ${focusX}%`;
+  focusYValue.textContent=`${yLabel} / ${focusY}%`;
+}
+
+function updateZoomValue(value){
+  const zoom=Math.min(200,Math.max(100,Number(value)||100));
+  zoomValue.textContent=`${zoom}%`;
+}
+
+async function saveImageFocus(){
+  if(processing)return;
+  if(sourceFile&&uploadFile){
+    setMessage("この表示設定は画像登録時に保存されます。","");
+    return;
+  }
+  if(!character?.image_url)return;
+  const nextUrl=setImageZoom(
+    setImageFocusY(
+      setImageFocusX(character.image_url,focusXInput.value),
+      focusYInput.value
+    ),
+    zoomInput.value
+  );
+  if(nextUrl===character.image_url){
+    setMessage("画像表示設定は変更されていません。","");
+    return;
+  }
+
+  processing=true;
+  setControlsDisabled(true);
+  try{
+    const {error}=await supabase
+      .from("characters")
+      .update({image_url:nextUrl})
+      .eq("id",character.id)
+      .eq("owner_id",currentUser.id);
+    if(error)throw error;
+
+    character.image_url=nextUrl;
+    preview.src=nextUrl;
+    preview.style.objectPosition=getImageObjectPosition(nextUrl);
+    preview.style.setProperty("--tnx-image-scale",String(getImageScale(nextUrl)));
+    preview.style.setProperty("--tnx-image-origin",getImageTransformOrigin(nextUrl));
+    updateFocusValues(getImageFocusX(nextUrl),getImageFocusY(nextUrl));
+    updateZoomValue(getImageZoom(nextUrl));
+    setMessage("画像表示設定を保存しました。","success");
+    document.dispatchEvent(new CustomEvent("tnx-image-updated",{detail:{imageUrl:nextUrl}}));
+  }catch(error){
+    console.error(error);
+    setFocusControl(character.image_url);
+    setMessage("画像表示設定の保存に失敗しました。","error");
+  }finally{
+    processing=false;
+    setControlsDisabled(false);
+  }
 }
 
 function releasePreviewUrl(){

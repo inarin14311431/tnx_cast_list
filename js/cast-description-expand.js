@@ -1,6 +1,6 @@
-/* Shared height-only description expansion for public style-skill and outfit tables. */
+/* Height-only description expansion for public outfit tables. */
 (function(){
-  const BUTTON_SELECTOR=".style-description-toggle-all";
+  const BUTTON_SELECTOR=".outfit-description-toggle-all";
   const FIELD_SELECTOR=".style-description-expandable";
   const OUTFIT_CONTAINER=document.querySelector("#outfit-container");
 
@@ -53,7 +53,7 @@
   }
 
   function scopeForButton(button){
-    return button.closest(".cast-outfit-section,.style-skill-section-v47,#style-skill-panel");
+    return button.closest(".cast-outfit-section");
   }
 
   document.addEventListener("click",event=>{

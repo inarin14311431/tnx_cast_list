@@ -74,6 +74,34 @@
     return card.querySelector(`[data-o="${key}"]`);
   }
 
+  function prepareNumberControl(control){
+    if(!(control instanceof HTMLInputElement))return control;
+    control.type='number';
+    control.min='0';
+    control.max='999';
+    control.step='1';
+    control.inputMode='numeric';
+    return control;
+  }
+
+  function prepareDescriptionControl(control){
+    if(!control)return null;
+    if(control instanceof HTMLTextAreaElement){control.rows=1;return control;}
+    if(!(control instanceof HTMLInputElement))return control;
+    const textarea=document.createElement('textarea');
+    textarea.dataset.o='description';
+    textarea.rows=1;
+    textarea.value=control.value;
+    textarea.addEventListener('input',()=>{
+      control.value=textarea.value;
+      control.dispatchEvent(new Event('input',{bubbles:true}));
+    });
+    control.hidden=true;
+    // sheet.js closes over the original control and reads data-o when this
+    // proxy dispatches input, so keep the field name on the detached control.
+    return textarea;
+  }
+
   function makeArmorDefenseCell(card,key){
     const td=document.createElement('td');
     td.className=`outfit-table-cell outfit-table-cell--${key}`;
@@ -130,9 +158,10 @@
     if(/^defense_[sip]$/.test(key))return makeArmorDefenseCell(card,key);
     const td=document.createElement('td');
     td.className=`outfit-table-cell outfit-table-cell--${key}`;
-    const control=controlFor(card,key);
+    let control=controlFor(card,key);
     if(!control)return td;
-    if(key==='description'&&control.tagName==='TEXTAREA')control.rows=1;
+    if(key==='purchase_value'||key==='experience_cost')control=prepareNumberControl(control);
+    if(key==='description')control=prepareDescriptionControl(control);
     td.append(control);
     return td;
   }

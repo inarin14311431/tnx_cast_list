@@ -295,7 +295,7 @@ async function handleResultAction(event) {
   button.disabled = true;
   try {
     await addRowToSheet(row);
-    setStatus(`「${row.name}」を編集画面へ追加しました。約1.2秒後に自動保存されます。`, "success");
+    setStatus(`「${row.name}」を編集画面へ追加しました。保存ボタンを押すまでDBには保存されません。`, "success");
   } catch (error) {
     console.error(error);
     setStatus(error?.message || "編集画面への追加に失敗しました。", "error");
@@ -312,7 +312,7 @@ async function addSelectedResults() {
   setStatus(`${rows.length}件を編集画面へ追加中…`, "loading");
   try {
     for (const row of rows) await addRowToSheet(row);
-    setStatus(`${rows.length}件を編集画面へ追加しました。約1.2秒後に自動保存されます。`, "success");
+    setStatus(`${rows.length}件を編集画面へ追加しました。保存ボタンを押すまでDBには保存されません。`, "success");
   } catch (error) {
     console.error(error);
     setStatus(error?.message || "編集画面への追加に失敗しました。", "error");

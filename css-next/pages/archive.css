@@ -10,7 +10,7 @@
 .cast-card > a { display: flex; flex-direction: column; height: 100%; text-decoration: none; }
 .cast-card__image { position: relative; flex: 0 0 260px; height: 260px; min-height: 260px; max-height: 260px; overflow: hidden; background: #020405; }
 .cast-card__image::after { position: absolute; inset: 0; content: ""; border-bottom: 1px solid var(--color-border-muted); background: linear-gradient(to top, color-mix(in srgb, var(--color-bg) 42%, transparent), transparent 40%); pointer-events: none; }
-.cast-card__image img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
+.cast-card__image img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; transform: scale(var(--tnx-image-scale, 1)); transform-origin: var(--tnx-image-origin, 50% 0%); }
 .cast-card__scanline { position: absolute; z-index: 2; inset: -20% 0 auto; height: 20%; opacity: 0; background: linear-gradient(to bottom, transparent, color-mix(in srgb, var(--color-accent) 38%, transparent), transparent); }
 .cast-card:hover .cast-card__scanline { opacity: 1; animation: next-scan 1.2s linear infinite; }
 .cast-card__body { display: flex; flex: 1; flex-direction: column; min-height: 220px; padding: 18px; }
