@@ -245,7 +245,7 @@ function createCharacterCard(character) {
         </div>
         <div class="cast-card__body">
           <div class="cast-card__meta"><p class="cast-card__exp">${escapeHtml(character.experience_points ?? 0)} EXP</p></div>
-          <p class="cast-card__handle">${escapeHtml(character.handle || "ハンドル未登録")}</p>
+          <p class="cast-card__handle">${escapeHtml(window.TNXHandleFormat?.quoteHandle(character.handle) || "ハンドル未登録")}</p>
           <h2 class="cast-card__name">${escapeHtml(character.character_name)}</h2>
           <div class="cast-card__styles" aria-label="スタイル">${styles}</div>
           <p class="cast-card__player">プレイヤー：${escapeHtml(character.player_name || "—")}</p>

@@ -134,12 +134,14 @@ function renderCombos() {
 
 function createComboCard(combo) {
   const ability = ABILITY_LABELS[combo.ability] ?? "能力未指定 / NOT SET";
+  const abilityClass = combo.ability === "life" ? " combo-card__ability--life" : "";
+  const actUseLimit = getPositiveInteger(combo.act_use_limit);
 
   const detail = [
     combo.timing ? `タイミング：${combo.timing}` : "",
     combo.target ? `対象：${combo.target}` : "",
     combo.range ? `射程：${combo.range}` : "",
-    combo.cost ? `コスト：${combo.cost}` : ""
+    actUseLimit ? `1アクト：${actUseLimit}回` : ""
   ].filter(Boolean).join(" / ");
 
   return `
@@ -150,7 +152,7 @@ function createComboCard(combo) {
     >
       <div class="combo-card__head">
         <strong>${escapeHtml(combo.name)}</strong>
-        <span>${escapeHtml(ability)}</span>
+        <span class="combo-card__ability${abilityClass}">${escapeHtml(ability)}</span>
       </div>
 
       <p class="combo-card__skills">
@@ -197,7 +199,7 @@ function openComboDialog(combo = null) {
     setField("timing", combo.timing);
     setField("target", combo.target);
     setField("range", combo.range);
-    setField("cost", combo.cost);
+    setField("act_use_limit", combo.act_use_limit);
     setField("description", combo.description);
     setField("sort_order", combo.sort_order);
   } else {
@@ -241,7 +243,7 @@ async function saveCombo(event) {
     timing: getValue("timing"),
     target: getValue("target"),
     range: getValue("range"),
-    cost: getValue("cost"),
+    act_use_limit: getPositiveInteger(getValue("act_use_limit")),
     description: getValue("description"),
     sort_order: getInteger("sort_order") ?? 0
   };
@@ -335,6 +337,11 @@ function getInteger(name) {
 
   const number = Number.parseInt(value, 10);
   return Number.isFinite(number) ? number : null;
+}
+
+function getPositiveInteger(value) {
+  const number = Number.parseInt(String(value ?? ""), 10);
+  return Number.isFinite(number) && number > 0 ? number : null;
 }
 
 function setDialogDisabled(disabled) {

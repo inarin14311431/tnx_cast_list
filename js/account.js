@@ -151,7 +151,7 @@ function createOwnedCastItem(character) {
   return `
     <article class="owned-cast">
       <div class="owned-cast__identity">
-        <p class="owned-cast__handle">${escapeHtml(character.handle ? `“${character.handle}”` : "ハンドル未登録")}</p>
+        <p class="owned-cast__handle">${escapeHtml(window.TNXHandleFormat?.quoteHandle(character.handle) || "ハンドル未登録")}</p>
         <h3>${escapeHtml(character.character_name)}</h3>
         ${styles ? `<div class="owned-cast__styles" aria-label="スタイル">${styles}</div>` : ""}
       </div>

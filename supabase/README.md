@@ -2,7 +2,7 @@
 
 このディレクトリの番号付きSQLは、運用中のSupabaseへ適用した履歴です。
 
-現在置かれている番号付きSQLは、`23_remove_legacy_github_pages_publish.sql`を除き適用済みです。
+現在置かれている番号付きSQLは、一覧で「未適用」としたものを除き適用済みです。
 新しい環境をゼロから構築する用途ではなく、変更内容の監査・復旧確認用として保持します。
 
 ## SQL一覧
@@ -25,6 +25,7 @@
 | 21 | `21_master_search_uid_allowlist.sql` | SKD/OFCマスタ検索のUID許可リスト | 適用済み |
 | 22 | `22_outfit_ofc_details.sql` | OFC固有項目と保存RPC | 適用済み |
 | 23 | `23_remove_legacy_github_pages_publish.sql` | 旧GitHub Pages公開用RPCを削除 | 未適用 |
+| 24 | `24_combo_act_use_limit.sql` | コンボの1アクト使用上限 | 未適用 |
 
 ## 欠番について
 
@@ -39,7 +40,7 @@
 
 ## 今後の採番規則
 
-次のDB変更は`24_機能名.sql`から追加します。
+次のDB変更は`25_機能名.sql`から追加します。
 
 - 一つの番号は一つの変更目的に限定する
 - 適用済みファイルの内容・番号は原則変更しない
