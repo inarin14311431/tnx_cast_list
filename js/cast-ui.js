@@ -6,6 +6,26 @@ import { supabase } from "./supabase-client.js";
  */
 
 (() => {
+  const content = document.querySelector('#cast-content');
+  const readonlySelector = 'input[readonly], textarea[readonly]';
+  if(!content) return;
+
+  function removeReadonlyFieldsFromTabOrder(root){
+    if(root.nodeType !== Node.ELEMENT_NODE) return;
+    if(root.matches(readonlySelector)) root.tabIndex = -1;
+    root.querySelectorAll(readonlySelector).forEach(field => { field.tabIndex = -1; });
+  }
+
+  removeReadonlyFieldsFromTabOrder(content);
+  new MutationObserver(mutations => {
+    mutations.forEach(mutation => {
+      if(mutation.type === 'attributes') removeReadonlyFieldsFromTabOrder(mutation.target);
+      mutation.addedNodes.forEach(removeReadonlyFieldsFromTabOrder);
+    });
+  }).observe(content,{childList:true,subtree:true,attributes:true,attributeFilter:['readonly']});
+})();
+
+(() => {
   const returnValue = new URLSearchParams(location.search).get('return')?.trim() || '';
   if (!returnValue) return;
   try {

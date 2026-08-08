@@ -1,10 +1,20 @@
 /* Network scan sequence and ambient data stream for the public cast view. */
 (function(){
+  const reducedMotion=window.matchMedia?.('(prefers-reduced-motion: reduce)').matches===true;
+  if(reducedMotion){
+    document.body.classList.add('cast-reduced-motion');
+    return;
+  }
   document.body.classList.add('cast-scan-mode');
   const publicId=new URLSearchParams(location.search).get('id')?.trim()||'UNKNOWN';
   const scanSessionKey='tnx-cast-scan-complete-v1';
+  const fastScanWindowMs=10*60*1000;
   let fastScan=false;
-  try{fastScan=sessionStorage.getItem(scanSessionKey)==='1';}catch{}
+  try{
+    const lastScanAt=Number(sessionStorage.getItem(scanSessionKey));
+    const elapsed=Date.now()-lastScanAt;
+    fastScan=Number.isFinite(lastScanAt)&&lastScanAt>0&&elapsed>=0&&elapsed<=fastScanWindowMs;
+  }catch{}
   if(fastScan)document.body.classList.add('cast-scan-fast');
 
   const rain=document.createElement('div');
@@ -85,7 +95,7 @@
     if(dataReady&&progress>=100&&!resolved){
       resolved=true;
       addLog('ACCESS GRANTED','パーソナルデータ取得完了',true);
-      try{sessionStorage.setItem(scanSessionKey,'1');}catch{}
+      try{sessionStorage.setItem(scanSessionKey,String(Date.now()));}catch{}
       document.querySelector('#cast-status')?.setAttribute('data-scan-state','complete');
       setTimeout(()=>overlay.classList.add('is-complete'),fastScan?90:520);
       setTimeout(()=>overlay.remove(),fastScan?460:1300);

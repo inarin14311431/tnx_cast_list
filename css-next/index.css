@@ -6,7 +6,7 @@
 @import url("./tokens/core.css?v=2");
 @import url("./tokens/themes.css?v=3");
 @import url("./foundation/reset.css");
-@import url("./foundation/base.css?v=1");
+@import url("./foundation/base.css?v=2");
 @import url("./foundation/typography.css");
 @import url("./layout/app-shell.css");
 @import url("./layout/page.css");
@@ -17,13 +17,13 @@
 @import url("./components/row-actions.css");
 @import url("./components/dialog.css");
 @import url("./components/status.css");
-@import url("./editor/editor.css?v=17");
+@import url("./editor/editor.css?v=25");
 @import url("./editor/skills.css?v=3");
 @import url("./editor/style-skills.css?v=4");
 @import url("./editor/outfits.css?v=7");
 @import url("./editor/import.css?v=6");
-@import url("./pages/archive.css?v=3");
-@import url("./pages/cast.css?v=29");
+@import url("./pages/archive.css?v=4");
+@import url("./pages/cast.css?v=32");
 @import url("./pages/auth.css");
 @import url("./pages/account.css?v=10");
 @import url("./pages/acts.css?v=2");

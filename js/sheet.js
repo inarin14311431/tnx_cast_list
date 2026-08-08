@@ -850,6 +850,9 @@ async function saveAll(force) {
 
     character = data;
     history.replaceState(null, "", `${SITE_BASE_PATH}sheet.html?id=${encodeURIComponent(character.public_id)}`);
+    window.dispatchEvent(new CustomEvent("tnx:character-saved", {
+      detail: { id: character.id, publicId: character.public_id }
+    }));
     dirty = false;
     setStatus("保存済み", "saved");
     pulse("saved");

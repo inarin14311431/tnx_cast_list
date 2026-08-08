@@ -25,7 +25,7 @@
       panel.setAttribute("aria-hidden", String(!active));
     });
 
-    document.querySelector(".cast-tabs")?.setAttribute("role", "tablist");
+    document.querySelector(".cast-tab-list")?.setAttribute("role", "tablist");
 
     if (options.focus) targetTab.focus();
     return true;
@@ -37,6 +37,16 @@
   }
 
   document.addEventListener("click", event => {
+    const jump = event.target.closest('[data-cast-jump="combo"]');
+    if (jump) {
+      event.preventDefault();
+      activateTab("session");
+      requestAnimationFrame(() => {
+        document.querySelector("#cast-combo-panel")?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      return;
+    }
+
     const tab = event.target.closest(TAB_SELECTOR);
     if (!tab) return;
 
