@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <script src="./js/css-next-theme.js"></script>
-  <link rel="stylesheet" href="./css-next/index.css?v=38" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/index.css?v=50" data-css-system="next">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="index, follow">
@@ -11,7 +11,7 @@
 <body data-page="cast.html">
   <div class="background-grid"></div><div class="scanlines"></div>
   <header class="cast-header app-header">
-    <div class="cast-header__actions"><div class="cast-header__primary-actions"><a class="cast-header__back app-back-link" href="./index.html"><span>&lt; キャスト一覧へ</span><small>RETURN TO ARCHIVE</small></a><a id="cast-edit-button" class="cast-edit-link" hidden><span>キャストを編集</span><small>EDIT CAST</small></a></div><div class="cast-header__export-panel" role="group" aria-label="データ出力"><span class="cast-header__export-label">データ出力 <small>EXPORT / TRANSFER</small></span><div class="cast-header__export-actions"></div></div></div>
+    <div class="cast-header__actions"><div class="cast-header__primary-actions"><a class="cast-header__back app-back-link" href="./index.html"><span>&lt; キャスト一覧へ</span><small>RETURN TO ARCHIVE</small></a><a id="cast-edit-button" class="cast-edit-link" hidden><span>キャストを編集</span><small>EDIT CAST</small></a><button id="cast-quick-sheet-button" class="cast-quick-sheet-link" type="button" aria-controls="quick-sheet" aria-expanded="false" hidden><span>簡易表示</span><small>QUICK SHEET</small></button></div><div class="cast-header__export-panel" role="group" aria-label="データ出力"><span class="cast-header__export-label">データ出力 <small>EXPORT / TRANSFER</small></span><div class="cast-header__export-actions"></div></div></div>
     <div class="cast-header__record">
       <p id="cast-status" class="cast-header__status">キャストデータへアクセス中…</p>
       <p id="cast-public-id" class="cast-public-id cast-header__public-id"></p>
@@ -33,10 +33,19 @@
     <section id="tab-profile" class="cast-tab-panel" data-panel="profile"><div class="data-layout"><section class="data-panel"><header class="data-panel__header"><h2>パーソナルデータ <small>PERSONAL DATA</small></h2></header><dl id="personal-data" class="profile-list"></dl></section><section class="data-panel"><header class="data-panel__header"><h2>ライフパス <small>LIFE PATH</small></h2></header><dl id="life-path" class="profile-list"></dl></section><section class="data-panel data-panel--wide"><header class="data-panel__header"><h2>プロフィール <small>PROFILE</small></h2></header><div id="profile-text" class="profile-text"></div></section></div></section>
     <section id="tab-outfits" class="cast-tab-panel" data-panel="outfits"><div id="outfit-container" class="outfit-container"></div></section>
   </main>
+  <section id="quick-sheet" class="quick-sheet" aria-label="簡易キャストシート" hidden>
+    <div class="quick-sheet__toolbar">
+      <button id="quick-sheet-close" type="button"><span>詳細表示へ戻る</span><small>BACK TO DETAIL</small></button>
+      <span class="quick-sheet__toolbar-note">A4 PORTRAIT × 3</span>
+      <button id="quick-sheet-detail-toggle" type="button" aria-controls="quick-sheet-pages" aria-pressed="false"><span>解説を全文表示</span><small>EXPAND NOTES</small></button>
+      <button id="quick-sheet-print" type="button"><span>印刷</span><small>PRINT A4 × 3</small></button>
+    </div>
+    <div id="quick-sheet-pages" class="quick-sheet__pages"></div>
+  </section>
   <section id="cast-error" class="cast-error" hidden><p class="cast-error__code">キャストデータが見つかりません <small>CAST DATA NOT FOUND</small></p><p id="cast-error-message"></p><a href="./index.html">キャスト一覧へ戻る</a></section>
   <script src="./js/cast-cyberscan.js?v=71"></script>
   <script src="./js/handle-format.js?v=2"></script>
-  <script type="module" src="./js/cast.js?v=81"></script>
+  <script type="module" src="./js/cast.js?v=94"></script>
   <script src="./js/cast-fixed-general-skills.js?v=2"></script>
   <script src="./js/cast-id-display.js?v=1"></script>
   <script src="./js/cast-tabs.js?v=2"></script>
