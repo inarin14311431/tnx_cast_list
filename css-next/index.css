@@ -18,6 +18,7 @@
 @import url("./components/dialog.css");
 @import url("./components/status.css");
 @import url("./editor/editor.css?v=25");
+@import url("./editor/sidebar-actions.css?v=2");
 @import url("./editor/skills.css?v=3");
 @import url("./editor/style-skills.css?v=4");
 @import url("./editor/outfits.css?v=7");
