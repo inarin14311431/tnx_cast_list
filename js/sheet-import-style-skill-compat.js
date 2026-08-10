@@ -12,7 +12,9 @@
     .replace(/^[.#]+|[.]$/g,"")
     .replace(/\.{2,}/g,".");
   const exactName=value=>String(value??"").trim().replace(/Ｎ◎ＶＡ/g,"N◎VA");
-  const matchName=value=>exactName(value).replace(/^[★■┗]+\s*/,"");
+  // Symbols are meaningful display data, but the base legacy importer may strip them.
+  // Ignore them only while matching; applySkill() restores the exact source name.
+  const matchName=value=>exactName(value).replace(/^[★■┗†※]+\s*/,"");
   const first=(object,...keys)=>{
     for(const key of keys){
       const value=object?.[key];
