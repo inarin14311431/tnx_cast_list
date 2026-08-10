@@ -21,12 +21,13 @@
 @import url("./editor/sidebar-actions.css?v=2");
 @import url("./editor/skills.css?v=3");
 @import url("./editor/style-skills.css?v=4");
-@import url("./editor/outfits.css?v=7");
+@import url("./editor/outfits.css?v=9");
 @import url("./editor/import.css?v=6");
 @import url("./pages/archive.css?v=4");
-@import url("./pages/cast.css?v=42");
+@import url("./pages/cast.css?v=43");
 @import url("./pages/auth.css");
 @import url("./pages/account.css?v=10");
 @import url("./pages/acts.css?v=2");
 @import url("./pages/showcase.css?v=2");
+@import url("./components/armor-totals.css?v=2");
 @import url("./responsive.css?v=7");
