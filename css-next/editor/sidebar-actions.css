@@ -1,0 +1,26 @@
+/* Sidebar action hover states for the cast-sheet editor.
+ * Saved / view actions use the same hover treatment as ordinary buttons.
+ */
+body[data-page="sheet.html"] .exp-panel #save-button.is-saved,
+body[data-page="sheet.html"] .exp-panel .sheet-view-link:not(.is-disabled) {
+  transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+body[data-page="sheet.html"] .exp-panel #save-button.is-saved:is(:hover, :focus-visible),
+body[data-page="sheet.html"] .exp-panel .sheet-view-link:not(.is-disabled):is(:hover, :focus-visible) {
+  border-color: var(--color-accent-strong);
+  color: var(--color-bg);
+  background: var(--color-accent);
+  box-shadow: var(--shadow-glow);
+}
+
+body[data-page="sheet.html"] .exp-panel #save-button.is-saved:is(:hover, :focus-visible) small,
+body[data-page="sheet.html"] .exp-panel .sheet-view-link:not(.is-disabled):is(:hover, :focus-visible) small {
+  color: color-mix(in srgb, var(--color-bg) 68%, transparent);
+  opacity: 1;
+}
+
+body[data-page="sheet.html"] .exp-panel #save-button.is-saved:active,
+body[data-page="sheet.html"] .exp-panel .sheet-view-link:not(.is-disabled):active {
+  transform: translateY(1px);
+}
