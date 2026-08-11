@@ -1,0 +1,23 @@
+/* Cast viewer export button interaction.
+ * Loaded after cast.css so hover/focus cannot be overwritten by the
+ * header-specific normal-state presentation rules. */
+body[data-page="cast.html"] .cast-header__export-actions :is(
+  .cocofolia-copy-button,
+  .udonarium-export-button,
+  .transfer-tsv-copy-button,
+  .transfer-bookmarklet-copy-button
+):is(:hover, :focus-visible) {
+  border-color: var(--export-accent);
+  color: var(--color-bg);
+  background: var(--export-accent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--export-accent) 62%, transparent);
+}
+
+body[data-page="cast.html"] .cast-header__export-actions :is(
+  .cocofolia-copy-button,
+  .udonarium-export-button,
+  .transfer-tsv-copy-button,
+  .transfer-bookmarklet-copy-button
+):is(:hover, :focus-visible) small {
+  color: color-mix(in srgb, var(--color-bg) 72%, transparent);
+}

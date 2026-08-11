@@ -1,4 +1,7 @@
-/* Complete legacy style-skill imports after the base importer and preserve name symbols. */
+/* Canonical compatibility layer for legacy style-skill imports.
+ * Owns JSON control-character repair, symbol-preserving name matching,
+ * duplicate cleanup and source-order restoration after the base importer.
+ */
 (()=>{
   const APPLY="#legacy-import-apply";
   const TEXT="#legacy-import-json";
@@ -12,8 +15,8 @@
     .replace(/^[.#]+|[.]$/g,"")
     .replace(/\.{2,}/g,".");
   const exactName=value=>String(value??"").trim().replace(/Ｎ◎ＶＡ/g,"N◎VA");
-  // Symbols are meaningful display data, but the base legacy importer may strip them.
-  // Ignore them only while matching; applySkill() restores the exact source name.
+  // Display symbols are meaningful, but old importers may strip them.
+  // Ignore symbols only while matching; applySkill() always restores source text.
   const matchName=value=>exactName(value).replace(/^[★■┗†※]+\s*/,"");
   const first=(object,...keys)=>{
     for(const key of keys){
@@ -28,6 +31,23 @@
     return !["","0","false","off","no","null","undefined"].includes(String(value).trim().toLowerCase());
   };
   const number=value=>{const match=String(value??"").match(/-?\d+/);return match?Number(match[0]):0};
+
+  function repairJsonStringControls(value){
+    const text=String(value??"");
+    let output="",inString=false,escaped=false;
+    for(const character of text){
+      if(!inString){output+=character;if(character==='"')inString=true;continue}
+      if(escaped){output+=character;escaped=false;continue}
+      if(character==='\\'){output+=character;escaped=true;continue}
+      if(character==='"'){output+=character;inString=false;continue}
+      if(character==='\n')output+='\\n';
+      else if(character==='\r')output+='\\r';
+      else if(character==='\t')output+='\\t';
+      else if(character.charCodeAt(0)<0x20)output+=`\\u${character.charCodeAt(0).toString(16).padStart(4,"0")}`;
+      else output+=character;
+    }
+    return output;
+  }
 
   function flatten(value,prefix,map){
     if(value===null||value===undefined)return;
@@ -134,6 +154,14 @@
     return true;
   }
 
+  function removeUnexpectedRows(usedKeys){
+    for(const row of rows()){
+      if(usedKeys.has(row.dataset.skillKey))continue;
+      if(!rowValue(row))continue;
+      row.querySelector('[data-delete-skill]')?.click();
+    }
+  }
+
   async function waitForNewRow(before,timeout=10000){
     const existing=rows().find(row=>!before.has(row.dataset.skillKey));
     if(existing)return existing;
@@ -228,17 +256,16 @@
         if(await applySkill(row,skill))repaired++;
       }else if(await addMissingSkill(skill)){
         row=rows().find(candidate=>!used.has(candidate.dataset.skillKey)&&rowValue(candidate)===skill.name);
-        if(row){
-          used.add(row.dataset.skillKey);
-          orderedKeys.push(row.dataset.skillKey);
-        }
+        if(row){used.add(row.dataset.skillKey);orderedKeys.push(row.dataset.skillKey)}
         repaired++;
       }
     }
+    removeUnexpectedRows(used);
     const missing=expected.filter(skill=>!rows().some(row=>rowValue(row)===skill.name));
     if(missing.length)throw new Error(`スタイル技能${missing.length}件を取込できませんでした：${missing.map(item=>item.name).join("、")}`);
     if(orderedKeys.length!==expected.length||!alignImportedOrder(orderedKeys))throw new Error("スタイル技能をJSONの並び順に復元できませんでした。");
     document.querySelector(ROOT)?.dispatchEvent(new Event("input",{bubbles:true}));
+    window.TNXMultilineFields?.enhance?.();
     window.TNXExperience?.queue?.();
     return {total:expected.length,repaired};
   }
@@ -246,8 +273,17 @@
   document.addEventListener("click",event=>{
     const button=event.target.closest?.(APPLY);
     if(!button)return;
+    const source=document.querySelector(TEXT);
+    if(!source)return;
+    const repairedText=repairJsonStringControls(source.value);
+    if(repairedText!==source.value){
+      source.value=repairedText;
+      const message=document.querySelector(MESSAGE);
+      if(message)message.textContent="JSON内の制御文字を修復して取り込みます…";
+    }
     let data;
-    try{data=JSON.parse(document.querySelector(TEXT)?.value||"")}catch{return}
+    try{data=JSON.parse(source.value||"")}catch{return}
+    window.__tnxLegacyImportInProgress=true;
     window.TNXLegacyStyleSkillRepair=(async()=>{
       try{return await repair(data)}
       catch(error){
@@ -255,6 +291,8 @@
         const message=document.querySelector(MESSAGE);
         if(message)message.textContent=`取込エラー：${error.message||String(error)}`;
         throw error;
+      }finally{
+        window.__tnxLegacyImportInProgress=false;
       }
     })();
   },true);

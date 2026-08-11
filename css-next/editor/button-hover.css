@@ -1,0 +1,10 @@
+/* Editor action buttons use a bright accent fill on hover. Keep the English
+ * secondary label dark enough to remain legible on that fill. */
+body[data-page="sheet.html"] .toolbar button:is(:hover, :focus-visible) small,
+body[data-page="sheet.html"] .master-search-actions button:is(:hover, :focus-visible) small,
+body[data-page="sheet.html"] #search-skd-master:is(:hover, :focus-visible) small,
+body[data-page="sheet.html"] #search-ofc-master:is(:hover, :focus-visible) small {
+  color: color-mix(in srgb, var(--color-bg) 90%, #000 10%);
+  opacity: .95;
+  text-shadow: none;
+}

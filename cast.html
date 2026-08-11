@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <script src="./js/css-next-theme.js"></script>
-  <link rel="stylesheet" href="./css-next/index.css?v=51" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/index.css?v=53" data-css-system="next">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="index, follow">
@@ -10,7 +10,10 @@
 </head>
 <body data-page="cast.html">
   <div class="background-grid"></div><div class="scanlines"></div>
-  <header class="cast-header app-header"><div class="cast-header__actions"><div class="cast-header__primary-actions"><a class="cast-header__back app-back-link" href="./index.html"><span>&lt; キャスト一覧へ</span><small>RETURN TO ARCHIVE</small></a><a id="cast-edit-button" class="cast-edit-link" hidden><span>キャストを編集</span><small>EDIT CAST</small></a><button id="cast-quick-sheet-button" class="cast-quick-sheet-link" type="button" aria-controls="quick-sheet" aria-expanded="false" hidden><span>簡易表示</span><small>QUICK SHEET</small></button></div><div class="cast-header__export-panel" role="group" aria-label="データ出力"><span class="cast-header__export-label">データ出力 <small>EXPORT / TRANSFER</small></span><div class="cast-header__export-actions"></div></div></div><div class="cast-header__record"><p id="cast-status" class="cast-header__status">キャストデータへアクセス中…</p><p id="cast-public-id" class="cast-public-id cast-header__public-id"></p></div></header>
+  <header class="cast-header app-header">
+    <div class="cast-header__actions"><div class="cast-header__primary-actions"><a class="cast-header__back app-back-link" href="./index.html"><span>&lt; キャスト一覧へ</span><small>RETURN TO ARCHIVE</small></a><a id="cast-edit-button" class="cast-edit-link" hidden><span>キャストを編集</span><small>EDIT CAST</small></a><button id="cast-quick-sheet-button" class="cast-quick-sheet-link" type="button" aria-controls="quick-sheet" aria-expanded="false" hidden><span>簡易表示</span><small>QUICK SHEET</small></button></div><div class="cast-header__export-panel" role="group" aria-label="データ出力"><span class="cast-header__export-label">データ出力 <small>EXPORT / TRANSFER</small></span><div class="cast-header__export-actions"></div></div></div>
+    <div class="cast-header__record"><p id="cast-status" class="cast-header__status">キャストデータへアクセス中…</p><p id="cast-public-id" class="cast-public-id cast-header__public-id"></p></div>
+  </header>
   <main id="cast-content" class="cast-content" hidden>
     <section class="cast-hero"><div class="cast-hero__image-panel"><div class="cast-hero__image-frame"><img id="cast-image" src="./assets/placeholders/scan-failed.webp" alt=""><span class="cast-hero__image-scan"></span><div class="cast-hero__image-label">人物画像 <small>VISUAL IDENTITY</small></div></div></div><div class="cast-hero__identity"><div class="cast-name-readings"><span id="cast-handle-kana" class="cast-handle-kana"></span><span id="cast-kana" class="cast-kana"></span></div><div class="cast-name-primary"><span id="cast-handle" class="cast-handle"></span><h1 id="cast-name" class="cast-name"></h1></div><div id="cast-styles" class="cast-styles"></div><section class="hero-divine-panel" aria-label="神業"><header><h2>神業 <small>DIVINE WORK</small></h2></header><div id="divine-list" class="divine-list hero-divine-list"></div></section><dl class="identity-grid"><div><dt>プレイヤー <small>PLAYER</small></dt><dd id="cast-player"></dd></div><div><dt>所属 <small>AFFILIATION</small></dt><dd id="cast-affiliation"></dd></div><div><dt>市民ランク <small>CITIZEN RANK</small></dt><dd id="cast-rank"></dd></div><div><dt>消費経験点 <small>EXP SPENT</small></dt><dd id="cast-exp"></dd></div></dl><section id="cast-summary-panel" class="cast-summary-panel" aria-labelledby="cast-summary-heading" hidden><div id="cast-summary-heading" class="cast-summary-heading">SCAN SUMMARY <small>抽出概要</small></div><p id="cast-summary" class="cast-summary"></p><button id="cast-summary-toggle" class="cast-summary-toggle" type="button" aria-controls="cast-summary" aria-expanded="false" hidden><span>全文表示</span><small>EXPAND</small></button></section></div></section>
     <nav class="cast-tabs" aria-label="キャスト情報"><div class="cast-tab-list"><button class="cast-tab is-active" type="button" data-tab="session"><span>アクトデータ</span><small>ACT DATA</small></button><button class="cast-tab" type="button" data-tab="profile"><span>プロフィール</span><small>PROFILE</small></button><button class="cast-tab" type="button" data-tab="outfits"><span>アウトフィット</span><small>OUTFITS</small></button></div><button class="cast-combo-jump" type="button" data-cast-jump="combo"><span>コンボ</span><small>COMBO</small></button></nav>
@@ -20,6 +23,14 @@
   </main>
   <section id="quick-sheet" class="quick-sheet" aria-label="簡易キャストシート" hidden><div class="quick-sheet__toolbar"><button id="quick-sheet-close" type="button"><span>詳細表示へ戻る</span><small>BACK TO DETAIL</small></button><span class="quick-sheet__toolbar-note">A4 PORTRAIT × 3</span><button id="quick-sheet-detail-toggle" type="button" aria-controls="quick-sheet-pages" aria-pressed="false"><span>解説を全文表示</span><small>EXPAND NOTES</small></button><button id="quick-sheet-print" type="button"><span>印刷</span><small>PRINT A4 × 3</small></button></div><div id="quick-sheet-pages" class="quick-sheet__pages"></div></section>
   <section id="cast-error" class="cast-error" hidden><p class="cast-error__code">キャストデータが見つかりません <small>CAST DATA NOT FOUND</small></p><p id="cast-error-message"></p><a href="./index.html">キャスト一覧へ戻る</a></section>
-  <script src="./js/cast-cyberscan.js?v=71"></script><script src="./js/handle-format.js?v=2"></script><script type="module" src="./js/cast.js?v=94"></script><script type="module" src="./js/cast-compact-skills.js?v=3"></script><script src="./js/cast-view-controls.js?v=3"></script><script type="module" src="./js/cast-ui.js?v=77"></script><script type="module" src="./js/cast-style-skills.js?v=5"></script><script type="module" src="./js/cast-outfits.js?v=4"></script><script src="./js/cast-archetype-view.js?v=78"></script>
+  <script src="./js/cast-cyberscan.js?v=71"></script>
+  <script src="./js/handle-format.js?v=2"></script>
+  <script type="module" src="./js/cast.js?v=94"></script>
+  <script type="module" src="./js/cast-compact-skills.js?v=3"></script>
+  <script src="./js/cast-view-controls.js?v=3"></script>
+  <script type="module" src="./js/cast-ui.js?v=77"></script>
+  <script type="module" src="./js/cast-style-skills.js?v=5"></script>
+  <script type="module" src="./js/cast-outfits.js?v=4"></script>
+  <script src="./js/cast-archetype-view.js?v=78"></script>
 </body>
 </html>

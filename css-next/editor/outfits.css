@@ -34,7 +34,16 @@
 .outfit-table :is(.outfit-table-head--slot, .outfit-table-cell--slot) { width: 7.5%; }
 .outfit-table :is(.outfit-table-head--page_number, .outfit-table-cell--page_number) { width: 4.5%; }
 .outfit-table :is(.outfit-table-head--description, .outfit-table-cell--description) { width: auto; min-width: 0; }
+.outfit-table-group--armor tfoot :is(th, td) { text-align: center; vertical-align: middle; }
 .outfit-table-group--armor tfoot td { color: var(--color-accent); background: var(--color-accent-soft); font-weight: 800; }
+.outfit-table-group--armor tfoot td:first-child { color: var(--color-muted); font-size: .82rem; font-weight: 800; letter-spacing: .03em; }
+.outfit-table-group--armor tfoot td:nth-child(2),
+.outfit-table-group--armor tfoot td:nth-child(3),
+.outfit-table-group--armor tfoot td:nth-child(4) {
+  color: var(--color-accent);
+  font: 900 clamp(1.05rem, 1vw, 1.3rem)/1 var(--font-data);
+  text-shadow: 0 0 10px color-mix(in srgb, var(--color-accent) 35%, transparent);
+}
 
 @media (min-width: 1100px) {
   body[data-page="sheet.html"] .outfit-table { min-width: 0; }

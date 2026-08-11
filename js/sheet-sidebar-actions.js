@@ -2,75 +2,101 @@
   const panel = document.querySelector('.exp-panel');
   if (!panel) return;
 
-  const ensureHelpLink = () => {
-    if (document.querySelector('[data-sheet-help-link]')) return;
-    const importButton = panel.querySelector('#legacy-import-open');
-    if (!importButton) return;
-    let control = importButton.closest('.sheet-import-control');
-    if (!control) {
-      control = document.createElement('div');
-      control.className = 'sheet-import-control';
-      importButton.before(control);
-      control.append(importButton);
-    }
-    const link = document.createElement('a');
-    link.href = './manual-data-import.html';
-    link.target = '_blank';
-    link.rel = 'noopener';
-    link.className = 'floating-help-link';
-    link.setAttribute('data-sheet-help-link', '1');
-    link.setAttribute('aria-label', 'データ取込マニュアルを開く');
-    link.title = 'データ取込マニュアル';
-    link.innerHTML = '<span class="floating-help-link__label">HELP</span>';
-    control.append(link);
+  // Export / transfer helpers belong to the public cast viewer.
+  const VIEWER_ONLY_ACTION = /ココフォリア|ユドナリウム|転記TSV|転記BM/;
+  const LABELS = {
+    view: /キャストを閲覧/,
+    import: /データ取込/,
+    autofill: /SKD・OFC補完|補完/
+  };
+  let queued = false;
+
+  const labelOf = element => String(element?.textContent || '').replace(/\s+/g, ' ').trim();
+
+  const topLevelChild = element => {
+    let current = element;
+    while (current && current.parentElement && current.parentElement !== panel) current = current.parentElement;
+    return current?.parentElement === panel ? current : null;
+  };
+
+  const findByLabel = pattern => {
+    const candidates = panel.querySelectorAll(':scope > button, :scope > a, :scope > label, :scope > div > button, :scope > div > a');
+    return [...candidates].find(element => pattern.test(labelOf(element))) || null;
+  };
+
+  const removeViewerOnlyActions = () => {
+    let changed = false;
+    panel.querySelectorAll(':scope > button, :scope > a, :scope > div > button, :scope > div > a').forEach(element => {
+      if (element.matches('#cast-view-button,[data-sheet-help],.sheet-help-trigger')) return;
+      if (!VIEWER_ONLY_ACTION.test(labelOf(element))) return;
+      const target = topLevelChild(element);
+      if (!target) return;
+      target.remove();
+      changed = true;
+    });
+    return changed;
+  };
+
+  const reorderActions = () => {
+    const visibility = topLevelChild(document.querySelector('#visibility'));
+    const save = topLevelChild(document.querySelector('#save-button'));
+    const view = topLevelChild(document.querySelector('#cast-view-button') || findByLabel(LABELS.view));
+    const importAction = topLevelChild(document.querySelector('#legacy-import-open') || findByLabel(LABELS.import));
+    const autofill = topLevelChild(findByLabel(LABELS.autofill));
+    const ordered = [visibility, save, view, importAction, autofill].filter(Boolean);
+    if (!ordered.length) return false;
+
+    const children = [...panel.children];
+    const current = children.filter(child => ordered.includes(child));
+    if (current.length === ordered.length && current.every((child, index) => child === ordered[index])) return false;
+
+    const fragment = document.createDocumentFragment();
+    ordered.forEach(element => fragment.append(element));
+    panel.append(fragment);
+    return true;
   };
 
   const GROUP_COLORS = {
-    a: '#70efa9',
-    b: '#35d7ff',
-    c: '#ff1493',
-    d: '#ffd000'
+    save: '#70efa9',
+    action: '#35d7ff'
   };
 
-  const classify = () => {
+  const classifyActions = () => {
     panel.querySelectorAll(':scope > button, :scope > a.sheet-view-link, :scope > .sheet-import-control > button').forEach(element => {
-      const label = String(element.textContent || '').replace(/\s+/g, ' ').trim();
+      const label = labelOf(element);
       let group = '';
-
-      if (element.id === 'save-button' || /保存済み|未保存|保存中|保存失敗/.test(label)) {
-        group = 'a';
-      } else if (/キャストを閲覧|データ取込|SKD・OFC補完/.test(label)) {
-        group = 'b';
-      } else if (/ココフォリア|ユドナリウム/.test(label)) {
-        group = 'c';
-      } else if (/転記TSV|転記BM/.test(label)) {
-        group = 'd';
-      }
+      if (element.id === 'save-button' || /保存済み|未保存|保存中|保存失敗/.test(label)) group = 'save';
+      else if (/キャストを閲覧|データ取込|SKD・OFC補完/.test(label)) group = 'action';
 
       if (!group) {
-        delete element.dataset.actionGroup;
-        element.style.removeProperty('--action-rail');
-        element.style.removeProperty('border-left-color');
+        if (element.dataset.actionGroup) delete element.dataset.actionGroup;
+        if (element.style.getPropertyValue('--action-rail')) element.style.removeProperty('--action-rail');
         return;
       }
-
+      if (element.dataset.actionGroup !== group) element.dataset.actionGroup = group;
       const color = GROUP_COLORS[group];
-      element.dataset.actionGroup = group;
-      element.style.setProperty('--action-rail', color);
+      if (element.style.getPropertyValue('--action-rail') !== color) element.style.setProperty('--action-rail', color);
     });
   };
 
-  ensureHelpLink();
-  classify();
-  requestAnimationFrame(classify);
-  window.addEventListener('load', classify, { once: true });
+  const arrange = () => {
+    queued = false;
+    removeViewerOnlyActions();
+    reorderActions();
+    classifyActions();
+  };
 
-  new MutationObserver(classify).observe(panel, {
+  const queueArrange = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(arrange);
+  };
+
+  arrange();
+  window.addEventListener('load', queueArrange, { once: true });
+  new MutationObserver(queueArrange).observe(panel, {
     childList: true,
-    subtree: true,
-    characterData: true,
-    attributes: true,
-    attributeFilter: ['hidden', 'class', 'id']
+    subtree: true
   });
 })();
 
@@ -109,9 +135,6 @@
 
     displayBase.value = calculatedBase;
     finalOutput.textContent = finalValue;
-
-    // sheet.js saves cs as cs_base + cs_mod. Adjust only the hidden storage value
-    // so the persisted final CS also respects the minimum value of zero.
     storedBase.value = finalValue - modifier;
   };
 
@@ -146,27 +169,18 @@
     renameBaseLabels();
 
     document.addEventListener('input', event => {
-      if (event.target.matches('#reason-base,#reason-mod,#passion-base,#passion-mod,#life-base,#life-mod,#cs-mod')) {
-        queueMicrotask(recalculateCs);
-      }
+      if (event.target.matches('#reason-base,#reason-mod,#passion-base,#passion-mod,#life-base,#life-mod,#cs-mod')) queueMicrotask(recalculateCs);
     });
     document.addEventListener('change', event => {
-      if (event.target.matches('#reason-base,#reason-mod,#passion-base,#passion-mod,#life-base,#life-mod,#cs-mod')) {
-        queueMicrotask(recalculateCs);
-      }
+      if (event.target.matches('#reason-base,#reason-mod,#passion-base,#passion-mod,#life-base,#life-mod,#cs-mod')) queueMicrotask(recalculateCs);
     });
 
     const abilityGrid = document.querySelector('#ability-grid');
     if (abilityGrid) {
       new MutationObserver(records => {
         renameBaseLabels();
-        if (records.some(record => ['reason-final', 'passion-final', 'life-final'].includes(record.target?.id))) {
-          queueMicrotask(recalculateCs);
-        }
-      }).observe(abilityGrid, {
-        childList: true,
-        subtree: true
-      });
+        if (records.some(record => ['reason-final', 'passion-final', 'life-final'].includes(record.target?.id))) queueMicrotask(recalculateCs);
+      }).observe(abilityGrid, { childList: true, subtree: true });
     }
     return true;
   };
