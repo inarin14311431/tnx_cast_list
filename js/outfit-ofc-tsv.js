@@ -82,6 +82,10 @@ function applyDetailsToRow(row, details) {
 }
 
 function selectedMasterIds() {
+  const persistent = Array.isArray(globalThis.__tnxMasterSearchSelectedIds)
+    ? globalThis.__tnxMasterSearchSelectedIds.map(String).filter(Boolean)
+    : [];
+  if (persistent.length) return persistent;
   return [...document.querySelectorAll("#master-search-results [data-result-select]:checked")]
     .map(input => String(input.dataset.resultSelect || ""))
     .filter(Boolean);

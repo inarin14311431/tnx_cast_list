@@ -23,6 +23,7 @@ const OUTFIT_LABELS = {
 let mode = "skd";
 let results = [];
 let selectedIds = new Set();
+let selectedRows = new Map();
 let filterCache = { skd: null, ofc: null };
 let searching = false;
 
@@ -107,6 +108,7 @@ async function openDialog(nextMode) {
   mode = nextMode;
   results = [];
   selectedIds.clear();
+  selectedRows.clear();
   const dialog = getDialog();
   dialog.querySelector("#master-search-title").textContent = mode === "skd" ? "SKDスタイル技能検索" : "OFCアウトフィット検索";
   dialog.querySelector("#master-search-code").textContent = mode === "skd" ? "STYLE SKILL DATABASE" : "OUTFIT CATALOG DATABASE";
@@ -176,7 +178,6 @@ async function runSearch() {
   const secondary = dialog.querySelector("#master-search-filter-secondary").value;
   const runButton = dialog.querySelector("#master-search-run");
   runButton.disabled = true;
-  selectedIds.clear();
   updateSelectionState();
   setStatus("Supabaseマスタを検索中…", "loading");
 
@@ -203,6 +204,10 @@ async function runSearch() {
     const { data, error } = await query;
     if (error) throw error;
     results = data ?? [];
+    for (const row of results) {
+      const id = String(row.id);
+      if (selectedIds.has(id)) selectedRows.set(id, row);
+    }
     renderResults();
     setStatus(results.length
       ? `${results.length}件を表示しています。検索結果は最大${PAGE_SIZE}件です。`
@@ -216,6 +221,7 @@ async function runSearch() {
   } finally {
     searching = false;
     runButton.disabled = false;
+    updateSelectionState();
   }
 }
 
@@ -238,9 +244,10 @@ function renderSkdResult(row) {
     row.difficulty && `目標値：${row.difficulty}`,
     row.confrontation && `対決：${row.confrontation}`
   ].filter(Boolean);
+  const checked = selectedIds.has(String(row.id)) ? " checked" : "";
   return `
     <article class="master-result-card" data-master-id="${row.id}">
-      <label class="master-result-check"><input type="checkbox" data-result-select="${row.id}"><span></span></label>
+      <label class="master-result-check"><input type="checkbox" data-result-select="${row.id}"${checked}><span></span></label>
       <div class="master-result-main">
         <p class="master-result-meta">${escapeHtml(row.style || "—")} / ${escapeHtml(row.type_label || "特技")} / P.${escapeHtml(row.page_number || "—")}</p>
         <h3>${escapeHtml(row.name)}</h3>
@@ -264,9 +271,10 @@ function renderOfcResult(row) {
     defense && `防御：${defense}`,
     row.slot && `部位：${row.slot}`
   ].filter(Boolean);
+  const checked = selectedIds.has(String(row.id)) ? " checked" : "";
   return `
     <article class="master-result-card" data-master-id="${row.id}">
-      <label class="master-result-check"><input type="checkbox" data-result-select="${row.id}"><span></span></label>
+      <label class="master-result-check"><input type="checkbox" data-result-select="${row.id}"${checked}><span></span></label>
       <div class="master-result-main">
         <p class="master-result-meta">${escapeHtml(row.major_category || "—")} / ${escapeHtml(row.minor_category || "—")} / P.${escapeHtml(row.page_number || "—")}</p>
         <h3>${escapeHtml(row.name)}</h3>
@@ -282,8 +290,14 @@ function handleResultSelection(event) {
   const checkbox = event.target.closest("[data-result-select]");
   if (!checkbox) return;
   const id = String(checkbox.dataset.resultSelect);
-  if (checkbox.checked) selectedIds.add(id);
-  else selectedIds.delete(id);
+  if (checkbox.checked) {
+    selectedIds.add(id);
+    const row = results.find(item => String(item.id) === id);
+    if (row) selectedRows.set(id, row);
+  } else {
+    selectedIds.delete(id);
+    selectedRows.delete(id);
+  }
   updateSelectionState();
 }
 
@@ -305,7 +319,7 @@ async function handleResultAction(event) {
 }
 
 async function addSelectedResults() {
-  const rows = results.filter(row => selectedIds.has(String(row.id)));
+  const rows = [...selectedRows.values()];
   if (!rows.length) return;
   const button = getDialog().querySelector("#master-search-add");
   button.disabled = true;
@@ -431,7 +445,7 @@ function formatDefense(row) {
 }
 
 async function copySelectedTsv() {
-  const rows = results.filter(row => selectedIds.has(String(row.id)));
+  const rows = [...selectedRows.values()];
   if (!rows.length) return;
   const tsv = mode === "skd" ? createSkdTsv(rows) : createOfcTsv(rows);
   try {
@@ -472,6 +486,7 @@ function toTsv(headers, rows) {
 
 function updateSelectionState() {
   const dialog = getDialog();
+  globalThis.__tnxMasterSearchSelectedIds = [...selectedIds];
   dialog.querySelector("#master-search-selected-count").textContent = String(selectedIds.size);
   dialog.querySelector("#master-search-add").disabled = selectedIds.size === 0 || searching;
   dialog.querySelector("#master-search-copy").disabled = selectedIds.size === 0 || searching;
