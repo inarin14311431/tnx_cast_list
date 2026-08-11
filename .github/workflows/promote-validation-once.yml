@@ -29,6 +29,7 @@ jobs:
           rsync -a --delete \
             --exclude '.git/' \
             --exclude '.github/' \
+            --exclude '_validation/' \
             --exclude 'tests/' \
             --exclude 'package.json' \
             --exclude 'README.md' \
