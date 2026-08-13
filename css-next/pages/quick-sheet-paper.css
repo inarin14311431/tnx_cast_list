@@ -1,0 +1,27 @@
+/* Quick sheet is intended to be marked by hand during play. */
+.quick-sheet__combo-card header > b.is-paper-counter {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+.quick-sheet__paper-counter {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 14px;
+}
+.quick-sheet__paper-counter i {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid currentColor;
+  background: transparent;
+}
+@media print {
+  .quick-sheet__paper-counter i {
+    width: 4mm;
+    height: 4mm;
+    border-width: .45mm;
+  }
+}

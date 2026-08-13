@@ -1,4 +1,5 @@
 import { getStyleSkills } from "./cast-data-store.js";
+import "./skill-display-enhancements.js?v=1";
 
 const PREFIX = "@@TNX_STYLE_DETAIL_V1@@";
 const SEPARATOR_MARKER = "[[STYLE_SEPARATOR]]";
@@ -53,10 +54,11 @@ function ensureDedicatedPanel(section) {
 
 function fieldCell(value, key) {
   const text = normalizeNewlines(value);
-  if (key === "name") return `<td class="style-view-cell style-view-cell--name"><textarea class="style-field-scroll style-skill-name-view" rows="1" wrap="soft" readonly aria-label="名称">${esc(text)}</textarea></td>`;
   if (key === "description") return `<td class="style-view-cell style-view-cell--description"><textarea class="style-field-scroll style-description-expandable" rows="1" wrap="soft" readonly aria-label="解説">${esc(text)}</textarea></td>`;
   const oneLine = text.replace(/\r?\n/g, " ");
-  return `<td class="style-view-cell style-view-cell--${key}"><input class="style-field-scroll" type="text" readonly value="${esc(oneLine)}" title="${esc(text)}" aria-label="${esc(key)}"></td>`;
+  const extraClass = key === "name" ? " style-skill-name-view" : "";
+  const ariaLabel = key === "name" ? "名称" : key;
+  return `<td class="style-view-cell style-view-cell--${key}"><input class="style-field-scroll${extraClass}" type="text" readonly value="${esc(oneLine)}" title="${esc(text)}" aria-label="${esc(ariaLabel)}"></td>`;
 }
 function headerCell(key, label) { return key !== "description" ? `<th>${label}</th>` : `<th class="style-description-heading"><span>${label}</span><button type="button" class="style-description-toggle-all" aria-pressed="false" aria-label="すべての解説を表示">全表示</button></th>`; }
 function createSeparatorRow(skill) { return `<tr class="style-skill-public-separator" data-style-separator-public="1"><td colspan="16"><span class="style-skill-public-separator__label">${esc(normalizeNewlines(skill.name).trim() || "スタイル技能")}</span><small>STYLE SECTION</small></td></tr>`; }
@@ -66,14 +68,11 @@ function createSkillRow(skill) {
   const kind = { none: "なし", normal: "通常", secret: "秘技", ultimate: "奥義", direction: "演出" }[skill.skill_kind] || skill.skill_kind || "";
   return `<tr>${fieldCell(skill.name, "name")}${fieldCell(kind, "kind")}${fieldCell(skill.level, "level")}${SUITS.map(([key,,mark]) => `<td class="style-suit-cell"><span class="style-suit-mark ${skill[key] ? "is-active" : ""}">${mark}</span></td>`).join("")}${FIELDS.map(([key]) => fieldCell(detail[key], key)).join("")}</tr>`;
 }
-function fitNameFields(section) { section.querySelectorAll("textarea.style-skill-name-view").forEach(field => { field.style.height = "auto"; field.style.height = `${Math.max(35, field.scrollHeight + 2)}px`; }); }
 function renderTable(section, skills) {
   section.classList.add("style-skill-section-v47", "style-skill-view-editorlike");
   const heading = section.querySelector("h3");
   section.innerHTML = `<div class="data-table-wrapper style-skill-view-wrapper"><table class="data-table style-skill-detail-table style-skill-view-table"><colgroup><col class="style-col-name"><col class="style-col-kind"><col class="style-col-level">${SUITS.map(() => '<col class="style-col-suit">').join("")}<col class="style-col-skill"><col class="style-col-limit"><col class="style-col-timing"><col class="style-col-target"><col class="style-col-range"><col class="style-col-difficulty"><col class="style-col-confrontation"><col class="style-col-description"><col class="style-col-page"></colgroup><thead><tr><th>名称</th><th>種別</th><th>LV</th>${SUITS.map(([, label]) => `<th>${label}</th>`).join("")}${FIELDS.map(([key, label]) => headerCell(key, label)).join("")}</tr></thead><tbody>${skills.map(createSkillRow).join("")}</tbody></table></div>`;
   if (heading) { heading.hidden = true; section.prepend(heading); }
-  requestAnimationFrame(() => fitNameFields(section));
-  document.fonts?.ready.then(() => fitNameFields(section));
   document.dispatchEvent(new CustomEvent("tnx:style-skills-rendered"));
 }
 

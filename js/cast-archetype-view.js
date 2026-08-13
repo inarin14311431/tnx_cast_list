@@ -92,8 +92,11 @@
       const styleName = card.querySelector(".divine-card__style")?.textContent.trim() || "";
       const name = card.querySelector(".divine-card__name");
       const divineName = name?.textContent.trim() || "";
+      let label = card.querySelector(".divine-card__label");
+      if (!label) { label = document.createElement("span"); label.className = "divine-card__label"; name?.insertAdjacentElement("beforebegin", label); }
+      label.textContent = "神業";
       let yomi = card.querySelector(".divine-card__yomi");
-      if (!yomi) { yomi = document.createElement("span"); yomi.className = "divine-card__yomi"; name?.insertAdjacentElement("afterend", yomi); }
+      if (!yomi) { yomi = document.createElement("span"); yomi.className = "divine-card__yomi"; name?.insertAdjacentElement("beforebegin", yomi); }
       yomi.textContent = divineYomiByName.get(divineName) || divineYomiByStyle.get(styleName) || "";
       yomi.hidden = !yomi.textContent;
     });

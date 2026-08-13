@@ -1,0 +1,29 @@
+/* Editor style cards: keep the field label on the left and the divine reading/name on the right. */
+body[data-page="sheet.html"] .style-card .divine-field {
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  grid-template-areas: "label divine";
+  column-gap: 10px;
+  align-items: center;
+}
+body[data-page="sheet.html"] .style-card .divine-field > span {
+  grid-area: label;
+  align-self: center;
+  justify-self: start;
+  color: var(--color-accent);
+  font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+body[data-page="sheet.html"] .style-card .divine-field > ruby {
+  grid-area: divine;
+  display: ruby;
+  min-width: 0;
+  justify-self: start;
+  line-height: 1.45;
+}
+body[data-page="sheet.html"] .style-card .divine-field ruby strong {
+  display: inline;
+}
+body[data-page="sheet.html"] .style-card .divine-field ruby rt {
+  text-align: center;
+}

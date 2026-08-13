@@ -2,6 +2,7 @@
  * Legacy import reconciliation belongs to sheet-import-style-skill-compat.js.
  */
 (() => {
+  import("./skill-display-enhancements.js?v=1");
   const PREFIX = "@@TNX_STYLE_DETAIL_V1@@";
   const DETAIL_KEYS = ["skill", "limit", "timing", "target", "range", "difficulty", "confrontation", "description", "page"];
 
