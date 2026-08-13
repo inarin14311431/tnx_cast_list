@@ -1,0 +1,70 @@
+import { supabase } from "./supabase-client.js";
+
+const openButton = document.querySelector("#account-delete-open");
+const dialog = document.querySelector("#account-delete-dialog");
+const cancelButton = document.querySelector("#account-delete-cancel");
+const confirmButton = document.querySelector("#account-delete-confirm");
+const passwordField = document.querySelector("#account-delete-password");
+const phraseField = document.querySelector("#account-delete-phrase");
+const status = document.querySelector("#account-delete-status");
+let deleting = false;
+
+openButton?.addEventListener("click", () => {
+  setStatus("");
+  passwordField.value = "";
+  phraseField.value = "";
+  dialog?.showModal();
+  passwordField?.focus();
+});
+cancelButton?.addEventListener("click", () => { if (!deleting) dialog?.close(); });
+dialog?.addEventListener("cancel", event => { if (deleting) event.preventDefault(); });
+confirmButton?.addEventListener("click", deleteAccount);
+
+async function deleteAccount() {
+  if (deleting) return;
+  if (phraseField?.value.trim() !== "DELETE") return setStatus("確認欄に DELETE と入力してください。", true);
+  if (!passwordField?.value) return setStatus("現在のパスワードを入力してください。", true);
+
+  deleting = true;
+  setBusy(true);
+  try {
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
+    if (userError || !user?.email) throw new Error("ログイン情報を確認できません。再ログインしてください。");
+
+    setStatus("本人確認中…");
+    const { error: reauthError } = await supabase.auth.signInWithPassword({ email: user.email, password: passwordField.value });
+    if (reauthError) throw new Error("パスワードが正しくありません。");
+
+    setStatus("登録データを削除中です。この画面を閉じないでください。");
+    const { data, error } = await supabase.functions.invoke("delete-account", { body: { confirmation: "DELETE" } });
+    if (error) throw new Error(await getFunctionError(error));
+    if (!data?.ok) throw new Error(data?.error || "アカウント削除を完了できませんでした。");
+
+    await supabase.auth.signOut({ scope: "local" }).catch(() => {});
+    location.replace("./index.html?accountDeleted=1");
+  } catch (error) {
+    console.error(error);
+    setStatus(error?.message || "アカウント削除に失敗しました。", true);
+    setBusy(false);
+    deleting = false;
+  }
+}
+
+function setBusy(value) {
+  confirmButton.disabled = value;
+  cancelButton.disabled = value;
+  passwordField.disabled = value;
+  phraseField.disabled = value;
+}
+function setStatus(message, isError = false) {
+  if (!status) return;
+  status.textContent = message;
+  status.className = `account-delete-dialog__status${isError ? " is-error" : ""}`;
+}
+async function getFunctionError(error) {
+  try {
+    const body = await error.context?.json?.();
+    if (body?.error) return body.error;
+  } catch {}
+  return error?.message || "アカウント削除に失敗しました。";
+}
