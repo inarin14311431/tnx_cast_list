@@ -1,0 +1,85 @@
+/* iPad / touch-tablet adjustments.
+ * Deliberately gated by coarse pointer so desktop layouts remain unchanged.
+ */
+@media (pointer: coarse) and (min-width: 768px) and (max-width: 1100px) {
+  :root { --page-gutter: 24px; }
+
+  /* Editor: move the desktop rail above the form instead of squeezing content. */
+  body[data-page="sheet.html"] .sheet-layout {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100% - 24px, 1040px);
+    gap: 14px;
+  }
+  body[data-page="sheet.html"] .exp-panel {
+    position: relative;
+    top: auto;
+    grid-column: 1;
+    grid-row: auto;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+    padding: 12px;
+  }
+  body[data-page="sheet.html"] .sheet-main { grid-column: 1; }
+  body[data-page="sheet.html"] .exp-panel > p,
+  body[data-page="sheet.html"] .exp-panel > strong,
+  body[data-page="sheet.html"] .exp-panel > dl { max-width: 300px; }
+  body[data-page="sheet.html"] .sheet-section-nav {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-inline: 0;
+  }
+  body[data-page="sheet.html"] .sheet-section-nav > p { grid-column: 1 / -1; }
+  body[data-page="sheet.html"] .sheet-section-nav :is(a, .sheet-combo-nav) {
+    grid-template-columns: 25px minmax(0, 1fr);
+    min-height: 44px;
+  }
+  body[data-page="sheet.html"] .exp-panel > label,
+  body[data-page="sheet.html"] .exp-panel > #save-button,
+  body[data-page="sheet.html"] .exp-panel > .sheet-view-link,
+  body[data-page="sheet.html"] .exp-panel > .sheet-import-control,
+  body[data-page="sheet.html"] .exp-panel > [data-action-group] {
+    max-width: 420px;
+  }
+  body[data-page="sheet.html"] .profile-top-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body[data-page="sheet.html"] .profile-top-grid .life-path-panel { grid-column: 1 / -1; }
+  body[data-page="sheet.html"] .profile-media-grid { grid-template-columns: 1fr; }
+  body[data-page="sheet.html"] .toolbar button,
+  body[data-page="sheet.html"] .exp-panel :is(button, select, .sheet-view-link) { min-height: 44px; }
+
+  /* Viewer: keep header controls usable without collapsing into tiny buttons. */
+  body[data-page="cast.html"] .cast-header {
+    position: relative;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding-inline: 12px;
+  }
+  body[data-page="cast.html"] .cast-header__actions {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+  }
+  body[data-page="cast.html"] .cast-header__primary-actions,
+  body[data-page="cast.html"] .cast-header__export-actions { flex-wrap: wrap; }
+  body[data-page="cast.html"] .cast-header__primary-actions > *,
+  body[data-page="cast.html"] .cast-header__export-actions > * { min-height: 44px; }
+  body[data-page="cast.html"] .cast-header__record { justify-items: end; }
+  body[data-page="cast.html"] .cast-hero { grid-template-columns: minmax(240px, 36%) minmax(0, 1fr); }
+
+  /* Archive/account: two stable columns are easier to tap than a squeezed three-column layout. */
+  body[data-page="index.html"] .archive-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  body[data-page="index.html"] .archive-control--search { grid-column: 1 / -1; }
+  body[data-page="index.html"] #archive-reset { min-height: 44px; }
+  body[data-page="index.html"] .cast-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  body[data-page="account.html"] .owned-cast__links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+
+  /* Shared floating controls remain reachable but do not cover page content. */
+  .global-theme-picker { max-width: min(300px, calc(100vw - 90px)); }
+  .global-theme-picker select { min-height: 36px; }
+}
+
+/* iPad landscape / large iPad: retain desktop structure, only improve touch targets. */
+@media (pointer: coarse) and (min-width: 1101px) and (max-width: 1366px) {
+  body[data-page="sheet.html"] .toolbar button,
+  body[data-page="sheet.html"] .exp-panel :is(button, select, .sheet-view-link),
+  body[data-page="cast.html"] .cast-header__primary-actions > *,
+  body[data-page="cast.html"] .cast-header__export-actions > * { min-height: 44px; }
+}

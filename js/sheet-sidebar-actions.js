@@ -57,8 +57,8 @@
   };
 
   const GROUP_COLORS = {
-    save: '#70efa9',
-    action: '#35d7ff'
+    save: 'var(--color-success)',
+    action: 'var(--color-accent)'
   };
 
   const classifyActions = () => {

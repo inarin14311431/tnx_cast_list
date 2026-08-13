@@ -29,6 +29,24 @@ body[data-page="sheet.html"] .skill-toolbar--two.has-style-divider { align-items
 #style-skills .style-skill-separator-row input[data-f="name"] { flex: 1 1 auto; width: 100%; min-width: 0; height: 38px; margin: 0; padding: 5px 9px; border: 0; color: var(--color-text); background: transparent; font-size: clamp(.82rem, 1vw, 1.08rem); font-weight: 900; letter-spacing: .1em; }
 
 @media (max-width: 760px) {
-  body[data-page="sheet.html"] #style-skills { overflow-x: auto; }
-  body[data-page="sheet.html"] #style-skills .style-skill-full-table { min-width: 1050px; }
+  body[data-page="sheet.html"] #style-skills {
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x pan-y;
+  }
+  body[data-page="sheet.html"] #style-skills .skill-group,
+  body[data-page="sheet.html"] #style-skills .skill-table-scroll {
+    width: max-content;
+    min-width: 100%;
+    max-width: none;
+    overflow: visible;
+  }
+  body[data-page="sheet.html"] #style-skills .style-skill-full-table {
+    width: 1050px;
+    min-width: 1050px;
+    max-width: none;
+  }
 }

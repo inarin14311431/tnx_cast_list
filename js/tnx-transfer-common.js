@@ -1,4 +1,4 @@
-(async()=>{
+(()=>{
   const FORMAT="TNX_CAST_TRANSFER_TSV";
   const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const frame=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
@@ -61,9 +61,7 @@
     let rows=tableRows(prefix);
     while(rows.length<count){
       const before=rows.length;
-      try{
-        if(typeof window.addSkillsRow==="function")window.addSkillsRow(prefix);
-      }catch(error){console.warn(`Could not add ${prefix} row`,error)}
+      try{if(typeof window.addSkillsRow==="function")window.addSkillsRow(prefix)}catch(error){console.warn(`Could not add ${prefix} row`,error)}
       await frame();
       await wait(30);
       rows=tableRows(prefix);
@@ -73,9 +71,7 @@
   }
 
   function rowIndex(row,prefix,position){
-    return row?.id?.startsWith(`${prefix}.`)
-      ? row.id.slice(prefix.length+1)
-      : String(position);
+    return row?.id?.startsWith(`${prefix}.`)?row.id.slice(prefix.length+1):String(position);
   }
 
   const SUITS={
@@ -92,18 +88,15 @@
     if(next!==image.src)image.src=next;
   }
 
-  async function setLegacySuit(prefix,index,field,value){
+  async function setLegacySuit(prefix,index,field,value,enabled=true){
     const suit=SUITS[field];
-    const desired=truth(value);
+    const desired=enabled&&truth(value);
     const hidden=document.getElementById(`${prefix}.${index}.${suit.code}`);
     const image=document.getElementById(`${prefix}.${index}.${suit.code}gif`);
     const current=hidden?.value==="1";
-
-    /* The legacy sheet keeps the hidden value and image in sync through imgClick. */
     if(current!==desired&&image&&typeof window.imgClick==="function"){
       try{window.imgClick(image);await frame()}catch(error){console.warn("imgClick failed",error)}
     }
-
     if(hidden){
       hidden.value=desired?"1":"";
       hidden.setAttribute("value",hidden.value);
@@ -112,91 +105,6 @@
     replaceSuitImage(image,suit.image,desired);
   }
 
-  function prefixedName(value,prefix){
-    const bare=clean(value).replace(/^(社会|コネ(?:クション)?)[：:]\s*/,"");
-    return bare?`${prefix}${bare}`:prefix;
-  }
-
-  async function repairNamedSkills(prefix,section,namePrefix){
-    const list=records(section);
-    if(!list.length)return;
-    const rows=await ensureRows(prefix,list.length);
-    for(let position=0;position<list.length;position++){
-      const row=rows[position];
-      const index=rowIndex(row,prefix,position);
-      const record=list[position];
-      setById(`${prefix}.${index}.name`,prefixedName(record.name,namePrefix));
-      setById(`${prefix}.${index}.level`,record.level||0);
-      for(const field of Object.keys(SUITS))await setLegacySuit(prefix,index,field,record[field]);
-      try{
-        const level=document.getElementById(`${prefix}.${index}.level`);
-        if(level&&typeof window.levelChange==="function")window.levelChange(level);
-      }catch{}
-    }
-  }
-
-  function expbase(kind){
-    const value=clean(kind).toLowerCase();
-    if(["secret","秘技"].includes(value))return"20";
-    if(["ultimate","奥義"].includes(value))return"50";
-    if(["none","direction","演出","なし"].includes(value))return"0";
-    return"10";
-  }
-
-  async function repairStyleSkills(section){
-    const list=records(section);
-    if(!list.length)return;
-    const prefix="superhumanskills";
-    const rows=await ensureRows(prefix,list.length);
-    const fields={
-      name:"name",
-      level:"level",
-      skill:"skill",
-      limit:"limit",
-      timing:"timing",
-      target:"target",
-      range:"range",
-      difficulty:"aim",
-      confrontation:"confront",
-      description:"notes",
-      page:"page"
-    };
-
-    for(let position=0;position<list.length;position++){
-      const row=rows[position];
-      const index=rowIndex(row,prefix,position);
-      const record=list[position];
-
-      /* Every field is written, including empty strings, to prevent column drift. */
-      for(const [source,target] of Object.entries(fields)){
-        setById(`${prefix}.${index}.${target}`,record[source]??"");
-      }
-      setById(`${prefix}.${index}.expbase`,expbase(record.kind));
-
-      for(const field of Object.keys(SUITS))await setLegacySuit(prefix,index,field,record[field]);
-      try{
-        const level=document.getElementById(`${prefix}.${index}.level`);
-        if(level&&typeof window.levelChange==="function")window.levelChange(level);
-      }catch{}
-    }
-  }
-
-  async function repairAll(data){
-    await repairNamedSkills("skills3",data.social||{},"社会：");
-    await repairNamedSkills("skills4",data.connection||{},"コネ：");
-    await repairStyleSkills(data.style_skill||{});
-    try{window.sumExp?.()}catch{}
-    document.dispatchEvent(new Event("input",{bubbles:true}));
-    document.dispatchEvent(new Event("change",{bubbles:true}));
-  }
-
-  try{
-    const data=parse(String(window.__TNX_TRANSFER_TSV__||""));
-    for(const delay of [250,700,1400,2800,5200]){
-      await wait(delay);
-      await repairAll(data);
-    }
-  }catch(error){
-    console.error("TNX exact transfer repair failed",error);
-  }
+  window.TNXTransferRepairCommon={FORMAT,wait,frame,clean,truth,parse,records,notify,setById,tableRows,ensureRows,rowIndex,SUITS,setLegacySuit};
+  window.TNXTransferRepairs=window.TNXTransferRepairs||{};
 })();

@@ -53,4 +53,24 @@
 }
 @media (max-width: 620px) {
   body[data-page="sheet.html"] .outfit-fields { grid-template-columns: 1fr; }
+  body[data-page="sheet.html"] #outfit-list,
+  body[data-page="sheet.html"] .outfit-table-group {
+    min-width: 0;
+    max-width: 100%;
+  }
+  body[data-page="sheet.html"] .outfit-table-scroll {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    touch-action: pan-x pan-y;
+  }
+  body[data-page="sheet.html"] .outfit-table {
+    width: 920px;
+    min-width: 920px;
+    max-width: none;
+  }
 }

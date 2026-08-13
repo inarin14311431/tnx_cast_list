@@ -1,4 +1,4 @@
-/* Cast viewer export button interaction.
+/* Cast viewer header button interaction.
  * Loaded after cast.css so hover/focus cannot be overwritten by the
  * header-specific normal-state presentation rules. */
 body[data-page="cast.html"] .cast-header__export-actions :is(
@@ -20,4 +20,16 @@ body[data-page="cast.html"] .cast-header__export-actions :is(
   .transfer-bookmarklet-copy-button
 ):is(:hover, :focus-visible) small {
   color: color-mix(in srgb, var(--color-bg) 72%, transparent);
+}
+
+/* Match the QUICK SHEET interaction while keeping the active theme accent. */
+body[data-page="cast.html"] .cast-header__actions .cast-edit-link:is(:hover, :focus-visible) {
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+  background: var(--color-accent);
+  box-shadow: var(--shadow-glow);
+}
+
+body[data-page="cast.html"] .cast-header__actions .cast-edit-link:is(:hover, :focus-visible) small {
+  color: inherit;
 }

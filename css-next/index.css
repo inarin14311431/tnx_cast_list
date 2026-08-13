@@ -18,6 +18,9 @@
 @import url("./components/dialog.css");
 @import url("./components/status.css");
 @import url("./components/help.css?v=1");
+@import url("./components/global-theme-picker.css?v=1");
+@import url("./components/sheet-snapshots.css?v=1");
+@import url("./components/sheet-import-help.css?v=1");
 @import url("./editor/editor.css?v=25");
 @import url("./editor/sidebar-actions.css?v=2");
 @import url("./editor/skills.css?v=3");
@@ -34,3 +37,4 @@
 @import url("./pages/showcase.css?v=2");
 @import url("./components/armor-totals.css?v=2");
 @import url("./responsive.css?v=7");
+@import url("./tablet.css?v=1");
