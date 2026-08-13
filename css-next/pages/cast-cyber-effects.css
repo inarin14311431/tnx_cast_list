@@ -1,0 +1,32 @@
+/* Decorative cyberpunk effects for the desktop public cast view only. */
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero__image-frame::before,
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero__image-frame::after { position:absolute;z-index:4;width:30px;height:30px;content:"";pointer-events:none;border-color:color-mix(in srgb,var(--color-accent) 82%,transparent);filter:drop-shadow(0 0 5px color-mix(in srgb,var(--color-accent) 35%,transparent)); }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero__image-frame::before { top:8px;left:8px;border-top:2px solid;border-left:2px solid; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero__image-frame::after { right:8px;bottom:38px;border-right:2px solid;border-bottom:2px solid; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero__image-scan { inset:0;z-index:3;overflow:hidden;background:repeating-linear-gradient(180deg,transparent 0 3px,color-mix(in srgb,var(--color-accent) 5%,transparent) 4px 5px);opacity:.68; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero__image-scan::before { position:absolute;right:0;left:0;height:3px;content:"";background:linear-gradient(90deg,transparent 2%,color-mix(in srgb,var(--color-accent) 45%,transparent) 16%,var(--color-accent) 50%,color-mix(in srgb,var(--color-accent) 45%,transparent) 84%,transparent 98%);box-shadow:0 0 7px color-mix(in srgb,var(--color-accent) 65%,transparent),0 0 18px color-mix(in srgb,var(--color-accent) 24%,transparent);animation:castPortraitScan 5.8s cubic-bezier(.42,0,.58,1) infinite; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero__image-scan::after { position:absolute;top:12px;right:12px;padding:4px 6px;content:"IDENTITY VERIFIED  //  LINK: OK";border:1px solid color-mix(in srgb,var(--color-accent) 30%,transparent);color:color-mix(in srgb,var(--color-accent) 82%,var(--color-text));background:color-mix(in srgb,var(--color-bg) 78%,transparent);font:700 8px/1 var(--font-data);letter-spacing:.12em;text-shadow:0 0 6px color-mix(in srgb,var(--color-accent) 35%,transparent);opacity:.72; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero { animation:castHeroAcquire .62s ease-out both; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-name-readings,
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-name-primary,
+body[data-page="cast.html"] #cast-content:not([hidden]) .hero-divine-panel,
+body[data-page="cast.html"] #cast-content:not([hidden]) .identity-grid,
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-summary-panel { animation:castIdentityAcquire .38s ease-out both; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-name-primary { animation-delay:.12s; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .hero-divine-panel { animation-delay:1.25s; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .identity-grid { animation-delay:1.42s; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-summary-panel { animation-delay:1.55s; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-style-card-simple { animation:castStyleVerify .52s ease-out both; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-style-card-simple:nth-child(1) { animation-delay:.38s; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-style-card-simple:nth-child(2) { animation-delay:.68s; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-style-card-simple:nth-child(3) { animation-delay:.98s; }
+body[data-page="cast.html"] .cast-header__public-id { position:relative;overflow:hidden;isolation:isolate; }
+body[data-page="cast.html"] .cast-header__public-id::after { position:absolute;z-index:2;top:-25%;bottom:-25%;left:-18px;width:12px;content:"";pointer-events:none;background:linear-gradient(90deg,transparent,color-mix(in srgb,var(--color-accent) 72%,white),transparent);filter:blur(.3px);opacity:0;box-shadow:0 0 10px color-mix(in srgb,var(--color-accent) 45%,transparent);animation:castIdTrace 5.4s ease-in-out infinite 1.1s; }
+@keyframes castPortraitScan { 0%,15%{top:-4%;opacity:0}20%{opacity:.95}70%{top:94%;opacity:.9}76%,100%{top:104%;opacity:0} }
+@keyframes castHeroAcquire { from{opacity:.42;filter:brightness(1.35) saturate(.75);transform:translateY(5px)} 55%{opacity:1;filter:brightness(1.12) saturate(1.08)} to{opacity:1;filter:none;transform:none} }
+@keyframes castIdentityAcquire { from{opacity:0;transform:translateX(8px);filter:brightness(1.3)} to{opacity:1;transform:none;filter:none} }
+@keyframes castStyleVerify { 0%{opacity:.3;transform:translateY(3px);filter:brightness(.75)} 45%{opacity:1;transform:translateY(0);filter:brightness(2) saturate(1.45);box-shadow:inset 0 0 28px color-mix(in srgb,var(--style-local) 24%,transparent),0 0 24px color-mix(in srgb,var(--style-local) 45%,transparent)} 100%{opacity:1;filter:none} }
+@keyframes castIdTrace { 0%,58%{left:-18px;opacity:0}62%{opacity:1}78%{left:calc(100% + 8px);opacity:1}82%,100%{left:calc(100% + 8px);opacity:0} }
+@media (prefers-reduced-motion: reduce) { body[data-page="cast.html"] #cast-content .cast-hero__image-scan::before,body[data-page="cast.html"] #cast-content .cast-hero,body[data-page="cast.html"] #cast-content .cast-name-readings,body[data-page="cast.html"] #cast-content .cast-name-primary,body[data-page="cast.html"] #cast-content .cast-style-card-simple,body[data-page="cast.html"] #cast-content .hero-divine-panel,body[data-page="cast.html"] #cast-content .identity-grid,body[data-page="cast.html"] #cast-content .cast-summary-panel,body[data-page="cast.html"] .cast-header__public-id::after { animation:none!important; } body[data-page="cast.html"] #cast-content .cast-hero__image-scan::before{top:48%;opacity:.38} }
+@media (max-width:600px) { body[data-page="cast.html"] #cast-content .cast-hero__image-frame::before,body[data-page="cast.html"] #cast-content .cast-hero__image-frame::after,body[data-page="cast.html"] #cast-content .cast-hero__image-scan::before,body[data-page="cast.html"] #cast-content .cast-hero__image-scan::after{display:none} }
+@media print { body[data-page="cast.html"] #cast-content .cast-hero__image-frame::before,body[data-page="cast.html"] #cast-content .cast-hero__image-frame::after,body[data-page="cast.html"] #cast-content .cast-hero__image-scan,body[data-page="cast.html"] .cast-header__public-id::after{display:none!important} }
