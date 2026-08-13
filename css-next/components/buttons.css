@@ -9,14 +9,14 @@ button, .account-actions a, .owned-cast__links a {
   text-decoration: none;
   transition: color var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
 }
-button:hover, .account-actions a:hover, .owned-cast__links a:hover { color: var(--color-bg); border-color: var(--color-accent-strong); background: var(--color-accent); box-shadow: var(--shadow-glow); }
+button:hover, button:focus-visible, .account-actions a:hover, .account-actions a:focus-visible, .owned-cast__links a:hover, .owned-cast__links a:focus-visible { color: var(--color-surface); border-color: var(--color-accent-strong); background: var(--color-accent); box-shadow: var(--shadow-glow); }
 button:active, .account-actions a:active, .owned-cast__links a:active { transform: translateY(1px); }
 button:disabled { opacity: .38; cursor: not-allowed; }
 button small, .account-actions small, .owned-cast__links small { display: block; margin-top: 2px; color: var(--color-muted); font-size: .54rem; }
 button:is(:hover, :focus-visible) small,
 .account-actions a:is(:hover, :focus-visible) small,
 .owned-cast__links a:is(:hover, :focus-visible) small {
-  color: color-mix(in srgb, var(--color-bg) 88%, #000 12%);
+  color: var(--color-surface);
   opacity: .92;
 }
 
@@ -54,15 +54,12 @@ button:is(:hover, :focus-visible) small,
   background: var(--export-accent);
   box-shadow: 0 0 12px var(--export-accent);
 }
-/* Export controls keep their own category color on hover instead of inheriting
- * the generic cyan button hover. This makes the four transfer actions behave
- * consistently while preserving their green / blue / violet / pink identity. */
 .cocofolia-copy-button:is(:hover, :focus-visible),
 .udonarium-export-button:is(:hover, :focus-visible),
 .transfer-tsv-copy-button:is(:hover, :focus-visible),
 .transfer-bookmarklet-copy-button:is(:hover, :focus-visible) {
   border-color: var(--export-accent);
-  color: var(--color-bg);
+  color: var(--color-surface);
   background: var(--export-accent);
   box-shadow: 0 0 16px color-mix(in srgb, var(--export-accent) 58%, transparent);
 }
@@ -70,7 +67,8 @@ button:is(:hover, :focus-visible) small,
 .udonarium-export-button:is(:hover, :focus-visible) small,
 .transfer-tsv-copy-button:is(:hover, :focus-visible) small,
 .transfer-bookmarklet-copy-button:is(:hover, :focus-visible) small {
-  color: color-mix(in srgb, var(--color-bg) 72%, transparent);
+  color: var(--color-surface);
+  opacity: .86;
 }
 .cocofolia-copy-button[data-copy-state="copying"],
 .transfer-tsv-copy-button[data-copy-state="copying"],

@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
   <script src="./js/css-next-theme.js"></script>
-  <link rel="stylesheet" href="./css-next/index.css?v=25" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/index.css?v=26" data-css-system="next">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ログイン // N◎VA CAST ARCHIVE</title>
@@ -28,6 +28,7 @@
           <label><span>パスワード <small>PASSWORD</small></span><input id="login-password" name="password" type="password" autocomplete="current-password" minlength="8" required></label>
           <button type="submit"><span>接続を開始</span><small>ESTABLISH CONNECTION</small></button>
         </form>
+        <button id="forgot-password-button" class="auth-text-button" type="button">パスワードを忘れた場合 <small>PASSWORD RECOVERY</small></button>
       </section>
       <section class="auth-panel" data-auth-panel="signup">
         <h2>新規登録 <small>NEW IDENTITY REGISTRATION</small></h2>
@@ -39,9 +40,18 @@
           <button type="submit"><span>アカウントを登録</span><small>REGISTER IDENTITY</small></button>
         </form>
       </section>
+      <section class="auth-panel" data-auth-panel="recovery">
+        <h2>認証情報の再発行 <small>PASSWORD RECOVERY</small></h2>
+        <p class="auth-panel__lead">登録したメールアドレスを入力してください。パスワード再設定用のリンクを送信します。</p>
+        <form id="recovery-form" class="auth-form">
+          <label><span>メールアドレス <small>EMAIL ADDRESS</small></span><input id="recovery-email" name="email" type="email" autocomplete="email" placeholder="operator@example.com" required></label>
+          <button type="submit"><span>再設定メールを送信</span><small>SEND RECOVERY LINK</small></button>
+        </form>
+        <button id="recovery-back-button" class="auth-text-button" type="button">&lt; ログインへ戻る <small>RETURN TO LOGIN</small></button>
+      </section>
       <div id="auth-message" class="auth-message" aria-live="polite"></div>
     </section>
   </main>
-  <script type="module" src="./js/login.js?v=32"></script>
+  <script type="module" src="./js/login.js?v=33"></script>
 </body>
 </html>

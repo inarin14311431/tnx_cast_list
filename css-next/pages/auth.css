@@ -18,4 +18,9 @@ body > .auth-header { padding-top: 30px; }
 .auth-form label > span { color: var(--color-text); font-size: .78rem; font-weight: 800; }
 .auth-form label small { color: var(--color-muted); font-size: .54rem; }
 .auth-form button { min-height: 54px; margin-top: 8px; font-weight: 800; }
+.auth-text-button { display: block; width: 100%; margin-top: 18px; padding: 10px 4px; border: 0; color: var(--color-muted); background: transparent; font-size: .72rem; text-align: center; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.auth-text-button:is(:hover, :focus-visible) { color: var(--color-accent); background: var(--color-accent-soft); box-shadow: none; }
+.auth-text-button small { margin-left: 6px; font-size: .5rem; letter-spacing: .08em; }
+.auth-text-button:is(:hover, :focus-visible) small { color: var(--color-accent); opacity: .8; }
+.auth-text-button:disabled { opacity: .5; cursor: default; }
 .auth-message { min-height: 1.5em; padding: 0 32px 24px; font-size: .8rem; }
