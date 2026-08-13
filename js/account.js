@@ -17,6 +17,7 @@ let ownedCharacters = [];
 initializeAccount();
 
 async function initializeAccount() {
+  clearOwnedCastSearch();
   currentUser = await requireAuth();
   if (!currentUser) return;
   document.querySelector("#account-email").textContent = currentUser.email ?? "UNKNOWN OPERATOR";
@@ -24,7 +25,17 @@ async function initializeAccount() {
   document.querySelector("#account-last-sign-in").textContent = formatDate(currentUser.last_sign_in_at);
   document.querySelector("#logout-button").addEventListener("click", signOut);
   setupOwnedCastControls();
+  clearOwnedCastSearch();
   await loadOwnedCharacters();
+}
+
+function clearOwnedCastSearch() {
+  if (!ownedCastSearch) return;
+  const clear = () => { ownedCastSearch.value = ""; };
+  clear();
+  requestAnimationFrame(clear);
+  window.setTimeout(clear, 120);
+  window.setTimeout(clear, 500);
 }
 
 function setupOwnedCastControls() {
