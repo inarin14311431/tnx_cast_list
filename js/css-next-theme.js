@@ -1,4 +1,4 @@
-/* Shared theme controller. Applies and persists the selected theme on every screen. */
+/* Shared theme controller. Applies the theme on every screen; theme selection UI exists only on index.html. */
 (() => {
   const STORAGE_KEY = "tnx-cast-site-theme";
   const THEMES = new Set([
@@ -13,6 +13,10 @@
     ["fesler", "フェスラー公国"], ["intron", "イントロン"], ["axleraters", "ニューロ！"],
     ["inagaki", "稲垣 光平"], ["astral", "アストラル"], ["orbital", "軌道"], ["japanese-army", "日本"]
   ];
+
+  function isIndexPage() {
+    return document.body?.dataset.page === "index.html";
+  }
 
   function ensureThemeOptions(select) {
     const current = select.value;
@@ -34,25 +38,13 @@
     const overlay = document.createElement("section");
     overlay.className = "japanese-army-overlay";
     overlay.setAttribute("data-japanese-army-overlay", "1");
-    overlay.innerHTML = `<label class="japanese-army-theme-picker"><span>表示テーマ <small>COLOR THEME</small></span><select data-theme-select aria-label="表示テーマ"></select></label><div class="japanese-army-warning" role="alert"><p class="japanese-army-seal">日本国電脳鎖国結界</p><div class="japanese-army-error">不法接続</div><p class="japanese-army-declaration">国外網からの未承認アクセスを検知</p><p class="japanese-army-order">本接続は国家防衛規定に基づき強制遮断された。<br>直ちに回線を切断せよ。再接続を厳禁する。</p></div><p class="japanese-army-error-code">NATIONAL BORDER FIREWALL // ACCESS VIOLATION RECORDED</p>`;
+    const picker = isIndexPage()
+      ? `<label class="japanese-army-theme-picker"><span>表示テーマ <small>COLOR THEME</small></span><select data-theme-select aria-label="表示テーマ"></select></label>`
+      : "";
+    overlay.innerHTML = `${picker}<div class="japanese-army-warning" role="alert"><p class="japanese-army-seal">日本国電脳鎖国結界</p><div class="japanese-army-error">不法接続</div><p class="japanese-army-declaration">国外網からの未承認アクセスを検知</p><p class="japanese-army-order">本接続は国家防衛規定に基づき強制遮断された。<br>直ちに回線を切断せよ。再接続を厳禁する。</p></div><p class="japanese-army-error-code">NATIONAL BORDER FIREWALL // ACCESS VIOLATION RECORDED</p>`;
     document.body.append(overlay);
-    ensureThemeOptions(overlay.querySelector("[data-theme-select]"));
-  }
-
-  function findThemePickerHost() {
-    return document.querySelector('.app-header, .showcase-header, .site-header, .auth-header');
-  }
-
-  function ensureGlobalThemePicker() {
-    if (!document.body || document.body.dataset.page === "index.html" || document.querySelector("[data-global-theme-picker]")) return;
-    const host = findThemePickerHost();
-    if (!host) return;
-    const label = document.createElement("label");
-    label.className = "global-theme-picker";
-    label.setAttribute("data-global-theme-picker", "1");
-    label.innerHTML = `<span>テーマ</span><select data-theme-select aria-label="表示テーマ"></select>`;
-    host.append(label);
-    ensureThemeOptions(label.querySelector("[data-theme-select]"));
+    const select = overlay.querySelector("[data-theme-select]");
+    if (select) ensureThemeOptions(select);
   }
 
   function applyTheme(theme, persist = false) {
@@ -69,9 +61,12 @@
   applyTheme(readTheme());
   const bind = () => {
     document.documentElement.dataset.cssSystem = "next";
-    ensureGlobalThemePicker();
     ensureJapaneseArmyOverlay();
     document.querySelectorAll("[data-theme-select]").forEach(select => {
+      if (!isIndexPage()) {
+        select.closest(".global-theme-picker, .japanese-army-theme-picker")?.remove();
+        return;
+      }
       ensureThemeOptions(select);
       if (select.dataset.themeBound === "1") return;
       select.dataset.themeBound = "1";
