@@ -65,6 +65,21 @@
     row.dataset.fullStyleFields="1";
   }
 
+  function syncRowFromOriginal(row){
+    if(!row||row.dataset.fullStyleFields!=="1")return false;
+    const original=row.querySelector('textarea[data-f="description"]');
+    if(!original)return false;
+    const data=parse(original.value);
+    let synced=false;
+    row.querySelectorAll("[data-style-field]").forEach(control=>{
+      const key=control.dataset.styleField;
+      const next=String(data[key]??"");
+      if(control.value!==next)control.value=next;
+      synced=true;
+    });
+    return synced;
+  }
+
   function rebuildRow(row){
     ensureKindOptions(row);
     if(row.dataset.fullStyleFields==="1")return;
@@ -124,6 +139,16 @@
     table.querySelectorAll("tbody tr[data-skill-key]").forEach(rebuildRow);
   }
 
+  function syncAll(){
+    const root=document.querySelector("#style-skills");
+    if(!root)return 0;
+    let count=0;
+    root.querySelectorAll('tbody tr[data-skill-key][data-full-style-fields="1"]').forEach(row=>{
+      if(syncRowFromOriginal(row))count++;
+    });
+    return count;
+  }
+
   function initialize(){
     const root=document.querySelector("#style-skills");
     if(!root){setTimeout(initialize,100);return;}
@@ -134,8 +159,15 @@
       requestAnimationFrame(()=>{queued=false;enhance();});
     };
     new MutationObserver(queue).observe(root,{childList:true,subtree:true});
+    root.addEventListener("input",event=>{
+      const original=event.target.closest?.('textarea[data-f="description"]');
+      if(!original||!root.contains(original))return;
+      syncRowFromOriginal(original.closest('tr[data-skill-key]'));
+    },true);
     queue();
   }
+
+  window.TNXStyleSkillFields={enhance,syncAll,syncRow:syncRowFromOriginal};
 
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initialize,{once:true});
   else initialize();
