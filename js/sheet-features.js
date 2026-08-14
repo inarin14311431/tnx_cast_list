@@ -1,4 +1,4 @@
-import "./help-ui.js";
+import "./help-ui.js?v=4";
 
 /* Sheet editor helper features.
  * Keeps only presentation helpers. DB persistence is handled by sheet.js,
@@ -10,6 +10,15 @@ initialize();
 function initialize(){
   initializeSaveButtonState();
   initializeArmorOutfitColumns();
+  ensureGlobalHelpAvailable();
+}
+
+function ensureGlobalHelpAvailable(){
+  if(document.body?.dataset.page!=="sheet.html")return;
+  window.setTimeout(()=>{
+    if(document.querySelector("#sheet-global-help"))return;
+    import("./help-ui.js?v=4&retry=1").catch(error=>console.error("Help UI bootstrap failed",error));
+  },250);
 }
 
 function initializeSaveButtonState(){
