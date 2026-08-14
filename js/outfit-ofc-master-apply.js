@@ -42,9 +42,14 @@ async function applyMasterRowsAfterBaseAdd(ids, before) {
 
 function applyDetailsToRow(row, details) {
   for (const [field, value] of Object.entries(details)) {
-    const input = row.querySelector(`[data-ofc="${cssEscape(field)}"]`);
+    let input = row.querySelector(`[data-ofc="${cssEscape(field)}"]`);
+    // Armor already has a native control field (control_modifier). OFC calls
+    // the same value control_value, so bridge it instead of dropping the value.
+    if (!input && field === "control_value") {
+      input = row.querySelector('[data-o="control_modifier"]');
+    }
     if (!input) continue;
-    input.value = String(value || "");
+    input.value = String(value ?? "");
     input.dispatchEvent(new Event("input", { bubbles: true }));
     input.dispatchEvent(new Event("change", { bubbles: true }));
   }

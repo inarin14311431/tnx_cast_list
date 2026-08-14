@@ -21,7 +21,7 @@
 
   const SCHEMAS={
     weapon:['category','name','purchase_value','experience_cost','concealment','attack','range','slot','description','actions'],
-    armor:['category','name','purchase_value','experience_cost','concealment','defense_s','defense_i','defense_p','slot','description','actions'],
+    armor:['category','name','purchase_value','experience_cost','concealment','defense_s','defense_i','defense_p','slot','control_modifier','description','actions'],
     cyberware:['category','name','purchase_value','experience_cost','concealment','slot','control_modifier','cs_modifier','mundane_modifier','description','actions'],
     tron:['category','name','purchase_value','experience_cost','concealment','slot','control_modifier','cs_modifier','mundane_modifier','description','actions'],
     vehicle:['category','name','purchase_value','experience_cost','attack','defense','control_modifier','cs_modifier','description','actions'],
@@ -185,7 +185,7 @@
       cell.className=`armor-defense-total armor-defense-total--${key}`;
       cell.dataset.armorTotal=key; cell.textContent='0'; row.append(cell);
     }
-    const tail=document.createElement('td'); tail.colSpan=3; row.append(tail);
+    const tail=document.createElement('td'); tail.colSpan=4; row.append(tail);
     tfoot.append(row); return tfoot;
   }
 

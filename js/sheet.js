@@ -660,7 +660,7 @@ function outfitFields(outfit) {
     return common + `<label>隠匿<input data-o="concealment" value="${esc(outfit.concealment)}"></label><label>攻撃<input data-o="attack" value="${esc(outfit.attack)}"></label><label>射程<input data-o="range" value="${esc(outfit.range)}"></label><label>部位<input data-o="slot" value="${esc(outfit.slot)}"></label>` + description;
   }
   if (outfit.category === "armor") {
-    return common + `<label>隠匿<input data-o="concealment" value="${esc(outfit.concealment)}"></label><label>防御<input data-o="defense" value="${esc(outfit.defense)}"></label><label>部位<input data-o="slot" value="${esc(outfit.slot)}"></label>` + description;
+    return common + `<label>隠匿<input data-o="concealment" value="${esc(outfit.concealment)}"></label><label>防御<input data-o="defense" value="${esc(outfit.defense)}"></label><label>部位<input data-o="slot" value="${esc(outfit.slot)}"></label><label>制御<input data-o="control_modifier" type="number" value="${outfit.control_modifier}"></label>` + description;
   }
   if (outfit.category === "vehicle") {
     return common + `<label>攻撃<input data-o="attack" value="${esc(outfit.attack)}"></label><label>防御<input data-o="defense" value="${esc(outfit.defense)}"></label><label>制御<input data-o="control_modifier" type="number" value="${outfit.control_modifier}"></label><label>CS<input data-o="cs_modifier" type="number" value="${outfit.cs_modifier}"></label>` + description;

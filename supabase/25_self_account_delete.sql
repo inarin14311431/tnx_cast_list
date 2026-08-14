@@ -15,9 +15,17 @@ begin
 
   select count(*) into v_character_count from public.characters where owner_id = p_user_id;
 
+  -- Character-owned tables use ON DELETE CASCADE (skills, outfits, combos,
+  -- snapshots, experience spending and act participants). Delete the root rows
+  -- so the database remains the source of truth for dependency cleanup.
   delete from public.characters where owner_id = p_user_id;
+
+  -- Remove account-scoped permissions explicitly as well as via auth cascade.
   delete from public.master_search_users where user_id = p_user_id;
 
+  -- Acts published by this user may contain legacy participant rows owned by
+  -- somebody else. Preserve those rows, but remove the deleted user's public
+  -- showcase and publisher identity. Acts with no participants can disappear.
   with deleted as (
     delete from public.acts a
     where a.published_by = p_user_id

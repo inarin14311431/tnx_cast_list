@@ -7,6 +7,7 @@ initialize();
 
 function initialize(){
   initializeSaveButtonState();
+  initializeArmorOutfitColumns();
 }
 
 function initializeSaveButtonState(){
@@ -48,4 +49,59 @@ function initializeSaveButtonState(){
     characterData:true
   });
   sync();
+}
+
+function initializeArmorOutfitColumns(){
+  const root=document.querySelector("#outfit-list");
+  if(!root)return;
+
+  const order=[
+    "category","name","purchase_value","experience_cost","concealment",
+    "defense_s","defense_i","defense_p","control_modifier",
+    "electronic_control","slot","description","page_number","actions"
+  ];
+  const allowedOFC=new Set(["electronic_control","page_number"]);
+  let queued=false;
+
+  const selectorFor=(kind,key)=>{
+    if(key==="electronic_control"||key==="page_number"){
+      return kind==="head"?`[data-ofc-head="${key}"]`:`[data-ofc-cell="${key}"]`;
+    }
+    return kind==="head"?`.outfit-table-head--${key}`:`.outfit-table-cell--${key}`;
+  };
+
+  const arrange=()=>{
+    queued=false;
+    root.querySelectorAll('table[data-outfit-schema="armor"]').forEach(table=>{
+      const head=table.querySelector("thead tr");
+      if(head){
+        head.querySelectorAll("[data-ofc-head]").forEach(cell=>{
+          cell.hidden=!allowedOFC.has(cell.dataset.ofcHead||"");
+        });
+        const slotHead=head.querySelector(".outfit-table-head--slot");
+        if(slotHead)slotHead.textContent="部位";
+        const desired=order.map(key=>head.querySelector(selectorFor("head",key))).filter(Boolean);
+        const current=[...head.children].filter(cell=>!cell.hidden);
+        if(desired.some((cell,index)=>current[index]!==cell))desired.forEach(cell=>head.append(cell));
+      }
+
+      table.querySelectorAll("tbody .outfit-table-row").forEach(row=>{
+        row.querySelectorAll("[data-ofc-cell]").forEach(cell=>{
+          cell.hidden=!allowedOFC.has(cell.dataset.ofcCell||"");
+        });
+        const desired=order.map(key=>row.querySelector(selectorFor("cell",key))).filter(Boolean);
+        const current=[...row.children].filter(cell=>!cell.hidden);
+        if(desired.some((cell,index)=>current[index]!==cell))desired.forEach(cell=>row.append(cell));
+      });
+    });
+  };
+
+  const queue=()=>{
+    if(queued)return;
+    queued=true;
+    requestAnimationFrame(arrange);
+  };
+
+  new MutationObserver(queue).observe(root,{childList:true,subtree:true});
+  queue();
 }

@@ -1,0 +1,11 @@
+body[data-page="account.html"] .account-data > div {
+  grid-template-columns: 190px minmax(0, 1fr);
+}
+body[data-page="account.html"] .account-data dt {
+  white-space: nowrap;
+}
+@media (max-width: 767px) {
+  body[data-page="account.html"] .account-data > div {
+    grid-template-columns: 1fr;
+  }
+}

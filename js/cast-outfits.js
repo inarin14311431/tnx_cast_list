@@ -99,7 +99,9 @@ function normalizedItem(category, item) {
     parry: details.parry,
     speed: details.speed,
     electronic_control: details.electronic_control,
-    control_value: details.control_value,
+    // Armor's editor uses control_modifier while OFC stores the same value as
+    // control_value. Prefer the OFC detail, but fall back to the normal field.
+    control_value: details.control_value || item.control_modifier || "",
     defense_s: details.defense_s || defense.s,
     defense_i: details.defense_i || defense.i,
     defense_p: details.defense_p || defense.p,

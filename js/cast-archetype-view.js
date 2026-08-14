@@ -35,13 +35,7 @@
     if (value.includes("●")) return "is-key";
     return "is-standard";
   }
-  function roleFor(mark) {
-    const value = String(mark || "").trim();
-    if (value.includes("◎") && value.includes("●")) return "PERSONA=KEY";
-    if (value.includes("◎")) return "PERSONA";
-    if (value.includes("●")) return "KEY";
-    return "SHADOW";
-  }
+
   function enhanceStyles() {
     const styles = document.querySelector("#cast-styles");
     const chips = [...document.querySelectorAll("#cast-styles .style-chip")];
@@ -57,18 +51,45 @@
       styles.before(heading);
     }
     heading.classList.add("cast-unified-heading");
-    chips.forEach((chip, index) => {
-      chip.querySelectorAll(".cast-archetype-card__scan,.cast-archetype-card__role").forEach(element => element.remove());
-      chip.classList.remove("cast-archetype-card", "is-persona", "is-key", "is-dual", "is-standard");
+
+    const entries = chips.map(chip => {
+      const name = chip.querySelector(".style-chip__name")?.textContent.trim() || "";
       const markElement = chip.querySelector(".style-chip__mark");
       const mark = markElement?.getAttribute("aria-label") || markElement?.textContent || "";
+      return { chip, name, mark };
+    });
+
+    const personaNames = new Set(entries.filter(({ mark }) => String(mark).includes("◎")).map(({ name }) => name).filter(Boolean));
+    const keyNames = new Set(entries.filter(({ mark }) => String(mark).includes("●")).map(({ name }) => name).filter(Boolean));
+    const shownShadowNames = new Set();
+
+    const roleForCard = (name, mark) => {
+      const value = String(mark || "").trim();
+      const hasPersona = value.includes("◎");
+      const hasKey = value.includes("●");
+      if (hasPersona && hasKey) return "PERSONA=KEY";
+      if (hasPersona) return "PERSONA";
+      if (hasKey) return "KEY";
+      if (!personaNames.has(name) && !keyNames.has(name) && !shownShadowNames.has(name)) {
+        shownShadowNames.add(name);
+        return "SHADOW";
+      }
+      return "";
+    };
+
+    entries.forEach(({ chip, name, mark }, index) => {
+      chip.querySelectorAll(".cast-archetype-card__scan,.cast-archetype-card__role").forEach(element => element.remove());
+      chip.classList.remove("cast-archetype-card", "is-persona", "is-key", "is-dual", "is-standard");
       chip.classList.add("cast-style-card-simple", stateFor(mark));
-      chip.dataset.styleRole = roleFor(mark);
+      const role = roleForCard(name, mark);
+      if (role) chip.dataset.styleRole = role;
+      else delete chip.dataset.styleRole;
       chip.dataset.castStyleSlot = String(index + 1).padStart(2, "0");
       delete chip.dataset.archetypeCode;
       delete chip.dataset.archetypeEnhanced;
     });
   }
+
   function enhanceDivines() {
     const panel = document.querySelector(".hero-divine-panel");
     const cards = [...document.querySelectorAll("#divine-list .divine-card")];
@@ -101,6 +122,7 @@
       yomi.hidden = !yomi.textContent;
     });
   }
+
   function enhanceStyleSkillPanel() {
     const panel = document.querySelector("#style-skill-panel");
     const table = panel?.querySelector(".style-skill-view-table");

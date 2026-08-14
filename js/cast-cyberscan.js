@@ -1,5 +1,10 @@
 /* Network scan sequence and ambient data stream for the public cast view. */
 (function(){
+  // Playwright visual tests need a stable DOM. The scan sequence mutates the
+  // overlay with timers even after CSS animations are disabled, so skip the
+  // presentation-only effect for automated browsers while keeping production
+  // behavior unchanged.
+  if(navigator.webdriver===true)return;
   if(window.matchMedia?.('(max-width: 600px)').matches===true)return;
   document.body.classList.add('cast-scan-mode');
   const publicId=new URLSearchParams(location.search).get('id')?.trim()||'UNKNOWN';

@@ -1,7 +1,7 @@
 @media (max-width: 1199px) {
-  :where(.archive-controls) { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-  :where(.archive-control--search) { grid-column: 1 / -1; }
-  :where(#archive-reset) { width: 100%; }
+  .archive-controls { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .archive-control--search { grid-column: 1 / -1; }
+  #archive-reset { width: 100%; }
   :where(.owned-cast__links) { grid-template-columns: repeat(3, 1fr); }
 }
 @media (max-width: 767px) {
@@ -9,8 +9,42 @@
   :where(.site-header__top, .auth-header h1) { flex-direction: column; }
   :where(.site-title) { font-size: clamp(2.2rem, 10vw, 3.2rem); }
   :where(.site-header__operator, .theme-picker) { width: 100%; justify-items: stretch; }
-  :where(.archive-controls) { grid-template-columns: 1fr; }
-  body :where(.archive-control--search) { grid-column: auto; }
+
+  /* Archive filters: explicit selectors are required here because the
+     desktop .archive-controls rule has class specificity. */
+  body[data-page="index.html"] .archive-controls {
+    box-sizing: border-box;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: calc(100% - 20px);
+    margin-top: 16px;
+    padding: 12px;
+  }
+  body[data-page="index.html"] .archive-control--search { grid-column: 1 / -1; }
+  body[data-page="index.html"] .archive-control { min-width: 0; }
+  body[data-page="index.html"] .archive-control :is(input, select) {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+  }
+  body[data-page="index.html"] #archive-reset {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 44px;
+  }
+  body[data-page="index.html"] .archive-summary,
+  body[data-page="index.html"] .cast-grid,
+  body[data-page="index.html"] .archive-pagination {
+    width: calc(100% - 20px);
+  }
+  body[data-page="index.html"] .cast-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+  body[data-page="index.html"] .cast-card { width: 100%; min-width: 0; }
+  body[data-page="index.html"] .archive-pagination { flex-wrap: wrap; }
+
   :where(.account-data, .account-actions, .owned-cast) { grid-template-columns: 1fr; }
   body :where(.owned-cast__links) { grid-template-columns: repeat(2, 1fr); }
   :where(.auth-panel) { padding: 24px 18px; }
