@@ -1,3 +1,4 @@
+import { supabase } from "./supabase-client.js";
 import { getCharacter } from "./cast-data-store.js";
 
 /* Public cast-view shared UI only.
@@ -49,10 +50,38 @@ function initializeReturnLink() {
   } catch {}
 }
 
-function initializeEditLinkAndLabels() {
+async function initializeOwnedEditLink() {
   const publicId = new URLSearchParams(location.search).get("id")?.trim() || "";
   const editLink = document.querySelector("#cast-edit-button");
-  if (editLink && publicId) { editLink.href = `./sheet.html?id=${encodeURIComponent(publicId)}`; editLink.hidden = false; }
+  if (!editLink) return;
+
+  editLink.hidden = true;
+  editLink.removeAttribute("href");
+  editLink.setAttribute("aria-hidden", "true");
+
+  if (!publicId) return;
+
+  try {
+    const [{ data: authData, error: authError }, character] = await Promise.all([
+      supabase.auth.getUser(),
+      getCharacter()
+    ]);
+    if (authError) throw authError;
+
+    const user = authData?.user ?? null;
+    const ownsCharacter = Boolean(user?.id && character?.owner_id && user.id === character.owner_id);
+    if (!ownsCharacter) return;
+
+    editLink.href = `./sheet.html?id=${encodeURIComponent(publicId)}`;
+    editLink.hidden = false;
+    editLink.removeAttribute("aria-hidden");
+  } catch (error) {
+    console.warn("cast edit access could not be verified", error);
+  }
+}
+
+function initializeEditLinkAndLabels() {
+  initializeOwnedEditLink();
   const setJapanese = (element, text) => { if (element) element.replaceChildren(document.createTextNode(text)); };
   const setBilingual = (element, jp, en) => {
     if (!element) return;
