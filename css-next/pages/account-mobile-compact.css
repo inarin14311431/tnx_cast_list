@@ -1,0 +1,67 @@
+@media (max-width: 767px) {
+  body[data-page="account.html"] .owned-cast {
+    gap: 10px;
+  }
+
+  body[data-page="account.html"] .owned-cast__identity {
+    flex: 0 0 auto;
+    width: 100%;
+    padding-right: 0;
+  }
+
+  body[data-page="account.html"] .owned-cast__styles {
+    width: 100%;
+    max-width: none;
+    margin-top: 8px;
+  }
+
+  body[data-page="account.html"] .owned-cast__meta {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: none;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 8px;
+  }
+
+  body[data-page="account.html"] .owned-cast__status-row {
+    min-height: 0;
+    justify-content: flex-start;
+    flex-wrap: nowrap;
+    gap: 8px;
+  }
+
+  body[data-page="account.html"] .owned-cast__visibility {
+    font-size: .76rem;
+  }
+
+  body[data-page="account.html"] .owned-cast__serial {
+    padding: 5px 8px 4px;
+    font-size: .64rem;
+  }
+
+  body[data-page="account.html"] .owned-cast__links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin-top: 0;
+  }
+
+  body[data-page="account.html"] .owned-cast__links :where(a, button) {
+    min-height: 44px;
+    gap: 2px;
+    padding: 6px 4px;
+  }
+
+  body[data-page="account.html"] .owned-cast__links .action-label__jp {
+    font-size: .86rem;
+  }
+
+  body[data-page="account.html"] .owned-cast__links .action-label__en {
+    font-size: .58rem;
+  }
+
+  body[data-page="account.html"] .owned-cast__management {
+    margin-top: 0;
+    padding-top: 6px;
+  }
+}
