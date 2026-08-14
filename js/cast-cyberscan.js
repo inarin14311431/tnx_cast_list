@@ -55,7 +55,7 @@
     ? [['LINK','既存認証経路を再接続'],['VERIFY','キャッシュ済み認証を確認']]
     : [['ROUTE','都市ネットへ接続'],['TRACE','対象IDを追跡'],['AUTH','アクセス権限を照合'],['SCAN','身体・経歴・技能データを抽出'],['VERIFY','データ整合性を確認']];
   const startedAt=performance.now();
-  const minimumDisplayMs=fastScan?520:2100;
+  const minimumDisplayMs=fastScan?520:3600;
   let progress=0,line=0,resolved=false;
 
   function addLog(label,text,ok=false){const p=document.createElement('p');p.className=ok?'ok':'';p.innerHTML=`<strong>${escapeHtml(label)}</strong> // ${escapeHtml(text)}`;log.append(p);}
@@ -63,17 +63,23 @@
     if(resolved)return;resolved=true;progress=100;bar.style.width='100%';addLog(success?'ACCESS GRANTED':'DENIED',success?(fastScan?'認証済みデータへ接続':'パーソナルデータ取得完了'):'対象データの取得に失敗',success);
     if(success){try{sessionStorage.setItem(scanSessionKey,String(Date.now()));}catch{}}
     const remain=Math.max(0,minimumDisplayMs-(performance.now()-startedAt));
-    window.setTimeout(()=>{overlay.classList.add('is-complete');window.setTimeout(()=>overlay.remove(),fastScan?260:620);},remain+(fastScan?80:220));
+    window.setTimeout(()=>{
+      overlay.classList.add('is-complete');
+      window.setTimeout(()=>{
+        overlay.remove();
+        window.dispatchEvent(new CustomEvent('tnx:cast-scan-complete',{detail:{success,fastScan}}));
+      },fastScan?260:620);
+    },remain+(fastScan?80:420));
   }
   addLog('LINK',fastScan?'既存の認証経路を呼び出し中…':'暗号化経路を確立中…');
   const timer=setInterval(()=>{
     const content=document.querySelector('#cast-content'),error=document.querySelector('#cast-error');
     const dataReady=content&&!content.hidden,failed=error&&!error.hidden,cap=(dataReady||failed)?100:90;
-    const factor=fastScan?.42:.15;
+    const factor=fastScan?.42:.10;
     progress=Math.min(cap,progress+Math.max(fastScan?12:2,Math.round((cap-progress)*factor)));bar.style.width=`${progress}%`;
-    const threshold=fastScan?[34,72]:[18,36,56,76,91];while(line<entries.length&&progress>=threshold[line]){addLog(entries[line][0],entries[line][1],line<1);line++;}
+    const threshold=fastScan?[34,72]:[14,32,50,70,88];while(line<entries.length&&progress>=threshold[line]){addLog(entries[line][0],entries[line][1],line<1);line++;}
     if(failed){clearInterval(timer);finish(false);return;}if(dataReady&&progress>=96){clearInterval(timer);finish(true);}
-  },fastScan?45:110);
-  window.setTimeout(()=>{if(resolved)return;const content=document.querySelector('#cast-content'),error=document.querySelector('#cast-error');if(content&&!content.hidden){clearInterval(timer);finish(true);}else if(error&&!error.hidden){clearInterval(timer);finish(false);}},fastScan?1000:3600);
+  },fastScan?45:130);
+  window.setTimeout(()=>{if(resolved)return;const content=document.querySelector('#cast-content'),error=document.querySelector('#cast-error');if(content&&!content.hidden){clearInterval(timer);finish(true);}else if(error&&!error.hidden){clearInterval(timer);finish(false);}},fastScan?1000:4600);
   function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));}
 })();
