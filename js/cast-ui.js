@@ -55,7 +55,10 @@ async function initializeOwnedEditLink() {
   const editLink = document.querySelector("#cast-edit-button");
   if (!editLink) return;
 
+  // .cast-edit-link has display:grid in cast.css, which overrides the browser's
+  // default [hidden] rule. Hide it explicitly until ownership is verified.
   editLink.hidden = true;
+  editLink.style.display = "none";
   editLink.removeAttribute("href");
   editLink.setAttribute("aria-hidden", "true");
 
@@ -74,6 +77,7 @@ async function initializeOwnedEditLink() {
 
     editLink.href = `./sheet.html?id=${encodeURIComponent(publicId)}`;
     editLink.hidden = false;
+    editLink.style.removeProperty("display");
     editLink.removeAttribute("aria-hidden");
   } catch (error) {
     console.warn("cast edit access could not be verified", error);
