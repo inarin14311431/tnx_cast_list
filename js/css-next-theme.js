@@ -18,6 +18,102 @@
     return document.body?.dataset.page === "index.html";
   }
 
+  function ensureStyleMarkStyles() {
+    if (document.querySelector("style[data-style-mark-normalizer]")) return;
+    const style = document.createElement("style");
+    style.dataset.styleMarkNormalizer = "1";
+    style.textContent = `
+      .tnx-style-marks {
+        display: inline-flex;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
+        gap: 2px;
+        min-height: 10px;
+        color: var(--style-color, currentColor);
+        line-height: 0;
+      }
+      .tnx-style-mark {
+        position: relative;
+        display: inline-block;
+        box-sizing: border-box;
+        width: 10px;
+        height: 10px;
+        flex: 0 0 10px;
+        border-radius: 50%;
+        color: inherit;
+        vertical-align: middle;
+      }
+      .tnx-style-mark--persona {
+        border: 1.5px solid currentColor;
+        background: transparent;
+      }
+      .tnx-style-mark--persona::after {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        box-sizing: border-box;
+        width: 4px;
+        height: 4px;
+        border: 1px solid currentColor;
+        border-radius: 50%;
+        content: "";
+        transform: translate(-50%, -50%);
+      }
+      .tnx-style-mark--key {
+        border: 1px solid currentColor;
+        background: currentColor;
+      }
+      .cast-card__style-chip .tnx-style-marks,
+      .owned-cast__style .tnx-style-marks {
+        text-shadow: none;
+      }
+    `;
+    document.head.append(style);
+  }
+
+  function createStyleMarks(mark) {
+    const value = String(mark || "").trim();
+    if (!value || !/[◎●]/.test(value)) return null;
+    const wrapper = document.createElement("span");
+    wrapper.className = "tnx-style-marks";
+    wrapper.setAttribute("role", "img");
+    wrapper.setAttribute("aria-label", value);
+    for (const char of value) {
+      if (char !== "◎" && char !== "●") continue;
+      const dot = document.createElement("span");
+      dot.className = `tnx-style-mark ${char === "◎" ? "tnx-style-mark--persona" : "tnx-style-mark--key"}`;
+      dot.setAttribute("aria-hidden", "true");
+      wrapper.append(dot);
+    }
+    return wrapper;
+  }
+
+  function normalizeStyleMarks(root = document) {
+    ensureStyleMarkStyles();
+    const nodes = [];
+    if (root instanceof Element && root.matches(".cast-card__style-chip b, .owned-cast__style b")) nodes.push(root);
+    if (root.querySelectorAll) nodes.push(...root.querySelectorAll(".cast-card__style-chip b, .owned-cast__style b"));
+    nodes.forEach(node => {
+      if (node.dataset.styleMarkNormalized === "1") return;
+      const marks = createStyleMarks(node.textContent);
+      if (!marks) return;
+      node.dataset.styleMarkNormalized = "1";
+      node.replaceChildren(marks);
+    });
+  }
+
+  function observeStyleMarks() {
+    if (!document.body) return;
+    normalizeStyleMarks(document);
+    const observer = new MutationObserver(records => {
+      records.forEach(record => record.addedNodes.forEach(node => {
+        if (node.nodeType === Node.ELEMENT_NODE) normalizeStyleMarks(node);
+      }));
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  }
+
   function ensureThemeOptions(select) {
     const current = select.value;
     THEME_OPTIONS.forEach(([value, label]) => {
@@ -62,6 +158,7 @@
   const bind = () => {
     document.documentElement.dataset.cssSystem = "next";
     ensureJapaneseArmyOverlay();
+    observeStyleMarks();
     document.querySelectorAll("[data-theme-select]").forEach(select => {
       if (!isIndexPage()) {
         select.closest(".global-theme-picker, .japanese-army-theme-picker")?.remove();
