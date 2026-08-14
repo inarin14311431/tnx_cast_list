@@ -1,3 +1,5 @@
+import "./help-ui.js";
+
 /* Sheet editor helper features.
  * Keeps only presentation helpers. DB persistence is handled by sheet.js,
  * and experience calculation is handled by experience.js.
