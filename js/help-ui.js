@@ -5,6 +5,7 @@ const page = document.body?.dataset.page;
 if (page === "sheet.html") initializeSheetHelp();
 
 function initializeSheetHelp() {
+  if (document.querySelector("#sheet-global-help")) return;
   ensureHelpStyles();
   removeLegacyHelpTriggers();
 
@@ -61,7 +62,7 @@ function ensureHelpStyles() {
   if (document.querySelector('link[data-sheet-help-style]')) return;
   const link = document.createElement("link");
   link.rel = "stylesheet";
-  link.href = "./css-next/components/help.css?v=3";
+  link.href = "./css-next/components/help.css?v=4";
   link.dataset.sheetHelpStyle = "1";
   document.head.append(link);
 }
