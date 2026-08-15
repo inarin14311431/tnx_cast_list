@@ -1,0 +1,42 @@
+name: Hotfix outfit JSON import
+on:
+  push:
+    paths:
+      - '.github/workflows/hotfix-outfit-import.yml'
+permissions:
+  contents: write
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: Patch importer
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p=Path('js/sheet-import-outfit-compat.js')
+          s=p.read_text()
+          s=s.replace('''  async function waitForColumns(row,category){\n    const fields=required[category]||required.other;\n    for(let attempt=0;attempt<120;attempt++){\n      const key=row?.dataset.outfitKey;\n      const current=key?document.querySelector(`${ROOT} [data-outfit-key="${CSS.escape(key)}"]`):row;\n      if(current&&fields.every(field=>current.querySelector(`[data-ofc="${field}"]`)))return current;\n      await frame();\n    }\n    return row;\n  }\n''','''  async function waitForColumns(row,category,timeout=8000){\n    const fields=required[category]||required.other;\n    const key=row?.dataset.outfitKey;\n    const started=Date.now();\n    while(Date.now()-started<timeout){\n      const current=key?document.querySelector(`${ROOT} [data-outfit-key="${CSS.escape(key)}"]`):row;\n      if(current&&fields.every(field=>current.querySelector(`[data-ofc="${field}"]`)))return current;\n      window.TNXOutfitOfcFields?.queueEnhance?.();\n      await frame();\n    }\n    return key?document.querySelector(`${ROOT} [data-outfit-key="${CSS.escape(key)}"]`):row;\n  }\n\n  async function createFallbackRow(item){\n    const before=new Set([...document.querySelectorAll(`${ROOT} [data-outfit-key]`)].map(row=>row.dataset.outfitKey));\n    const add=document.querySelector('#add-outfit');\n    if(!add)return null;\n    add.click();\n    let row=null;\n    const started=Date.now();\n    while(Date.now()-started<8000&&!row){\n      row=[...document.querySelectorAll(`${ROOT} [data-outfit-key]`)].find(candidate=>!before.has(candidate.dataset.outfitKey));\n      if(!row)await frame();\n    }\n    if(!row)return null;\n    setValue(row.querySelector('[data-o="category"]'),item.category);\n    const key=row.dataset.outfitKey;\n    const categoryStarted=Date.now();\n    while(Date.now()-categoryStarted<8000){\n      const current=document.querySelector(`${ROOT} [data-outfit-key="${CSS.escape(key)}"]`);\n      if(current&&rowCategory(current)===item.category){row=current;break}\n      await frame();\n    }\n    setValue(row.querySelector('[data-o="name"]'),item.name);\n    return row;\n  }\n''')
+          s=s.replace('''      if(!row){missing.push(item);progress(step(index,1),"アウトフィットを最終変換中",`${index+1}/${items.length}件を確認`);continue}\n      used.add(row.dataset.outfitKey);\n''','''      if(!row){\n        progress(step(index,.25),"アウトフィット行を再生成中",`${index+1}/${items.length}件　${item.name}`);\n        row=await createFallbackRow(item);\n        if(row)rows.push(row);\n      }\n      if(!row){missing.push(item);progress(step(index,1),"アウトフィットを最終変換中",`${index+1}/${items.length}件を確認`);continue}\n      used.add(row.dataset.outfitKey);\n''')
+          p.write_text(s)
+
+          h=Path('sheet.html')
+          t=h.read_text()
+          t=t.replace('sheet-import-outfit-compat.js?v=8','sheet-import-outfit-compat.js?v=9')
+          h.write_text(t)
+          PY
+      - name: Syntax check
+        run: node --check js/sheet-import-outfit-compat.js
+      - name: Commit hotfix and remove workflow
+        run: |
+          rm .github/workflows/hotfix-outfit-import.yml
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add js/sheet-import-outfit-compat.js sheet.html .github/workflows/hotfix-outfit-import.yml
+          git commit -m 'Fix legacy outfit JSON import recovery'
+          git push
