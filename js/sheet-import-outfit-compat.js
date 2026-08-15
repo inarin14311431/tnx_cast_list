@@ -132,36 +132,26 @@
     return key?document.querySelector(`${ROOT} [data-outfit-key="${CSS.escape(key)}"]`):row;
   }
 
-  async function createFallbackRow(item){
-    const before=new Set([...document.querySelectorAll(`${ROOT} [data-outfit-key]`)].map(row=>row.dataset.outfitKey));
-    const add=document.querySelector('#add-outfit');
-    if(!add)return null;
-    add.click();
-    let row=null;
-    const started=Date.now();
-    while(Date.now()-started<8000&&!row){
-      row=[...document.querySelectorAll(`${ROOT} [data-outfit-key]`)].find(candidate=>!before.has(candidate.dataset.outfitKey));
-      if(!row)await frame();
-    }
-    if(!row)return null;
-    setValue(row.querySelector('[data-o="category"]'),item.category);
-    const key=row.dataset.outfitKey;
-    const categoryStarted=Date.now();
-    while(Date.now()-categoryStarted<8000){
-      const current=document.querySelector(`${ROOT} [data-outfit-key="${CSS.escape(key)}"]`);
-      if(current&&rowCategory(current)===item.category){row=current;break}
-      await frame();
-    }
-    setValue(row.querySelector('[data-o="name"]'),item.name);
-    return row;
-  }
-
   function rowCategory(row){return row.querySelector('[data-o="category"]')?.value||row.closest("table")?.dataset.outfitSchema||"other"}
   function rowName(row){return clean(row.querySelector('[data-o="name"]')?.value)}
+
+  async function findExistingRow(item,used,timeout=8000){
+    const started=Date.now();
+    while(Date.now()-started<timeout){
+      const rows=[...document.querySelectorAll(`${ROOT} [data-outfit-key]`)];
+      let row=rows.find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name&&rowCategory(candidate)===item.category);
+      if(!row&&["cyberware","tron"].includes(item.category))row=rows.find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name&&rowCategory(candidate)==="other");
+      if(!row)row=rows.find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name);
+      if(row)return row;
+      await frame();
+    }
+    return null;
+  }
 
   async function applyItem(row,item,onColumnsReady){
     setValue(row.querySelector('[data-o="category"]'),item.category);
     row=await waitForColumns(row,item.category);
+    if(!row)throw new Error(`アウトフィット行の再描画に失敗しました：${item.name}`);
     onColumnsReady?.();
     const data=item.data;
     const base=(field,value)=>setValue(row.querySelector(`[data-o="${field}"]`),value);
@@ -200,7 +190,6 @@
   }
 
   async function convertAll(items){
-    const rows=[...document.querySelectorAll(`${ROOT} [data-outfit-key]`)];
     const used=new Set();
     const missing=[];
     if(!items.length){progress(FINAL_END,"アウトフィットを最終変換中","変換対象のアウトフィットはありません");return missing}
@@ -208,14 +197,8 @@
     for(let index=0;index<items.length;index++){
       const item=items[index];
       progress(step(index),"アウトフィットを最終変換中",`${index+1}/${items.length}件　${item.category}：${item.name}`);
-      let row=rows.find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name&&rowCategory(candidate)===item.category);
-      if(!row&&["cyberware","tron"].includes(item.category))row=rows.find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name&&rowCategory(candidate)==="other");
-      if(!row){
-        progress(step(index,.25),"アウトフィット行を再生成中",`${index+1}/${items.length}件　${item.name}`);
-        row=await createFallbackRow(item);
-        if(row)rows.push(row);
-      }
-      if(!row){missing.push(item);progress(step(index,1),"アウトフィットを最終変換中",`${index+1}/${items.length}件を確認`);continue}
+      const row=await findExistingRow(item,used);
+      if(!row){missing.push(item);progress(step(index,1),"アウトフィットを最終変換中",`${index+1}/${items.length}件を再検索しました`);continue}
       used.add(row.dataset.outfitKey);
       await applyItem(row,item,()=>progress(step(index,.55),"アウトフィット列を調整中",`${index+1}/${items.length}件　${item.name}`));
       progress(step(index,1),"アウトフィットを最終変換中",`${index+1}/${items.length}件の変換完了`);
