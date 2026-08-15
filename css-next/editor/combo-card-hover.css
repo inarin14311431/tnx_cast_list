@@ -1,0 +1,32 @@
+/* Keep combo summary cards readable on hover/focus.
+ * The global button hover rule switches button text to --color-surface;
+ * combo cards use a dark tinted hover background, so their child text must
+ * retain the combo-card palette instead of inheriting the generic button one.
+ */
+body[data-page="sheet.html"] .sheet-combo-entry-card:is(:hover, :focus-visible),
+body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible) {
+  color: var(--color-text);
+}
+
+body[data-page="sheet.html"] .sheet-combo-entry-card:is(:hover, :focus-visible) > strong,
+body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible) > strong {
+  color: var(--color-text);
+}
+
+body[data-page="sheet.html"] .sheet-combo-entry-card:is(:hover, :focus-visible) .sheet-combo-entry-card__skills,
+body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible) .sheet-combo-list-card__skills,
+body[data-page="sheet.html"] .sheet-combo-entry-card:is(:hover, :focus-visible) > small,
+body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible) > small {
+  color: color-mix(in srgb, var(--color-text) 68%, var(--color-muted));
+  opacity: 1;
+}
+
+body[data-page="sheet.html"] .sheet-combo-entry-card:is(:hover, :focus-visible) .sheet-combo-entry-card__kind,
+body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible) .sheet-combo-list-card__kind {
+  color: var(--color-accent);
+}
+
+body[data-page="sheet.html"] .sheet-combo-entry-card.is-counter:is(:hover, :focus-visible) .sheet-combo-entry-card__kind,
+body[data-page="sheet.html"] .sheet-combo-list-card.is-counter:is(:hover, :focus-visible) .sheet-combo-list-card__kind {
+  color: var(--color-success);
+}
