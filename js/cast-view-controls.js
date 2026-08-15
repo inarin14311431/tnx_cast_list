@@ -126,59 +126,124 @@
 })();
 
 (() => {
-  function setDescriptionFields(scope, selector, expanded) {
-    const fields = [...scope.querySelectorAll(selector)];
-    fields.forEach(field => {
-      field.classList.toggle("is-expanded", expanded);
-      field.closest("tr")?.classList.toggle("is-description-expanded", expanded);
-      field.scrollTop = 0;
-      field.scrollLeft = 0;
-      if (expanded) field.style.setProperty("height", "auto", "important");
-      else field.style.removeProperty("height");
-    });
+  const STYLE_FIELD_SELECTOR = ".style-description-expandable";
+  const OUTFIT_FIELD_SELECTOR = ".outfit-description-expandable";
 
-    if (expanded) {
-      requestAnimationFrame(() => {
-        fields.forEach(field => {
-          field.style.setProperty("height", `${Math.max(35, field.scrollHeight + 2)}px`, "important");
-        });
-      });
+  function resizeDescriptionField(field, expanded) {
+    field.classList.toggle("is-expanded", expanded);
+    field.closest("tr")?.classList.toggle("is-description-expanded", expanded);
+    field.scrollTop = 0;
+    field.scrollLeft = 0;
+    field.setAttribute("aria-expanded", String(expanded));
+    field.dataset.descriptionExpanded = expanded ? "1" : "0";
+
+    if (!expanded) {
+      field.style.removeProperty("height");
+      return;
     }
+
+    field.style.setProperty("height", "auto", "important");
+    requestAnimationFrame(() => {
+      if (!field.isConnected || field.dataset.descriptionExpanded !== "1") return;
+      field.style.setProperty("height", `${Math.max(35, field.scrollHeight + 2)}px`, "important");
+    });
+  }
+
+  function setDescriptionFields(scope, selector, expanded) {
+    [...scope.querySelectorAll(selector)].forEach(field => resizeDescriptionField(field, expanded));
   }
 
   function updateButton(button, expanded) {
+    if (!button) return;
     button.textContent = expanded ? "縮小" : "全表示";
     button.setAttribute("aria-pressed", String(expanded));
     button.setAttribute("aria-label", expanded ? "すべての解説を縮小" : "すべての解説を表示");
   }
 
+  function descriptionScope(field) {
+    const outfitSection = field.closest(".cast-outfit-section");
+    const styleSection = field.closest(".style-skill-view-editorlike, .style-skill-section-v47, .skill-section");
+    return {
+      scope: outfitSection || styleSection,
+      selector: outfitSection ? OUTFIT_FIELD_SELECTOR : STYLE_FIELD_SELECTOR
+    };
+  }
+
+  function syncAllState(scope, selector) {
+    if (!scope) return;
+    const fields = [...scope.querySelectorAll(selector)];
+    const allExpanded = fields.length > 0 && fields.every(field => field.classList.contains("is-expanded"));
+    scope.classList.toggle("is-description-all-expanded", allExpanded);
+    updateButton(scope.querySelector(".style-description-toggle-all"), allExpanded);
+  }
+
+  function isScrollbarInteraction(event, field) {
+    if (event.target !== field || field.scrollHeight <= field.clientHeight + 1) return false;
+    const scrollbarWidth = Math.max(12, field.offsetWidth - field.clientWidth);
+    return event.offsetX >= field.clientWidth - scrollbarWidth;
+  }
+
   document.addEventListener("click", event => {
     const button = event.target.closest(".style-description-toggle-all");
-    if (!button) return;
+    if (button) {
+      const outfitSection = button.closest(".cast-outfit-section");
+      const styleSection = button.closest(".style-skill-view-editorlike, .style-skill-section-v47, .skill-section");
+      const scope = outfitSection || styleSection;
+      if (!scope) return;
 
-    const outfitSection = button.closest(".cast-outfit-section");
-    const styleSection = button.closest(".style-skill-view-editorlike, .style-skill-section-v47, .skill-section");
-    const scope = outfitSection || styleSection;
-    if (!scope) return;
+      event.preventDefault();
+      event.stopPropagation();
+      event.stopImmediatePropagation();
 
-    event.preventDefault();
-    event.stopPropagation();
-    event.stopImmediatePropagation();
+      const selector = outfitSection ? OUTFIT_FIELD_SELECTOR : STYLE_FIELD_SELECTOR;
+      const expanded = !scope.classList.contains("is-description-all-expanded");
+      setDescriptionFields(scope, selector, expanded);
+      scope.classList.toggle("is-description-all-expanded", expanded);
+      updateButton(button, expanded);
 
-    const expanded = !scope.classList.contains("is-description-all-expanded");
-    scope.classList.toggle("is-description-all-expanded", expanded);
-
-    if (outfitSection) {
-      setDescriptionFields(scope, ".outfit-description-expandable", expanded);
-    } else {
-      setDescriptionFields(scope, ".style-description-expandable", expanded);
-      const table = scope.querySelector(".style-skill-view-table");
-      table?.style.removeProperty("min-width");
-      table?.querySelector("col.style-col-description")?.style.removeProperty("width");
+      if (!outfitSection) {
+        const table = scope.querySelector(".style-skill-view-table");
+        table?.style.removeProperty("min-width");
+        table?.querySelector("col.style-col-description")?.style.removeProperty("width");
+      }
+      return;
     }
 
-    updateButton(button, expanded);
+    const cell = event.target.closest(".style-view-cell--description");
+    const field = cell?.querySelector(`${STYLE_FIELD_SELECTOR}, ${OUTFIT_FIELD_SELECTOR}`);
+    if (!field) return;
+    if (isScrollbarInteraction(event, field)) return;
+
+    const { scope, selector } = descriptionScope(field);
+    if (!scope) return;
+
+    const expanded = !field.classList.contains("is-expanded");
+    resizeDescriptionField(field, expanded);
+    syncAllState(scope, selector);
   }, true);
+
+  document.addEventListener("keydown", event => {
+    const field = event.target.closest?.(`${STYLE_FIELD_SELECTOR}, ${OUTFIT_FIELD_SELECTOR}`);
+    if (!field || !["Enter", " "].includes(event.key)) return;
+    event.preventDefault();
+    const { scope, selector } = descriptionScope(field);
+    resizeDescriptionField(field, !field.classList.contains("is-expanded"));
+    syncAllState(scope, selector);
+  }, true);
+
+  function prepareDescriptionFields() {
+    document.querySelectorAll(`${STYLE_FIELD_SELECTOR}, ${OUTFIT_FIELD_SELECTOR}`).forEach(field => {
+      if (field.dataset.descriptionClickReady === "1") return;
+      field.dataset.descriptionClickReady = "1";
+      field.tabIndex = 0;
+      field.setAttribute("role", "button");
+      field.setAttribute("aria-expanded", String(field.classList.contains("is-expanded")));
+      field.setAttribute("title", "クリックでこの解説だけ全文表示／折りたたみ");
+    });
+  }
+
+  new MutationObserver(prepareDescriptionFields).observe(document.body, { childList: true, subtree: true });
+  prepareDescriptionFields();
 })();
 
 (() => {
