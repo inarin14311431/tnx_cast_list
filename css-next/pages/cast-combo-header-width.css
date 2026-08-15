@@ -1,0 +1,22 @@
+/* Combo header width tuning: reserve more room for correction/target-value stats. */
+@media (min-width: 768px) {
+  body[data-page="cast.html"] .combo-card__header {
+    grid-template-columns: minmax(180px, .72fr) minmax(300px, auto) auto;
+  }
+
+  body[data-page="cast.html"] .combo-card__stats {
+    grid-template-columns: minmax(128px, 1fr) minmax(160px, 1.2fr);
+    min-width: 300px;
+  }
+
+  body[data-page="cast.html"] .combo-card__stats > div {
+    gap: 7px;
+    padding-inline: 7px;
+  }
+
+  body[data-page="cast.html"] .combo-card__header h3 {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
