@@ -119,14 +119,40 @@
     other:["page_number"]
   };
 
-  async function waitForColumns(row,category){
+  async function waitForColumns(row,category,timeout=8000){
     const fields=required[category]||required.other;
-    for(let attempt=0;attempt<120;attempt++){
-      const key=row?.dataset.outfitKey;
+    const key=row?.dataset.outfitKey;
+    const started=Date.now();
+    while(Date.now()-started<timeout){
       const current=key?document.querySelector(`${ROOT} [data-outfit-key="${CSS.escape(key)}"]`):row;
       if(current&&fields.every(field=>current.querySelector(`[data-ofc="${field}"]`)))return current;
+      window.TNXOutfitOfcFields?.queueEnhance?.();
       await frame();
     }
+    return key?document.querySelector(`${ROOT} [data-outfit-key="${CSS.escape(key)}"]`):row;
+  }
+
+  async function createFallbackRow(item){
+    const before=new Set([...document.querySelectorAll(`${ROOT} [data-outfit-key]`)].map(row=>row.dataset.outfitKey));
+    const add=document.querySelector('#add-outfit');
+    if(!add)return null;
+    add.click();
+    let row=null;
+    const started=Date.now();
+    while(Date.now()-started<8000&&!row){
+      row=[...document.querySelectorAll(`${ROOT} [data-outfit-key]`)].find(candidate=>!before.has(candidate.dataset.outfitKey));
+      if(!row)await frame();
+    }
+    if(!row)return null;
+    setValue(row.querySelector('[data-o="category"]'),item.category);
+    const key=row.dataset.outfitKey;
+    const categoryStarted=Date.now();
+    while(Date.now()-categoryStarted<8000){
+      const current=document.querySelector(`${ROOT} [data-outfit-key="${CSS.escape(key)}"]`);
+      if(current&&rowCategory(current)===item.category){row=current;break}
+      await frame();
+    }
+    setValue(row.querySelector('[data-o="name"]'),item.name);
     return row;
   }
 
@@ -184,6 +210,11 @@
       progress(step(index),"アウトフィットを最終変換中",`${index+1}/${items.length}件　${item.category}：${item.name}`);
       let row=rows.find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name&&rowCategory(candidate)===item.category);
       if(!row&&["cyberware","tron"].includes(item.category))row=rows.find(candidate=>!used.has(candidate.dataset.outfitKey)&&rowName(candidate)===item.name&&rowCategory(candidate)==="other");
+      if(!row){
+        progress(step(index,.25),"アウトフィット行を再生成中",`${index+1}/${items.length}件　${item.name}`);
+        row=await createFallbackRow(item);
+        if(row)rows.push(row);
+      }
       if(!row){missing.push(item);progress(step(index,1),"アウトフィットを最終変換中",`${index+1}/${items.length}件を確認`);continue}
       used.add(row.dataset.outfitKey);
       await applyItem(row,item,()=>progress(step(index,.55),"アウトフィット列を調整中",`${index+1}/${items.length}件　${item.name}`));
