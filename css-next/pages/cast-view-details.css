@@ -1,0 +1,54 @@
+/* Public cast view detail refinements kept together to avoid cascade-only patch files. */
+
+/* Align the ruled profile background with the text line box. */
+body[data-page="cast.html"] .profile-text{
+  --profile-line-height:28px;
+  line-height:var(--profile-line-height);
+  background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--profile-line-height) - 1px),var(--color-accent-soft) calc(var(--profile-line-height) - 1px),var(--color-accent-soft) var(--profile-line-height));
+  background-position:0 14px;
+}
+
+/* Preserve explicit line breaks in style-skill names on the public view. */
+body[data-page="cast.html"] .style-skill-view-table tbody tr{
+  height:auto;
+  min-height:45px;
+}
+body[data-page="cast.html"] .style-skill-view-table .style-view-cell--name{
+  height:auto;
+  min-height:45px;
+  vertical-align:middle;
+}
+body[data-page="cast.html"] .style-skill-view-table .style-skill-name-view{
+  display:block;
+  box-sizing:border-box;
+  width:100%;
+  min-width:0;
+  height:auto;
+  min-height:35px;
+  margin:0;
+  padding:7px 5px;
+  overflow:hidden;
+  resize:none;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  word-break:break-word;
+  line-height:1.2;
+}
+
+/* Divine work cards: category label at left, reading above the name. */
+body[data-page="cast.html"] .cast-divine-authority .cast-divine-card{grid-template-columns:42px minmax(0,1fr);grid-template-rows:auto auto;gap:2px 8px}
+body[data-page="cast.html"] .cast-divine-authority .divine-card__number{display:none}
+body[data-page="cast.html"] .cast-divine-authority .divine-card__label{grid-column:1;grid-row:1/3;align-self:center;color:color-mix(in srgb,var(--divine-local) 72%,var(--color-text));font:800 .72rem/1 var(--font-data);letter-spacing:.08em;white-space:nowrap}
+body[data-page="cast.html"] .cast-divine-authority .divine-card__yomi{grid-column:2;grid-row:1;align-self:end;min-width:0;padding-right:68px;color:color-mix(in srgb,var(--divine-local) 42%,var(--color-text));font:700 .64rem/1.15 var(--font-data);letter-spacing:.1em}
+body[data-page="cast.html"] .cast-divine-authority .divine-card__name{grid-column:2;grid-row:2;align-self:start}
+@media(max-width:700px){
+  body[data-page="cast.html"] .cast-divine-authority .cast-divine-card{grid-template-columns:40px minmax(0,1fr)}
+  body[data-page="cast.html"] .cast-divine-authority .divine-card__label{font-size:.68rem}
+  body[data-page="cast.html"] .cast-divine-authority .divine-card__yomi{padding-right:54px;font-size:.6rem}
+}
+
+/* Header export/edit interactions. */
+body[data-page="cast.html"] .cast-header__export-actions :is(.cocofolia-copy-button,.udonarium-export-button,.transfer-tsv-copy-button,.transfer-bookmarklet-copy-button):is(:hover,:focus-visible){border-color:var(--export-accent);color:var(--color-bg);background:var(--export-accent);box-shadow:0 0 18px color-mix(in srgb,var(--export-accent) 62%,transparent)}
+body[data-page="cast.html"] .cast-header__export-actions :is(.cocofolia-copy-button,.udonarium-export-button,.transfer-tsv-copy-button,.transfer-bookmarklet-copy-button):is(:hover,:focus-visible) small{color:color-mix(in srgb,var(--color-bg) 72%,transparent)}
+body[data-page="cast.html"] .cast-header__actions .cast-edit-link:is(:hover,:focus-visible){border-color:var(--color-accent);color:var(--color-bg);background:var(--color-accent);box-shadow:var(--shadow-glow)}
+body[data-page="cast.html"] .cast-header__actions .cast-edit-link:is(:hover,:focus-visible) small{color:inherit}

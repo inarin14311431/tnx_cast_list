@@ -26,6 +26,7 @@
 | 22 | `22_outfit_ofc_details.sql` | OFC固有項目と保存RPC | 適用済み |
 | 23 | `23_remove_legacy_github_pages_publish.sql` | 旧GitHub Pages公開用RPCを削除 | 未適用 |
 | 24 | `24_combo_act_use_limit.sql` | コンボの1アクト使用上限 | 未適用 |
+| 26 | `26_combo_multi_suit.sql` | コンボの複数使用スート保存 | 未適用 |
 
 ## 欠番について
 
@@ -40,7 +41,7 @@
 
 ## 今後の採番規則
 
-次のDB変更は`25_機能名.sql`から追加します。
+次のDB変更は`27_機能名.sql`から追加します。
 
 - 一つの番号は一つの変更目的に限定する
 - 適用済みファイルの内容・番号は原則変更しない

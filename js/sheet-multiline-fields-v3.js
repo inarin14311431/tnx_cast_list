@@ -3,9 +3,7 @@ import { supabase } from "./supabase-client.js";
 const styleRoot=document.querySelector("#style-skills");
 const outfitRoot=document.querySelector("#outfit-list");
 const publicId=new URLSearchParams(location.search).get("id")?.trim()||"";
-const styleValues=new Map();
 const outfitValues=new Map();
-const appliedStyles=new Set();
 const appliedOutfits=new Set();
 let queued=false;
 
@@ -39,56 +37,43 @@ function prepareOutfit(field){
   field.dataset.manualResizeReady="1";
 }
 
-function fieldRestoreKey(field){
-  const styleKey=field.closest("tr[data-skill-key]")?.dataset.skillKey;
-  if(field.matches('textarea[data-f="name"]'))return styleKey?{type:"style",key:styleKey}:null;
-  const outfitKey=field.closest("[data-outfit-key]")?.dataset.outfitKey;
-  const outfitField=field.dataset.o;
-  if(outfitKey&&outfitField)return {type:"outfit",key:`${outfitKey}:${outfitField}`};
-  return null;
+function outfitRestoreKey(field){
+  const key=field.closest("[data-outfit-key]")?.dataset.outfitKey;
+  const name=field.dataset.o;
+  return key&&name?`${key}:${name}`:null;
 }
 
-function markEdited(field){
-  const restoreKey=fieldRestoreKey(field);
-  if(!restoreKey)return;
-  if(restoreKey.type==="style")appliedStyles.add(restoreKey.key);
-  else appliedOutfits.add(restoreKey.key);
+function markOutfitEdited(field){
+  const key=outfitRestoreKey(field);
+  if(key)appliedOutfits.add(key);
 }
 
-function bridgeOriginalValue(input,field){
-  try{
-    Object.defineProperty(input,"value",{
-      configurable:true,
-      get:()=>field.value,
-      set:value=>{field.value=normalize(value);}
-    });
-  }catch{
-    input.addEventListener("input",()=>{field.value=normalize(input.getAttribute("value")||input.value);});
-  }
-}
-
-function convert(input,kind){
+function convertOutfit(input){
   if(!(input instanceof HTMLInputElement)||["number","hidden","checkbox","radio","file"].includes(input.type))return input;
   const field=document.createElement("textarea");
   for(const attribute of [...input.attributes])if(!["type","value"].includes(attribute.name))field.setAttribute(attribute.name,attribute.value);
   field.rows=1;
   field.value=normalize(input.value);
-  bridgeOriginalValue(input,field);
   field.oninput=input.oninput;
   field.onchange=input.onchange;
-  field.addEventListener("input",()=>markEdited(field),true);
-  field.addEventListener("change",()=>markEdited(field),true);
+  field.addEventListener("input",()=>markOutfitEdited(field),true);
+  field.addEventListener("change",()=>markOutfitEdited(field),true);
   input.replaceWith(field);
-  if(kind==="style")fitStyle(field);else prepareOutfit(field);
+  prepareOutfit(field);
   return field;
 }
 
-function restoreStyle(field){
-  const key=field.closest("tr[data-skill-key]")?.dataset.skillKey;
-  if(!key||appliedStyles.has(key)||!styleValues.has(key))return;
-  field.value=styleValues.get(key);
-  appliedStyles.add(key);
+function setStyleNameExact(rowOrKey,value){
+  const key=typeof rowOrKey==="string"?rowOrKey:rowOrKey?.dataset?.skillKey;
+  if(!key)return null;
+  const row=styleRoot?.querySelector(`tr[data-skill-key="${CSS.escape(String(key))}"]`);
+  const field=row?.querySelector('textarea[data-f="name"]');
+  if(!(field instanceof HTMLTextAreaElement))return null;
+  field.value=normalize(value);
+  field.dispatchEvent(new Event("input",{bubbles:true}));
+  field.dispatchEvent(new Event("change",{bubbles:true}));
   fitStyle(field);
+  return field;
 }
 
 function restoreOutfit(owner){
@@ -107,9 +92,8 @@ function restoreOutfit(owner){
 
 function enhance(){
   queued=false;
-  styleRoot?.querySelectorAll('tr[data-skill-key] td:first-child input[data-f="name"]').forEach(input=>restoreStyle(convert(input,"style")));
-  styleRoot?.querySelectorAll('textarea[data-f="name"]').forEach(field=>{restoreStyle(field);normalizeTextarea(field);fitStyle(field);});
-  outfitRoot?.querySelectorAll('input[data-o]').forEach(input=>convert(input,"outfit"));
+  styleRoot?.querySelectorAll('textarea[data-f="name"]').forEach(field=>{normalizeTextarea(field);fitStyle(field);});
+  outfitRoot?.querySelectorAll('input[data-o]').forEach(input=>convertOutfit(input));
   outfitRoot?.querySelectorAll('[data-outfit-key]').forEach(restoreOutfit);
   outfitRoot?.querySelectorAll('textarea[data-o]').forEach(field=>{normalizeTextarea(field);prepareOutfit(field);});
   document.querySelectorAll("textarea:not(#legacy-import-json):not(#tsv-text)").forEach(normalizeTextarea);
@@ -131,16 +115,7 @@ function parseTsv(text){
 function restoreImport(mode,rows){
   requestAnimationFrame(()=>requestAnimationFrame(()=>{
     enhance();
-    if(mode==="skd"){
-      const fields=[...(styleRoot?.querySelectorAll('tr[data-skill-key] textarea[data-f="name"]')||[])].slice(-rows.length);
-      fields.forEach((field,index)=>{
-        field.value=normalize(rows[index]?.["名称"]||field.value);
-        markEdited(field);
-        field.dispatchEvent(new Event("input",{bubbles:true}));
-        fitStyle(field);
-      });
-      return;
-    }
+    if(mode==="skd")return;
     const used=new Set();
     for(const row of rows){
       const target=[...(outfitRoot?.querySelectorAll('[data-outfit-key]')||[])].reverse().find(item=>!used.has(item)&&compare(item.querySelector('[data-o="name"]')?.value)===compare(row.name));
@@ -151,7 +126,7 @@ function restoreImport(mode,rows){
         const field=target.querySelector(`textarea[data-o="${name}"]`);
         if(!field||value===undefined)continue;
         field.value=normalize(value);
-        markEdited(field);
+        markOutfitEdited(field);
         field.dispatchEvent(new Event("input",{bubbles:true}));
         prepareOutfit(field);
       }
@@ -159,16 +134,12 @@ function restoreImport(mode,rows){
   }));
 }
 
-async function loadOriginal(){
+async function loadOriginalOutfits(){
   if(!publicId)return;
   const {data:character,error}=await supabase.from("characters").select("id").eq("public_id",publicId).maybeSingle();
   if(error||!character)return;
-  const [skills,outfits]=await Promise.all([
-    supabase.from("character_skills").select("id,name").eq("character_id",character.id).eq("category","style").order("sort_order"),
-    supabase.from("character_outfits").select("*").eq("character_id",character.id).order("sort_order")
-  ]);
-  for(const skill of skills.data||[])styleValues.set(String(skill.id),normalize(skill.name));
-  for(const outfit of outfits.data||[])outfitValues.set(String(outfit.id),outfit);
+  const result=await supabase.from("character_outfits").select("*").eq("character_id",character.id).order("sort_order");
+  for(const outfit of result.data||[])outfitValues.set(String(outfit.id),outfit);
   queue();
 }
 
@@ -194,6 +165,6 @@ document.addEventListener("click",event=>{
   const mode=document.querySelector("#tsv-title")?.textContent.includes("SKD")?"skd":"ofc";
   restoreImport(mode,parseTsv(document.querySelector("#tsv-text")?.value));
 },true);
-window.TNXMultilineFields={enhance,queue,normalize};
+window.TNXMultilineFields={enhance,queue,normalize,setStyleNameExact};
 queue();
-loadOriginal();
+loadOriginalOutfits();

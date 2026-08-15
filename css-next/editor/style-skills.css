@@ -1,32 +1,301 @@
 /* Style-skill editor: desktop fits the sheet body without hiding columns. */
-#style-skills { --style-level-column: 42px; --style-suit-column: 34px; --style-page-column: 44px; --style-action-column: var(--row-action-column); width: 100%; min-width: 0; overflow: hidden; }
-#style-skills .skill-group, #style-skills .skill-table-scroll { width: 100%; min-width: 0; max-width: 100%; overflow: hidden; }
+#style-skills {
+  --style-level-column: 42px;
+  --style-suit-column: 34px;
+  --style-page-column: 44px;
+  --style-action-column: var(--row-action-column);
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+#style-skills .skill-group,
+#style-skills .skill-table-scroll {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
 #style-skills .skill-group-heading { display: none; }
 body[data-page="sheet.html"] .skill-toolbar--two.has-style-divider { align-items: stretch; }
-#style-skills .style-skill-full-table { display: block; width: 100%; min-width: 0; max-width: 100%; border-collapse: separate; border-spacing: 0; font-size: clamp(.76rem, .66vw, .94rem); }
-#style-skills .style-skill-full-table thead, #style-skills .style-skill-full-table tbody { display: block; width: 100%; min-width: 0; }
-#style-skills .style-skill-full-table thead tr, #style-skills .style-skill-full-table tbody tr[data-skill-key] { display: grid; grid-template-columns: minmax(0, 2fr) minmax(0, .92fr) var(--style-level-column) repeat(4, var(--style-suit-column)) minmax(0, 1.08fr) minmax(0, .66fr) minmax(0, 1.15fr) minmax(0, .82fr) minmax(0, .76fr) minmax(0, .76fr) minmax(0, .68fr) minmax(0, 3fr) var(--style-page-column) var(--style-action-column); align-items: center; width: 100%; min-width: 0; }
-#style-skills .style-skill-full-table :is(th, td) { box-sizing: border-box; display: flex; align-items: center; width: auto; min-width: 0; min-height: 50px; padding: 5px 2px; overflow: hidden; border-bottom: 1px solid var(--color-border-muted); }
-#style-skills .style-skill-full-table :is(th, td):last-child { justify-content: center; padding-inline: 5px; }
-#style-skills .style-skill-full-table th { justify-content: center; min-height: 38px; color: var(--color-muted); background: var(--color-accent-soft); white-space: normal; overflow-wrap: anywhere; font-size: clamp(.58rem, .52vw, .8rem); line-height: 1.08; text-align: center; }
-#style-skills .style-skill-full-table :is(input, select, textarea) { box-sizing: border-box; width: 100%; min-width: 0; max-width: 100%; height: 38px; min-height: 38px; margin: 0; padding: 5px 3px; font-size: clamp(.78rem, .7vw, .96rem); line-height: 1.2; }
-#style-skills .style-skill-full-table :is(input, select) { padding-block: 0; line-height: normal; }
-#style-skills .style-suit-cell { justify-content: center; padding-inline: 1px; }
-#style-skills .suit-check { display: grid; position: relative; width: 30px; height: 30px; margin: auto; place-items: center; cursor: pointer; }
-#style-skills .suit-check input { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
-#style-skills .suit-check span { display: grid; width: 28px; height: 28px; place-items: center; border: 1px solid var(--color-border); color: var(--color-muted); background: var(--color-field); font: 900 1.08rem/1 var(--font-data); }
-#style-skills .suit-check input:checked + span { border-color: var(--color-accent); color: var(--color-bg); background: var(--color-accent); box-shadow: var(--shadow-glow); }
-#style-skills textarea[data-style-field="description"] { resize: vertical; overflow-x: hidden; overflow-y: auto; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
-#style-skills input[data-f="level"] { text-align: center; font-weight: 800; }
+
+/* Normal style-skill table. Keep this independent from divider styling below. */
+#style-skills .style-skill-full-table {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: clamp(.76rem, .66vw, .94rem);
+}
+
+#style-skills .style-skill-full-table thead,
+#style-skills .style-skill-full-table tbody {
+  display: block;
+  width: 100%;
+  min-width: 0;
+}
+
+#style-skills .style-skill-full-table thead tr,
+#style-skills .style-skill-full-table tbody tr[data-skill-key] {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(0, .92fr)
+    var(--style-level-column)
+    repeat(4, var(--style-suit-column))
+    minmax(0, 1.08fr)
+    minmax(0, .66fr)
+    minmax(0, 1.15fr)
+    minmax(0, .82fr)
+    minmax(0, .76fr)
+    minmax(0, .76fr)
+    minmax(0, .68fr)
+    minmax(0, 3fr)
+    var(--style-page-column)
+    var(--style-action-column);
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+#style-skills .style-skill-full-table :is(th, td) {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  width: auto;
+  min-width: 0;
+  min-height: 50px;
+  padding: 5px 2px;
+  overflow: hidden;
+  border-bottom: 1px solid var(--color-border-muted);
+}
+
+#style-skills .style-skill-full-table :is(th, td):last-child {
+  justify-content: center;
+  padding-inline: 5px;
+}
+
+#style-skills .style-skill-full-table th {
+  justify-content: center;
+  min-height: 38px;
+  color: var(--color-muted);
+  background: var(--color-accent-soft);
+  white-space: normal;
+  overflow-wrap: anywhere;
+  font-size: clamp(.58rem, .52vw, .8rem);
+  line-height: 1.08;
+  text-align: center;
+}
+
+#style-skills .style-skill-full-table :is(input, select, textarea) {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: 38px;
+  min-height: 38px;
+  margin: 0;
+  padding: 5px 3px;
+  font-size: clamp(.78rem, .7vw, .96rem);
+  line-height: 1.2;
+}
+
+#style-skills .style-skill-full-table :is(input, select) {
+  padding-block: 0;
+  line-height: normal;
+}
+
+#style-skills .style-suit-cell {
+  justify-content: center;
+  padding-inline: 1px;
+}
+
+#style-skills .suit-check {
+  display: grid;
+  position: relative;
+  width: 30px;
+  height: 30px;
+  margin: auto;
+  place-items: center;
+  cursor: pointer;
+}
+
+#style-skills .suit-check input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+#style-skills .suit-check span {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+  background: var(--color-field);
+  font: 900 1.08rem/1 var(--font-data);
+}
+
+#style-skills .suit-check input:checked + span {
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+  background: var(--color-accent);
+  box-shadow: var(--shadow-glow);
+}
+
+#style-skills textarea[data-style-field="description"] {
+  resize: vertical;
+  overflow-x: hidden;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+#style-skills input[data-f="level"] {
+  text-align: center;
+  font-weight: 800;
+}
+
 #style-skills .style-skill-empty-row { display: block; width: 100%; }
-#style-skills .style-skill-empty-row td { display: block; width: 100%; padding: 20px 12px; color: var(--color-muted); text-align: center; }
-#style-skills .style-skill-full-table tbody tr.style-skill-separator-row[data-skill-key] { box-sizing: border-box; display: grid; grid-template-columns: minmax(0, 1fr) var(--style-action-column); align-items: center; width: 100%; min-width: 0; min-height: 50px; margin: 10px 0 4px; overflow: hidden; border-top: 2px solid var(--color-accent); border-bottom: 1px solid var(--color-border); background: linear-gradient(90deg, color-mix(in srgb, var(--color-surface) 58%, var(--color-accent) 42%), color-mix(in srgb, var(--color-surface) 82%, var(--color-accent) 18%)); box-shadow: inset 7px 0 0 var(--color-accent); }
-#style-skills .style-skill-separator-row > td { box-sizing: border-box; min-width: 0; min-height: 48px; border: 0; background: transparent; }
-#style-skills .style-skill-separator-row > td:not(:first-child):not(:last-child) { display: none; }
-#style-skills .style-skill-separator-row > td:first-child { display: flex; align-items: center; gap: 10px; padding: 4px 8px 4px 20px; overflow: hidden; }
-#style-skills .style-skill-separator-row > td:first-child::before { content: "STYLE SECTION"; flex: 0 0 auto; padding: 5px 7px; border: 1px solid var(--color-border); color: var(--color-accent); background: var(--color-accent-soft); font: 800 .64rem/1 var(--font-data); letter-spacing: .16em; white-space: nowrap; }
-#style-skills .style-skill-separator-row > td:last-child { display: flex; align-items: center; justify-content: center; padding: 5px 3px; overflow: hidden; }
-#style-skills .style-skill-separator-row input[data-f="name"] { flex: 1 1 auto; width: 100%; min-width: 0; height: 38px; margin: 0; padding: 5px 9px; border: 0; color: var(--color-text); background: transparent; font-size: clamp(.82rem, 1vw, 1.08rem); font-weight: 900; letter-spacing: .1em; }
+#style-skills .style-skill-empty-row td {
+  display: block;
+  width: 100%;
+  padding: 20px 12px;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+/*
+ * Style divider.
+ * Keep the exact same 17-column grid as normal style-skill rows. The title spans
+ * columns 1-16 and the native sheet.js action cell stays in column 17.
+ */
+#style-skills .style-skill-full-table tbody tr.style-skill-separator-row[data-skill-key] {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(0, .92fr)
+    var(--style-level-column)
+    repeat(4, var(--style-suit-column))
+    minmax(0, 1.08fr)
+    minmax(0, .66fr)
+    minmax(0, 1.15fr)
+    minmax(0, .82fr)
+    minmax(0, .76fr)
+    minmax(0, .76fr)
+    minmax(0, .68fr)
+    minmax(0, 3fr)
+    var(--style-page-column)
+    var(--style-action-column);
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+  min-height: 50px;
+  margin: 10px 0 4px;
+  overflow: hidden;
+  border-top: 2px solid var(--color-accent);
+  border-bottom: 1px solid var(--color-border);
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, var(--color-surface) 58%, var(--color-accent) 42%),
+    color-mix(in srgb, var(--color-surface) 82%, var(--color-accent) 18%)
+  );
+  box-shadow: inset 7px 0 0 var(--color-accent);
+}
+
+#style-skills .style-skill-separator-row > td {
+  display: none;
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 48px;
+  border: 0;
+  background: transparent;
+}
+
+#style-skills .style-skill-separator-row > td:first-child {
+  display: flex;
+  grid-column: 1 / 17;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px 4px 20px;
+  overflow: hidden;
+}
+
+#style-skills .style-skill-separator-row > td:first-child::before {
+  content: "STYLE SECTION";
+  flex: 0 0 auto;
+  padding: 5px 7px;
+  border: 1px solid var(--color-border);
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  font: 800 .64rem/1 var(--font-data);
+  letter-spacing: .16em;
+  white-space: nowrap;
+}
+
+#style-skills .style-skill-separator-row > td:last-child {
+  display: flex;
+  grid-column: 17;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 3px;
+  overflow: visible;
+}
+
+#style-skills .style-skill-separator-row > td:last-child .row-actions {
+  display: inline-grid;
+  visibility: visible;
+  opacity: 1;
+}
+
+#style-skills .style-skill-separator-row :is(input, textarea)[data-f="name"] {
+  position: relative;
+  z-index: 1;
+  display: block;
+  flex: 1 1 auto;
+  width: 100%;
+  min-width: 0;
+  max-width: none;
+  height: 38px !important;
+  min-height: 38px !important;
+  margin: 0;
+  padding: 7px 9px;
+  overflow: hidden;
+  resize: none;
+  border: 1px solid var(--color-border);
+  border-radius: 2px;
+  color: var(--color-text);
+  background: var(--color-field);
+  font-size: clamp(.82rem, 1vw, 1.08rem);
+  font-weight: 900;
+  line-height: 1.2;
+  letter-spacing: .08em;
+  pointer-events: auto;
+  cursor: text;
+  opacity: 1;
+}
+
+#style-skills .style-skill-separator-row :is(input, textarea)[data-f="name"]:hover {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-field) 88%, var(--color-accent) 12%);
+}
+
+#style-skills .style-skill-separator-row :is(input, textarea)[data-f="name"]:focus {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 1px;
+  border-color: var(--color-accent);
+  background: var(--color-field);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 16%, transparent);
+}
 
 @media (max-width: 760px) {
   body[data-page="sheet.html"] #style-skills {
@@ -37,6 +306,7 @@ body[data-page="sheet.html"] .skill-toolbar--two.has-style-divider { align-items
     overscroll-behavior-x: contain;
     touch-action: pan-x pan-y;
   }
+
   body[data-page="sheet.html"] #style-skills .skill-group,
   body[data-page="sheet.html"] #style-skills .skill-table-scroll {
     width: max-content;
@@ -44,6 +314,7 @@ body[data-page="sheet.html"] .skill-toolbar--two.has-style-divider { align-items
     max-width: none;
     overflow: visible;
   }
+
   body[data-page="sheet.html"] #style-skills .style-skill-full-table {
     width: 1050px;
     min-width: 1050px;

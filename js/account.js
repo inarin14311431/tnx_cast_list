@@ -18,7 +18,65 @@ const ownedCastResultCount = document.querySelector("#owned-cast-result-count");
 let currentUser = null;
 let ownedCharacters = [];
 
+initializeSearchField();
+setupOwnedCastNavigation();
 initializeAccount();
+
+function initializeSearchField() {
+  if (!ownedCastSearch) return;
+  const lock = () => {
+    ownedCastSearch.readOnly = true;
+    ownedCastSearch.setAttribute("readonly", "");
+  };
+  const unlock = () => {
+    ownedCastSearch.readOnly = false;
+    ownedCastSearch.removeAttribute("readonly");
+  };
+  const clear = () => {
+    ownedCastSearch.value = "";
+    ownedCastSearch.dispatchEvent(new Event("input", { bubbles: true }));
+  };
+
+  ownedCastSearch.name = "q";
+  ownedCastSearch.setAttribute("autocomplete", "off");
+  ownedCastSearch.setAttribute("inputmode", "search");
+  ownedCastSearch.setAttribute("enterkeyhint", "search");
+  ownedCastSearch.setAttribute("aria-autocomplete", "none");
+  ownedCastSearch.setAttribute("data-form-type", "other");
+  ownedCastSearch.setAttribute("data-lpignore", "true");
+  ownedCastSearch.setAttribute("data-1p-ignore", "true");
+  ownedCastSearch.setAttribute("data-bwignore", "true");
+
+  lock();
+  ownedCastSearch.addEventListener("pointerdown", unlock, { passive: true });
+  ownedCastSearch.addEventListener("touchstart", unlock, { passive: true });
+  ownedCastSearch.addEventListener("focus", () => {
+    if (ownedCastSearch.readOnly) unlock();
+  });
+  ownedCastSearch.addEventListener("blur", lock);
+
+  clear();
+  requestAnimationFrame(clear);
+  setTimeout(clear, 120);
+  setTimeout(clear, 500);
+}
+
+function setupOwnedCastNavigation() {
+  if (!ownedCastsContainer) return;
+  ownedCastsContainer.addEventListener("click", event => {
+    const link = event.target.closest(".owned-cast__links a");
+    if (!link) return;
+
+    const href = link.getAttribute("href") || "";
+    const match = href.match(/(?:^|\/)(cast|sheet|acts)\.html([?#].*)?$/);
+    if (!match) return;
+
+    event.preventDefault();
+    event.stopPropagation();
+    const target = new URL(`./${match[1]}.html${match[2] || ""}`, window.location.href);
+    window.location.assign(target.href);
+  });
+}
 
 async function initializeAccount() {
   currentUser = await requireAuth();

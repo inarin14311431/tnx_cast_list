@@ -1,0 +1,16 @@
+/* Public cast combo presentation. */
+body[data-page="cast.html"] .combo-card__ability--multi{display:flex;min-width:0;padding:0;border:0;border-radius:0;gap:3px;background:transparent;box-shadow:none}
+body[data-page="cast.html"] .combo-card__ability--multi[hidden]{display:none!important}
+body[data-page="cast.html"] .combo-card__ability-chip{display:inline-grid;place-items:center;min-width:3.2em;min-height:23px;padding:2px 4px;border:1px solid var(--color-border-muted);border-radius:999px;background:color-mix(in srgb,var(--color-surface) 78%,transparent);font-size:.76rem;font-weight:750;line-height:1;white-space:nowrap}
+body[data-page="cast.html"] .combo-card__ability-chip--reason,
+body[data-page="cast.html"] .combo-card__ability-chip--passion,
+body[data-page="cast.html"] .combo-card__ability-chip--mundane{color:var(--color-text)}
+body[data-page="cast.html"] .combo-card__ability-chip--life{border-color:color-mix(in srgb,var(--color-danger) 82%,var(--color-border));color:var(--color-danger);background:color-mix(in srgb,var(--color-danger) 10%,var(--color-surface))}
+
+/* Reserve enough room for correction/target-value stats without letting combo names dominate. */
+@media (min-width:768px){
+  body[data-page="cast.html"] .combo-card__header{grid-template-columns:minmax(180px,.72fr) minmax(300px,auto) auto}
+  body[data-page="cast.html"] .combo-card__stats{grid-template-columns:minmax(128px,1fr) minmax(160px,1.2fr);min-width:300px}
+  body[data-page="cast.html"] .combo-card__stats>div{gap:7px;padding-inline:7px}
+  body[data-page="cast.html"] .combo-card__header h3{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+}
