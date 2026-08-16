@@ -1,5 +1,3 @@
-import('./sheet-import-url.js?v=3').catch(error=>console.error('sheet URL import failed to load',error));
-
 (() => {
   const panel = document.querySelector('.exp-panel');
   if (!panel) return;
