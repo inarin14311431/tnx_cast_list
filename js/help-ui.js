@@ -1,5 +1,4 @@
 import { SHEET_HELP_ORDER, SHEET_HELP_TOPICS } from "./help-content.js";
-import "./sheet-import-help.js";
 
 const page = document.body?.dataset.page;
 if (page === "sheet.html") initializeSheetHelp();
@@ -62,7 +61,7 @@ function ensureHelpStyles() {
   if (document.querySelector('link[data-sheet-help-style]')) return;
   const link = document.createElement("link");
   link.rel = "stylesheet";
-  link.href = "./css-next/components/help.css?v=4";
+  link.href = "./css-next/components/help.css?v=5";
   link.dataset.sheetHelpStyle = "1";
   document.head.append(link);
 }
