@@ -1,0 +1,85 @@
+name: Sync validation release
+
+on:
+  push:
+    branches: [release/validation-20260821]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout production release branch
+        uses: actions/checkout@v4
+        with:
+          ref: release/validation-20260821
+          fetch-depth: 0
+
+      - name: Checkout validated application source
+        uses: actions/checkout@v4
+        with:
+          repository: inarin14311431/tnx-cast-archive-test
+          ref: 5e69e365a9a2c612ad36bc2368c432c63a511019
+          path: .validation-source
+
+      - name: Sync runtime application assets only
+        shell: bash
+        run: |
+          set -euo pipefail
+          SRC=.validation-source
+
+          for dir in js css-next assets showcases; do
+            rm -rf "$dir"
+            cp -a "$SRC/$dir" "$dir"
+          done
+
+          for file in \
+            404.html \
+            account.html \
+            act-showcase.html \
+            acts.html \
+            backup.html \
+            cast.html \
+            combos.html \
+            edit.html \
+            index.html \
+            login.html \
+            manual-data-import.html \
+            password-reset.html \
+            register.html \
+            sheet.html \
+            sheet-mobile.html \
+            sheet-mobile-new.html \
+            showcase-generator.html \
+            transfer.html; do
+            if [ -f "$SRC/$file" ]; then
+              cp -a "$SRC/$file" "$file"
+            else
+              rm -f "$file"
+            fi
+          done
+
+          rm -rf .validation-source
+          rm -f .github/workflows/sync-validation-release.yml
+          rmdir .github/workflows 2>/dev/null || true
+          rmdir .github 2>/dev/null || true
+
+      - name: Commit synchronized release
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet && git diff --cached --quiet && [ -z "$(git status --porcelain)" ]; then
+            echo "No runtime differences to synchronize."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- \
+            404.html account.html act-showcase.html acts.html backup.html cast.html combos.html edit.html index.html login.html \
+            manual-data-import.html password-reset.html register.html sheet.html sheet-mobile.html sheet-mobile-new.html showcase-generator.html transfer.html \
+            js css-next assets showcases
+          git add -u -- .github || true
+          git commit -m "Sync validated application runtime for production release"
+          git push origin HEAD:release/validation-20260821
