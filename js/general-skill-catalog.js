@@ -7,10 +7,11 @@ export const GENERAL_MASTER_ROWS = Object.freeze([
 
 export const GENERAL_BLANK_SLOT_COLUMNS = Object.freeze(["left", "left", "right", "right"]);
 
-export const GENERAL_MOBILE_ORDER = Object.freeze([
-  "医療", "芸術：", "射撃", "運動", "知覚", "回避", "電脳", "白兵",
-  "製作：", "操縦：", "心理", "信用", "自我", "圧力", "交渉", "隠密"
-]);
+// Mobile is a single-column editor, so keep the canonical master order instead of
+// interleaving the two desktop columns row-by-row.
+export const GENERAL_MOBILE_ORDER = Object.freeze(
+  GENERAL_MASTER_ROWS.map(([name]) => name)
+);
 
 export const MUTABLE_GENERAL_PREFIXES = Object.freeze(
   GENERAL_MASTER_ROWS.filter(([, , kind]) => kind === "proper").map(([name]) => name)
