@@ -1,6 +1,7 @@
 const SPECIALIZED_PREFIXES = ["製作：", "芸術：", "操縦："];
 
 const waitFrame = () => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+let replayingImportClick = false;
 
 function skillName(row) {
   return String(row?.querySelector('[data-f="name"]')?.value || "").trim();
@@ -70,11 +71,17 @@ function bindImportReset() {
   if (!apply || apply.dataset.specializedResetBound === "1") return;
   apply.dataset.specializedResetBound = "1";
   apply.addEventListener("click", async event => {
-    if (apply.disabled) return;
+    if (replayingImportClick || apply.disabled) return;
+    event.preventDefault();
     event.stopImmediatePropagation();
     await resetFixedSpecializedRows();
-    apply.click();
-  }, { capture: true, once: true });
+    replayingImportClick = true;
+    try {
+      apply.click();
+    } finally {
+      replayingImportClick = false;
+    }
+  }, true);
 }
 
 function initialize() {
