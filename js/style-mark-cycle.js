@@ -1,10 +1,12 @@
 /* Click-cycle controls for ◎ / ● style assignments.
  * The original select elements remain the source of truth for save/load compatibility.
  */
-(function(){
+function initializeStyleMarkCycle(){
   const MARKS=["","◎","●","◎●"];
   const root=document.querySelector("#style-grid");
   if(!root)return;
+  if(root.dataset.tnxStyleMarkCycleInitialized==="true")return;
+  root.dataset.tnxStyleMarkCycleInitialized="true";
 
   let enhanced=false;
   let syncQueued=false;
@@ -201,4 +203,6 @@
       subtree:true
     });
   }
-})();
+}
+
+initializeStyleMarkCycle();

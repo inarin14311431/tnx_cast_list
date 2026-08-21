@@ -1,6 +1,10 @@
-/* Character-sheets direct URL import for the sheet editor. VERSION 1.3.0 */
+/* Character-sheets direct URL import for the sheet editor. VERSION 1.5.2 */
 (()=>{
-  const VERSION='1.3.0';
+  const VERSION='1.5.2';
+  const STYLE_CODE_NAMES=new Map([
+    ['0','カブキ'],['1','バサラ'],['2','タタラ'],['3','ミストレス'],['4','カブト'],['5','カリスマ'],['6','マネキン'],['7','カゼ'],['8','フェイト'],['9','クロマク'],['10','エグゼク'],['11','カタナ'],['12','クグツ'],['13','カゲ'],['14','チャクラ'],['15','レッガー'],['16','カブトワリ'],['17','ハイランダー'],['18','マヤカシ'],['19','トーキー'],['20','イヌ'],['21','ニューロ'],
+    ['-0','コモン'],['-1','ヒルコ'],['-2','クロガネ'],['-4','イブキ'],['-6','シキガミ'],['-7','アラシ'],['-9','カゲムシャ'],['-12','ミギウデ'],['-17','エトランゼ'],['-18','アヤカシ'],['-21','ウツワ']
+  ]);
   import('./help-ui.js?v=6').catch(error=>console.error('sheet help failed to load',error));
 
   const dialog=document.querySelector('#legacy-import-dialog');
@@ -15,7 +19,6 @@
   dialog.dataset.urlImportReady='1';
   dialog.dataset.urlImportVersion=VERSION;
 
-  // 旧取込専用HELPは廃止済み。残存DOMだけを初期化時に1回掃除する。
   document.querySelectorAll('#sheet-import-help-button,#sheet-import-bookmarklet-copy,#sheet-import-help-dialog').forEach(node=>node.remove());
   const obsoleteControl=importButton.closest('.sheet-import-control');
   if(obsoleteControl&&obsoleteControl.parentNode){
@@ -27,7 +30,7 @@
 
   const heading=form.querySelector('h2');
   const intro=heading?.nextElementSibling;
-  if(heading)heading.textContent='キャラシ倉庫から取込';
+  if(heading)heading.textContent='キャラクターシート倉庫から取込';
   if(intro?.tagName==='P')intro.textContent='キャラクターシート倉庫のURLを入力して「取込み」を押してください。';
 
   legacyCopy?.remove();
@@ -49,16 +52,6 @@
   const input=box.querySelector('#character-sheets-import-url');
   const run=box.querySelector('#character-sheets-import-run');
 
-  const style=document.createElement('style');
-  style.textContent=`
-    #legacy-import-dialog .character-sheets-url-import{display:grid;gap:10px;margin:16px 0}
-    #legacy-import-dialog .character-sheets-url-import label{font-weight:700}
-    #legacy-import-dialog .character-sheets-url-import input{width:100%;min-width:0;padding:11px 12px}
-    #legacy-import-dialog .character-sheets-url-import button{min-height:44px}
-    #legacy-import-dialog .character-sheets-url-import__version{justify-self:end;opacity:.52;font-size:10px;letter-spacing:.06em}
-  `;
-  document.head.append(style);
-
   function setMessage(text,isError=false){
     message.textContent=text;
     message.dataset.state=isError?'error':'';
@@ -77,27 +70,78 @@
     return key;
   }
 
+  function parseJsonData(value){
+    if(typeof value!=='string')return value;
+    let source=value.trim();
+    if(!source)return value;
+    if(source.endsWith(';'))source=source.slice(0,-1).trim();
+    if(source.startsWith('(')&&source.endsWith(')'))source=source.slice(1,-1).trim();
+    try{return JSON.parse(source)}catch{return value}
+  }
+
+  function mergeWrapperMetadata(parsed,wrapper){
+    if(!parsed||typeof parsed!=='object'||Array.isArray(parsed))return parsed;
+    const result={...parsed};
+    for(const key of ['outline','name','nameKana','player','display']){
+      if((result[key]===undefined||result[key]===null||result[key]==='')&&wrapper?.[key]!==undefined)result[key]=wrapper[key];
+    }
+    return result;
+  }
+
+  function enrichLegacyStyles(data){
+    if(!data||typeof data!=='object'||data.outline)return data;
+    const styles=data.styles;
+    if(!styles||typeof styles!=='object'||Array.isArray(styles))return data;
+    const names=[styles.style1,styles.style2,styles.style3].map(value=>STYLE_CODE_NAMES.get(String(value??''))||'');
+    if(names.every(Boolean))data.outline=`STYLE:${names.join('=')}`;
+    return data;
+  }
+
+  function stripLegacyStarSkillMarkers(data){
+    if(!data||typeof data!=='object')return data;
+    const visit=(value,inSkillTree=false)=>{
+      if(Array.isArray(value)){
+        value.forEach(item=>visit(item,inSkillTree));
+        return;
+      }
+      if(!value||typeof value!=='object')return;
+      for(const [key,item] of Object.entries(value)){
+        const nextSkillTree=inSkillTree||/skill/i.test(key);
+        if(nextSkillTree&&key==='name'&&typeof item==='string')value[key]=item.replace(/^\s*★\s*/,'');
+        else visit(item,nextSkillTree);
+      }
+    };
+    visit(data,false);
+    return data;
+  }
+
   function normalizePayload(payload){
     let data=payload;
-    for(let i=0;i<3;i++){
+    for(let i=0;i<6;i++){
       if(typeof data==='string'){
-        try{data=JSON.parse(data);continue;}catch{break;}
+        const parsed=parseJsonData(data);
+        if(parsed!==data){data=parsed;continue;}
+        break;
       }
       if(data&&typeof data==='object'&&typeof data.jsonData==='string'&&data.jsonData.trim()){
-        try{data=JSON.parse(data.jsonData);continue;}catch{}
+        const parsed=parseJsonData(data.jsonData);
+        if(parsed!==data.jsonData){data=mergeWrapperMetadata(parsed,data);continue;}
       }
       if(data&&typeof data==='object'&&data.data&&typeof data.data==='object'&&!data.base&&!data.skills1&&!data.superhumanskills&&!data.weapons){
-        data=data.data;continue;
+        const wrapper=data;
+        data=mergeWrapperMetadata(data.data,wrapper);continue;
       }
       break;
     }
-    if(!data||typeof data!=='object')throw new Error('キャラシ倉庫から有効なデータを取得できませんでした。');
+    if(!data||typeof data!=='object')throw new Error('キャラクターシート倉庫から有効なデータを取得できませんでした。');
+    data=enrichLegacyStyles(data);
+    data=stripLegacyStarSkillMarkers(data);
     const supported=Array.isArray(data.fields)||data.base||data.skills1||data.skills2||data.superhumanskills||data.weapons||data.outfits;
     if(!supported)throw new Error('取得データをTNXキャラクターシートとして認識できません。');
     return data;
   }
 
-  function fetchJsonp(key,timeout=15000){
+  function jsonpOnce(url,timeout=12000){
     return new Promise((resolve,reject)=>{
       const callback=`__tnxSheetUrlImport_${Date.now()}_${Math.random().toString(36).slice(2)}`;
       const script=document.createElement('script');
@@ -108,14 +152,35 @@
       };
       const finish=(fn,value)=>{
         if(settled)return;
-        settled=true;clearTimeout(timer);cleanup();fn(value);
+        settled=true;
+        clearTimeout(timer);
+        cleanup();
+        fn(value);
       };
-      const timer=setTimeout(()=>finish(reject,new Error('キャラシ倉庫からの応答がタイムアウトしました。')),timeout);
+      const timer=setTimeout(()=>finish(reject,new Error('応答がタイムアウトしました。')),timeout);
       window[callback]=payload=>finish(resolve,payload);
-      script.onerror=()=>finish(reject,new Error('キャラシ倉庫のデータ取得に失敗しました。'));
-      script.src=`https://character-sheets.appspot.com/tnx/display?ajax=1&key=${encodeURIComponent(key)}&callback=${encodeURIComponent(callback)}`;
+      script.onerror=()=>finish(reject,new Error('データ取得リクエストに失敗しました。'));
+      const request=new URL(url);
+      request.searchParams.set('callback',callback);
+      script.src=request.toString();
       document.head.append(script);
     });
+  }
+
+  async function fetchJsonp(key){
+    const encoded=encodeURIComponent(key);
+    const urls=[
+      `https://character-sheets.appspot.com/tnx/display?ajax=1&key=${encoded}`,
+      `https://character-sheets.appspot.com/tnx/display.html?ajax=1&key=${encoded}`,
+      `https://character-sheets.appspot.com/tnx/display?key=${encoded}&ajax=1`,
+      `https://character-sheets.appspot.com/tnx/display.html?key=${encoded}&ajax=1`
+    ];
+    const failures=[];
+    for(const url of urls){
+      try{return await jsonpOnce(url);}catch(error){failures.push(`${url}: ${error?.message||error}`);}
+    }
+    console.error('character-sheets JSONP endpoints failed',failures);
+    throw new Error('キャラクターシート倉庫のデータ取得に失敗しました。');
   }
 
   function waitUntilFinished(timeout=180000){
@@ -134,7 +199,7 @@
     if(run.disabled)return;
     run.disabled=true;
     input.disabled=true;
-    setMessage('キャラシ倉庫からデータを取得しています…');
+    setMessage('キャラクターシート倉庫からデータを取得しています…');
     try{
       const key=resolveSource(input.value);
       const payload=await fetchJsonp(key);

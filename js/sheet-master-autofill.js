@@ -123,7 +123,19 @@ function fillOutfits(index) {
     if (!source) continue;
 
     const raw = parseRawData(source.raw_data);
-    const concealment = [source.concealment, source.concealment_penalty].filter(value => !isMissing(value)).join("/");
+    const concealmentValue = firstPresent(
+      source.concealment,
+      raw.concealment,
+      raw.concealA,
+      raw["隠匿値"]
+    );
+    const concealmentPenalty = firstPresent(
+      source.concealment_penalty,
+      raw.concealment_penalty,
+      raw.concealB,
+      raw["隠匿修正"],
+      raw["ペナ"]
+    );
     const rangeValue = firstPresent(source.range_text, raw.range_text, raw.range, raw.rangeText);
     const electronicValue = firstPresent(source.electronic_control, raw.electronic_control, raw.electrical_control, raw.electronicControl, raw.electricalControl);
     const residence = readResidenceValues(raw);
@@ -131,7 +143,8 @@ function fillOutfits(index) {
 
     changed += fillControl(base("purchase_value"), source.purchase_target);
     changed += fillControl(base("experience_cost"), source.permanent_cost);
-    changed += fillControl(base("concealment"), concealment);
+    changed += fillControl(base("concealment"), concealmentValue);
+    changed += fillControl(ofc("concealment_penalty"), concealmentPenalty);
     changed += fillControl(base("attack"), source.attack);
     changed += fillControl(base("range") || ofc("range_text"), rangeValue);
     changed += fillControl(base("slot"), source.slot);
@@ -217,6 +230,8 @@ function chooseBestOutfitMatch(row, matches) {
   return chooseBestMatch(matches, source => scoreExistingPairs([
     [base("purchase_value"), source.purchase_target],
     [base("experience_cost"), source.permanent_cost],
+    [base("concealment"), source.concealment],
+    [ofc("concealment_penalty"), source.concealment_penalty],
     [base("attack"), source.attack],
     [base("range") || ofc("range_text"), source.range_text],
     [ofc("parry"), source.parry],

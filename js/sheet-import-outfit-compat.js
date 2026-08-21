@@ -1,8 +1,10 @@
-/* Legacy outfit import compatibility: isolate outfit data from the base importer and rebuild deterministically. */
+/* Canonical legacy outfit import owner: strips outfit payloads from the base importer and rebuilds them once. */
 (()=>{
   const APPLY="#legacy-import-apply",TEXT="#legacy-import-json",ROOT="#outfit-list",MESSAGE="#legacy-import-message",DIALOG="#legacy-import-dialog";
   const BASE_IMPORT_EVENT="tnx:legacy-import-base-finished";
   const PREFIXES=["weapons","armours","armors","cyberwares","trons","vehicles","residences","outfits"];
+  const OUTFIT_ADAPTER=import("./outfit-ofc-adapter.js?v=1");
+  let normalizeImportedOutfitDetails=(category,value)=>value;
   const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const frame=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
   const clean=value=>String(value??"").trim().replace(/^[★†※■┗]+\s*/,"");
@@ -22,11 +24,11 @@
     root.querySelector("[data-import-progress-label]").textContent=label;
     root.querySelector("[data-import-progress-detail]").textContent=detail;
   }
-  window.TNXLegacyImportProgress={update:progress};
 
   function lock(dialog,on){
     if(!dialog)return;
-    if(on)dialog.setAttribute("data-importing","1");else dialog.removeAttribute("data-importing");
+    if(on){dialog.setAttribute("data-importing","1");dialog.dataset.outfitImportOwner="canonical"}
+    else{dialog.removeAttribute("data-importing");delete dialog.dataset.outfitImportOwner}
     const close=dialog.querySelector('[value="cancel"]');if(close)close.disabled=on;
     const apply=dialog.querySelector(APPLY);if(apply){if(on)apply.setAttribute("aria-busy","true");else{apply.removeAttribute("aria-busy");apply.disabled=false}}
   }
@@ -89,6 +91,7 @@
     if(!element||value===undefined||value===null)return false;
     element.value=String(value);
     element.dispatchEvent(new Event("input",{bubbles:true}));
+    element.dispatchEvent(new Event("change",{bubbles:true}));
     return true;
   }
 
@@ -103,6 +106,12 @@
   }
 
   async function clearExisting(){
+    const directClear=window.TNXSheetEditor?.clearOutfitsForImport;
+    if(typeof directClear==="function"){
+      directClear();
+      await frame();
+      return;
+    }
     let guard=0;
     while(guard++<300){
       const remove=document.querySelector(`${ROOT} [data-delete-outfit]`);
@@ -111,32 +120,77 @@
     }
   }
 
+  function canonicalModifiers(item){
+    const data=item.data;
+    return normalizeImportedOutfitDetails(item.category,{
+      control_modifier:first(data,"control","controlModifier","controlValue"),
+      cs_modifier:first(data,"cs","csModifier")
+    });
+  }
+
   function commonValues(item){
     const data=item.data;
-    const concealA=first(data,"concealA","concealment"),concealB=first(data,"concealB","concealmentPenalty");
+    const modifiers=canonicalModifiers(item);
     return {
       name:item.name,
       purchase_value:first(data,"purchase","purchaseValue"),
       experience_cost:first(data,"permanent","experienceCost"),
-      concealment:[concealA,concealB].filter(value=>String(value??"")!=="").join("/"),
+      concealment:first(data,"concealA","concealment"),
       slot:first(data,"slot","part"),
-      control_modifier:first(data,"control","controlModifier"),
-      cs_modifier:first(data,"sf","speed","csModifier"),
+      ...modifiers,
       description:first(data,"notes","description")
     };
   }
 
-  function createRaw(item){
-    const root=document.querySelector(ROOT),add=document.querySelector("#add-outfit");
-    if(!root||!add)throw new Error("アウトフィット追加欄を確認できません。");
+  function fieldControl(row,field){
+    return row?.querySelector?.(`[data-o="${field}"]`)
+      ||row?.querySelector?.(`[data-pc-outfit-proxy="${field}"]`)
+      ||null;
+  }
+
+  async function waitForCreatedRow(before,timeout=8000){
+    const root=document.querySelector(ROOT),started=Date.now();
+    while(root&&Date.now()-started<timeout){
+      const row=[...root.querySelectorAll('[data-outfit-key]')].find(candidate=>!before.has(candidate.dataset.outfitKey));
+      if(row)return row;
+      await frame();
+    }
+    return null;
+  }
+
+  async function createRaw(item){
+    const root=document.querySelector(ROOT);
+    if(!root)throw new Error("アウトフィット追加欄を確認できません。");
+
+    const directAdd=window.TNXSheetEditor?.addOutfitForImport;
+    if(typeof directAdd==="function"){
+      const key=directAdd(item.category);
+      if(!key)throw new Error(`アウトフィット行を作成できません：${item.name}`);
+      const row=await waitRow(key);
+      if(!row)throw new Error(`アウトフィット行を作成できません：${item.name}`);
+      const values=commonValues(item);
+      for(const [field,value] of Object.entries(values))setValue(fieldControl(row,field),value);
+      return key;
+    }
+
     const before=new Set([...root.querySelectorAll('[data-outfit-key]')].map(row=>row.dataset.outfitKey));
+    const categoryAdd=root.querySelector(`[data-add-outfit-category="${CSS.escape(item.category)}"]`);
+    const generic=document.querySelector("#add-outfit");
+    const add=categoryAdd||generic;
+    if(!add)throw new Error("アウトフィット追加欄を確認できません。");
     add.click();
-    const card=[...root.querySelectorAll(':scope > .outfit-card[data-outfit-key]')].find(candidate=>!before.has(candidate.dataset.outfitKey));
-    if(!card)throw new Error(`アウトフィット行を作成できません：${item.name}`);
-    const key=card.dataset.outfitKey;
+
+    let row=await waitForCreatedRow(before);
+    if(!row)throw new Error(`アウトフィット行を作成できません：${item.name}`);
+    const key=row.dataset.outfitKey;
+
+    if(!categoryAdd){
+      setValue(fieldControl(row,"category"),item.category);
+      await frame();
+      row=root.querySelector(`[data-outfit-key="${CSS.escape(key)}"]`)||row;
+    }
     const values=commonValues(item);
-    for(const [field,value] of Object.entries(values))setValue(card.querySelector(`[data-o="${field}"]`),value);
-    setValue(card.querySelector('[data-o="category"]'),item.category);
+    for(const [field,value] of Object.entries(values))setValue(fieldControl(row,field),value);
     return key;
   }
 
@@ -155,29 +209,36 @@
     let row=await waitRow(key);
     if(!row)throw new Error(`アウトフィット行の再描画に失敗しました：${item.name}`);
     const data=item.data;
-    const base=(field,value)=>setValue(row.querySelector(`[data-o="${field}"]`),value);
+    const modifiers=canonicalModifiers(item);
+    const base=(field,value)=>setValue(fieldControl(row,field),value);
     const ofc=(field,value)=>String(value??"")!==""&&setValue(row.querySelector(`[data-ofc="${field}"]`),value);
     base("name",item.name);
+    ofc("concealment_penalty",first(data,"concealB","concealmentPenalty","concealment_penalty"));
     if(item.category==="weapon"){
       base("attack",first(data,"attack"));base("range",first(data,"range"));base("slot",first(data,"slot","part"));
       ofc("parry",first(data,"parry","defense"));ofc("speed",first(data,"speed"));
     }else if(item.category==="armor"){
-      const s=first(data,"protecS","defenseS"),i=first(data,"protecI","defenseI"),p=first(data,"protecP","defenseP");
-      base("defense",[s,i,p].map(value=>String(value??"")).join("/"));base("slot",first(data,"slot","part"));ofc("control_value",first(data,"control","controlValue"));
+      const s=first(data,"protecS","defenseS"),p=first(data,"protecP","defenseP"),i=first(data,"protecI","defenseI");
+      base("slot",first(data,"slot","part"));base("control_modifier",modifiers.control_modifier);
+      ofc("defense_s",s);ofc("defense_p",p);ofc("defense_i",i);
     }else if(item.category==="cyberware"){
-      base("control_modifier",first(data,"control","controlModifier"));base("slot",first(data,"slot","part"));
+      base("slot",first(data,"slot","part"));
     }else if(item.category==="tron"){
-      base("control_modifier",first(data,"control","controlModifier"));base("slot",first(data,"slot"));ofc("speed",first(data,"speed"));
-      ofc("tron_software",first(data,"software","tron_software"));ofc("tron_support",first(data,"support","tron_support"));ofc("tron_hardware",first(data,"hardware","tron_hardware"));ofc("cs_value",first(data,"cs","csValue"));
+      base("slot",first(data,"slot"));base("cs_modifier",modifiers.cs_modifier);ofc("speed",first(data,"speed"));
+      ofc("tron_software",first(data,"software","tron_software"));ofc("tron_support",first(data,"support","tron_support"));ofc("tron_hardware",first(data,"hardware","tron_hardware"));
     }else if(item.category==="vehicle"){
-      base("attack",first(data,"attack"));base("control_modifier",first(data,"control","controlModifier"));
-      ofc("speed",first(data,"slot","speed"));ofc("defense_s",first(data,"protecS","defenseS"));ofc("defense_p",first(data,"protecP","defenseP"));ofc("defense_i",first(data,"protecI","defenseI"));ofc("crew",first(data,"crew","passenger","passengers"));ofc("sf",first(data,"sf","speedFactor"));
+      const s=first(data,"protecS","defenseS"),p=first(data,"protecP","defenseP"),i=first(data,"protecI","defenseI");
+      base("attack",first(data,"attack"));base("control_modifier",modifiers.control_modifier);base("cs_modifier",modifiers.cs_modifier);
+      ofc("speed",first(data,"speed","slot"));ofc("defense_s",s);ofc("defense_p",p);ofc("defense_i",i);ofc("crew",first(data,"crew","passenger","passengers"));ofc("sf",first(data,"sf","speedFactor"));
     }else if(item.category==="residence"){
       base("slot",first(data,"part","slot"));ofc("speed",first(data,"speed"));ofc("residence_entry",first(data,"entry"));ofc("residence_electric",first(data,"electric","residence_electric"));ofc("residence_area",first(data,"area","residence_area"));
     }else base("slot",first(data,"slot","part"));
     ofc("page_number",first(data,"page","pageNumber"));
     ofc("electronic_control",first(data,"electrical_control","electronic_control","electricalControl","electronicControl"));
   }
+
+  window.TNXLegacyOutfitImport={owner:"sheet-import-outfit-compat",sourceOutfits,stripOutfits};
+  window.TNXLegacyImportProgress={update:progress};
 
   const dialog=document.querySelector(DIALOG);
   dialog?.addEventListener("cancel",event=>{if(dialog.getAttribute("data-importing")==="1")event.preventDefault()});
@@ -193,11 +254,15 @@
     const importDialog=document.querySelector(DIALOG);
     lock(importDialog,true);
     progress(3,"JSONを解析中",`アウトフィット${items.length}件を分離して取込みます`);
+
+    /* The base importer receives no outfit payload. This module is the only runtime owner of outfit reconstruction. */
     textarea.value=JSON.stringify(baseData);
     const basePromise=waitBaseImport();
 
     (async()=>{
       try{
+        const adapter=await OUTFIT_ADAPTER;
+        normalizeImportedOutfitDetails=adapter.normalizeImportedOutfitDetails;
         await basePromise;
         textarea.value=originalText;
         progress(50,"アウトフィットを準備中","既存のアウトフィットを整理しています");
@@ -206,9 +271,8 @@
         for(let index=0;index<items.length;index++){
           const item=items[index];
           progress(52+32*(index/Math.max(1,items.length)),"アウトフィットを作成中",`${index+1}/${items.length}件　${item.name}`);
-          const key=createRaw(item);
+          const key=await createRaw(item);
           created.push({key,item});
-          await frame();
         }
         for(let index=0;index<created.length;index++){
           const {key,item}=created[index];

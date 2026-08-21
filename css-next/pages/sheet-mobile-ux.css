@@ -1,0 +1,167 @@
+/* Final cross-feature UX layer for sheet-mobile.html.
+ * Owns navigation, fixed actions, modal actions, reorder mode and mobile readability.
+ * Feature CSS keeps only feature-specific card/form layouts.
+ */
+body[data-page="sheet-mobile.html"]{
+  --mobile-sticky-header-height:64px;
+  padding-bottom:calc(84px + env(safe-area-inset-bottom));
+}
+
+/* Header + section navigation */
+body[data-page="sheet-mobile.html"] .mobile-sheet-header{
+  position:sticky;
+  top:0;
+  z-index:120;
+}
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:5px;
+  margin:0 0 12px;
+  padding:0;
+  overflow:visible;
+  background:transparent;
+}
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav a{
+  display:grid;
+  place-items:center;
+  min-width:0;
+  min-height:40px;
+  padding:5px 4px;
+  border:1px solid var(--color-border-muted);
+  background:var(--color-surface);
+  font-size:10.5px;
+  font-weight:700;
+  line-height:1.2;
+  text-align:center;
+  white-space:normal;
+}
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav a.is-active,
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav a[aria-current="location"]{
+  border-color:color-mix(in srgb,var(--color-accent) 70%,var(--color-border-muted));
+  color:var(--color-accent);
+  background:color-mix(in srgb,var(--color-accent) 10%,var(--color-surface));
+}
+body[data-page="sheet-mobile.html"] .mobile-sheet-section{scroll-margin-top:calc(var(--mobile-sticky-header-height) + 10px)}
+
+/* Save status: normal state stays quiet; only actionable states occupy space. */
+body[data-page="sheet-mobile.html"] .mobile-sheet-status[data-state="saved"]{display:none}
+body[data-page="sheet-mobile.html"] .mobile-sheet-status[data-state="dirty"],
+body[data-page="sheet-mobile.html"] .mobile-sheet-status[data-state="saving"],
+body[data-page="sheet-mobile.html"] .mobile-sheet-status[data-state="error"]{display:block;margin:0 0 8px}
+body[data-page="sheet-mobile.html"] .mobile-sheet-status[data-state="saving"]{border-color:color-mix(in srgb,var(--color-accent) 55%,var(--color-border-muted))}
+body[data-page="sheet-mobile.html"] .mobile-edit-notice{margin-bottom:10px;font-size:10.5px}
+
+/* Fixed actions: TOP / view / save. Visibility is moved back into basic information. */
+body[data-page="sheet-mobile.html"] .mobile-sheet-actions{
+  grid-template-columns:64px minmax(78px,.8fr) minmax(128px,1.55fr);
+  justify-content:center;
+  gap:5px;
+  padding:8px max(8px,env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom)) max(8px,env(safe-area-inset-right));
+}
+body[data-page="sheet-mobile.html"] .mobile-sheet-actions>*{min-width:0;min-height:48px}
+body[data-page="sheet-mobile.html"] .mobile-sheet-actions #mobile-save{
+  border-color:color-mix(in srgb,var(--color-accent) 58%,var(--color-border-muted));
+  font-size:12px;
+  font-weight:900;
+}
+body[data-page="sheet-mobile.html"] .mobile-sheet-actions #mobile-save[data-state="dirty"]{
+  border-color:var(--color-warning,#e0b44c);
+  color:var(--color-warning,#e0b44c);
+}
+body[data-page="sheet-mobile.html"] .mobile-sheet-actions #mobile-save[data-state="saving"]{opacity:.72}
+body[data-page="sheet-mobile.html"] .mobile-profile-visibility{
+  display:grid;
+  grid-template-columns:auto minmax(120px,1fr);
+  align-items:center;
+  gap:10px;
+  margin:0 0 10px;
+  padding:9px 10px;
+  border:1px solid color-mix(in srgb,var(--color-section-profile,var(--color-accent)) 38%,var(--color-border-muted));
+  background:color-mix(in srgb,var(--color-section-profile,var(--color-accent)) 6%,var(--color-surface));
+}
+body[data-page="sheet-mobile.html"] .mobile-profile-visibility span{font-size:11px;font-weight:800;opacity:.78}
+body[data-page="sheet-mobile.html"] .mobile-profile-visibility select{
+  width:100%;
+  min-height:42px;
+  border:1px solid var(--color-border-muted);
+  background:var(--color-surface);
+  color:inherit;
+  font-size:16px;
+}
+
+/* Every editable modal uses the same action grammar. */
+body[data-page="sheet-mobile.html"] .mobile-editor-dialog__header--actions{
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:8px;
+}
+body[data-page="sheet-mobile.html"] .mobile-editor-dialog__header--actions>strong{
+  grid-column:2;
+  grid-row:1;
+  min-width:0;
+  text-align:center;
+}
+body[data-page="sheet-mobile.html"] .mobile-editor-dialog__header--actions>button{
+  grid-row:1;
+  min-width:72px;
+  min-height:44px;
+  padding-inline:9px;
+  white-space:nowrap;
+}
+body[data-page="sheet-mobile.html"] .mobile-editor-dialog__header--actions>button:first-child{grid-column:1}
+body[data-page="sheet-mobile.html"] .mobile-editor-dialog__header--actions>button:last-child{
+  grid-column:3;
+  border-color:color-mix(in srgb,var(--color-accent) 68%,var(--color-border-muted));
+  color:var(--color-accent);
+  font-weight:900;
+}
+body[data-page="sheet-mobile.html"] [data-mobile-apply-source="1"]{display:none!important}
+
+/* Readability: prefer fewer visible fields over 9px text. */
+body[data-page="sheet-mobile.html"] .mobile-general-display-name{font-size:12px;line-height:1.3}
+body[data-page="sheet-mobile.html"] .mobile-general-row--button strong{font-size:11px}
+body[data-page="sheet-mobile.html"] .mobile-general-display-suit{font-size:15px}
+body[data-page="sheet-mobile.html"] .mobile-style-skill-card__primary .mobile-edit-card__name{font-size:13px}
+body[data-page="sheet-mobile.html"] .mobile-style-skill-card__primary .mobile-edit-card__level{font-size:11.5px}
+body[data-page="sheet-mobile.html"] .mobile-style-skill-card__secondary{font-size:10.5px;grid-template-columns:minmax(44px,.7fr) minmax(54px,1fr) minmax(70px,1.25fr)}
+body[data-page="sheet-mobile.html"] .mobile-style-skill-card__secondary span:nth-child(4){display:none}
+body[data-page="sheet-mobile.html"] .mobile-outfit-card strong{font-size:13px}
+body[data-page="sheet-mobile.html"] .mobile-outfit-card span{font-size:11px}
+body[data-page="sheet-mobile.html"] .mobile-outfit-card small{font-size:10px}
+
+/* Reorder mode: normal browsing stays compact; arrows appear only when requested. */
+body[data-page="sheet-mobile.html"] .mobile-reorder-toggle{
+  flex:0 0 auto;
+  min-height:38px;
+  padding:5px 9px;
+  border:1px solid color-mix(in srgb,var(--mobile-section-accent,var(--color-accent)) 42%,var(--color-border-muted));
+  background:color-mix(in srgb,var(--mobile-section-accent,var(--color-accent)) 6%,var(--color-surface));
+  color:var(--mobile-section-accent,var(--color-accent));
+  font-size:10.5px;
+  font-weight:800;
+}
+body[data-page="sheet-mobile.html"] .mobile-reorder-toggle[aria-pressed="true"]{
+  border-color:var(--mobile-section-accent,var(--color-accent));
+  background:color-mix(in srgb,var(--mobile-section-accent,var(--color-accent)) 14%,var(--color-surface));
+}
+body[data-page="sheet-mobile.html"] #mobile-style-skills-section:not(.is-reorder-mode) .mobile-style-skill-row,
+body[data-page="sheet-mobile.html"] #mobile-outfits-section:not(.is-reorder-mode) .mobile-outfit-order-row{grid-template-columns:minmax(0,1fr)}
+body[data-page="sheet-mobile.html"] #mobile-style-skills-section:not(.is-reorder-mode) .mobile-style-skill-row__actions,
+body[data-page="sheet-mobile.html"] #mobile-outfits-section:not(.is-reorder-mode) .mobile-outfit-order-row__actions{display:none}
+body[data-page="sheet-mobile.html"] #mobile-style-skills-section.is-reorder-mode .mobile-style-skill-row,
+body[data-page="sheet-mobile.html"] #mobile-outfits-section.is-reorder-mode .mobile-outfit-order-row{grid-template-columns:minmax(0,1fr) 44px}
+body[data-page="sheet-mobile.html"] #mobile-style-skills-section.is-reorder-mode .mobile-style-skill-row__actions,
+body[data-page="sheet-mobile.html"] #mobile-outfits-section.is-reorder-mode .mobile-outfit-order-row__actions{display:grid}
+body[data-page="sheet-mobile.html"] #mobile-style-skills-section:not(.is-reorder-mode) .mobile-style-separator__actions [data-move-style],
+body[data-page="sheet-mobile.html"] #mobile-style-skills-section:not(.is-reorder-mode) .mobile-style-separator__actions [data-move-separator]{display:none}
+
+@media(max-width:390px){
+  body[data-page="sheet-mobile.html"] .mobile-sheet-nav{gap:4px}
+  body[data-page="sheet-mobile.html"] .mobile-sheet-nav a{min-height:38px;padding-inline:2px;font-size:9.5px}
+  body[data-page="sheet-mobile.html"] .mobile-sheet-actions{grid-template-columns:56px 72px minmax(118px,1fr);gap:4px}
+  body[data-page="sheet-mobile.html"] .mobile-editor-dialog__header--actions>button{min-width:64px;padding-inline:6px;font-size:11px}
+  body[data-page="sheet-mobile.html"] .mobile-general-display-name{font-size:11.5px}
+  body[data-page="sheet-mobile.html"] .mobile-style-skill-card__secondary{font-size:10px;grid-template-columns:minmax(42px,.7fr) minmax(50px,1fr) minmax(62px,1.2fr)}
+}

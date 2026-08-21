@@ -222,7 +222,6 @@ function createOwnedCastItem(character) {
           <a href="${SITE_BASE_PATH}cast.html?id=${id}">${actionLabel("閲覧", "OPEN")}</a>
           <a href="${SITE_BASE_PATH}sheet.html?id=${id}">${actionLabel("シート編集", "EDIT SHEET")}</a>
           <a href="${SITE_BASE_PATH}acts.html?character=${id}">${actionLabel("参加アクト", "ACTS")}</a>
-          <a href="${SITE_BASE_PATH}sheet.html?id=${id}#combos">${actionLabel("コンボ", "COMBOS")}</a>
         </div>
         <div class="owned-cast__management" aria-label="管理操作">
           <span class="owned-cast__management-label">管理操作 <small>MANAGEMENT</small></span>

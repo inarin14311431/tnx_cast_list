@@ -1,3 +1,5 @@
+import { parseLegacyDefense } from "./outfit-legacy-compat.js";
+
 export const OUTFIT_ROOT_SELECTOR = "#outfit-list";
 
 export function targetToCategory(target) {
@@ -22,17 +24,7 @@ export function categoryToTarget(category) {
 }
 
 export function parseDefense(value) {
-  const text = String(value || "").trim();
-  const output = { defense_s: "", defense_p: "", defense_i: "" };
-  for (const match of text.matchAll(/\b([SPI])\s*[:：]?\s*([^/／,，\s]+)/gi)) {
-    output[`defense_${match[1].toLowerCase()}`] = match[2];
-  }
-  if (Object.values(output).some(Boolean)) return output;
-  const parts = text.split(/[\/／,，\s]+/).filter(Boolean);
-  if (parts.length) output.defense_s = parts[0] || "";
-  if (parts.length > 1) output.defense_i = parts[1] || "";
-  if (parts.length > 2) output.defense_p = parts[2] || "";
-  return output;
+  return parseLegacyDefense(value, "sip");
 }
 
 export function defenseText(details) {

@@ -9,6 +9,10 @@ import {
   rowSignature,
   targetToCategory
 } from "./outfit-ofc-utils.js";
+import {
+  masterRowToOutfitDetails,
+  normalizeImportedOutfitDetails
+} from "./outfit-ofc-adapter.js?v=2";
 
 const MASTER_TABLE = "ofc_master";
 const TSV_EXTRA_HEADERS = [
@@ -17,7 +21,7 @@ const TSV_EXTRA_HEADERS = [
   "defense_s", "defense_p", "defense_i",
   "ianus_surface", "ianus_deep", "ianus_none",
   "tron_software", "tron_support", "tron_hardware",
-  "cs_value", "crew", "sf",
+  "cs_modifier", "crew", "sf",
   "residence_entry", "residence_electric", "residence_area"
 ];
 
@@ -64,7 +68,7 @@ function handleTsvImport(event) {
       const category = targetToCategory(source.target);
       const index = available.findIndex(row => rowSignature(row) === outfitSignature(category, source.name));
       const row = index >= 0 ? available.splice(index, 1)[0] : available.shift();
-      if (row) applyDetailsToRow(row, tsvRowDetails(source));
+      if (row) applyDetailsToRow(row, tsvRowDetails(source, category));
     }
   }, 0);
 }
@@ -72,9 +76,13 @@ function handleTsvImport(event) {
 function applyDetailsToRow(row, details) {
   requestAnimationFrame(() => {
     for (const [field, value] of Object.entries(details)) {
-      const input = row.querySelector(`[data-ofc="${cssEscape(field)}"]`);
+      let input = row.querySelector(`[data-ofc="${cssEscape(field)}"]`);
+      if (field === "control_modifier") input = row.querySelector('[data-o="control_modifier"]') || input;
+      if (field === "cs_modifier") input = row.querySelector('[data-o="cs_modifier"]') || input;
+      if (field === "concealment") input = row.querySelector('[data-pc-outfit-proxy="concealment"]') || row.querySelector('[data-o="concealment"]') || input;
+      if (field === "slot") input = row.querySelector('[data-pc-outfit-proxy="slot"]') || row.querySelector('[data-o="slot"]') || input;
       if (!input) continue;
-      input.value = String(value || "");
+      input.value = String(value ?? "");
       input.dispatchEvent(new Event("input", { bubbles: true }));
       input.dispatchEvent(new Event("change", { bubbles: true }));
     }
@@ -104,65 +112,30 @@ async function fetchMasterRows(ids) {
   return data || [];
 }
 
-function masterRowDetails(row) {
-  const raw = row?.raw_data && typeof row.raw_data === "object" ? row.raw_data : {};
-  return compactDetails({
-    page_number: row.page_number || raw["ページ番号"],
-    major_category: row.major_category || raw["大分類"],
-    minor_category: row.minor_category || raw["小分類"],
-    manufacturer: row.manufacturer || raw["メーカー"],
-    purchase_target: row.purchase_target || raw["目標値"],
-    permanent_cost: row.permanent_cost || raw["常備化"],
-    concealment: row.concealment || raw["隠匿値"],
-    concealment_penalty: row.concealment_penalty || raw["ペナ"],
-    attack: row.attack || raw["攻"],
-    parry: row.parry || raw["受"],
-    range_text: row.range_text || raw["射"],
-    speed: row.speed || raw["ス"],
-    control_value: row.control_value || raw["制御値"],
-    electronic_control: row.electronic_control || raw["電制"],
-    defense_s: row.defense_s || raw.S,
-    defense_p: row.defense_p || raw.P,
-    defense_i: row.defense_i || raw.I,
-    ianus_surface: raw["表"],
-    ianus_deep: raw["深"],
-    ianus_none: raw["無"],
-    tron_software: raw["ソ"],
-    tron_support: raw["サ"],
-    tron_hardware: raw["ハ"],
-    cs_value: raw.CS,
-    crew: raw["乗員"],
-    sf: raw.SF,
-    residence_entry: raw["登"],
-    residence_electric: raw["電"],
-    residence_area: raw["ア"],
-    slot: row.slot || raw["部位"],
-    description: row.description || raw["解説"]
-  });
-}
-
 function createFullOfcTsv(rows) {
   const headers = [
     "target", "name", "purchase", "permanent", "concealA", "concealB",
     "attack", "defense", "range", "part", "notes", ...TSV_EXTRA_HEADERS
   ];
   const values = rows.map(row => {
-    const detail = masterRowDetails(row);
+    const detail = masterRowToOutfitDetails(row);
     return [
       categoryToTarget(row.site_category), row.name, detail.purchase_target, detail.permanent_cost,
       detail.concealment, detail.concealment_penalty, detail.attack, defenseText(detail),
       detail.range_text, detail.slot, detail.description,
-      ...TSV_EXTRA_HEADERS.map(header => detail[header] || "")
+      ...TSV_EXTRA_HEADERS.map(header => header === "control_value" ? (detail.control_modifier || "") : (detail[header] || ""))
     ];
   });
   return toTsv(headers, values);
 }
 
-function tsvRowDetails(row) {
+function tsvRowDetails(row, category) {
   const details = {};
   for (const header of TSV_EXTRA_HEADERS) details[header] = row[header] || "";
-  return compactDetails({
+  return normalizeImportedOutfitDetails(category, {
     ...details,
+    control_modifier: row.control_modifier || row.control_value,
+    cs_modifier: row.cs_modifier || row.cs_value,
     purchase_target: row.purchase,
     permanent_cost: row.permanent,
     concealment: row.concealA,
@@ -188,11 +161,6 @@ function parseTsv(text) {
 function toTsv(headers, rows) {
   const clean = value => String(value ?? "").replace(/\r\n?/g, "\n").replace(/\n/g, "\\n").replace(/\t/g, " ");
   return [headers, ...rows].map(row => row.map(clean).join("\t")).join("\n");
-}
-
-function compactDetails(value) {
-  const source = value && typeof value === "object" && !Array.isArray(value) ? value : {};
-  return Object.fromEntries(Object.entries(source).map(([key, item]) => [key, String(item ?? "")]).filter(([, item]) => item !== ""));
 }
 
 function setMasterStatus(message, state = "") {

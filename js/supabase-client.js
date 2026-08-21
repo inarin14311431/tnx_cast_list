@@ -20,7 +20,10 @@ const rawSupabase = createClient(
  * Keep their identical SELECT chains on one in-page Promise so modules do not
  * issue the same network request independently. Other pages use the raw client.
  */
-const isPublicCastView = document.body?.dataset.page === "cast.html" || /(?:^|\/)cast\.html$/.test(location.pathname);
+const hasDocument = typeof document !== "undefined";
+const hasLocation = typeof location !== "undefined";
+const isPublicCastView = (hasDocument && document.body?.dataset.page === "cast.html")
+  || (hasLocation && /(?:^|\/)cast\.html$/.test(location.pathname));
 const publicReadCache = new Map();
 const WRITE_METHODS = new Set(["insert", "update", "upsert", "delete"]);
 
@@ -86,14 +89,19 @@ export const supabase = isPublicCastView
     })
   : rawSupabase;
 
-if (document.querySelector(".cast-content, .sheet-layout")) {
-  import("./cocofolia-export.js?v=2").catch(error => {
-    console.error("Cocofolia export could not be loaded.", error);
-  });
-  import("./udonarium-export.js?v=1").catch(error => {
-    console.error("Udonarium export could not be loaded.", error);
-  });
-  import("./transfer-tsv-export.js?v=2").catch(error => {
-    console.error("Transfer TSV export could not be loaded.", error);
-  });
+function loadModuleScript(src, id) {
+  if (!hasDocument || document.getElementById(id)) return;
+  const script = document.createElement("script");
+  script.id = id;
+  script.type = "module";
+  script.src = src;
+  script.addEventListener("error", () => {
+    console.error(`${src} could not be loaded.`);
+  }, { once: true });
+  document.head.append(script);
+}
+
+if (hasDocument && document.querySelector(".cast-content, .sheet-layout")) {
+  loadModuleScript("./js/cocofolia-export.js?v=2", "tnx-cocofolia-export-module");
+  loadModuleScript("./js/udonarium-export.js?v=1", "tnx-udonarium-export-module");
 }

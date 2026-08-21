@@ -1,4 +1,5 @@
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
+import { CREATION_ALLOWANCE, INITIAL_GENERAL_SKILL_COST, paidSkillLevel, steppedExperienceCost } from "./sheet-experience-rules.js?v=3";
 
 /* Single authoritative experience-point calculator. */
 (function(){
@@ -6,8 +7,6 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
   const $$=selector=>[...document.querySelectorAll(selector)];
   const ABILITIES=["reason","passion","life","mundane"];
   const STYLE_COST=window.TNXStyleSkillKinds?.costs||{normal:10,secret:20,ultimate:50,direction:2};
-  const INITIAL_SKILL_COST=165;
-  const CREATION_ALLOWANCE=170;
   let queued=false;
   let writing=false;
 
@@ -42,15 +41,6 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
     return result;
   }
 
-  function steppedCost(base,current,threshold){
-    let total=0;
-    const growth=Math.max(0,current-base);
-    for(let step=1;step<=growth;step++){
-      total+=base+step<=threshold?20:40;
-    }
-    return total;
-  }
-
   function skillCategory(row){
     if(row.closest("#style-skills"))return "style";
     return "general";
@@ -69,11 +59,13 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
       if(!name)continue;
       const level=Math.max(0,num(row.querySelector('[data-f="level"]')?.value));
       if(level<=0)continue;
+      const freeLevel=Math.max(0,num(row.querySelector('[data-f="free_level"]')?.value));
+      const paidLevel=paidSkillLevel(level,freeLevel);
       const kind=row.querySelector('[data-f="skill_kind"]')?.value||"general";
       if(skillCategory(row)==="style"){
-        style+=level*(STYLE_COST[kind]??10);
+        style+=paidLevel*(STYLE_COST[kind]??10);
       }else{
-        general+=level*(kind==="proper"?5:10);
+        general+=paidLevel*(kind==="proper"?5:10);
       }
     }
     return {general,style};
@@ -98,12 +90,12 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
     let ability=0;
     let control=0;
     for(const key of ABILITIES){
-      ability+=steppedCost(base[key],num($(`#${key}-base`)?.value),10);
-      control+=steppedCost(base[`${key}-control`],num($(`#${key}-control-base`)?.value),16);
+      ability+=steppedExperienceCost(base[key],num($(`#${key}-base`)?.value),10);
+      control+=steppedExperienceCost(base[`${key}-control`],num($(`#${key}-control-base`)?.value),16);
     }
 
     const skills=skillParts();
-    const paidGeneral=Math.max(0,skills.general-INITIAL_SKILL_COST);
+    const paidGeneral=Math.max(0,skills.general-INITIAL_GENERAL_SKILL_COST);
     const parts={
       "能力値":ability,
       "制御値":control,
@@ -135,7 +127,7 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
       parts,
       gross,
       rawGeneralSkillCost:skills.general,
-      initialSkillCost:INITIAL_SKILL_COST,
+      initialSkillCost:INITIAL_GENERAL_SKILL_COST,
       creationAllowance:CREATION_ALLOWANCE
     };
   }

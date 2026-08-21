@@ -4,14 +4,16 @@ import {
   OUTFIT_CATEGORY_LABELS,
   OUTFIT_FIELD_LABELS,
   OUTFIT_SCHEMAS
-} from "./cast-view-definitions.js";
+} from "./cast-view-definitions.js?v=2";
 
 const container = document.querySelector("#outfit-container");
 const content = document.querySelector("#cast-content");
 
-if (container) initialize();
+if (container) initializeCastOutfits();
 
-async function initialize() {
+async function initializeCastOutfits() {
+  if (container.dataset.castOutfitsInitialized === "1") return;
+  container.dataset.castOutfitsInitialized = "1";
   try {
     const outfits = await getOutfits();
     await waitForCastReady();
@@ -75,7 +77,7 @@ function createHeader(field) {
 }
 
 function createRow(category, schema, item) {
-  const source = normalizedItem(category, item);
+  const source = displayItem(category, item);
   return `<tr>${schema.map(field => createCell(field, source)).join("")}</tr>`;
 }
 
@@ -88,70 +90,30 @@ function createCell(field, item) {
   return `<td class="cast-outfit-col--${field}"><span class="cast-outfit-value" title="${escapeAttribute(text)}">${escapeHtml(text)}</span></td>`;
 }
 
-function normalizedItem(category, item) {
-  const details = normalizeDetails(item.ofc_details);
-  const defense = parseArmorDefense(item.defense);
-  const residenceElectric = details.residence_electric || "";
-  const residenceArea = details.residence_area || "";
+function displayItem(category, item) {
+  const residenceElectric = item.residence_electric || "";
+  const residenceArea = item.residence_area || "";
   return {
     ...item,
     category: OUTFIT_CATEGORY_LABELS[category] || OUTFIT_CATEGORY_LABELS.other,
-    parry: details.parry,
-    speed: details.speed,
-    electronic_control: details.electronic_control,
-    // Armor's editor uses control_modifier while OFC stores the same value as
-    // control_value. Prefer the OFC detail, but fall back to the normal field.
-    control_value: details.control_value || item.control_modifier || "",
-    defense_s: details.defense_s || defense.s,
-    defense_i: details.defense_i || defense.i,
-    defense_p: details.defense_p || defense.p,
-    tron_software: details.tron_software,
-    tron_support: details.tron_support,
-    tron_hardware: details.tron_hardware,
-    cs_value: details.cs_value,
-    crew: details.crew,
-    sf: details.sf,
-    residence_entry: details.residence_entry,
-    residence_electric_area: [residenceElectric, residenceArea].some(Boolean) ? `${residenceElectric}/${residenceArea}` : "",
-    page_number: details.page_number
+    residence_electric_area: [residenceElectric, residenceArea].some(Boolean)
+      ? `${residenceElectric || "—"}/${residenceArea || "—"}`
+      : ""
   };
-}
-
-function normalizeDetails(value) {
-  return value && typeof value === "object" && !Array.isArray(value)
-    ? Object.fromEntries(Object.entries(value).map(([key, item]) => [key, String(item ?? "")]))
-    : {};
 }
 
 function createArmorFooter(schema, totals) {
   const first = schema.indexOf("defense_s");
   const tail = schema.length - first - 3;
-  return `<tfoot><tr class="cast-armor-total-row"><th colspan="${first}">防御値合計</th><td class="cast-armor-total">${totals.s}</td><td class="cast-armor-total">${totals.i}</td><td class="cast-armor-total">${totals.p}</td>${tail > 0 ? `<td colspan="${tail}"></td>` : ""}</tr></tfoot>`;
-}
-
-function parseArmorDefense(value) {
-  const text = String(value ?? "").trim();
-  const result = { s: "", i: "", p: "" };
-  if (!text) return result;
-  const labeled = [...text.matchAll(/(?:^|[\s,，/／])([SPI])\s*[:：]?\s*([+-]?\d+)/gi)];
-  if (labeled.length) {
-    for (const match of labeled) result[match[1].toLowerCase()] = match[2];
-    return result;
-  }
-  const parts = text.split(/[\/／,，\s]+/).filter(Boolean);
-  result.s = parts[0] || "";
-  result.i = parts[1] || "";
-  result.p = parts[2] || "";
-  return result;
+  return `<tfoot><tr class="cast-armor-total-row"><th colspan="${first}">防御値合計</th><td class="cast-armor-total">${totals.s}</td><td class="cast-armor-total">${totals.p}</td><td class="cast-armor-total">${totals.i}</td>${tail > 0 ? `<td colspan="${tail}"></td>` : ""}</tr></tfoot>`;
 }
 
 function armorTotals(items) {
-  const totals = { s: 0, i: 0, p: 0 };
-  for (const item of items) {
-    const source = normalizedItem("armor", item);
-    for (const key of Object.keys(totals)) totals[key] += numeric(source[`defense_${key}`]);
-  }
-  return totals;
+  return items.reduce((totals, item) => ({
+    s: totals.s + numeric(item.defense_s),
+    p: totals.p + numeric(item.defense_p),
+    i: totals.i + numeric(item.defense_i)
+  }), { s: 0, p: 0, i: 0 });
 }
 
 function numeric(value) {

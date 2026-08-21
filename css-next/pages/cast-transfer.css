@@ -1,0 +1,201 @@
+/* CAST view direct-transfer controls and dialog. */
+.direct-transfer-button {
+  --transfer-accent: #66d9c7;
+  position: relative;
+  display: grid;
+  align-content: center;
+  gap: 2px;
+  overflow: hidden;
+  border-color: var(--transfer-accent);
+  color: var(--transfer-accent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--transfer-accent) 18%, transparent), var(--color-accent-soft));
+  font: 800 .68rem/1 var(--font-data, monospace);
+  text-align: left;
+}
+.direct-transfer-button::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 3px;
+  content: "";
+  background: var(--transfer-accent);
+  box-shadow: 0 0 12px var(--transfer-accent);
+}
+.direct-transfer-button small {
+  display: block;
+  margin-top: 2px;
+  color: var(--color-muted);
+  font-size: .48rem;
+  letter-spacing: .08em;
+  opacity: .75;
+}
+.direct-transfer-button:is(:hover, :focus-visible, :active) {
+  border-color: var(--transfer-accent);
+  color: var(--color-surface);
+  background: var(--transfer-accent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--transfer-accent) 58%, transparent);
+}
+.direct-transfer-button:is(:hover, :focus-visible, :active) small {
+  color: var(--color-surface);
+  opacity: .86;
+}
+.direct-transfer-button:disabled {
+  opacity: .38;
+  cursor: not-allowed;
+}
+
+.cast-header__export-actions .direct-transfer-button--desktop {
+  min-width: 92px;
+  min-height: 38px;
+  padding: 6px 9px;
+}
+
+.mobile-cast-topbar {
+  grid-template-columns: auto minmax(0, 1fr) auto auto auto;
+}
+.mobile-cast-topbar > span {
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.mobile-cast-topbar .direct-transfer-button--mobile,
+.mobile-cast-topbar [data-mobile-editor-route] {
+  position: relative;
+  display: grid;
+  align-content: center;
+  min-width: 64px;
+  min-height: 30px;
+  padding: 4px 7px 4px 9px;
+  overflow: hidden;
+  border: 1px solid currentColor;
+  border-radius: 0;
+  background: linear-gradient(135deg, color-mix(in srgb, currentColor 18%, transparent), var(--color-accent-soft));
+  font: 800 9px/1 var(--font-data, monospace);
+  letter-spacing: .03em;
+  text-align: left;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.mobile-cast-topbar .direct-transfer-button--mobile::before,
+.mobile-cast-topbar [data-mobile-editor-route]::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  content: "";
+  background: currentColor;
+  box-shadow: 0 0 10px currentColor;
+}
+.mobile-cast-topbar .direct-transfer-button--mobile small {
+  margin-top: 1px;
+  font-size: 6px;
+  letter-spacing: .07em;
+}
+.mobile-cast-topbar [data-mobile-editor-route] {
+  color: var(--color-warning, #e0b44c);
+}
+.mobile-cast-topbar [data-mobile-editor-route]:is(:hover,:focus-visible,:active) {
+  background: var(--color-warning, #e0b44c);
+  color: var(--color-surface);
+  box-shadow: 0 0 14px color-mix(in srgb, var(--color-warning, #e0b44c) 55%, transparent);
+}
+
+.cast-transfer-dialog {
+  width: min(860px, calc(100vw - 32px));
+  height: min(88vh, 920px);
+  max-width: none;
+  max-height: none;
+  margin: auto;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--color-accent, #22d3ee) 42%, var(--color-border, #35515c));
+  background: var(--color-surface, #0d1820);
+  color: var(--color-text);
+  box-shadow: 0 20px 70px rgba(0, 0, 0, .58);
+}
+.cast-transfer-dialog::backdrop {
+  background: rgba(3, 8, 12, .74);
+  backdrop-filter: blur(3px);
+}
+.cast-transfer-dialog__shell {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  height: 100%;
+}
+.cast-transfer-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-border);
+  background: color-mix(in srgb, var(--color-surface, #0d1820) 92%, var(--color-accent, #22d3ee) 8%);
+}
+.cast-transfer-dialog__header div {
+  display: grid;
+  gap: 2px;
+}
+.cast-transfer-dialog__header span {
+  color: var(--color-muted);
+  font: 700 .58rem/1 var(--font-data, monospace);
+  letter-spacing: .14em;
+}
+.cast-transfer-dialog__header strong {
+  color: var(--color-accent);
+  font-size: 1rem;
+}
+.cast-transfer-dialog__close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  min-height: 36px;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-text);
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.cast-transfer-dialog__close:is(:hover, :focus-visible) {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent, #22d3ee) 9%, transparent);
+  color: var(--color-accent);
+}
+.cast-transfer-dialog__frame {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+}
+
+@media (max-width: 640px) {
+  .cast-header__export-actions .direct-transfer-button--desktop {
+    min-width: 76px;
+    padding-inline: 6px;
+  }
+  .cast-transfer-dialog {
+    width: calc(100vw - 12px);
+    height: calc(100dvh - 12px);
+  }
+  .cast-transfer-dialog__header {
+    padding: 10px 11px;
+  }
+}
+
+@media (max-width: 390px) {
+  .mobile-cast-topbar {
+    gap: 4px;
+    padding-inline: 6px;
+  }
+  .mobile-cast-topbar .direct-transfer-button--mobile,
+  .mobile-cast-topbar [data-mobile-editor-route] {
+    min-width: 56px;
+    padding-inline: 7px 5px;
+    font-size: 8px;
+  }
+  .mobile-cast-topbar .direct-transfer-button--mobile small {
+    font-size: 5px;
+  }
+}

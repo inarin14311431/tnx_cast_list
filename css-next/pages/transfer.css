@@ -1,0 +1,354 @@
+/* Standalone and embedded data-transfer page. */
+body[data-page="transfer.html"] {
+  min-height: 100vh;
+  margin: 0;
+  padding: 20px;
+  background: var(--color-bg);
+  color: var(--color-text);
+}
+.transfer-page {
+  width: min(760px, 100%);
+  margin: 0 auto;
+  padding: 22px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.transfer-page__back {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: var(--color-accent);
+  font: 700 .78rem/1.3 var(--font-data, monospace);
+  text-decoration: none;
+}
+.transfer-page h1 {
+  margin: 0 0 10px;
+  color: var(--color-accent);
+  font-size: 1.35rem;
+}
+.transfer-page .lead,
+.transfer-page .warning {
+  line-height: 1.75;
+}
+.transfer-page .warning {
+  padding: 12px 14px;
+  border-left: 3px solid var(--color-accent);
+  background: var(--color-accent-soft);
+}
+.transfer-page form {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  margin-top: 20px;
+}
+.transfer-page label:not(.transfer-choice):not(.check) {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  font-weight: 700;
+}
+.transfer-page input[type="text"],
+.transfer-page input[type="url"],
+.transfer-page input[type="password"] {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  padding: 12px;
+}
+.transfer-page .source-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: end;
+}
+.transfer-page .source-row label {
+  margin: 0;
+}
+.transfer-page .source-row button {
+  white-space: nowrap;
+}
+.transfer-page .transfer-mode {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+  padding: 14px;
+  border: 1px solid var(--color-border-muted);
+}
+.transfer-page .transfer-mode legend {
+  padding: 0 7px;
+  font-weight: 800;
+}
+.transfer-page .transfer-choice,
+.transfer-page .check {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 4px 0;
+  font-weight: 600;
+  line-height: 1.55;
+  white-space: normal;
+}
+.transfer-page .transfer-choice input[type="radio"],
+.transfer-page .check input[type="checkbox"] {
+  position: static;
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  padding: 0;
+}
+.transfer-page .transfer-choice span,
+.transfer-page .check span {
+  display: block;
+  position: static;
+  width: auto;
+  max-width: 100%;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+  word-break: normal;
+}
+.transfer-page button {
+  min-height: 48px;
+  padding: 11px 16px;
+  font-weight: 800;
+}
+.transfer-page button:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+.transfer-page .preview {
+  min-width: 0;
+  padding: 13px;
+  border: 1px solid var(--color-border-muted);
+  background: var(--color-bg);
+  line-height: 1.7;
+  word-break: break-word;
+}
+.transfer-page .preview dl {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 5px 12px;
+  margin: 0;
+}
+.transfer-page .preview dt {
+  color: var(--color-muted);
+}
+.transfer-page .preview dd {
+  min-width: 0;
+  margin: 0;
+}
+.transfer-page .danger {
+  padding: 11px 13px;
+  border: 1px solid var(--color-danger, #ff6b6b);
+  line-height: 1.6;
+}
+.transfer-page .loaded {
+  padding: 11px 13px;
+  border: 1px solid var(--color-border-muted);
+  line-height: 1.65;
+}
+.transfer-page .loaded[data-state="ok"] {
+  border-color: var(--color-accent);
+}
+.transfer-page .loaded[data-state="error"] {
+  border-color: var(--color-danger, #ff6b6b);
+}
+.transfer-page small {
+  color: var(--color-muted);
+}
+
+.transfer-result {
+  position: relative;
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  margin-top: 22px;
+  padding: 17px;
+  overflow: hidden;
+  border: 2px solid var(--color-accent);
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 12%, var(--color-surface)), var(--color-bg));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent), 0 0 28px color-mix(in srgb, var(--color-accent) 24%, transparent);
+  line-height: 1.7;
+  word-break: break-word;
+  outline: none;
+}
+.transfer-result::before {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  content: "";
+  background: var(--color-accent);
+  box-shadow: 0 0 16px var(--color-accent);
+}
+.transfer-result[data-state="success"] {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-accent) 38%, transparent), 0 0 34px color-mix(in srgb, var(--color-accent) 34%, transparent);
+}
+.transfer-result__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 38%, transparent);
+}
+.transfer-result__header > div {
+  display: grid;
+  gap: 2px;
+}
+.transfer-result__header span {
+  color: var(--color-muted);
+  font: 800 .62rem/1 var(--font-data, monospace);
+  letter-spacing: .12em;
+}
+.transfer-result h2 {
+  margin: 0;
+  color: var(--color-accent);
+  font-size: 1.08rem;
+}
+.transfer-result__status {
+  flex: 0 0 auto;
+  padding: 5px 9px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent);
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  font: 800 .68rem/1 var(--font-data, monospace);
+  letter-spacing: .06em;
+}
+.transfer-result p {
+  margin: 0;
+}
+.transfer-result__response {
+  display: grid;
+  gap: 7px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 42%, var(--color-border-muted));
+  background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+}
+.transfer-result__response > strong {
+  color: var(--color-accent);
+}
+.transfer-result__response > p {
+  color: var(--color-muted);
+  font-size: .82rem;
+}
+.transfer-result__response iframe {
+  width: 100%;
+  min-height: 92px;
+  border: 1px solid var(--color-border-muted);
+  background: var(--color-field, var(--color-bg));
+}
+.transfer-result__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: end;
+}
+.transfer-result__row label {
+  color: var(--color-text);
+}
+.transfer-result__link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 11px 14px;
+  border: 1px solid var(--color-accent);
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  font-weight: 800;
+  text-decoration: none;
+}
+.transfer-result__link:is(:hover, :focus-visible) {
+  color: var(--color-surface);
+  background: var(--color-accent);
+  box-shadow: 0 0 16px color-mix(in srgb, var(--color-accent) 58%, transparent);
+}
+.transfer-page .update-only[hidden],
+.transfer-page .update-target-field[hidden],
+.transfer-result[hidden],
+.transfer-result__response[hidden],
+.transfer-result__row[hidden],
+.transfer-result__link[hidden] {
+  display: none;
+}
+
+.is-transfer-embed body[data-page="transfer.html"] {
+  min-height: 0;
+  padding: 0;
+  background: transparent;
+}
+.is-transfer-embed .transfer-page {
+  width: 100%;
+  margin: 0;
+  padding: 18px;
+  border: 0;
+  background: transparent;
+}
+.is-transfer-embed .transfer-page__back {
+  display: none;
+}
+.is-transfer-embed .transfer-page h1 {
+  margin-top: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .transfer-result:not([hidden]) {
+    animation: transfer-result-reveal .32s ease-out both;
+  }
+  @keyframes transfer-result-reveal {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+}
+
+@media (max-width: 600px) {
+  body[data-page="transfer.html"] {
+    padding: 8px;
+  }
+  .transfer-page {
+    padding: 16px;
+  }
+  .transfer-page .transfer-mode {
+    padding: 12px;
+  }
+  .transfer-page .preview dl {
+    grid-template-columns: 1fr;
+  }
+  .transfer-page .preview dd {
+    margin: 0 0 8px;
+  }
+  .transfer-page .transfer-choice,
+  .transfer-page .check {
+    align-items: flex-start;
+  }
+  .transfer-page .transfer-choice input[type="radio"],
+  .transfer-page .check input[type="checkbox"] {
+    margin-top: .15em;
+  }
+  .transfer-page .source-row,
+  .transfer-result__row {
+    grid-template-columns: 1fr;
+  }
+  .transfer-page .source-row button {
+    width: 100%;
+  }
+  .transfer-result {
+    padding: 14px;
+  }
+  .transfer-result__header {
+    align-items: flex-start;
+  }
+  .transfer-result__response iframe {
+    min-height: 112px;
+  }
+  .is-transfer-embed .transfer-page {
+    padding: 12px;
+  }
+}

@@ -2,6 +2,7 @@
 (function(){
   const PREFIX="@@TNX_STYLE_DETAIL_V1@@";
   const SEPARATOR_MARKER="[[STYLE_SEPARATOR]]";
+  const STYLE_SKILLS_CHANGED_EVENT="tnx:style-skills-changed";
   const SUITS=[
     ["reason","♠"],
     ["passion","♣"],
@@ -150,12 +151,13 @@
 
   function enhance(){
     const root=document.querySelector("#style-skills");
-    if(!root)return;
+    if(!root)return false;
     const table=root.querySelector("table.skill-table");
-    if(!table)return;
+    if(!table)return false;
     table.classList.add("style-skill-full-table");
     rebuildHeader(table);
     table.querySelectorAll("tbody tr[data-skill-key]").forEach(rebuildRow);
+    return true;
   }
 
   function syncAll(){
@@ -171,19 +173,24 @@
   function initialize(){
     const root=document.querySelector("#style-skills");
     if(!root){setTimeout(initialize,100);return;}
+    const publishChange=()=>root.dispatchEvent(new CustomEvent(STYLE_SKILLS_CHANGED_EVENT,{bubbles:false}));
     let queued=false;
     const queue=()=>{
       if(queued)return;
       queued=true;
-      requestAnimationFrame(()=>{queued=false;enhance();});
+      requestAnimationFrame(()=>{
+        queued=false;
+        if(enhance())publishChange();
+      });
     };
     new MutationObserver(queue).observe(root,{childList:true,subtree:true});
     root.addEventListener("input",event=>{
       const original=event.target.closest?.('textarea[data-f="description"]');
-      if(!original||!root.contains(original))return;
-      const row=original.closest('tr[data-skill-key]');
-      if(isSeparatorRow(row))return;
-      syncRowFromOriginal(row);
+      if(original&&root.contains(original)){
+        const row=original.closest('tr[data-skill-key]');
+        if(!isSeparatorRow(row))syncRowFromOriginal(row);
+      }
+      publishChange();
     },true);
     queue();
   }

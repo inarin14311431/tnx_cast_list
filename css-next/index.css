@@ -21,6 +21,7 @@
 @import url("./components/global-theme-picker.css?v=1");
 @import url("./components/sheet-snapshots.css?v=1");
 @import url("./components/sheet-import-help.css?v=1");
+@import url("./components/sheet-url-import.css?v=1");
 
 /* Sheet editor */
 @import url("./editor/editor.css?v=25");
@@ -29,7 +30,7 @@
 @import url("./editor/skills.css?v=3");
 @import url("./editor/style-skills.css?v=10");
 @import url("./editor/style-separator-fix.css?v=2");
-@import url("./editor/outfits.css?v=9");
+@import url("./editor/outfits.css?v=16");
 @import url("./editor/import.css?v=6");
 @import url("./editor/button-hover.css?v=1");
 @import url("./editor/combos.css?v=1");
@@ -37,9 +38,9 @@
 /* Pages */
 @import url("./pages/archive.css?v=4");
 @import url("./pages/cast.css?v=43");
-@import url("./pages/cast-view-details.css?v=2");
+@import url("./pages/cast-view-details.css?v=3");
 @import url("./pages/cast-combos.css?v=1");
-@import url("./pages/quick-sheet-paper.css?v=1");
+@import url("./pages/quick-sheet-paper.css?v=2");
 @import url("./pages/auth.css");
 @import url("./pages/account.css?v=10");
 @import url("./pages/acts.css?v=2");

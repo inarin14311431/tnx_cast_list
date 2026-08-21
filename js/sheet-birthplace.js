@@ -1,7 +1,7 @@
 /* Birthplace field integrated into the main transactional manual save.
  * No independent debounce, retry loop, or direct UPDATE is performed here.
  */
-(async () => {
+async function initializeSheetBirthplace() {
   const DEFAULT_BIRTHPLACE = 'Ｎ◎ＶＡ';
   const citizenRank = document.querySelector('#citizen-rank');
   const grid = citizenRank?.closest('.basic-profile-grid');
@@ -64,4 +64,6 @@
       status.className = 'unsaved';
     }
   });
-})();
+}
+
+initializeSheetBirthplace();

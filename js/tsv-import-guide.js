@@ -34,7 +34,7 @@
         ["concealA", "任意", "隠匿値の前半"],
         ["concealB", "任意", "隠匿値の後半。concealAと「/」で連結します。"],
         ["attack", "任意", "攻撃力"],
-        ["defense", "任意", "防御値"],
+        ["defense", "任意", "防御値。S/P/Iを「3/2/1」のように記載した場合も防S/P/Iへ分解します。"],
         ["range", "任意", "射程"],
         ["slot", "任意", "装備スロット"],
         ["control", "任意", "制御値。数値は制御欄へ反映し、元の値も解説へ保持します。"],
@@ -52,7 +52,7 @@
       sample: [
         "target\tname\tpurchase\tpermanent\tconcealA\tconcealB\tattack\tdefense\trange\tslot\tcontrol\telectrical_control\tprotecS\tprotecP\tprotecI\tcrew\tsf\tentry\tpart\tnotes\tpage",
         "weapons\tサンプルブレード\t15\t5\t12\t-1\tS+5\t\t至近\t片手持ち\t0\t\t\t\t\t\t\t\t右手\tOFC取込用サンプル\t123",
-        "vehicles\tサンプルヴィークル\t20\t10\t\t\tS+3\t3/2/2\t近\t乗物\t-1\t15\t3\t2\t2\t2\t2\t12\t車両\t複数項目を含むサンプル\t234"
+        "armours\tサンプルアーマー\t20\t10\t\t\t\t3/2/1\t\tスーツ\t-1\t15\t\t\t\t\t\t\t胴\t防御一括値サンプル\t234"
       ].join("\n")
     }
   };
@@ -144,6 +144,19 @@
     return match ? Number(match[0]) : 0;
   }
 
+  function firstValue(...values) {
+    return values.find(value => String(value ?? "").trim() !== "") ?? "";
+  }
+
+  function resolveOFCDefense(data = {}) {
+    const combined = String(data.defense || "").trim().split(/[\/／]/).map(value => value.trim());
+    return {
+      defense_s: firstValue(data.protecS, data.protectS, data.protectionS, data.defenseS, data.defense_s, data.S, combined[0]),
+      defense_p: firstValue(data.protecP, data.protectP, data.protectionP, data.defenseP, data.defense_p, data.P, combined[1]),
+      defense_i: firstValue(data.protecI, data.protectI, data.protectionI, data.defenseI, data.defense_i, data.I, combined[2])
+    };
+  }
+
   function buildOFCDescription(data) {
     const lines = [];
     if (data.notes) lines.push(data.notes);
@@ -156,9 +169,9 @@
       ["スロット", data.slot],
       ["制御", data.control],
       ["電制", data.electrical_control],
-      ["防御S", data.protecS],
-      ["防御P", data.protecP],
-      ["防御I", data.protecI],
+      ["防御S", firstValue(data.protecS, data.protectS, data.protectionS, data.defenseS, data.defense_s, data.S)],
+      ["防御P", firstValue(data.protecP, data.protectP, data.protectionP, data.defenseP, data.defense_p, data.P)],
+      ["防御I", firstValue(data.protecI, data.protectI, data.protectionI, data.defenseI, data.defense_i, data.I)],
       ["乗員", data.crew],
       ["SF", data.sf],
       ["登場", data.entry],
@@ -169,6 +182,18 @@
       if (String(value || "").trim()) lines.push(`${label}：${value}`);
     });
     return lines.join("\n");
+  }
+
+  function importedOFCDetails(data) {
+    return {
+      page_number: data.page,
+      concealment_penalty: data.concealB,
+      electronic_control: data.electrical_control,
+      ...resolveOFCDefense(data),
+      crew: data.crew,
+      sf: data.sf,
+      residence_entry: data.entry
+    };
   }
 
   async function importOFC(rows) {
@@ -199,13 +224,29 @@
         attack: data.attack,
         defense: data.defense,
         range: data.range,
-        slot: data.slot,
+        slot: data.part || data.slot,
         control_modifier: numberValue(data.control),
         description: buildOFCDescription(data)
       };
 
       for (const [field, value] of Object.entries(values)) {
         await setControl(card.querySelector(`[data-o="${field}"]`), value ?? "");
+        card = document.querySelector(`[data-outfit-key="${CSS.escape(key)}"]`) || card;
+      }
+
+      const detailValues = importedOFCDetails(data);
+      globalThis.TNXOutfitOFCState?.setDetails?.(key, detailValues);
+
+      const detailedCard = await waitFor(() => {
+        const current = document.querySelector(`[data-outfit-key="${CSS.escape(key)}"]`);
+        return current?.querySelector('[data-ofc="page_number"]') ? current : null;
+      });
+      if (!detailedCard) continue;
+      card = detailedCard;
+
+      for (const [field, value] of Object.entries(detailValues)) {
+        if (String(value || "") === "") continue;
+        await setControl(card.querySelector(`[data-ofc="${field}"]`), value);
         card = document.querySelector(`[data-outfit-key="${CSS.escape(key)}"]`) || card;
       }
     }

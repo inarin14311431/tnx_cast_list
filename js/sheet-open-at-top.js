@@ -1,5 +1,10 @@
 /* Always open the sheet editor at the top and keep its image guidance current. */
-(()=>{
+initializeSheetOpenAtTop();
+
+function initializeSheetOpenAtTop(){
+  if(document.documentElement.dataset.sheetOpenAtTopInitialized==="true")return;
+  document.documentElement.dataset.sheetOpenAtTopInitialized="true";
+
   const scrollTop=()=>{
     window.scrollTo(0,0);
     requestAnimationFrame(()=>window.scrollTo(0,0));
@@ -30,4 +35,4 @@
       scrollTop();
     },{once:true});
   }
-})();
+}

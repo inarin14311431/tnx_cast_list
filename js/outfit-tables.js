@@ -2,6 +2,7 @@
 (function(){
   const root=document.querySelector('#outfit-list');
   if(!root)return;
+  const RENDER_EVENT='tnx:outfit-tables-rendered';
 
   const CATEGORIES=[
     ['weapon','武器','WEAPONS','ADD WEAPON'],
@@ -13,20 +14,22 @@
     ['other','その他','OTHER','ADD OTHER']
   ];
 
-  const LABELS={
-    category:'分類',name:'名称',purchase_value:'購入',experience_cost:'常備化',concealment:'隠匿',
-    attack:'攻撃',defense:'防御',defense_s:'S',defense_i:'I',defense_p:'P',range:'射程',slot:'部位／エリア',
-    control_modifier:'制御',cs_modifier:'CS',mundane_modifier:'外界',description:'解説',actions:''
+  // These labels and schemas describe raw controls rendered by this classic
+  // table adapter. Canonical outfit semantics are owned by outfit-contract.js;
+  // armor S/P/I are canonical OFC fields and are no longer synthesized here.
+  const BASE_LABELS={
+    category:'分類',name:'名称',purchase_value:'購入',experience_cost:'常備化',concealment:'隠匿値',
+    attack:'攻撃',range:'射程',slot:'部位',control_modifier:'制御値',cs_modifier:'CS修正',description:'解説',actions:''
   };
 
-  const SCHEMAS={
+  const RAW_CARD_SCHEMAS={
     weapon:['category','name','purchase_value','experience_cost','concealment','attack','range','slot','description','actions'],
-    armor:['category','name','purchase_value','experience_cost','concealment','defense_s','defense_i','defense_p','slot','control_modifier','description','actions'],
-    cyberware:['category','name','purchase_value','experience_cost','concealment','slot','control_modifier','cs_modifier','mundane_modifier','description','actions'],
-    tron:['category','name','purchase_value','experience_cost','concealment','slot','control_modifier','cs_modifier','mundane_modifier','description','actions'],
-    vehicle:['category','name','purchase_value','experience_cost','attack','defense','control_modifier','cs_modifier','description','actions'],
-    residence:['category','name','purchase_value','experience_cost','mundane_modifier','slot','description','actions'],
-    other:['category','name','purchase_value','experience_cost','concealment','slot','control_modifier','cs_modifier','mundane_modifier','description','actions']
+    armor:['category','name','purchase_value','experience_cost','concealment','slot','control_modifier','description','actions'],
+    cyberware:['category','name','purchase_value','experience_cost','concealment','slot','description','actions'],
+    tron:['category','name','purchase_value','experience_cost','concealment','slot','cs_modifier','description','actions'],
+    vehicle:['category','name','purchase_value','experience_cost','attack','control_modifier','cs_modifier','description','actions'],
+    residence:['category','name','purchase_value','experience_cost','slot','description','actions'],
+    other:['category','name','purchase_value','experience_cost','concealment','slot','description','actions']
   };
 
   let queued=false;
@@ -39,39 +42,25 @@
     requestAnimationFrame(()=>{queued=false;enhance();});
   }
 
-  function parseArmorDefense(value){
-    const text=String(value??'').trim();
-    if(!text)return {s:'',i:'',p:''};
-    const labeled={s:'',i:'',p:''};
-    const matches=[...text.matchAll(/\b([SIP])\s*[:：]?\s*(-?\d+)/gi)];
-    if(matches.length){for(const match of matches)labeled[match[1].toLowerCase()]=match[2];return labeled;}
-    const parts=text.split(/[\/／,，\s]+/).filter(Boolean);
-    if(parts.length>=2)return {s:parts[0]||'',i:parts[1]||'',p:parts[2]||''};
-    return {s:text,i:'',p:''};
-  }
-  function encodeArmorDefense(values){return [values.s,values.i,values.p].map(value=>String(value??'').trim()).join('/');}
-  function armorValue(card,key){
-    if(!card._armorDefenseValues){
-      const original=card.querySelector('[data-o="defense"]');
-      card._armorDefenseOriginal=original||null;
-      card._armorDefenseValues=parseArmorDefense(original?.value||'');
-    }
-    return card._armorDefenseValues[key.slice(-1)]??'';
-  }
-  function updateArmorDefense(card,key,value){
-    const part=key.slice(-1);
-    if(!card._armorDefenseValues)armorValue(card,key);
-    card._armorDefenseValues[part]=value;
-    const original=card._armorDefenseOriginal;
-    if(!original)return;
-    original.value=encodeArmorDefense(card._armorDefenseValues);
-    original.dispatchEvent(new Event('input',{bubbles:true}));
-    updateArmorTotals(card.closest('.outfit-table-group--armor'));
+  function notifyRendered(){
+    root.dispatchEvent(new CustomEvent(RENDER_EVENT,{detail:{rows:root.querySelectorAll('.outfit-table-row[data-outfit-key]').length}}));
   }
 
   function controlFor(card,key){
     if(key==='category')return card.querySelector('[data-o="category"]');
     return card.querySelector(`[data-o="${key}"]`);
+  }
+
+  function readControlValue(control){
+    return control.type==='number'?Number(control.value||0):control.value;
+  }
+
+  function captureCardData(card){
+    const data={};
+    card.querySelectorAll('[data-o]').forEach(control=>{
+      data[control.dataset.o]=readControlValue(control);
+    });
+    return data;
   }
 
   function prepareNumberControl(control){
@@ -100,24 +89,6 @@
     // sheet.js closes over the original control and reads data-o when this
     // proxy dispatches input, so keep the field name on the detached control.
     return textarea;
-  }
-
-  function makeArmorDefenseCell(card,key){
-    const td=document.createElement('td');
-    td.className=`outfit-table-cell outfit-table-cell--${key}`;
-    const input=document.createElement('input');
-    input.type='number'; input.step='1'; input.value=armorValue(card,key);
-    input.dataset.armorDefense=key.slice(-1).toUpperCase();
-    input.setAttribute('aria-label',`防御値${key.slice(-1).toUpperCase()}`);
-    input.addEventListener('input',()=>updateArmorDefense(card,key,input.value));
-    td.append(input);
-    if(key==='defense_s'&&card._armorDefenseOriginal){
-      card._armorDefenseOriginal.hidden=true;
-      card._armorDefenseOriginal.style.display='none';
-      card._armorDefenseOriginal.tabIndex=-1;
-      td.append(card._armorDefenseOriginal);
-    }
-    return td;
   }
 
   function moveButton(direction,key){
@@ -155,7 +126,6 @@
 
   function makeCell(card,key){
     if(key==='actions')return makeActionsCell(card);
-    if(/^defense_[sip]$/.test(key))return makeArmorDefenseCell(card,key);
     const td=document.createElement('td');
     td.className=`outfit-table-cell outfit-table-cell--${key}`;
     let control=controlFor(card,key);
@@ -170,7 +140,10 @@
     const tr=document.createElement('tr');
     tr.dataset.outfitKey=card.dataset.outfitKey||'';
     tr.className='outfit-table-row';
-    for(const key of SCHEMAS[category])tr.append(makeCell(card,key));
+    // Capture every raw control before makeCell moves visible controls out of the card.
+    // Visible values are overlaid again by readRow so live edits still win.
+    tr._outfitTransportData=captureCardData(card);
+    for(const key of RAW_CARD_SCHEMAS[category])tr.append(makeCell(card,key));
     return tr;
   }
 
@@ -180,7 +153,7 @@
     row.className='armor-defense-total-row';
     const label=document.createElement('th');
     label.colSpan=5; label.textContent='防御値合計'; row.append(label);
-    for(const key of ['s','i','p']){
+    for(const key of ['s','p','i']){
       const cell=document.createElement('td');
       cell.className=`armor-defense-total armor-defense-total--${key}`;
       cell.dataset.armorTotal=key; cell.textContent='0'; row.append(cell);
@@ -191,9 +164,11 @@
 
   function updateArmorTotals(section){
     if(!section)return;
-    const totals={s:0,i:0,p:0};
-    section.querySelectorAll('[data-armor-defense]').forEach(input=>totals[input.dataset.armorDefense.toLowerCase()]+=Number(input.value||0));
-    for(const key of ['s','i','p']){
+    const totals={s:0,p:0,i:0};
+    for(const key of ['s','p','i']){
+      section.querySelectorAll(`[data-ofc="defense_${key}"]`).forEach(input=>{
+        totals[key]+=Number(input.value||0);
+      });
       const cell=section.querySelector(`[data-armor-total="${key}"]`);
       if(cell)cell.textContent=String(totals[key]);
     }
@@ -242,8 +217,8 @@
     const scroll=document.createElement('div'); scroll.className='outfit-table-scroll';
     const table=document.createElement('table'); table.className='outfit-table'; table.dataset.outfitSchema=category;
     const thead=document.createElement('thead'); const headRow=document.createElement('tr');
-    for(const key of SCHEMAS[category]){
-      const th=document.createElement('th'); th.className=`outfit-table-head outfit-table-head--${key}`; th.textContent=LABELS[key]; headRow.append(th);
+    for(const key of RAW_CARD_SCHEMAS[category]){
+      const th=document.createElement('th'); th.className=`outfit-table-head outfit-table-head--${key}`; th.textContent=BASE_LABELS[key]; headRow.append(th);
     }
     thead.append(headRow);
     const tbody=document.createElement('tbody'); cards.forEach(card=>tbody.append(makeRow(card,category)));
@@ -254,9 +229,9 @@
   }
 
   function readRow(row){
-    const data={};
+    const data={...(row._outfitTransportData||{})};
     row.querySelectorAll('[data-o]').forEach(control=>{
-      data[control.dataset.o]=control.type==='number'?Number(control.value||0):control.value;
+      data[control.dataset.o]=readControlValue(control);
     });
     return {key:row.dataset.outfitKey||'',category:data.category||'other',data};
   }
@@ -340,7 +315,10 @@
 
   function enhance(){
     const cards=[...root.querySelectorAll(':scope > .outfit-card[data-outfit-key]')];
-    if(!cards.length&&root.querySelector('.outfit-table-group'))return;
+    if(!cards.length&&root.querySelector('.outfit-table-group')){
+      updateArmorTotals(root.querySelector('.outfit-table-group--armor'));
+      return;
+    }
 
     const grouped=new Map(CATEGORIES.map(([key])=>[key,[]]));
     for(const card of cards){
@@ -355,6 +333,7 @@
         fragment.append(makeTable(key,grouped.get(key)||[],label,en,addLabel));
       }
       root.replaceChildren(fragment);
+      notifyRendered();
     }finally{
       observer.observe(root,{childList:true,subtree:true});
     }
@@ -365,6 +344,11 @@
     if(add){event.preventDefault();addCategory(add.dataset.addOutfitCategory);return;}
     const move=event.target.closest('[data-outfit-move]');
     if(move){event.preventDefault();moveOutfit(move.dataset.outfitKey,move.dataset.outfitMove);}
+  });
+
+  root.addEventListener('input',event=>{
+    if(!event.target.matches?.('[data-ofc="defense_s"],[data-ofc="defense_p"],[data-ofc="defense_i"]'))return;
+    updateArmorTotals(event.target.closest('.outfit-table-group--armor'));
   });
 
   configureToolbar();

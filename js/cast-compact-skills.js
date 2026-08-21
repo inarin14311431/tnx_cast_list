@@ -8,7 +8,7 @@ import {
 /* Public compact skill renderer/layout.
  * Owns General / Social / Connection tables and their final placement.
  */
-(() => {
+function initializeCastCompactSkills() {
   const normalizeName = value => String(value || "").trim().replace(/[;；]/g, "：");
   const familyName = value => {
     const name = normalizeName(value);
@@ -155,7 +155,8 @@ import {
   }
 
   const content = document.querySelector("#cast-content");
-  if (!content) return;
+  if (!content || content.dataset.castCompactSkillsInitialized === "1") return;
+  content.dataset.castCompactSkillsInitialized = "1";
   if (!content.hidden) {
     finalize();
     return;
@@ -166,4 +167,6 @@ import {
     finalize();
   });
   observer.observe(content, { attributes: true, attributeFilter: ["hidden"] });
-})();
+}
+
+initializeCastCompactSkills();

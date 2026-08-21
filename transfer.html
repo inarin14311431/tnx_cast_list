@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <script>if(new URLSearchParams(location.search).get("embed")==="1")document.documentElement.classList.add("is-transfer-embed");</script>
+  <script src="./js/css-next-theme.js"></script>
+  <link rel="stylesheet" href="./css-next/index.css?v=56" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/pages/transfer.css?v=2">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="robots" content="noindex,nofollow">
+  <title>データ転記 // N◎VA ARCHIVE</title>
+</head>
+<body data-page="transfer.html">
+  <main class="transfer-page">
+    <a id="return-to-cast" class="transfer-page__back" href="./index.html">&lt; キャスト画面へ戻る</a>
+    <h1>データ転記</h1>
+    <p class="lead">CAST ARCHIVEのキャストデータをキャラクターシート倉庫形式へ変換し、新規登録または既存キャスト更新を行います。PC・スマートフォンのどちらからでも利用できます。</p>
+    <p class="warning"><strong>実登録・実更新を行います。</strong> 送信前に転記内容と編集パスワードを確認してください。パスワードはCAST ARCHIVEには保存しません。</p>
+
+    <form id="transfer-form" autocomplete="off">
+      <div class="source-row">
+        <label>CAST ARCHIVE キャストID またはURL
+          <input id="source-cast" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="TNX-000117 または cast.html?id=TNX-000117">
+        </label>
+        <button id="load-cast" type="button">CASTデータ読込</button>
+      </div>
+      <p id="load-status" class="loaded" aria-live="polite">未読込です。送信はできません。</p>
+
+      <fieldset class="transfer-mode">
+        <legend>転記方法</legend>
+        <label class="transfer-choice"><input type="radio" name="transfer-mode" value="new" checked> <span>新規登録</span></label>
+        <label class="transfer-choice"><input type="radio" name="transfer-mode" value="update"> <span>既存キャストを更新</span></label>
+      </fieldset>
+
+      <div class="update-only update-target-field" hidden>
+        <label>更新先キャラクターシート倉庫URL
+          <input id="update-url" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://character-sheets.appspot.com/tnx/edit.html?key=...">
+        </label>
+      </div>
+
+      <label>キャラクターシート倉庫の編集パスワード
+        <input id="transfer-password" type="password" required minlength="1" autocomplete="new-password">
+      </label>
+
+      <label class="check"><input id="hide-from-list" type="checkbox"> <span>キャラクターシート倉庫のリストに載せない</span></label>
+
+      <section class="preview" aria-labelledby="preview-title">
+        <strong id="preview-title">送信内容の要約</strong>
+        <dl>
+          <dt>CAST</dt><dd id="preview-cast">未読込</dd>
+          <dt>スタイル</dt><dd id="preview-styles">—</dd>
+          <dt>技能</dt><dd id="preview-skills">—</dd>
+          <dt>アウトフィット</dt><dd id="preview-outfits">—</dd>
+          <dt>処理</dt><dd id="preview-mode">新規登録</dd>
+          <dt>key</dt><dd id="preview-key">空欄（新規登録）</dd>
+          <dt>リスト表示</dt><dd id="preview-display">表示する</dd>
+          <dt>送信先</dt><dd>character-sheets.appspot.com/tnx/register</dd>
+        </dl>
+      </section>
+
+      <p class="danger update-only" hidden><strong>上書き注意：</strong>指定したkeyの既存キャラクターを、現在読み込んだCAST ARCHIVEデータで更新します。</p>
+      <label class="check"><input id="confirm-register" type="checkbox"> <span id="confirm-text">読み込んだCAST ARCHIVEキャストを新規登録することを確認しました。</span></label>
+      <button id="submit-register" type="submit" disabled>キャラクターシート倉庫へ新規登録 <small>POST TO CHARACTER SHEETS</small></button>
+      <p id="status" aria-live="polite">未送信です。</p>
+    </form>
+
+    <section id="transfer-result" class="transfer-result" hidden tabindex="-1" aria-labelledby="transfer-result-title">
+      <header class="transfer-result__header">
+        <div>
+          <span>TRANSFER RESULT</span>
+          <h2 id="transfer-result-title">キャラクターシート倉庫URL</h2>
+        </div>
+        <strong id="transfer-result-status" class="transfer-result__status">未処理</strong>
+      </header>
+      <p id="transfer-result-message">転記先を確認できます。</p>
+      <div id="transfer-response-box" class="transfer-result__response" hidden>
+        <strong>キャラクターシート倉庫からの登録結果</strong>
+        <p>この画面内に登録結果を表示します。表示されたJSONまたはkeyを下の欄へ貼り付けてください。</p>
+        <iframe id="transfer-response-frame" name="character-sheets-transfer-response" title="キャラクターシート倉庫の登録結果"></iframe>
+      </div>
+      <div id="new-key-row" class="transfer-result__row" hidden>
+        <label>登録結果JSON または key
+          <input id="result-key" type="text" autocomplete="off" spellcheck="false" placeholder='{"key":"..."} または key を貼り付け'>
+        </label>
+        <button id="build-result-link" type="button">URL生成</button>
+      </div>
+      <a id="transfer-result-link" class="transfer-result__link" href="#" target="_blank" rel="noopener" hidden>キャラクターシート倉庫で開く</a>
+    </section>
+  </main>
+  <script type="module" src="./js/transfer.js?v=4"></script>
+</body>
+</html>

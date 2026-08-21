@@ -4,6 +4,7 @@
 (() => {
   import("./skill-display-enhancements.js?v=1");
   const PREFIX = "@@TNX_STYLE_DETAIL_V1@@";
+  const STYLE_SKILLS_CHANGED_EVENT = "tnx:style-skills-changed";
   const DETAIL_KEYS = ["skill", "limit", "timing", "target", "range", "difficulty", "confrontation", "description", "page"];
 
   function balancedJson(text, start) {
@@ -117,20 +118,22 @@
     document.querySelectorAll('#style-skills tr[data-skill-key]').forEach(repairRow);
   }
 
-  function initialize() {
+  function initializeStyleSkillDetailIntegrity() {
     const root = document.querySelector("#style-skills");
-    if (!root) { setTimeout(initialize, 100); return; }
+    if (!root) { setTimeout(initializeStyleSkillDetailIntegrity, 100); return; }
+    if (root.dataset.styleDetailIntegrityInitialized === "1") return;
+    root.dataset.styleDetailIntegrityInitialized = "1";
+
     let queued = false;
     const queue = () => {
       if (queued) return;
       queued = true;
       requestAnimationFrame(() => { queued = false; scan(); });
     };
-    new MutationObserver(queue).observe(root, { childList: true, subtree: true, characterData: true });
-    root.addEventListener("input", queue, true);
+    root.addEventListener(STYLE_SKILLS_CHANGED_EVENT, queue);
     queue();
   }
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initialize, { once: true });
-  else initialize();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initializeStyleSkillDetailIntegrity, { once: true });
+  else initializeStyleSkillDetailIntegrity();
 })();
