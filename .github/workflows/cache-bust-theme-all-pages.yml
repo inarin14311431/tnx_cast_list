@@ -1,0 +1,33 @@
+name: Cache bust theme on all pages
+
+on:
+  push:
+    branches:
+      - hotfix/cache-bust-theme-experience-20260821
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Refresh shared theme CSS key on all root pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          find . -maxdepth 1 -type f -name '*.html' -print0 | xargs -0 sed -Ei 's#css-next/index\.css\?v=[^" ]+#css-next/index.css?v=20260821-1#g'
+          rm -f .github/workflows/cache-bust-theme-all-pages.yml
+      - name: Commit hotfix
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m 'Refresh shared theme CSS cache key on all pages'
+          git push
