@@ -1,5 +1,5 @@
 /* Owned cast cards: compact identity + two-row action area.
-   This file owns desktop, mobile, management, and icon presentation for the card. */
+   This file owns desktop, mobile, management, icon, and interaction presentation for the card. */
 
 body[data-page="account.html"] .owned-cast-list {
   display: grid;
@@ -20,6 +20,7 @@ body[data-page="account.html"] .owned-cast {
     color-mix(in srgb, var(--color-bg) 78%, transparent));
 }
 
+/* Identity */
 body[data-page="account.html"] .owned-cast__identity {
   min-width: 0;
   padding: 0 4px;
@@ -39,6 +40,7 @@ body[data-page="account.html"] .owned-cast__styles {
   margin-top: 7px;
 }
 
+/* Status + action area */
 body[data-page="account.html"] .owned-cast__meta {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -54,12 +56,15 @@ body[data-page="account.html"] .owned-cast__status-row {
   justify-content: flex-end;
   gap: 8px;
 }
-body[data-page="account.html"] .owned-cast__visibility { font-size: .75rem; }
+body[data-page="account.html"] .owned-cast__visibility {
+  font-size: .75rem;
+}
 body[data-page="account.html"] .owned-cast__serial {
   padding: 5px 8px 4px;
   font-size: .64rem;
 }
 
+/* Shared action appearance */
 body[data-page="account.html"] .owned-cast__links,
 body[data-page="account.html"] .owned-cast__management {
   display: grid;
@@ -98,6 +103,51 @@ body[data-page="account.html"] .owned-cast__links > [data-mobile-sheet-link] {
   display: none !important;
 }
 
+/* Explicit interaction feedback. Keep hover/focus theme-aware and layout-stable. */
+body[data-page="account.html"] .owned-cast :is(.owned-cast__links > a, .owned-cast__management > a, .owned-cast__management > button) {
+  transition:
+    transform 120ms ease,
+    border-color 120ms ease,
+    background-color 120ms ease,
+    box-shadow 120ms ease,
+    color 120ms ease;
+}
+body[data-page="account.html"] .owned-cast :is(.owned-cast__links > a, .owned-cast__management > a):is(:hover, :focus-visible) {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-accent) 86%, var(--color-border-muted));
+  background: color-mix(in srgb, var(--color-accent) 18%, var(--color-surface));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent),
+    0 4px 14px color-mix(in srgb, var(--color-accent) 18%, transparent);
+  color: color-mix(in srgb, var(--color-accent) 88%, var(--color-text));
+  outline: none;
+}
+body[data-page="account.html"] .owned-cast__links > a:first-child:is(:hover, :focus-visible) {
+  background: linear-gradient(180deg,
+    color-mix(in srgb, var(--color-accent) 42%, var(--color-surface)),
+    color-mix(in srgb, var(--color-accent) 19%, var(--color-bg)));
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 30%, transparent),
+    0 4px 16px color-mix(in srgb, var(--color-accent) 24%, transparent);
+}
+body[data-page="account.html"] .owned-cast__management > button:is(:hover, :focus-visible) {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, currentColor 68%, var(--color-border-muted));
+  background: color-mix(in srgb, currentColor 12%, var(--color-surface));
+  box-shadow: 0 3px 10px color-mix(in srgb, currentColor 14%, transparent);
+  outline: none;
+}
+body[data-page="account.html"] .owned-cast__management > button[data-delete]:is(:hover, :focus-visible) {
+  border-color: color-mix(in srgb, var(--color-danger) 82%, var(--color-border-muted));
+  background: color-mix(in srgb, var(--color-danger) 15%, var(--color-surface));
+  box-shadow: 0 3px 12px color-mix(in srgb, var(--color-danger) 20%, transparent);
+}
+body[data-page="account.html"] .owned-cast :is(.owned-cast__links > a, .owned-cast__management > a, .owned-cast__management > button):active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* Theme-aware inline SVG icons */
 body[data-page="account.html"] .owned-cast .action-icon {
   width: 18px;
   height: 18px;
@@ -133,6 +183,7 @@ body[data-page="account.html"] .owned-cast :is(.owned-cast__links > a, .owned-ca
   text-align: left;
 }
 
+/* Row 2 management cluster */
 body[data-page="account.html"] .owned-cast__management > a {
   grid-column: 1;
   grid-row: 1;
@@ -155,7 +206,9 @@ body[data-page="account.html"] .owned-cast__management-label {
   white-space: nowrap;
 }
 body[data-page="account.html"] .owned-cast__management-label small,
-body[data-page="account.html"] .owned-cast__management button .action-label__en { display: none; }
+body[data-page="account.html"] .owned-cast__management button .action-label__en {
+  display: none;
+}
 body[data-page="account.html"] .owned-cast__management > button {
   display: inline-flex;
   width: 56px;
@@ -170,24 +223,36 @@ body[data-page="account.html"] .owned-cast__management > button[data-duplicate] 
   margin-right: 61px;
   color: color-mix(in srgb, var(--color-accent) 72%, var(--color-text));
 }
-body[data-page="account.html"] .owned-cast__management > button[data-delete] { color: var(--color-danger); }
+body[data-page="account.html"] .owned-cast__management > button[data-delete] {
+  color: var(--color-danger);
+}
 body[data-page="account.html"] .owned-cast__management button .action-icon {
   width: 15px;
   height: 15px;
   flex-basis: 15px;
 }
-body[data-page="account.html"] .owned-cast__management button .action-label__jp { font-size: .66rem; }
-body[data-page="account.html"] .owned-cast__management > a .action-label__jp { font-size: .86rem; }
-body[data-page="account.html"] .owned-cast__management > a .action-label__en { font-size: .52rem; }
+body[data-page="account.html"] .owned-cast__management button .action-label__jp {
+  font-size: .66rem;
+}
+body[data-page="account.html"] .owned-cast__management > a .action-label__jp {
+  font-size: .86rem;
+}
+body[data-page="account.html"] .owned-cast__management > a .action-label__en {
+  font-size: .52rem;
+}
 body[data-page="account.html"] .owned-cast__management:focus-within,
-body[data-page="account.html"] .owned-cast__management:hover { opacity: 1; }
+body[data-page="account.html"] .owned-cast__management:hover {
+  opacity: 1;
+}
 
 @media (max-width: 860px) {
   body[data-page="account.html"] .owned-cast {
     grid-template-columns: minmax(190px, .72fr) minmax(420px, 1.28fr);
     gap: 12px;
   }
-  body[data-page="account.html"] .owned-cast__identity h3 { font-size: 1rem; }
+  body[data-page="account.html"] .owned-cast__identity h3 {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 767px) {
@@ -204,14 +269,18 @@ body[data-page="account.html"] .owned-cast__management:hover { opacity: 1; }
     width: 100%;
     padding: 0;
   }
-  body[data-page="account.html"] .owned-cast__identity :is(h3, .owned-cast__handle) { grid-column: 1; }
+  body[data-page="account.html"] .owned-cast__identity :is(h3, .owned-cast__handle) {
+    grid-column: 1;
+  }
   body[data-page="account.html"] .owned-cast__styles {
     grid-column: 1 / -1;
     width: 100%;
     max-width: none;
     margin-top: 6px;
   }
-  body[data-page="account.html"] .owned-cast__status-row { min-height: 22px; }
+  body[data-page="account.html"] .owned-cast__status-row {
+    min-height: 22px;
+  }
   body[data-page="account.html"] .owned-cast :is(.owned-cast__links > a, .owned-cast__management > a) {
     min-height: 44px;
     padding-inline: 4px;
@@ -229,8 +298,12 @@ body[data-page="account.html"] .owned-cast__management:hover { opacity: 1; }
     font-size: .72rem;
     white-space: nowrap;
   }
-  body[data-page="account.html"] .owned-cast__links .action-label__en { font-size: .44rem; }
-  body[data-page="account.html"] .owned-cast__management > a .action-label__jp { font-size: .7rem; }
+  body[data-page="account.html"] .owned-cast__links .action-label__en {
+    font-size: .44rem;
+  }
+  body[data-page="account.html"] .owned-cast__management > a .action-label__jp {
+    font-size: .7rem;
+  }
   body[data-page="account.html"] .owned-cast__management-label {
     margin-right: 96px;
     font-size: .52rem;
@@ -240,7 +313,9 @@ body[data-page="account.html"] .owned-cast__management:hover { opacity: 1; }
     min-height: 34px;
     gap: 2px;
   }
-  body[data-page="account.html"] .owned-cast__management > button[data-duplicate] { margin-right: 48px; }
+  body[data-page="account.html"] .owned-cast__management > button[data-duplicate] {
+    margin-right: 48px;
+  }
   body[data-page="account.html"] .owned-cast__management button .action-icon {
     width: 13px;
     height: 13px;
@@ -250,7 +325,9 @@ body[data-page="account.html"] .owned-cast__management:hover { opacity: 1; }
 
 @media (max-width: 390px) {
   body[data-page="account.html"] .owned-cast__links .action-label__en,
-  body[data-page="account.html"] .owned-cast__management > a .action-label__en { display: none; }
+  body[data-page="account.html"] .owned-cast__management > a .action-label__en {
+    display: none;
+  }
   body[data-page="account.html"] .owned-cast :is(.owned-cast__links > a, .owned-cast__management > a).has-action-icon {
     grid-template-columns: 16px auto;
     column-gap: 3px;
@@ -259,7 +336,13 @@ body[data-page="account.html"] .owned-cast__management:hover { opacity: 1; }
     margin-right: 90px;
     font-size: .48rem;
   }
-  body[data-page="account.html"] .owned-cast__management > button { width: 42px; }
-  body[data-page="account.html"] .owned-cast__management > button[data-duplicate] { margin-right: 45px; }
-  body[data-page="account.html"] .owned-cast__management button .action-label__jp { font-size: .6rem; }
+  body[data-page="account.html"] .owned-cast__management > button {
+    width: 42px;
+  }
+  body[data-page="account.html"] .owned-cast__management > button[data-duplicate] {
+    margin-right: 45px;
+  }
+  body[data-page="account.html"] .owned-cast__management button .action-label__jp {
+    font-size: .6rem;
+  }
 }
