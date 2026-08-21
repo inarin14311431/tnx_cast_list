@@ -103,7 +103,7 @@ body[data-page="account.html"] .owned-cast__links > [data-mobile-sheet-link] {
   display: none !important;
 }
 
-/* Explicit interaction feedback. Keep hover/focus theme-aware and layout-stable. */
+/* Explicit interaction feedback. Accent stays in surfaces; hover text follows each theme's readable text token. */
 body[data-page="account.html"] .owned-cast :is(.owned-cast__links > a, .owned-cast__management > a, .owned-cast__management > button) {
   transition:
     transform 120ms ease,
@@ -119,7 +119,7 @@ body[data-page="account.html"] .owned-cast :is(.owned-cast__links > a, .owned-ca
   box-shadow:
     0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent),
     0 4px 14px color-mix(in srgb, var(--color-accent) 18%, transparent);
-  color: color-mix(in srgb, var(--color-accent) 88%, var(--color-text));
+  color: var(--color-text);
   outline: none;
 }
 body[data-page="account.html"] .owned-cast__links > a:first-child:is(:hover, :focus-visible) {
@@ -132,10 +132,13 @@ body[data-page="account.html"] .owned-cast__links > a:first-child:is(:hover, :fo
 }
 body[data-page="account.html"] .owned-cast__management > button:is(:hover, :focus-visible) {
   transform: translateY(-1px);
-  border-color: color-mix(in srgb, currentColor 68%, var(--color-border-muted));
-  background: color-mix(in srgb, currentColor 12%, var(--color-surface));
-  box-shadow: 0 3px 10px color-mix(in srgb, currentColor 14%, transparent);
+  color: var(--color-text);
   outline: none;
+}
+body[data-page="account.html"] .owned-cast__management > button[data-duplicate]:is(:hover, :focus-visible) {
+  border-color: color-mix(in srgb, var(--color-accent) 74%, var(--color-border-muted));
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-surface));
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--color-accent) 14%, transparent);
 }
 body[data-page="account.html"] .owned-cast__management > button[data-delete]:is(:hover, :focus-visible) {
   border-color: color-mix(in srgb, var(--color-danger) 82%, var(--color-border-muted));
