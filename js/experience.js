@@ -1,5 +1,6 @@
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
-import { CREATION_ALLOWANCE, INITIAL_SKILL_COST, paidInitialSkillCost, paidSkillLevel, steppedExperienceCost } from "./sheet-experience-rules.js?v=4";
+import { isInitialGeneralSkill } from "./general-skill-catalog.js";
+import { CREATION_ALLOWANCE, INITIAL_SKILL_COST, paidFixedInitialGeneralLevel, paidSocialConnectionInitialCost, paidSkillLevel, steppedExperienceCost } from "./sheet-experience-rules.js?v=6";
 
 /* Single authoritative experience-point calculator. */
 (function(){
@@ -9,153 +10,13 @@ import { CREATION_ALLOWANCE, INITIAL_SKILL_COST, paidInitialSkillCost, paidSkill
   const STYLE_COST=window.TNXStyleSkillKinds?.costs||{normal:10,secret:20,ultimate:50,direction:2};
   let queued=false;
   let writing=false;
-
-  function num(value){
-    const parsed=Number(value);
-    return Number.isFinite(parsed)?parsed:0;
-  }
-
-  function styleRecord(index){
-    const name=$(`#style-${index}`)?.value||"";
-    if(name==="ウツワ"){
-      const attribute=$(`#style-${index}-attribute`)?.value||"";
-      return UTSUWA_ATTRIBUTES.find(item=>item.name===attribute)||null;
-    }
-    return STYLE_DATA.find(item=>item.name===name)||null;
-  }
-
-  function baselines(){
-    const result={};
-    for(const key of ABILITIES){
-      result[key]=0;
-      result[`${key}-control`]=0;
-    }
-    for(let index=1;index<=3;index++){
-      const record=styleRecord(index);
-      if(!record)continue;
-      for(const key of ABILITIES){
-        result[key]+=num(record[key]?.[0]);
-        result[`${key}-control`]+=num(record[key]?.[1]);
-      }
-    }
-    return result;
-  }
-
-  function skillCategory(row,name=""){
-    if(row.closest("#style-skills"))return "style";
-    const category=row.closest("[data-skill-category]")?.dataset.skillCategory||"";
-    if(category)return category;
-    if(/^社会[：:]/.test(name))return "social";
-    if(/^コネ[：:]/.test(name))return "connection";
-    return "general";
-  }
-
-  function skillParts(){
-    let general=0;
-    let socialConnection=0;
-    let style=0;
-    const seen=new Set();
-    const rows=$$("#general-skills tr[data-skill-key],#style-skills tr[data-skill-key]");
-    for(const row of rows){
-      const key=row.dataset.skillKey;
-      if(key&&seen.has(key))continue;
-      if(key)seen.add(key);
-      const name=row.querySelector('[data-f="name"]')?.value?.trim()||"";
-      if(!name)continue;
-      const level=Math.max(0,num(row.querySelector('[data-f="level"]')?.value));
-      if(level<=0)continue;
-      const freeLevel=Math.max(0,num(row.querySelector('[data-f="free_level"]')?.value));
-      const paidLevel=paidSkillLevel(level,freeLevel);
-      const kind=row.querySelector('[data-f="skill_kind"]')?.value||"general";
-      const category=skillCategory(row,name);
-      if(category==="style"){
-        style+=paidLevel*(STYLE_COST[kind]??10);
-      }else if(category==="social"||category==="connection"){
-        socialConnection+=paidLevel*5;
-      }else{
-        general+=paidLevel*(kind==="proper"?5:10);
-      }
-    }
-    return {general,socialConnection,style};
-  }
-
-  function outfitCost(){
-    let total=0;
-    const seen=new Set();
-    for(const control of $$('#outfit-list [data-o="experience_cost"]')){
-      const row=control.closest('[data-outfit-key]');
-      const key=row?.dataset.outfitKey||control;
-      if(seen.has(key))continue;
-      seen.add(key);
-      total+=Math.max(0,num(control.value));
-    }
-    return total;
-  }
-
-  function calculate(){
-    queued=false;
-    const base=baselines();
-    let ability=0;
-    let control=0;
-    for(const key of ABILITIES){
-      ability+=steppedExperienceCost(base[key],num($(`#${key}-base`)?.value),10);
-      control+=steppedExperienceCost(base[`${key}-control`],num($(`#${key}-control-base`)?.value),16);
-    }
-
-    const skills=skillParts();
-    const paidSkills=paidInitialSkillCost(skills);
-    const paidGeneral=paidSkills.total;
-    const parts={
-      "能力値":ability,
-      "制御値":control,
-      "一般技能":paidGeneral,
-      "スタイル技能":skills.style,
-      "アウトフィット":outfitCost(),
-      "初期作成経験点":-CREATION_ALLOWANCE
-    };
-    const gross=ability+control+paidGeneral+skills.style+parts["アウトフィット"];
-    const total=gross-CREATION_ALLOWANCE;
-
-    writing=true;
-    const output=$("#exp-total");
-    if(output&&output.textContent!==String(total)){
-      output.textContent=String(total);
-      output.classList.remove("flash");
-      void output.offsetWidth;
-      output.classList.add("flash");
-    }
-    const breakdown=$("#exp-breakdown");
-    const html=["能力値","制御値","一般技能","スタイル技能","アウトフィット","初期作成経験点"]
-      .map(label=>`<div><dt>${label}</dt><dd>${parts[label]||0}</dd></div>`)
-      .join("");
-    if(breakdown&&breakdown.innerHTML!==html)breakdown.innerHTML=html;
-    writing=false;
-
-    return {
-      total,
-      parts,
-      gross,
-      rawGeneralSkillCost:skills.general,
-      rawSocialConnectionSkillCost:skills.socialConnection,
-      initialSkillCost:INITIAL_SKILL_COST,
-      creationAllowance:CREATION_ALLOWANCE
-    };
-  }
-
-  function queue(){
-    if(writing||queued)return;
-    queued=true;
-    requestAnimationFrame(calculate);
-  }
-
-  window.TNXExperience={calculate,queue};
-  document.addEventListener("input",queue,true);
-  document.addEventListener("change",queue,true);
-  new MutationObserver(mutations=>{
-    if(writing)return;
-    if(mutations.every(item=>item.target.closest?.("#exp-total,#exp-breakdown")))return;
-    queue();
-  }).observe(document.documentElement,{childList:true,subtree:true});
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",queue,{once:true});
-  else queue();
+  function num(value){const parsed=Number(value);return Number.isFinite(parsed)?parsed:0;}
+  function styleRecord(index){const name=$(`#style-${index}`)?.value||"";if(name==="ウツワ"){const attribute=$(`#style-${index}-attribute`)?.value||"";return UTSUWA_ATTRIBUTES.find(item=>item.name===attribute)||null;}return STYLE_DATA.find(item=>item.name===name)||null;}
+  function baselines(){const result={};for(const key of ABILITIES){result[key]=0;result[`${key}-control`]=0;}for(let index=1;index<=3;index++){const record=styleRecord(index);if(!record)continue;for(const key of ABILITIES){result[key]+=num(record[key]?.[0]);result[`${key}-control`]+=num(record[key]?.[1]);}}return result;}
+  function skillCategory(row,name=""){if(row.closest("#style-skills"))return "style";const category=row.closest("[data-skill-category]")?.dataset.skillCategory||"";if(category)return category;if(/^社会[：:]/.test(name))return "social";if(/^コネ[：:]/.test(name))return "connection";return "general";}
+  function skillParts(){let general=0,social=0,connection=0,style=0;const seen=new Set();const rows=$$("#general-skills tr[data-skill-key],#style-skills tr[data-skill-key]");for(const row of rows){const key=row.dataset.skillKey;if(key&&seen.has(key))continue;if(key)seen.add(key);const name=row.querySelector('[data-f="name"]')?.value?.trim()||"";if(!name)continue;const level=Math.max(0,num(row.querySelector('[data-f="level"]')?.value));if(level<=0)continue;const freeLevel=Math.max(0,num(row.querySelector('[data-f="free_level"]')?.value));const paidLevel=paidSkillLevel(level,freeLevel);const kind=row.querySelector('[data-f="skill_kind"]')?.value||"general";const category=skillCategory(row,name);if(category==="style")style+=paidLevel*(STYLE_COST[kind]??10);else if(category==="social")social+=paidLevel*5;else if(category==="connection")connection+=paidLevel*5;else if(isInitialGeneralSkill(name))general+=paidFixedInitialGeneralLevel(level,freeLevel)*10;else general+=paidLevel*(kind==="proper"?5:10);}const socialConnection=paidSocialConnectionInitialCost({social,connection});return {general,socialConnection,style,rawSocial:social,rawConnection:connection};}
+  function outfitCost(){let total=0;const seen=new Set();for(const control of $$('#outfit-list [data-o="experience_cost"]')){const row=control.closest('[data-outfit-key]');const key=row?.dataset.outfitKey||control;if(seen.has(key))continue;seen.add(key);total+=Math.max(0,num(control.value));}return total;}
+  function calculate(){queued=false;const base=baselines();let ability=0,control=0;for(const key of ABILITIES){ability+=steppedExperienceCost(base[key],num($(`#${key}-base`)?.value),10);control+=steppedExperienceCost(base[`${key}-control`],num($(`#${key}-control-base`)?.value),16);}const skills=skillParts();const paidGeneral=skills.general+skills.socialConnection;const parts={"能力値":ability,"制御値":control,"一般技能":paidGeneral,"スタイル技能":skills.style,"アウトフィット":outfitCost(),"初期作成経験点":-CREATION_ALLOWANCE};const gross=ability+control+paidGeneral+skills.style+parts["アウトフィット"];const total=gross-CREATION_ALLOWANCE;writing=true;const output=$("#exp-total");if(output&&output.textContent!==String(total)){output.textContent=String(total);output.classList.remove("flash");void output.offsetWidth;output.classList.add("flash");}const breakdown=$("#exp-breakdown");const html=["能力値","制御値","一般技能","スタイル技能","アウトフィット","初期作成経験点"].map(label=>`<div><dt>${label}</dt><dd>${parts[label]||0}</dd></div>`).join("");if(breakdown&&breakdown.innerHTML!==html)breakdown.innerHTML=html;writing=false;return {total,parts,gross,paidGeneralSkillCost:skills.general,paidSocialConnectionSkillCost:skills.socialConnection,rawSocialSkillCost:skills.rawSocial,rawConnectionSkillCost:skills.rawConnection,initialSkillCost:INITIAL_SKILL_COST,creationAllowance:CREATION_ALLOWANCE};}
+  function queue(){if(writing||queued)return;queued=true;requestAnimationFrame(calculate);}
+  window.TNXExperience={calculate,queue};document.addEventListener("input",queue,true);document.addEventListener("change",queue,true);new MutationObserver(mutations=>{if(writing)return;if(mutations.every(item=>item.target.closest?.("#exp-total,#exp-breakdown")))return;queue();}).observe(document.documentElement,{childList:true,subtree:true});if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",queue,{once:true});else queue();
 })();
