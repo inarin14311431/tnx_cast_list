@@ -1,4 +1,5 @@
 import { supabase } from "./supabase-client.js";
+import { normalizeOutfitListForView } from "./outfit-view-model.js";
 
 /* Shared read-only data access for the public cast view.
  * Queries intentionally match cast.js so the public-view Supabase cache can
@@ -79,7 +80,7 @@ export async function getOutfits() {
       .order("name");
 
     if (error) throw error;
-    return data || [];
+    return normalizeOutfitListForView(data || []);
   })();
 
   return outfitsPromise;

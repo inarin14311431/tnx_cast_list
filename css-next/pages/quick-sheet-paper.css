@@ -18,10 +18,67 @@
   border: 1.5px solid currentColor;
   background: transparent;
 }
+
+/* Canonical ACT-reference outfit table sizing. Purchase and concealment are
+ * paired values, so keep them compact and leave remaining width to notes. */
+.quick-sheet__outfit-table {
+  width: 100%;
+  table-layout: fixed;
+}
+.quick-sheet__outfit-table .quick-sheet__outfit-name {
+  width: 20%;
+  min-width: 92px;
+}
+.quick-sheet__outfit-table .quick-sheet__outfit-purchase,
+.quick-sheet__outfit-table .quick-sheet__outfit-concealment {
+  width: 7%;
+  min-width: 46px;
+  white-space: nowrap;
+}
+.quick-sheet__outfit-table .quick-sheet__outfit-attack,
+.quick-sheet__outfit-table .quick-sheet__outfit-parry,
+.quick-sheet__outfit-table .quick-sheet__outfit-range,
+.quick-sheet__outfit-table .quick-sheet__outfit-speed,
+.quick-sheet__outfit-table .quick-sheet__outfit-control-modifier,
+.quick-sheet__outfit-table .quick-sheet__outfit-defense-s,
+.quick-sheet__outfit-table .quick-sheet__outfit-defense-p,
+.quick-sheet__outfit-table .quick-sheet__outfit-defense-i,
+.quick-sheet__outfit-table .quick-sheet__outfit-tron-software,
+.quick-sheet__outfit-table .quick-sheet__outfit-tron-support,
+.quick-sheet__outfit-table .quick-sheet__outfit-tron-hardware,
+.quick-sheet__outfit-table .quick-sheet__outfit-cs-modifier,
+.quick-sheet__outfit-table .quick-sheet__outfit-crew,
+.quick-sheet__outfit-table .quick-sheet__outfit-sf,
+.quick-sheet__outfit-table .quick-sheet__outfit-residence-entry,
+.quick-sheet__outfit-table .quick-sheet__outfit-residence-electric,
+.quick-sheet__outfit-table .quick-sheet__outfit-residence-area,
+.quick-sheet__outfit-table .quick-sheet__outfit-electronic-control {
+  width: 5.5%;
+  min-width: 34px;
+  white-space: nowrap;
+}
+.quick-sheet__outfit-table .quick-sheet__outfit-description {
+  width: auto;
+}
+.quick-sheet__outfit-table th.quick-sheet__outfit-stat,
+.quick-sheet__outfit-table td.quick-sheet__outfit-stat {
+  padding-left: 3px;
+  padding-right: 3px;
+  text-align: center;
+}
+.quick-sheet__outfit-table th.quick-sheet__outfit-purchase,
+.quick-sheet__outfit-table th.quick-sheet__outfit-concealment {
+  letter-spacing: 0;
+}
+
 @media print {
   .quick-sheet__paper-counter i {
     width: 4mm;
     height: 4mm;
     border-width: .45mm;
+  }
+  .quick-sheet__outfit-table .quick-sheet__outfit-purchase,
+  .quick-sheet__outfit-table .quick-sheet__outfit-concealment {
+    min-width: 0;
   }
 }

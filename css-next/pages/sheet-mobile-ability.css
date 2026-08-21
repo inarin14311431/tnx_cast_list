@@ -1,0 +1,30 @@
+body[data-page="sheet-mobile.html"] .mobile-ability-grid{gap:8px}
+body[data-page="sheet-mobile.html"] .mobile-ability-matrix{display:grid;grid-template-columns:52px repeat(4,minmax(0,1fr));gap:6px;padding:7px;border:1px solid color-mix(in srgb,var(--color-section-ability) 34%,var(--color-border-muted));background:color-mix(in srgb,var(--color-surface) 96%,var(--color-section-ability) 3%);border-radius:8px}
+body[data-page="sheet-mobile.html"] .mobile-ability-matrix>*{min-width:0;min-height:32px;border:0;background:transparent;color:inherit}
+body[data-page="sheet-mobile.html"] .mobile-ability-matrix__corner{display:block}
+body[data-page="sheet-mobile.html"] .mobile-ability-matrix__head{display:grid;place-items:end center;padding:2px;color:var(--color-section-ability);font-size:10px;font-weight:800}
+body[data-page="sheet-mobile.html"] .mobile-ability-matrix__value{display:grid;place-items:center;min-height:44px;padding:5px 2px;border-radius:7px;background:color-mix(in srgb,var(--color-section-ability) 7%,var(--color-surface));font:800 1rem/1 var(--font-data,inherit);cursor:pointer}
+body[data-page="sheet-mobile.html"] .mobile-ability-matrix__rowlabel{display:grid;place-items:center start;padding:3px 2px;color:var(--color-muted);font-size:9px;font-weight:800;white-space:nowrap}
+body[data-page="sheet-mobile.html"] .mobile-cs-cell{display:flex;align-items:center;justify-content:flex-start;gap:12px;width:100%;min-height:46px;padding:7px 10px;border:1px solid color-mix(in srgb,var(--color-section-ability) 34%,var(--color-border-muted));border-radius:8px;background:color-mix(in srgb,var(--color-surface) 95%,var(--color-section-ability) 4%);color:inherit;text-align:left}
+body[data-page="sheet-mobile.html"] .mobile-cs-cell>span{display:flex;align-items:baseline;gap:6px;color:var(--color-section-ability);font-weight:800}
+body[data-page="sheet-mobile.html"] .mobile-cs-cell small{font-size:8px;letter-spacing:.08em;opacity:.62}
+body[data-page="sheet-mobile.html"] .mobile-cs-cell strong{font:800 1.3rem/1 var(--font-data,inherit)}
+body[data-page="sheet-mobile.html"] .mobile-cs-cell em{font-size:10px;font-style:normal;opacity:.55}
+
+body[data-page="sheet-mobile.html"] .mobile-ability-editor-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+body[data-page="sheet-mobile.html"] .mobile-ability-editor-panel{min-width:0;padding:10px;border:1px solid color-mix(in srgb,var(--color-section-ability) 38%,var(--color-border-muted));background:color-mix(in srgb,var(--color-surface) 94%,transparent)}
+body[data-page="sheet-mobile.html"] .mobile-ability-editor-panel h3{margin:0 0 8px;color:var(--color-section-ability);font-size:13px}
+body[data-page="sheet-mobile.html"] .mobile-ability-editor-panel label{display:grid;gap:4px;margin-top:8px;font-size:11px}
+body[data-page="sheet-mobile.html"] .mobile-ability-editor-panel :is(input,select){width:100%;min-width:0;min-height:44px;padding:9px 10px;border:1px solid var(--color-border-muted);background:var(--color-field);color:inherit;font-size:16px}
+body[data-page="sheet-mobile.html"] .mobile-ability-fixed{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;min-height:44px;padding:8px 10px;border:1px solid color-mix(in srgb,var(--color-section-ability) 28%,var(--color-border-muted));background:color-mix(in srgb,var(--color-section-ability) 7%,transparent);font-size:11px}
+body[data-page="sheet-mobile.html"] .mobile-ability-fixed strong{color:var(--color-section-ability);font:800 1.2rem/1 var(--font-data,inherit)}
+body[data-page="sheet-mobile.html"] .mobile-ability-preview{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px solid var(--color-border-muted);font-size:11px}
+body[data-page="sheet-mobile.html"] .mobile-ability-preview strong{font:800 1.35rem/1 var(--font-data,inherit)}
+body[data-page="sheet-mobile.html"] .mobile-cs-editor{max-width:420px;margin:0 auto}
+
+@media(max-width:390px){
+  body[data-page="sheet-mobile.html"] .mobile-ability-matrix{grid-template-columns:46px repeat(4,minmax(0,1fr));gap:4px;padding:6px}
+  body[data-page="sheet-mobile.html"] .mobile-ability-matrix__head{font-size:9px}
+  body[data-page="sheet-mobile.html"] .mobile-ability-matrix__value{font-size:.92rem}
+  body[data-page="sheet-mobile.html"] .mobile-ability-matrix__rowlabel{font-size:8px}
+}

@@ -57,6 +57,36 @@
     return [...document.querySelectorAll(`#${CSS.escape(prefix)} tbody tr[id^="${prefix}."]`)];
   }
 
+  function rowIndex(row,prefix,position){
+    return row?.id?.startsWith(`${prefix}.`)?row.id.slice(prefix.length+1):String(position);
+  }
+
+  async function trimRows(prefix,count){
+    const target=Math.max(0,Number(count)||0);
+    let rows=tableRows(prefix);
+    let guard=0;
+    while(rows.length>target&&guard++<100){
+      const row=rows[rows.length-1];
+      const index=rowIndex(row,prefix,rows.length-1);
+      const remove=document.getElementById(`${prefix}.${index}.delete`)
+        ||row?.querySelector('[id$=".delete"],button[data-action="delete"],input[type="button"][value="×"]');
+      const before=rows.length;
+      if(remove){
+        try{remove.click()}catch{}
+        await frame();
+        await wait(30);
+      }
+      rows=tableRows(prefix);
+      if(rows.length>=before){
+        row?.remove();
+        await frame();
+        rows=tableRows(prefix);
+      }
+      if(rows.length>=before)break;
+    }
+    return rows;
+  }
+
   async function ensureRows(prefix,count){
     let rows=tableRows(prefix);
     while(rows.length<count){
@@ -68,10 +98,6 @@
       if(rows.length<=before)break;
     }
     return rows;
-  }
-
-  function rowIndex(row,prefix,position){
-    return row?.id?.startsWith(`${prefix}.`)?row.id.slice(prefix.length+1):String(position);
   }
 
   const SUITS={
@@ -105,6 +131,6 @@
     replaceSuitImage(image,suit.image,desired);
   }
 
-  window.TNXTransferRepairCommon={FORMAT,wait,frame,clean,truth,parse,records,notify,setById,tableRows,ensureRows,rowIndex,SUITS,setLegacySuit};
+  window.TNXTransferRepairCommon={FORMAT,wait,frame,clean,truth,parse,records,notify,setById,tableRows,trimRows,ensureRows,rowIndex,SUITS,setLegacySuit};
   window.TNXTransferRepairs=window.TNXTransferRepairs||{};
 })();

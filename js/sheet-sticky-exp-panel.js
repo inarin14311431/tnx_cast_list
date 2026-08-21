@@ -1,5 +1,8 @@
-(() => {
+function initializeSheetStickyExpPanel() {
   const root = document.documentElement;
+  if (root.dataset.tnxStickyExpPanelInitialized === "true") return;
+  root.dataset.tnxStickyExpPanelInitialized = "true";
+
   const header = document.querySelector(".sheet-header");
   const layout = document.querySelector(".sheet-layout");
   const panel = document.querySelector(".exp-panel");
@@ -121,4 +124,6 @@
     observer.observe(layout);
     if (panel) observer.observe(panel);
   }
-})();
+}
+
+initializeSheetStickyExpPanel();

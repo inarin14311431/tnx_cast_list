@@ -1,0 +1,41 @@
+/* Mobile editor theme integration.
+ * Bridges legacy mobile aliases to the canonical CSS token system and owns
+ * semantic section accents/navigation colors. Page-feature styles stay in
+ * their own sheet-mobile-*.css files.
+ */
+body[data-page="sheet-mobile.html"] {
+  --line-color: var(--color-border-muted);
+  --surface: var(--color-surface);
+  --surface-strong: var(--color-surface-alt);
+  --input-bg: var(--color-field);
+  --page-bg: var(--color-bg);
+  --mobile-ability-accent: color-mix(in srgb,var(--color-section-ability) 45%,var(--color-section-outfits) 55%);
+  --mobile-snapshot-accent: color-mix(in srgb,var(--color-section-styles) 65%,var(--color-success) 35%);
+}
+body[data-page="sheet-mobile.html"] .mobile-sheet-section{--mobile-section-accent:var(--color-accent);border-color:color-mix(in srgb,var(--mobile-section-accent) 46%,var(--color-border-muted));box-shadow:inset 0 3px 0 color-mix(in srgb,var(--mobile-section-accent) 72%,transparent)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-section>header{border-bottom-color:color-mix(in srgb,var(--mobile-section-accent) 34%,var(--color-border-muted));background:linear-gradient(90deg,color-mix(in srgb,var(--mobile-section-accent) 12%,transparent),transparent 72%)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-section>header h2{color:var(--mobile-section-accent)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-section--profile{--mobile-section-accent:var(--color-section-profile)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-section--styles{--mobile-section-accent:var(--color-section-styles)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-section--ability{--mobile-section-accent:var(--mobile-ability-accent)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-section--skills{--mobile-section-accent:var(--color-section-skills)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-section--style-skills{--mobile-section-accent:var(--color-section-style-skills)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-section--outfits{--mobile-section-accent:var(--color-section-outfits)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-section--combos{--mobile-section-accent:var(--color-warning)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-section--snapshots{--mobile-section-accent:var(--mobile-snapshot-accent)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-section--image{--mobile-section-accent:var(--color-feature)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav a{--mobile-nav-accent:var(--color-accent);border-color:color-mix(in srgb,var(--mobile-nav-accent) 52%,var(--color-border-muted));background:color-mix(in srgb,var(--color-surface) 94%,var(--mobile-nav-accent) 6%);color:var(--mobile-nav-accent)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav a[href="#mobile-profile"]{--mobile-nav-accent:var(--color-section-profile)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav a[href="#mobile-styles-section"]{--mobile-nav-accent:var(--color-section-styles)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav a[href="#mobile-ability-section"]{--mobile-nav-accent:var(--mobile-ability-accent)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav a[href="#mobile-general"]{--mobile-nav-accent:var(--color-section-skills)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav a[href="#mobile-style-skills-section"]{--mobile-nav-accent:var(--color-section-style-skills)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav a[href="#mobile-outfits-section"]{--mobile-nav-accent:var(--color-section-outfits)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav a[href="#mobile-combos-section"]{--mobile-nav-accent:var(--color-warning)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav a[href="#mobile-snapshots-section"]{--mobile-nav-accent:var(--mobile-snapshot-accent)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav a[href="#mobile-image-section"]{--mobile-nav-accent:var(--color-feature)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-status[data-state="error"]{border-color:var(--color-danger)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-status[data-state="dirty"]{border-color:var(--color-warning)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-status[data-state="saved"]{border-color:var(--color-success)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-actions button[data-state="dirty"]{border-color:var(--color-warning)}
+body[data-page="sheet-mobile.html"] .mobile-sheet-actions button[data-state="saved"]{border-color:var(--color-success)}

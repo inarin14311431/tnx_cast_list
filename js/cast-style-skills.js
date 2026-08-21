@@ -89,7 +89,11 @@ function whenCastReady(callback) {
   observer.observe(content, { attributes: true, attributeFilter: ["hidden"] });
 }
 
-async function initialize() {
+async function initializeCastStyleSkills() {
+  const root = document.documentElement;
+  if (root.dataset.castStyleSkillsInitialized === "1") return;
+  root.dataset.castStyleSkillsInitialized = "1";
+
   let skills = [];
   try { skills = await getStyleSkills(); } catch (error) { console.error("Style skill view data load failed", error); return; }
   if (!skills.length) return;
@@ -100,4 +104,4 @@ async function initialize() {
     renderTable(section, skills);
   });
 }
-initialize();
+initializeCastStyleSkills();

@@ -121,7 +121,7 @@
     while(guard++<250){
       const row=getRows().find(filter);
       if(!row)break;
-      const del=row.querySelector('[data-delete-skill],[data-delete-outfit]');
+      const del=row.querySelector('[data-delete-skill]');
       if(!del)break;
       del.click();
       await wait();
@@ -144,6 +144,10 @@
     const suits=skillSuits(data);
     return Math.max(0,number(firstDefined(data,'level','lv')),Object.values(suits).filter(Boolean).length);
   }
+  function skillFreeLevel(data){
+    const level=skillLevel(data);
+    return Math.min(level,Math.max(0,number(firstDefined(data,'free_level','freeLevel'))));
+  }
 
   async function setSkillRow(row,data,kind){
     if(!row)return false;
@@ -153,7 +157,6 @@
     await setInput(current?.querySelector('[data-f="name"]'),cleanName(data.name));
     current=locate();
     await setInput(current?.querySelector('[data-f="skill_kind"]'),kind);
-
     const suits=skillSuits(data);
     const level=skillLevel(data);
     current=locate();
@@ -165,7 +168,8 @@
     }
     current=locate();
     await setInput(current?.querySelector('[data-f="level"]'),level);
-
+    current=locate();
+    await setInput(current?.querySelector('[data-f="free_level"]'),skillFreeLevel(data));
     current=locate();
     const description=current?.querySelector('[data-f="description"]');
     if(description){
@@ -186,7 +190,6 @@
   }
 
   const rowsForImportLabel=label=>label==='__style__'?$$('#style-skills tr[data-skill-key]'):skillRows(label);
-
   async function addSkill(button,label,data,kind){
     const before=new Set(rowsForImportLabel(label).map(row=>row.dataset.skillKey));
     if(!await click(button))return false;
@@ -255,24 +258,27 @@
   async function importGeneral(map,stats){
     await clearRows(()=>skillRows('一般技能'),row=>!FIXED_GENERAL.has(rowName(row)));
     for(const data of [...groups(map,'skills1'),...groups(map,'skills2')]){
-      const name=cleanName(firstDefined(data,'name'));
+      const rawName=firstDefined(data,'name');
+      const name=cleanName(rawName);
       const level=skillLevel(data);
       if(!name||!level)continue;
       const row=findGeneralRow(name);
       const kind=name.includes('：')?'proper':'general';
-      const done=row?await setSkillRow(row,{...data,name},kind):await addSkill('#add-general','一般技能',{...data,name},kind);
+      const done=row?await setSkillRow(row,{...data,name:rawName},kind):await addSkill('#add-general','一般技能',{...data,name:rawName},kind);
       if(done)stats.general++;
     }
     for(const data of groups(map,['skills3','socialskills','social'])){
-      const name=prefixed(firstDefined(data,'name'),'社会：');
+      const rawName=firstDefined(data,'name');
+      const name=prefixed(rawName,'社会：');
       if(!name||!skillLevel(data))continue;
-      if(await addSkill('#add-social','社会',{...data,name},'proper'))stats.social++;
+      if(await addSkill('#add-social','社会',{...data,name:/^\s*★/.test(String(rawName||''))?`★${name}`:name},'proper'))stats.social++;
     }
     for(const data of groups(map,['skills4','connectionskills','connections'])){
-      const raw=cleanName(firstDefined(data,'name'));
+      const rawName=firstDefined(data,'name');
+      const raw=cleanName(rawName);
       if(!raw||/^ー+$/.test(raw)||!skillLevel(data))continue;
       const name=prefixed(raw,'コネ：');
-      if(await addSkill('#add-connection','コネクション',{...data,name},'proper'))stats.connection++;
+      if(await addSkill('#add-connection','コネクション',{...data,name:/^\s*★/.test(String(rawName||''))?`★${name}`:name},'proper'))stats.connection++;
     }
   }
 
@@ -288,49 +294,11 @@
   async function importStyleSkills(map,stats){
     await clearRows(()=>$$('#style-skills tr[data-skill-key]'));
     for(const data of groups(map,['superhumanskills','styleskills','styleSkills'])){
-      const name=cleanName(firstDefined(data,'name'));
+      const rawName=firstDefined(data,'name');
+      const name=cleanName(rawName);
       const level=skillLevel(data);
-      if(!name||!level||String(firstDefined(data,'name')).trim().startsWith('■'))continue;
-      if(await addSkill('#add-style-skill','__style__',{...data,name},styleSkillKind(data)))stats.style++;
-    }
-  }
-
-  async function addOutfit(category,data){
-    const before=new Set($$('#outfit-list [data-outfit-key]').map(card=>card.dataset.outfitKey));
-    if(!await click('#add-outfit'))return false;
-    let card=null;
-    for(let attempt=0;attempt<12&&!card;attempt++){
-      card=$$('#outfit-list [data-outfit-key]').find(candidate=>!before.has(candidate.dataset.outfitKey));
-      if(!card)await wait();
-    }
-    if(!card)return false;
-    const key=card.dataset.outfitKey;
-    const locate=()=>document.querySelector(`[data-outfit-key="${CSS.escape(key)}"]`);
-    let current=locate();await setInput(current?.querySelector('[data-o="category"]'),category);
-    current=locate();await setInput(current?.querySelector('[data-o="name"]'),cleanName(firstDefined(data,'name')));
-    current=locate();await setInput(current?.querySelector('[data-o="purchase_value"]'),number(firstDefined(data,'purchase','purchaseValue')));
-    current=locate();await setInput(current?.querySelector('[data-o="experience_cost"]'),number(firstDefined(data,'permanent','experienceCost')));
-    current=locate();const conceal=[firstDefined(data,'concealA'),firstDefined(data,'concealB')].filter(value=>String(value??'')!=='').join('/');await setInput(current?.querySelector('[data-o="concealment"]'),conceal);
-    current=locate();await setInput(current?.querySelector('[data-o="attack"]'),firstDefined(data,'attack'));
-    current=locate();const defense=[firstDefined(data,'protecS','defenseS'),firstDefined(data,'protecP','defenseP'),firstDefined(data,'protecI','defenseI')].filter(value=>String(value??'')!=='').join('/');await setInput(current?.querySelector('[data-o="defense"]'),defense);
-    current=locate();await setInput(current?.querySelector('[data-o="range"]'),firstDefined(data,'range'));
-    current=locate();await setInput(current?.querySelector('[data-o="slot"]'),firstDefined(data,'part','slot'));
-    current=locate();await setInput(current?.querySelector('[data-o="control_modifier"]'),number(firstDefined(data,'control','controlModifier')));
-    current=locate();await setInput(current?.querySelector('[data-o="cs_modifier"]'),number(firstDefined(data,'sf','speed','csModifier')));
-    current=locate();const description=current?.querySelector('[data-o="description"],textarea[data-description-proxy]');if(description)await setInput(description,firstDefined(data,'notes','description'));
-    return true;
-  }
-
-  async function importOutfits(map,stats){
-    await clearRows(()=>$$('#outfit-list [data-outfit-key]'));
-    const sections=[
-      ['weapon',['weapons']],['armor',['armours','armors']],['other',['outfits','cyberwares','trons']],['vehicle',['vehicles']],['residence',['residences']]
-    ];
-    for(const [category,prefixes] of sections){
-      for(const data of groups(map,prefixes)){
-        if(!cleanName(firstDefined(data,'name')))continue;
-        if(await addOutfit(category,data))stats.outfit++;
-      }
+      if(!name||!level||String(rawName).trim().startsWith('■'))continue;
+      if(await addSkill('#add-style-skill','__style__',{...data,name:rawName},styleSkillKind(data)))stats.style++;
     }
   }
 
@@ -351,7 +319,7 @@
       if(!supportedFields&&!supportedRaw)throw new Error('対応する旧キャラシJSONではありません。ブックマークレットで取得したJSON、または旧サイトの生JSONを貼り付けてください。');
       const map=fieldMap(data);
       if(!map.size)throw new Error('JSON内に取り込める項目がありません。');
-      const stats={general:0,social:0,connection:0,style:0,outfit:0};
+      const stats={general:0,social:0,connection:0,style:0};
 
       msg.textContent='基本情報を反映しています…';
       reportProgress(8,'基本情報を取込中','プロフィールとライフパスを反映しています');
@@ -359,17 +327,26 @@
       const castName=parseCastName(get(map,'base.name','name'));
       await setElement('#character-name',castName.name);
       await setElement('#handle',get(map,'base.handle','handle')||castName.handle);
+      await setElement('#handle-kana',get(map,'base.handleKana','base.handle_kana','handleKana','handle_kana'));
       await setElement('#character-kana',get(map,'base.nameKana','base.kana','kana'));
       await setElement('#player-name',get(map,'base.player','player'));
       await setElement('#affiliation',get(map,'base.post','base.affiliation','affiliation'));
       await setElement('#citizen-rank',get(map,'base.rank','rank'));
       await setElement('#summary',get(map,'base.lifepath.memo','base.summary','summary'));
+      await setElement('#age',get(map,'base.age','age'));
+      await setElement('#gender',get(map,'base.sex','base.gender','sex','gender'));
+      await setElement('#height',get(map,'base.height','height'));
+      await setElement('#weight',get(map,'base.weight','weight'));
+      await setElement('#eyes',get(map,'base.eyes','eyes'));
+      await setElement('#hair',get(map,'base.hair','hair'));
+      await setElement('#skin',get(map,'base.skin','skin'));
+      await setElement('#life-path-origin',get(map,'base.lifepath.origin','base.lifepath.experience','life_path_origin'));
+      await setElement('#life-path-experience',get(map,'base.lifepath.environment','life_path_experience'));
+      await setElement('#life-path-encounter',get(map,'base.lifepath.encounter','base.lifepath.encouter','life_path_encounter'));
       const profileParts=[
         get(map,'base.memoir','base.profile','profile'),
         get(map,'base.memo')&&`【メモ】\n${get(map,'base.memo')}`,
-        [
-          ['出身',get(map,'base.birth')],['年齢',get(map,'base.age')],['性別',get(map,'base.sex')],['身長',get(map,'base.height')],['体重',get(map,'base.weight')],['瞳',get(map,'base.eyes')],['髪',get(map,'base.hair')],['肌',get(map,'base.skin')],['経験',get(map,'base.lifepath.experience')],['環境',get(map,'base.lifepath.environment')],['邂逅',get(map,'base.lifepath.encounter','base.lifepath.encouter')]
-        ].filter(([,value])=>String(value??'').trim()).map(([key,value])=>`${key}：${value}`).join('\n')
+        get(map,'base.birth')&&`出身：${get(map,'base.birth')}`
       ].filter(Boolean);
       await setElement('#profile',profileParts.join('\n\n'));
 
@@ -383,14 +360,11 @@
       reportProgress(36,'技能を取込中',`一般技能${stats.general}件・社会${stats.social}件・コネ${stats.connection}件を反映`);
       await importStyleSkills(map,stats);
       reportProgress(42,'スタイル技能を取込中',`スタイル技能${stats.style}件の取込を完了`);
-      msg.textContent='アウトフィットを反映しています…';
-      reportProgress(44,'アウトフィットを取込中','基本項目を現行シートへ配置しています');
-      await importOutfits(map,stats);
-      reportProgress(50,'基本取込完了',`アウトフィット${stats.outfit}件の基本配置が完了しました`);
+      reportProgress(50,'基本取込完了','プロフィール・技能の基本取込を完了しました');
 
       document.dispatchEvent(new Event('input',{bubbles:true}));
       window.TNXExperience?.queue?.();
-      const summary=`一般技能${stats.general}件、社会${stats.social}件、コネ${stats.connection}件、スタイル技能${stats.style}件、アウトフィット${stats.outfit}件`;
+      const summary=`一般技能${stats.general}件、社会${stats.social}件、コネ${stats.connection}件、スタイル技能${stats.style}件`;
       const finalizing=dialog.getAttribute('data-importing')==='1';
       msg.textContent=finalizing
         ?`基本取込が完了しました（${summary}）。引き続き最終変換を行っています…`

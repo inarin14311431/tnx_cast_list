@@ -3,7 +3,6 @@ import {
   cssEscape,
   getOutfitRows,
   outfitSignature,
-  parseDefense,
   rowSignature,
   valueOf
 } from "./outfit-ofc-utils.js";
@@ -15,10 +14,9 @@ const FIELD_DEFINITIONS = {
   major_category: ["OFC大分類", "MAJOR"],
   minor_category: ["OFC小分類", "MINOR"],
   manufacturer: ["メーカー", "MAKER"],
-  concealment_penalty: ["隠匿ペナ", "CONCEAL PENALTY"],
+  concealment_penalty: ["隠匿修正", "CONCEALMENT MODIFIER"],
   parry: ["受", "PARRY"],
   speed: ["ス", "SPEED"],
-  control_value: ["制御値", "CONTROL VALUE"],
   electronic_control: ["電制", "ELECTRONIC CONTROL"],
   defense_s: ["防S", "DEF S"],
   defense_p: ["防P", "DEF P"],
@@ -29,7 +27,6 @@ const FIELD_DEFINITIONS = {
   tron_software: ["トロン ソ", "TRON SOFTWARE"],
   tron_support: ["トロン サ", "TRON SUPPORT"],
   tron_hardware: ["トロン ハ", "TRON HARDWARE"],
-  cs_value: ["CS値", "CS VALUE"],
   crew: ["乗員", "CREW"],
   sf: ["SF", "SF"],
   residence_entry: ["住宅 登", "RESIDENCE ENTRY"],
@@ -37,17 +34,17 @@ const FIELD_DEFINITIONS = {
   residence_area: ["住宅 ア", "RESIDENCE AREA"]
 };
 
-const COMMON_FIELDS = [
-  "major_category", "minor_category", "manufacturer", "page_number", "concealment_penalty"
-];
+// Only canonical fields meaningful to the current PC editor are generated.
+// Retired aliases are normalized at explicit import boundaries, not retained in editor state.
+const COMMON_FIELDS = ["manufacturer", "page_number", "concealment_penalty"];
 const CATEGORY_FIELDS = {
   weapon: [...COMMON_FIELDS, "parry", "speed", "electronic_control"],
-  armor: [...COMMON_FIELDS, "electronic_control"],
-  cyberware: [...COMMON_FIELDS, "control_value", "electronic_control", "ianus_surface", "ianus_deep", "ianus_none"],
-  tron: [...COMMON_FIELDS, "control_value", "electronic_control", "tron_software", "tron_support", "tron_hardware"],
-  vehicle: [...COMMON_FIELDS, "parry", "speed", "control_value", "electronic_control", "defense_s", "defense_p", "defense_i", "cs_value", "crew", "sf"],
-  residence: [...COMMON_FIELDS, "electronic_control", "residence_entry", "residence_electric", "residence_area"],
-  other: [...COMMON_FIELDS, "control_value", "electronic_control", "cs_value"]
+  armor: [...COMMON_FIELDS, "defense_s", "defense_p", "defense_i", "electronic_control"],
+  cyberware: [...COMMON_FIELDS, "electronic_control", "ianus_surface", "ianus_deep", "ianus_none"],
+  tron: [...COMMON_FIELDS, "speed", "electronic_control", "tron_software", "tron_support", "tron_hardware"],
+  vehicle: [...COMMON_FIELDS, "speed", "electronic_control", "defense_s", "defense_p", "defense_i", "crew", "sf"],
+  residence: [...COMMON_FIELDS, "speed", "electronic_control", "residence_entry", "residence_electric", "residence_area"],
+  other: [...COMMON_FIELDS, "electronic_control"]
 };
 
 const stateByKey = new Map();
@@ -56,6 +53,21 @@ let restoreQueues = null;
 let enhanceQueued = false;
 let suppressDirty = false;
 let detailsReady = false;
+
+globalThis.TNXOutfitOFCState = {
+  getDetails(row) {
+    const key = row?.dataset?.outfitKey || "";
+    const details = key ? stateByKey.get(key) : null;
+    return details ? { ...details } : {};
+  },
+  setDetails(rowOrKey, details = {}) {
+    const key = typeof rowOrKey === "string" ? rowOrKey : rowOrKey?.dataset?.outfitKey || "";
+    if (!key) return false;
+    stateByKey.set(key, normalizeDetails(details));
+    queueEnhance();
+    return true;
+  }
+};
 
 initialize();
 
@@ -89,7 +101,7 @@ async function loadStoredDetails() {
 
   const { data, error } = await supabase
     .from("character_outfits")
-    .select("category,name,sort_order,concealment,attack,defense,range,slot,description,ofc_details")
+    .select("category,name,sort_order,ofc_details")
     .eq("character_id", character.id)
     .order("sort_order");
   if (error) {
@@ -113,15 +125,7 @@ function rowsToDetailQueues(rows) {
 }
 
 function normalizeStoredRecord(row) {
-  const details = normalizeDetails(row?.ofc_details || {});
-  const legacy = parseLegacyDescription(row?.description || "");
-  for (const [key, value] of Object.entries(legacy)) {
-    if (!details[key]) details[key] = value;
-  }
-  if (!details.defense_s && !details.defense_p && !details.defense_i) {
-    Object.assign(details, parseDefense(row?.defense || ""));
-  }
-  return details;
+  return normalizeDetails(row?.ofc_details || {});
 }
 
 function queueEnhance() {
@@ -237,11 +241,10 @@ function collectDetails(row) {
 
   const category = valueOf(row, "category") || "other";
   const concealParts = String(valueOf(row, "concealment") || "").split(/[\/／]/);
-  const armorDefense = parseDefense(valueOf(row, "defense"));
   const visibleDefense = {
-    defense_s: row.querySelector('[data-armor-defense="S"]')?.value || details.defense_s || armorDefense.defense_s,
-    defense_p: row.querySelector('[data-armor-defense="P"]')?.value || details.defense_p || armorDefense.defense_p,
-    defense_i: row.querySelector('[data-armor-defense="I"]')?.value || details.defense_i || armorDefense.defense_i
+    defense_s: row.querySelector('[data-ofc="defense_s"]')?.value || details.defense_s,
+    defense_p: row.querySelector('[data-ofc="defense_p"]')?.value || details.defense_p,
+    defense_i: row.querySelector('[data-ofc="defense_i"]')?.value || details.defense_i
   };
 
   return compactDetails({
@@ -269,28 +272,11 @@ function snapshotDetailQueues() {
   return queues;
 }
 
-function parseLegacyDescription(text) {
-  const map = {
-    "メーカー": "manufacturer", "大分類": "major_category", "小分類": "minor_category",
-    "受": "parry", "ス": "speed", "制御値": "control_value", "電制": "electronic_control",
-    "参照P": "page_number"
-  };
-  const details = {};
-  for (const line of String(text || "").split("\n")) {
-    const match = line.match(/^([^：:]+)[：:]\s*(.*)$/);
-    if (!match) continue;
-    const field = map[match[1].trim()];
-    if (field && !details[field]) details[field] = match[2].trim();
-    if (/^防御値$/.test(match[1].trim())) Object.assign(details, parseDefense(match[2]));
-  }
-  return details;
-}
-
 function normalizeDetails(value) {
   const source = value && typeof value === "object" && !Array.isArray(value) ? value : {};
-  const output = {};
+  const output = Object.fromEntries(Object.entries(source).map(([key, item]) => [key, String(item ?? "")]));
   for (const key of [...Object.keys(FIELD_DEFINITIONS), "site_category", "purchase_target", "permanent_cost", "concealment", "attack", "range_text", "slot", "description"]) {
-    output[key] = String(source[key] ?? "");
+    if (!(key in output)) output[key] = "";
   }
   return output;
 }

@@ -1,0 +1,54 @@
+body[data-page="sheet-mobile.html"] #mobile-outfits{display:grid;gap:6px}
+body[data-page="sheet-mobile.html"] .mobile-outfit-order-row{display:grid;grid-template-columns:minmax(0,1fr) 44px;align-items:stretch;gap:5px;min-width:0}
+body[data-page="sheet-mobile.html"] .mobile-outfit-order-row__actions{display:grid;grid-template-rows:1fr 1fr;gap:4px}
+body[data-page="sheet-mobile.html"] .mobile-outfit-order-row__actions button{display:grid;place-items:center;min-width:44px;min-height:44px;padding:0;border:1px solid var(--color-border-muted);background:var(--color-surface);color:inherit}
+body[data-page="sheet-mobile.html"] .mobile-outfit-card{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:8px;width:100%;min-width:0;min-height:48px;padding:8px 10px;border:1px solid color-mix(in srgb,var(--color-section-outfits) 42%,var(--color-border-muted));background:color-mix(in srgb,var(--color-surface) 94%,transparent);color:inherit;text-align:left}
+body[data-page="sheet-mobile.html"] .mobile-outfit-card.is-pending{border-style:dashed;border-color:color-mix(in srgb,var(--color-section-outfits) 72%,var(--color-border-muted))}
+body[data-page="sheet-mobile.html"] .mobile-outfit-card>*{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+body[data-page="sheet-mobile.html"] .mobile-outfit-card strong{color:var(--color-section-outfits);font-size:12px}
+body[data-page="sheet-mobile.html"] .mobile-outfit-card span{font-size:10px;color:var(--color-muted)}
+body[data-page="sheet-mobile.html"] .mobile-outfit-card small{font-size:9px;color:var(--color-muted)}
+body[data-page="sheet-mobile.html"] #mobile-outfit-dialog{max-width:min(680px,100vw);max-height:100dvh;padding:0;overflow:hidden}
+body[data-page="sheet-mobile.html"] #mobile-outfit-dialog>form{display:grid;grid-template-rows:auto minmax(0,1fr);width:min(680px,100vw);max-width:100%;height:min(92dvh,900px);max-height:100dvh;overflow:hidden}
+body[data-page="sheet-mobile.html"] #mobile-outfit-dialog .mobile-editor-dialog__header{position:relative;z-index:2}
+body[data-page="sheet-mobile.html"] #mobile-outfit-dialog .mobile-editor-dialog__body{min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;padding-bottom:max(24px,env(safe-area-inset-bottom))}
+body[data-page="sheet-mobile.html"] .mobile-outfit-editor{display:grid;gap:10px}
+body[data-page="sheet-mobile.html"] .mobile-outfit-editor__grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+body[data-page="sheet-mobile.html"] .mobile-outfit-editor__grid>label{display:grid;grid-column:span 3;gap:5px;min-width:0;font-size:11px}
+body[data-page="sheet-mobile.html"] .mobile-outfit-editor__category,body[data-page="sheet-mobile.html"] .mobile-outfit-editor__name,body[data-page="sheet-mobile.html"] .mobile-outfit-editor__description,body[data-page="sheet-mobile.html"] .mobile-outfit-group{grid-column:1/-1}
+body[data-page="sheet-mobile.html"] .mobile-outfit-editor__category{padding:10px;border:1px solid color-mix(in srgb,var(--color-section-outfits) 55%,var(--color-border-muted));background:color-mix(in srgb,var(--color-section-outfits) 10%,var(--color-surface))}
+body[data-page="sheet-mobile.html"] .mobile-outfit-editor__category select{font-weight:800}
+body[data-page="sheet-mobile.html"] .mobile-outfit-group{margin:0;padding:10px;border:1px solid color-mix(in srgb,var(--color-section-outfits) 25%,var(--color-border-muted));min-width:0}
+body[data-page="sheet-mobile.html"] .mobile-outfit-group>legend{padding:0 6px;color:var(--color-section-outfits);font-size:11px;font-weight:800}
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:9px}
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label{display:grid;grid-column:span 3;gap:5px;min-width:0;font-size:11px}
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>.mobile-outfit-editor__name,body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>.mobile-outfit-editor__description{grid-column:1/-1}
+/* メーカーは保存互換のためデータを残すが、PC/モバイルとも編集UIには出さない。 */
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-detail="manufacturer"]){display:none}
+/* OFC実データで1〜4文字が中心の性能値は3列、長めの値は2列を基本とする。 */
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-field="purchase_value"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-field="experience_cost"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-transient="conceal-mod"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-field="control_modifier"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-field="cs_modifier"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-detail="electronic_control"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-detail="speed"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-detail="parry"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-detail="tron_software"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-detail="tron_support"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-detail="tron_hardware"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-detail="crew"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-detail="sf"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-detail="residence_entry"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-detail="residence_electric"]),
+body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label:has([data-outfit-detail="residence_area"]){grid-column:span 2}
+body[data-page="sheet-mobile.html"] .mobile-outfit-editor :is(input,select,textarea){width:100%;min-width:0;padding:8px 10px;border:1px solid var(--color-border-muted);background:var(--color-surface);color:inherit;font-size:16px}
+body[data-page="sheet-mobile.html"] .mobile-outfit-editor :is(input,select){min-height:44px;height:44px}
+body[data-page="sheet-mobile.html"] .mobile-outfit-editor textarea{min-height:128px;resize:vertical;line-height:1.45}
+body[data-page="sheet-mobile.html"] .mobile-outfit-editor__name input{min-height:48px;height:48px;font-weight:700}
+body[data-page="sheet-mobile.html"] .mobile-outfit-defense{display:grid;grid-column:1/-1;grid-template-columns:auto repeat(3,minmax(0,1fr));align-items:end;gap:7px;padding:8px;border:1px solid var(--color-border-muted)}
+body[data-page="sheet-mobile.html"] .mobile-outfit-defense>span{align-self:center;font-size:11px;font-weight:800}
+body[data-page="sheet-mobile.html"] .mobile-outfit-defense label{display:grid;gap:3px;font-size:10px;text-align:center}
+body[data-page="sheet-mobile.html"] .mobile-outfit-defense input{text-align:center}
+body[data-page="sheet-mobile.html"] .mobile-outfit-category-hint{margin:0;padding:14px;border:1px dashed var(--color-border-muted);color:var(--color-muted);font-size:12px;line-height:1.6}
+@media(max-width:390px){body[data-page="sheet-mobile.html"] #mobile-outfit-dialog>form{height:100dvh}body[data-page="sheet-mobile.html"] .mobile-outfit-editor__grid,body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid{gap:7px}body[data-page="sheet-mobile.html"] .mobile-outfit-group__grid>label{grid-column:span 3}body[data-page="sheet-mobile.html"] .mobile-outfit-defense{grid-template-columns:1fr 1fr 1fr}body[data-page="sheet-mobile.html"] .mobile-outfit-defense>span{grid-column:1/-1}}

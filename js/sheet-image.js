@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=4";
+import { requestSheetSave, waitForSheetSaved } from "./sheet-save-state.js?v=2";
 import { getImageFocusX, getImageFocusY, getImageObjectPosition, getImageScale, getImageTransformOrigin, getImageZoom, setImageFocusX, setImageFocusY, setImageZoom } from "./image-focus.js?v=3";
 
 const BUCKET_NAME="character-images";
@@ -284,24 +285,12 @@ async function ensureCharacter(){
   const player=document.querySelector("#player-name")?.value.trim()||"";
   if(!name||!player)throw new Error("画像登録前にキャスト名とプレイヤー名を入力してください。");
 
-  const saveButton=document.querySelector("#save-button");
-  const saveStatus=document.querySelector("#save-status");
-  if(!saveButton||!saveStatus)throw new Error("キャスト保存機能を確認できませんでした。");
-
   setMessage("キャスト本体を保存してから画像を登録します…","loading");
-  saveButton.click();
-
-  const started=Date.now();
-  while(Date.now()-started<20000){
-    if(saveStatus.classList.contains("error")||/失敗|エラー/.test(saveStatus.textContent||"")){
-      throw new Error(saveStatus.textContent||"キャスト本体の保存に失敗しました。");
-    }
-    const publicId=getPublicId();
-    const saved=saveStatus.classList.contains("saved")||/保存済み/.test(saveStatus.textContent||"");
-    if(publicId&&saved)return loadCharacter(publicId);
-    await new Promise(resolve=>setTimeout(resolve,150));
-  }
-  throw new Error("キャスト本体の保存完了を確認できませんでした。");
+  if(!requestSheetSave())throw new Error("キャスト保存機能を確認できませんでした。");
+  await waitForSheetSaved(20000);
+  const publicId=getPublicId();
+  if(!publicId)throw new Error("保存後のキャストIDを確認できませんでした。");
+  return loadCharacter(publicId);
 }
 
 async function uploadImage(event){

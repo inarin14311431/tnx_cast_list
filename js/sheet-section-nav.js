@@ -1,7 +1,10 @@
 /* Sidebar section navigation for long cast-sheet edits. */
-(() => {
+initializeSheetSectionNav();
+
+function initializeSheetSectionNav() {
   const nav = document.querySelector(".sheet-section-nav");
-  if (!nav) return;
+  if (!nav || nav.dataset.tnxSectionNavInitialized === "true") return;
+  nav.dataset.tnxSectionNavInitialized = "true";
 
   const sectionIds = [
     "sheet-profile", "sheet-styles", "sheet-ability",
@@ -39,4 +42,4 @@
 
   import("./help-ui.js?v=3").catch(error => console.warn("Editor help could not be initialized.", error));
   import("./sheet-save-diagnostics.js?v=1").catch(error => console.warn("Save diagnostics could not be initialized.", error));
-})();
+}

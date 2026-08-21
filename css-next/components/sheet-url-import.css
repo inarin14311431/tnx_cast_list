@@ -1,0 +1,27 @@
+/* Character Sheets URL import UI. Kept in CSS so runtime JavaScript only manages state and data. */
+#legacy-import-dialog .character-sheets-url-import {
+  display: grid;
+  gap: 10px;
+  margin: 16px 0;
+}
+
+#legacy-import-dialog .character-sheets-url-import label {
+  font-weight: 700;
+}
+
+#legacy-import-dialog .character-sheets-url-import input {
+  width: 100%;
+  min-width: 0;
+  padding: 11px 12px;
+}
+
+#legacy-import-dialog .character-sheets-url-import button {
+  min-height: 44px;
+}
+
+#legacy-import-dialog .character-sheets-url-import__version {
+  justify-self: end;
+  opacity: .52;
+  font-size: 10px;
+  letter-spacing: .06em;
+}

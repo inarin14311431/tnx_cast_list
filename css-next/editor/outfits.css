@@ -13,27 +13,41 @@
 .outfit-table-title { margin: 0; color: var(--color-accent); font-size: .9rem; letter-spacing: .04em; }
 .outfit-table-empty { margin: 0; padding: 16px; color: var(--color-muted); text-align: center; }
 .outfit-table-scroll { width: 100%; min-width: 0; overflow-x: auto; }
-.outfit-table { width: 100%; min-width: 920px; border-collapse: collapse; table-layout: fixed; font-size: clamp(.74rem, .62vw, .9rem); }
+.outfit-table { --outfit-name-column: 150px; width: 100%; min-width: 920px; border-collapse: collapse; table-layout: fixed; font-size: clamp(.74rem, .62vw, .9rem); }
 .outfit-table :is(th, td) { box-sizing: border-box; height: 44px; padding: 4px 3px; overflow: hidden; border-right: 1px solid var(--color-border-muted); border-bottom: 1px solid var(--color-border-muted); vertical-align: middle; }
 .outfit-table th { height: 34px; color: var(--color-muted); background: var(--color-accent-soft); font: 700 .66rem/1.1 var(--font-data); text-align: center; white-space: normal; }
 .outfit-table td { color: var(--color-text); }
 .outfit-table :is(input, select, textarea) { display: block; box-sizing: border-box; width: 100%; min-width: 0; height: 34px; min-height: 34px; margin: 0; font-size: inherit; }
-.outfit-table :is(input, select) { padding: 0 4px; line-height: 32px; }
+.outfit-table :is(input, select) { padding: 0 3px; line-height: 32px; }
 .outfit-table textarea { padding: 8px 4px; resize: vertical; overflow-x: hidden; overflow-y: auto; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; line-height: 16px; }
 .outfit-table-cell--actions, .outfit-table-head--actions { width: var(--row-action-column); min-width: var(--row-action-column); max-width: var(--row-action-column); }
 .outfit-table-cell--actions { text-align: center; }
-.outfit-table :is(.outfit-table-head--category, .outfit-table-cell--category) { width: 5.5%; }
-.outfit-table :is(.outfit-table-head--name, .outfit-table-cell--name) { width: 11%; }
-.outfit-table :is(.outfit-table-head--purchase_value, .outfit-table-cell--purchase_value) { width: 4.1%; }
-.outfit-table :is(.outfit-table-head--experience_cost, .outfit-table-cell--experience_cost) { width: 4.8%; }
-.outfit-table :is(.outfit-table-head--concealment, .outfit-table-cell--concealment) { width: 5%; }
-.outfit-table :is(.outfit-table-head--attack, .outfit-table-cell--attack, .outfit-table-head--parry, .outfit-table-cell--parry, .outfit-table-head--range, .outfit-table-cell--range, .outfit-table-head--range_text, .outfit-table-cell--range_text) { width: 4.8%; }
-.outfit-table :is(.outfit-table-head--defense, .outfit-table-cell--defense, .outfit-table-head--defense_s, .outfit-table-cell--defense_s, .outfit-table-head--defense_i, .outfit-table-cell--defense_i, .outfit-table-head--defense_p, .outfit-table-cell--defense_p) { width: 4.6%; }
-.outfit-table :is(.outfit-table-head--control_modifier, .outfit-table-cell--control_modifier, .outfit-table-head--cs_modifier, .outfit-table-cell--cs_modifier, .outfit-table-head--mundane_modifier, .outfit-table-cell--mundane_modifier) { width: 4.5%; }
-.outfit-table :is(.outfit-table-head--speed, .outfit-table-cell--speed, .outfit-table-head--electronic_control, .outfit-table-cell--electronic_control, .outfit-table-head--control_value, .outfit-table-cell--control_value, .outfit-table-head--tron_software, .outfit-table-cell--tron_software, .outfit-table-head--tron_support, .outfit-table-cell--tron_support, .outfit-table-head--tron_hardware, .outfit-table-cell--tron_hardware, .outfit-table-head--cs_value, .outfit-table-cell--cs_value, .outfit-table-head--crew, .outfit-table-cell--crew, .outfit-table-head--sf, .outfit-table-cell--sf, .outfit-table-head--residence_entry, .outfit-table-cell--residence_entry, .outfit-table-head--residence-electric-area, .outfit-table-cell--residence-electric-area) { width: 3.8%; }
-.outfit-table :is(.outfit-table-head--slot, .outfit-table-cell--slot) { width: 7.5%; }
+
+/* OFC実データの最大文字数を基準に、短い数値欄を詰めて解説へ幅を返す。名称は全カテゴリで同じ固定幅。 */
+.outfit-table :is(.outfit-table-head--category, .outfit-table-cell--category) { width: 5.2%; }
+.outfit-table :is(.outfit-table-head--name, .outfit-table-cell--name) { width: var(--outfit-name-column); min-width: var(--outfit-name-column); max-width: var(--outfit-name-column); }
+.outfit-table :is(.outfit-table-head--purchase_value, .outfit-table-cell--purchase_value) { width: 3.4%; }
+.outfit-table :is(.outfit-table-head--experience_cost, .outfit-table-cell--experience_cost) { width: 4%; }
+.outfit-table :is(.outfit-table-head--concealment, .outfit-table-cell--concealment) { width: 4.2%; }
+.outfit-table :is(.outfit-table-head--concealment_penalty, .outfit-table-cell--concealment_penalty) { width: 4%; }
+.outfit-table :is(.outfit-table-head--attack, .outfit-table-cell--attack) { width: 4.8%; }
+.outfit-table :is(.outfit-table-head--parry, .outfit-table-cell--parry) { width: 3.6%; }
+.outfit-table :is(.outfit-table-head--range, .outfit-table-cell--range, .outfit-table-head--range_text, .outfit-table-cell--range_text) { width: 4.4%; }
+.outfit-table :is(.outfit-table-head--defense, .outfit-table-cell--defense) { width: 5%; }
+.outfit-table :is(.outfit-table-head--defense_s, .outfit-table-cell--defense_s, .outfit-table-head--defense_i, .outfit-table-cell--defense_i, .outfit-table-head--defense_p, .outfit-table-cell--defense_p) { width: 2.8%; }
+.outfit-table :is(.outfit-table-head--control_modifier, .outfit-table-cell--control_modifier, .outfit-table-head--cs_modifier, .outfit-table-cell--cs_modifier) { width: 3.8%; }
+.outfit-table :is(.outfit-table-head--speed, .outfit-table-cell--speed) { width: 2.8%; }
+.outfit-table :is(.outfit-table-head--electronic_control, .outfit-table-cell--electronic_control) { width: 3.2%; }
+.outfit-table :is(.outfit-table-head--tron_software, .outfit-table-cell--tron_software, .outfit-table-head--tron_support, .outfit-table-cell--tron_support, .outfit-table-head--tron_hardware, .outfit-table-cell--tron_hardware) { width: 3.1%; }
+.outfit-table :is(.outfit-table-head--crew, .outfit-table-cell--crew, .outfit-table-head--sf, .outfit-table-cell--sf) { width: 3.3%; }
+.outfit-table :is(.outfit-table-head--ianus_surface, .outfit-table-cell--ianus_surface, .outfit-table-head--ianus_deep, .outfit-table-cell--ianus_deep, .outfit-table-head--ianus_none, .outfit-table-cell--ianus_none) { width: 3.2%; }
+.outfit-table :is(.outfit-table-head--residence_entry, .outfit-table-cell--residence_entry, .outfit-table-head--residence-electric-area, .outfit-table-cell--residence-electric-area) { width: 3.6%; }
+.outfit-table :is(.outfit-table-head--slot, .outfit-table-cell--slot) { width: 6.5%; }
+.outfit-table-group--other .outfit-table :is(.outfit-table-head--slot, .outfit-table-cell--slot) { width: 9.75%; }
 .outfit-table :is(.outfit-table-head--page_number, .outfit-table-cell--page_number) { width: 4.5%; }
+.outfit-table :is(.outfit-table-head--manufacturer, .outfit-table-cell--manufacturer) { display: none !important; }
 .outfit-table :is(.outfit-table-head--description, .outfit-table-cell--description) { width: auto; min-width: 0; }
+
 .outfit-table-group--armor tfoot :is(th, td) { text-align: center; vertical-align: middle; }
 .outfit-table-group--armor tfoot td { color: var(--color-accent); background: var(--color-accent-soft); font-weight: 800; }
 .outfit-table-group--armor tfoot td:first-child { color: var(--color-muted); font-size: .82rem; font-weight: 800; letter-spacing: .03em; }

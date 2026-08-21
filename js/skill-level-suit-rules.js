@@ -1,17 +1,15 @@
-/* Skill level / suit synchronization rules.
- *
- * - Level 4 or higher selects all four suits.
- * - Level 0-3 does not automatically add suits.
- * - Adding a suit raises the level only when the suit count exceeds it.
- * - Removing a suit lowers the level to the remaining suit count.
- *
- * This wraps the editor's own row handlers so the internal skill data,
- * displayed values, experience calculation and saved data stay in sync.
+/* Skill level / suit synchronization DOM adapter.
+ * Pure level/suit/free-level decisions live in sheet-skill-level-suit-state.js.
  */
-(function(){
+(async function(){
   const SUITS=["reason","passion","life","mundane"];
   const ROOT_SELECTOR="#general-skills,#style-skills";
-  let queued=false;
+  const stateUrl=new URL("./sheet-skill-level-suit-state.js?v=1",document.currentScript?.src||document.baseURI);
+  const {
+    normalizeSkillLevel,
+    shouldSelectAllSuits,
+    resolveSkillInputState
+  }=await import(stateUrl.href);
 
   function suitBoxes(row){
     return SUITS.map(suit=>row.querySelector(`[data-f="${suit}"]`)).filter(Boolean);
@@ -21,86 +19,93 @@
     return suitBoxes(row).filter(box=>box.checked).length;
   }
 
-  function remember(boxes){
-    boxes.forEach(box=>box.dataset.previousChecked=box.checked?"1":"0");
+  function dispatchInput(control){
+    control.dispatchEvent(new Event("input",{bubbles:true}));
   }
 
-  function wrapRow(row){
-    if(row.dataset.levelSuitRules==="1")return true;
+  function syncFreeLevel(row, levelValue){
+    const freeLevel=row.querySelector('[data-f="free_level"]');
+    if(!freeLevel)return;
+    const state=resolveSkillInputState({
+      action:"free_level",
+      value:freeLevel.value,
+      currentLevel:levelValue,
+      currentFreeLevel:freeLevel.value
+    });
+    if(String(state.freeLevel)===String(freeLevel.value))return;
+    freeLevel.value=String(state.freeLevel);
+    dispatchInput(freeLevel);
+  }
 
-    const level=row.querySelector('[data-f="level"]');
-    const boxes=suitBoxes(row);
-    if(!level||boxes.length!==4)return false;
-    if(typeof level.oninput!=="function"||boxes.some(box=>typeof box.oninput!=="function"))return false;
+  function handleInput(event){
+    const control=event.target;
+    if(!control?.matches)return;
+    const row=control.closest?.('tr[data-skill-key]');
+    if(!row)return;
 
-    const originalLevel=level.oninput;
-    const originalSuitHandlers=new Map(boxes.map(box=>[box,box.oninput]));
-    remember(boxes);
+    if(control.matches('[data-f="level"]')){
+      const state=resolveSkillInputState({
+        action:"level",
+        value:control.value,
+        currentLevel:control.value,
+        currentFreeLevel:row.querySelector('[data-f="free_level"]')?.value||0
+      });
+      control.value=String(state.level);
+      syncFreeLevel(row,state.level);
+      if(!shouldSelectAllSuits(state.level))return;
 
-    level.oninput=function(event){
-      const value=Math.max(0,Number(level.value||0));
-      level.value=String(value);
-      originalLevel.call(level,event);
-
-      if(value>=4){
-        for(const box of boxes){
-          if(box.checked)continue;
-          box.checked=true;
-          originalSuitHandlers.get(box)?.call(box,new Event("input",{bubbles:true}));
-        }
-        /* Suit handlers must not reduce a level above four. */
-        level.value=String(value);
-        originalLevel.call(level,new Event("input",{bubbles:true}));
+      for(const box of suitBoxes(row)){
+        if(box.checked)continue;
+        box.checked=true;
+        dispatchInput(box);
       }
-
-      remember(boxes);
-    };
-
-    for(const box of boxes){
-      box.oninput=function(event){
-        const wasChecked=box.dataset.previousChecked==="1";
-        const isChecked=box.checked;
-        originalSuitHandlers.get(box)?.call(box,event);
-
-        if(wasChecked&&!isChecked){
-          const remaining=selectedCount(row);
-          level.value=String(remaining);
-          originalLevel.call(level,new Event("input",{bubbles:true}));
-        }
-
-        remember(boxes);
-      };
-    }
-
-    row.dataset.levelSuitRules="1";
-    return true;
-  }
-
-  function enhance(){
-    document.querySelectorAll(ROOT_SELECTOR).forEach(root=>{
-      root.querySelectorAll('tr[data-skill-key]').forEach(wrapRow);
-    });
-  }
-
-  function queue(){
-    if(queued)return;
-    queued=true;
-    requestAnimationFrame(()=>{
-      queued=false;
-      enhance();
-    });
-  }
-
-  function initialize(){
-    const roots=[...document.querySelectorAll(ROOT_SELECTOR)];
-    if(!roots.length){
-      setTimeout(initialize,100);
       return;
     }
-    roots.forEach(root=>new MutationObserver(queue).observe(root,{childList:true,subtree:true}));
-    queue();
+
+    if(control.matches('[data-f="free_level"]')){
+      const level=row.querySelector('[data-f="level"]');
+      const state=resolveSkillInputState({
+        action:"free_level",
+        value:control.value,
+        currentLevel:level?.value||0,
+        currentFreeLevel:control.value
+      });
+      control.value=String(state.freeLevel);
+      return;
+    }
+
+    if(!SUITS.some(suit=>control.matches(`[data-f="${suit}"]`)))return;
+    const level=row.querySelector('[data-f="level"]');
+    if(!level)return;
+    const currentLevel=normalizeSkillLevel(level.value);
+    const state=resolveSkillInputState({
+      action:"suit",
+      currentLevel,
+      currentFreeLevel:row.querySelector('[data-f="free_level"]')?.value||0,
+      selectedSuitCount:selectedCount(row),
+      checked:control.checked
+    });
+    if(state.level===currentLevel){
+      syncFreeLevel(row,state.level);
+      return;
+    }
+    level.value=String(state.level);
+    dispatchInput(level);
   }
 
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initialize,{once:true});
-  else initialize();
-})();
+  function initializeSkillLevelSuitRules(){
+    const roots=[...document.querySelectorAll(ROOT_SELECTOR)];
+    if(!roots.length){
+      setTimeout(initializeSkillLevelSuitRules,100);
+      return;
+    }
+    roots.forEach(root=>{
+      if(root.dataset.levelSuitRulesObserver==="1")return;
+      root.dataset.levelSuitRulesObserver="1";
+      root.addEventListener("input",handleInput);
+    });
+  }
+
+  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initializeSkillLevelSuitRules,{once:true});
+  else initializeSkillLevelSuitRules();
+})().catch(error=>console.error("Skill level/suit rules failed to initialize",error));

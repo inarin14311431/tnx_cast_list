@@ -3,6 +3,7 @@ import { supabase } from "./supabase-client.js";
 const styleRoot=document.querySelector("#style-skills");
 const outfitRoot=document.querySelector("#outfit-list");
 const publicId=new URLSearchParams(location.search).get("id")?.trim()||"";
+const OUTFIT_RENDER_EVENT="tnx:outfit-tables-rendered";
 const outfitValues=new Map();
 const appliedOutfits=new Set();
 let queued=false;
@@ -16,8 +17,12 @@ function isImportSource(field){
   return field?.matches?.("#legacy-import-json,#tsv-text");
 }
 
+function isStyleDetailStorage(field){
+  return field?.matches?.('#style-skills textarea[data-f="description"]');
+}
+
 function normalizeTextarea(field){
-  if(!(field instanceof HTMLTextAreaElement)||isImportSource(field))return false;
+  if(!(field instanceof HTMLTextAreaElement)||isImportSource(field)||isStyleDetailStorage(field))return false;
   const value=normalize(field.value);
   if(value===field.value)return false;
   field.value=value;
@@ -144,7 +149,7 @@ async function loadOriginalOutfits(){
 }
 
 styleRoot&&new MutationObserver(queue).observe(styleRoot,{childList:true,subtree:true});
-outfitRoot&&new MutationObserver(queue).observe(outfitRoot,{childList:true,subtree:true});
+outfitRoot?.addEventListener(OUTFIT_RENDER_EVENT,queue);
 document.addEventListener("input",event=>{
   const field=event.target;
   if(field instanceof HTMLInputElement&&field.matches('input[data-o="description"]')){

@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <script src="./js/css-next-theme.js"></script>
+  <link rel="stylesheet" href="./css-next/index.css?v=43" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/pages/sheet-mobile.css?v=5">
+  <link rel="stylesheet" href="./css-next/pages/sheet-mobile-theme.css?v=3" data-mobile-theme-style="1">
+  <link rel="stylesheet" href="./css-next/pages/sheet-mobile-ui.css?v=7" data-mobile-ui-style="1">
+  <link rel="stylesheet" href="./css-next/pages/sheet-mobile-profile.css?v=11" data-mobile-profile-style="1" data-mobile-profile-current-style="1">
+  <link rel="stylesheet" href="./css-next/pages/sheet-mobile-style.css?v=6" data-mobile-style-editor-style="1">
+  <link rel="stylesheet" href="./css-next/pages/sheet-mobile-ability.css?v=4" data-mobile-ability-current-style="1">
+  <link rel="stylesheet" href="./css-next/pages/sheet-mobile-skills.css?v=6" data-mobile-skills-style="1">
+  <link rel="stylesheet" href="./css-next/pages/sheet-mobile-outfit.css?v=9" data-mobile-outfit-style="1">
+  <link rel="stylesheet" href="./css-next/pages/sheet-mobile-combos.css?v=5" data-mobile-combo-style="1">
+  <link rel="stylesheet" href="./css-next/pages/sheet-mobile-snapshots.css?v=2" data-mobile-snapshots-style="1">
+  <link rel="stylesheet" href="./css-next/pages/sheet-mobile-image.css?v=2" data-mobile-image-style="1">
+  <link rel="stylesheet" href="./css-next/pages/sheet-mobile-import.css?v=2" data-mobile-import-style="1">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex, nofollow">
+  <title>モバイル編集 // N◎VA ARCHIVE</title>
+</head>
+<body id="mobile-sheet-top" data-page="sheet-mobile.html">
+  <div class="background-grid"></div><div class="scanlines"></div>
+  <header class="mobile-sheet-header">
+    <a class="mobile-sheet-header__back" href="./account.html" aria-label="アカウントへ戻る">‹</a>
+    <div class="mobile-sheet-header__title"><strong>モバイル編集</strong><small>CAST SHEET MOBILE EDITOR / PROTOTYPE</small></div>
+    <a id="mobile-pc-link" class="mobile-sheet-header__pc" href="./sheet.html" aria-label="PC版編集画面を開く">PC</a>
+  </header>
+  <main class="mobile-sheet-shell">
+    <p id="mobile-edit-notice" class="mobile-edit-notice">各項目はタップすると編集できます。モーダルは閉じると編集内容を反映し、画面下部の保存ボタンで確定します。</p>
+    <nav class="mobile-sheet-nav" aria-label="編集セクション">
+      <a href="#mobile-profile">01 基本情報</a><a href="#mobile-styles-section">02 スタイル</a><a href="#mobile-ability-section">03 能力値</a><a href="#mobile-general">04 一般技能</a><a href="#mobile-style-skills-section">05 スタイル技能</a><a href="#mobile-outfits-section">06 アウトフィット</a>
+    </nav>
+    <section id="mobile-profile" class="mobile-sheet-section mobile-sheet-section--profile">
+      <header><h2>01 基本情報</h2></header>
+      <div class="mobile-sheet-section__body">
+        <form id="mobile-profile-form" class="mobile-profile-groups">
+          <fieldset class="mobile-profile-group"><legend>キャスト情報</legend><div class="mobile-form-grid mobile-form-grid--two">
+            <label>キャスト名<input data-mobile-character-field="character_name" required></label><label>名前ルビ<input data-mobile-character-field="character_kana"></label><label>ハンドル<input data-mobile-character-field="handle"></label><label>ハンドルルビ<input data-mobile-character-field="handle_kana"></label><label>プレイヤー名<input data-mobile-character-field="player_name" required></label><label>所属<input data-mobile-character-field="affiliation"></label><label>市民ランク<input data-mobile-character-field="citizen_rank"></label><label>公開状態<select data-mobile-character-field="visibility"><option value="public">公開 / PUBLIC</option><option value="private">非公開 / PRIVATE</option></select></label>
+          </div></fieldset>
+          <fieldset class="mobile-profile-group"><legend>パーソナルデータ</legend><div class="mobile-form-grid mobile-form-grid--two">
+            <label>年齢<input data-mobile-character-field="age"></label><label>性別<input data-mobile-character-field="gender"></label><label>身長<input data-mobile-character-field="height"></label><label>体重<input data-mobile-character-field="weight"></label><label>瞳<input data-mobile-character-field="eyes"></label><label>髪<input data-mobile-character-field="hair"></label><label>肌<input data-mobile-character-field="skin"></label>
+          </div></fieldset>
+          <fieldset class="mobile-profile-group"><legend>ライフパス</legend><div class="mobile-form-grid mobile-form-grid--two">
+            <label>出自<input data-mobile-character-field="life_path_origin"></label><label>経験<input data-mobile-character-field="life_path_experience"></label><label>邂逅<input data-mobile-character-field="life_path_encounter"></label>
+          </div></fieldset>
+          <fieldset class="mobile-profile-group"><legend>キャラクター説明</legend><div class="mobile-form-grid mobile-form-grid--two">
+            <label class="mobile-span-2">概要<textarea rows="4" data-mobile-character-field="summary"></textarea></label><label class="mobile-span-2">プロフィール<textarea rows="10" data-mobile-character-field="profile"></textarea></label>
+          </div></fieldset>
+        </form>
+      </div>
+    </section>
+    <section id="mobile-styles-section" class="mobile-sheet-section mobile-sheet-section--styles"><header><h2>02 スタイル</h2></header><div class="mobile-sheet-section__body"><div id="mobile-style-summary" class="mobile-card-list"></div></div></section>
+    <section id="mobile-ability-section" class="mobile-sheet-section mobile-sheet-section--ability"><header><h2>03 能力値・制御値・CS</h2></header><div class="mobile-sheet-section__body"><div id="mobile-ability-summary" class="mobile-ability-grid"></div></div></section>
+    <section id="mobile-general" class="mobile-sheet-section mobile-sheet-section--skills"><header><h2>04 一般技能・社会・コネ</h2></header><div class="mobile-sheet-section__body"><div id="mobile-general-skills" class="mobile-general-editor"></div></div></section>
+    <section id="mobile-style-skills-section" class="mobile-sheet-section mobile-sheet-section--style-skills"><header><h2>05 スタイル技能</h2></header><div class="mobile-sheet-section__body"><div id="mobile-style-skills" class="mobile-card-list"></div></div></section>
+    <section id="mobile-outfits-section" class="mobile-sheet-section mobile-sheet-section--outfits"><header><h2>06 アウトフィット</h2></header><div class="mobile-sheet-section__body"><div id="mobile-outfits" class="mobile-card-list"></div></div></section>
+  </main>
+  <div class="mobile-sheet-actions" role="group" aria-label="モバイル編集操作"><a id="mobile-view-link" href="./cast.html?mobile=1">閲覧画面</a><button id="mobile-save" type="button" data-state="saved">保存済み</button></div>
+  <dialog id="mobile-ability-dialog" class="mobile-editor-dialog"><form method="dialog"><header class="mobile-editor-dialog__header mobile-editor-dialog__header--close-only"><button id="mobile-ability-dialog-cancel" type="button">閉じる</button><strong id="mobile-ability-dialog-title">能力値編集</strong></header><div class="mobile-editor-dialog__body"><div class="mobile-ability-editor-grid">
+    <section class="mobile-ability-editor-panel"><h3>能力値</h3><div class="mobile-ability-fixed"><span>基本値</span><strong data-mobile-ability-fixed="ability">0</strong></div><label>成長分<select data-mobile-ability-input="ability-growth"></select></label><label>補正値<select data-mobile-ability-input="ability-mod"></select></label><div class="mobile-ability-preview"><span>最終値</span><strong id="mobile-ability-final">0</strong></div></section>
+    <section class="mobile-ability-editor-panel"><h3>制御値</h3><div class="mobile-ability-fixed"><span>基本値</span><strong data-mobile-ability-fixed="control">0</strong></div><label>成長分<select data-mobile-ability-input="control-growth"></select></label><label>補正値<select data-mobile-ability-input="control-mod"></select></label><div class="mobile-ability-preview"><span>最終値</span><strong id="mobile-control-final">0</strong></div></section>
+  </div></div></form></dialog>
+  <dialog id="mobile-cs-dialog" class="mobile-editor-dialog"><form method="dialog"><header class="mobile-editor-dialog__header mobile-editor-dialog__header--close-only"><button id="mobile-cs-dialog-cancel" type="button">閉じる</button><strong>CS編集</strong></header><div class="mobile-editor-dialog__body"><section class="mobile-ability-editor-panel mobile-cs-editor"><h3>CS / CONTROL SPEED</h3><label>現在値<input data-mobile-cs-input="base" type="number" inputmode="numeric"></label><label>補正値<input data-mobile-cs-input="mod" type="number" inputmode="numeric"></label><div class="mobile-ability-preview"><span>最終値</span><strong id="mobile-cs-final">0</strong></div></section></div></form></dialog>
+  <dialog id="style-skill-dialog" class="mobile-editor-dialog"><form method="dialog"><header class="mobile-editor-dialog__header mobile-editor-dialog__header--close-only"><button id="style-skill-dialog-cancel" type="button">閉じる</button><strong id="style-skill-dialog-title">スタイル技能編集</strong></header><div class="mobile-editor-dialog__body"><div class="mobile-form-grid mobile-form-grid--two mobile-style-detail-grid">
+    <label class="mobile-span-2">名称<input id="mobile-style-name"></label><label>種別<select id="mobile-style-kind"><option value="normal">通常</option><option value="secret">秘技</option><option value="ultimate">奥義</option><option value="direction">演出</option></select></label><label>レベル<input id="mobile-style-level" type="number" min="0" inputmode="numeric"></label>
+    <div class="mobile-span-2 mobile-suit-grid" aria-label="取得スート"><label><input id="mobile-style-suit-reason" type="checkbox"><span>♠</span></label><label><input id="mobile-style-suit-passion" type="checkbox"><span>♣</span></label><label><input id="mobile-style-suit-life" type="checkbox"><span>♥</span></label><label><input id="mobile-style-suit-mundane" type="checkbox"><span>♦</span></label></div>
+    <label>技能<select data-mobile-style-detail="skill"><option value="">選択</option><option>なし</option><option>単独</option><option>宣言</option><option>任意</option><option>解説参照</option><option>白兵</option><option>射撃</option><option>白兵,射撃</option><option>心理</option><option>交渉</option><option>知覚</option><option>自我</option><option>回避</option><option>運動</option><option>操縦</option><option>電脳</option><option>製作</option><option>社会</option><option>社会,コネ</option><option>コネ</option><option>芸術</option><option>元力</option><option>隠密</option><option>医療</option><option>圧力</option><option>信用</option></select></label>
+    <label>上限<select data-mobile-style-detail="limit"><option value="">選択</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>SL</option><option>解説参照</option><option>なし</option><option>―</option></select></label>
+    <label>タイミング<select data-mobile-style-detail="timing"><option value="">選択</option><option>常時</option><option>常時（選択）</option><option>セットアッププロセス</option><option>イニシアチブプロセス</option><option>ムーブ</option><option>マイナー</option><option>メジャー</option><option>リアクション</option><option>オートアクション</option><option>クリンナッププロセス</option><option>舞台裏判定</option><option>登場判定</option><option>判定の直前</option><option>判定の直後</option><option>ダメージ算出</option><option>ダメージ算出の直前</option><option>ダメージ適用の直前</option><option>ダメージ適用の直後</option><option>神業</option><option>解説参照</option><option>任意</option><option>―</option></select></label>
+    <label>対象<select data-mobile-style-detail="target"><option value="">選択</option><option>自身</option><option>単体</option><option>単体※</option><option>範囲</option><option>範囲（選択）</option><option>シーン</option><option>シーン（選択）</option><option>チーム</option><option>解説参照</option><option>なし</option><option>―</option></select></label>
+    <label>射程<select data-mobile-style-detail="range"><option value="">選択</option><option>なし</option><option>至近</option><option>至近※</option><option>近</option><option>中</option><option>遠</option><option>超遠</option><option>武器</option><option>解説参照</option><option>―</option></select></label>
+    <label>目標値<select data-mobile-style-detail="difficulty"><option value="">選択</option><option>なし</option><option>10</option><option>15</option><option>20</option><option>21</option><option>制御値</option><option>達成値</option><option>登場</option><option>登場目標値</option><option>購入値</option><option>肉体ダメージ</option><option>精神ダメージ</option><option>社会ダメージ</option><option>解説参照</option><option>不可</option><option>―</option></select></label>
+    <label>対決<select data-mobile-style-detail="confrontation"><option value="">選択</option><option>なし</option><option>＜回避＞</option><option>＜自我＞</option><option>＜知覚＞</option><option>＜隠密＞</option><option>＜交渉＞</option><option>＜信用＞</option><option>＜電脳＞</option><option>＜白兵＞</option><option>＜芸術＞※</option><option>不可</option><option>解説参照</option><option>―</option></select></label>
+    <label>参照P<input data-mobile-style-detail="page"></label><label class="mobile-span-2">解説<textarea rows="8" data-mobile-style-detail="description"></textarea></label>
+  </div></div></form></dialog>
+  <script type="module" src="./js/sheet-mobile-app.js?v=9"></script>
+</body>
+</html>

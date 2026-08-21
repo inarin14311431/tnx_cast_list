@@ -1,5 +1,5 @@
 /* Structured profile fields are saved only by sheet.js through the main save button.
- * This file now keeps only legacy JSON import separation and local status text.
+ * This file owns legacy JSON import separation and local status text.
  */
 const HANDLE_FIELDS = ["handle_kana"];
 const PERSONAL_FIELDS = ["age", "gender", "height", "weight", "eyes", "hair", "skin"];
@@ -14,10 +14,11 @@ const LEGACY_KEYS = {
   eyes: ["base.eyes", "eyes"],
   hair: ["base.hair", "hair"],
   skin: ["base.skin", "skin"],
-  life_path_origin: ["base.lifepath.experience", "base.lifepath.origin", "life_path_origin"],
+  life_path_origin: ["base.lifepath.origin", "base.lifepath.experience", "life_path_origin"],
   life_path_experience: ["base.lifepath.environment", "life_path_experience"],
   life_path_encounter: ["base.lifepath.encounter", "base.lifepath.encouter", "life_path_encounter"]
 };
+const BASE_IMPORT_EVENT = "tnx:legacy-import-base-finished";
 
 const inputs = Object.fromEntries(
   FIELDS.map(name => [name, document.querySelector(`#${name.replaceAll("_", "-")}`)])
@@ -26,6 +27,7 @@ const statuses = [
   document.querySelector("#personal-data-status"),
   document.querySelector("#life-path-status")
 ].filter(Boolean);
+let pendingLegacyValues = null;
 
 if (FIELDS.every(name => inputs[name])) initialize();
 
@@ -37,6 +39,15 @@ function initialize() {
   }
 
   bindLegacyImportSeparation();
+  document.addEventListener(BASE_IMPORT_EVENT, event => {
+    if (!event.detail?.ok || !pendingLegacyValues) {
+      pendingLegacyValues = null;
+      return;
+    }
+    applyLegacyValues(pendingLegacyValues);
+    pendingLegacyValues = null;
+    setStatus("取込内容は未保存です。保存ボタンを押してください。", "");
+  });
   setStatus("", "");
 }
 
@@ -93,6 +104,16 @@ function extractLegacyValues(data) {
   return values;
 }
 
+function applyLegacyValues(values) {
+  for (const [name, value] of Object.entries(values || {})) {
+    const input = inputs[name];
+    if (!input) continue;
+    input.value = value;
+    input.dispatchEvent(new Event("input", { bubbles: true }));
+    input.dispatchEvent(new Event("change", { bubbles: true }));
+  }
+}
+
 function sanitizeLegacyData(data) {
   const clone = structuredClone(data);
   const blocked = new Set(Object.values(LEGACY_KEYS).flat().map(canonicalKey));
@@ -128,16 +149,12 @@ function bindLegacyImportSeparation() {
     try {
       const data = JSON.parse(textarea.value);
       const values = extractLegacyValues(data);
+      pendingLegacyValues = values;
       textarea.value = JSON.stringify(sanitizeLegacyData(data), null, 2);
-
-      for (const [name, value] of Object.entries(values)) {
-        inputs[name].value = value;
-        inputs[name].dispatchEvent(new Event("input", { bubbles: true }));
-        inputs[name].dispatchEvent(new Event("change", { bubbles: true }));
-      }
-
+      applyLegacyValues(values);
       setStatus("取込内容は未保存です。保存ボタンを押してください。", "");
     } catch {
+      pendingLegacyValues = null;
       /* The main importer reports malformed JSON. */
     }
   }, true);

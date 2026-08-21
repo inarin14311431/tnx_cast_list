@@ -1,7 +1,7 @@
 (()=>{
   const common=window.TNXTransferRepairCommon;
   if(!common)throw new Error("TNX transfer common utilities are not loaded.");
-  const {records,clean,setById,ensureRows,rowIndex,notify}=common;
+  const {records,clean,setById,trimRows,ensureRows,rowIndex,notify}=common;
   const MARKER="[[STYLE_SEPARATOR]]";
 
   function expbase(kind){
@@ -14,8 +14,12 @@
 
   async function repairStyleSkills(data){
     const list=records(data.style_skill||{});
-    if(!list.length)return;
     const prefix="superhumanskills";
+    await trimRows(prefix,list.length);
+    if(!list.length){
+      try{window.sumExp?.()}catch{}
+      return;
+    }
     const rows=await ensureRows(prefix,list.length);
     const fields={
       name:"name",
@@ -43,6 +47,7 @@
         if(level&&typeof window.levelChange==="function")window.levelChange(level);
       }catch{}
     }
+    try{window.sumExp?.()}catch{}
   }
 
   function isSeparator(record){

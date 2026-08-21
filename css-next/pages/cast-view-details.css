@@ -35,6 +35,14 @@ body[data-page="cast.html"] .style-skill-view-table .style-skill-name-view{
   line-height:1.2;
 }
 
+/* Keep the short concealment modifier field from absorbing spare table width. */
+body[data-page="cast.html"] .cast-outfit-table .cast-outfit-col--concealment_penalty{
+  width:58px;
+  min-width:58px;
+  max-width:58px;
+  text-align:center;
+}
+
 /* Divine work cards: category label at left, reading above the name. */
 body[data-page="cast.html"] .cast-divine-authority .cast-divine-card{grid-template-columns:42px minmax(0,1fr);grid-template-rows:auto auto;gap:2px 8px}
 body[data-page="cast.html"] .cast-divine-authority .divine-card__number{display:none}

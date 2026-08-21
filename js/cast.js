@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=3";
+import { normalizeOutfitListForView, formatPurchasePair, formatConcealmentPair } from "./outfit-view-model.js";
 
 const content = document.querySelector("#cast-content");
 const statusText = document.querySelector("#cast-status");
@@ -44,47 +45,49 @@ const QUICK_OTHER_OUTFIT_GROUPS = [
     category: "cyberware",
     japanese: "サイバーウェア",
     english: "CYBERWARE",
-    columns: ["name", "concealment", "electronic_control", "description"]
+    columns: ["name", "purchase", "concealment", "electronic_control", "description"]
   },
   {
     category: "tron",
     japanese: "トロン",
     english: "TRON",
-    columns: ["name", "concealment", "speed", "tron_software", "tron_support", "tron_hardware", "cs_value", "electronic_control", "description"]
+    columns: ["name", "purchase", "concealment", "speed", "tron_software", "tron_support", "tron_hardware", "cs_modifier", "electronic_control", "description"]
   },
   {
     category: "vehicle",
     japanese: "ヴィークル",
     english: "VEHICLE",
-    columns: ["name", "concealment", "attack", "parry", "speed", "defense_s", "defense_p", "defense_i", "cs_value", "crew", "sf", "electronic_control", "description"]
+    columns: ["name", "purchase", "concealment", "attack", "speed", "control_modifier", "cs_modifier", "defense_s", "defense_p", "defense_i", "crew", "sf", "electronic_control", "description"]
   },
   {
     category: "residence",
     japanese: "住居",
     english: "RESIDENCE",
-    columns: ["name", "speed", "residence_entry", "residence_electric", "residence_area", "electronic_control", "description"]
+    columns: ["name", "purchase", "concealment", "speed", "residence_entry", "residence_electric", "residence_area", "electronic_control", "description"]
   },
   {
     category: "other",
     japanese: "その他",
     english: "OTHER",
-    columns: ["name", "concealment", "cs_value", "electronic_control", "description"]
+    columns: ["name", "purchase", "concealment", "electronic_control", "description"]
   }
 ];
 const QUICK_OUTFIT_COLUMN_LABELS = {
   name: "名称",
+  purchase: "購入",
   concealment: "隠匿",
   attack: "攻撃",
   parry: "受け",
   range: "射程",
   speed: "スロ",
+  control_modifier: "制御値",
   defense_s: "S",
   defense_p: "P",
   defense_i: "I",
   tron_software: "ソ",
   tron_support: "サ",
   tron_hardware: "ハ",
-  cs_value: "CS",
+  cs_modifier: "CS修正",
   crew: "乗員",
   sf: "SF",
   residence_entry: "登場",
@@ -206,6 +209,7 @@ function renderCharacter(
   );
   setText("#cast-summary", character.summary);
 
+  const viewOutfits = normalizeOutfitListForView(outfits);
   renderImage(character);
   renderStyles(character);
   renderAbilities(character);
@@ -214,9 +218,9 @@ function renderCharacter(
   renderLifePath(character);
   renderProfile(character);
   renderSkills(skills);
-  renderOutfits(outfits);
+  renderOutfits(viewOutfits);
   renderCombos(combos, character);
-  prepareQuickSheet(character, skills, outfits, combos);
+  prepareQuickSheet(character, skills, viewOutfits, combos);
 }
 
 function prepareQuickSheet(character, skills, outfits, combos) {
@@ -512,18 +516,20 @@ function parseQuickStyleDetail(value) {
 
 function createQuickWeaponTable(outfits) {
   if (!outfits.length) return `<p class="quick-sheet__empty">登録なし</p>`;
-  const columns = ["name", "concealment", "attack", "parry", "range", "speed", "electronic_control", "description"];
+  const columns = ["name", "purchase", "concealment", "attack", "parry", "range", "speed", "electronic_control", "description"];
   return createQuickOutfitTable(outfits, columns, "quick-sheet__weapon-table");
 }
 
 function createQuickArmorTable(outfits) {
   if (!outfits.length) return `<p class="quick-sheet__empty">登録なし</p>`;
   const totals = quickArmorTotals(outfits);
-  const columns = ["name", "concealment", "defense_s", "defense_p", "defense_i", "electronic_control", "description"];
+  const columns = ["name", "purchase", "concealment", "defense_s", "defense_p", "defense_i", "control_modifier", "electronic_control", "description"];
   const totalCells = [["S", totals.s], ["P", totals.p], ["I", totals.i]]
     .map(([label, value]) => `<td class="quick-sheet__armor-total-value" aria-label="防御値合計 ${label} ${value}"><span>${label}</span><strong>${value}</strong></td>`)
     .join("");
-  const totalRow = `<tfoot><tr class="quick-sheet__armor-total-row"><th class="quick-sheet__armor-total-label" colspan="2" scope="row"><span>防御値合計</span><small>TOTAL DEFENSE</small></th>${totalCells}<td class="quick-sheet__armor-total-spacer" aria-hidden="true"></td><td class="quick-sheet__armor-total-spacer quick-sheet__outfit-detail" aria-hidden="true"></td></tr></tfoot>`;
+  const firstDefenseIndex = columns.indexOf("defense_s");
+  const trailingColumns = columns.length - firstDefenseIndex - 3;
+  const totalRow = `<tfoot><tr class="quick-sheet__armor-total-row"><th class="quick-sheet__armor-total-label" colspan="${firstDefenseIndex}" scope="row"><span>防御値合計</span><small>TOTAL DEFENSE</small></th>${totalCells}${trailingColumns > 0 ? `<td class="quick-sheet__armor-total-spacer" colspan="${trailingColumns}" aria-hidden="true"></td>` : ""}</tr></tfoot>`;
   return createQuickOutfitTable(outfits, columns, "quick-sheet__armor-table", totalRow);
 }
 
@@ -559,6 +565,8 @@ function quickOutfitColumnClass(key) {
 function getQuickOutfitDisplayValue(outfit, key) {
   if (key === "name") return displayValue(outfit.name);
   if (key === "description") return displayValue(outfit.description);
+  if (key === "purchase") return formatPurchasePair(outfit);
+  if (key === "concealment") return formatConcealmentPair(outfit);
   if (["defense_s", "defense_p", "defense_i"].includes(key)) {
     return displayValue(getQuickOutfitDefense(outfit)[key.slice(-1)]);
   }
@@ -567,7 +575,7 @@ function getQuickOutfitDisplayValue(outfit, key) {
 
 function getQuickOutfitValue(outfit, key) {
   const details = outfit.ofc_details && typeof outfit.ofc_details === "object" && !Array.isArray(outfit.ofc_details) ? outfit.ofc_details : {};
-  return String(details[key] ?? outfit[key] ?? "").trim();
+  return String(outfit[key] ?? details[key] ?? "").trim();
 }
 
 function getQuickOutfitDefense(outfit) {
@@ -580,7 +588,7 @@ function getQuickOutfitDefense(outfit) {
 }
 
 function parseQuickArmorDefense(value) {
-  const result = { s: "", i: "", p: "" };
+  const result = { s: "", p: "", i: "" };
   const text = String(value ?? "").trim();
   if (!text) return result;
   const labeled = [...text.matchAll(/(?:^|[\s,，/／])([SPI])\s*[:：]?\s*([+-]?\d+)/gi)];
@@ -589,17 +597,16 @@ function parseQuickArmorDefense(value) {
     return result;
   }
   const parts = text.split(/[\/／,，\s]+/).filter(Boolean);
-  [result.s, result.i, result.p] = [parts[0] || "", parts[1] || "", parts[2] || ""];
+  [result.s, result.p, result.i] = [parts[0] || "", parts[1] || "", parts[2] || ""];
   return result;
 }
 
 function quickArmorTotals(items) {
-  const totals = { s: 0, i: 0, p: 0 };
+  const totals = { s: 0, p: 0, i: 0 };
   for (const item of items) {
-    const details = item.ofc_details && typeof item.ofc_details === "object" && !Array.isArray(item.ofc_details) ? item.ofc_details : {};
-    const defense = parseQuickArmorDefense(item.defense);
+    const defense = getQuickOutfitDefense(item);
     for (const key of Object.keys(totals)) {
-      const raw = details[`defense_${key}`] || defense[key] || 0;
+      const raw = defense[key] || 0;
       const match = String(raw).match(/[+-]?\d+(?:\.\d+)?/);
       totals[key] += match ? Number(match[0]) : 0;
     }
