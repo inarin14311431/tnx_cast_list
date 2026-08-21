@@ -64,11 +64,11 @@ function initializeSearchField() {
 function setupOwnedCastNavigation() {
   if (!ownedCastsContainer) return;
   ownedCastsContainer.addEventListener("click", event => {
-    const link = event.target.closest(".owned-cast__links a");
+    const link = event.target.closest(".owned-cast__links a, .owned-cast__management a");
     if (!link) return;
 
     const href = link.getAttribute("href") || "";
-    const match = href.match(/(?:^|\/)(cast|sheet|acts)\.html([?#].*)?$/);
+    const match = href.match(/(?:^|\/)(cast|sheet|sheet-mobile|acts)\.html([?#].*)?$/);
     if (!match) return;
 
     event.preventDefault();
@@ -218,13 +218,14 @@ function createOwnedCastItem(character) {
           <span class="owned-cast__visibility">${escapeHtml(visibilityLabel(character.visibility))}</span>
           <span class="owned-cast__serial">${escapeHtml(displayId)}</span>
         </div>
-        <div class="owned-cast__links" aria-label="キャスト操作">
+        <div class="owned-cast__links" aria-label="主要操作">
           <a href="${SITE_BASE_PATH}cast.html?id=${id}">${actionLabel("閲覧", "OPEN")}</a>
           <a href="${SITE_BASE_PATH}sheet.html?id=${id}">${actionLabel("シート編集", "EDIT SHEET")}</a>
-          <a href="${SITE_BASE_PATH}acts.html?character=${id}">${actionLabel("参加アクト", "ACTS")}</a>
+          <a href="${SITE_BASE_PATH}sheet-mobile.html?id=${id}">${actionLabel("モバイル編集", "MOBILE EDIT")}</a>
         </div>
         <div class="owned-cast__management" aria-label="管理操作">
-          <span class="owned-cast__management-label">管理操作 <small>MANAGEMENT</small></span>
+          <a class="owned-cast__acts" href="${SITE_BASE_PATH}acts.html?character=${id}">${actionLabel("参加アクト", "ACTS")}</a>
+          <span class="owned-cast__management-label">管理機能 <small>MANAGEMENT</small></span>
           <button type="button" data-duplicate="${escapeHtml(character.public_id)}">${actionLabel("複製", "DUPLICATE")}</button>
           <button type="button" data-delete="${escapeHtml(character.public_id)}">${actionLabel("削除", "DELETE")}</button>
         </div>
