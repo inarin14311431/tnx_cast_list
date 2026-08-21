@@ -1,5 +1,5 @@
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
-import { CREATION_ALLOWANCE, INITIAL_GENERAL_SKILL_COST, paidSkillLevel, steppedExperienceCost } from "./sheet-experience-rules.js?v=3";
+import { CREATION_ALLOWANCE, INITIAL_SKILL_COST, paidInitialSkillCost, paidSkillLevel, steppedExperienceCost } from "./sheet-experience-rules.js?v=4";
 
 /* Single authoritative experience-point calculator. */
 (function(){
@@ -41,13 +41,18 @@ import { CREATION_ALLOWANCE, INITIAL_GENERAL_SKILL_COST, paidSkillLevel, stepped
     return result;
   }
 
-  function skillCategory(row){
+  function skillCategory(row,name=""){
     if(row.closest("#style-skills"))return "style";
+    const category=row.closest("[data-skill-category]")?.dataset.skillCategory||"";
+    if(category)return category;
+    if(/^社会[：:]/.test(name))return "social";
+    if(/^コネ[：:]/.test(name))return "connection";
     return "general";
   }
 
   function skillParts(){
     let general=0;
+    let socialConnection=0;
     let style=0;
     const seen=new Set();
     const rows=$$("#general-skills tr[data-skill-key],#style-skills tr[data-skill-key]");
@@ -62,13 +67,16 @@ import { CREATION_ALLOWANCE, INITIAL_GENERAL_SKILL_COST, paidSkillLevel, stepped
       const freeLevel=Math.max(0,num(row.querySelector('[data-f="free_level"]')?.value));
       const paidLevel=paidSkillLevel(level,freeLevel);
       const kind=row.querySelector('[data-f="skill_kind"]')?.value||"general";
-      if(skillCategory(row)==="style"){
+      const category=skillCategory(row,name);
+      if(category==="style"){
         style+=paidLevel*(STYLE_COST[kind]??10);
+      }else if(category==="social"||category==="connection"){
+        socialConnection+=paidLevel*5;
       }else{
         general+=paidLevel*(kind==="proper"?5:10);
       }
     }
-    return {general,style};
+    return {general,socialConnection,style};
   }
 
   function outfitCost(){
@@ -95,7 +103,8 @@ import { CREATION_ALLOWANCE, INITIAL_GENERAL_SKILL_COST, paidSkillLevel, stepped
     }
 
     const skills=skillParts();
-    const paidGeneral=Math.max(0,skills.general-INITIAL_GENERAL_SKILL_COST);
+    const paidSkills=paidInitialSkillCost(skills);
+    const paidGeneral=paidSkills.total;
     const parts={
       "能力値":ability,
       "制御値":control,
@@ -127,7 +136,8 @@ import { CREATION_ALLOWANCE, INITIAL_GENERAL_SKILL_COST, paidSkillLevel, stepped
       parts,
       gross,
       rawGeneralSkillCost:skills.general,
-      initialSkillCost:INITIAL_GENERAL_SKILL_COST,
+      rawSocialConnectionSkillCost:skills.socialConnection,
+      initialSkillCost:INITIAL_SKILL_COST,
       creationAllowance:CREATION_ALLOWANCE
     };
   }

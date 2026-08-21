@@ -1,0 +1,32 @@
+/* Mobile public cast view theme bridge. Keeps light and dark themes readable. */
+body.is-mobile-cast-view {
+  --color-panel: var(--color-surface);
+  --mobile-cast-soft: color-mix(in srgb, var(--color-text) 4%, transparent);
+  --mobile-cast-line: color-mix(in srgb, var(--color-text) 10%, transparent);
+}
+
+body.is-mobile-cast-view :is(
+  .mobile-cast-meta > div,
+  .mobile-cast-divines article,
+  .mobile-cast-profile-grid > div,
+  .mobile-cast-lifepath p,
+  .mobile-skill-row,
+  .mobile-style-row
+) {
+  background: var(--mobile-cast-soft);
+}
+
+body.is-mobile-cast-view :is(
+  .mobile-cast-abilities article,
+  .mobile-outfit-card,
+  .mobile-combo-card
+) {
+  border-color: var(--mobile-cast-line);
+}
+
+body.is-mobile-cast-view :is(
+  .mobile-cast-summary,
+  .mobile-style-row > p
+) {
+  border-color: var(--mobile-cast-line);
+}
