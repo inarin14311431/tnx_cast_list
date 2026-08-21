@@ -1,9 +1,11 @@
-// Initial skill package: 13 levels of General skills (130 XP)
-// plus 7 levels of Social/Connection skills (35 XP).
-// These are separate acquisition pools: unused Social/Connection allowance must not
-// offset additional General-skill expenditure (and vice versa).
+// Initial skill package:
+// - 13 fixed General skills each have their first level for free (130 XP total).
+// - Social and Connection share a flexible 7-level free pool (35 XP total).
+// The fixed General pool and Social/Connection pool are not interchangeable.
 // Character construction then grants 170 XP for further growth.
+export const INITIAL_GENERAL_SKILL_COUNT = 13;
 export const INITIAL_GENERAL_SKILL_COST = 130;
+export const INITIAL_SOCIAL_CONNECTION_SKILL_LEVELS = 7;
 export const INITIAL_SOCIAL_CONNECTION_SKILL_COST = 35;
 export const INITIAL_SKILL_COST = INITIAL_GENERAL_SKILL_COST + INITIAL_SOCIAL_CONNECTION_SKILL_COST;
 export const CREATION_ALLOWANCE = 170;
@@ -37,12 +39,11 @@ export function paidSkillLevel(level, freeLevel = 0) {
   return normalizedLevel - normalizedFree;
 }
 
-export function paidInitialSkillCost({ general = 0, socialConnection = 0 } = {}) {
-  const paidGeneral = Math.max(0, numericValue(general) - INITIAL_GENERAL_SKILL_COST);
-  const paidSocialConnection = Math.max(0, numericValue(socialConnection) - INITIAL_SOCIAL_CONNECTION_SKILL_COST);
-  return {
-    general: paidGeneral,
-    socialConnection: paidSocialConnection,
-    total: paidGeneral + paidSocialConnection
-  };
+export function paidFixedInitialGeneralLevel(level, freeLevel = 0) {
+  return Math.max(0, paidSkillLevel(level, freeLevel) - 1);
+}
+
+export function paidSocialConnectionInitialCost({ social = 0, connection = 0 } = {}) {
+  const rawTotal = Math.max(0, numericValue(social)) + Math.max(0, numericValue(connection));
+  return Math.max(0, rawTotal - INITIAL_SOCIAL_CONNECTION_SKILL_COST);
 }
