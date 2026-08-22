@@ -1,21 +1,110 @@
 /* Combo editor controls and interaction states. */
-body[data-page="sheet.html"] .sheet-combo-suit-picker{display:flex;flex-wrap:wrap;gap:5px;align-items:center;min-height:38px;padding:4px 5px;border:1px solid var(--color-border-muted);background:var(--color-surface-alt)}
-body[data-page="sheet.html"] .sheet-combo-suit-option{display:inline-flex;align-items:center;gap:0;cursor:pointer}
-body[data-page="sheet.html"] .sheet-combo-suit-option input{position:absolute;inline-size:1px;block-size:1px;opacity:0;pointer-events:none}
-body[data-page="sheet.html"] .sheet-combo-suit-option span{display:inline-grid;place-items:center;min-width:3.2em;min-height:27px;padding:2px 4px;border:1px solid var(--color-border);border-radius:3px;color:var(--color-muted);background:var(--color-surface);font-size:.78rem;font-weight:750;white-space:nowrap}
-body[data-page="sheet.html"] .sheet-combo-suit-option input:checked+span{border-color:var(--color-accent);color:var(--color-accent);background:var(--color-accent-soft);box-shadow:inset 0 0 8px color-mix(in srgb,var(--color-accent) 10%,transparent)}
-body[data-page="sheet.html"] .sheet-combo-suit-option input:focus-visible+span{outline:2px solid var(--color-accent);outline-offset:2px}
+
+body[data-page="sheet.html"] .sheet-combo-suit-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  align-items: center;
+  min-height: 38px;
+  padding: 4px 5px;
+  border: 1px solid var(--color-border-muted);
+  background: var(--color-surface-alt);
+}
+
+body[data-page="sheet.html"] .sheet-combo-suit-option {
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  cursor: pointer;
+}
+
+body[data-page="sheet.html"] .sheet-combo-suit-option input {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+body[data-page="sheet.html"] .sheet-combo-suit-option span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 3.2em;
+  min-height: 27px;
+  padding: 2px 4px;
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  color: var(--color-muted);
+  background: var(--color-surface);
+  font-size: .78rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+body[data-page="sheet.html"] .sheet-combo-suit-option input:checked + span {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  box-shadow: inset 0 0 8px color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+
+body[data-page="sheet.html"] .sheet-combo-suit-option input:focus-visible + span {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/*
+ * The combo/counter section header is a <header> promoted to .section-toggle
+ * by JavaScript. Global button hover rules therefore do not apply to it.
+ * Mirror the same filled-accent feedback used by sections 01-06 explicitly.
+ */
+body[data-page="sheet.html"] .sheet-combo-entry__header.section-toggle:is(:hover, :focus-visible) {
+  border-bottom-color: var(--sheet-section-accent);
+  color: var(--color-on-accent, var(--color-surface));
+  background: var(--sheet-section-accent);
+  box-shadow:
+    inset 3px 0 0 color-mix(in srgb, var(--color-on-accent, var(--color-surface)) 42%, transparent),
+    var(--shadow-glow);
+}
+
+body[data-page="sheet.html"] .sheet-combo-entry__header.section-toggle:is(:hover, :focus-visible) #sheet-combo-entry-title,
+body[data-page="sheet.html"] .sheet-combo-entry__header.section-toggle:is(:hover, :focus-visible) small,
+body[data-page="sheet.html"] .sheet-combo-entry__header.section-toggle:is(:hover, :focus-visible)::after {
+  color: var(--color-on-accent, var(--color-surface));
+  opacity: .95;
+}
+
+body[data-page="sheet.html"] .sheet-combo-entry__header.section-toggle:is(:hover, :focus-visible) .sheet-combo-entry__tag {
+  border-color: color-mix(in srgb, var(--color-on-accent, var(--color-surface)) 58%, transparent);
+  color: var(--color-on-accent, var(--color-surface));
+  background: color-mix(in srgb, var(--color-on-accent, var(--color-surface)) 10%, transparent);
+}
 
 /* Keep combo summary cards readable on hover/focus. */
 body[data-page="sheet.html"] .sheet-combo-entry-card:is(:hover, :focus-visible),
-body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible){color:var(--color-text)}
-body[data-page="sheet.html"] .sheet-combo-entry-card:is(:hover, :focus-visible)>strong,
-body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible)>strong{color:var(--color-text)}
+body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible) {
+  color: var(--color-text);
+}
+
+body[data-page="sheet.html"] .sheet-combo-entry-card:is(:hover, :focus-visible) > strong,
+body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible) > strong {
+  color: var(--color-text);
+}
+
 body[data-page="sheet.html"] .sheet-combo-entry-card:is(:hover, :focus-visible) .sheet-combo-entry-card__skills,
 body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible) .sheet-combo-list-card__skills,
-body[data-page="sheet.html"] .sheet-combo-entry-card:is(:hover, :focus-visible)>small,
-body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible)>small{color:color-mix(in srgb,var(--color-text) 68%,var(--color-muted));opacity:1}
+body[data-page="sheet.html"] .sheet-combo-entry-card:is(:hover, :focus-visible) > small,
+body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible) > small {
+  color: color-mix(in srgb, var(--color-text) 68%, var(--color-muted));
+  opacity: 1;
+}
+
 body[data-page="sheet.html"] .sheet-combo-entry-card:is(:hover, :focus-visible) .sheet-combo-entry-card__kind,
-body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible) .sheet-combo-list-card__kind{color:var(--color-accent)}
+body[data-page="sheet.html"] .sheet-combo-list-card:is(:hover, :focus-visible) .sheet-combo-list-card__kind {
+  color: var(--color-accent);
+}
+
 body[data-page="sheet.html"] .sheet-combo-entry-card.is-counter:is(:hover, :focus-visible) .sheet-combo-entry-card__kind,
-body[data-page="sheet.html"] .sheet-combo-list-card.is-counter:is(:hover, :focus-visible) .sheet-combo-list-card__kind{color:var(--color-success)}
+body[data-page="sheet.html"] .sheet-combo-list-card.is-counter:is(:hover, :focus-visible) .sheet-combo-list-card__kind {
+  color: var(--color-success);
+}

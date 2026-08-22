@@ -5,7 +5,7 @@
  */
 @import url("./tokens/core.css?v=2");
 @import url("./tokens/themes.css?v=3");
-@import url("./tokens/theme-ui-overrides.css?v=1");
+@import url("./tokens/theme-ui-overrides.css?v=2");
 @import url("./foundation/reset.css");
 @import url("./foundation/base.css?v=2");
 @import url("./foundation/typography.css");
@@ -16,7 +16,7 @@
 @import url("./components/panel.css");
 @import url("./components/table.css");
 @import url("./components/row-actions.css");
-@import url("./components/dialog.css");
+@import url("./components/dialog.css?v=2");
 @import url("./components/status.css");
 @import url("./components/help.css?v=1");
 @import url("./components/global-theme-picker.css?v=1");
@@ -48,6 +48,9 @@
 @import url("./pages/acts.css?v=2");
 @import url("./pages/showcase.css?v=2");
 @import url("./components/armor-totals.css?v=2");
+
+/* Cross-theme readability rules intentionally come after page styles. */
+@import url("./components/theme-contrast.css?v=1");
 
 /* Responsive overrides are intentionally last. */
 @import url("./responsive.css?v=8");
