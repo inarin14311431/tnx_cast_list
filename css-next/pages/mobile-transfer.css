@@ -12,79 +12,161 @@ body[data-page="mobile-transfer.html"] {
 
 .mobile-transfer-layout {
   display: grid;
-  gap: 12px;
+  gap: 14px;
   width: min(760px, calc(100% - 20px));
-  margin: 16px auto 40px;
+  margin: 18px auto 40px;
 }
 
 .mobile-transfer-intro,
 .mobile-transfer-step,
-.mobile-transfer-safety {
-  border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
-  background: color-mix(in srgb, var(--color-panel) 94%, transparent);
+.mobile-transfer-note {
+  border: 1px solid color-mix(in srgb, var(--color-accent) 28%, transparent);
+  background: var(--theme-panel-bg, var(--color-surface));
   box-shadow: 0 14px 30px rgb(0 0 0 / 14%);
 }
 
 .mobile-transfer-intro {
-  padding: 16px;
+  padding: 18px;
 }
 
-.mobile-transfer-intro__label,
-.mobile-transfer-step > header > span {
+.mobile-transfer-intro__label {
   display: block;
-  margin-bottom: 4px;
+  margin: 0 0 6px;
   color: var(--color-accent);
-  font-family: monospace;
+  font-family: var(--font-data, monospace);
   font-size: 10px;
-  font-weight: 800;
-  letter-spacing: .08em;
+  font-weight: 900;
+  letter-spacing: .12em;
 }
 
-.mobile-transfer-intro h2,
-.mobile-transfer-step h2,
-.mobile-transfer-safety h2 {
+.mobile-transfer-intro h2 {
   margin: 0;
+  font-size: clamp(20px, 4vw, 26px);
+  line-height: 1.25;
 }
 
-.mobile-transfer-intro > p:not(.mobile-transfer-intro__label),
-.mobile-transfer-step > p,
-.mobile-transfer-safety p,
-.mobile-transfer-help p {
-  line-height: 1.7;
+.mobile-transfer-intro__lead {
+  max-width: 42em;
+  margin: 8px 0 0;
+  color: var(--color-muted);
+  font-size: 13px;
+  line-height: 1.65;
 }
 
 .mobile-transfer-cast-id {
-  margin: 12px 0 0;
-  padding: 8px 10px;
-  border-left: 3px solid var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
-  font-family: monospace;
-  font-weight: 800;
+  margin: 14px 0 0;
+  padding: 10px 12px;
+  border-left: 4px solid var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 9%, transparent);
+  color: var(--color-text);
+  font-family: var(--font-data, monospace);
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: .03em;
 }
 
-.mobile-transfer-step > header {
-  padding: 12px 14px 10px;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 22%, transparent);
-  background: color-mix(in srgb, var(--color-accent) 6%, transparent);
+.mobile-transfer-step {
+  --step-color: var(--color-accent);
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--step-color) 58%, transparent);
+  background:
+    linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--step-color) 7%, transparent),
+      transparent 42%
+    ),
+    var(--theme-panel-bg, var(--color-surface));
 }
 
-.mobile-transfer-step > p,
-.mobile-transfer-step > details,
-.mobile-transfer-step > .mobile-transfer-actions {
-  margin-right: 14px;
-  margin-left: 14px;
+.mobile-transfer-step--bookmarklet {
+  --step-color: var(--color-export-bookmarklet, var(--color-section-style-skills, var(--color-accent)));
 }
 
-.mobile-transfer-step > p {
-  margin-top: 12px;
-  margin-bottom: 12px;
+.mobile-transfer-step--data {
+  --step-color: var(--color-export-tsv, var(--color-section-profile, var(--color-accent)));
+}
+
+.mobile-transfer-step--warehouse {
+  --step-color: var(--color-export-success, var(--color-section-skills, var(--color-success)));
+}
+
+.mobile-transfer-step__header {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 15px 16px 13px;
+  border-bottom: 1px solid color-mix(in srgb, var(--step-color) 34%, transparent);
+  background: color-mix(in srgb, var(--step-color) 9%, var(--color-surface));
+}
+
+.mobile-transfer-step__number {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  border: 1px solid color-mix(in srgb, var(--step-color) 76%, transparent);
+  background: color-mix(in srgb, var(--step-color) 17%, var(--color-surface));
+  color: var(--step-color);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--step-color) 13%, transparent);
+  font-family: var(--font-data, monospace);
+  font-size: 18px;
+  font-weight: 950;
+  line-height: 1;
+}
+
+.mobile-transfer-step__heading {
+  min-width: 0;
+}
+
+.mobile-transfer-step__meta {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 4px;
+  color: var(--step-color);
+  font-family: var(--font-data, monospace);
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: .1em;
+}
+
+.mobile-transfer-step__meta small {
+  display: inline-flex;
+  align-items: center;
+  min-height: 20px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--step-color) 14%, transparent);
+  color: color-mix(in srgb, var(--step-color) 82%, var(--color-text));
+  font-family: inherit;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.mobile-transfer-step h2 {
+  margin: 0;
+  color: var(--color-text);
+  font-size: clamp(18px, 4vw, 22px);
+  line-height: 1.35;
+}
+
+.mobile-transfer-step__body {
+  padding: 14px 16px 16px;
+}
+
+.mobile-transfer-step__summary {
+  margin: 0 0 13px;
+  color: var(--color-muted);
+  font-size: 13px;
+  line-height: 1.65;
 }
 
 .mobile-transfer-actions {
   display: grid;
   gap: 8px;
-  margin-top: 12px;
-  margin-bottom: 14px;
+  margin: 0;
 }
 
 .mobile-transfer-actions button,
@@ -92,119 +174,210 @@ body[data-page="mobile-transfer.html"] {
   display: grid;
   place-items: center;
   width: 100%;
-  min-height: 54px;
-  padding: 9px 12px;
-  border: 1px solid var(--color-accent);
-  border-radius: 0;
-  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-panel));
+  min-height: 58px;
+  padding: 10px 14px;
+  border: 1px solid color-mix(in srgb, var(--step-color) 88%, transparent);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--step-color) 20%, var(--color-surface));
   color: var(--color-text);
+  box-shadow: 0 8px 20px color-mix(in srgb, var(--step-color) 13%, transparent);
   text-align: center;
   text-decoration: none;
   cursor: pointer;
+  transition:
+    transform var(--transition-fast, 160ms ease),
+    background var(--transition-fast, 160ms ease),
+    color var(--transition-fast, 160ms ease),
+    box-shadow var(--transition-fast, 160ms ease);
 }
 
 .mobile-transfer-actions button:hover,
 .mobile-transfer-actions button:focus-visible,
 .mobile-transfer-open:hover,
 .mobile-transfer-open:focus-visible {
-  background: var(--color-accent);
-  color: var(--color-on-accent);
+  transform: translateY(-1px);
+  background: color-mix(in srgb, var(--step-color) 34%, var(--color-surface));
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--step-color) 22%, transparent);
 }
 
 .mobile-transfer-actions button span,
 .mobile-transfer-open span {
-  font-size: 14px;
-  font-weight: 900;
+  font-size: 15px;
+  font-weight: 950;
 }
 
 .mobile-transfer-actions button small,
 .mobile-transfer-open small {
-  margin-top: 2px;
+  margin-top: 3px;
+  color: color-mix(in srgb, currentColor 72%, transparent);
   font-size: 8px;
-  font-weight: 800;
-  letter-spacing: .08em;
+  font-weight: 900;
+  letter-spacing: .1em;
 }
 
 .mobile-transfer-actions button:disabled {
+  transform: none;
   cursor: not-allowed;
   opacity: .55;
 }
 
 .mobile-transfer-step details {
-  margin-top: 0;
-  margin-bottom: 14px;
-  border-top: 1px dashed color-mix(in srgb, var(--color-accent) 25%, transparent);
-  padding-top: 10px;
+  margin-top: 14px;
+  padding-top: 11px;
+  border-top: 1px dashed color-mix(in srgb, var(--step-color) 32%, transparent);
 }
 
 .mobile-transfer-step summary {
-  color: var(--color-accent);
-  font-weight: 800;
+  color: var(--step-color);
+  font-size: 13px;
+  font-weight: 900;
   cursor: pointer;
 }
 
 .mobile-transfer-help {
-  padding: 2px 2px 0;
+  padding: 4px 2px 0;
+  color: var(--color-muted);
 }
 
-.mobile-transfer-note {
-  padding: 9px 10px;
-  border-left: 3px solid var(--color-accent);
-  background: color-mix(in srgb, var(--color-accent) 7%, transparent);
+.mobile-transfer-help p {
+  margin: 9px 0 0;
+  font-size: 12px;
+  line-height: 1.65;
+}
+
+.mobile-transfer-checklist {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+  counter-reset: transfer-step;
+}
+
+.mobile-transfer-checklist li {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 9px;
+  align-items: start;
+  color: var(--color-text);
+  font-size: 13px;
+  line-height: 1.5;
+  counter-increment: transfer-step;
+}
+
+.mobile-transfer-checklist li::before {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--step-color) 20%, var(--color-surface));
+  color: var(--step-color);
+  font-family: var(--font-data, monospace);
+  font-size: 10px;
+  font-weight: 950;
+  content: counter(transfer-step);
 }
 
 .mobile-transfer-status {
   min-height: 1.5em;
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  border-left: 3px solid color-mix(in srgb, var(--step-color) 55%, transparent);
+  background: color-mix(in srgb, var(--step-color) 7%, transparent);
+  color: var(--color-muted);
+  font-size: 12px;
   font-weight: 800;
+  line-height: 1.5;
+}
+
+.mobile-transfer-status:empty {
+  display: none;
+}
+
+.mobile-transfer-status[data-state="working"] {
+  color: var(--step-color);
 }
 
 .mobile-transfer-status[data-state="success"] {
-  color: var(--color-accent);
+  border-left-color: var(--color-success);
+  background: color-mix(in srgb, var(--color-success) 8%, transparent);
+  color: var(--color-success);
 }
 
 .mobile-transfer-status[data-state="error"] {
-  color: var(--color-danger, #ff6b6b);
+  border-left-color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 8%, transparent);
+  color: var(--color-danger);
 }
 
-.mobile-transfer-safety {
-  padding: 14px;
-  border-color: color-mix(in srgb, var(--color-text-muted) 30%, transparent);
+.mobile-transfer-note {
+  display: grid;
+  gap: 3px;
+  padding: 12px 14px;
+  border-color: color-mix(in srgb, var(--color-warning, var(--color-accent)) 34%, transparent);
+  background: color-mix(in srgb, var(--color-warning, var(--color-accent)) 7%, var(--color-surface));
+  color: var(--color-muted);
+  font-size: 12px;
+  line-height: 1.5;
 }
 
-.mobile-transfer-safety p {
-  margin-bottom: 0;
-  color: var(--color-text-muted);
-}
-
-.mobile-transfer-step code {
-  font-family: monospace;
-  color: var(--color-accent);
+.mobile-transfer-note strong {
+  color: color-mix(in srgb, var(--color-warning, var(--color-accent)) 72%, var(--color-text));
+  font-size: 13px;
 }
 
 @media (max-width: 640px) {
   .mobile-transfer-layout {
-    width: calc(100% - 12px);
-    margin-top: 8px;
-    gap: 8px;
+    width: calc(100% - 14px);
+    margin-top: 9px;
+    gap: 10px;
   }
 
   .mobile-transfer-intro {
+    padding: 14px;
+  }
+
+  .mobile-transfer-intro h2 {
+    font-size: 20px;
+  }
+
+  .mobile-transfer-intro__lead {
+    font-size: 12px;
+  }
+
+  .mobile-transfer-step__header {
+    gap: 10px;
     padding: 12px;
   }
 
-  .mobile-transfer-intro h2,
+  .mobile-transfer-step__number {
+    width: 40px;
+    height: 40px;
+    flex-basis: 40px;
+    font-size: 15px;
+  }
+
   .mobile-transfer-step h2 {
     font-size: 17px;
   }
 
-  .mobile-transfer-step > header {
-    padding: 10px;
+  .mobile-transfer-step__body {
+    padding: 12px;
   }
 
-  .mobile-transfer-step > p,
-  .mobile-transfer-step > details,
-  .mobile-transfer-step > .mobile-transfer-actions {
-    margin-right: 10px;
-    margin-left: 10px;
+  .mobile-transfer-step__summary,
+  .mobile-transfer-checklist li {
+    font-size: 12px;
+  }
+
+  .mobile-transfer-actions button,
+  .mobile-transfer-open {
+    min-height: 54px;
+  }
+
+  .mobile-transfer-actions button span,
+  .mobile-transfer-open span {
+    font-size: 14px;
   }
 }
