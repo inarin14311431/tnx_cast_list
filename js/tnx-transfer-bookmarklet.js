@@ -39,12 +39,71 @@
     }).join("\n");
   }
 
+  function countTransferRows(text){
+    return String(text||"")
+      .replace(/\r/g,"")
+      .split("\n")
+      .filter(line=>line.startsWith(`${FORMAT}\t`))
+      .length;
+  }
+
+  function installClipboardBridge(){
+    const nativeClipboard=navigator.clipboard;
+    const restore=[];
+    const bridgeReadText=async()=>String(window.__TNX_TRANSFER_TSV__||"");
+
+    const navigatorDescriptor=Object.getOwnPropertyDescriptor(navigator,"clipboard");
+    if(nativeClipboard){
+      try{
+        const shim=Object.create(nativeClipboard);
+        Object.defineProperty(shim,"readText",{configurable:true,value:bridgeReadText});
+        Object.defineProperty(navigator,"clipboard",{configurable:true,value:shim});
+        restore.push(()=>{
+          try{
+            if(navigatorDescriptor)Object.defineProperty(navigator,"clipboard",navigatorDescriptor);
+            else delete navigator.clipboard;
+          }catch{}
+        });
+        return ()=>restore.reverse().forEach(fn=>fn());
+      }catch{}
+
+      const ownDescriptor=Object.getOwnPropertyDescriptor(nativeClipboard,"readText");
+      try{
+        Object.defineProperty(nativeClipboard,"readText",{configurable:true,value:bridgeReadText});
+        restore.push(()=>{
+          try{
+            if(ownDescriptor)Object.defineProperty(nativeClipboard,"readText",ownDescriptor);
+            else delete nativeClipboard.readText;
+          }catch{}
+        });
+        return ()=>restore.reverse().forEach(fn=>fn());
+      }catch{}
+
+      const prototype=Object.getPrototypeOf(nativeClipboard);
+      const prototypeDescriptor=prototype&&Object.getOwnPropertyDescriptor(prototype,"readText");
+      if(prototype&&prototypeDescriptor){
+        try{
+          Object.defineProperty(prototype,"readText",{
+            ...prototypeDescriptor,
+            configurable:true,
+            value:bridgeReadText
+          });
+          restore.push(()=>{
+            try{Object.defineProperty(prototype,"readText",prototypeDescriptor)}catch{}
+          });
+          return ()=>restore.reverse().forEach(fn=>fn());
+        }catch{}
+      }
+    }
+
+    return ()=>{};
+  }
+
   function startResponsibilityRepairs(data){
     const common=window.TNXTransferRepairCommon;
     const repairs=window.TNXTransferRepairs;
     if(!common||!repairs)throw new Error("転記補正モジュールを初期化できませんでした。");
 
-    /* Preserve the former v3 pass order: social/connection -> style skill -> totals. */
     (async()=>{
       for(const delay of [250,700,1400,2800,5200]){
         await common.wait(delay);
@@ -56,7 +115,6 @@
       }
     })().catch(error=>console.error("TNX exact transfer repair failed",error));
 
-    /* Preserve the former v4 cumulative general-skill repair cadence. */
     (async()=>{
       for(const delay of [350,900,1800,3400,6000]){
         await common.wait(delay);
@@ -64,7 +122,6 @@
       }
     })().catch(error=>console.error("TNX general-skill mapping failed",error));
 
-    /* Preserve the former v5 absolute separator repair schedule. */
     for(const delay of [450,1000,2200,4500,8000,11000,12500]){
       window.setTimeout(()=>{
         repairs.repairStyleSeparators(data).catch(error=>console.error("TNX style-separator level-zero repair failed",error));
@@ -83,33 +140,25 @@
     }
 
     transferText=normalizeStyleSeparatorLevels(transferText);
+    const transferRows=countTransferRows(transferText);
+    if(transferRows<=1){
+      throw new Error("転記TSVに実データがありません。スマホ転記画面へ戻り、転記TSVをもう一度コピーしてください。");
+    }
     window.__TNX_TRANSFER_TSV__=transferText;
 
-    const clipboard=navigator.clipboard;
-    const originalReadText=clipboard?.readText?.bind(clipboard);
-    let overridden=false;
-    if(clipboard){
-      try{
-        Object.defineProperty(clipboard,"readText",{configurable:true,value:async()=>window.__TNX_TRANSFER_TSV__});
-        overridden=true;
-      }catch{
-        try{clipboard.readText=async()=>window.__TNX_TRANSFER_TSV__;overridden=true}catch{}
-      }
-    }
+    const restoreClipboard=installClipboardBridge();
+    try{
+      await load("https://cdn.jsdelivr.net/gh/inarin14311431/tnx_cast_list@893d5243ca5dedd2f525f23d6a4536f96d9fd772/js/tnx-transfer-bookmarklet.js");
+      await load(localResource("tnx-transfer-bookmarklet-fixes.js"));
+      await load(localResource("tnx-transfer-common.js"));
+      await load(localResource("tnx-transfer-social-connection.js"));
+      await load(localResource("tnx-transfer-style-skills.js"));
+      await load(localResource("tnx-transfer-general-skills.js"));
+      await load(localResource("tnx-transfer-handle-repair.js"));
 
-    await load("https://cdn.jsdelivr.net/gh/inarin14311431/tnx_cast_list@893d5243ca5dedd2f525f23d6a4536f96d9fd772/js/tnx-transfer-bookmarklet.js");
-    await load(localResource("tnx-transfer-bookmarklet-fixes.js"));
-    await load(localResource("tnx-transfer-common.js"));
-    await load(localResource("tnx-transfer-social-connection.js"));
-    await load(localResource("tnx-transfer-style-skills.js"));
-    await load(localResource("tnx-transfer-general-skills.js"));
-
-    startResponsibilityRepairs(window.TNXTransferRepairCommon.parse(window.__TNX_TRANSFER_TSV__));
-
-    if(overridden&&clipboard&&originalReadText){
-      window.setTimeout(()=>{
-        try{Object.defineProperty(clipboard,"readText",{configurable:true,value:originalReadText})}catch{}
-      },20000);
+      startResponsibilityRepairs(window.TNXTransferRepairCommon.parse(window.__TNX_TRANSFER_TSV__));
+    }finally{
+      window.setTimeout(restoreClipboard,20000);
     }
   }catch(error){
     console.error("TNX transfer loader failed",error);
