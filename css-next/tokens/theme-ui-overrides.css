@@ -1,6 +1,16 @@
 /* Theme-specific UI token refinements. Section colors intentionally remain fixed. */
 :root {
   --color-panel: var(--color-surface);
+  /* Readability tokens shared by every theme. Keep secondary text visibly subordinate without relying on transparency. */
+  --color-text-muted: color-mix(in srgb, var(--color-muted) 82%, var(--color-text));
+  --color-placeholder: color-mix(in srgb, var(--color-muted) 86%, var(--color-text));
+  /* Dark themes use dark foregrounds on their intentionally vivid accent fills. */
+  --color-on-accent: var(--color-bg);
+}
+
+/* Light themes use dark accent fills, so their readable foreground is the light surface. */
+:root:is([data-theme="intron"], [data-theme="orbital"]) {
+  --color-on-accent: var(--color-surface);
 }
 
 :root:not([data-theme="intron"]):not([data-theme="orbital"]):not([data-theme="japanese-army"]) {

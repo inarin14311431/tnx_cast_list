@@ -1,0 +1,53 @@
+/* Cross-theme contrast guardrails.
+   Keep foreground readability semantic so individual theme accents remain decorative rather than becoming text dependencies. */
+
+/* Selection and filled interactive states must use a foreground chosen for the theme's accent polarity. */
+::selection {
+  color: var(--color-on-accent);
+}
+
+button:is(:hover, :focus-visible),
+.account-actions a:is(:hover, :focus-visible),
+.owned-cast__links a:is(:hover, :focus-visible) {
+  color: var(--color-on-accent);
+}
+
+.cocofolia-copy-button:is(:hover, :focus-visible),
+.udonarium-export-button:is(:hover, :focus-visible),
+.transfer-tsv-copy-button:is(:hover, :focus-visible),
+.transfer-bookmarklet-copy-button:is(:hover, :focus-visible) {
+  color: var(--color-on-accent);
+}
+
+/* Secondary copy stays subordinate through color, never through transparency alone. */
+button small,
+.account-actions small,
+.owned-cast__links small,
+.action-label__en,
+.account-cast-control > span small,
+.owned-cast__management-label,
+.owned-cast__management-label small {
+  color: var(--color-text-muted);
+  opacity: 1;
+}
+
+/* When the control itself changes foreground, its secondary label follows it exactly. */
+button:is(:hover, :focus-visible) small,
+.account-actions a:is(:hover, :focus-visible) small,
+.owned-cast__links a:is(:hover, :focus-visible) small,
+.cocofolia-copy-button:is(:hover, :focus-visible) small,
+.udonarium-export-button:is(:hover, :focus-visible) small,
+.transfer-tsv-copy-button:is(:hover, :focus-visible) small,
+.transfer-bookmarklet-copy-button:is(:hover, :focus-visible) small {
+  color: inherit;
+  opacity: 1;
+}
+
+/* Account cast actions use tinted hover surfaces rather than a solid accent fill.
+   Their primary foreground is supplied by account-action-hierarchy.css; make the EN sublabel inherit it. */
+body[data-page="account.html"] .owned-cast
+:is(.owned-cast__links > a, .owned-cast__management > a):is(:hover, :focus-visible)
+.action-label__en {
+  color: inherit;
+  opacity: 1;
+}
