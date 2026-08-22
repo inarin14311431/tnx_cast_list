@@ -3,6 +3,9 @@ import { requireAuth } from "./auth-state.js?v=4";
 
 const user = await requireAuth();
 const message = document.querySelector("#backup-message");
+const MAX_BACKUP_BYTES = 10 * 1024 * 1024;
+const MAX_CASTS = 500;
+const MAX_RELATED_ROWS = 500;
 
 if (user) {
   document.querySelector("#export-button")?.addEventListener("click", exportBackup);
@@ -49,17 +52,16 @@ async function exportBackup() {
 async function importBackup() {
   const file = document.querySelector("#import-file")?.files?.[0];
   if (!file) return setMessage("JSONファイルを選択してください。", "error");
+  if (file.size > MAX_BACKUP_BYTES) return setMessage("インポートに失敗しました：バックアップファイルは10MB以下にしてください。", "error");
 
   try {
     const payload = JSON.parse(await file.text());
-    if (!payload || !Array.isArray(payload.casts)) {
-      throw new Error("バックアップ形式が正しくありません。");
-    }
+    validateBackupPayload(payload);
 
     let imported = 0;
 
     for (const pack of payload.casts) {
-      const character = { ...(pack.character ?? {}) };
+      const character = { ...pack.character };
       delete character.id;
       delete character.public_id;
       delete character.created_at;
@@ -76,10 +78,11 @@ async function importBackup() {
       if (error) throw error;
 
       for (const [key, table] of [["skills", "character_skills"], ["outfits", "character_outfits"], ["combos", "character_combos"]]) {
-        const rows = (pack[key] ?? []).map(source => {
+        const rows = pack[key].map(source => {
           const row = { ...source, character_id: created.id };
           delete row.id;
           delete row.created_at;
+          delete row.updated_at;
           return row;
         });
 
@@ -97,6 +100,31 @@ async function importBackup() {
     console.error(error);
     setMessage(error?.message ? `インポートに失敗しました：${error.message}` : "インポートに失敗しました。", "error");
   }
+}
+
+function validateBackupPayload(payload) {
+  if (!payload || typeof payload !== "object" || Array.isArray(payload) || !Array.isArray(payload.casts)) {
+    throw new Error("バックアップ形式が正しくありません。");
+  }
+  if (payload.version != null && payload.version !== 1) {
+    throw new Error("未対応のバックアップバージョンです。");
+  }
+  if (payload.casts.length > MAX_CASTS) {
+    throw new Error(`一度にインポートできるキャストは${MAX_CASTS}件までです。`);
+  }
+
+  payload.casts.forEach((pack, index) => {
+    if (!pack || typeof pack !== "object" || Array.isArray(pack)) throw new Error(`${index + 1}件目のキャスト形式が正しくありません。`);
+    if (!pack.character || typeof pack.character !== "object" || Array.isArray(pack.character)) throw new Error(`${index + 1}件目のキャスト本体が正しくありません。`);
+    if (!String(pack.character.character_name ?? "").trim()) throw new Error(`${index + 1}件目のキャスト名がありません。`);
+
+    for (const key of ["skills", "outfits", "combos"]) {
+      if (pack[key] == null) pack[key] = [];
+      if (!Array.isArray(pack[key])) throw new Error(`${index + 1}件目の${key}形式が正しくありません。`);
+      if (pack[key].length > MAX_RELATED_ROWS) throw new Error(`${index + 1}件目の${key}件数が上限を超えています。`);
+      if (pack[key].some(row => !row || typeof row !== "object" || Array.isArray(row))) throw new Error(`${index + 1}件目の${key}データが正しくありません。`);
+    }
+  });
 }
 
 function setMessage(text, type) {
