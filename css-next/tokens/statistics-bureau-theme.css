@@ -1,0 +1,46 @@
+:root[data-theme="statistics-bureau"] {
+  color-scheme: light;
+  --color-bg: #e7edf0;
+  --color-surface: #f8fbfc;
+  --color-surface-alt: #dce7eb;
+  --color-field: #ffffff;
+  --color-text: #172831;
+  --color-muted: #5e7078;
+  --color-placeholder: #74868e;
+  --color-accent: #176b78;
+  --color-accent-strong: #0e5965;
+  --color-danger: #9c3945;
+  --color-success: #2f7258;
+  --color-warning: #7e641d;
+  --color-feature: #345f8d;
+  --color-border: #78949e;
+  --color-border-muted: #a8b9bf;
+  --color-overlay: rgb(20 38 48 / 42%);
+  --color-section-profile: #176b78;
+  --color-section-styles: #496982;
+  --color-section-ability: #2f7180;
+  --color-section-skills: #3a745f;
+  --color-section-style-skills: #596792;
+  --color-section-outfits: #76647f;
+  --color-style-persona: #315f82;
+  --color-style-key: #176b78;
+  --color-style-dual: #3d6886;
+  --theme-body-bg:
+    linear-gradient(90deg, rgb(23 107 120 / 4%) 1px, transparent 1px),
+    linear-gradient(180deg, rgb(23 107 120 / 4%) 1px, transparent 1px),
+    linear-gradient(180deg, #eef3f5, #dfe8eb 65%, #d8e2e6);
+  --theme-panel-bg: linear-gradient(180deg, rgb(255 255 255 / 98%), rgb(239 245 247 / 98%));
+}
+
+:root[data-theme="statistics-bureau"] body { background-size: 28px 28px, 28px 28px, auto; }
+:root[data-theme="statistics-bureau"] .scanlines { opacity: .035; }
+:root[data-theme="statistics-bureau"] .background-grid { opacity: .12; }
+:root[data-theme="statistics-bureau"] .site-header,
+:root[data-theme="statistics-bureau"] .app-header { border-bottom-color: #78949e; background: linear-gradient(180deg, rgb(248 251 252 / 97%), rgb(225 235 239 / 95%)); box-shadow: 0 8px 22px rgb(23 40 49 / 10%); }
+:root[data-theme="statistics-bureau"] .site-header__system::before { content: "GOVERNMENT STATISTICS BUREAU // "; color: var(--color-accent); }
+.statistics-bureau-entry { display: none; }
+:root[data-theme="statistics-bureau"] .statistics-bureau-entry { display: grid; place-items: center; min-height: 48px; padding: 8px 14px; border: 1px solid var(--color-accent); background: color-mix(in srgb, var(--color-accent) 8%, white); color: var(--color-accent-strong); text-align: center; text-decoration: none; font-weight: 900; letter-spacing: .04em; }
+:root[data-theme="statistics-bureau"] .statistics-bureau-entry small { display: block; margin-top: 2px; color: var(--color-muted); font-family: var(--font-data); font-size: 8px; letter-spacing: .1em; }
+:root[data-theme="statistics-bureau"] .cast-card,
+:root[data-theme="statistics-bureau"] .archive-controls,
+:root[data-theme="statistics-bureau"] .account-panel { box-shadow: 0 6px 18px rgb(23 40 49 / 8%); }
