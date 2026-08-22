@@ -5,6 +5,7 @@
  */
 @import url("./tokens/core.css?v=2");
 @import url("./tokens/themes.css?v=3");
+@import url("./tokens/statistics-bureau-theme.css?v=1");
 @import url("./tokens/theme-ui-overrides.css?v=2");
 @import url("./foundation/reset.css");
 @import url("./foundation/base.css?v=2");
