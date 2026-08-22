@@ -1,0 +1,210 @@
+body[data-page="mobile-transfer.html"] {
+  min-width: 0;
+}
+
+.mobile-transfer-header {
+  gap: 4px;
+}
+
+.mobile-transfer-header h1 {
+  margin-bottom: 0;
+}
+
+.mobile-transfer-layout {
+  display: grid;
+  gap: 12px;
+  width: min(760px, calc(100% - 20px));
+  margin: 16px auto 40px;
+}
+
+.mobile-transfer-intro,
+.mobile-transfer-step,
+.mobile-transfer-safety {
+  border: 1px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+  background: color-mix(in srgb, var(--color-panel) 94%, transparent);
+  box-shadow: 0 14px 30px rgb(0 0 0 / 14%);
+}
+
+.mobile-transfer-intro {
+  padding: 16px;
+}
+
+.mobile-transfer-intro__label,
+.mobile-transfer-step > header > span {
+  display: block;
+  margin-bottom: 4px;
+  color: var(--color-accent);
+  font-family: monospace;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.mobile-transfer-intro h2,
+.mobile-transfer-step h2,
+.mobile-transfer-safety h2 {
+  margin: 0;
+}
+
+.mobile-transfer-intro > p:not(.mobile-transfer-intro__label),
+.mobile-transfer-step > p,
+.mobile-transfer-safety p,
+.mobile-transfer-help p {
+  line-height: 1.7;
+}
+
+.mobile-transfer-cast-id {
+  margin: 12px 0 0;
+  padding: 8px 10px;
+  border-left: 3px solid var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, transparent);
+  font-family: monospace;
+  font-weight: 800;
+}
+
+.mobile-transfer-step > header {
+  padding: 12px 14px 10px;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-accent) 22%, transparent);
+  background: color-mix(in srgb, var(--color-accent) 6%, transparent);
+}
+
+.mobile-transfer-step > p,
+.mobile-transfer-step > details,
+.mobile-transfer-step > .mobile-transfer-actions {
+  margin-right: 14px;
+  margin-left: 14px;
+}
+
+.mobile-transfer-step > p {
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.mobile-transfer-actions {
+  display: grid;
+  gap: 8px;
+  margin-top: 12px;
+  margin-bottom: 14px;
+}
+
+.mobile-transfer-actions button,
+.mobile-transfer-open {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 54px;
+  padding: 9px 12px;
+  border: 1px solid var(--color-accent);
+  border-radius: 0;
+  background: color-mix(in srgb, var(--color-accent) 12%, var(--color-panel));
+  color: var(--color-text);
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.mobile-transfer-actions button:hover,
+.mobile-transfer-actions button:focus-visible,
+.mobile-transfer-open:hover,
+.mobile-transfer-open:focus-visible {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+}
+
+.mobile-transfer-actions button span,
+.mobile-transfer-open span {
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.mobile-transfer-actions button small,
+.mobile-transfer-open small {
+  margin-top: 2px;
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: .08em;
+}
+
+.mobile-transfer-actions button:disabled {
+  cursor: not-allowed;
+  opacity: .55;
+}
+
+.mobile-transfer-step details {
+  margin-top: 0;
+  margin-bottom: 14px;
+  border-top: 1px dashed color-mix(in srgb, var(--color-accent) 25%, transparent);
+  padding-top: 10px;
+}
+
+.mobile-transfer-step summary {
+  color: var(--color-accent);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.mobile-transfer-help {
+  padding: 2px 2px 0;
+}
+
+.mobile-transfer-note {
+  padding: 9px 10px;
+  border-left: 3px solid var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 7%, transparent);
+}
+
+.mobile-transfer-status {
+  min-height: 1.5em;
+  font-weight: 800;
+}
+
+.mobile-transfer-status[data-state="success"] {
+  color: var(--color-accent);
+}
+
+.mobile-transfer-status[data-state="error"] {
+  color: var(--color-danger, #ff6b6b);
+}
+
+.mobile-transfer-safety {
+  padding: 14px;
+  border-color: color-mix(in srgb, var(--color-text-muted) 30%, transparent);
+}
+
+.mobile-transfer-safety p {
+  margin-bottom: 0;
+  color: var(--color-text-muted);
+}
+
+.mobile-transfer-step code {
+  font-family: monospace;
+  color: var(--color-accent);
+}
+
+@media (max-width: 640px) {
+  .mobile-transfer-layout {
+    width: calc(100% - 12px);
+    margin-top: 8px;
+    gap: 8px;
+  }
+
+  .mobile-transfer-intro {
+    padding: 12px;
+  }
+
+  .mobile-transfer-intro h2,
+  .mobile-transfer-step h2 {
+    font-size: 17px;
+  }
+
+  .mobile-transfer-step > header {
+    padding: 10px;
+  }
+
+  .mobile-transfer-step > p,
+  .mobile-transfer-step > details,
+  .mobile-transfer-step > .mobile-transfer-actions {
+    margin-right: 10px;
+    margin-left: 10px;
+  }
+}
