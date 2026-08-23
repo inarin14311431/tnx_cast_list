@@ -1,8 +1,6 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const DEFAULT_ALLOWED_ORIGIN = "https://inarin14311431.github.io";
-const PRIMARY_ADMIN_USER_ID = "f44d74d1-5f09-425f-8de8-a7fb6b46ea79";
-const PRIMARY_ADMIN_EMAIL = "inarin1431@gmail.com";
 const CHARACTER_IMAGE_BUCKET = "character-images";
 const PAGE_SIZE = 200;
 const MAX_USERS = 5000;
@@ -28,20 +26,26 @@ Deno.serve(async request => {
   const corsHeaders = createCorsHeaders(origin);
 
   if (request.method === "OPTIONS") {
-    if (!isAllowedOrigin(origin)) return json({ error: "Origin is not allowed." }, 403, corsHeaders);
+    if (!isAllowedOrigin(origin)) {
+      return json({ error: "Origin is not allowed." }, 403, corsHeaders);
+    }
     return new Response("ok", { headers: corsHeaders });
   }
 
-  if (request.method !== "POST") return json({ error: "Method not allowed." }, 405, corsHeaders);
-  if (!isAllowedOrigin(origin)) return json({ error: "Origin is not allowed." }, 403, corsHeaders);
+  if (request.method !== "POST") {
+    return json({ error: "Method not allowed." }, 405, corsHeaders);
+  }
+  if (!isAllowedOrigin(origin)) {
+    return json({ error: "Origin is not allowed." }, 403, corsHeaders);
+  }
 
   try {
     const operator = await requireAuthenticatedUser(request);
-    if (!isPrimaryAdmin(operator)) throw new HttpError(403, "This operation is restricted to the primary administrator.");
+    const adminClient = createAdminClient();
+    await requireAdministrator(adminClient, operator.id);
 
     const body = await request.json().catch(() => ({})) as RequestBody;
     const action = typeof body.action === "string" ? body.action : "list";
-    const adminClient = createAdminClient();
 
     if (action === "list") {
       const users = await listAuthUsers(adminClient);
@@ -67,12 +71,53 @@ Deno.serve(async request => {
   }
 });
 
+async function requireAdministrator(client: AdminClient, userId: string) {
+  const { data, error } = await client
+    .from("app_administrators")
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    throw new HttpError(500, `管理者権限を確認できませんでした。${error.message}`);
+  }
+  if (!data) {
+    throw new HttpError(403, "This operation is restricted to an administrator.");
+  }
+}
+
+async function isAdministrator(client: AdminClient, userId: string) {
+  const { data, error } = await client
+    .from("app_administrators")
+    .select("user_id")
+    .eq("user_id", userId)
+    .maybeSingle();
+
+  if (error) {
+    throw new HttpError(500, `管理者権限を確認できませんでした。${error.message}`);
+  }
+  return Boolean(data);
+}
+
 async function listAuthUsers(client: AdminClient) {
-  const users: Array<{ id: string; email: string; createdAt: string | null; lastSignInAt: string | null }> = [];
+  const users: Array<{
+    id: string;
+    email: string;
+    createdAt: string | null;
+    lastSignInAt: string | null;
+  }> = [];
 
   for (let page = 1; users.length < MAX_USERS; page += 1) {
-    const { data, error } = await client.auth.admin.listUsers({ page, perPage: PAGE_SIZE });
-    if (error) throw new HttpError(500, `Supabase Authの登録者を取得できませんでした。${error.message}`);
+    const { data, error } = await client.auth.admin.listUsers({
+      page,
+      perPage: PAGE_SIZE
+    });
+    if (error) {
+      throw new HttpError(
+        500,
+        `Supabase Authの登録者を取得できませんでした。${error.message}`
+      );
+    }
 
     const pageUsers = data?.users ?? [];
     for (const account of pageUsers) {
@@ -90,34 +135,55 @@ async function listAuthUsers(client: AdminClient) {
     if (pageUsers.length < PAGE_SIZE) break;
   }
 
-  return users.sort((left, right) => left.email.localeCompare(right.email, "ja", { sensitivity: "base" }));
+  return users.sort((left, right) =>
+    left.email.localeCompare(right.email, "ja", { sensitivity: "base" })
+  );
 }
 
-async function deleteAuthUserCompletely(client: AdminClient, body: RequestBody, operator: AuthenticatedUser) {
+async function deleteAuthUserCompletely(
+  client: AdminClient,
+  body: RequestBody,
+  operator: AuthenticatedUser
+) {
   const targetUserId = typeof body.userId === "string" ? body.userId.trim() : "";
-  const expectedEmail = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+  const expectedEmail = typeof body.email === "string"
+    ? body.email.trim().toLowerCase()
+    : "";
 
-  if (!UUID_PATTERN.test(targetUserId)) throw new HttpError(400, "削除対象ユーザーIDの形式が正しくありません。");
-  if (targetUserId === operator.id || targetUserId === PRIMARY_ADMIN_USER_ID) {
-    throw new HttpError(403, "管理者本人のアカウントは削除できません。");
+  if (!UUID_PATTERN.test(targetUserId)) {
+    throw new HttpError(400, "削除対象ユーザーIDの形式が正しくありません。");
+  }
+  if (targetUserId === operator.id || await isAdministrator(client, targetUserId)) {
+    throw new HttpError(403, "管理者アカウントは削除できません。");
   }
 
-  const { data: targetResult, error: targetError } = await client.auth.admin.getUserById(targetUserId);
-  if (targetError || !targetResult?.user) throw new HttpError(404, "削除対象のAuthユーザーが見つかりません。");
+  const { data: targetResult, error: targetError } =
+    await client.auth.admin.getUserById(targetUserId);
+  if (targetError || !targetResult?.user) {
+    throw new HttpError(404, "削除対象のAuthユーザーが見つかりません。");
+  }
 
   const targetEmail = String(targetResult.user.email ?? "").trim();
-  if (!targetEmail) throw new HttpError(409, "削除対象ユーザーのメールアドレスを確認できません。");
-  if (targetEmail.toLowerCase() === PRIMARY_ADMIN_EMAIL) throw new HttpError(403, "管理者本人のアカウントは削除できません。");
+  if (!targetEmail) {
+    throw new HttpError(409, "削除対象ユーザーのメールアドレスを確認できません。");
+  }
   if (expectedEmail && expectedEmail !== targetEmail.toLowerCase()) {
-    throw new HttpError(409, "選択後にユーザー情報が変更されています。登録者一覧を再読み込みしてください。");
+    throw new HttpError(
+      409,
+      "選択後にユーザー情報が変更されています。登録者一覧を再読み込みしてください。"
+    );
   }
 
   const storageDeletedCount = await deleteUserStorage(client, targetUserId);
   const databaseResult = await deleteUserDatabaseRows(client, targetUserId);
 
-  const { error: deleteUserError } = await client.auth.admin.deleteUser(targetUserId, false);
+  const { error: deleteUserError } =
+    await client.auth.admin.deleteUser(targetUserId, false);
   if (deleteUserError) {
-    throw new HttpError(500, `関連データは削除されましたが、Authユーザー本体の削除に失敗しました。${deleteUserError.message}`);
+    throw new HttpError(
+      500,
+      `関連データは削除されましたが、Authユーザー本体の削除に失敗しました。${deleteUserError.message}`
+    );
   }
 
   console.info("Auth user completely deleted", {
@@ -141,9 +207,16 @@ async function deleteUserDatabaseRows(client: AdminClient, userId: string) {
     .from("characters")
     .select("id")
     .eq("owner_id", userId);
-  if (characterReadError) throw new HttpError(500, `所有キャストの確認に失敗しました。${characterReadError.message}`);
+  if (characterReadError) {
+    throw new HttpError(
+      500,
+      `所有キャストの確認に失敗しました。${characterReadError.message}`
+    );
+  }
 
-  const characterIds = (characterRows ?? []).map(row => String(row.id)).filter(Boolean);
+  const characterIds = (characterRows ?? [])
+    .map(row => String(row.id))
+    .filter(Boolean);
 
   if (characterIds.length) {
     await deleteByIds(client, "act_participants", "character_id", characterIds);
@@ -152,15 +225,37 @@ async function deleteUserDatabaseRows(client: AdminClient, userId: string) {
     await deleteByIds(client, "character_skills", "character_id", characterIds);
   }
 
-  const { error: characterDeleteError } = await client.from("characters").delete().eq("owner_id", userId);
-  if (characterDeleteError) throw new HttpError(500, `キャスト本体の削除に失敗しました。${characterDeleteError.message}`);
+  const { error: characterDeleteError } = await client
+    .from("characters")
+    .delete()
+    .eq("owner_id", userId);
+  if (characterDeleteError) {
+    throw new HttpError(
+      500,
+      `キャスト本体の削除に失敗しました。${characterDeleteError.message}`
+    );
+  }
 
-  const { error: actUpdateError } = await client.from("acts").update({ published_by: null }).eq("published_by", userId);
-  if (actUpdateError) throw new HttpError(500, `アクト公開者情報の解除に失敗しました。${actUpdateError.message}`);
+  const { error: actUpdateError } = await client
+    .from("acts")
+    .update({ published_by: null })
+    .eq("published_by", userId);
+  if (actUpdateError) {
+    throw new HttpError(
+      500,
+      `アクト公開者情報の解除に失敗しました。${actUpdateError.message}`
+    );
+  }
 
-  const { error: allowlistDeleteError } = await client.from("master_search_users").delete().eq("user_id", userId);
+  const { error: allowlistDeleteError } = await client
+    .from("master_search_users")
+    .delete()
+    .eq("user_id", userId);
   if (allowlistDeleteError && !isMissingRelationError(allowlistDeleteError)) {
-    throw new HttpError(500, `検索利用許可の削除に失敗しました。${allowlistDeleteError.message}`);
+    throw new HttpError(
+      500,
+      `検索利用許可の削除に失敗しました。${allowlistDeleteError.message}`
+    );
   }
 
   return { deletedCharacterCount: characterIds.length };
@@ -178,7 +273,10 @@ async function deleteByIds(
     const { error } = await client.from(table).delete().in(column, chunk);
     if (!error) continue;
     if (optional && isMissingRelationError(error)) return;
-    throw new HttpError(500, `${table}の関連データ削除に失敗しました。${error.message}`);
+    throw new HttpError(
+      500,
+      `${table}の関連データ削除に失敗しました。${error.message}`
+    );
   }
 }
 
@@ -194,23 +292,40 @@ async function deleteUserStorage(client: AdminClient, userId: string) {
 
   for (let index = 0; index < paths.length; index += 100) {
     const chunk = paths.slice(index, index + 100);
-    const { error } = await client.storage.from(CHARACTER_IMAGE_BUCKET).remove(chunk);
-    if (error) throw new HttpError(500, `キャスト画像の削除に失敗しました。${error.message}`);
+    const { error } = await client.storage
+      .from(CHARACTER_IMAGE_BUCKET)
+      .remove(chunk);
+    if (error) {
+      throw new HttpError(
+        500,
+        `キャスト画像の削除に失敗しました。${error.message}`
+      );
+    }
   }
   return paths.length;
 }
 
-async function collectStoragePaths(client: AdminClient, prefix: string): Promise<string[]> {
+async function collectStoragePaths(
+  client: AdminClient,
+  prefix: string
+): Promise<string[]> {
   const paths: string[] = [];
   let offset = 0;
 
   while (true) {
-    const { data, error } = await client.storage.from(CHARACTER_IMAGE_BUCKET).list(prefix, {
-      limit: STORAGE_PAGE_SIZE,
-      offset,
-      sortBy: { column: "name", order: "asc" }
-    });
-    if (error) throw new HttpError(500, `キャスト画像一覧の取得に失敗しました。${error.message}`);
+    const { data, error } = await client.storage
+      .from(CHARACTER_IMAGE_BUCKET)
+      .list(prefix, {
+        limit: STORAGE_PAGE_SIZE,
+        offset,
+        sortBy: { column: "name", order: "asc" }
+      });
+    if (error) {
+      throw new HttpError(
+        500,
+        `キャスト画像一覧の取得に失敗しました。${error.message}`
+      );
+    }
 
     const entries = data ?? [];
     for (const entry of entries) {
@@ -227,16 +342,28 @@ async function collectStoragePaths(client: AdminClient, prefix: string): Promise
 }
 
 function isMissingRelationError(error: { code?: string; message?: string }) {
-  return error.code === "42P01" || error.code === "PGRST205" || /does not exist|schema cache/i.test(String(error.message ?? ""));
+  return error.code === "42P01" ||
+    error.code === "PGRST205" ||
+    /does not exist|schema cache/i.test(String(error.message ?? ""));
 }
 
-async function requireAuthenticatedUser(request: Request): Promise<AuthenticatedUser> {
+async function requireAuthenticatedUser(
+  request: Request
+): Promise<AuthenticatedUser> {
   const authorization = request.headers.get("authorization") ?? "";
-  if (!authorization.toLowerCase().startsWith("bearer ")) throw new HttpError(401, "Authentication is required.");
+  if (!authorization.toLowerCase().startsWith("bearer ")) {
+    throw new HttpError(401, "Authentication is required.");
+  }
 
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
-  const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY") || Deno.env.get("SUPABASE_PUBLISHABLE_KEY");
-  if (!supabaseUrl || !supabaseKey) throw new HttpError(500, "Supabase authentication environment is incomplete.");
+  const supabaseKey = Deno.env.get("SUPABASE_ANON_KEY") ||
+    Deno.env.get("SUPABASE_PUBLISHABLE_KEY");
+  if (!supabaseUrl || !supabaseKey) {
+    throw new HttpError(
+      500,
+      "Supabase authentication environment is incomplete."
+    );
+  }
 
   const client = createClient(supabaseUrl, supabaseKey, {
     global: { headers: { Authorization: authorization } },
@@ -244,44 +371,62 @@ async function requireAuthenticatedUser(request: Request): Promise<Authenticated
   });
   const token = authorization.slice(7).trim();
   const { data: { user }, error } = await client.auth.getUser(token);
-  if (error || !user) throw new HttpError(401, "The login session is invalid or expired.");
+  if (error || !user) {
+    throw new HttpError(401, "The login session is invalid or expired.");
+  }
   return { id: user.id, email: user.email };
 }
 
 function createAdminClient(): AdminClient {
   const supabaseUrl = Deno.env.get("SUPABASE_URL");
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
-  if (!supabaseUrl || !serviceRoleKey) throw new HttpError(500, "Supabase service-role environment is incomplete.");
+  if (!supabaseUrl || !serviceRoleKey) {
+    throw new HttpError(
+      500,
+      "Supabase service-role environment is incomplete."
+    );
+  }
   return createClient(supabaseUrl, serviceRoleKey, {
     auth: { persistSession: false, autoRefreshToken: false }
   });
 }
 
-function isPrimaryAdmin(user: AuthenticatedUser) {
-  return user.id === PRIMARY_ADMIN_USER_ID && String(user.email ?? "").trim().toLowerCase() === PRIMARY_ADMIN_EMAIL;
-}
-
 function splitEnvironmentList(value: string | undefined) {
-  return String(value ?? "").split(/[\s,;]+/).map(item => item.trim()).filter(Boolean);
+  return String(value ?? "")
+    .split(/[\s,;]+/)
+    .map(item => item.trim())
+    .filter(Boolean);
 }
 
 function isAllowedOrigin(origin: string) {
   if (!origin) return true;
-  if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin)) return true;
-  const allowed = splitEnvironmentList(Deno.env.get("MASTER_DATA_ALLOWED_ORIGINS") || DEFAULT_ALLOWED_ORIGIN);
-  return allowed.some(value => origin === value || origin.startsWith(`${value.replace(/\/$/, "")}/`));
+  if (/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?$/i.test(origin)) {
+    return true;
+  }
+  const allowed = splitEnvironmentList(
+    Deno.env.get("MASTER_DATA_ALLOWED_ORIGINS") || DEFAULT_ALLOWED_ORIGIN
+  );
+  return allowed.some(value =>
+    origin === value || origin.startsWith(`${value.replace(/\/$/, "")}/`)
+  );
 }
 
 function createCorsHeaders(origin: string) {
   return {
-    "Access-Control-Allow-Origin": isAllowedOrigin(origin) && origin ? origin : DEFAULT_ALLOWED_ORIGIN,
-    "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+    "Access-Control-Allow-Origin":
+      isAllowedOrigin(origin) && origin ? origin : DEFAULT_ALLOWED_ORIGIN,
+    "Access-Control-Allow-Headers":
+      "authorization, x-client-info, apikey, content-type",
     "Access-Control-Allow-Methods": "POST, OPTIONS",
     "Vary": "Origin",
     "Content-Type": "application/json; charset=utf-8"
   };
 }
 
-function json(payload: unknown, status: number, headers: Record<string, string>) {
+function json(
+  payload: unknown,
+  status: number,
+  headers: Record<string, string>
+) {
   return new Response(JSON.stringify(payload), { status, headers });
 }

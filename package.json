@@ -1,0 +1,8 @@
+{
+  "name": "tnx-cast-list-production",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "audit:security": "node scripts/audit-security.mjs"
+  }
+}
