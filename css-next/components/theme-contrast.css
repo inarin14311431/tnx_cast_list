@@ -26,7 +26,11 @@ button small,
 .action-label__en,
 .account-cast-control > span small,
 .owned-cast__management-label,
-.owned-cast__management-label small {
+.owned-cast__management-label small,
+.section-toggle small,
+.exp-panel small,
+.sheet-section-nav > p,
+.sheet-section-nav small {
   color: var(--color-text-muted);
   opacity: 1;
 }
@@ -49,5 +53,20 @@ body[data-page="account.html"] .owned-cast
 :is(.owned-cast__links > a, .owned-cast__management > a):is(:hover, :focus-visible)
 .action-label__en {
   color: inherit;
+  opacity: 1;
+}
+
+/* Light themes are especially sensitive to opacity-based text fading.
+   Keep semantic secondary labels opaque and let --color-text-muted provide the hierarchy. */
+:root:is([data-theme="intron"], [data-theme="orbital"]) :is(
+  .auth-header small,
+  .app-header small,
+  .account-panel small,
+  .section-toggle small,
+  .exp-panel small,
+  .sheet-section-nav small,
+  .sheet-section-nav > p
+) {
+  color: var(--color-text-muted);
   opacity: 1;
 }

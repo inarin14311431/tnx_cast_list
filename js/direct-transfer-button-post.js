@@ -1,5 +1,6 @@
 (() => {
   const TRIGGER_SELECTOR = "[data-direct-transfer-trigger], #direct-transfer-button";
+  const MOBILE_TRIGGER_CLASS = "direct-transfer-button--mobile";
   let dialog = null;
 
   function resolvePublicId(trigger) {
@@ -8,11 +9,24 @@
     return new URLSearchParams(location.search).get("id")?.trim() || "";
   }
 
+  function isMobileBookmarkletTrigger(trigger) {
+    return trigger?.classList?.contains(MOBILE_TRIGGER_CLASS) === true;
+  }
+
   function syncTrigger(trigger) {
     if (!(trigger instanceof HTMLButtonElement)) return;
+
     const publicId = resolvePublicId(trigger);
     trigger.disabled = !publicId;
-    trigger.title = publicId ? "キャラクターシート倉庫へデータ転記" : "保存済みキャストで利用できます。";
+
+    if (!publicId) {
+      trigger.title = "保存済みキャストで利用できます。";
+      return;
+    }
+
+    trigger.title = isMobileBookmarkletTrigger(trigger)
+      ? "スマートフォン用BM方式でキャラクターシート倉庫へ転記"
+      : "キャラクターシート倉庫へデータ転記";
   }
 
   function syncTriggers(root = document) {
@@ -35,7 +49,10 @@
     dialog.innerHTML = `
       <div class="cast-transfer-dialog__shell">
         <header class="cast-transfer-dialog__header">
-          <div><span>CHARACTER SHEETS TRANSFER</span><strong id="cast-transfer-dialog-title">データ転記</strong></div>
+          <div>
+            <span>CHARACTER SHEETS TRANSFER</span>
+            <strong id="cast-transfer-dialog-title">データ転記</strong>
+          </div>
           <button type="button" class="cast-transfer-dialog__close" aria-label="データ転記を閉じる">×</button>
         </header>
         <iframe class="cast-transfer-dialog__frame" title="データ転記"></iframe>
@@ -43,6 +60,7 @@
     document.body.append(dialog);
 
     const frame = dialog.querySelector(".cast-transfer-dialog__frame");
+
     dialog.querySelector(".cast-transfer-dialog__close")?.addEventListener("click", () => dialog.close());
     dialog.addEventListener("click", event => {
       if (event.target === dialog) dialog.close();
@@ -55,24 +73,38 @@
       try {
         frame.contentDocument?.addEventListener("keydown", closeDialogOnEscape, true);
       } catch {
-        // Ignore cross-origin iframe content. Native dialog Escape remains available from the parent document.
+        // Cross-origin iframe content cannot be inspected. Parent dialog Escape remains available.
       }
     });
     dialog.addEventListener("close", () => {
       if (frame) frame.src = "about:blank";
     });
+
     return dialog;
+  }
+
+  function openPostTransfer(publicId) {
+    const modal = ensureDialog();
+    const frame = modal.querySelector(".cast-transfer-dialog__frame");
+
+    if (frame) {
+      frame.src = `./transfer.html?embed=1&id=${encodeURIComponent(publicId)}`;
+    }
+
+    if (typeof modal.showModal === "function") modal.showModal();
+    else modal.setAttribute("open", "");
   }
 
   function openTransfer(trigger) {
     const publicId = resolvePublicId(trigger);
     if (!publicId) return;
 
-    const modal = ensureDialog();
-    const frame = modal.querySelector(".cast-transfer-dialog__frame");
-    if (frame) frame.src = `./transfer.html?embed=1&id=${encodeURIComponent(publicId)}`;
-    if (typeof modal.showModal === "function") modal.showModal();
-    else modal.setAttribute("open", "");
+    if (isMobileBookmarkletTrigger(trigger)) {
+      location.href = `./mobile-transfer.html?id=${encodeURIComponent(publicId)}`;
+      return;
+    }
+
+    openPostTransfer(publicId);
   }
 
   document.addEventListener("keydown", closeDialogOnEscape, true);

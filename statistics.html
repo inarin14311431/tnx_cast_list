@@ -10,28 +10,111 @@
   <title>行政府統計局 // N◎VA MUNICIPAL DATABASE</title>
 </head>
 <body data-page="statistics.html" data-theme-override="statistics-bureau">
-  <div class="background-grid"></div><div class="scanlines"></div>
-  <header class="statistics-header app-header"><a class="app-back-link" href="./index.html"><span>&lt; キャスト一覧へ</span><small>RETURN TO ARCHIVE</small></a><p>N◎VA MUNICIPAL GOVERNMENT</p><h1>行政府統計局 <small>GOVERNMENT STATISTICS BUREAU</small></h1></header>
+  <div class="background-grid"></div>
+  <div class="scanlines"></div>
+
+  <header class="statistics-header app-header">
+    <a class="app-back-link" href="./index.html">
+      <span>&lt; キャスト一覧へ</span>
+      <small>RETURN TO ARCHIVE</small>
+    </a>
+    <p>N◎VA MUNICIPAL GOVERNMENT</p>
+    <h1>行政府統計局 <small>GOVERNMENT STATISTICS BUREAU</small></h1>
+  </header>
+
   <main class="statistics-layout">
-    <section class="statistics-intro"><div><p class="statistics-kicker">PUBLIC CAST DATABASE / STATISTICAL REPORT</p><h2>公開キャスト統計</h2><p>CAST ARCHIVEで公開されているキャスト情報を集計しています。非公開キャストは統計に含みません。</p></div><div class="statistics-report-meta"><span>REPORT STATUS</span><strong id="statistics-status">集計中…</strong><small id="statistics-generated-at"></small></div></section>
-    <section class="statistics-summary" aria-label="概要統計"><article class="statistics-card statistics-card--primary"><span>公開キャスト</span><strong id="stat-total-casts">—</strong><small>PUBLIC CASTS</small></article><article class="statistics-card"><span>プレイヤー</span><strong id="stat-players">—</strong><small>REGISTERED PLAYERS</small></article><article class="statistics-card"><span>所属組織</span><strong id="stat-affiliations">—</strong><small>AFFILIATIONS</small></article><article class="statistics-card"><span>平均経験点</span><strong id="stat-average-exp">—</strong><small>AVERAGE EXP</small></article><article class="statistics-card"><span>30日以内更新</span><strong id="stat-recent">—</strong><small>UPDATED / 30 DAYS</small></article></section>
-    <section class="statistics-grid">
-      <article class="statistics-panel statistics-panel--wide"><header><div><p class="statistics-kicker">STYLE REGISTRY</p><h2>スタイル採用数</h2></div><span>延べ採用数</span></header><div id="statistics-styles" class="statistics-ranking"></div></article>
-      <article class="statistics-panel statistics-panel--spotlight"><header><div><p class="statistics-kicker">SKILL TOP 10</p><h2>一般技能ランキング</h2></div><span>技能レベル合計</span></header><div id="statistics-general-skills" class="statistics-podium"></div></article>
-      <article class="statistics-panel statistics-panel--spotlight"><header><div><p class="statistics-kicker">STYLE SKILL TOP 10</p><h2>スタイル技能ランキング</h2></div><span>取得キャスト数</span></header><div id="statistics-style-skills" class="statistics-podium statistics-podium--violet"></div></article>
-      <article class="statistics-panel"><header><div><p class="statistics-kicker">ABILITY AVERAGES</p><h2>平均能力値</h2></div><span>公開キャスト平均</span></header><div id="statistics-abilities" class="statistics-radar"></div></article>
-      <article class="statistics-panel"><header><div><p class="statistics-kicker">CONTROL AVERAGES</p><h2>平均制御値</h2></div><span>公開キャスト平均</span></header><div id="statistics-controls" class="statistics-meter-grid"></div></article>
-      <article class="statistics-panel"><header><div><p class="statistics-kicker">CS DISTRIBUTION</p><h2>CS分布</h2></div><span>キャスト数</span></header><div id="statistics-cs" class="statistics-histogram"></div></article>
-      <article class="statistics-panel"><header><div><p class="statistics-kicker">OUTFIT MIX</p><h2>アウトフィット構成</h2></div><span>カテゴリ比率</span></header><div id="statistics-outfit-mix" class="statistics-donut-wrap"></div></article>
-      <article class="statistics-panel statistics-panel--wide"><header><div><p class="statistics-kicker">COMBINATION ANALYSIS</p><h2>スタイル組み合わせ</h2></div><span>上位12組</span></header><div id="statistics-style-combos" class="statistics-tile-grid"></div></article>
-      <article class="statistics-panel"><header><div><p class="statistics-kicker">CITIZEN STATUS</p><h2>市民ランク</h2></div></header><div id="statistics-ranks" class="statistics-ranking statistics-ranking--compact"></div></article>
-      <article class="statistics-panel"><header><div><p class="statistics-kicker">EXPERIENCE DISTRIBUTION</p><h2>経験点分布</h2></div></header><div id="statistics-exp" class="statistics-ranking statistics-ranking--compact"></div></article>
-      <article class="statistics-panel statistics-panel--wide"><header><div><p class="statistics-kicker">AFFILIATION DIRECTORY</p><h2>所属組織</h2></div><span>上位12件</span></header><div id="statistics-affiliation-ranking" class="statistics-ranking statistics-ranking--two-column"></div></article>
-      <article class="statistics-panel statistics-panel--wide statistics-panel--oddity"><header><div><p class="statistics-kicker">TODAY'S USELESS STATISTICS</p><h2>本日の無意味統計</h2></div><span>DBにあるので計算しました</span></header><div id="statistics-oddities" class="statistics-oddities"></div></article>
+    <section class="statistics-intro">
+      <div>
+        <p class="statistics-kicker">PUBLIC CAST DATABASE / STATISTICAL REPORT</p>
+        <h2>公開キャスト統計</h2>
+        <p>CAST ARCHIVEで公開されているキャスト情報を集計しています。非公開キャストは統計に含みません。</p>
+      </div>
+      <div class="statistics-report-meta">
+        <span>REPORT STATUS</span>
+        <strong id="statistics-status">集計中…</strong>
+        <small id="statistics-generated-at"></small>
+      </div>
     </section>
-    <aside class="statistics-note"><strong>統計上の注意</strong><p>同じスタイルを複数枠で取得している場合はそれぞれ1件として集計します。一般技能ランキングは各技能のSLを合計して順位付けします。スタイル技能ランキングは同一キャスト内の同名技能を1件として扱い、所属・市民ランク・技能名・アウトフィット名は登録文字列を基準に集計します。</p></aside>
+
+    <section class="statistics-summary" aria-label="概要統計">
+      <article class="statistics-card statistics-card--primary"><span>公開キャスト</span><strong id="stat-total-casts">—</strong><small>PUBLIC CASTS</small></article>
+      <article class="statistics-card"><span>プレイヤー</span><strong id="stat-players">—</strong><small>REGISTERED PLAYERS</small></article>
+      <article class="statistics-card"><span>所属組織</span><strong id="stat-affiliations">—</strong><small>AFFILIATIONS</small></article>
+      <article class="statistics-card"><span>平均経験点</span><strong id="stat-average-exp">—</strong><small>AVERAGE EXP</small></article>
+      <article class="statistics-card"><span>30日以内更新</span><strong id="stat-recent">—</strong><small>UPDATED / 30 DAYS</small></article>
+    </section>
+
+    <section class="statistics-grid">
+      <article class="statistics-panel statistics-panel--wide">
+        <header><div><p class="statistics-kicker">STYLE REGISTRY</p><h2>スタイル採用数</h2></div><span>延べ採用数</span></header>
+        <div id="statistics-styles" class="statistics-ranking"></div>
+      </article>
+
+      <article class="statistics-panel statistics-panel--spotlight">
+        <header><div><p class="statistics-kicker">SKILL TOP 10</p><h2>一般技能ランキング</h2></div><span>技能レベル合計</span></header>
+        <div id="statistics-general-skills" class="statistics-podium"></div>
+      </article>
+
+      <article class="statistics-panel statistics-panel--spotlight">
+        <header><div><p class="statistics-kicker">STYLE SKILL TOP 10</p><h2>スタイル技能ランキング</h2></div><span>取得キャスト数</span></header>
+        <div id="statistics-style-skills" class="statistics-podium statistics-podium--violet"></div>
+      </article>
+
+      <article class="statistics-panel">
+        <header><div><p class="statistics-kicker">ABILITY AVERAGES</p><h2>平均能力値</h2></div><span>公開キャスト平均</span></header>
+        <div id="statistics-abilities" class="statistics-radar"></div>
+      </article>
+
+      <article class="statistics-panel">
+        <header><div><p class="statistics-kicker">CONTROL AVERAGES</p><h2>平均制御値</h2></div><span>公開キャスト平均</span></header>
+        <div id="statistics-controls" class="statistics-meter-grid"></div>
+      </article>
+
+      <article class="statistics-panel">
+        <header><div><p class="statistics-kicker">CS DISTRIBUTION</p><h2>CS分布</h2></div><span>キャスト数</span></header>
+        <div id="statistics-cs" class="statistics-histogram"></div>
+      </article>
+
+      <article class="statistics-panel">
+        <header><div><p class="statistics-kicker">OUTFIT MIX</p><h2>アウトフィット構成</h2></div><span>カテゴリ比率</span></header>
+        <div id="statistics-outfit-mix" class="statistics-donut-wrap"></div>
+      </article>
+
+      <article class="statistics-panel statistics-panel--wide">
+        <header><div><p class="statistics-kicker">COMBINATION ANALYSIS</p><h2>スタイル組み合わせ</h2></div><span>上位12組</span></header>
+        <div id="statistics-style-combos" class="statistics-tile-grid"></div>
+      </article>
+
+      <article class="statistics-panel">
+        <header><div><p class="statistics-kicker">CITIZEN STATUS</p><h2>市民ランク</h2></div></header>
+        <div id="statistics-ranks" class="statistics-ranking statistics-ranking--compact"></div>
+      </article>
+
+      <article class="statistics-panel">
+        <header><div><p class="statistics-kicker">EXPERIENCE DISTRIBUTION</p><h2>経験点分布</h2></div></header>
+        <div id="statistics-exp" class="statistics-ranking statistics-ranking--compact"></div>
+      </article>
+
+      <article class="statistics-panel statistics-panel--wide">
+        <header><div><p class="statistics-kicker">AFFILIATION DIRECTORY</p><h2>所属組織</h2></div><span>上位12件</span></header>
+        <div id="statistics-affiliation-ranking" class="statistics-ranking statistics-ranking--two-column"></div>
+      </article>
+
+      <article class="statistics-panel statistics-panel--wide statistics-panel--oddity">
+        <header><div><p class="statistics-kicker">TODAY'S USELESS STATISTICS</p><h2>本日の無意味統計</h2></div><span>DBにあるので計算しました</span></header>
+        <div id="statistics-oddities" class="statistics-oddities"></div>
+      </article>
+    </section>
+
+    <aside class="statistics-note">
+      <strong>統計上の注意</strong>
+      <p>同じスタイルを複数枠で取得している場合はそれぞれ1件として集計します。一般技能ランキングは各技能のSLを合計して順位付けします。スタイル技能ランキングは同一キャスト内の同名技能を1件として扱い、所属・市民ランク・技能名・アウトフィット名は登録文字列を基準に集計します。</p>
+    </aside>
+
     <section id="statistics-error" class="statistics-error" hidden></section>
   </main>
-  <script type="module" src="./js/statistics.js?v=2"></script><script type="module" src="./js/statistics-general-level.js?v=2"></script>
+
+  <script type="module" src="./js/statistics.js?v=2"></script>
+  <script type="module" src="./js/statistics-general-level.js?v=2"></script>
 </body>
 </html>

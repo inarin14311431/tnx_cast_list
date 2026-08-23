@@ -32,15 +32,59 @@
   --theme-panel-bg: linear-gradient(180deg, rgb(255 255 255 / 98%), rgb(239 245 247 / 98%));
 }
 
-:root[data-theme="statistics-bureau"] body { background-size: 28px 28px, 28px 28px, auto; }
-:root[data-theme="statistics-bureau"] .scanlines { opacity: .035; }
-:root[data-theme="statistics-bureau"] .background-grid { opacity: .12; }
+:root[data-theme="statistics-bureau"] body {
+  background-size: 28px 28px, 28px 28px, auto;
+}
+
+:root[data-theme="statistics-bureau"] .scanlines {
+  opacity: .035;
+}
+
+:root[data-theme="statistics-bureau"] .background-grid {
+  opacity: .12;
+}
+
 :root[data-theme="statistics-bureau"] .site-header,
-:root[data-theme="statistics-bureau"] .app-header { border-bottom-color: #78949e; background: linear-gradient(180deg, rgb(248 251 252 / 97%), rgb(225 235 239 / 95%)); box-shadow: 0 8px 22px rgb(23 40 49 / 10%); }
-:root[data-theme="statistics-bureau"] .site-header__system::before { content: "GOVERNMENT STATISTICS BUREAU // "; color: var(--color-accent); }
-.statistics-bureau-entry { display: none; }
-:root[data-theme="statistics-bureau"] .statistics-bureau-entry { display: grid; place-items: center; min-height: 48px; padding: 8px 14px; border: 1px solid var(--color-accent); background: color-mix(in srgb, var(--color-accent) 8%, white); color: var(--color-accent-strong); text-align: center; text-decoration: none; font-weight: 900; letter-spacing: .04em; }
-:root[data-theme="statistics-bureau"] .statistics-bureau-entry small { display: block; margin-top: 2px; color: var(--color-muted); font-family: var(--font-data); font-size: 8px; letter-spacing: .1em; }
+:root[data-theme="statistics-bureau"] .app-header {
+  border-bottom-color: #78949e;
+  background: linear-gradient(180deg, rgb(248 251 252 / 97%), rgb(225 235 239 / 95%));
+  box-shadow: 0 8px 22px rgb(23 40 49 / 10%);
+}
+
+:root[data-theme="statistics-bureau"] .site-header__system::before {
+  content: "GOVERNMENT STATISTICS BUREAU // ";
+  color: var(--color-accent);
+}
+
+.statistics-bureau-entry {
+  display: none;
+}
+
+:root[data-theme="statistics-bureau"] .statistics-bureau-entry {
+  display: grid;
+  place-items: center;
+  min-height: 48px;
+  padding: 8px 14px;
+  border: 1px solid var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, white);
+  color: var(--color-accent-strong);
+  text-align: center;
+  text-decoration: none;
+  font-weight: 900;
+  letter-spacing: .04em;
+}
+
+:root[data-theme="statistics-bureau"] .statistics-bureau-entry small {
+  display: block;
+  margin-top: 2px;
+  color: var(--color-muted);
+  font-family: var(--font-data);
+  font-size: 8px;
+  letter-spacing: .1em;
+}
+
 :root[data-theme="statistics-bureau"] .cast-card,
 :root[data-theme="statistics-bureau"] .archive-controls,
-:root[data-theme="statistics-bureau"] .account-panel { box-shadow: 0 6px 18px rgb(23 40 49 / 8%); }
+:root[data-theme="statistics-bureau"] .account-panel {
+  box-shadow: 0 6px 18px rgb(23 40 49 / 8%);
+}

@@ -1,0 +1,75 @@
+/* Mobile cast-view readability pass.
+ * Keep the dense archive presentation, but do not rely on 6-9px text for gameplay data.
+ */
+body.is-mobile-cast-view .mobile-cast-topbar { font-size: 11px; }
+body.is-mobile-cast-view .mobile-cast-topbar > span { font-size: 10px; }
+body.is-mobile-cast-view .mobile-cast-footer { font-size: 10px; }
+body.is-mobile-cast-view .mobile-cast-handle { font-size: 11px; }
+body.is-mobile-cast-view .mobile-cast-kana { font-size: 10px; }
+body.is-mobile-cast-view .mobile-cast-styles span { font-size: 10px; }
+body.is-mobile-cast-view .mobile-cast-meta > div { padding: 5px 6px; }
+body.is-mobile-cast-view .mobile-cast-meta dt { font-size: 9px; }
+body.is-mobile-cast-view .mobile-cast-meta dd { font-size: 11px; line-height: 1.3; }
+body.is-mobile-cast-view .mobile-cast-divines article { padding: 6px 7px; }
+body.is-mobile-cast-view .mobile-cast-divines span { font-size: 9px; }
+body.is-mobile-cast-view .mobile-cast-divines strong { font-size: 11px; }
+body.is-mobile-cast-view .mobile-cast-summary,
+body.is-mobile-cast-view .mobile-cast-profile-text { font-size: 11px; line-height: 1.55; }
+body.is-mobile-cast-view .mobile-cast-section__title { padding: 7px 9px; }
+body.is-mobile-cast-view .mobile-cast-section__title h2 { font-size: 13px; }
+body.is-mobile-cast-view .mobile-cast-section__title small { font-size: 9px; }
+body.is-mobile-cast-view .mobile-cast-abilities article { padding: 5px 2px; }
+body.is-mobile-cast-view .mobile-cast-abilities header { font-size: 10px; }
+body.is-mobile-cast-view .mobile-cast-abilities header b { font-size: 13px; }
+body.is-mobile-cast-view .mobile-cast-abilities span { font-size: 9px; }
+body.is-mobile-cast-view .mobile-cast-abilities strong { font-size: 13px; }
+body.is-mobile-cast-view .mobile-cast-profile-grid > div { grid-template-columns: 44px minmax(0, 1fr); gap: 5px; padding: 5px; }
+body.is-mobile-cast-view .mobile-cast-profile-grid dt,
+body.is-mobile-cast-view .mobile-cast-lifepath span { font-size: 9px; }
+body.is-mobile-cast-view .mobile-cast-profile-grid dd,
+body.is-mobile-cast-view .mobile-cast-lifepath p { font-size: 11px; line-height: 1.35; }
+body.is-mobile-cast-view .mobile-skill-row { min-height: 28px; padding: 4px 5px; }
+body.is-mobile-cast-view .mobile-skill-row > strong { font-size: 11px; }
+body.is-mobile-cast-view .mobile-skill-row > b { font-size: 10px; }
+body.is-mobile-cast-view .mobile-suits { grid-template-columns: repeat(4, 18px); }
+body.is-mobile-cast-view .mobile-suits span { width: 18px; height: 18px; font-size: 11px; }
+body.is-mobile-cast-view .mobile-style-row { min-height: 32px; padding: 4px 5px; }
+body.is-mobile-cast-view .mobile-style-row > strong { font-size: 11px; }
+body.is-mobile-cast-view .mobile-style-row > b { font-size: 10px; }
+body.is-mobile-cast-view .mobile-style-row .mobile-suits { grid-template-columns: repeat(4, 17px); }
+body.is-mobile-cast-view .mobile-style-row .mobile-suits span { width: 17px; height: 17px; font-size: 10px; }
+body.is-mobile-cast-view .mobile-style-row__facts span { font-size: 9.5px; }
+body.is-mobile-cast-view .mobile-style-row__facts i,
+body.is-mobile-cast-view .mobile-outfit-card__facts i { font-size: 9px; }
+body.is-mobile-cast-view .mobile-style-row > p { font-size: 10px; line-height: 1.45; }
+body.is-mobile-cast-view .mobile-style-separator { padding: 6px 7px; font-size: 11px; }
+body.is-mobile-cast-view .mobile-armor-total { padding: 7px 9px; }
+body.is-mobile-cast-view .mobile-armor-total span { font-size: 10px; }
+body.is-mobile-cast-view .mobile-armor-total strong { font-size: 14px; }
+body.is-mobile-cast-view .mobile-outfit-group > header { padding: 7px 2px 4px; }
+body.is-mobile-cast-view .mobile-outfit-group h3 { font-size: 12px; }
+body.is-mobile-cast-view .mobile-outfit-group small { font-size: 9px; }
+body.is-mobile-cast-view .mobile-outfit-card { min-height: 34px; padding: 5px 6px; }
+body.is-mobile-cast-view .mobile-outfit-card > strong { font-size: 11px; }
+body.is-mobile-cast-view .mobile-outfit-card__facts span { font-size: 10px; }
+body.is-mobile-cast-view .mobile-outfit-card > p { max-height: 3em; font-size: 10px; line-height: 1.45; }
+body.is-mobile-cast-view .mobile-combo-card { padding: 7px; }
+body.is-mobile-cast-view .mobile-combo-card header strong { font-size: 12px; }
+body.is-mobile-cast-view .mobile-combo-card dl > div { grid-template-columns: 42px 1fr; font-size: 10px; }
+body.is-mobile-cast-view .mobile-combo-card > p { font-size: 10px; line-height: 1.45; }
+
+@media (max-width: 520px) {
+  body.is-mobile-cast-view .mobile-core-skills { grid-template-columns: 1fr; }
+  body.is-mobile-cast-view .mobile-outfit-group > div,
+  body.is-mobile-cast-view .mobile-combo-list { grid-template-columns: 1fr; gap: 4px; }
+  body.is-mobile-cast-view .mobile-style-row {
+    grid-template-columns: minmax(96px, 1.3fr) 22px auto;
+  }
+  body.is-mobile-cast-view .mobile-style-row__facts { grid-column: 1 / -1; padding-top: 2px; }
+}
+
+@media (max-width: 390px) {
+  body.is-mobile-cast-view .mobile-cast-hero { grid-template-columns: 98px minmax(0, 1fr); }
+  body.is-mobile-cast-view .mobile-cast-profile-grid { grid-template-columns: 1fr; }
+  body.is-mobile-cast-view .mobile-cast-lifepath { grid-template-columns: 1fr; gap: 2px; }
+}

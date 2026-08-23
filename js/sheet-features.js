@@ -2,7 +2,7 @@ import "./help-ui.js?v=4";
 import "./combo-multi-suit.js?v=1";
 import "./sheet-save-state.js?v=2";
 import "./direct-transfer-button.js?v=6";
-import "./sheet-import-specialized-repair.js?v=1";
+import "./sheet-import-specialized-cleanup.js?v=1";
 
 /* Sheet editor helper features.
  * Keeps only presentation helpers. DB persistence is handled by sheet.js,
