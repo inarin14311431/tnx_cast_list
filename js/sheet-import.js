@@ -255,7 +255,19 @@
     return prefix?findRow('一般技能',prefix):null;
   };
 
+  async function resetSpecializedGeneralRows(){
+    for(const prefix of GENERAL_SPECIALIZATION_PREFIXES){
+      const row=skillRows('一般技能').find(candidate=>{
+        const name=rowName(candidate);
+        return (name===prefix||name.startsWith(prefix))&&!candidate.querySelector('[data-delete-skill]');
+      });
+      if(!row)continue;
+      await setSkillRow(row,{name:prefix,level:0,s:false,c:false,h:false,d:false,free_level:0},'proper');
+    }
+  }
+
   async function importGeneral(map,stats){
+    await resetSpecializedGeneralRows();
     await clearRows(()=>skillRows('一般技能'),row=>!FIXED_GENERAL.has(rowName(row)));
     for(const data of [...groups(map,'skills1'),...groups(map,'skills2')]){
       const rawName=firstDefined(data,'name');

@@ -26,7 +26,32 @@ body.is-mobile-cast-view :is(
 
 body.is-mobile-cast-view :is(
   .mobile-cast-summary,
+  .mobile-cast-profile-text,
   .mobile-style-row > p
 ) {
   border-color: var(--mobile-cast-line);
+}
+
+/* Mobile labels previously depended on opacity over hard-coded dark surfaces.
+   Use the semantic muted foreground instead so light and dark themes keep the same hierarchy. */
+body.is-mobile-cast-view :is(
+  .mobile-cast-topbar > span,
+  .mobile-cast-footer,
+  .mobile-cast-kana,
+  .mobile-cast-meta dt,
+  .mobile-cast-divines span,
+  .mobile-cast-section__title small,
+  .mobile-cast-abilities span,
+  .mobile-cast-profile-grid dt,
+  .mobile-cast-lifepath span,
+  .mobile-skill-row > b,
+  .mobile-style-row__facts i,
+  .mobile-outfit-card__facts i,
+  .mobile-style-row > p,
+  .mobile-outfit-group small,
+  .mobile-outfit-card > p,
+  .mobile-combo-card dt
+) {
+  color: var(--color-text-muted);
+  opacity: 1;
 }

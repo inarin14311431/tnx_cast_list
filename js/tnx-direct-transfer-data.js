@@ -223,12 +223,19 @@ function toSkillCore(skill, name) {
   return { c: flag(skill.passion), d: flag(skill.mundane), h: flag(skill.life), level: text(skill.level) || null, name: nullable(name), s: flag(skill.reason) };
 }
 function blankSkill(name = null) { return { c: null, d: null, h: null, level: name ? "1" : null, name, s: name ? "1" : null }; }
+function styleSkillExpBase(skill) {
+  const kind = text(skill?.skill_kind).toLowerCase();
+  if (kind === "secret" || kind === "秘技") return "20";
+  if (kind === "ultimate" || kind === "奥義") return "50";
+  if (["direction", "none", "演出", "なし"].includes(kind)) return "0";
+  return "10";
+}
 function toStyleSkill(skill) {
   const detail = parseStyleDetail(skill);
   return {
     aim: nullable(detail.difficulty || skill.difficulty),
     c: flag(skill.passion), confront: nullable(detail.confrontation || skill.confrontation), d: flag(skill.mundane),
-    expbase: "10", h: flag(skill.life), level: text(skill.level) || null, limit: nullable(detail.limit),
+    expbase: styleSkillExpBase(skill), h: flag(skill.life), level: text(skill.level) || null, limit: nullable(detail.limit),
     name: nullable(skill.name), notes: nullable(detail.description || skill.description), page: nullable(detail.page),
     range: nullable(detail.range || skill.range), s: flag(skill.reason), skill: nullable(detail.skill),
     target: nullable(detail.target || skill.target), timing: nullable(detail.timing || skill.timing),
