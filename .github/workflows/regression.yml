@@ -1,0 +1,51 @@
+name: Regression checks
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Check JavaScript syntax
+        run: npm run check:js
+
+      - name: Audit module dependency graph
+        run: npm run audit:modules
+
+      - name: Audit runtime integrity
+        run: npm run audit:integrity
+
+      - name: Audit PC editor runtime
+        run: npm run audit:sheet
+
+      - name: Audit public cast runtime
+        run: npm run audit:cast
+
+      - name: Audit troop runtime
+        run: npm run audit:troop
+
+      - name: Audit mobile editor runtime
+        run: npm run audit:mobile
+
+      - name: Audit security invariants
+        run: npm run audit:security
+
+      - name: Report sheet DOM ownership
+        run: npm run report:sheet-ownership
+
+      - name: Report cast DOM ownership
+        run: npm run report:cast-ownership
+
+      - name: Run Node regression tests
+        run: npm test

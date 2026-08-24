@@ -1,0 +1,38 @@
+body[data-page="account.html"] .owned-cast__management {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 2fr);
+}
+
+body[data-page="account.html"] .owned-cast__management > .owned-cast__acts {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+body[data-page="account.html"] .owned-cast__management > .owned-cast__troops {
+  grid-column: 2;
+  grid-row: 1;
+  min-width: 0;
+  min-height: 46px;
+  padding: 6px 5px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 48%, var(--color-border-muted));
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 7%, var(--color-surface));
+  text-align: center;
+  text-decoration: none;
+}
+
+body[data-page="account.html"] .owned-cast__management:not(.owned-cast__management--with-troop) > .owned-cast__acts {
+  grid-column: 1 / 3;
+}
+
+body[data-page="account.html"] .owned-cast__management > .owned-cast__management-label,
+body[data-page="account.html"] .owned-cast__management > button {
+  grid-column: 3;
+  grid-row: 1;
+}
+
+@media (max-width: 767px) {
+  body[data-page="account.html"] .owned-cast__management > .owned-cast__troops {
+    min-height: 44px;
+    padding-inline: 4px;
+  }
+}

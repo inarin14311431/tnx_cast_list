@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <base href="/">
+  <title>Bookmarklet transfer editor fixture</title>
+</head>
+<body data-page="sheet.html">
+  <aside class="exp-panel">
+    <label>公開状態<select id="visibility"><option>public</option></select></label>
+    <button id="save-button" type="button">保存済み</button>
+    <a id="cast-view-button">キャストを閲覧</a>
+    <button id="legacy-import-open" type="button">データ取込</button>
+  </aside>
+
+  <main class="sheet-layout">
+    <input id="character-name" value="転記テスト">
+    <input id="character-kana" value="てんきてすと">
+    <input id="handle" value="TEST HANDLE">
+    <input id="player-name" value="E2E PLAYER">
+
+    <table id="style-skills">
+      <tbody>
+        <tr data-skill-key="style-e2e">
+          <td><input data-f="name" value="†対決転記テスト"></td>
+          <td><input data-f="level" value="1"></td>
+          <td><input data-f="skill_kind" value="style"></td>
+          <td><input type="checkbox" data-f="reason" checked></td>
+          <td><input type="checkbox" data-f="passion"></td>
+          <td><input type="checkbox" data-f="life"></td>
+          <td><input type="checkbox" data-f="mundane"></td>
+          <td><input data-style-field="timing" value="メジャー"></td>
+          <td><input data-style-field="target" value="単体"></td>
+          <td><input data-style-field="range" value="至近"></td>
+          <td><input data-style-field="difficulty" value="制御値"></td>
+          <td><input data-style-field="confrontation" value="回避"></td>
+          <td><textarea data-style-field="description">転記内容確認</textarea></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <article data-outfit-key="armor-e2e">
+      <select data-o="category"><option value="armor" selected>armor</option></select>
+      <input data-o="name" value="E2Eアーマー">
+      <input data-o="purchase_value" value="12">
+      <input data-o="experience_cost" value="3">
+      <input data-o="concealment" value="8/0">
+      <input data-o="defense" value="S3/P4/I5">
+      <input data-o="description" value="防具転記確認">
+      <input data-ofc="control_value" value="-2">
+      <input data-ofc="defense_s" value="3">
+      <input data-ofc="defense_p" value="4">
+      <input data-ofc="defense_i" value="5">
+      <input data-ofc="electronic_control" value="15">
+    </article>
+  </main>
+
+  <script>
+    window.__copiedText = "";
+    Object.defineProperty(navigator, "clipboard", {
+      configurable: true,
+      value: {
+        writeText: async text => { window.__copiedText = String(text); }
+      }
+    });
+  </script>
+  <script type="module" src="/js/sheet-sidebar-actions.js"></script>
+  <script type="module" src="/js/sheet-features.js"></script>
+</body>
+</html>
