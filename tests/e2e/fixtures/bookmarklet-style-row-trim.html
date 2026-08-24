@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ja">
+<head><meta charset="utf-8"><title>Style row trim fixture</title></head>
+<body>
+<table id="superhumanskills"><tbody>
+  <tr id="superhumanskills.0"><td><input id="superhumanskills.0.name" value="旧技能A"><input id="superhumanskills.0.expbase" value="10"><input id="superhumanskills.0.level" value="1"><input id="superhumanskills.0.s" value=""><input id="superhumanskills.0.c" value=""><input id="superhumanskills.0.h" value=""><input id="superhumanskills.0.d" value=""><input id="superhumanskills.0.skill"><input id="superhumanskills.0.limit"><input id="superhumanskills.0.timing"><input id="superhumanskills.0.target"><input id="superhumanskills.0.range"><input id="superhumanskills.0.aim"><input id="superhumanskills.0.confront"><input id="superhumanskills.0.notes"><input id="superhumanskills.0.page"><input type="button" id="superhumanskills.0.delete" value="×"></td></tr>
+  <tr id="superhumanskills.001"><td><input id="superhumanskills.001.name" value="旧技能B"><input id="superhumanskills.001.expbase" value="10"><input id="superhumanskills.001.level" value="1"><input id="superhumanskills.001.s" value=""><input id="superhumanskills.001.c" value=""><input id="superhumanskills.001.h" value=""><input id="superhumanskills.001.d" value=""><input id="superhumanskills.001.skill"><input id="superhumanskills.001.limit"><input id="superhumanskills.001.timing"><input id="superhumanskills.001.target"><input id="superhumanskills.001.range"><input id="superhumanskills.001.aim"><input id="superhumanskills.001.confront"><input id="superhumanskills.001.notes"><input id="superhumanskills.001.page"><input type="button" id="superhumanskills.001.delete" value="×"></td></tr>
+  <tr id="superhumanskills.002"><td><input id="superhumanskills.002.name" value="余剰技能C"><input id="superhumanskills.002.expbase" value="10"><input id="superhumanskills.002.level" value="1"><input type="button" id="superhumanskills.002.delete" value="×"></td></tr>
+  <tr id="superhumanskills.003"><td><input id="superhumanskills.003.name" value="余剰技能D"><input id="superhumanskills.003.expbase" value="10"><input id="superhumanskills.003.level" value="1"><input type="button" id="superhumanskills.003.delete" value="×"></td></tr>
+</tbody></table>
+<input id="exp.superhumanskills" value="40">
+<script>
+  function sumExp(){
+    let total=0;
+    document.querySelectorAll('#superhumanskills tbody tr').forEach(row=>{
+      const index=row.id.slice('superhumanskills.'.length);
+      total+=(Number(document.getElementById(`superhumanskills.${index}.expbase`)?.value)||0)*(Number(document.getElementById(`superhumanskills.${index}.level`)?.value)||0);
+    });
+    document.getElementById('exp.superhumanskills').value=String(total);
+  }
+  function levelChange(){sumExp()}
+  document.addEventListener('click',event=>{
+    const button=event.target.closest('input[id$=".delete"]');
+    if(!button)return;
+    button.closest('tr')?.remove();
+    sumExp();
+  });
+</script>
+<script src="/js/tnx-transfer-common.js"></script>
+<script src="/js/tnx-transfer-style-skills.js"></script>
+<script>
+  window.fixtureReady=(async()=>{
+    await window.TNXTransferRepairs.repairStyleSkills({style_skill:{
+      0:{name:'†転記秘技',kind:'secret',level:'2',reason:'0',passion:'0',life:'0',mundane:'0',skill:'白兵',limit:'3',timing:'メジャー',target:'単体',range:'武器',difficulty:'制御値',confrontation:'回避',description:'fixture',page:''},
+      1:{name:'転記特技',kind:'normal',level:'1',reason:'0',passion:'0',life:'0',mundane:'0',skill:'なし',limit:'4',timing:'常時',target:'自身',range:'なし',difficulty:'なし',confrontation:'なし',description:'fixture',page:''}
+    }});
+    sumExp();
+    document.documentElement.dataset.fixtureReady='1';
+  })();
+</script>
+</body>
+</html>

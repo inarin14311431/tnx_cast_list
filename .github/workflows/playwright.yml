@@ -1,0 +1,119 @@
+name: Playwright E2E
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  public-smoke:
+    name: Public and smoke E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install
+      - name: Install Chromium
+        run: npx playwright install chromium
+      - name: Run public and smoke tests
+        run: >-
+          npx playwright test
+          tests/e2e/smoke.spec.js
+          tests/e2e/cast-view.spec.js
+          tests/e2e/troop-view.spec.js
+          tests/e2e/editor-help.spec.js
+          tests/e2e/direct-transfer.spec.js
+          --project=chromium
+        env:
+          E2E_CAST_ID: ${{ secrets.E2E_CAST_ID }}
+      - name: Upload public Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-public
+          path: playwright-report/
+          retention-days: 14
+
+  authenticated-editor:
+    name: Authenticated editor E2E
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install
+      - name: Install Chromium
+        run: npx playwright install chromium
+      - name: Run authenticated editor tests
+        run: >-
+          npx playwright test
+          tests/e2e/authenticated.spec.js
+          tests/e2e/troop-view.spec.js
+          tests/e2e/troop-editor-flow.spec.js
+          tests/e2e/legacy-import-profile.spec.js
+          tests/e2e/outfit-import-transfer.spec.js
+          tests/e2e/sheet-row-lifecycle.spec.js
+          tests/e2e/sheet-save-reload-flow.spec.js
+          tests/e2e/style-marks.spec.js
+          tests/e2e/style-separator.spec.js
+          tests/e2e/style-skill-detail-integrity.spec.js
+          --project=chromium
+        env:
+          E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+          E2E_CAST_ID: ${{ secrets.E2E_CAST_ID }}
+      - name: Upload editor Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-editor
+          path: playwright-report/
+          retention-days: 14
+
+  mobile:
+    name: Mobile E2E
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.55.0-noble
+      options: --user 1001
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install
+      - name: Run mobile tests
+        run: >-
+          npx playwright test
+          tests/e2e/account-mobile.spec.js
+          tests/e2e/troop-view.spec.js
+          tests/e2e/mobile-combo-counter.spec.js
+          tests/e2e/mobile-experience.spec.js
+          --project=mobile
+        env:
+          E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
+          E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
+          E2E_CAST_ID: ${{ secrets.E2E_CAST_ID }}
+      - name: Upload mobile Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-mobile
+          path: playwright-report/
+          retention-days: 14

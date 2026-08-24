@@ -1,0 +1,555 @@
+/* Source consolidated from css-next/pages/troop-compact-density-v2.css. */
+/* Compact troop view/editor density pass */
+body[data-page="troop.html"]{font-size:13px}
+body[data-page="troop.html"] .troop-layout{width:min(1040px,calc(100% - 24px));gap:10px;margin:12px auto 32px}
+body[data-page="troop.html"] .app-header{padding-top:10px;padding-bottom:10px}
+body[data-page="troop.html"] .app-header>p{margin:0 0 2px;font-size:9px;letter-spacing:.16em;color:var(--color-muted)}
+body[data-page="troop.html"] .app-header h1{margin:0;font-size:20px;line-height:1.15}
+body[data-page="troop.html"] .app-header h1 small{font-size:8px;color:var(--color-muted)}
+body[data-page="troop.html"] .troop-sheet,body[data-page="troop.html"] .troop-editor{border-color:color-mix(in srgb,var(--color-accent) 28%,var(--color-border));background:color-mix(in srgb,var(--color-surface) 96%,var(--color-accent) 4%);box-shadow:0 6px 18px rgb(0 0 0/9%)}
+body[data-page="troop.html"] .troop-sheet__header{padding:11px 13px;border-bottom-color:color-mix(in srgb,var(--color-accent) 26%,var(--color-border-muted));background:linear-gradient(90deg,color-mix(in srgb,var(--color-accent) 9%,transparent),transparent 58%)}
+body[data-page="troop.html"] .troop-sheet__header h2{font-size:24px;line-height:1.1}
+body[data-page="troop.html"] .troop-linked-character{margin-top:3px;font-size:11px}
+body[data-page="troop.html"] .troop-sheet__actions{gap:6px}
+body[data-page="troop.html"] .troop-sheet__actions a,body[data-page="troop.html"] .troop-sheet__actions button{min-height:34px;padding:5px 9px;font-size:11px}
+body[data-page="troop.html"] .troop-vitals{gap:6px;padding:9px 10px}
+body[data-page="troop.html"] .troop-vitals article{min-height:62px;padding:7px 9px;border-color:color-mix(in srgb,var(--color-accent) 18%,var(--color-border-muted));background:color-mix(in srgb,var(--color-accent) 4%,var(--color-surface))}
+body[data-page="troop.html"] .troop-vitals span{font-size:8px}
+body[data-page="troop.html"] .troop-vitals strong{margin:2px 0;font-size:23px}
+body[data-page="troop.html"] .troop-vitals small{font-size:7px}
+body[data-page="troop.html"] .troop-sheet>.troop-section{margin:0 10px 8px}
+body[data-page="troop.html"] .troop-section{box-shadow:none;border-color:color-mix(in srgb,var(--color-accent) 18%,var(--color-border-muted))}
+body[data-page="troop.html"] .troop-section>header{padding:7px 9px;background:color-mix(in srgb,var(--color-accent) 5%,var(--color-surface));border-bottom-color:color-mix(in srgb,var(--color-accent) 20%,var(--color-border-muted))}
+body[data-page="troop.html"] .troop-section h2,body[data-page="troop.html"] .troop-section h3{font-size:13px;line-height:1.15}
+body[data-page="troop.html"] .troop-section small{font-size:7px;letter-spacing:.06em}
+body[data-page="troop.html"] .troop-style-grid{padding:8px 10px}
+body[data-page="troop.html"] .troop-style-grid span{padding:5px 9px;font-size:12px;border-bottom-width:2px}
+body[data-page="troop.html"] .troop-ability-grid{gap:5px;padding:8px 10px}
+body[data-page="troop.html"] .troop-ability-grid article{padding:7px 6px;background:color-mix(in srgb,var(--color-accent) 3%,transparent)}
+body[data-page="troop.html"] .troop-ability-grid article span{font-size:10px}
+body[data-page="troop.html"] .troop-ability-grid strong{font-size:21px}
+body[data-page="troop.html"] .troop-ability-grid small{font-size:8px}
+body[data-page="troop.html"] .troop-data-list{gap:4px;padding:7px 8px}
+body[data-page="troop.html"] .troop-data-list article{gap:2px 8px;padding:6px 8px;border-left-width:2px;font-size:11px;background:color-mix(in srgb,var(--color-accent) 2.5%,transparent)}
+body[data-page="troop.html"] .troop-data-list article strong{font-size:11.5px}
+body[data-page="troop.html"] .troop-data-list article span,body[data-page="troop.html"] .troop-data-list article p{font-size:10px;line-height:1.35}
+body[data-page="troop.html"] .troop-notes{padding:8px 10px;font-size:11px;line-height:1.5}
+
+body[data-page="troop.html"] .troop-editor{gap:8px;padding:10px}
+body[data-page="troop.html"] .troop-editor>.troop-section{margin:0}
+body[data-page="troop.html"] .troop-form-grid{gap:7px;padding:8px 10px}
+body[data-page="troop.html"] .troop-form-grid label{gap:3px;font-size:11px}
+body[data-page="troop.html"] input,body[data-page="troop.html"] select,body[data-page="troop.html"] textarea{font-size:12px}
+body[data-page="troop.html"] .troop-editor input,body[data-page="troop.html"] .troop-editor select{min-height:32px;padding:5px 7px}
+body[data-page="troop.html"] .troop-rule-note{padding:0 10px 8px;font-size:10px;line-height:1.45}
+body[data-page="troop.html"] .troop-editor-list{gap:5px;padding:7px 8px}
+body[data-page="troop.html"] .troop-editor-row{gap:5px;padding:5px 6px;background:color-mix(in srgb,var(--color-accent) 2%,transparent)}
+body[data-page="troop.html"] .troop-suits label{min-height:30px}
+body[data-page="troop.html"] .troop-suits span{font-size:17px}
+body[data-page="troop.html"] .troop-combo-cards{gap:5px;padding:7px 8px}
+body[data-page="troop.html"] .troop-combo-cards .combo-card{padding:7px 9px}
+body[data-page="troop.html"] .troop-combo-cards .combo-card__skills,body[data-page="troop.html"] .troop-combo-cards .combo-card__detail,body[data-page="troop.html"] .troop-combo-cards .combo-card__description{margin:3px 0;font-size:10px}
+body[data-page="troop.html"] .troop-outfit-fields{font-size:8px;letter-spacing:.04em}
+body[data-page="troop.html"] .troop-editor-actions{gap:6px;padding-top:2px}
+body[data-page="troop.html"] .troop-editor-actions button,body[data-page="troop.html"] .troop-editor-actions a{min-height:34px;padding:5px 11px;font-size:11px}
+body[data-page="troop.html"] #troop-notes{min-height:76px;max-height:120px}
+
+body[data-page="troop.html"] .troop-section--management{border-top:3px solid var(--color-accent)}
+body[data-page="troop.html"] .troop-section--management>header,body[data-page="troop.html"] .troop-editor>.troop-section:nth-of-type(2)>header{background:linear-gradient(90deg,color-mix(in srgb,var(--color-accent) 10%,var(--color-surface)),var(--color-surface) 72%)}
+body[data-page="troop.html"] .troop-section>header button{min-height:30px;padding:4px 8px;font-size:10px}
+
+@media(max-width:760px){
+  body[data-page="troop.html"]{font-size:12px}
+  body[data-page="troop.html"] .troop-layout{width:100%;padding:6px 7px 18px;margin:0}
+  body[data-page="troop.html"] .app-header{padding:7px 9px}
+  body[data-page="troop.html"] .app-header h1{font-size:15px}
+  body[data-page="troop.html"] .troop-sheet__header{padding:8px 9px}
+  body[data-page="troop.html"] .troop-sheet__header h2{font-size:18px}
+  body[data-page="troop.html"] .troop-vitals{padding:6px;gap:4px}
+  body[data-page="troop.html"] .troop-vitals article{min-height:48px;padding:5px 4px}
+  body[data-page="troop.html"] .troop-vitals strong{font-size:17px}
+  body[data-page="troop.html"] .troop-sheet>.troop-section{margin:0 6px 5px}
+  body[data-page="troop.html"] .troop-section>header{padding:6px 7px}
+  body[data-page="troop.html"] .troop-form-grid,body[data-page="troop.html"] .troop-editor-list,body[data-page="troop.html"] .troop-combo-cards{padding:6px}
+  body[data-page="troop.html"] .troop-editor{padding:6px;gap:6px}
+  body[data-page="troop.html"] .troop-rule-note{padding:0 7px 6px;font-size:9px}
+}
+
+/* Source consolidated from css-next/pages/troop-density-v3.css. */
+body[data-page="troop.html"] .troop-editor{font-size:13px}
+body[data-page="troop.html"] .troop-editor .troop-section>header{justify-content:flex-start;text-align:left;gap:8px;padding:7px 10px;border-left:3px solid color-mix(in srgb,var(--color-accent) 72%,var(--color-border))}
+body[data-page="troop.html"] .troop-editor .troop-section>header h2{margin:0;font-size:15px;line-height:1.2;letter-spacing:.02em;text-align:left}
+body[data-page="troop.html"] .troop-editor .troop-section>header h2 small{display:inline!important;margin-left:5px;font-size:8px!important;letter-spacing:.1em;color:var(--color-muted)}
+body[data-page="troop.html"] .troop-editor .troop-section>header button{margin-left:auto}
+body[data-page="troop.html"] .troop-rule-note{font-size:11px!important;line-height:1.45!important;margin:5px 10px!important;color:var(--color-muted)}
+
+/* ---- top summary regroup ---- */
+body[data-page="troop.html"] .troop-overview{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(360px,.85fr);gap:8px;margin:0 0 10px;padding:8px;border:1px solid color-mix(in srgb,var(--color-accent) 38%,var(--color-border));background:color-mix(in srgb,var(--color-surface) 95%,var(--color-accent));box-shadow:inset 0 2px 0 color-mix(in srgb,var(--color-accent) 52%,transparent)}
+body[data-page="troop.html"] .troop-overview>.troop-section{margin:0!important;min-width:0;border:1px solid var(--color-border-muted)!important;background:color-mix(in srgb,var(--color-surface) 97%,var(--color-accent))}
+body[data-page="troop.html"] .troop-section--overview-basic{grid-column:1;grid-row:1}
+body[data-page="troop.html"] .troop-section--overview-management{grid-column:2;grid-row:1}
+body[data-page="troop.html"] .troop-section--overview-style{grid-column:1;grid-row:2}
+body[data-page="troop.html"] .troop-section--overview-abilities{grid-column:2;grid-row:2}
+body[data-page="troop.html"] .troop-section--overview-basic .troop-form-grid{display:grid!important;grid-template-columns:minmax(220px,1fr) max-content max-content!important;gap:8px!important;align-items:end;padding:8px 10px!important}
+body[data-page="troop.html"] .troop-section--overview-management .troop-form-grid{grid-template-columns:minmax(120px,.8fr) minmax(150px,1.3fr) 86px!important;gap:7px!important;padding:8px 10px!important}
+body[data-page="troop.html"] .troop-section--overview-style .troop-form-grid{grid-template-columns:minmax(180px,1fr) minmax(180px,1fr)!important;gap:8px!important;padding:8px 10px!important}
+body[data-page="troop.html"] .troop-overview label{font-size:12px!important;font-weight:700}
+body[data-page="troop.html"] .troop-overview input,body[data-page="troop.html"] .troop-overview select{height:32px!important;font-size:13px!important}
+body[data-page="troop.html"] .troop-short-number-field{display:grid!important;grid-template-columns:1fr!important;align-items:end;justify-content:start;gap:3px!important;min-width:64px;max-width:78px}
+body[data-page="troop.html"] .troop-short-number-field .troop-short-number{width:66px!important;min-width:66px!important;text-align:center;font:900 17px/1 var(--font-data)!important}
+body[data-page="troop.html"] .troop-section--style-primary{border-color:color-mix(in srgb,var(--color-accent) 76%,var(--color-border))!important;box-shadow:inset 4px 0 0 var(--color-accent)!important;background:color-mix(in srgb,var(--color-accent) 8%,var(--color-surface))!important}
+body[data-page="troop.html"] .troop-section--style-primary>header{background:color-mix(in srgb,var(--color-accent) 16%,var(--color-surface));border-bottom-color:color-mix(in srgb,var(--color-accent) 58%,var(--color-border-muted))}
+body[data-page="troop.html"] .troop-section--style-primary h2{font-size:17px!important;color:var(--color-text)}
+body[data-page="troop.html"] .troop-section--style-primary select{font-weight:850;border-color:color-mix(in srgb,var(--color-accent) 55%,var(--color-border))!important}
+.troop-important-badge{display:inline-block!important;margin-left:8px;padding:3px 6px;border:1px solid var(--color-accent);background:color-mix(in srgb,var(--color-accent) 12%,transparent);color:var(--color-accent)!important;font:800 9px/1 var(--font-data);letter-spacing:.12em;vertical-align:middle}
+
+/* ---- compact ability + CS ---- */
+body[data-page="troop.html"] .troop-ability-grid--with-cs{display:grid!important;grid-template-columns:repeat(4,minmax(62px,1fr)) 54px!important;gap:5px!important;padding:8px 10px!important}
+body[data-page="troop.html"] .troop-ability-grid--with-cs article{min-width:0!important;padding:6px 4px!important;min-height:62px!important;border-top:2px solid color-mix(in srgb,var(--color-accent) 55%,var(--color-border))!important}
+body[data-page="troop.html"] .troop-ability-grid--with-cs article span{font-size:11px!important;font-weight:800}
+body[data-page="troop.html"] .troop-ability-grid--with-cs article strong{font-size:19px!important;line-height:1.05!important}
+body[data-page="troop.html"] .troop-ability-grid--with-cs article small{font-size:9px!important}
+body[data-page="troop.html"] .troop-ability-grid--with-cs .troop-cs-card{background:color-mix(in srgb,var(--color-accent) 14%,var(--color-surface));border-color:var(--color-accent)!important}
+body[data-page="troop.html"] .troop-ability-grid--with-cs .troop-cs-card strong{color:var(--color-accent)}
+
+/* ---- general skills: same two-column order as cast editor ---- */
+#troop-general-skills-editor{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-template-rows:repeat(8,auto)!important;grid-auto-flow:column;gap:5px 10px!important;padding:5px 10px 9px!important}
+.troop-general-fixed-row{grid-template-columns:minmax(0,1fr) 42px 128px!important;gap:5px!important;padding:5px 6px!important;min-height:38px;border-left:2px solid color-mix(in srgb,var(--color-accent) 32%,var(--color-border-muted))!important}
+.troop-general-fixed-row:nth-child(4n+1),.troop-general-fixed-row:nth-child(4n+2){background:color-mix(in srgb,var(--color-accent) 4%,var(--color-surface))}
+.troop-general-name-cell{display:flex;align-items:center;min-width:0;gap:4px}.troop-general-name-cell strong{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.troop-general-prefix{flex:0 0 auto;font-size:12px;font-weight:850}.troop-general-detail{min-width:0!important;height:29px!important;padding:3px 5px!important;font-size:12px!important}.troop-level-input{width:42px!important;min-width:42px!important;height:29px!important;padding:3px!important;text-align:center;font-size:13px!important;font-weight:900}.troop-general-fixed-row .troop-suits{grid-template-columns:repeat(4,29px)!important;gap:2px}.troop-general-fixed-row .troop-suits label{min-height:29px!important;height:29px}.troop-general-fixed-row .troop-suits span{font-size:18px!important}.troop-suit-toggle--fixed{border-color:color-mix(in srgb,var(--color-accent) 68%,var(--color-border-muted))!important;background:color-mix(in srgb,var(--color-accent) 12%,transparent)!important}
+.troop-general-field-heads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:6px 10px 0}.troop-general-field-heads>div{display:grid;grid-template-columns:minmax(0,1fr) 42px 128px;gap:5px;padding:0 6px}.troop-general-field-heads span,.troop-style-field-heads span{color:var(--color-text);font:800 10px/1.1 var(--font-data);letter-spacing:.04em;text-align:left}.troop-general-field-heads span:nth-child(n+2){text-align:center}.troop-general-field-heads small,.troop-style-field-heads small{display:inline!important;font-size:8px!important;color:var(--color-muted)!important}
+
+/* ---- style skills labels and rows ---- */
+.troop-style-field-heads{display:grid;grid-template-columns:minmax(140px,1.3fr) 100px 58px 150px 66px minmax(130px,1.4fr) 36px;gap:7px;padding:7px 10px 2px}.troop-style-field-heads span:nth-child(2),.troop-style-field-heads span:nth-child(3),.troop-style-field-heads span:nth-child(4),.troop-style-field-heads span:nth-child(5){text-align:center}
+#troop-style-skills-editor{padding:3px 10px 9px!important;gap:5px!important}
+#troop-style-skills-editor .troop-skill-row{font-size:12px!important;min-height:36px!important;border-left:2px solid color-mix(in srgb,var(--color-accent) 44%,var(--color-border-muted))}
+#troop-style-skills-editor input,#troop-style-skills-editor select{height:30px!important;font-size:12px!important}
+#troop-style-skills-editor .troop-suits span{font-size:17px!important}
+
+/* ---- combo cards: deliberately terse ---- */
+.troop-combo-cards--compact .combo-card{display:grid!important;grid-template-columns:minmax(145px,.8fr) minmax(0,2fr)!important;gap:3px 10px!important;padding:7px 9px!important;min-height:0!important;border-left:3px solid color-mix(in srgb,var(--color-accent) 58%,var(--color-border))!important}.troop-combo-cards--compact .combo-card__head{grid-column:1;display:block!important;min-width:0}.troop-combo-cards--compact .combo-card__head strong{display:block;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.troop-combo-cards--compact .combo-card__ability{display:block;margin-top:1px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--color-accent)}.troop-combo-cards--compact .combo-card__skills{grid-column:2;margin:0!important;align-self:center;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.troop-combo-cards--compact .combo-card dl,.troop-combo-cards--compact .combo-card__description{display:none!important}.troop-combo-cards--compact .combo-card__detail{grid-column:2;margin:0!important;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--color-muted)}
+
+/* ---- view side density / accent ---- */
+body[data-page="troop.html"] #troop-view .troop-section>header{justify-content:flex-start;text-align:left;border-left:3px solid color-mix(in srgb,var(--color-accent) 65%,var(--color-border));background:color-mix(in srgb,var(--color-accent) 7%,var(--color-surface))}
+body[data-page="troop.html"] #troop-view .troop-section h3{font-size:14px!important;text-align:left}
+#troop-combos-view article{grid-template-columns:minmax(130px,.7fr) minmax(0,2fr) auto!important;align-items:center;padding:6px 8px!important;border-left:3px solid color-mix(in srgb,var(--color-accent) 48%,var(--color-border))}#troop-combos-view article>strong{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#troop-combos-view article>span{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#troop-combos-view article>p{grid-column:2!important;margin:0!important;font-size:10px!important;line-height:1.25!important;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;overflow:hidden}
+
+@media(max-width:1000px){body[data-page="troop.html"] .troop-overview{grid-template-columns:1fr}.troop-section--overview-basic,.troop-section--overview-management,.troop-section--overview-style,.troop-section--overview-abilities{grid-column:1!important;grid-row:auto!important}body[data-page="troop.html"] .troop-section--overview-management .troop-form-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:900px){#troop-general-skills-editor{grid-template-columns:1fr!important;grid-template-rows:none!important;grid-auto-flow:row!important}.troop-general-fixed-row{grid-column:1!important;grid-row:auto!important}.troop-general-field-heads{grid-template-columns:1fr}.troop-general-field-heads>div:nth-child(2){display:none}.troop-style-field-heads{display:none}.troop-combo-cards--compact .combo-card{grid-template-columns:1fr}.troop-combo-cards--compact .combo-card__skills,.troop-combo-cards--compact .combo-card__detail{grid-column:1}body[data-page="troop.html"] .troop-ability-grid--with-cs{grid-template-columns:repeat(5,minmax(52px,1fr))!important}}
+@media(max-width:620px){body[data-page="troop.html"] .troop-section--overview-basic .troop-form-grid{grid-template-columns:minmax(0,1fr) 66px 66px!important}body[data-page="troop.html"] .troop-section--overview-management .troop-form-grid{grid-template-columns:1fr!important}body[data-page="troop.html"] .troop-section--overview-style .troop-form-grid{grid-template-columns:1fr!important}.troop-general-fixed-row{grid-template-columns:minmax(0,1fr) 40px 120px!important}.troop-general-fixed-row .troop-suits{grid-template-columns:repeat(4,27px)!important}.troop-general-field-heads>div{grid-template-columns:minmax(0,1fr) 40px 120px}.troop-important-badge{display:none!important}body[data-page="troop.html"] .troop-ability-grid--with-cs{grid-template-columns:repeat(4,1fr) 50px!important;gap:3px!important}body[data-page="troop.html"] .troop-ability-grid--with-cs article strong{font-size:17px!important}}
+
+/* Source consolidated from css-next/pages/troop-visual-accent-v5.css. */
+/* Troop editor/view visual hierarchy. Loaded last so it intentionally wins over legacy troop styles. */
+body[data-page="troop.html"] .troop-editor .troop-section > header,
+body[data-page="troop.html"] #troop-view .troop-section > header{
+  justify-content:flex-start;
+  text-align:left;
+  padding:8px 11px;
+  border-left:4px solid var(--troop-section-accent,var(--color-accent));
+  border-bottom-color:color-mix(in srgb,var(--troop-section-accent,var(--color-accent)) 52%,var(--color-border));
+  background:linear-gradient(90deg,color-mix(in srgb,var(--troop-section-accent,var(--color-accent)) 17%,var(--color-surface)) 0%,color-mix(in srgb,var(--troop-section-accent,var(--color-accent)) 6%,var(--color-surface)) 55%,var(--color-surface) 100%);
+}
+body[data-page="troop.html"] .troop-editor .troop-section > header h2,
+body[data-page="troop.html"] #troop-view .troop-section > header h3{
+  margin:0;
+  color:color-mix(in srgb,var(--troop-section-accent,var(--color-accent)) 74%,var(--color-text));
+  font-size:15px!important;
+  font-weight:900;
+  letter-spacing:.025em;
+  text-align:left;
+}
+body[data-page="troop.html"] .troop-editor .troop-section > header small,
+body[data-page="troop.html"] #troop-view .troop-section > header small{color:var(--color-muted)!important}
+body[data-page="troop.html"] .troop-editor .troop-section > header button{margin-left:auto}
+
+/* Section identity: deliberately different accents, while still theme-aware. */
+body[data-page="troop.html"] .troop-editor .troop-section:nth-of-type(1){--troop-section-accent:#b983ff}
+body[data-page="troop.html"] .troop-editor .troop-section:nth-of-type(2){--troop-section-accent:#54c7ff}
+body[data-page="troop.html"] .troop-editor .troop-section:nth-of-type(3){--troop-section-accent:#9bd85b}
+body[data-page="troop.html"] .troop-editor .troop-section:nth-of-type(4){--troop-section-accent:#f2bd45}
+body[data-page="troop.html"] .troop-editor .troop-section:nth-of-type(5){--troop-section-accent:#ef6f9a}
+body[data-page="troop.html"] .troop-editor .troop-section:nth-of-type(6){--troop-section-accent:#55d8ce}
+body[data-page="troop.html"] .troop-editor .troop-section:nth-of-type(7){--troop-section-accent:#ee9b42}
+body[data-page="troop.html"] .troop-editor .troop-section:nth-of-type(8){--troop-section-accent:#b98aff}
+body[data-page="troop.html"] .troop-editor .troop-section:nth-of-type(9){--troop-section-accent:#5ab6df}
+body[data-page="troop.html"] #troop-view .troop-section:nth-of-type(2){--troop-section-accent:#9bd85b}
+body[data-page="troop.html"] #troop-view .troop-section:nth-of-type(3){--troop-section-accent:#f2bd45}
+body[data-page="troop.html"] #troop-view .troop-section:nth-of-type(4){--troop-section-accent:#ef6f9a}
+body[data-page="troop.html"] #troop-view .troop-section:nth-of-type(5){--troop-section-accent:#55d8ce}
+body[data-page="troop.html"] #troop-view .troop-section:nth-of-type(6){--troop-section-accent:#ee9b42}
+body[data-page="troop.html"] #troop-view .troop-section:nth-of-type(7){--troop-section-accent:#b98aff}
+body[data-page="troop.html"] #troop-view .troop-section:nth-of-type(8){--troop-section-accent:#5ab6df}
+
+/* Combo cards need to be readable at a glance, not micro typography. */
+body[data-page="troop.html"] .troop-combo-cards--compact .combo-card{
+  padding:8px 10px!important;
+  border-left:4px solid #ee9b42!important;
+  background:color-mix(in srgb,#ee9b42 5%,var(--color-surface))!important;
+}
+body[data-page="troop.html"] .troop-combo-cards--compact .combo-card__head strong{font-size:15px!important;line-height:1.25!important}
+body[data-page="troop.html"] .troop-combo-cards--compact .combo-card__ability{font-size:12px!important;line-height:1.3!important;font-weight:750;color:color-mix(in srgb,#54c7ff 76%,var(--color-text))!important}
+body[data-page="troop.html"] .troop-combo-cards--compact .combo-card__skills{font-size:13px!important;line-height:1.35!important;font-weight:750}
+body[data-page="troop.html"] .troop-combo-cards--compact .combo-card__detail{font-size:11px!important;line-height:1.35!important;color:var(--color-muted)}
+
+body[data-page="troop.html"] #troop-combos-view article{
+  padding:8px 10px!important;
+  border-left:4px solid #ee9b42!important;
+  background:color-mix(in srgb,#ee9b42 5%,var(--color-surface));
+}
+body[data-page="troop.html"] #troop-combos-view article > strong{font-size:15px!important;line-height:1.3!important;font-weight:900}
+body[data-page="troop.html"] #troop-combos-view article > span{font-size:12px!important;line-height:1.35!important}
+body[data-page="troop.html"] #troop-combos-view article > p{font-size:11px!important;line-height:1.35!important}
+
+/* PC cast-view troop modal uses the same larger combo hierarchy. */
+.troop-modal .troop-modal__combo strong,
+.troop-modal .combo-card strong{font-size:15px!important;line-height:1.3!important}
+.troop-modal .troop-modal__combo span,
+.troop-modal .combo-card span{font-size:12px!important;line-height:1.35!important}
+
+@media(max-width:620px){
+  body[data-page="troop.html"] .troop-editor .troop-section > header h2,
+  body[data-page="troop.html"] #troop-view .troop-section > header h3{font-size:14px!important}
+  body[data-page="troop.html"] .troop-combo-cards--compact .combo-card__head strong,
+  body[data-page="troop.html"] #troop-combos-view article > strong{font-size:14px!important}
+}
+
+/* Source consolidated from css-next/pages/troop-layout-v6.css. */
+/* Final troop editor/read-view layout. Loaded after the legacy troop styles. */
+body[data-page="troop.html"] .troop-overview{
+  grid-template-columns:minmax(0,4fr) minmax(0,6fr)!important;
+  gap:10px!important;
+}
+
+/* Stable section accents by purpose rather than DOM position. */
+body[data-page="troop.html"] .troop-section--overview-basic{--troop-section-accent:#8c78c7}
+body[data-page="troop.html"] .troop-section--overview-management{--troop-section-accent:#4f9bc0}
+body[data-page="troop.html"] .troop-section--overview-style{--troop-section-accent:#78aa58}
+body[data-page="troop.html"] .troop-section--overview-abilities{--troop-section-accent:#d4a43d}
+body[data-page="troop.html"] .troop-section:has(#troop-general-skills-editor),
+body[data-page="troop.html"] .troop-view-section--general{--troop-section-accent:#cf6874}
+body[data-page="troop.html"] .troop-section:has(#troop-style-skills-editor),
+body[data-page="troop.html"] .troop-view-section--style-skills{--troop-section-accent:#49aaa3}
+body[data-page="troop.html"] .troop-section:has(#troop-combo-cards),
+body[data-page="troop.html"] .troop-view-section--combos{--troop-section-accent:#cf873b}
+body[data-page="troop.html"] .troop-section:has(#troop-outfits-editor),
+body[data-page="troop.html"] .troop-view-section--outfits{--troop-section-accent:#9375ba}
+body[data-page="troop.html"] .troop-section:has(#troop-notes),
+body[data-page="troop.html"] .troop-view-section--notes{--troop-section-accent:#4d8eb5}
+
+body[data-page="troop.html"] .troop-editor .troop-section>header,
+body[data-page="troop.html"] #troop-view .troop-section>header{
+  justify-content:flex-start!important;
+  min-height:34px;
+  padding:7px 10px!important;
+  text-align:left!important;
+  border-left:4px solid var(--troop-section-accent,var(--color-accent))!important;
+  border-bottom-color:color-mix(in srgb,var(--troop-section-accent,var(--color-accent)) 42%,var(--color-border-muted))!important;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--troop-section-accent,var(--color-accent)) 14%,var(--color-surface)) 0%,color-mix(in srgb,var(--troop-section-accent,var(--color-accent)) 5%,var(--color-surface)) 62%,var(--color-surface) 100%)!important;
+}
+body[data-page="troop.html"] #troop-view .troop-section>header::before{display:none!important}
+body[data-page="troop.html"] .troop-editor .troop-section>header h2,
+body[data-page="troop.html"] #troop-view .troop-section>header h2{
+  margin:0!important;
+  color:color-mix(in srgb,var(--troop-section-accent,var(--color-accent)) 72%,var(--color-text))!important;
+  font-size:15px!important;
+  font-weight:900!important;
+  line-height:1.2!important;
+  letter-spacing:.02em!important;
+}
+body[data-page="troop.html"] .troop-editor .troop-section>header h2 small,
+body[data-page="troop.html"] #troop-view .troop-section>header h2 small{
+  display:inline!important;
+  margin-left:5px!important;
+  color:var(--color-muted)!important;
+  font-size:8px!important;
+}
+
+/* Style is already the major section, so the selector itself has no secondary label frame. */
+body[data-page="troop.html"] .troop-section--style-primary .troop-form-grid{grid-template-columns:minmax(0,1fr)!important}
+body[data-page="troop.html"] .troop-section--style-primary .troop-primary-style-select{width:100%!important;min-height:34px!important;margin:0!important}
+body[data-page="troop.html"] .troop-section--style-primary .troop-important-badge{display:none!important}
+
+/* Four aligned two-digit value/control pairs, followed by CS. */
+body[data-page="troop.html"] .troop-ability-grid--compact-pairs{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(68px,1fr)) minmax(46px,.62fr)!important;
+  gap:0!important;
+  padding:6px 8px 8px!important;
+  background:color-mix(in srgb,var(--troop-section-accent,#d4a43d) 4%,var(--color-surface))!important;
+}
+body[data-page="troop.html"] .troop-ability-grid--compact-pairs .troop-ability-pair,
+body[data-page="troop.html"] .troop-ability-grid--compact-pairs .troop-cs-card{
+  display:grid!important;
+  grid-template-rows:16px 26px!important;
+  align-content:center!important;
+  justify-items:center!important;
+  min-width:0!important;
+  min-height:48px!important;
+  padding:4px 6px!important;
+  border:0!important;
+  border-right:1px solid color-mix(in srgb,var(--troop-section-accent,#d4a43d) 22%,var(--color-border-muted))!important;
+  background:transparent!important;
+}
+body[data-page="troop.html"] .troop-ability-grid--compact-pairs .troop-ability-pair:nth-child(4){border-right:1px solid color-mix(in srgb,var(--troop-section-accent,#d4a43d) 54%,var(--color-border-muted))!important}
+body[data-page="troop.html"] .troop-ability-grid--compact-pairs .troop-cs-card{border-right:0!important;background:color-mix(in srgb,var(--troop-section-accent,#d4a43d) 12%,var(--color-surface))!important}
+body[data-page="troop.html"] .troop-ability-pair__label,
+body[data-page="troop.html"] .troop-cs-card span{font-size:12px!important;line-height:16px!important;font-weight:850!important;white-space:nowrap!important}
+body[data-page="troop.html"] .troop-ability-pair__value,
+body[data-page="troop.html"] .troop-cs-card strong{
+  display:inline-flex!important;
+  align-items:baseline!important;
+  justify-content:center!important;
+  gap:1px!important;
+  min-width:5.2ch!important;
+  margin:0!important;
+  font-size:21px!important;
+  line-height:26px!important;
+  font-weight:900!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums!important;
+}
+body[data-page="troop.html"] .troop-cs-card strong{min-width:2.2ch!important;color:var(--troop-section-accent,#d4a43d)!important}
+body[data-page="troop.html"] .troop-ability-pair__value i{font-size:.72em!important;font-style:normal!important;font-weight:650!important;opacity:.72!important}
+
+/* Public view and editor are mutually exclusive. Component display rules must not override the HTML hidden state. */
+body[data-page="troop.html"] #troop-editor[hidden]{display:none!important}
+
+/* Read-only view mirrors the editor instead of using the legacy mobile sheet. */
+body[data-page="troop.html"] #troop-view.troop-view-readonly[hidden]{display:none!important}
+body[data-page="troop.html"] #troop-view.troop-view-readonly:not([hidden]){
+  position:relative;
+  display:grid!important;
+  width:100%!important;
+  gap:10px!important;
+  padding:16px!important;
+  border:1px solid color-mix(in srgb,var(--color-accent) 28%,var(--color-border))!important;
+  background:linear-gradient(180deg,color-mix(in srgb,var(--color-accent) 5%,var(--theme-panel-bg,var(--color-surface))),var(--theme-panel-bg,var(--color-surface)) 220px)!important;
+  box-sizing:border-box;
+}
+body[data-page="troop.html"] #troop-view.troop-view-readonly::before{
+  content:"TROOP // READ ONLY RECORD";
+  position:absolute;
+  top:0;
+  right:16px;
+  z-index:1;
+  padding:5px 10px;
+  background:var(--color-accent);
+  color:var(--color-filled-control-text,#fff);
+  font:900 8px/1 var(--font-data);
+  letter-spacing:.12em;
+}
+body[data-page="troop.html"] .troop-view-readonly__header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  min-height:54px;
+  padding:8px 10px 10px;
+  border-bottom:1px solid color-mix(in srgb,var(--color-accent) 36%,var(--color-border-muted));
+  background:linear-gradient(100deg,color-mix(in srgb,var(--color-accent) 12%,transparent),transparent 58%);
+}
+body[data-page="troop.html"] .troop-view-readonly__header h2{margin:2px 0 0;font-size:clamp(22px,3vw,32px);line-height:1.1}
+body[data-page="troop.html"] .troop-view-readonly__header .troops-kicker{margin:0;font-size:9px}
+body[data-page="troop.html"] .troop-view-readonly__header .troop-sheet__actions a,
+body[data-page="troop.html"] .troop-view-readonly__header .troop-sheet__actions button{min-height:34px;padding:6px 10px;font-size:11px}
+body[data-page="troop.html"] .troop-view-overview{margin:0!important}
+body[data-page="troop.html"] .troop-view-form-grid{display:grid;gap:8px;margin:0;padding:8px 10px;align-items:end}
+body[data-page="troop.html"] .troop-view-form-grid--basic{grid-template-columns:minmax(180px,1fr) 92px 82px}
+body[data-page="troop.html"] .troop-view-form-grid--management{grid-template-columns:minmax(92px,.75fr) minmax(145px,1.35fr) 86px}
+body[data-page="troop.html"] .troop-view-form-grid>div{display:grid;min-width:0;gap:3px}
+body[data-page="troop.html"] .troop-view-form-grid dt{font-size:12px;font-weight:700}
+body[data-page="troop.html"] .troop-view-form-grid dd,
+body[data-page="troop.html"] .troop-view-style-value{
+  display:flex;
+  align-items:center;
+  min-width:0;
+  min-height:32px;
+  margin:0;
+  padding:5px 8px;
+  border:1px solid var(--color-border-muted);
+  background:color-mix(in srgb,var(--troop-section-accent,var(--color-accent)) 5%,var(--color-surface));
+  font-size:13px;
+  font-weight:800;
+  overflow-wrap:anywhere;
+}
+body[data-page="troop.html"] .troop-view-form-grid--basic>div:nth-child(n+2) dd,
+body[data-page="troop.html"] .troop-view-form-grid--management>div:last-child dd{justify-content:center;font:900 17px/1 var(--font-data);font-variant-numeric:tabular-nums}
+body[data-page="troop.html"] .troop-view-form-grid a{color:inherit;text-underline-offset:2px}
+body[data-page="troop.html"] .troop-view-style-value{min-height:34px;margin:8px 10px;border-color:color-mix(in srgb,var(--troop-section-accent,#78aa58) 55%,var(--color-border));font-size:14px;font-weight:900}
+body[data-page="troop.html"] .troop-view-section{margin:0!important;border:1px solid var(--color-border-muted)!important;box-shadow:none!important}
+body[data-page="troop.html"] .empty-data{margin:0;padding:12px;color:var(--color-muted);font-size:12px}
+
+/* General skills retain the editor's two-column table. */
+body[data-page="troop.html"] .troop-view-general-field-heads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding:6px 10px 0}
+body[data-page="troop.html"] .troop-view-general-field-heads>div{display:grid;grid-template-columns:minmax(0,1fr) 42px 128px;gap:5px;padding:0 6px}
+body[data-page="troop.html"] .troop-view-general-field-heads span,
+body[data-page="troop.html"] .troop-view-style-field-heads span,
+body[data-page="troop.html"] .troop-view-outfit-fields span{color:var(--color-text);font:800 10px/1.1 var(--font-data);letter-spacing:.04em}
+body[data-page="troop.html"] .troop-view-general-field-heads span:nth-child(n+2){text-align:center}
+body[data-page="troop.html"] .troop-view-general-field-heads small,
+body[data-page="troop.html"] .troop-view-style-field-heads small,
+body[data-page="troop.html"] .troop-view-outfit-fields small{display:inline!important;color:var(--color-muted)!important;font-size:8px!important}
+body[data-page="troop.html"] .troop-view-general-list{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:repeat(8,auto);
+  grid-auto-flow:column;
+  gap:5px 10px!important;
+  padding:5px 10px 9px!important;
+}
+body[data-page="troop.html"] .troop-view-general-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) 42px 128px!important;
+  align-items:center;
+  gap:5px!important;
+  min-width:0;
+  min-height:38px;
+  padding:5px 6px!important;
+  border:1px solid var(--color-border-muted)!important;
+  border-left:2px solid color-mix(in srgb,var(--troop-section-accent,#cf6874) 45%,var(--color-border-muted))!important;
+  background:color-mix(in srgb,var(--troop-section-accent,#cf6874) 3%,var(--color-surface))!important;
+}
+body[data-page="troop.html"] .troop-view-general-row strong{min-width:0;font-size:13px;overflow-wrap:anywhere}
+body[data-page="troop.html"] .troop-view-general-row span{text-align:center;font-size:12px;font-weight:800}
+body[data-page="troop.html"] .troop-view-suits{font-size:17px!important;letter-spacing:.08em;white-space:nowrap}
+
+/* Style skills use the same fields and order as the editor. */
+body[data-page="troop.html"] .troop-view-style-field-heads,
+body[data-page="troop.html"] .troop-view-style-skill-row{display:grid!important;grid-template-columns:minmax(145px,1.25fr) 82px 42px 112px 112px 112px minmax(120px,1.2fr)!important;gap:6px!important}
+body[data-page="troop.html"] .troop-view-style-field-heads{padding:7px 10px 2px}
+body[data-page="troop.html"] .troop-view-style-field-heads span:nth-child(n+2):not(:last-child){text-align:center}
+body[data-page="troop.html"] .troop-view-style-skill-list{display:grid;gap:5px;padding:3px 10px 9px}
+body[data-page="troop.html"] .troop-view-style-skill-row{
+  align-items:center;
+  min-width:0;
+  min-height:38px;
+  padding:6px!important;
+  border:1px solid var(--color-border-muted)!important;
+  border-left:2px solid color-mix(in srgb,var(--troop-section-accent,#49aaa3) 48%,var(--color-border-muted))!important;
+  background:color-mix(in srgb,var(--troop-section-accent,#49aaa3) 3%,var(--color-surface))!important;
+  font-size:12px;
+}
+body[data-page="troop.html"] .troop-view-style-skill-row>*{min-width:0;margin:0;overflow-wrap:anywhere}
+body[data-page="troop.html"] .troop-view-style-skill-row>span{text-align:center}
+body[data-page="troop.html"] .troop-view-style-skill-row>p{line-height:1.4;color:var(--color-muted)}
+
+/* Combo cards are complete, scannable, and leave room for clipboard actions. */
+body[data-page="troop.html"] .troop-view-combo-list{display:grid;gap:7px;padding:8px 10px 10px}
+body[data-page="troop.html"] #troop-combos-view .troop-view-combo{
+  position:relative;
+  display:grid!important;
+  grid-template-columns:minmax(165px,.8fr) minmax(0,1.8fr)!important;
+  gap:5px 10px!important;
+  align-items:start!important;
+  min-width:0;
+  padding:9px 116px 9px 10px!important;
+  border:1px solid color-mix(in srgb,var(--troop-section-accent,#cf873b) 34%,var(--color-border-muted))!important;
+  border-left:4px solid var(--troop-section-accent,#cf873b)!important;
+  background:linear-gradient(90deg,color-mix(in srgb,var(--troop-section-accent,#cf873b) 7%,var(--color-surface)),var(--color-surface) 52%)!important;
+}
+body[data-page="troop.html"] .troop-view-combo__identity{display:grid;gap:2px;min-width:0}
+body[data-page="troop.html"] .troop-view-combo__identity strong{font-size:15px;line-height:1.3}
+body[data-page="troop.html"] .troop-view-combo__identity span{font-size:11px!important;line-height:1.35;color:var(--color-muted)}
+body[data-page="troop.html"] .troop-view-combo dl{display:grid;grid-template-columns:repeat(3,minmax(70px,1fr));gap:5px;margin:0}
+body[data-page="troop.html"] .troop-view-combo dl>div{display:grid;grid-template-columns:auto 1fr;align-items:baseline;gap:5px;padding:3px 5px;border:1px solid var(--color-border-muted)}
+body[data-page="troop.html"] .troop-view-combo dt{font-size:9px;color:var(--color-muted);white-space:nowrap}
+body[data-page="troop.html"] .troop-view-combo dd{margin:0;text-align:right;font-size:13px;font-weight:900}
+body[data-page="troop.html"] .troop-view-combo__detail,
+body[data-page="troop.html"] .troop-view-combo__description{grid-column:2!important;margin:0!important;font-size:11px!important;line-height:1.4!important;white-space:pre-wrap}
+body[data-page="troop.html"] .troop-view-combo__detail{color:var(--color-muted)}
+body[data-page="troop.html"] #troop-combos-view .troop-combo-copy{border-color:color-mix(in srgb,var(--troop-section-accent,#cf873b) 55%,var(--color-border-muted));background:color-mix(in srgb,var(--troop-section-accent,#cf873b) 10%,var(--color-surface))}
+body[data-page="troop.html"] #troop-combos-view .troop-combo-copy small{color:var(--troop-section-accent,#cf873b)!important}
+body[data-page="troop.html"] #troop-combos-view .troop-combo-copy:hover,
+body[data-page="troop.html"] #troop-combos-view .troop-combo-copy.is-copied{background:var(--troop-section-accent,#cf873b)}
+
+/* Outfit rows mirror the editor's six read-only fields. */
+body[data-page="troop.html"] .troop-view-outfit-fields,
+body[data-page="troop.html"] .troop-view-outfit-row{display:grid!important;grid-template-columns:minmax(150px,1.2fr) 110px 64px 64px 64px minmax(180px,1.6fr)!important;gap:7px!important}
+body[data-page="troop.html"] .troop-view-outfit-fields{margin:10px 10px 0;padding:0 6px 6px;border-bottom:1px solid color-mix(in srgb,var(--troop-section-accent,#9375ba) 32%,var(--color-border-muted))}
+body[data-page="troop.html"] .troop-view-outfit-list{display:grid;gap:5px;padding:5px 10px 9px}
+body[data-page="troop.html"] .troop-view-outfit-row{
+  align-items:center;
+  min-width:0;
+  padding:6px!important;
+  border:1px solid var(--color-border-muted)!important;
+  border-left:2px solid color-mix(in srgb,var(--troop-section-accent,#9375ba) 46%,var(--color-border-muted))!important;
+  background:color-mix(in srgb,var(--troop-section-accent,#9375ba) 3%,var(--color-surface))!important;
+  font-size:12px;
+}
+body[data-page="troop.html"] .troop-view-outfit-row>*{min-width:0;margin:0;overflow-wrap:anywhere}
+body[data-page="troop.html"] .troop-view-outfit-row>span{text-align:center;font-weight:800}
+body[data-page="troop.html"] .troop-view-outfit-row>p{color:var(--color-muted);line-height:1.4}
+body[data-page="troop.html"] .troop-view-notes{min-height:48px;padding:10px 12px;white-space:pre-wrap;font-size:12px;line-height:1.6}
+
+/* Editor-only metadata refinements retained from v6. */
+body[data-page="troop.html"] .troop-style-field-heads{grid-template-columns:minmax(145px,1.25fr) 82px 42px 128px 112px 112px minmax(120px,1.2fr) 36px!important;gap:6px!important}
+body[data-page="troop.html"] #troop-style-skills-editor .troop-style-row-v6{display:grid!important;grid-template-columns:minmax(145px,1.25fr) 82px 42px 128px 112px 112px minmax(120px,1.2fr) 36px!important;gap:6px!important;align-items:center!important}
+body[data-page="troop.html"] #troop-style-skills-editor .troop-style-row-v6>[data-field="level"]{width:42px!important;min-width:42px!important;max-width:42px!important;height:29px!important;padding:3px!important;text-align:center!important;font-size:13px!important;font-weight:900!important}
+body[data-page="troop.html"] #troop-style-skills-editor .troop-style-row-v6 .troop-style-meta-input{min-width:0!important;height:30px!important;padding:4px 6px!important;font-size:12px!important}
+body[data-page="troop.html"] .troop-style-field-heads span{font-size:10px!important;font-weight:850!important}
+body[data-page="troop.html"] .troop-style-field-heads small{font-size:8px!important}
+body[data-page="troop.html"] .troop-outfit-fields span{font-size:10px!important;line-height:1.15!important;font-weight:850!important;letter-spacing:.04em!important;color:var(--color-text)!important}
+body[data-page="troop.html"] .troop-outfit-fields small{display:inline!important;font-size:8px!important;color:var(--color-muted)!important}
+body[data-page="troop.html"] .combo-card dl dd{font-size:13px!important;font-weight:850!important}
+
+@media(max-width:1000px){
+  body[data-page="troop.html"] .troop-overview{grid-template-columns:1fr!important}
+  body[data-page="troop.html"] .troop-style-field-heads{display:none!important}
+  body[data-page="troop.html"] #troop-style-skills-editor .troop-style-row-v6{grid-template-columns:minmax(130px,1fr) 78px 42px 124px!important}
+  body[data-page="troop.html"] .troop-view-style-field-heads{display:none!important}
+  body[data-page="troop.html"] .troop-view-style-skill-row{grid-template-columns:minmax(140px,1fr) 78px 42px 120px!important}
+  body[data-page="troop.html"] .troop-view-style-skill-row>span:nth-of-type(4){grid-column:1/3}
+  body[data-page="troop.html"] .troop-view-style-skill-row>span:nth-of-type(5){grid-column:3/5}
+  body[data-page="troop.html"] .troop-view-style-skill-row>p{grid-column:1/-1}
+}
+
+@media(max-width:900px){
+  body[data-page="troop.html"] .troop-view-general-field-heads{grid-template-columns:1fr}
+  body[data-page="troop.html"] .troop-view-general-field-heads>div:nth-child(2){display:none}
+  body[data-page="troop.html"] .troop-view-general-list{grid-template-columns:1fr!important;grid-template-rows:none;grid-auto-flow:row}
+  body[data-page="troop.html"] #troop-combos-view .troop-view-combo{grid-template-columns:1fr!important}
+  body[data-page="troop.html"] .troop-view-combo dl,
+  body[data-page="troop.html"] .troop-view-combo__detail,
+  body[data-page="troop.html"] .troop-view-combo__description{grid-column:1!important}
+  body[data-page="troop.html"] .troop-view-outfit-fields{display:none!important}
+  body[data-page="troop.html"] .troop-view-outfit-row{grid-template-columns:minmax(150px,1.2fr) 100px 54px 54px 54px minmax(150px,1.4fr)!important}
+}
+
+@media(max-width:620px){
+  body[data-page="troop.html"] #troop-view.troop-view-readonly:not([hidden]){padding:8px!important}
+  body[data-page="troop.html"] #troop-view.troop-view-readonly::before{display:none}
+  body[data-page="troop.html"] .troop-view-readonly__header{align-items:stretch;flex-direction:column;padding:8px}
+  body[data-page="troop.html"] .troop-view-readonly__header .troop-sheet__actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  body[data-page="troop.html"] .troop-view-form-grid--basic{grid-template-columns:minmax(0,1fr) 66px 66px}
+  body[data-page="troop.html"] .troop-view-form-grid--management{grid-template-columns:1fr}
+  body[data-page="troop.html"] .troop-ability-grid--compact-pairs{grid-template-columns:repeat(4,minmax(52px,1fr)) minmax(42px,.62fr)!important;padding-inline:3px!important}
+  body[data-page="troop.html"] .troop-ability-grid--compact-pairs .troop-ability-pair,
+  body[data-page="troop.html"] .troop-ability-grid--compact-pairs .troop-cs-card{padding-inline:2px!important}
+  body[data-page="troop.html"] .troop-ability-pair__value,
+  body[data-page="troop.html"] .troop-cs-card strong{font-size:17px!important}
+  body[data-page="troop.html"] .troop-ability-pair__label,
+  body[data-page="troop.html"] .troop-cs-card span{font-size:10px!important}
+  body[data-page="troop.html"] .troop-view-general-field-heads>div,
+  body[data-page="troop.html"] .troop-view-general-row{grid-template-columns:minmax(0,1fr) 40px 112px!important}
+  body[data-page="troop.html"] .troop-view-style-skill-row{grid-template-columns:minmax(0,1fr) auto!important;padding:8px!important}
+  body[data-page="troop.html"] .troop-view-style-skill-row>strong{grid-column:1}
+  body[data-page="troop.html"] .troop-view-style-skill-row>span:nth-of-type(1){grid-column:2;text-align:right}
+  body[data-page="troop.html"] .troop-view-style-skill-row>span:nth-of-type(2){grid-column:1;text-align:left}
+  body[data-page="troop.html"] .troop-view-style-skill-row>span:nth-of-type(3){grid-column:2;text-align:right}
+  body[data-page="troop.html"] .troop-view-style-skill-row>span:nth-of-type(4),
+  body[data-page="troop.html"] .troop-view-style-skill-row>span:nth-of-type(5),
+  body[data-page="troop.html"] .troop-view-style-skill-row>p{grid-column:1/-1;text-align:left}
+  body[data-page="troop.html"] .troop-view-style-skill-row>span:nth-of-type(4)::before{content:"タイミング：";color:var(--color-muted)}
+  body[data-page="troop.html"] .troop-view-style-skill-row>span:nth-of-type(5)::before{content:"対決：";color:var(--color-muted)}
+  body[data-page="troop.html"] #troop-combos-view .troop-view-combo{padding:9px 9px 52px!important}
+  body[data-page="troop.html"] .troop-view-combo dl{grid-template-columns:1fr}
+  body[data-page="troop.html"] #troop-combos-view .troop-combo-copy{top:auto;right:7px;bottom:7px;min-height:34px;min-width:92px}
+  body[data-page="troop.html"] .troop-view-outfit-row{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+  body[data-page="troop.html"] .troop-view-outfit-row>strong,
+  body[data-page="troop.html"] .troop-view-outfit-row>p{grid-column:1/-1}
+  body[data-page="troop.html"] .troop-view-outfit-row>span{font-size:11px}
+  body[data-page="troop.html"] .troop-view-outfit-row>span:nth-of-type(1)::before{content:"攻撃 ";color:var(--color-muted)}
+  body[data-page="troop.html"] .troop-view-outfit-row>span:nth-of-type(2)::before{content:"S ";color:var(--color-muted)}
+  body[data-page="troop.html"] .troop-view-outfit-row>span:nth-of-type(3)::before{content:"P ";color:var(--color-muted)}
+  body[data-page="troop.html"] .troop-view-outfit-row>span:nth-of-type(4)::before{content:"I ";color:var(--color-muted)}
+}

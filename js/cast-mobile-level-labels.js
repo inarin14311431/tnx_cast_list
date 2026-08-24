@@ -32,3 +32,7 @@
     initialize();
   }
 })();
+
+import("./cast-troops-link.js?v=2").catch(error => {
+  console.error("cast troop navigation failed to load", error);
+});

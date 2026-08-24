@@ -1,0 +1,58 @@
+/* Troop editor v4 refinements */
+#troop-general-skills-editor .troop-skill-row:has(.troop-general-skill-picker){grid-template-columns:minmax(230px,1.7fr) 64px 154px minmax(150px,1.4fr) 38px}
+.troop-combo-abilities,.troop-combo-skills{margin:0;padding:10px;border:1px solid var(--color-border-muted)}
+.troop-combo-abilities legend,.troop-combo-skills legend{padding:0 5px;font-weight:900}
+.troop-combo-abilities{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.troop-combo-abilities label,.troop-combo-skill-options label{display:flex;align-items:center;gap:7px;min-height:38px;padding:6px 9px;border:1px solid var(--color-border-muted);cursor:pointer}
+.troop-combo-abilities label:has(input:checked),.troop-combo-skill-options label:has(input:checked){border-color:var(--color-accent);background:var(--color-accent-soft);font-weight:900}
+.troop-combo-skill-options{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}
+.troop-editor-row--outfit,.troop-outfit-fields{grid-template-columns:minmax(150px,1.2fr) 110px 64px 64px 64px minmax(180px,1.6fr) 38px}
+.troop-editor-row--outfit [data-field="attack"]{font-weight:900}
+.troop-editor-row--outfit [data-field^="defense_"]{text-align:center;font-weight:900}
+.troop-outfit-fields{display:grid;gap:7px;margin:12px 12px 0;padding:0 8px 7px;border-bottom:1px solid color-mix(in srgb,var(--color-accent) 32%,var(--color-border-muted));color:var(--color-muted);font:800 9px/1.2 var(--font-data);letter-spacing:.08em}.troop-outfit-fields span{min-width:0}.troop-outfit-fields small{display:inline;color:var(--color-accent);font-size:7px}.troop-section--outfits{border-top:3px solid color-mix(in srgb,var(--color-accent) 70%,transparent)}
+
+/* Troop record visual hierarchy */
+body[data-page="troop.html"] .troop-sheet,body[data-page="troop.html"] .troop-editor{position:relative;border-color:color-mix(in srgb,var(--color-accent) 28%,var(--color-border));background:linear-gradient(180deg,color-mix(in srgb,var(--color-accent) 5%,var(--theme-panel-bg,var(--color-surface))),var(--theme-panel-bg,var(--color-surface)) 220px)}
+body[data-page="troop.html"] .troop-sheet::before,body[data-page="troop.html"] .troop-editor::before{content:"TROOP // ACTIVE UNIT RECORD";position:absolute;top:0;right:16px;z-index:1;padding:5px 10px;background:var(--color-accent);color:var(--color-filled-control-text,#fff);font:900 8px/1 var(--font-data);letter-spacing:.12em}
+body[data-page="troop.html"] .troop-sheet__header{border-bottom-color:color-mix(in srgb,var(--color-accent) 40%,var(--color-border-muted));background:linear-gradient(100deg,color-mix(in srgb,var(--color-accent) 16%,transparent),transparent 56%)}
+body[data-page="troop.html"] .troop-vitals article{border-top:3px solid color-mix(in srgb,var(--color-accent) 54%,transparent);background:linear-gradient(180deg,color-mix(in srgb,var(--color-accent) 10%,transparent),color-mix(in srgb,var(--color-accent) 3%,transparent))}
+body[data-page="troop.html"] .troop-vitals article:hover{border-color:var(--color-accent);box-shadow:inset 0 0 18px color-mix(in srgb,var(--color-accent) 8%,transparent)}
+body[data-page="troop.html"] .troop-section>header{position:relative;background:linear-gradient(90deg,color-mix(in srgb,var(--color-accent) 12%,transparent),color-mix(in srgb,var(--color-accent) 2%,transparent) 65%)}
+body[data-page="troop.html"] .troop-section>header::before{content:"";width:4px;align-self:stretch;background:var(--color-accent);box-shadow:0 0 10px color-mix(in srgb,var(--color-accent) 60%,transparent)}
+body[data-page="troop.html"] .troop-data-list article{position:relative;border-left-width:4px;background:linear-gradient(90deg,color-mix(in srgb,var(--color-accent) 7%,transparent),transparent 52%)}
+body[data-page="troop.html"] .troop-combo-view-list article{padding-right:122px}.troop-combo-copy{position:absolute;top:8px;right:8px;display:grid;place-items:center;min-width:98px;min-height:40px;padding:5px 9px;border:1px solid color-mix(in srgb,var(--color-accent) 52%,var(--color-border-muted));background:color-mix(in srgb,var(--color-accent) 9%,var(--color-surface));color:var(--color-text);cursor:pointer;font-weight:900}.troop-combo-copy small{display:block!important;margin-top:2px;color:var(--color-accent)!important;font:800 7px/1 var(--font-data)!important;letter-spacing:.08em}.troop-combo-copy:hover,.troop-combo-copy.is-copied{background:var(--color-accent);color:var(--color-filled-control-text,#fff)}.troop-combo-copy:hover small,.troop-combo-copy.is-copied small{color:inherit!important}
+body[data-page="troop.html"] .troop-editor-row{transition:border-color .15s ease,background .15s ease}body[data-page="troop.html"] .troop-editor-row:focus-within{border-color:var(--color-accent);background:color-mix(in srgb,var(--color-accent) 7%,transparent);box-shadow:0 0 0 1px color-mix(in srgb,var(--color-accent) 15%,transparent)}
+@media(max-width:900px){.troop-combo-abilities{grid-template-columns:repeat(2,minmax(0,1fr))}.troop-combo-skill-options{grid-template-columns:1fr}.troop-editor-row--outfit{grid-template-columns:repeat(2,minmax(0,1fr))}.troop-outfit-fields{display:none}.troop-editor-row--outfit [data-remove]{grid-column:2;justify-self:end}}
+@media(max-width:760px){
+  .troop-combo-abilities,.troop-editor-row--outfit{grid-template-columns:1fr}.troop-editor-row--outfit [data-remove]{grid-column:auto}
+  body[data-page="troop.html"] .background-grid,body[data-page="troop.html"] .scanlines{display:none}
+  body[data-page="troop.html"] .auth-header{padding:10px 12px}
+  body[data-page="troop.html"] .auth-header p{display:none}
+  body[data-page="troop.html"] .auth-header h1{font-size:16px;margin:4px 0 0}
+  body[data-page="troop.html"] .troop-layout{width:100%;padding:10px 10px 24px}
+  body[data-page="troop.html"] .troop-sheet{display:grid;gap:8px}
+  body[data-page="troop.html"] .troop-sheet::before,body[data-page="troop.html"] .troop-editor::before{display:none}
+  body[data-page="troop.html"] .troop-sheet__header{padding:12px;gap:8px}
+  body[data-page="troop.html"] .troop-sheet__header h2{font-size:20px}
+  body[data-page="troop.html"] .troop-sheet__actions{gap:6px}
+  body[data-page="troop.html"] .troop-sheet__actions button,body[data-page="troop.html"] .troop-sheet__actions a{padding:7px 9px;font-size:11px}
+  body[data-page="troop.html"] .troop-vitals{grid-template-columns:repeat(4,minmax(0,1fr));gap:5px}
+  body[data-page="troop.html"] .troop-vitals article{min-width:0;padding:8px 5px;text-align:center}
+  body[data-page="troop.html"] .troop-vitals span{font-size:9px}
+  body[data-page="troop.html"] .troop-vitals strong{font-size:18px}
+  body[data-page="troop.html"] .troop-vitals small{display:none}
+  body[data-page="troop.html"] .troop-section{margin:0;padding:10px}
+  body[data-page="troop.html"] .troop-section>header{margin-bottom:6px}
+  body[data-page="troop.html"] .troop-section h3{font-size:13px}
+  body[data-page="troop.html"] .troop-section h3 small{font-size:9px}
+  body[data-page="troop.html"] .troop-style-grid{font-size:13px}
+  body[data-page="troop.html"] .troop-ability-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+  body[data-page="troop.html"] .troop-ability-grid>*{min-width:0;padding:7px 4px}
+  body[data-page="troop.html"] .troop-data-list{display:grid;gap:4px}
+  body[data-page="troop.html"] .troop-data-list>*{padding:7px 8px;font-size:11px}
+  body[data-page="troop.html"] .troop-combo-view-list article{padding-right:8px;padding-bottom:50px}
+  body[data-page="troop.html"] .troop-combo-copy{top:auto;bottom:6px;right:6px;min-height:34px;min-width:92px}
+  body[data-page="troop.html"] .troop-notes{font-size:11px;line-height:1.5;max-height:7.5em;overflow:auto}
+  body[data-page="troop.html"] #troop-public-id{font-size:9px}
+  body[data-page="troop.html"] #troop-linked-character-view{font-size:11px}
+}
