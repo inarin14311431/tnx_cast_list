@@ -13,8 +13,7 @@ const [
   errorMessage,
   coordinator,
   state,
-  diagnostics,
-  ofcSave
+  diagnostics
 ] = await Promise.all([
   read("sheet.js"),
   read("sheet-save-payload.js"),
@@ -24,8 +23,7 @@ const [
   read("sheet-error-message.js"),
   read("sheet-save-coordinator.js"),
   read("sheet-save-state.js"),
-  read("sheet-save-diagnostics.js"),
-  read("outfit-ofc-save.js")
+  read("sheet-save-diagnostics.js")
 ]);
 
 const runtimeDependencyPattern = /document\.|querySelector|window\.|from\s+["'][^"']*supabase-client|supabase\.(?:from|rpc|auth|storage)/;
@@ -80,10 +78,11 @@ test("save state presentation remains explicit rather than DOM-derived", () => {
   assert.doesNotMatch(diagnostics, /MutationObserver/);
 });
 
-test("OFC enrichment remains an explicit pure persistence dependency", () => {
-  assert.match(persistence, /enrichOutfitPayload/);
-  assert.match(ofcSave, /export function enrichOutfitPayload/);
-  assert.doesNotMatch(ofcSave, /supabase-client|supabase\.rpc\s*=|__tnxOfcSaveWrapped/);
+test("outfit persistence receives the canonical model projection without DOM enrichment", () => {
+  assert.doesNotMatch(persistence, /enrichOutfitPayload|outfit-ofc-save/);
+  assert.match(persistence, /p_outfits:\s*Array\.isArray\(outfits\) \? outfits : \[\]/);
+  assert.match(payload, /ofc_details:\s*buildOutfitDetails\(item, category\)/);
+  assert.doesNotMatch(payload, /document\.|querySelector|TNXOutfitOFCState/);
 });
 
 test("retired save compatibility cannot leak back through current save modules", () => {
@@ -93,7 +92,8 @@ test("retired save compatibility cannot leak back through current save modules",
     assert.doesNotMatch(source, /control_value/);
     assert.doesNotMatch(source, /cs_value/);
   }
-  assert.doesNotMatch(payload, /\bdefense\s*:/);
+  assert.match(payload, /defense:\s*""/);
+  assert.doesNotMatch(payload, /composeDefense|parseDefense|data-armor-defense/);
 });
 
 test("save-in-flight edits stay protected by revision-aware coordinator logic", () => {
