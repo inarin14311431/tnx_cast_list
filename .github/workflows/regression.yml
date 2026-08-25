@@ -48,13 +48,4 @@ jobs:
         run: npm run report:cast-ownership
 
       - name: Run Node regression tests
-        run: |
-          set -o pipefail
-          npm test 2>&1 | tee regression.log
-
-      - name: Upload regression log
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: regression-log
-          path: regression.log
+        run: npm test
