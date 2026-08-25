@@ -1,5 +1,4 @@
 import { supabase } from "./supabase-client.js";
-import { enrichOutfitPayload } from "./outfit-ofc-save.js?v=1";
 
 const SAVE_RPC = "save_character_bundle_with_ofc";
 
@@ -13,7 +12,7 @@ export async function persistSheetBundle({
     p_character_id: characterId,
     p_character: character,
     p_skills: skills,
-    p_outfits: enrichOutfitPayload(Array.isArray(outfits) ? outfits : [])
+    p_outfits: Array.isArray(outfits) ? outfits : []
   });
 
   if (error) throw error;
