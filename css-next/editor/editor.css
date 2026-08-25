@@ -347,6 +347,65 @@ body[data-page="sheet.html"] .exp-panel .sheet-import-control .floating-help-lin
   body[data-page="sheet.html"] .sheet-combo-entry__header { flex-wrap: wrap; align-items: flex-start; }
   body[data-page="sheet.html"] .sheet-combo-entry__header > div { display: grid; gap: 3px; }
   body[data-page="sheet.html"] .sheet-combo-entry__body, body[data-page="sheet.html"] .sheet-combo-entry__list { grid-template-columns: 1fr; }
+  body[data-page="sheet.html"] .ability-matrix--cs :is(.ability-matrix__header, .ability-matrix__row) {
+    grid-template-columns: 70px minmax(0, 1fr);
+  }
+}
+
+@media (pointer: coarse) and (min-width: 768px) and (max-width: 1100px) {
+  body[data-page="sheet.html"] .sheet-layout {
+    grid-template-columns: minmax(0, 1fr);
+    width: min(100% - 24px, 1040px);
+    gap: 14px;
+  }
+  body[data-page="sheet.html"] .exp-panel {
+    position: relative;
+    top: auto;
+    grid-column: 1;
+    grid-row: auto;
+    width: 100%;
+    max-height: none;
+    overflow: visible;
+    padding: 12px;
+  }
+  body[data-page="sheet.html"] .sheet-main { grid-column: 1; }
+  body[data-page="sheet.html"] .exp-panel > :is(p, strong, dl) { max-width: 300px; }
+  body[data-page="sheet.html"] .sheet-section-nav {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    margin-inline: 0;
+  }
+  body[data-page="sheet.html"] .sheet-section-nav > p { grid-column: 1 / -1; }
+  body[data-page="sheet.html"] .sheet-section-nav :is(a, .sheet-combo-nav) {
+    grid-template-columns: 25px minmax(0, 1fr);
+    min-height: 44px;
+  }
+  body[data-page="sheet.html"] .exp-panel > :is(
+    label,
+    #save-button,
+    .sheet-view-link,
+    .sheet-import-control,
+    [data-action-group]
+  ) { max-width: 420px; }
+  body[data-page="sheet.html"] .profile-top-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  body[data-page="sheet.html"] .profile-top-grid .life-path-panel { grid-column: 1 / -1; }
+  body[data-page="sheet.html"] .profile-media-grid { grid-template-columns: 1fr; }
+  body[data-page="sheet.html"] :is(
+    .toolbar button,
+    .exp-panel button,
+    .exp-panel select,
+    .exp-panel .sheet-view-link
+  ) { min-height: 44px; }
+}
+
+@media (pointer: coarse) and (min-width: 1101px) and (max-width: 1366px) {
+  body[data-page="sheet.html"] :is(
+    .toolbar button,
+    .exp-panel button,
+    .exp-panel select,
+    .exp-panel .sheet-view-link
+  ) { min-height: 44px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

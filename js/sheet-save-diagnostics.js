@@ -6,19 +6,9 @@ let lastSaveError = null;
 let lastErrorAt = 0;
 let lastStateText = "";
 
-installStyles();
 installPanel();
 observeSaveError();
 observeSaveState();
-
-function installStyles() {
-  if (document.querySelector('#sheet-save-diagnostics-style')) return;
-  const link = document.createElement('link');
-  link.id = 'sheet-save-diagnostics-style';
-  link.rel = 'stylesheet';
-  link.href = './css-next/components/save-diagnostics.css?v=1';
-  document.head.append(link);
-}
 
 function installPanel() {
   if (document.querySelector('#save-diagnostics')) return;

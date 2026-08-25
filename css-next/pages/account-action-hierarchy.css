@@ -100,7 +100,7 @@ body[data-page="account.html"] .owned-cast__links > a:first-child {
   box-shadow: 0 0 14px color-mix(in srgb, var(--color-accent) 12%, transparent);
 }
 body[data-page="account.html"] .owned-cast__links > [data-mobile-sheet-link] {
-  display: none !important;
+  display: none ;
 }
 
 /* Explicit interaction feedback. Accent stays in surfaces; hover text follows each theme's readable text token. */

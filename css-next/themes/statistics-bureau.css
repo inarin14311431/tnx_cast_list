@@ -1,3 +1,4 @@
+/* Theme definition and presentation: Government Statistics Bureau. */
 :root[data-theme="statistics-bureau"] {
   color-scheme: light;
   --color-bg: #e7edf0;

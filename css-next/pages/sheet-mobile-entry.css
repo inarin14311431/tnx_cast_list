@@ -1,0 +1,19 @@
+/* Canonical stylesheet entry for the mobile editor. */
+@layer app, mobile-base, mobile-theme, mobile-ui, mobile-profile, mobile-style,
+  mobile-ability, mobile-skills, mobile-outfit, mobile-combos, mobile-snapshots,
+  mobile-image, mobile-import, mobile-ux;
+
+@import url("../index.css?v=64") layer(app);
+@import url("./sheet-mobile.css?v=5") layer(mobile-base);
+@import url("./sheet-mobile-theme.css?v=3") layer(mobile-theme);
+@import url("./sheet-mobile-ui.css?v=8") layer(mobile-ui);
+@import url("./sheet-mobile-profile.css?v=11") layer(mobile-profile);
+@import url("./sheet-mobile-style.css?v=6") layer(mobile-style);
+@import url("./sheet-mobile-ability.css?v=4") layer(mobile-ability);
+@import url("./sheet-mobile-skills.css?v=6") layer(mobile-skills);
+@import url("./sheet-mobile-outfit.css?v=9") layer(mobile-outfit);
+@import url("./sheet-mobile-combos.css?v=5") layer(mobile-combos);
+@import url("./sheet-mobile-snapshots.css?v=2") layer(mobile-snapshots);
+@import url("./sheet-mobile-image.css?v=2") layer(mobile-image);
+@import url("./sheet-mobile-import.css?v=2") layer(mobile-import);
+@import url("./sheet-mobile-ux.css?v=3") layer(mobile-ux);

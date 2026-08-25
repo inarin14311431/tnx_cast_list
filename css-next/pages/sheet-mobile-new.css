@@ -1,0 +1,56 @@
+body[data-page="sheet-mobile-new.html"] .mobile-new-layout {
+  display: block;
+  width: min(720px, calc(100% - 24px));
+  margin: 18px auto 48px;
+}
+
+body[data-page="sheet-mobile-new.html"] .mobile-new-panel {
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-glow);
+}
+
+body[data-page="sheet-mobile-new.html"] .mobile-new-panel__body {
+  display: grid;
+  gap: 18px;
+  padding: 22px;
+}
+
+body[data-page="sheet-mobile-new.html"] .mobile-new-panel__body > p {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.7;
+}
+
+body[data-page="sheet-mobile-new.html"] .mobile-new-form {
+  display: grid;
+  gap: 14px;
+}
+
+body[data-page="sheet-mobile-new.html"] .mobile-new-form label {
+  display: grid;
+  gap: 6px;
+  color: var(--color-text);
+  font-size: .78rem;
+  font-weight: 800;
+}
+
+body[data-page="sheet-mobile-new.html"] .mobile-new-form :is(input, select) {
+  width: 100%;
+  min-height: 48px;
+  font-size: 16px;
+}
+
+body[data-page="sheet-mobile-new.html"] #mobile-new-status {
+  min-height: 1.5em;
+  color: var(--color-muted);
+}
+
+body[data-page="sheet-mobile-new.html"] .mobile-new-actions button {
+  width: 100%;
+  min-height: 52px;
+}
+
+@media (max-width: 640px) {
+  body[data-page="sheet-mobile-new.html"] .mobile-new-panel__body { padding: 16px; }
+}

@@ -138,9 +138,8 @@ body[data-page="statistics.html"] { min-width: 0; }
 .statistics-histogram__bar span { color: var(--color-muted); font-size: 10px; font-weight: 900; text-align: center; }
 
 .statistics-donut-wrap { display: grid; grid-template-columns: 210px 1fr; gap: 18px; align-items: center; padding: 18px; }
-.statistics-donut { display: grid; place-items: center; width: 180px; height: 180px; margin: auto; border-radius: 50%; }
+.statistics-donut { position: relative; display: grid; place-items: center; width: 180px; height: 180px; margin: auto; border-radius: 50%; }
 .statistics-donut::after { position: absolute; width: 105px; height: 105px; border-radius: 50%; background: white; content: ""; }
-.statistics-donut { position: relative; }
 .statistics-donut > div { position: relative; z-index: 1; display: grid; justify-items: center; }
 .statistics-donut strong { color: var(--color-text); font-family: var(--font-data); font-size: 28px; }
 .statistics-donut span { color: var(--color-muted); font-size: 8px; font-weight: 900; letter-spacing: .12em; }

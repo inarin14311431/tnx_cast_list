@@ -41,3 +41,71 @@
 .error-terminal > :first-child { color: var(--color-accent); font-family: var(--font-data); letter-spacing: .14em; }
 .error-terminal h1 { margin-block: 12px; font-size: clamp(2rem, 7vw, 4.4rem); }
 .error-terminal a { display: inline-grid; margin-top: 20px; padding: 12px 20px; border: 1px solid var(--color-border); }
+
+.archive-copyright {
+  width: min(var(--page-width), calc(100% - var(--page-gutter)));
+  margin: 0 auto 20px;
+  color: var(--color-muted);
+  font-family: var(--font-data);
+  font-size: .62rem;
+  line-height: 1.55;
+  text-align: right;
+  opacity: .78;
+}
+
+.archive-copyright p {
+  margin: 0;
+}
+
+@media (max-width: 1199px) {
+  body[data-page="index.html"] .archive-controls {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  body[data-page="index.html"] .archive-control--search { grid-column: 1 / -1; }
+  body[data-page="index.html"] #archive-reset { width: 100%; }
+}
+
+@media (max-width: 767px) {
+  body[data-page="index.html"] .archive-controls {
+    box-sizing: border-box;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+    width: calc(100% - 20px);
+    margin-top: 16px;
+    padding: 12px;
+  }
+  body[data-page="index.html"] .archive-control--search { grid-column: 1 / -1; }
+  body[data-page="index.html"] .archive-control { min-width: 0; }
+  body[data-page="index.html"] .archive-control :is(input, select) {
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+  }
+  body[data-page="index.html"] #archive-reset {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 44px;
+  }
+  body[data-page="index.html"] :is(.archive-summary, .cast-grid, .archive-pagination) {
+    width: calc(100% - 20px);
+  }
+  body[data-page="index.html"] .cast-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 14px;
+  }
+  body[data-page="index.html"] .cast-card { width: 100%; min-width: 0; }
+  body[data-page="index.html"] .archive-pagination { flex-wrap: wrap; }
+}
+
+@media (pointer: coarse) and (min-width: 768px) and (max-width: 1100px) {
+  body[data-page="index.html"] .archive-controls {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  body[data-page="index.html"] .archive-control--search { grid-column: 1 / -1; }
+  body[data-page="index.html"] #archive-reset { min-height: 44px; }
+  body[data-page="index.html"] .cast-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+}

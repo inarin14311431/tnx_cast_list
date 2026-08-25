@@ -13,17 +13,6 @@ const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({
   "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
 }[char]));
 
-export function ensureOutfitStylesheet() {
-  let link = document.querySelector("link[data-mobile-outfit-style]");
-  if (!link) {
-    link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.dataset.mobileOutfitStyle = "1";
-    document.head.append(link);
-  }
-  link.href = "./css-next/pages/sheet-mobile-outfit.css?v=8";
-}
-
 export function ensureOutfitToolbar() {
   const body = document.querySelector("#mobile-outfits-section .mobile-sheet-section__body");
   if (!body || body.querySelector("[data-mobile-outfit-toolbar]")) return;

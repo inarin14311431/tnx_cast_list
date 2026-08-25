@@ -11,11 +11,10 @@
   overflow-x:hidden;
 }
 #troop-combo-dialog .combo-form-grid > * { min-width:0; box-sizing:border-box; }
-#troop-combo-dialog .combo-field--name { grid-column:span 3 !important; }
-#troop-combo-dialog .troop-combo-abilities { grid-column:span 3 !important; }
+#troop-combo-dialog .combo-field--name { grid-column:span 3 ; }
 #troop-combo-dialog .troop-combo-skills,
-#troop-combo-dialog .combo-form-grid__wide { grid-column:1/-1 !important; }
-#troop-combo-dialog .combo-field--rule { grid-column:span 2 !important; }
+#troop-combo-dialog .combo-form-grid__wide { grid-column:1/-1 ; }
+#troop-combo-dialog .combo-field--rule { grid-column:span 2 ; }
 #troop-combo-dialog .combo-field > span,
 #troop-combo-dialog .combo-field--description > span {
   display:flex;
@@ -39,6 +38,7 @@
   padding:4px 6px;
 }
 #troop-combo-dialog .troop-combo-abilities {
+  grid-column:span 3;
   grid-template-columns:repeat(4,max-content);
   align-items:center;
   justify-content:start;
@@ -71,11 +71,11 @@
   #troop-combo-dialog .combo-field--name,
   #troop-combo-dialog .troop-combo-abilities,
   #troop-combo-dialog .troop-combo-skills,
-  #troop-combo-dialog .combo-form-grid__wide{grid-column:1/-1!important}
-  #troop-combo-dialog .combo-field--rule{grid-column:span 1!important}
+  #troop-combo-dialog .combo-form-grid__wide{grid-column:1/-1}
+  #troop-combo-dialog .combo-field--rule{grid-column:span 1}
 }
 @media(max-width:460px){
   #troop-combo-dialog .combo-form-grid{grid-template-columns:1fr}
-  #troop-combo-dialog .combo-form-grid>*{grid-column:1!important}
+  #troop-combo-dialog .combo-form-grid>*{grid-column:1}
   #troop-combo-dialog .troop-combo-abilities{grid-template-columns:repeat(2,max-content)}
 }

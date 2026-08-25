@@ -9,15 +9,6 @@ const SOURCE_DIALOGS=[
 let pendingGeneralNew=false;
 let pendingGeneralSaveState=null;
 
-function loadUxStyles(){
-  if(document.querySelector("link[data-mobile-ux-style]"))return;
-  const link=document.createElement("link");
-  link.rel="stylesheet";
-  link.href="./css-next/pages/sheet-mobile-ux.css?v=2";
-  link.dataset.mobileUxStyle="1";
-  document.head.append(link);
-}
-
 function readSaveVisual(){
   const button=$("#mobile-save");
   const status=$("#mobile-save-status");
@@ -202,7 +193,6 @@ function syncSavingStatus(){
 }
 
 function init(){
-  loadUxStyles();
   trackTransientGeneralAdds();
   installAllExplicitActions();
   installReorderModes();

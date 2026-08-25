@@ -73,9 +73,9 @@
   border-top:3px solid color-mix(in srgb,var(--summary-accent) 72%,transparent);
   background:linear-gradient(180deg,color-mix(in srgb,var(--summary-accent) 9%,var(--color-surface-elevated)),var(--color-surface-elevated));
 }
-.cast-troop-summary__style{--summary-accent:var(--troop-style)!important}
-.cast-troop-summary__ability{--summary-accent:var(--troop-abilities)!important}
-.cast-troop-summary__management{--summary-accent:var(--troop-management)!important}
+.cast-troop-summary__style{--summary-accent:var(--troop-style)}
+.cast-troop-summary__ability{--summary-accent:var(--troop-abilities)}
+.cast-troop-summary__management{--summary-accent:var(--troop-management)}
 .cast-troop-summary span{font:800 9px/1.2 var(--font-data);letter-spacing:.1em;color:var(--summary-accent)}
 .cast-troop-summary strong{font-size:17px}
 
@@ -115,10 +115,10 @@
 .cast-troop-notes{margin:0;padding:9px 10px;border-left:3px solid color-mix(in srgb,var(--troop-section-accent) 52%,transparent);background:color-mix(in srgb,var(--troop-section-accent) 3%,var(--color-surface-elevated));white-space:pre-wrap;font-size:11px;line-height:1.55}
 
 .cast-troop-combos .troop-combo-copy{position:absolute;top:8px;right:8px;display:grid;place-items:center;min-width:92px;min-height:38px;padding:5px 9px;border:1px solid color-mix(in srgb,var(--troop-section-accent) 52%,var(--color-border-muted));background:color-mix(in srgb,var(--troop-section-accent) 10%,var(--color-surface));color:var(--color-text);cursor:pointer;font-weight:900}
-.cast-troop-combos .troop-combo-copy small{display:block!important;margin-top:1px;color:var(--troop-section-accent)!important;font:800 7px/1 var(--font-data)!important;letter-spacing:.08em}
+.cast-troop-combos .troop-combo-copy small{display:block;margin-top:1px;color:var(--troop-section-accent);font:800 7px/1 var(--font-data);letter-spacing:.08em}
 .cast-troop-combos .troop-combo-copy:hover,
 .cast-troop-combos .troop-combo-copy.is-copied{background:var(--troop-section-accent);color:var(--color-filled-control-text,#fff)}
 .cast-troop-combos .troop-combo-copy:hover small,
-.cast-troop-combos .troop-combo-copy.is-copied small{color:inherit!important}
+.cast-troop-combos .troop-combo-copy.is-copied small{color:inherit}
 
-@media(max-width:760px){.cast-troop-dialog{display:none!important}}
+@media(max-width:760px){.cast-troop-dialog{display:none}}

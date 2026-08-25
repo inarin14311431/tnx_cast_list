@@ -31,7 +31,6 @@ const quote = value => {
   return `“${text}”`;
 };
 let activeGroup = null;
-function ensureStyleSheet(){if(document.querySelector('link[data-mobile-profile-style]'))return;const link=document.createElement("link");link.rel="stylesheet";link.href="./css-next/pages/sheet-mobile-profile.css?v=11";link.dataset.mobileProfileStyle="1";document.head.append(link);}
 function source(field){return document.querySelector(`[data-mobile-character-field="${field}"]`);}
 function splitLifePath(value){const text=String(value||"").trim();const match=text.match(/^(.*?)[（(]([^（）()]*)[）)]\s*$/);return match?{name:match[1].trim(),skill:match[2].trim()}:{name:text,skill:""};}
 function joinLifePath(name,skill){const left=String(name||"").trim();const right=String(skill||"").trim();return right?`${left}（${right}）`:left;}
@@ -53,4 +52,4 @@ function syncActiveGroupFromDialog(){if(!activeGroup)return;let changed=false;if
 function applyDialog(){syncActiveGroupFromDialog();activeGroup=null;$("#mobile-profile-dialog")?.close();}
 function cancelDialog(){activeGroup=null;$("#mobile-profile-dialog")?.close();}
 function bind(){document.addEventListener("click",event=>{const button=event.target.closest("[data-mobile-profile-group]");if(button)openGroup(button.dataset.mobileProfileGroup);});$("#mobile-profile-dialog-apply")?.addEventListener("click",applyDialog);$("#mobile-profile-dialog-cancel")?.addEventListener("click",cancelDialog);$("#mobile-profile-dialog")?.addEventListener("cancel",event=>{event.preventDefault();cancelDialog();});$("#mobile-global-visibility")?.addEventListener("change",event=>{const original=source("visibility");if(!original||original.value===event.target.value)return;original.value=event.target.value;notifyProfileChanged();});document.addEventListener("tnx:mobile-profile-loaded",renderSummaries);const status=$("#mobile-save-status");if(status)new MutationObserver(renderSummaries).observe(status,{childList:true,subtree:true,attributes:true,attributeFilter:["data-state"]});}
-function init(){if(window.__TNXMobileProfileInitialized)return;window.__TNXMobileProfileInitialized=true;ensureStyleSheet();injectSummaryUi();injectDialog();injectGlobalActions();bind();setTimeout(renderSummaries,0);}init();
+function init(){if(window.__TNXMobileProfileInitialized)return;window.__TNXMobileProfileInitialized=true;injectSummaryUi();injectDialog();injectGlobalActions();bind();setTimeout(renderSummaries,0);}init();

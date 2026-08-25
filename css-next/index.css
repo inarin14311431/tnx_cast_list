@@ -1,17 +1,14 @@
 /*
- * CSS rebuild entry point.
- * Keep imports in architecture order: tokens -> foundation -> layout -> components -> editor -> pages -> responsive.
- * Page-specific direct styles (mobile/cyber) are loaded by their page HTML rather than globally.
+ * Shared application shell only.
+ * Feature, editor and page styles belong to a page entry in pages/*-entry.css.
+ * Theme definitions and effects live in themes/index.css and are linked last by HTML.
  */
 @import url("./tokens/core.css?v=2");
-@import url("./tokens/themes.css?v=3");
-@import url("./tokens/statistics-bureau-theme.css?v=1");
-@import url("./tokens/theme-ui-overrides.css?v=2");
 @import url("./foundation/reset.css");
 @import url("./foundation/base.css?v=2");
 @import url("./foundation/typography.css");
-@import url("./layout/app-shell.css");
-@import url("./layout/page.css");
+@import url("./layout/app-shell.css?v=2");
+@import url("./layout/page.css?v=2");
 @import url("./components/buttons.css?v=5");
 @import url("./components/forms.css?v=2");
 @import url("./components/panel.css");
@@ -19,41 +16,5 @@
 @import url("./components/row-actions.css");
 @import url("./components/dialog.css?v=2");
 @import url("./components/status.css");
-@import url("./components/help.css?v=1");
-@import url("./components/global-theme-picker.css?v=1");
-@import url("./components/sheet-snapshots.css?v=1");
-@import url("./components/sheet-import-help.css?v=1");
-@import url("./components/sheet-url-import.css?v=1");
-@import url("./components/cast-troops.css?v=1");
-
-/* Sheet editor */
-@import url("./editor/editor.css?v=25");
-@import url("./editor/divine-layout.css?v=1");
-@import url("./editor/sidebar-actions.css?v=2");
-@import url("./editor/skills.css?v=3");
-@import url("./editor/style-skills.css?v=10");
-@import url("./editor/style-separator-fix.css?v=2");
-@import url("./editor/outfits.css?v=16");
-@import url("./editor/import.css?v=6");
-@import url("./editor/button-hover.css?v=1");
-@import url("./editor/combos.css?v=1");
-
-/* Pages */
-@import url("./pages/archive.css?v=4");
-@import url("./pages/cast.css?v=43");
-@import url("./pages/cast-view-details.css?v=3");
-@import url("./pages/cast-combos.css?v=1");
-@import url("./pages/cast-mobile-theme.css?v=1");
-@import url("./pages/quick-sheet-paper.css?v=2");
-@import url("./pages/auth.css");
-@import url("./pages/account.css?v=10");
-@import url("./pages/acts.css?v=2");
-@import url("./pages/showcase.css?v=2");
-@import url("./components/armor-totals.css?v=2");
-
-/* Cross-theme readability rules intentionally come after page styles. */
-@import url("./components/theme-contrast.css?v=1");
-
-/* Responsive overrides are intentionally last. */
-@import url("./responsive.css?v=8");
-@import url("./tablet.css?v=1");
+@import url("./components/global-theme-picker.css?v=2");
+@import url("./components/legal-notices.css?v=1");

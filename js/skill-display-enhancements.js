@@ -12,19 +12,6 @@
     return BASE_SKILLS.has(name) || BASE_SKILL_PREFIXES.some(prefix => name.startsWith(prefix));
   };
 
-  const style = document.createElement("style");
-  style.textContent = `
-    .tnx-base-skill-name{display:flex;align-items:center;gap:2px;min-width:0}
-    .tnx-base-skill-star{flex:0 0 auto;color:var(--color-accent);font-weight:900;line-height:1}
-    .tnx-base-skill-name>input{min-width:0;flex:1 1 auto}
-    tr.tnx-style-separator-row>td{padding:7px 10px!important;border-top:1px solid var(--color-accent)!important;border-bottom:1px solid color-mix(in srgb,var(--color-accent) 38%,transparent)!important;background:color-mix(in srgb,var(--color-accent) 7%,transparent)!important;color:var(--color-accent);font-weight:800;letter-spacing:.04em}
-    .tnx-style-separator-content{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%}
-    .tnx-style-separator-content small{font-size:9px;letter-spacing:.12em;opacity:.58}
-    .tnx-style-separator-actions{margin-left:auto;display:flex;gap:3px}
-    .quick-sheet tr.tnx-style-separator-row>td{padding:4px 7px!important;font-size:10px}
-  `;
-  document.head.append(style);
-
   function editorStars() {
     document.querySelectorAll('#general-skills tr[data-skill-key]').forEach(row => {
       const input = row.querySelector('[data-f="name"]');

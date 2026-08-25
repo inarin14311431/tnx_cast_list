@@ -36,7 +36,6 @@
 
 /* 1段目 */
 #troop-combo-dialog .combo-form-grid > label:first-of-type { grid-column:1 / 4; }
-#troop-combo-dialog .troop-combo-abilities { grid-column:4 / -1; }
 /* 2段目 */
 #troop-combo-dialog .troop-combo-skills { grid-column:1 / -1; }
 /* 3段目 */
@@ -56,7 +55,7 @@
 
 #troop-combo-dialog .troop-combo-abilities,
 #troop-combo-dialog .troop-combo-skills { display:grid; gap:4px; margin:0; padding:5px 6px 6px; border:1px solid var(--color-border-muted); background:var(--color-surface-alt); overflow:hidden; }
-#troop-combo-dialog .troop-combo-abilities { grid-template-columns:repeat(4,max-content); align-content:start; align-items:center; justify-content:start; column-gap:4px; }
+#troop-combo-dialog .troop-combo-abilities { grid-column:4 / -1; grid-template-columns:repeat(4,max-content); align-content:start; align-items:center; justify-content:start; column-gap:4px; }
 #troop-combo-dialog .troop-combo-abilities legend,
 #troop-combo-dialog .troop-combo-skills legend { padding:0 4px; color:var(--color-muted); font-size:9px; font-weight:900; }
 #troop-combo-dialog .troop-combo-abilities label,
@@ -74,11 +73,11 @@
 @media(max-width:680px){
   #troop-combo-dialog{width:calc(100vw - 12px);max-height:94vh}
   #troop-combo-dialog .combo-form-grid{grid-template-columns:repeat(2,minmax(0,1fr));padding:8px 9px}
-  #troop-combo-dialog .combo-form-grid>*{grid-column:auto!important}
+  #troop-combo-dialog .combo-form-grid>*{grid-column:auto}
   #troop-combo-dialog .combo-form-grid>label:first-of-type,
   #troop-combo-dialog .troop-combo-abilities,
   #troop-combo-dialog .troop-combo-skills,
-  #troop-combo-dialog .combo-form-grid__wide{grid-column:1/-1!important}
+  #troop-combo-dialog .combo-form-grid__wide{grid-column:1/-1}
   #troop-combo-dialog .troop-combo-abilities{grid-template-columns:repeat(4,max-content)}
   #troop-combo-dialog .troop-combo-skill-options{grid-template-columns:repeat(2,minmax(0,1fr))}
 }
@@ -86,7 +85,7 @@
   #troop-combo-dialog{width:calc(100vw - 8px);max-height:96vh}
   #troop-combo-dialog .combo-dialog__header{padding:8px}
   #troop-combo-dialog .combo-form-grid{grid-template-columns:1fr;padding:7px 8px 9px}
-  #troop-combo-dialog .combo-form-grid>*{grid-column:auto!important}
+  #troop-combo-dialog .combo-form-grid>*{grid-column:auto}
   #troop-combo-dialog .troop-combo-abilities{grid-template-columns:repeat(2,max-content)}
   #troop-combo-dialog .troop-combo-skill-options{grid-template-columns:1fr;max-height:140px}
   #troop-combo-dialog .combo-dialog__actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:7px 8px}
