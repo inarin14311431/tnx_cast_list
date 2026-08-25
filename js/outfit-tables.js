@@ -1,4 +1,4 @@
-/* Convert outfit cards into category-specific tables without changing save logic. */
+/* Convert complete outfit cards into category-specific tables. */
 (function(){
   const root=document.querySelector('#outfit-list');
   if(!root)return;
@@ -14,22 +14,29 @@
     ['other','その他','OTHER','ADD OTHER']
   ];
 
-  // These labels and schemas describe raw controls rendered by this classic
-  // table adapter. Canonical outfit semantics are owned by outfit-contract.js;
-  // armor S/P/I are canonical OFC fields and are no longer synthesized here.
+  const OFC_FIELDS=new Set([
+    'concealment_penalty','parry','speed','electronic_control','defense_s','defense_p','defense_i',
+    'ianus_surface','ianus_deep','ianus_none','tron_software','tron_support','tron_hardware',
+    'crew','sf','residence_entry','residence_electric','residence_area','manufacturer','page_number',
+    'major_category','minor_category'
+  ]);
+
   const BASE_LABELS={
-    category:'分類',name:'名称',purchase_value:'購入',experience_cost:'常備化',concealment:'隠匿値',
-    attack:'攻撃',range:'射程',slot:'部位',control_modifier:'制御値',cs_modifier:'CS修正',description:'解説',actions:''
+    category:'分類',name:'名称',purchase_value:'購入',experience_cost:'常備化',concealment:'隠匿値',concealment_penalty:'隠匿修正',
+    attack:'攻撃',parry:'受',range:'射程',speed:'ス',electronic_control:'電制',defense_s:'S',defense_p:'P',defense_i:'I',
+    control_modifier:'制御値',cs_modifier:'CS修正',ianus_surface:'表',ianus_deep:'深',ianus_none:'無',
+    tron_software:'ソ',tron_support:'サ',tron_hardware:'ハ',crew:'乗員',sf:'SF',residence_entry:'登',residence_electric:'電',residence_area:'ア',
+    slot:'部位',manufacturer:'メーカー',page_number:'参照P',major_category:'OFC大分類',minor_category:'OFC小分類',description:'解説',actions:''
   };
 
   const RAW_CARD_SCHEMAS={
-    weapon:['category','name','purchase_value','experience_cost','concealment','attack','range','slot','description','actions'],
-    armor:['category','name','purchase_value','experience_cost','concealment','slot','control_modifier','description','actions'],
-    cyberware:['category','name','purchase_value','experience_cost','concealment','slot','description','actions'],
-    tron:['category','name','purchase_value','experience_cost','concealment','slot','cs_modifier','description','actions'],
-    vehicle:['category','name','purchase_value','experience_cost','attack','control_modifier','cs_modifier','description','actions'],
-    residence:['category','name','purchase_value','experience_cost','slot','description','actions'],
-    other:['category','name','purchase_value','experience_cost','concealment','slot','description','actions']
+    weapon:['category','name','purchase_value','experience_cost','concealment','concealment_penalty','attack','parry','range','speed','electronic_control','slot','manufacturer','page_number','major_category','minor_category','description','actions'],
+    armor:['category','name','purchase_value','experience_cost','concealment','concealment_penalty','defense_s','defense_p','defense_i','control_modifier','electronic_control','slot','manufacturer','page_number','major_category','minor_category','description','actions'],
+    cyberware:['category','name','purchase_value','experience_cost','concealment','concealment_penalty','electronic_control','ianus_surface','ianus_deep','ianus_none','slot','manufacturer','page_number','major_category','minor_category','description','actions'],
+    tron:['category','name','purchase_value','experience_cost','concealment','concealment_penalty','electronic_control','speed','tron_software','tron_support','tron_hardware','cs_modifier','slot','manufacturer','page_number','major_category','minor_category','description','actions'],
+    vehicle:['category','name','purchase_value','experience_cost','concealment','concealment_penalty','attack','speed','control_modifier','cs_modifier','electronic_control','defense_s','defense_p','defense_i','crew','sf','slot','manufacturer','page_number','major_category','minor_category','description','actions'],
+    residence:['category','name','purchase_value','experience_cost','concealment','concealment_penalty','speed','electronic_control','residence_entry','residence_electric','residence_area','slot','manufacturer','page_number','major_category','minor_category','description','actions'],
+    other:['category','name','purchase_value','experience_cost','concealment','concealment_penalty','electronic_control','slot','manufacturer','page_number','major_category','minor_category','description','actions']
   };
 
   let queued=false;
@@ -86,8 +93,6 @@
       control.dispatchEvent(new Event('input',{bubbles:true}));
     });
     control.hidden=true;
-    // sheet.js closes over the original control and reads data-o when this
-    // proxy dispatches input, so keep the field name on the detached control.
     return textarea;
   }
 
@@ -127,7 +132,8 @@
   function makeCell(card,key){
     if(key==='actions')return makeActionsCell(card);
     const td=document.createElement('td');
-    td.className=`outfit-table-cell outfit-table-cell--${key}`;
+    td.className=`outfit-table-cell outfit-table-cell--${key}${OFC_FIELDS.has(key)?' outfit-table-cell--ofc':''}`;
+    if(OFC_FIELDS.has(key))td.dataset.ofcCell=key;
     let control=controlFor(card,key);
     if(!control)return td;
     if(key==='purchase_value'||key==='experience_cost')control=prepareNumberControl(control);
@@ -139,9 +145,8 @@
   function makeRow(card,category){
     const tr=document.createElement('tr');
     tr.dataset.outfitKey=card.dataset.outfitKey||'';
+    tr.dataset.outfitOfcDetails=card.dataset.outfitOfcDetails||'{}';
     tr.className='outfit-table-row';
-    // Capture every raw control before makeCell moves visible controls out of the card.
-    // Visible values are overlaid again by readRow so live edits still win.
     tr._outfitTransportData=captureCardData(card);
     for(const key of RAW_CARD_SCHEMAS[category])tr.append(makeCell(card,key));
     return tr;
@@ -218,7 +223,11 @@
     const table=document.createElement('table'); table.className='outfit-table'; table.dataset.outfitSchema=category;
     const thead=document.createElement('thead'); const headRow=document.createElement('tr');
     for(const key of RAW_CARD_SCHEMAS[category]){
-      const th=document.createElement('th'); th.className=`outfit-table-head outfit-table-head--${key}`; th.textContent=BASE_LABELS[key]; headRow.append(th);
+      const th=document.createElement('th');
+      th.className=`outfit-table-head outfit-table-head--${key}${OFC_FIELDS.has(key)?' outfit-table-head--ofc':''}`;
+      if(OFC_FIELDS.has(key))th.dataset.ofcHead=key;
+      th.textContent=BASE_LABELS[key];
+      headRow.append(th);
     }
     thead.append(headRow);
     const tbody=document.createElement('tbody'); cards.forEach(card=>tbody.append(makeRow(card,category)));
