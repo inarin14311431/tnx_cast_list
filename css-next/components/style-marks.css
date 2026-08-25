@@ -1,0 +1,51 @@
+/* Shared ◎ / ● glyphs used by archive and account cards. */
+.tnx-style-marks {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 10px;
+  color: var(--style-color, currentColor);
+  line-height: 0;
+}
+
+.tnx-style-mark {
+  position: relative;
+  display: inline-block;
+  box-sizing: border-box;
+  width: 10px;
+  height: 10px;
+  flex: 0 0 10px;
+  border-radius: 50%;
+  color: inherit;
+  vertical-align: middle;
+}
+
+.tnx-style-mark--persona {
+  border: 1.5px solid currentColor;
+  background: transparent;
+}
+
+.tnx-style-mark--persona::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  box-sizing: border-box;
+  width: 4px;
+  height: 4px;
+  border: 1px solid currentColor;
+  border-radius: 50%;
+  content: "";
+  transform: translate(-50%, -50%);
+}
+
+.tnx-style-mark--key {
+  border: 1px solid currentColor;
+  background: currentColor;
+}
+
+.cast-card__style-chip .tnx-style-marks,
+.owned-cast__style .tnx-style-marks {
+  text-shadow: none;
+}

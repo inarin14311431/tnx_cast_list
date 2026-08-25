@@ -117,7 +117,7 @@ body[data-page="sheet-mobile.html"] .mobile-editor-dialog__header--actions>butto
   color:var(--color-accent);
   font-weight:900;
 }
-body[data-page="sheet-mobile.html"] [data-mobile-apply-source="1"]{display:none!important}
+body[data-page="sheet-mobile.html"] [data-mobile-apply-source="1"]{display:none}
 
 /* Readability: prefer fewer visible fields over 9px text. */
 body[data-page="sheet-mobile.html"] .mobile-general-display-name{font-size:12px;line-height:1.3}

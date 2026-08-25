@@ -24,3 +24,8 @@ body > .auth-header { padding-top: 30px; }
 .auth-text-button:is(:hover, :focus-visible) small { color: var(--color-accent); opacity: .8; }
 .auth-text-button:disabled { opacity: .5; cursor: default; }
 .auth-message { min-height: 1.5em; padding: 0 32px 24px; font-size: .8rem; }
+
+@media (max-width: 767px) {
+  body[data-page="login.html"] .auth-panel,
+  body[data-page="password-reset.html"] .auth-panel { padding: 24px 18px; }
+}

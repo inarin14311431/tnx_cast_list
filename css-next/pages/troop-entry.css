@@ -1,0 +1,12 @@
+/*
+ * Canonical stylesheet entry for troop.html.
+ * Layer order replaces load-order overrides and keeps the final screen contract explicit.
+ */
+@layer app, troop-base, troop-layout, troop-dialog, troop-combo, troop-screen;
+
+@import url("../index.css?v=64") layer(app);
+@import url("./troops.css?v=5") layer(troop-base);
+@import url("./troops-v4.css?v=2") layer(troop-layout);
+@import url("./troop-combo-dialog.css?v=3") layer(troop-dialog);
+@import url("./troop-combo-rule-v2.css?v=1") layer(troop-combo);
+@import url("./troop-screen.css?v=2") layer(troop-screen);

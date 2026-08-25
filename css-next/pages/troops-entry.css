@@ -1,0 +1,6 @@
+/* Canonical stylesheet entry for the troop registry screen. */
+@layer app, troop-base, troop-registry;
+
+@import url("../index.css?v=64") layer(app);
+@import url("./troops.css?v=5") layer(troop-base);
+@import url("./troops-registry-polish.css?v=3") layer(troop-registry);

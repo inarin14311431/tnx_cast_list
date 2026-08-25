@@ -8,7 +8,7 @@ body {
   font-family: var(--font-sans);
   line-height: 1.55;
 }
-::selection { color: var(--color-bg); background: var(--color-accent); }
+::selection { color: var(--color-on-accent, var(--color-bg)); background: var(--color-accent); }
 :focus-visible { outline: 3px solid var(--color-accent-strong); outline-offset: 3px; }
 .visually-hidden {
   position: absolute;

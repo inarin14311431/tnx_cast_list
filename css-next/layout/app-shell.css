@@ -54,6 +54,15 @@
 .showcase-header__archive { justify-self: end; color: var(--color-accent); text-decoration: none; text-align: right; }
 .showcase-header__archive small { display: block; margin-top: 2px; color: var(--color-muted); font: .56rem/1.1 var(--font-data); letter-spacing: .08em; }
 
+@media (max-width: 767px) {
+  :where(.site-header__top, .auth-header h1) { flex-direction: column; }
+  .site-title { font-size: clamp(2.2rem, 10vw, 3.2rem); }
+  :where(.site-header__operator, .theme-picker) {
+    width: 100%;
+    justify-items: stretch;
+  }
+}
+
 @media (max-width: 700px) {
   .site-header__top { flex-direction: column; }
   body[data-page="index.html"] .site-header__operator, body[data-page="index.html"] .auth-navigation { width: 100%; }

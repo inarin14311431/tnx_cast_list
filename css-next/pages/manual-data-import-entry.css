@@ -1,0 +1,5 @@
+/* Canonical stylesheet entry for the legacy import reference. */
+@layer app, manual-import-page;
+
+@import url("../index.css?v=64") layer(app);
+@import url("./manual-data-import.css?v=1") layer(manual-import-page);

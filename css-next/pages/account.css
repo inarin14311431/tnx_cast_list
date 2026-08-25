@@ -129,3 +129,9 @@ body[data-page="backup.html"] #import-file { width: 100%; padding: 12px; border:
   body[data-page="account.html"] :is(#master-search-user-sql-copy, #master-search-user-delete) { width: 100%; }
   html body[data-page="backup.html"] .account-layout { grid-template-columns: 1fr; }
 }
+
+@media (pointer: coarse) and (min-width: 768px) and (max-width: 1100px) {
+  body[data-page="account.html"] .owned-cast__links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

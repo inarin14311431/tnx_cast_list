@@ -1,0 +1,24 @@
+/* Canonical stylesheet entry for the PC cast editor. */
+@layer app, sheet-components, sheet-editor, sheet-enhancements;
+
+@import url("../index.css?v=64") layer(app);
+
+@import url("../components/help.css?v=1") layer(sheet-components);
+@import url("../components/save-diagnostics.css?v=1") layer(sheet-components);
+@import url("../components/sheet-snapshots.css?v=1") layer(sheet-components);
+@import url("../components/sheet-url-import.css?v=1") layer(sheet-components);
+
+@import url("../editor/editor.css?v=26") layer(sheet-editor);
+@import url("../editor/divine-layout.css?v=1") layer(sheet-editor);
+@import url("../editor/sidebar-actions.css?v=2") layer(sheet-editor);
+@import url("../editor/skills.css?v=3") layer(sheet-editor);
+@import url("../editor/style-skills.css?v=11") layer(sheet-editor);
+@import url("../editor/style-separator-fix.css?v=3") layer(sheet-editor);
+@import url("../editor/outfits.css?v=17") layer(sheet-editor);
+@import url("../editor/import.css?v=6") layer(sheet-editor);
+@import url("../editor/button-hover.css?v=1") layer(sheet-editor);
+@import url("../editor/combos.css?v=1") layer(sheet-editor);
+
+@import url("../components/armor-totals.css?v=3") layer(sheet-enhancements);
+@import url("../components/sheet-import-help.css?v=3") layer(sheet-enhancements);
+@import url("../components/skill-display-enhancements.css?v=1") layer(sheet-enhancements);

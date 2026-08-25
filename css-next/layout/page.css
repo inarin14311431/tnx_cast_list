@@ -1,2 +1,6 @@
 main { position: relative; z-index: 1; }
 .account-layout, .auth-layout { width: min(var(--page-width), calc(100% - var(--page-gutter))); margin-inline: auto; }
+
+@media (max-width: 767px) {
+  :root { --page-gutter: 20px; }
+}

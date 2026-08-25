@@ -1,4 +1,4 @@
-/* Theme token sets. Keep this file selector-free apart from :root theme attributes. */
+/* Standard theme token sets. Keep this file selector-free apart from :root theme attributes. */
 :root,
 :root[data-theme="nova"] {
   --color-bg: #05080b;
@@ -58,8 +58,8 @@
   --color-surface-alt: #1c080b;
   --color-text: #f7eeee;
   --color-muted: #b89b9f;
-  --color-accent: #d51f37;
-  --color-accent-strong: #d51f37;
+  --color-accent: #ff4d62;
+  --color-accent-strong: #ff6b7c;
   --color-danger: #ff314d;
   --theme-body-bg: radial-gradient(circle at 50% -16%, rgba(176,0,24,.25), transparent 40%), radial-gradient(circle at 88% 18%, rgba(110,0,15,.18), transparent 32%), radial-gradient(circle at 10% 76%, rgba(90,0,12,.11), transparent 34%), linear-gradient(180deg, #100305, #050203 58%, #000);
   --theme-panel-bg: linear-gradient(180deg, rgba(28,8,11,.97), rgba(7,3,4,.99));
@@ -71,8 +71,8 @@
   --color-surface-alt: #143155;
   --color-text: #eef6ff;
   --color-muted: #9bb1cc;
-  --color-accent: #347fff;
-  --color-accent-strong: #347fff;
+  --color-accent: #6ea1ff;
+  --color-accent-strong: #83b0ff;
   --color-danger: #ff657d;
   --theme-body-bg: radial-gradient(circle at 50% -12%, rgba(52,127,255,.25), transparent 44%), radial-gradient(circle at 86% 18%, rgba(209,193,255,.13), transparent 30%), linear-gradient(180deg, #0a1730, #050c18 70%, #030712);
   --theme-panel-bg: linear-gradient(180deg, rgba(20,49,85,.96), rgba(9,27,50,.98));
@@ -84,8 +84,8 @@
   --color-surface-alt: #371e14;
   --color-text: #fff3e9;
   --color-muted: #c2a08e;
-  --color-accent: #c84b3f;
-  --color-accent-strong: #c84b3f;
+  --color-accent: #f07868;
+  --color-accent-strong: #ff8a76;
   --color-danger: #ff3945;
   --theme-body-bg: radial-gradient(circle at 18% -8%, rgba(200,75,63,.23), transparent 42%), radial-gradient(circle at 88% 16%, rgba(255,173,56,.14), transparent 30%), linear-gradient(180deg, #1b100a, #100b08 68%, #080503);
   --theme-panel-bg: linear-gradient(180deg, rgba(55,30,20,.96), rgba(29,17,12,.98));

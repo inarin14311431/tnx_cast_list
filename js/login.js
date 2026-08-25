@@ -40,6 +40,12 @@ async function handleLogin(event) {
 
 async function handleSignup(event) {
   event.preventDefault();
+  const consent = document.querySelector("#signup-legal-consent");
+  if (!consent?.checked) {
+    setMessage("利用規約とプライバシーポリシーへの同意が必要です。 / POLICY CONSENT REQUIRED", "error");
+    consent?.focus();
+    return;
+  }
   const email = document.querySelector("#signup-email").value.trim();
   const password = document.querySelector("#signup-password").value;
   const confirmation = document.querySelector("#signup-password-confirmation").value;

@@ -14,7 +14,6 @@ import {
 import {
   buildOutfitEditor,
   ensureOutfitDialog,
-  ensureOutfitStylesheet,
   ensureOutfitToolbar,
   renderOutfitCards
 } from "./sheet-mobile-outfit-ui.js?v=14";
@@ -295,9 +294,6 @@ function bindEvents() {
 }
 
 async function init() {
-  ensureOutfitStylesheet();
-  const styleLink = document.querySelector("link[data-mobile-outfit-style]");
-  if (styleLink) styleLink.href = "./css-next/pages/sheet-mobile-outfit.css?v=9";
   ensureOutfitToolbar();
   ensureOutfitDialog();
   normalizeConfrontationOptionLabels();

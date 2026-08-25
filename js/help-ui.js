@@ -5,7 +5,6 @@ if (page === "sheet.html") initializeSheetHelp();
 
 function initializeSheetHelp() {
   if (document.querySelector("#sheet-global-help")) return;
-  ensureHelpStyles();
   removeLegacyHelpTriggers();
 
   const dialog = createDialog();
@@ -55,15 +54,6 @@ function initializeSheetHelp() {
 function removeLegacyHelpTriggers() {
   document.querySelectorAll(".sheet-help-trigger, .floating-help-link, [data-sheet-help-link], .sheet-sidebar-help-row").forEach(element => element.remove());
   document.querySelectorAll(".toolbar--with-help").forEach(element => element.classList.remove("toolbar--with-help"));
-}
-
-function ensureHelpStyles() {
-  if (document.querySelector('link[data-sheet-help-style]')) return;
-  const link = document.createElement("link");
-  link.rel = "stylesheet";
-  link.href = "./css-next/components/help.css?v=5";
-  link.dataset.sheetHelpStyle = "1";
-  document.head.append(link);
 }
 
 function createGlobalHelpButton() {

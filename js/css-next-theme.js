@@ -1,19 +1,103 @@
-/* Shared theme controller. Applies the theme on every screen; theme selection UI exists only on index.html. */
+/* Shared theme controller. Theme metadata lives only in theme-registry.js. */
 (() => {
+  const registry = globalThis.TNX_THEME_REGISTRY;
+  if (!registry) {
+    console.error("Theme registry was not loaded before css-next-theme.js.");
+    return;
+  }
+
   const STORAGE_KEY = "tnx-cast-site-theme";
-  const THEMES = new Set(["nova","moon","star","eden","vlad","lutetia","buena","canberra","hongkong","fesler","intron","axleraters","inagaki","astral","orbital","japanese-army","statistics-bureau"]);
-  const THEME_OPTIONS = [["nova","トーキョーＮ◎ＶＡ"],["moon","オーサカM○●N"],["star","カムイST☆R"],["eden","ミトラスGARDEN"],["vlad","ヴラド・コロニー"],["lutetia","ヴィル・ヌーヴ・ルテチア"],["buena","ブエナIЯA"],["canberra","キャンベラAXYZ"],["hongkong","ホンコンHEAVEN"],["fesler","フェスラー公国"],["intron","イントロン"],["axleraters","ニューロ！"],["inagaki","稲垣 光平"],["astral","アストラル"],["orbital","軌道"],["japanese-army","日本"],["statistics-bureau","行政府統計局"]];
-  function isIndexPage(){return document.body?.dataset.page==="index.html";}
-  function ensureStyleMarkStyles(){if(document.querySelector("style[data-style-mark-normalizer]"))return;const style=document.createElement("style");style.dataset.styleMarkNormalizer="1";style.textContent=`.tnx-style-marks{display:inline-flex;flex:0 0 auto;align-items:center;justify-content:center;gap:2px;min-height:10px;color:var(--style-color,currentColor);line-height:0}.tnx-style-mark{position:relative;display:inline-block;box-sizing:border-box;width:10px;height:10px;flex:0 0 10px;border-radius:50%;color:inherit;vertical-align:middle}.tnx-style-mark--persona{border:1.5px solid currentColor;background:transparent}.tnx-style-mark--persona::after{position:absolute;top:50%;left:50%;box-sizing:border-box;width:4px;height:4px;border:1px solid currentColor;border-radius:50%;content:"";transform:translate(-50%,-50%)}.tnx-style-mark--key{border:1px solid currentColor;background:currentColor}.cast-card__style-chip .tnx-style-marks,.owned-cast__style .tnx-style-marks{text-shadow:none}`;document.head.append(style);}
-  function createStyleMarks(mark){const value=String(mark||"").trim();if(!value||!/[◎●]/.test(value))return null;const wrapper=document.createElement("span");wrapper.className="tnx-style-marks";wrapper.setAttribute("role","img");wrapper.setAttribute("aria-label",value);for(const char of value){if(char!=="◎"&&char!=="●")continue;const dot=document.createElement("span");dot.className=`tnx-style-mark ${char==="◎"?"tnx-style-mark--persona":"tnx-style-mark--key"}`;dot.setAttribute("aria-hidden","true");wrapper.append(dot);}return wrapper;}
-  function normalizeStyleMarks(root=document){ensureStyleMarkStyles();const nodes=[];if(root instanceof Element&&root.matches(".cast-card__style-chip b, .owned-cast__style b"))nodes.push(root);if(root.querySelectorAll)nodes.push(...root.querySelectorAll(".cast-card__style-chip b, .owned-cast__style b"));nodes.forEach(node=>{if(node.dataset.styleMarkNormalized==="1")return;const marks=createStyleMarks(node.textContent);if(!marks)return;node.dataset.styleMarkNormalized="1";node.replaceChildren(marks);});}
-  function observeStyleMarks(){if(!document.body)return;normalizeStyleMarks(document);const observer=new MutationObserver(records=>{records.forEach(record=>record.addedNodes.forEach(node=>{if(node.nodeType===Node.ELEMENT_NODE)normalizeStyleMarks(node);}));});observer.observe(document.body,{childList:true,subtree:true});}
-  function ensureThemeOptions(select){const current=select.value;THEME_OPTIONS.forEach(([value,label])=>{let option=Array.from(select.options).find(item=>item.value===value);if(!option){option=document.createElement("option");option.value=value;select.append(option);}option.textContent=label;});if(THEMES.has(current))select.value=current;}
-  function readTheme(){try{const stored=localStorage.getItem(STORAGE_KEY);return THEMES.has(stored)?stored:"nova";}catch{return"nova";}}
-  function ensureJapaneseArmyOverlay(){if(!document.body||document.querySelector("[data-japanese-army-overlay]"))return;const overlay=document.createElement("section");overlay.className="japanese-army-overlay";overlay.setAttribute("data-japanese-army-overlay","1");const picker=isIndexPage()?`<label class="japanese-army-theme-picker"><span>表示テーマ <small>COLOR THEME</small></span><select data-theme-select aria-label="表示テーマ"></select></label>`:"";overlay.innerHTML=`${picker}<div class="japanese-army-warning" role="alert"><p class="japanese-army-seal">日本国電脳鎖国結界</p><div class="japanese-army-error">不法接続</div><p class="japanese-army-declaration">国外網からの未承認アクセスを検知</p><p class="japanese-army-order">本接続は国家防衛規定に基づき強制遮断された。<br>直ちに回線を切断せよ。再接続を厳禁する。</p></div><p class="japanese-army-error-code">NATIONAL BORDER FIREWALL // ACCESS VIOLATION RECORDED</p>`;document.body.append(overlay);const select=overlay.querySelector("[data-theme-select]");if(select)ensureThemeOptions(select);}
-  function applyTheme(theme,persist=false){const next=THEMES.has(theme)?theme:"nova";document.documentElement.dataset.theme=next;document.documentElement.style.colorScheme=["intron","orbital","statistics-bureau"].includes(next)?"light":"dark";if(persist){try{localStorage.setItem(STORAGE_KEY,next);}catch{}}document.querySelectorAll("[data-theme-select]").forEach(select=>{ensureThemeOptions(select);if(select.value!==next)select.value=next;});}
-  function ensureMobileEditorRoutes(){const page=document.body?.dataset.page||"",id=new URLSearchParams(location.search).get("id")?.trim()||"";if(!id)return;if(page==="sheet.html"){const aside=document.querySelector(".exp-panel");if(aside&&!document.querySelector("#sheet-mobile-edit-link")){const link=document.createElement("a");link.id="sheet-mobile-edit-link";link.className="sheet-view-link";link.href=`./sheet-mobile.html?id=${encodeURIComponent(id)}`;link.innerHTML="モバイル編集 <small>MOBILE EDITOR</small>";const view=document.querySelector("#cast-view-button");view?.after(link)||aside.append(link);}}if(page==="cast.html"&&new URLSearchParams(location.search).get("mobile")==="1"){const desktopEdit=document.querySelector("#cast-edit-button");const sync=()=>{if(!desktopEdit||desktopEdit.hidden)return;const bar=document.querySelector(".mobile-cast-topbar");if(!bar||bar.querySelector("[data-mobile-editor-route]"))return;const link=document.createElement("a");link.href=`./sheet-mobile.html?id=${encodeURIComponent(id)}`;link.dataset.mobileEditorRoute="1";link.textContent="編集";bar.append(link);};sync();if(desktopEdit)new MutationObserver(sync).observe(desktopEdit,{attributes:true,attributeFilter:["hidden","href"]});new MutationObserver(sync).observe(document.body,{childList:true,subtree:true});}}
+
+  function isIndexPage() {
+    return document.body?.dataset.page === "index.html";
+  }
+
+  function readTheme() {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return registry.has(stored) ? stored : registry.defaultId;
+    } catch {
+      return registry.defaultId;
+    }
+  }
+
+  function populateThemeOptions(select) {
+    const current = select.value;
+    const fragment = document.createDocumentFragment();
+    registry.themes.forEach(theme => {
+      const option = document.createElement("option");
+      option.value = theme.id;
+      option.textContent = theme.label;
+      fragment.append(option);
+    });
+    select.replaceChildren(fragment);
+    if (registry.has(current)) select.value = current;
+  }
+
+  function synchronizeThemeSelects(themeId) {
+    document.querySelectorAll("[data-theme-select]").forEach(select => {
+      populateThemeOptions(select);
+      select.value = themeId;
+    });
+  }
+
+  function applyTheme(themeId, { persist = false } = {}) {
+    const theme = registry.get(themeId) || registry.get(registry.defaultId);
+    document.documentElement.dataset.theme = theme.id;
+    document.documentElement.style.colorScheme = theme.colorScheme;
+    if (persist) {
+      try {
+        localStorage.setItem(STORAGE_KEY, theme.id);
+      } catch {
+        // Storage can be unavailable in private or restricted browser contexts.
+      }
+    }
+    synchronizeThemeSelects(theme.id);
+    document.dispatchEvent(new CustomEvent("tnx:theme-change", { detail: { theme: theme.id } }));
+    return theme.id;
+  }
+
+  function ensureJapaneseArmyOverlay() {
+    if (!document.body || document.querySelector("[data-japanese-army-overlay]")) return;
+    const overlay = document.createElement("section");
+    overlay.className = "japanese-army-overlay";
+    overlay.dataset.japaneseArmyOverlay = "1";
+    const picker = isIndexPage()
+      ? `<label class="japanese-army-theme-picker"><span>表示テーマ <small>COLOR THEME</small></span><select data-theme-select aria-label="表示テーマ"></select></label>`
+      : "";
+    overlay.innerHTML = `${picker}<div class="japanese-army-warning" role="alert"><p class="japanese-army-seal">日本国電脳鎖国結界</p><div class="japanese-army-error">不法接続</div><p class="japanese-army-declaration">国外網からの未承認アクセスを検知</p><p class="japanese-army-order">本接続は国家防衛規定に基づき強制遮断された。<br>直ちに回線を切断せよ。再接続を厳禁する。</p></div><p class="japanese-army-error-code">NATIONAL BORDER FIREWALL // ACCESS VIOLATION RECORDED</p>`;
+    document.body.append(overlay);
+  }
+
+  function bindThemeSelect(select) {
+    if (!isIndexPage()) {
+      select.closest(".global-theme-picker, .japanese-army-theme-picker")?.remove();
+      return;
+    }
+    populateThemeOptions(select);
+    select.value = document.documentElement.dataset.theme || registry.defaultId;
+    if (select.dataset.themeBound === "1") return;
+    select.dataset.themeBound = "1";
+    select.addEventListener("change", () => applyTheme(select.value, { persist: true }));
+  }
+
+  function bind() {
+    document.documentElement.dataset.cssSystem = "next";
+    const override = document.body?.dataset.themeOverride;
+    if (registry.has(override)) applyTheme(override);
+    ensureJapaneseArmyOverlay();
+    document.querySelectorAll("[data-theme-select]").forEach(bindThemeSelect);
+  }
+
+  globalThis.TNX_THEME = Object.freeze({
+    apply: applyTheme,
+    current() {
+      return document.documentElement.dataset.theme || registry.defaultId;
+    },
+    populate: populateThemeOptions
+  });
+
   applyTheme(readTheme());
-  const bind=()=>{document.documentElement.dataset.cssSystem="next";if(document.body?.dataset.themeOverride&&THEMES.has(document.body.dataset.themeOverride))applyTheme(document.body.dataset.themeOverride,false);ensureJapaneseArmyOverlay();observeStyleMarks();ensureMobileEditorRoutes();document.querySelectorAll("[data-theme-select]").forEach(select=>{if(!isIndexPage()){select.closest(".global-theme-picker, .japanese-army-theme-picker")?.remove();return;}ensureThemeOptions(select);if(select.dataset.themeBound==="1")return;select.dataset.themeBound="1";select.value=document.documentElement.dataset.theme||"nova";select.addEventListener("change",()=>applyTheme(select.value,true));});};
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",bind,{once:true});else bind();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind, { once: true });
+  else bind();
 })();

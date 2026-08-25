@@ -1,5 +1,5 @@
-/* Theme-specific UI token refinements. Section colors intentionally remain fixed. */
-:root {
+/* Shared semantic UI tokens. Theme identities stay in presets and special-theme files. */
+html:root {
   --color-panel: var(--color-surface);
   /* Readability tokens shared by every theme. Keep secondary text visibly subordinate without relying on transparency. */
   --color-text-muted: color-mix(in srgb, var(--color-muted) 82%, var(--color-text));
@@ -13,23 +13,8 @@
   --color-on-accent: var(--color-surface);
 }
 
-:root:not([data-theme="intron"]):not([data-theme="orbital"]):not([data-theme="japanese-army"]) {
+:root:not([data-theme="intron"]):not([data-theme="orbital"]):not([data-theme="japanese-army"]):not([data-theme="spectrum-neon"]) {
   --color-success: color-mix(in srgb, #75ffb4 68%, var(--color-accent));
   --color-warning: color-mix(in srgb, #ffd166 70%, var(--color-accent));
   --color-feature: color-mix(in srgb, #ff63b9 70%, var(--color-accent));
-}
-
-:root[data-theme="vlad"] {
-  --color-accent: #ff4d62;
-  --color-accent-strong: #ff6b7c;
-}
-
-:root[data-theme="lutetia"] {
-  --color-accent: #6ea1ff;
-  --color-accent-strong: #83b0ff;
-}
-
-:root[data-theme="buena"] {
-  --color-accent: #f07868;
-  --color-accent-strong: #ff8a76;
 }

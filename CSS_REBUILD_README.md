@@ -1,5 +1,7 @@
 # CSS再構築版 — Phase 7 本番統合
 
+> この文書はPhase 7の移行記録です。現在の読込規約と変更手順は `docs/CSS_ARCHITECTURE.md` を正とします。
+
 Phase 7では、隔離検証していた新CSSを通常ページへ統合し、旧CSSと互換用の動的CSS処理を本番経路から撤去しました。
 
 ## Pass 2 — 閲覧・編集画面重点復元
@@ -76,7 +78,8 @@ JavaScriptは状態・データ・実行時数値を担当し、CSSファイル�
 
 ## Phase 7での変更
 
-- 通常URLの11画面を直接 `css-next/index.css` へ移行
+- テーマ対応20画面を `css-next/pages/*-entry.css` 経由の読込へ統一
+- `css-next/index.css` を全画面共通の基礎部品だけに限定
 - `/next/` を介する画面遷移を廃止
 - プレビュー専用の `<base>`、リンク補正、CSSガードを本番HTMLから撤去
 - 旧 `theme.js` を本番構成から撤去
@@ -124,8 +127,8 @@ Phase 7以降は `/next/index.html` ではなく、上記の通常URLが本番�
 
 `node scripts\audit-css-rebuild.mjs` は次を検査します。
 
-- 新CSS 28ファイル
-- 通常版11画面の新CSS読込
+- `css-next` 配下の全CSS
+- テーマ対応20画面の専用エントリ読込
 - 旧CSS参照なし
 - 旧 `theme.js` 参照なし
 - `/next/` 依存なし

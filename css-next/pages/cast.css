@@ -640,6 +640,35 @@ body[data-page="cast.html"].is-quick-sheet-open > :is(.cast-header, .cast-conten
   body[data-page="cast.html"] #personal-data.profile-list > div { grid-template-columns: 100px minmax(0, 1fr); }
   body[data-page="cast.html"] .cast-outfit-table .cast-outfit-col--description { width: 280px; min-width: 280px; max-width: 280px; }
 }
+
+@media (pointer: coarse) and (min-width: 768px) and (max-width: 1100px) {
+  body[data-page="cast.html"] .cast-header {
+    position: relative;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding-inline: 12px;
+  }
+  body[data-page="cast.html"] .cast-header__actions {
+    grid-template-columns: 1fr;
+    margin-left: 0;
+  }
+  body[data-page="cast.html"] :is(.cast-header__primary-actions, .cast-header__export-actions) {
+    flex-wrap: wrap;
+  }
+  body[data-page="cast.html"] :is(.cast-header__primary-actions, .cast-header__export-actions) > * {
+    min-height: 44px;
+  }
+  body[data-page="cast.html"] .cast-header__record { justify-items: end; }
+  body[data-page="cast.html"] .cast-hero {
+    grid-template-columns: minmax(240px, 36%) minmax(0, 1fr);
+  }
+}
+
+@media (pointer: coarse) and (min-width: 1101px) and (max-width: 1366px) {
+  body[data-page="cast.html"] :is(.cast-header__primary-actions, .cast-header__export-actions) > * {
+    min-height: 44px;
+  }
+}
 @media (prefers-reduced-motion: reduce) and (min-width: 1px) {
   body[data-page="cast.html"] .cast-data-rain { display: none; }
   body[data-page="cast.html"] .cast-data-rain span { animation: none; }

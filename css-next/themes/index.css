@@ -1,0 +1,13 @@
+/*
+ * Final theme layer.
+ *
+ * Every active CSS-next page loads this bundle after index.css and any
+ * page-specific styles. Theme additions and removals are registered here and
+ * in js/theme-registry.js; HTML pages never link an individual theme file.
+ */
+@import url("./presets.css?v=1");
+@import url("./statistics-bureau.css?v=1");
+@import url("./base-ui.css?v=1");
+@import url("./accessibility.css?v=1");
+@import url("./japanese-army.css?v=1");
+@import url("./spectrum-neon.css?v=1");

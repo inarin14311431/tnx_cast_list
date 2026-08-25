@@ -1,8 +1,11 @@
 <!doctype html>
 <html lang="ja">
 <head>
-  <script src="./js/css-next-theme.js"></script>
-  <link rel="stylesheet" href="./css-next/index.css?v=56" data-css-system="next">
+  <script src="./js/theme-registry.js?v=1"></script>
+  <script src="./js/css-next-theme.js?v=8"></script>
+  <script src="./js/theme-scope.js?v=1"></script>
+  <link rel="stylesheet" href="./css-next/pages/sheet-mobile-new-entry.css?v=1" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/themes/index.css?v=1" data-theme-system="1">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="robots" content="noindex,nofollow">
@@ -11,17 +14,17 @@
 <body data-page="sheet-mobile-new.html">
   <div class="background-grid"></div><div class="scanlines"></div>
   <header class="app-header"><a class="app-back-link" href="./account.html"><span>&lt; アカウントへ</span><small>RETURN TO ACCOUNT</small></a><div><p>N◎VA MUNICIPAL DATABASE</p><h1>新規キャスト作成 <small>MOBILE ENTRY</small></h1></div></header>
-  <main class="sheet-layout" style="display:block;max-width:720px;margin:0 auto;padding:18px">
-    <section class="sheet-section sheet-section--profile is-open">
-      <div class="section-body">
+  <main class="mobile-new-layout">
+    <section class="mobile-new-panel">
+      <div class="mobile-new-panel__body">
         <p>最初に必須項目だけ登録します。作成後、そのままモバイル編集画面へ移動します。</p>
-        <div class="form-grid">
+        <div class="mobile-new-form">
           <label>キャスト名<input id="mobile-new-character-name" autocomplete="off"></label>
           <label>プレイヤー名<input id="mobile-new-player-name" autocomplete="off"></label>
           <label>公開状態<select id="mobile-new-visibility"><option value="private">非公開 / PRIVATE</option><option value="public">公開 / PUBLIC</option></select></label>
         </div>
         <p id="mobile-new-status" aria-live="polite"></p>
-        <div class="toolbar"><button id="mobile-new-create" type="button">作成してモバイル編集へ <small>CREATE & OPEN MOBILE EDITOR</small></button></div>
+        <div class="mobile-new-actions"><button id="mobile-new-create" type="button">作成してモバイル編集へ <small>CREATE & OPEN MOBILE EDITOR</small></button></div>
       </div>
     </section>
   </main>

@@ -11,7 +11,7 @@ body[data-page="cast.html"] .cast-outfit-section--armor :is(
   .cast-outfit-col--defense_i,
   .cast-outfit-col--defense_p
 ) .cast-outfit-value {
-  text-align: center !important;
+  text-align: center ;
 }
 
 body[data-page="cast.html"] .cast-outfit-section--armor :is(
@@ -26,15 +26,15 @@ body[data-page="cast.html"] .cast-outfit-section--armor :is(
 /* Total row: keep S / I / P centered, but pull the label toward those totals. */
 body[data-page="sheet.html"] .outfit-table-group--armor tfoot :is(th, td),
 body[data-page="cast.html"] .cast-armor-total-row > :is(th, td) {
-  vertical-align: middle !important;
+  vertical-align: middle ;
 }
 
 body[data-page="sheet.html"] .outfit-table-group--armor tfoot :is(th, td):first-child,
 body[data-page="cast.html"] .cast-armor-total-row > th:first-child {
-  padding-right: 14px !important;
-  font-weight: 900 !important;
+  padding-right: 14px ;
+  font-weight: 900 ;
   letter-spacing: .04em;
-  text-align: right !important;
+  text-align: right ;
   white-space: nowrap;
 }
 
@@ -42,17 +42,17 @@ body[data-page="sheet.html"] .outfit-table-group--armor tfoot td:nth-child(2),
 body[data-page="sheet.html"] .outfit-table-group--armor tfoot td:nth-child(3),
 body[data-page="sheet.html"] .outfit-table-group--armor tfoot td:nth-child(4),
 body[data-page="cast.html"] .cast-armor-total-row > .cast-armor-total {
-  color: var(--color-accent) !important;
-  font-family: var(--font-data) !important;
-  font-size: clamp(1.2rem, 1.25vw, 1.55rem) !important;
-  font-weight: 900 !important;
-  line-height: 1 !important;
-  text-align: center !important;
+  color: var(--color-accent) ;
+  font-family: var(--font-data) ;
+  font-size: clamp(1.2rem, 1.25vw, 1.55rem) ;
+  font-weight: 900 ;
+  line-height: 1 ;
+  text-align: center ;
   text-shadow: 0 0 10px color-mix(in srgb, var(--color-accent) 38%, transparent);
 }
 
 body[data-page="sheet.html"] .outfit-table-group--armor tfoot td:nth-child(2),
 body[data-page="sheet.html"] .outfit-table-group--armor tfoot td:nth-child(3),
 body[data-page="sheet.html"] .outfit-table-group--armor tfoot td:nth-child(4) {
-  padding-inline: 0 !important;
+  padding-inline: 0 ;
 }

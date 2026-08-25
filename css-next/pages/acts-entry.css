@@ -1,0 +1,6 @@
+/* Canonical stylesheet entry for act history and the legacy combo redirect. */
+@layer app, auth-page, acts-page;
+
+@import url("../index.css?v=64") layer(app);
+@import url("./auth.css?v=2") layer(auth-page);
+@import url("./acts.css?v=2") layer(acts-page);
