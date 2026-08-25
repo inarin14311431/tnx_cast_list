@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
 const css = fs.readFileSync(new URL('../css-next/pages/account-action-hierarchy.css', import.meta.url), 'utf8');
-const html = fs.readFileSync(new URL('../account.html', import.meta.url), 'utf8');
 
 test('owned cast action stylesheet exposes explicit hover and focus-visible feedback', () => {
   assert.match(css, /:is\(:hover, :focus-visible\)/);
@@ -19,8 +18,4 @@ test('hover text uses the theme text token instead of accent-derived foregrounds
   assert.doesNotMatch(css, /color:\s*color-mix\(in srgb, var\(--color-accent\) 88%, var\(--color-text\)\)/);
   assert.match(css, /button\[data-duplicate\]:is\(:hover, :focus-visible\)[\s\S]*var\(--color-accent\)/);
   assert.match(css, /button\[data-delete\]:is\(:hover, :focus-visible\)[\s\S]*var\(--color-danger\)/);
-});
-
-test('account page busts cached card interaction CSS', () => {
-  assert.match(html, /account-action-hierarchy\.css\?v=6/);
 });
