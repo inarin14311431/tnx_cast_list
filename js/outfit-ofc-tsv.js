@@ -1,7 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import {
   categoryToTarget,
-  cssEscape,
   defenseText,
   getOutfitRows,
   outfitSignature,
@@ -68,25 +67,15 @@ function handleTsvImport(event) {
       const category = targetToCategory(source.target);
       const index = available.findIndex(row => rowSignature(row) === outfitSignature(category, source.name));
       const row = index >= 0 ? available.splice(index, 1)[0] : available.shift();
-      if (row) applyDetailsToRow(row, tsvRowDetails(source, category));
+      if (row) applyDetailsToModel(row.dataset.outfitKey, tsvRowDetails(source, category));
     }
   }, 0);
 }
 
-function applyDetailsToRow(row, details) {
-  requestAnimationFrame(() => {
-    for (const [field, value] of Object.entries(details)) {
-      let input = row.querySelector(`[data-ofc="${cssEscape(field)}"]`);
-      if (field === "control_modifier") input = row.querySelector('[data-o="control_modifier"]') || input;
-      if (field === "cs_modifier") input = row.querySelector('[data-o="cs_modifier"]') || input;
-      if (field === "concealment") input = row.querySelector('[data-pc-outfit-proxy="concealment"]') || row.querySelector('[data-o="concealment"]') || input;
-      if (field === "slot") input = row.querySelector('[data-pc-outfit-proxy="slot"]') || row.querySelector('[data-o="slot"]') || input;
-      if (!input) continue;
-      input.value = String(value ?? "");
-      input.dispatchEvent(new Event("input", { bubbles: true }));
-      input.dispatchEvent(new Event("change", { bubbles: true }));
-    }
-  });
+function applyDetailsToModel(key, details) {
+  const apply = window.TNXSheetEditor?.applyOutfitDetailsForImport;
+  if (typeof apply !== "function") throw new Error("Outfit editor model gateway is unavailable.");
+  if (!apply(key, details)) throw new Error(`Outfit model row not found: ${key}`);
 }
 
 function selectedMasterIds() {
