@@ -5,17 +5,23 @@
   "scripts": {
     "test": "node --test tests/*.test.mjs",
     "test:troop": "node --test tests/troop-*.test.mjs",
+    "test:visual": "playwright test --config=playwright.visual.config.js",
+    "test:quality": "playwright test --config=playwright.quality.config.js",
     "check:js": "node scripts/check-js.mjs",
     "audit:modules": "node scripts/audit-module-graph.mjs",
     "audit:integrity": "node scripts/audit-runtime-integrity.mjs",
+    "audit:css": "node scripts/audit-css-rebuild.mjs",
+    "audit:themes": "node scripts/audit-theme-system.mjs",
     "audit:sheet": "node scripts/audit-sheet-runtime.mjs",
     "audit:cast": "node scripts/audit-cast-runtime.mjs",
     "audit:troop": "node scripts/audit-troop-runtime.mjs",
     "audit:mobile": "node scripts/audit-mobile-editor-runtime.mjs",
     "audit:security": "node scripts/audit-security.mjs",
+    "audit:migrations": "node scripts/audit-migrations.mjs",
+    "audit:quality": "node scripts/audit-quality-gates.mjs",
     "report:sheet-ownership": "node scripts/report-sheet-dom-ownership.mjs",
     "report:cast-ownership": "node scripts/report-cast-dom-ownership.mjs",
-    "verify": "npm run check:js && npm run audit:modules && npm run audit:integrity && npm run audit:sheet && npm run audit:cast && npm run audit:troop && npm run audit:mobile && npm run audit:security && npm run report:sheet-ownership && npm run report:cast-ownership && npm test",
+    "verify": "npm run check:js && npm run audit:modules && npm run audit:integrity && npm run audit:css && npm run audit:themes && npm run audit:sheet && npm run audit:cast && npm run audit:troop && npm run audit:mobile && npm run audit:security && npm run audit:migrations && npm run audit:quality && npm run report:sheet-ownership && npm run report:cast-ownership && npm test",
     "e2e": "playwright test",
     "e2e:troop": "playwright test tests/e2e/troop-view.spec.js tests/e2e/troop-editor-flow.spec.js --project=chromium",
     "e2e:headed": "playwright test --headed",
@@ -23,6 +29,6 @@
     "e2e:install": "playwright install chromium webkit"
   },
   "devDependencies": {
-    "@playwright/test": "1.55.0"
+    "@playwright/test": "1.62.1"
   }
 }
