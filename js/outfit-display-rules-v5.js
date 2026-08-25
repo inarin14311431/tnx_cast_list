@@ -69,13 +69,11 @@
     queued = false;
     if (applying) return;
     applying = true;
-    observer.disconnect();
     try {
       applySheetLayouts();
       applyCastLabels();
     } finally {
       applying = false;
-      observe();
     }
   }
 
