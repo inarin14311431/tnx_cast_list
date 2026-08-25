@@ -9,7 +9,6 @@ const themeDirectory = path.join(root, "css-next", "themes");
 async function exists(target) {
   try { await access(target); return true; } catch { return false; }
 }
-
 async function filesUnder(directory, extension) {
   const result = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -19,8 +18,8 @@ async function filesUnder(directory, extension) {
   }
   return result.sort();
 }
-
 const relative = file => path.relative(root, file).replaceAll(path.sep, "/");
+
 await import(pathToFileURL(path.join(root, "js", "theme-registry.js")));
 const registry = globalThis.TNX_THEME_REGISTRY;
 if (!registry || !Array.isArray(registry.themes)) problems.push("js/theme-registry.js: canonical registry is unavailable");
@@ -74,7 +73,7 @@ const htmlFiles = rootEntries.filter(entry => entry.isFile() && entry.name.endsW
 let activePageCount = 0;
 for (const file of htmlFiles) {
   const source = await readFile(file, "utf8");
-  if (!source.includes('data-css-system="next"')) continue;
+  if (!source.includes("./css-next/themes/index.css?v=1")) continue;
   activePageCount += 1;
   const assets = [...source.matchAll(/<(?:script|link)\b[^>]*(?:src|href)=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
   const stylesheets = assets.filter(asset => /\.css(?:\?|$)/.test(asset));
