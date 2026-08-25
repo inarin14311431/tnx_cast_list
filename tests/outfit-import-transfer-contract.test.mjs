@@ -26,13 +26,14 @@ test("legacy outfit import uses the shared adapter for current control and CS se
   assert.match(legacy, /ofc\("electronic_control"/);
 });
 
-test("OFC TSV keeps legacy headers external but normalizes aliases internally", () => {
+test("OFC TSV keeps legacy headers external but normalizes aliases into the editor model", () => {
   assert.match(tsv, /"control_value", "electronic_control"/);
   assert.match(tsv, /control_modifier: row\.control_modifier \|\| row\.control_value/);
   assert.match(tsv, /cs_modifier: row\.cs_modifier \|\| row\.cs_value/);
-  assert.match(tsv, /field === "control_modifier".*data-o="control_modifier"/s);
-  assert.match(tsv, /field === "cs_modifier".*data-o="cs_modifier"/s);
-  assert.match(tsv, /field === "concealment".*data-pc-outfit-proxy="concealment"/s);
+  assert.match(tsv, /TNXSheetEditor\?\.applyOutfitDetailsForImport/);
+  assert.doesNotMatch(tsv, /data-o="control_modifier"/);
+  assert.doesNotMatch(tsv, /data-o="cs_modifier"/);
+  assert.doesNotMatch(tsv, /data-pc-outfit-proxy="concealment"/);
 });
 
 test("OFC master and TSV share one adapter owner", () => {
