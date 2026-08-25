@@ -1,0 +1,82 @@
+name: Temporary validation app sync
+
+on:
+  push:
+    branches: [release/sync-validation-20260825]
+    paths:
+      - '.github/workflows/temp-sync-validation-20260825.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: ${{ !contains(github.event.head_commit.message, 'Sync validated app runtime') }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout production release branch
+        uses: actions/checkout@v4
+        with:
+          ref: release/sync-validation-20260825
+          fetch-depth: 0
+
+      - name: Checkout validation main
+        uses: actions/checkout@v4
+        with:
+          repository: inarin14311431/tnx-cast-archive-test
+          ref: main
+          path: _validation
+
+      - name: Sync validated runtime while preserving production transfer
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Root application pages. Production transfer pages are intentionally preserved.
+          for src in _validation/*.html; do
+            name="$(basename "$src")"
+            case "$name" in
+              transfer.html|mobile-transfer.html) continue ;;
+            esac
+            cp "$src" "$name"
+          done
+
+          # CSS runtime. Preserve every production file whose path is transfer-specific.
+          rsync -a --delete \
+            --exclude='*transfer*' \
+            _validation/css-next/ css-next/
+
+          # JavaScript runtime. Preserve production bookmarklet/direct-transfer implementation.
+          rsync -a --delete \
+            --exclude='*transfer*' \
+            _validation/js/ js/
+
+          # Keep public runtime documentation aligned where it describes the CSS/theme system.
+          cp _validation/CSS_REBUILD_README.md CSS_REBUILD_README.md
+          mkdir -p docs
+          cp _validation/docs/CSS_ARCHITECTURE.md docs/CSS_ARCHITECTURE.md
+          cp _validation/docs/THEME_SYSTEM.md docs/THEME_SYSTEM.md
+
+          # Explicit safety assertions: production transfer implementation must still exist
+          # and validation transfer pages must not have been substituted.
+          test -f transfer.html
+          test -f mobile-transfer.html
+          test -f js/direct-transfer-button.js
+          test -f js/tnx-transfer-bookmarklet-fixes.js
+          git diff --exit-code HEAD -- transfer.html mobile-transfer.html js/direct-transfer-button.js js/tnx-transfer-bookmarklet-fixes.js
+
+          rm -rf _validation
+          rm -f .github/workflows/temp-sync-validation-20260825.yml
+
+      - name: Commit synchronized runtime
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m 'Sync validated app runtime without transfer changes'
+          git push origin HEAD:release/sync-validation-20260825
