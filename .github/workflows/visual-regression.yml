@@ -1,0 +1,52 @@
+name: Visual Regression
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  compare:
+    name: Compare reference screenshots
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
+      options: --user 1001
+    timeout-minutes: 15
+    steps:
+      - name: Checkout production
+        uses: actions/checkout@v4
+      - name: Checkout approved visual reference
+        uses: actions/checkout@v4
+        with:
+          repository: inarin14311431/tnx-cast-archive-test
+          ref: main
+          path: .visual-reference
+      - name: Sync visual test contract
+        run: |
+          rm -rf tests/visual
+          cp -R .visual-reference/tests/visual tests/visual
+          cp .visual-reference/playwright.visual.config.js playwright.visual.config.js
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install
+      - name: Compare screenshots
+        # Production intentionally retains TSV/bookmarklet transfer controls while
+        # verification may show its direct-transfer controls. That deliberate
+        # desktop toolbar difference is covered semantically by transfer E2E,
+        # so only that one reference screenshot is excluded here.
+        run: npm run test:visual:production
+      - name: Upload visual report and image diffs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-regression-report
+          path: |
+            playwright-report-visual/
+            test-results/visual/
+          if-no-files-found: ignore
+          retention-days: 14

@@ -1,0 +1,68 @@
+name: Quality gates
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  contract:
+    name: Verification contract parity
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout production
+        uses: actions/checkout@v4
+      - name: Checkout verification contract
+        uses: actions/checkout@v4
+        with:
+          repository: inarin14311431/tnx-cast-archive-test
+          ref: main
+          path: .verification-contract
+          sparse-checkout: quality-gates.json
+          sparse-checkout-cone-mode: false
+      - name: Compare quality contracts
+        run: node scripts/audit-quality-gates.mjs --compare .verification-contract/quality-gates.json
+
+  accessibility:
+    name: Accessibility baseline
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install chromium
+      - name: Run accessibility baseline
+        run: npx playwright test --config=playwright.quality.config.js tests/quality/accessibility.spec.js
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: accessibility-report
+          path: playwright-report/
+          retention-days: 14
+
+  performance:
+    name: Performance budget
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install
+      - run: npx playwright install chromium
+      - name: Run performance budgets
+        run: npx playwright test --config=playwright.quality.config.js tests/quality/performance-budget.spec.js
+      - name: Upload Playwright report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report
+          path: playwright-report/
+          retention-days: 14
