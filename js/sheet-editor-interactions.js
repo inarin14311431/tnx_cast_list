@@ -41,6 +41,10 @@ function toggleSection(toggle) {
   toggle.setAttribute("aria-expanded", String(isOpen));
 }
 
+function isInternalNormalization(event) {
+  return Boolean(event?.detail?.tnxInternalNormalization);
+}
+
 export function initSheetEditorInteractions({
   root = document,
   windowRef = window,
@@ -54,7 +58,7 @@ export function initSheetEditorInteractions({
     root.querySelectorAll(".section-toggle, .sheet-combo-entry__header").forEach(prepareSectionToggle);
 
     const handleEdit = event => {
-      if (isLoading() || !event.target?.matches?.("input,select,textarea")) return;
+      if (isLoading() || isInternalNormalization(event) || !event.target?.matches?.("input,select,textarea")) return;
       onEdit(event);
     };
 

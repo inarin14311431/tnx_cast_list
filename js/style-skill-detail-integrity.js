@@ -5,6 +5,7 @@
   import("./skill-display-enhancements.js?v=1");
   const PREFIX = "@@TNX_STYLE_DETAIL_V1@@";
   const STYLE_SKILLS_CHANGED_EVENT = "tnx:style-skills-changed";
+  const INTERNAL_NORMALIZATION_EVENT = "tnxInternalNormalization";
   const DETAIL_KEYS = ["skill", "limit", "timing", "target", "range", "difficulty", "confrontation", "description", "page"];
 
   function balancedJson(text, start) {
@@ -86,6 +87,13 @@
     }));
   }
 
+  function dispatchInternalNormalization(input) {
+    input.dispatchEvent(new CustomEvent("input", {
+      bubbles: true,
+      detail: { [INTERNAL_NORMALIZATION_EVENT]: true }
+    }));
+  }
+
   function repairRow(row) {
     if (!row || row.dataset.styleIntegrityRepairing === "1") return;
     const original = row.querySelector('[data-f="description"]');
@@ -106,7 +114,10 @@
         const encoded = canonical(detail);
         if (original.value !== encoded) {
           original.value = encoded;
-          original.dispatchEvent(new Event("input", { bubbles: true }));
+          // This is a presentation-time compatibility repair, not a user edit.
+          // Keep the event available to presentation modules while allowing the
+          // sheet editor to exclude it from dirty/model synchronization.
+          dispatchInternalNormalization(original);
         }
       }
     } finally {

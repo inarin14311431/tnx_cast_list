@@ -6,6 +6,10 @@ function readInputValue(element) {
   return element.value;
 }
 
+function isInternalNormalization(event) {
+  return Boolean(event?.detail?.tnxInternalNormalization);
+}
+
 export function initSheetRowInteractions({
   root = globalThis.document,
   onSkillInput = () => {},
@@ -21,6 +25,7 @@ export function initSheetRowInteractions({
     if (!element?.matches || !element?.closest) return;
 
     if (element.matches("[data-f]")) {
+      if (isInternalNormalization(event)) return;
       const row = element.closest("[data-skill-key]");
       if (!row) return;
       onSkillInput({
