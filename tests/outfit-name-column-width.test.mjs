@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const css = await readFile(new URL("../css-next/editor/outfits.css", import.meta.url), "utf8");
-const index = await readFile(new URL("../css-next/index.css", import.meta.url), "utf8");
+const sheetEntry = await readFile(new URL("../css-next/pages/sheet-entry.css", import.meta.url), "utf8");
 const aligner = await readFile(new URL("../js/armor-grand-total.js", import.meta.url), "utf8");
 
 test("all outfit categories share one fixed name column width", () => {
@@ -19,5 +19,5 @@ test("armor explanation consumes the measured remaining table width", () => {
   assert.match(aligner, /targetWidth - fixedWidth/);
   assert.match(aligner, /cell\.style\.width = `\$\{descriptionWidth\}px`/);
   assert.match(aligner, /window\.addEventListener\("resize", queue/);
-  assert.match(index, /editor\/outfits\.css\?v=16/);
+  assert.match(sheetEntry, /editor\/outfits\.css\?v=17/);
 });
