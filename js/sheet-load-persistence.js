@@ -1,5 +1,7 @@
 import { supabase } from "./supabase-client.js";
 
+const SHEET_CHARACTER_LOADED_EVENT = "tnx:sheet-character-loaded";
+
 export async function loadSheetBundle({ publicId, ownerId } = {}) {
   const normalizedPublicId = String(publicId || "").trim();
   const normalizedOwnerId = String(ownerId || "").trim();
@@ -22,6 +24,10 @@ export async function loadSheetBundle({ publicId, ownerId } = {}) {
 
   const relatedError = skillResult.error || outfitResult.error;
   if (relatedError) throw relatedError;
+
+  globalThis.window?.dispatchEvent?.(new CustomEvent(SHEET_CHARACTER_LOADED_EVENT, {
+    detail: { character }
+  }));
 
   return Object.freeze({
     character,
