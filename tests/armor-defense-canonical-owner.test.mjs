@@ -2,37 +2,39 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
+const normalization = await readFile(new URL("../js/sheet-load-normalization.js", import.meta.url), "utf8");
+const renderer = await readFile(new URL("../js/sheet-outfit-renderer.js", import.meta.url), "utf8");
 const fields = await readFile(new URL("../js/outfit-ofc-fields.js", import.meta.url), "utf8");
 const layout = await readFile(new URL("../js/outfit-display-rules-v5.js", import.meta.url), "utf8");
 const tables = await readFile(new URL("../js/outfit-tables.js", import.meta.url), "utf8");
 const save = await readFile(new URL("../js/outfit-ofc-save.js", import.meta.url), "utf8");
 
-test("armor S P I editor fields are canonical OFC detail controls", () => {
-  assert.match(fields, /armor:\s*\[\.\.\.COMMON_FIELDS,\s*"defense_s",\s*"defense_p",\s*"defense_i",\s*"electronic_control"\]/);
+test("armor S P I are flattened into the canonical editor model before rendering", () => {
+  assert.match(normalization, /normalizeImportedOutfitDetails\(category, outfit\.ofc_details \|\| \{\}\)/);
+  assert.match(normalization, /defense_s:\s*""/);
+  assert.match(normalization, /defense_p:\s*""/);
+  assert.match(normalization, /defense_i:\s*""/);
+  assert.match(renderer, /armor:\s*\[[\s\S]*field\(outfit, "defense_s", "S"\)[\s\S]*field\(outfit, "defense_p", "P"\)[\s\S]*field\(outfit, "defense_i", "I"\)/);
   assert.match(layout, /\["ofc","defense_s","S"\],\["ofc","defense_p","P"\]/);
   assert.match(layout, /\["ofc","defense_i","I"\]/);
-  assert.doesNotMatch(layout, /\["base","defense_s","S"\]/);
-  assert.doesNotMatch(layout, /\["base","defense_p","P"\]/);
-  assert.doesNotMatch(layout, /\["base","defense_i","I"\]/);
+});
+
+test("armor table owns canonical OFC S P I cells from its first render", () => {
+  assert.match(tables, /armor:\['category'[\s\S]*'defense_s','defense_p','defense_i'/);
+  assert.match(tables, /td\.dataset\.ofcCell=key/);
+  assert.match(tables, /th\.dataset\.ofcHead=key/);
+  assert.doesNotMatch(tables, /parseArmorDefense|encodeArmorDefense|data-armor-defense/);
 });
 
 test("armor detail collection reads canonical OFC S P I only", () => {
   assert.match(fields, /row\.querySelector\('\[data-ofc="defense_s"\]'\)\?\.value \|\| details\.defense_s/);
   assert.match(fields, /row\.querySelector\('\[data-ofc="defense_p"\]'\)\?\.value \|\| details\.defense_p/);
   assert.match(fields, /row\.querySelector\('\[data-ofc="defense_i"\]'\)\?\.value \|\| details\.defense_i/);
-  assert.doesNotMatch(fields, /parseDefense/);
+  assert.doesNotMatch(fields, /parseDefense|from\(["']character_outfits["']\)|supabase/);
 });
 
-test("legacy armor defense backing bridge is retired from active editing", () => {
-  assert.doesNotMatch(layout, /syncArmorDefenseBridge|syncArmorDefenseRow|data-armor-defense/);
-  assert.doesNotMatch(tables, /parseArmorDefense|encodeArmorDefense|armorValue|updateArmorDefense|makeArmorDefenseCell|data-armor-defense/);
-  assert.match(tables, /\[data-ofc="defense_\$\{key\}"\]/);
-});
-
-test("current DB detail loading no longer reconstructs combined defense", () => {
-  assert.match(fields, /\.select\("category,name,sort_order,ofc_details"\)/);
-  assert.match(fields, /return normalizeDetails\(row\?\.ofc_details \|\| \{\}\)/);
-  assert.doesNotMatch(fields, /row\?\.defense|parseLegacyDescription/);
+test("current armor flow never reconstructs or saves combined defense", () => {
+  assert.doesNotMatch(normalization, /parseLegacyDescription|composeDefense/);
   assert.match(save, /defense: ""/);
   assert.doesNotMatch(save, /composeDefense|data-armor-defense|parseDefense/);
 });

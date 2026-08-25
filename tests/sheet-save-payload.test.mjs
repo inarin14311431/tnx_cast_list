@@ -69,9 +69,9 @@ test("skill payload filters empty rows and preserves style separators", () => {
   assert.equal(payload[1].sort_order, 1);
 });
 
-test("outfit payload emits only category-owned canonical base fields", () => {
+test("outfit payload emits category-owned base fields and structured OFC defense", () => {
   const payload = buildOutfitSavePayloads([
-    { category: "armor", name: "ARMOR", control_modifier: -2, cs_modifier: 9, defense: "1/2/3" },
+    { category: "armor", name: "ARMOR", control_modifier: -2, cs_modifier: 9, defense_s: "1", defense_p: "2", defense_i: "3" },
     { category: "tron", name: "TRON", control_modifier: -4, cs_modifier: 1 },
     { category: "vehicle", name: "VEHICLE", attack: "I+5", control_modifier: -1, cs_modifier: 2 },
     { category: "cyberware", name: "CYBER", control_modifier: -8, cs_modifier: 7 }
@@ -79,7 +79,10 @@ test("outfit payload emits only category-owned canonical base fields", () => {
 
   assert.equal(payload[0].control_modifier, -2);
   assert.equal(Object.hasOwn(payload[0], "cs_modifier"), false);
-  assert.equal(Object.hasOwn(payload[0], "defense"), false);
+  assert.equal(payload[0].defense, "");
+  assert.equal(payload[0].ofc_details.defense_s, "1");
+  assert.equal(payload[0].ofc_details.defense_p, "2");
+  assert.equal(payload[0].ofc_details.defense_i, "3");
   assert.equal(payload[1].cs_modifier, 1);
   assert.equal(Object.hasOwn(payload[1], "control_modifier"), false);
   assert.equal(payload[2].attack, "I+5");
@@ -87,4 +90,20 @@ test("outfit payload emits only category-owned canonical base fields", () => {
   assert.equal(payload[2].cs_modifier, 2);
   assert.equal(Object.hasOwn(payload[3], "control_modifier"), false);
   assert.equal(Object.hasOwn(payload[3], "cs_modifier"), false);
+});
+
+test("hidden OFC details survive model projection until explicitly edited", () => {
+  const [payload] = buildOutfitSavePayloads([{
+    category: "other",
+    name: "OTHER",
+    _ofc_details: {
+      manufacturer: "保存済メーカー",
+      page_number: "99",
+      retained_extension: "keep"
+    }
+  }]);
+
+  assert.equal(payload.ofc_details.manufacturer, "保存済メーカー");
+  assert.equal(payload.ofc_details.page_number, "99");
+  assert.equal(payload.ofc_details.retained_extension, "keep");
 });

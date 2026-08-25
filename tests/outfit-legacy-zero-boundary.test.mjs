@@ -20,11 +20,7 @@ test("canonical cleanup removes retired outfit aliases and armor base defense", 
 });
 
 test("legacy aliases are accepted only as input and normalize to canonical fields", () => {
-  const vehicle = normalizeImportedOutfitDetails("vehicle", {
-    control_value: "-2",
-    cs_value: "1",
-    mundane_modifier: "5"
-  });
+  const vehicle = normalizeImportedOutfitDetails("vehicle", { control_value: "-2", cs_value: "1", mundane_modifier: "5" });
   assert.equal(vehicle.control_modifier, "-2");
   assert.equal(vehicle.cs_modifier, "1");
   assert.equal(Object.hasOwn(vehicle, "control_value"), false);
@@ -44,12 +40,10 @@ test("current import and save boundaries do not re-emit retired aliases", () => 
   assert.doesNotMatch(mobileModel, /ofc_details\s*:\s*\{[^}]*cs_value/s);
 });
 
-test("PC OFC detail state no longer defines retired aliases", () => {
-  const fieldDefinitions = pcFields.match(/const FIELD_DEFINITIONS = \{([\s\S]*?)\n\};/)?.[1] || "";
-  assert.doesNotMatch(fieldDefinitions, /control_value/);
-  assert.doesNotMatch(fieldDefinitions, /cs_value/);
-  assert.doesNotMatch(fieldDefinitions, /mundane_modifier/);
-  assert.match(pcFields, /Retired aliases are normalized at explicit import boundaries/);
+test("PC OFC compatibility state contains no retired field generation or DB hydration", () => {
+  assert.doesNotMatch(pcFields, /control_value|cs_value|mundane_modifier/);
+  assert.doesNotMatch(pcFields, /supabase|from\(["']character_outfits["']\)|createElement\(["']td["']\)/);
+  assert.match(pcFields, /parseEmbeddedDetails/);
 });
 
 test("classic sheet no longer carries retired outfit transport or save scaffolding", () => {

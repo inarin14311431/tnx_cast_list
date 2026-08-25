@@ -121,18 +121,14 @@ test('OFC responsibilities keep import compatibility, TSV normalization and disp
   assert.doesNotMatch(display, /save_character_bundle|legacy-import-apply/);
 });
 
-test('OFC save enhancement is isolated from field rendering', async () => {
-  const save = await read('js/outfit-ofc-save.js');
+test('OFC save projection is owned by the DOM-free payload contract', async () => {
+  const payload = await read('js/sheet-save-payload.js');
   const persistence = await read('js/sheet-save-persistence.js');
-  assert.match(save, /function enrichOutfitPayload/);
-  assert.match(save, /ofc_details/);
-  assert.match(save, /outfit-ofc-utils\.js/);
-  assert.doesNotMatch(save, /save_character_bundle_with_ofc|supabase\.rpc|MutationObserver|master-search-copy|tsv-apply/);
+  assert.match(payload, /function buildOutfitDetails/);
+  assert.match(payload, /ofc_details:\s*buildOutfitDetails/);
+  assert.doesNotMatch(payload, /document\.|querySelector|TNXOutfitOFCState/);
   assert.match(persistence, /save_character_bundle_with_ofc/);
-  assert.match(persistence, /enrichOutfitPayload/);
-
-  const access = await read('js/sheet-master-search-access.js');
-  assert.match(access, /import "\.\/outfit-ofc-save\.js(?:\?[^\"]+)?"/);
+  assert.doesNotMatch(persistence, /enrichOutfitPayload|outfit-ofc-save/);
 
   const fields = await read('js/outfit-ofc-fields.js');
   assert.doesNotMatch(fields, /BASE_SAVE_RPC|OFC_SAVE_RPC|wrapSaveRpc|enrichOutfitPayload|__tnxOfcSaveWrapped/);

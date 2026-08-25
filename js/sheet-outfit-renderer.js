@@ -8,6 +8,15 @@ const OUTFIT_LABELS = Object.freeze({
   other: "その他"
 });
 
+const OFC_FIELDS = new Set([
+  "concealment_penalty", "parry", "speed", "electronic_control",
+  "defense_s", "defense_p", "defense_i",
+  "ianus_surface", "ianus_deep", "ianus_none",
+  "tron_software", "tron_support", "tron_hardware",
+  "crew", "sf", "residence_entry", "residence_electric", "residence_area",
+  "manufacturer", "page_number", "major_category", "minor_category"
+]);
+
 function esc(value) {
   return String(value ?? "").replace(/[&<>"']/g, char => ({
     "&": "&amp;",
@@ -16,6 +25,13 @@ function esc(value) {
     '"': "&quot;",
     "'": "&#39;"
   }[char]));
+}
+
+function field(outfit, key, label, { type = "text", className = "" } = {}) {
+  const value = type === "number" ? Number(outfit[key] || 0) : outfit[key] ?? "";
+  const ofc = OFC_FIELDS.has(key) ? ` data-ofc="${key}"` : "";
+  const klass = className ? ` class="${className}"` : "";
+  return `<label${klass}>${label}<input data-o="${key}"${ofc} type="${type}" value="${esc(value)}"></label>`;
 }
 
 export function renderOutfitEditor(outfits = []) {
@@ -28,28 +44,57 @@ function renderOutfitCard(outfit = {}) {
   const options = Object.entries(OUTFIT_LABELS)
     .map(([value, label]) => `<option value="${value}" ${category === value ? "selected" : ""}>${label}</option>`)
     .join("");
+  const details = esc(JSON.stringify(outfit._ofc_details || {}));
 
-  return `<article class="outfit-card outfit-form" data-outfit-key="${esc(outfit._key)}"><header><label>分類<select data-o="category">${options}</select></label><button class="row-delete" data-delete-outfit="${esc(outfit._key)}" type="button">×</button></header><div class="outfit-fields">${renderOutfitFields({ ...outfit, category })}</div></article>`;
+  return `<article class="outfit-card outfit-form" data-outfit-key="${esc(outfit._key)}" data-outfit-ofc-details="${details}"><header><label>分類<select data-o="category">${options}</select></label><button class="row-delete" data-delete-outfit="${esc(outfit._key)}" type="button">×</button></header><div class="outfit-fields">${renderOutfitFields({ ...outfit, category })}</div></article>`;
 }
 
 function renderOutfitFields(outfit) {
-  const common = `<label>名称<input data-o="name" value="${esc(outfit.name)}"></label><label>購入<input data-o="purchase_value" value="${esc(outfit.purchase_value)}"></label><label>常備化<input data-o="experience_cost" type="number" value="${Number(outfit.experience_cost || 0)}"></label>`;
-  const description = `<label class="outfit-description">解説<input data-o="description" value="${esc(outfit.description)}"></label>`;
+  const common = [
+    field(outfit, "name", "名称"),
+    field(outfit, "purchase_value", "購入"),
+    field(outfit, "experience_cost", "常備化", { type: "number" }),
+    field(outfit, "concealment", "隠匿値"),
+    field(outfit, "concealment_penalty", "隠匿修正")
+  ];
+  const metadata = [
+    field(outfit, "manufacturer", "メーカー"),
+    field(outfit, "page_number", "参照P"),
+    field(outfit, "major_category", "OFC大分類"),
+    field(outfit, "minor_category", "OFC小分類"),
+    field(outfit, "description", "解説", { className: "outfit-description" })
+  ];
 
-  if (outfit.category === "weapon") {
-    return common + `<label>隠匿<input data-o="concealment" value="${esc(outfit.concealment)}"></label><label>攻撃<input data-o="attack" value="${esc(outfit.attack)}"></label><label>射程<input data-o="range" value="${esc(outfit.range)}"></label><label>部位<input data-o="slot" value="${esc(outfit.slot)}"></label>` + description;
-  }
-  if (outfit.category === "armor") {
-    return common + `<label>隠匿<input data-o="concealment" value="${esc(outfit.concealment)}"></label><label>部位<input data-o="slot" value="${esc(outfit.slot)}"></label><label>制御値<input data-o="control_modifier" type="number" value="${Number(outfit.control_modifier || 0)}"></label>` + description;
-  }
-  if (outfit.category === "tron") {
-    return common + `<label>隠匿<input data-o="concealment" value="${esc(outfit.concealment)}"></label><label>部位<input data-o="slot" value="${esc(outfit.slot)}"></label><label>CS修正<input data-o="cs_modifier" type="number" value="${Number(outfit.cs_modifier || 0)}"></label>` + description;
-  }
-  if (outfit.category === "vehicle") {
-    return common + `<label>攻撃<input data-o="attack" value="${esc(outfit.attack)}"></label><label>制御値<input data-o="control_modifier" type="number" value="${Number(outfit.control_modifier || 0)}"></label><label>CS修正<input data-o="cs_modifier" type="number" value="${Number(outfit.cs_modifier || 0)}"></label>` + description;
-  }
-  if (outfit.category === "residence") {
-    return common + `<label>部位／エリア<input data-o="slot" value="${esc(outfit.slot)}"></label>` + description;
-  }
-  return common + `<label>隠匿<input data-o="concealment" value="${esc(outfit.concealment)}"></label><label>部位<input data-o="slot" value="${esc(outfit.slot)}"></label>` + description;
+  const categoryFields = {
+    weapon: [
+      field(outfit, "attack", "攻撃"), field(outfit, "parry", "受"), field(outfit, "range", "射程"),
+      field(outfit, "speed", "ス"), field(outfit, "electronic_control", "電制"), field(outfit, "slot", "部位")
+    ],
+    armor: [
+      field(outfit, "defense_s", "S"), field(outfit, "defense_p", "P"), field(outfit, "defense_i", "I"),
+      field(outfit, "control_modifier", "制御値", { type: "number" }), field(outfit, "electronic_control", "電制"), field(outfit, "slot", "部位")
+    ],
+    cyberware: [
+      field(outfit, "electronic_control", "電制"), field(outfit, "ianus_surface", "表"), field(outfit, "ianus_deep", "深"),
+      field(outfit, "ianus_none", "無"), field(outfit, "slot", "部位")
+    ],
+    tron: [
+      field(outfit, "electronic_control", "電制"), field(outfit, "speed", "ス"), field(outfit, "tron_software", "ソ"),
+      field(outfit, "tron_support", "サ"), field(outfit, "tron_hardware", "ハ"), field(outfit, "cs_modifier", "CS修正", { type: "number" }),
+      field(outfit, "slot", "部位")
+    ],
+    vehicle: [
+      field(outfit, "attack", "攻撃"), field(outfit, "speed", "ス"), field(outfit, "control_modifier", "制御値", { type: "number" }),
+      field(outfit, "cs_modifier", "CS修正", { type: "number" }), field(outfit, "electronic_control", "電制"),
+      field(outfit, "defense_s", "S"), field(outfit, "defense_p", "P"), field(outfit, "defense_i", "I"),
+      field(outfit, "crew", "乗員"), field(outfit, "sf", "SF"), field(outfit, "slot", "部位")
+    ],
+    residence: [
+      field(outfit, "speed", "ス"), field(outfit, "electronic_control", "電制"), field(outfit, "residence_entry", "登"),
+      field(outfit, "residence_electric", "電"), field(outfit, "residence_area", "ア"), field(outfit, "slot", "部位／エリア")
+    ],
+    other: [field(outfit, "electronic_control", "電制"), field(outfit, "slot", "部位")]
+  };
+
+  return [...common, ...(categoryFields[outfit.category] || categoryFields.other), ...metadata].join("");
 }
