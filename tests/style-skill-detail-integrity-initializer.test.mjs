@@ -14,5 +14,7 @@ test('style skill detail integrity keeps canonical event and repair hooks', () =
   assert.match(source, /tnx:style-skills-changed/);
   assert.match(source, /root\.addEventListener\(STYLE_SKILLS_CHANGED_EVENT, queue\)/);
   assert.match(source, /requestAnimationFrame\(\(\) => \{ queued = false; scan\(\); \}\)/);
-  assert.match(source, /original\.dispatchEvent\(new Event\("input", \{ bubbles: true \}\)\)/);
+  assert.match(source, /dispatchInternalNormalization\(original\)/);
+  assert.match(source, /new CustomEvent\("input"/);
+  assert.match(source, /tnxInternalNormalization/);
 });
