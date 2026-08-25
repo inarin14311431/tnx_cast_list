@@ -7,7 +7,6 @@ const coordinatorSource = await readFile(new URL("../js/sheet-save-coordinator.j
 const stateSource = await readFile(new URL("../js/sheet-save-state.js", import.meta.url), "utf8");
 const persistenceSource = await readFile(new URL("../js/sheet-save-persistence.js", import.meta.url), "utf8");
 const payloadSource = await readFile(new URL("../js/sheet-save-payload.js", import.meta.url), "utf8");
-const ofcSaveSource = await readFile(new URL("../js/outfit-ofc-save.js", import.meta.url), "utf8");
 
 test("classic sheet delegates save lifecycle state to the coordinator", () => {
   assert.match(sheetSource, /createSheetSaveCoordinator/);
@@ -32,6 +31,14 @@ test("save coordinator owns dirty, saving and queued-save mechanics", () => {
   assert.match(coordinatorSource, /async function save\(force = false\)/);
   assert.match(coordinatorSource, /if \(saving\) \{[\s\S]*pending = true/);
   assert.match(coordinatorSource, /queueMicrotask\(\(\) => save\(false\)\)/);
+});
+
+test("retired legacy load bridge is absent from the generic save coordinator", () => {
+  assert.doesNotMatch(coordinatorSource, /sheet-legacy-outfit-compat/);
+  assert.doesNotMatch(coordinatorSource, /installLegacyOutfitCompatibility/);
+  assert.doesNotMatch(coordinatorSource, /HYDRATION_/);
+  assert.doesNotMatch(coordinatorSource, /MutationObserver/);
+  assert.doesNotMatch(coordinatorSource, /isTrusted/);
 });
 
 test("edits made during an in-flight save stay dirty and queue a follow-up save", () => {
@@ -92,15 +99,13 @@ test("transactional persistence is isolated behind the classic sheet persistence
   assert.match(persistenceSource, /supabase\.rpc\(SAVE_RPC/);
   assert.match(persistenceSource, /p_character: character/);
   assert.match(persistenceSource, /p_skills: skills/);
-  assert.match(persistenceSource, /p_outfits: enrichOutfitPayload/);
+  assert.match(persistenceSource, /p_outfits:\s*Array\.isArray\(outfits\) \? outfits : \[\]/);
   assert.match(sheetSource, /tnx:character-saved/);
 });
 
-test("OFC enrichment is an explicit persistence dependency instead of an RPC monkey patch", () => {
-  assert.match(persistenceSource, /import \{ enrichOutfitPayload \} from "\.\/outfit-ofc-save\.js\?v=1"/);
-  assert.match(ofcSaveSource, /export function enrichOutfitPayload/);
-  assert.doesNotMatch(ofcSaveSource, /supabase-client/);
-  assert.doesNotMatch(ofcSaveSource, /supabase\.rpc\s*=/);
-  assert.doesNotMatch(ofcSaveSource, /__tnxOfcSaveWrapped/);
-  assert.doesNotMatch(ofcSaveSource, /function install\(/);
+test("outfit canonicalization is complete before persistence and requires no DOM enrichment", () => {
+  assert.match(payloadSource, /function buildOutfitDetails/);
+  assert.match(payloadSource, /ofc_details:\s*buildOutfitDetails/);
+  assert.doesNotMatch(persistenceSource, /outfit-ofc-save|enrichOutfitPayload/);
+  assert.doesNotMatch(payloadSource, /document\.|querySelector|TNXOutfitOFCState/);
 });
