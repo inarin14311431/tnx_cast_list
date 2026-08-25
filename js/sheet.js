@@ -48,6 +48,7 @@ import { collectAbilityInputSnapshot, applyAbilityInputSnapshot } from "./sheet-
 import { collectStyleInputSnapshot, applyStyleInputSnapshot } from "./sheet-style-input-snapshot.js?v=1";
 import { initSheetStyleInteractions } from "./sheet-style-interactions.js?v=1";
 import { appendRow, appendRows, clearRows, moveRowWithinCategory, normalizeOutfitCategory, removeRowByKey } from "./sheet-row-collection-state.js?v=2";
+import { normalizeImportedOutfitDetails } from "./outfit-ofc-adapter.js?v=2";
 import { GENERAL_MASTER_ROWS as GENERAL_MASTER, GENERAL_BLANK_SLOT_COLUMNS } from "./general-skill-catalog.js?v=1";
 
 const $ = selector => document.querySelector(selector);
@@ -218,6 +219,35 @@ function clearOutfitsForImport() {
   renderOutfits(); recalc(); markDirty();
 }
 
+function applyOutfitDetailsForImport(key, details = {}) {
+  const outfit = outfits.find(item => item._key === key);
+  if (!outfit) return false;
+
+  const category = normalizeOutfitCategory(details.site_category || details.category || outfit.category, OUTFIT_CATEGORIES);
+  const normalized = normalizeImportedOutfitDetails(category, details);
+  const aliases = {
+    site_category: "category",
+    purchase_target: "purchase_value",
+    permanent_cost: "experience_cost",
+    range_text: "range"
+  };
+
+  outfit.category = category;
+  for (const [sourceField, value] of Object.entries(normalized)) {
+    const field = aliases[sourceField] || sourceField;
+    if (field === "category") continue;
+    if (field in outfit) outfit[field] = value;
+  }
+  outfit._ofc_details = {
+    ...(outfit._ofc_details || {}),
+    ...normalized,
+    site_category: category
+  };
+
+  renderOutfits(); recalc(); markDirty();
+  return true;
+}
+
 function addStyleSeparator() {
   const skill = createStyleSeparatorRow(STYLE_SEPARATOR_MARKER, { sortOrder: skills.length });
   skills = appendRow(skills, skill);
@@ -229,7 +259,8 @@ window.TNXSheetEditor = {
   ...(window.TNXSheetEditor || {}),
   addStyleSeparator,
   addOutfitForImport,
-  clearOutfitsForImport
+  clearOutfitsForImport,
+  applyOutfitDetailsForImport
 };
 
 function generalColumnCounts() {
