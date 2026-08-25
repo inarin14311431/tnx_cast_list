@@ -35,7 +35,11 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Compare screenshots
-        run: npm run test:visual
+        # Production intentionally retains TSV/bookmarklet transfer controls while
+        # verification may show its direct-transfer controls. That deliberate
+        # desktop toolbar difference is covered semantically by transfer E2E,
+        # so only that one reference screenshot is excluded here.
+        run: npm run test:visual:production
       - name: Upload visual report and image diffs
         if: always()
         uses: actions/upload-artifact@v4
