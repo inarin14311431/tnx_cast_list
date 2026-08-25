@@ -1,5 +1,4 @@
 import { registerSheetSaveRequester, setSheetSaveState } from "./sheet-save-state.js?v=2";
-import { installLegacyOutfitCompatibility } from "./sheet-legacy-outfit-compat.js?v=1";
 
 const SAVE_ERROR_EVENT = "tnx:sheet-save-error";
 
@@ -60,6 +59,5 @@ export function createSheetSaveCoordinator({ persist, validate, onSaved, onError
   }
 
   registerSheetSaveRequester(() => save(true));
-  installLegacyOutfitCompatibility({ markSaved });
   return Object.freeze({ markDirty, markSaved, markLoading, markLoadError, hasUnsavedChanges, isSaving, save });
 }
