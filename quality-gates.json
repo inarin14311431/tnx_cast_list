@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "contractVersion": "2026-08-25.1",
+  "requiredScripts": [
+    "check:js",
+    "audit:modules",
+    "audit:integrity",
+    "audit:sheet",
+    "audit:cast",
+    "audit:troop",
+    "audit:mobile",
+    "audit:css",
+    "audit:themes",
+    "audit:security",
+    "audit:migrations",
+    "audit:quality",
+    "test",
+    "test:visual",
+    "test:quality"
+  ],
+  "requiredWorkflows": [
+    "playwright.yml",
+    "regression.yml",
+    "security.yml",
+    "visual-regression.yml",
+    "quality.yml"
+  ]
+}
