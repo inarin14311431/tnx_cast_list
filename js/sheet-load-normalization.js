@@ -1,3 +1,5 @@
+import { normalizeImportedOutfitDetails } from "./outfit-ofc-adapter.js?v=2";
+
 export const STYLE_SEPARATOR_MARKER = "[[STYLE_SEPARATOR]]";
 export const STYLE_DETAIL_PREFIX = "@@TNX_STYLE_DETAIL_V1@@";
 
@@ -72,20 +74,55 @@ export function normalizeLoadedSkill(skill = {}, { styleKindFromLabel } = {}) {
 }
 
 export function normalizeLoadedOutfit(outfit = {}) {
-  return {
+  const category = outfit.category || "other";
+  const details = normalizeImportedOutfitDetails(category, outfit.ofc_details || {});
+  const result = {
     _key: outfit.id || createKey(),
     category: "other",
     name: "",
     purchase_value: "",
     experience_cost: 0,
     concealment: "",
+    concealment_penalty: "",
     attack: "",
+    parry: "",
     range: "",
+    speed: "",
+    electronic_control: "",
+    defense_s: "",
+    defense_p: "",
+    defense_i: "",
+    control_modifier: 0,
+    cs_modifier: 0,
+    ianus_surface: "",
+    ianus_deep: "",
+    ianus_none: "",
+    tron_software: "",
+    tron_support: "",
+    tron_hardware: "",
+    crew: "",
+    sf: "",
+    residence_entry: "",
+    residence_electric: "",
+    residence_area: "",
+    manufacturer: "",
+    page_number: "",
+    major_category: "",
+    minor_category: "",
     slot: "",
     description: "",
     sort_order: 0,
+    ...details,
     ...outfit,
     _key: outfit.id || createKey(),
-    experience_cost: Number(outfit.experience_cost || 0)
+    category,
+    experience_cost: Number(outfit.experience_cost || details.permanent_cost || 0),
+    range: String(outfit.range || details.range_text || ""),
+    electronic_control: String(outfit.electronic_control || details.electronic_control || ""),
+    control_modifier: Number(outfit.control_modifier || details.control_modifier || 0),
+    cs_modifier: Number(outfit.cs_modifier || details.cs_modifier || 0),
+    _ofc_details: details
   };
+  delete result.ofc_details;
+  return result;
 }
