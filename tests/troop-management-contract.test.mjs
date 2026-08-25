@@ -22,9 +22,11 @@ test("troop v2 migration adds combos and spent experience", () => {
 test("troop rules use one style, derived stats, max members and EXP", () => {
   const html = read("troop.html");
   const js = read("js/troop.js");
+  const cssEntry = read("css-next/pages/troop-entry.css");
   assert.match(html, /CSはトループレベルと同値/);
   assert.match(html, /ARは1/);
-  assert.match(html, /troop-screen\.css\?v=1/);
+  assert.match(html, /troop-entry\.css\?v=1/);
+  assert.match(cssEntry, /troop-screen\.css\?v=2[^\n]*layer\(troop-screen\)/);
   assert.doesNotMatch(html, /troop-(?:compact-density-v2|density-v3|visual-accent-v5|layout-v6)\.css/);
   assert.match(html, /id="troop-style"/);
   assert.doesNotMatch(html, /id="troop-style-2"/);
@@ -117,7 +119,24 @@ test("utsuwa attribute is strictly hidden except for utsuwa", () => {
   const css = read("css-next/pages/troops.css");
   assert.match(html, /id="troop-utsuwa-wrap" hidden/);
   assert.match(js, /hidden = !isUtsuwa/);
-  assert.match(css, /#troop-editor \[hidden\][^{]*\{display:none!important\}/);
+  assert.match(css, /#troop-editor \[hidden\][^{]*\{display:none\}/);
+});
+
+test("troop styles use explicit cascade layers without important overrides", () => {
+  const html = read("troop.html");
+  const registryHtml = read("troops.html");
+  const detailEntry = read("css-next/pages/troop-entry.css");
+  const registryEntry = read("css-next/pages/troops-entry.css");
+  const sources = [
+    "troops.css", "troops-v4.css", "troop-combo-dialog.css",
+    "troop-combo-rule-v2.css", "troop-screen.css", "troops-registry-polish.css"
+  ].map(file => read(`css-next/pages/${file}`));
+
+  assert.match(html, /troop-entry\.css\?v=1/);
+  assert.match(registryHtml, /troops-entry\.css\?v=1/);
+  assert.match(detailEntry, /@layer app, troop-base, troop-layout, troop-dialog, troop-combo, troop-screen/);
+  assert.match(registryEntry, /@layer app, troop-base, troop-registry/);
+  sources.forEach(source => assert.doesNotMatch(source, /!important/));
 });
 
 test("troop general and style skills keep normal EXP rules", () => {
@@ -188,8 +207,10 @@ test("troop editor runtime uses explicit initializers without DOM recovery obser
 test("cast troop modal uses editor section colors and compact CS pairs", () => {
   const cast = read("js/cast-troops-link.js");
   const castHtml = read("cast.html");
+  const castEntry = read("css-next/pages/cast-entry.css");
   const css = read("css-next/pages/cast-troop-modal.css");
-  assert.match(castHtml, /cast-troop-modal\.css\?v=3/);
+  assert.match(castHtml, /cast-entry\.css\?v=1/);
+  assert.match(castEntry, /cast-troop-modal\.css\?v=4[^\n]*layer\(cast-troop-modal\)/);
   assert.match(castHtml, /cast-troops-link\.js\?v=6/);
   assert.match(castHtml, /troop-combo-copy\.js\?v=2/);
   assert.match(cast, /cast-troop-block--abilities/);
@@ -210,6 +231,7 @@ test("cast troop modal uses editor section colors and compact CS pairs", () => {
 test("account and cast have responsive troop navigation adapters", () => {
   const cast = read("js/cast-troops-link.js");
   const castHtml = read("cast.html");
+  const castEntry = read("css-next/pages/cast-entry.css");
   const mobileCss = read("css-next/pages/troops-v4.css");
   assert.match(read("js/account-mobile-editor-links.js"), /troops\.html/);
   assert.match(read("js/cast-mobile-level-labels.js"), /cast-troops-link\.js/);
@@ -218,6 +240,7 @@ test("account and cast have responsive troop navigation adapters", () => {
   assert.match(cast, /showModal\(\)/);
   assert.match(cast, /troops\.length === 1.*troop\.html/s);
   assert.match(cast, /troops\.html\?character=/);
-  assert.match(castHtml, /cast-troop-modal\.css/);
+  assert.match(castHtml, /cast-entry\.css/);
+  assert.match(castEntry, /cast-troop-modal\.css/);
   assert.match(mobileCss, /body\[data-page="troop\.html"\].*troop-vitals/s);
 });

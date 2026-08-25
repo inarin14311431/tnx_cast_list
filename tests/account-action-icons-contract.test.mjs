@@ -5,6 +5,7 @@ import fs from 'node:fs';
 const icons = fs.readFileSync(new URL('../js/account-action-icons.js', import.meta.url), 'utf8');
 const css = fs.readFileSync(new URL('../css-next/pages/account-action-hierarchy.css', import.meta.url), 'utf8');
 const html = fs.readFileSync(new URL('../account.html', import.meta.url), 'utf8');
+const entry = fs.readFileSync(new URL('../css-next/pages/account-entry.css', import.meta.url), 'utf8');
 
 test('owned cast actions render inline currentColor SVG icons', () => {
   for (const name of ['open', 'edit', 'mobile', 'acts', 'duplicate', 'delete']) {
@@ -22,7 +23,8 @@ test('consolidated card styling keeps theme-aware icon colors', () => {
 });
 
 test('account page loads only the consolidated cast-card stylesheet', () => {
-  assert.match(html, /account-action-hierarchy\.css\?v=6/);
+  assert.match(html, /account-entry\.css\?v=1/);
+  assert.match(entry, /account-action-hierarchy\.css\?v=7/);
   assert.doesNotMatch(html, /account-action-icons\.css/);
   assert.doesNotMatch(html, /account-mobile-compact\.css/);
   assert.ok(html.indexOf('account-action-icons.js?v=1') > html.indexOf('account.js?v=42'));

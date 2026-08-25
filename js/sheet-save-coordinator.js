@@ -1,6 +1,29 @@
 import { registerSheetSaveRequester, setSheetSaveState } from "./sheet-save-state.js?v=2";
 
 const SAVE_ERROR_EVENT = "tnx:sheet-save-error";
+const OUTFIT_ROOT_SELECTOR = "#outfit-list";
+const OUTFIT_GROUP_SELECTOR = ".outfit-table-group";
+const OUTFIT_ROW_SELECTOR = "[data-outfit-key]";
+const OUTFIT_READY_FIELD_SELECTOR = '[data-ofc="manufacturer"]';
+const HYDRATION_POLL_MS = 25;
+
+function scheduleFrame(callback) {
+  if (typeof globalThis.requestAnimationFrame === "function") {
+    globalThis.requestAnimationFrame(callback);
+    return;
+  }
+  globalThis.setTimeout?.(callback, 0);
+}
+
+function outfitEditorIsHydrated() {
+  const root = globalThis.document?.querySelector?.(OUTFIT_ROOT_SELECTOR);
+  if (!root) return false;
+  const groups = root.querySelectorAll?.(OUTFIT_GROUP_SELECTOR) || [];
+  if (!groups.length) return false;
+  const rows = [...(root.querySelectorAll?.(OUTFIT_ROW_SELECTOR) || [])];
+  if (!rows.length) return true;
+  return rows.every(row => Boolean(row.querySelector?.(OUTFIT_READY_FIELD_SELECTOR)));
+}
 
 export function createSheetSaveCoordinator({
   persist,
@@ -12,15 +35,55 @@ export function createSheetSaveCoordinator({
   let saving = false;
   let pending = false;
   let changeRevision = 0;
+  let hydrationGeneration = 0;
+  let hydrationPending = false;
+  let trustedEditDuringHydration = false;
 
   function publish(state, text = "") {
     setSheetSaveState(state, text);
   }
 
   function publishError(error, text) {
-    window.dispatchEvent(new CustomEvent(SAVE_ERROR_EVENT, {
+    globalThis.window?.dispatchEvent?.(new CustomEvent(SAVE_ERROR_EVENT, {
       detail: { error, text: String(text || "") }
     }));
+  }
+
+  function handleTrustedHydrationEdit(event) {
+    if (hydrationPending && event?.isTrusted) trustedEditDuringHydration = true;
+  }
+
+  globalThis.document?.addEventListener?.("input", handleTrustedHydrationEdit, true);
+  globalThis.document?.addEventListener?.("change", handleTrustedHydrationEdit, true);
+
+  function settleHydration(generation) {
+    if (!hydrationPending || generation !== hydrationGeneration) return;
+    if (!outfitEditorIsHydrated()) {
+      globalThis.setTimeout?.(() => settleHydration(generation), HYDRATION_POLL_MS);
+      return;
+    }
+
+    scheduleFrame(() => scheduleFrame(() => {
+      if (!hydrationPending || generation !== hydrationGeneration) return;
+      hydrationPending = false;
+      if (trustedEditDuringHydration) return;
+      dirty = false;
+      pending = false;
+      publish("saved", "保存済み");
+    }));
+  }
+
+  function beginHydrationSettle() {
+    hydrationGeneration += 1;
+    hydrationPending = true;
+    trustedEditDuringHydration = false;
+    settleHydration(hydrationGeneration);
+  }
+
+  function cancelHydrationSettle() {
+    hydrationGeneration += 1;
+    hydrationPending = false;
+    trustedEditDuringHydration = false;
   }
 
   function markDirty() {
@@ -40,10 +103,12 @@ export function createSheetSaveCoordinator({
   }
 
   function markLoading(text = "読込中…") {
+    beginHydrationSettle();
     publish("saving", text);
   }
 
   function markLoadError(text) {
+    cancelHydrationSettle();
     dirty = false;
     pending = false;
     publish("error", text);

@@ -5,16 +5,18 @@ import { readFile } from "node:fs/promises";
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("statistics bureau is available as a theme and archive entry point", async () => {
-  const [theme, index, themeCss] = await Promise.all([
+  const [registry, controller, index, themeCss] = await Promise.all([
+    read("js/theme-registry.js"),
     read("js/css-next-theme.js"),
     read("index.html"),
-    read("css-next/tokens/statistics-bureau-theme.css")
+    read("css-next/themes/statistics-bureau.css")
   ]);
 
-  assert.match(theme, /statistics-bureau/);
-  assert.match(theme, /行政府統計局/);
+  assert.match(registry, /id:\s*"statistics-bureau",\s*label:\s*"行政府統計局"/);
+  assert.match(registry, /colorScheme:\s*"light"/);
+  assert.match(controller, /TNX_THEME_REGISTRY/);
   assert.match(index, /statistics\.html/);
-  assert.match(index, /value="statistics-bureau"/);
+  assert.doesNotMatch(index, /value="statistics-bureau"/);
   assert.match(themeCss, /data-theme="statistics-bureau"/);
 });
 
