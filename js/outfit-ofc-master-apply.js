@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { cssEscape, getOutfitRows, outfitSignature, rowSignature } from "./outfit-ofc-utils.js";
+import { getOutfitRows, outfitSignature, rowSignature } from "./outfit-ofc-utils.js";
 import { masterRowToOutfitDetails } from "./outfit-ofc-adapter.js?v=2";
 
 const MASTER_TABLE = "ofc_master";
@@ -33,27 +33,17 @@ async function applyMasterRowsAfterBaseAdd(ids, before) {
       const matchIndex = available.findIndex(row => rowSignature(row) === outfitSignature(category, rowData.name));
       const row = matchIndex >= 0 ? available.splice(matchIndex, 1)[0] : available.shift();
       if (!row) continue;
-      await waitForOfcFields(row, 2000);
-      applyDetailsToRow(row, masterRowToOutfitDetails(rowData));
+      applyDetailsToModel(row.dataset.outfitKey, masterRowToOutfitDetails(rowData));
     }
   } catch (error) {
     console.warn("OFC detail fields could not be applied after master addition.", error);
   }
 }
 
-function applyDetailsToRow(row, details) {
-  for (const [field, value] of Object.entries(details)) {
-    let input = row.querySelector(`[data-ofc="${cssEscape(field)}"]`);
-    if (field === "control_modifier") input = row.querySelector('[data-o="control_modifier"]') || input;
-    if (field === "cs_modifier") input = row.querySelector('[data-o="cs_modifier"]') || input;
-    if (field === "concealment") input = row.querySelector('[data-pc-outfit-proxy="concealment"]') || row.querySelector('[data-o="concealment"]') || input;
-    if (field === "slot") input = row.querySelector('[data-pc-outfit-proxy="slot"]') || row.querySelector('[data-o="slot"]') || input;
-    if (field === "description") input = row.querySelector('[data-o="description"]') || input;
-    if (!input) continue;
-    input.value = String(value ?? "");
-    input.dispatchEvent(new Event("input", { bubbles: true }));
-    input.dispatchEvent(new Event("change", { bubbles: true }));
-  }
+function applyDetailsToModel(key, details) {
+  const apply = window.TNXSheetEditor?.applyOutfitDetailsForImport;
+  if (typeof apply !== "function") throw new Error("Outfit editor model gateway is unavailable.");
+  if (!apply(key, details)) throw new Error(`Outfit model row not found: ${key}`);
 }
 
 function selectedMasterIds() {
@@ -87,15 +77,6 @@ async function waitForNewOutfitRows(before, expected, timeout) {
     await wait(50);
   }
   return getOutfitRows().filter(row => !before.has(row.dataset.outfitKey));
-}
-
-async function waitForOfcFields(row, timeout) {
-  const started = performance.now();
-  while (performance.now() - started < timeout) {
-    if (row.querySelector("[data-ofc]") || row.querySelector("[data-pc-outfit-proxy]")) return true;
-    await wait(40);
-  }
-  return false;
 }
 
 function wait(milliseconds) {
