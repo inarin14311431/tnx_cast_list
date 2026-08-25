@@ -6,6 +6,7 @@ const OUTFIT_GROUP_SELECTOR = ".outfit-table-group";
 const OUTFIT_ROW_SELECTOR = "[data-outfit-key]";
 const OUTFIT_READY_FIELD_SELECTOR = '[data-ofc="manufacturer"]';
 const HYDRATION_POLL_MS = 25;
+const HYDRATION_QUIET_MS = 300;
 
 function scheduleFrame(callback) {
   if (typeof globalThis.requestAnimationFrame === "function") {
@@ -25,12 +26,7 @@ function outfitEditorIsHydrated() {
   return rows.every(row => Boolean(row.querySelector?.(OUTFIT_READY_FIELD_SELECTOR)));
 }
 
-export function createSheetSaveCoordinator({
-  persist,
-  validate,
-  onSaved,
-  onError
-} = {}) {
+export function createSheetSaveCoordinator({ persist, validate, onSaved, onError } = {}) {
   let dirty = false;
   let saving = false;
   let pending = false;
@@ -38,10 +34,10 @@ export function createSheetSaveCoordinator({
   let hydrationGeneration = 0;
   let hydrationPending = false;
   let trustedEditDuringHydration = false;
+  let hydrationLastActivity = 0;
+  let hydrationObserver = null;
 
-  function publish(state, text = "") {
-    setSheetSaveState(state, text);
-  }
+  function publish(state, text = "") { setSheetSaveState(state, text); }
 
   function publishError(error, text) {
     globalThis.window?.dispatchEvent?.(new CustomEvent(SAVE_ERROR_EVENT, {
@@ -49,12 +45,32 @@ export function createSheetSaveCoordinator({
     }));
   }
 
-  function handleTrustedHydrationEdit(event) {
-    if (hydrationPending && event?.isTrusted) trustedEditDuringHydration = true;
+  function noteHydrationActivity() {
+    if (hydrationPending) hydrationLastActivity = Date.now();
   }
 
-  globalThis.document?.addEventListener?.("input", handleTrustedHydrationEdit, true);
-  globalThis.document?.addEventListener?.("change", handleTrustedHydrationEdit, true);
+  function handleHydrationEdit(event) {
+    if (!hydrationPending) return;
+    noteHydrationActivity();
+    if (event?.isTrusted) trustedEditDuringHydration = true;
+  }
+
+  globalThis.document?.addEventListener?.("input", handleHydrationEdit, true);
+  globalThis.document?.addEventListener?.("change", handleHydrationEdit, true);
+
+  function stopHydrationObserver() {
+    hydrationObserver?.disconnect?.();
+    hydrationObserver = null;
+  }
+
+  function startHydrationObserver() {
+    stopHydrationObserver();
+    const root = globalThis.document?.querySelector?.(OUTFIT_ROOT_SELECTOR);
+    const Observer = globalThis.MutationObserver;
+    if (!root || typeof Observer !== "function") return;
+    hydrationObserver = new Observer(noteHydrationActivity);
+    hydrationObserver.observe(root, { childList: true, subtree: true, attributes: true });
+  }
 
   function settleHydration(generation) {
     if (!hydrationPending || generation !== hydrationGeneration) return;
@@ -63,9 +79,16 @@ export function createSheetSaveCoordinator({
       return;
     }
 
+    const quietFor = Date.now() - hydrationLastActivity;
+    if (quietFor < HYDRATION_QUIET_MS) {
+      globalThis.setTimeout?.(() => settleHydration(generation), HYDRATION_QUIET_MS - quietFor);
+      return;
+    }
+
     scheduleFrame(() => scheduleFrame(() => {
       if (!hydrationPending || generation !== hydrationGeneration) return;
       hydrationPending = false;
+      stopHydrationObserver();
       if (trustedEditDuringHydration) return;
       dirty = false;
       pending = false;
@@ -77,6 +100,8 @@ export function createSheetSaveCoordinator({
     hydrationGeneration += 1;
     hydrationPending = true;
     trustedEditDuringHydration = false;
+    hydrationLastActivity = Date.now();
+    startHydrationObserver();
     settleHydration(hydrationGeneration);
   }
 
@@ -84,9 +109,11 @@ export function createSheetSaveCoordinator({
     hydrationGeneration += 1;
     hydrationPending = false;
     trustedEditDuringHydration = false;
+    stopHydrationObserver();
   }
 
   function markDirty() {
+    if (hydrationPending && !trustedEditDuringHydration) return;
     dirty = true;
     changeRevision += 1;
     if (saving) {
@@ -114,13 +141,8 @@ export function createSheetSaveCoordinator({
     publish("error", text);
   }
 
-  function hasUnsavedChanges() {
-    return dirty;
-  }
-
-  function isSaving() {
-    return saving;
-  }
+  function hasUnsavedChanges() { return dirty; }
+  function isSaving() { return saving; }
 
   async function save(force = false) {
     if (saving) {
@@ -168,13 +190,5 @@ export function createSheetSaveCoordinator({
 
   registerSheetSaveRequester(() => save(true));
 
-  return Object.freeze({
-    markDirty,
-    markSaved,
-    markLoading,
-    markLoadError,
-    hasUnsavedChanges,
-    isSaving,
-    save
-  });
+  return Object.freeze({ markDirty, markSaved, markLoading, markLoadError, hasUnsavedChanges, isSaving, save });
 }
