@@ -20,15 +20,17 @@ function trailingFunctionBlock(source, name) {
   return match[0];
 }
 
-test("new outfit state no longer seeds retired compatibility fields", () => {
+test("new outfit state keeps canonical modifiers but does not seed retired compatibility fields", () => {
   const outfit = createBlankOutfit({ key: "policy-test", sortOrder: 0 });
+  assert.equal("control_modifier" in outfit, true);
+  assert.equal("cs_modifier" in outfit, true);
   assert.equal("defense" in outfit, false);
-  assert.equal("control_modifier" in outfit, false);
-  assert.equal("cs_modifier" in outfit, false);
+  assert.equal("control_value" in outfit, false);
+  assert.equal("cs_value" in outfit, false);
   assert.equal("mundane_modifier" in outfit, false);
 });
 
-test("classic raw card no longer emits hidden legacy outfit transport fields", () => {
+test("complete renderer emits no hidden legacy outfit transport fields", () => {
   assert.doesNotMatch(sheetSource, /function compatibilityOutfitFields/);
   const block = trailingFunctionBlock(rendererSource, "renderOutfitFields");
   assert.doesNotMatch(block, /type="hidden" data-o="defense"/);
@@ -37,28 +39,25 @@ test("classic raw card no longer emits hidden legacy outfit transport fields", (
   assert.doesNotMatch(block, /data-o="mundane_modifier"/);
 });
 
-test("raw editor exposes only canonical category-owned control and CS fields", () => {
+test("renderer exposes canonical category-owned control and CS fields", () => {
   const block = trailingFunctionBlock(rendererSource, "renderOutfitFields");
-  assert.match(block, /outfit\.category === "armor"[\s\S]*data-o="control_modifier"/);
-  assert.match(block, /outfit\.category === "tron"[\s\S]*data-o="cs_modifier"/);
-  assert.match(block, /outfit\.category === "vehicle"[\s\S]*data-o="control_modifier"[\s\S]*data-o="cs_modifier"/);
-  assert.doesNotMatch(block, /data-o="defense"/);
-  assert.doesNotMatch(block, /mundane_modifier/);
+  assert.match(block, /armor:\s*\[[\s\S]*field\(outfit, "control_modifier", "制御値"/);
+  assert.match(block, /tron:\s*\[[\s\S]*field\(outfit, "cs_modifier", "CS修正"/);
+  assert.match(block, /vehicle:\s*\[[\s\S]*field\(outfit, "control_modifier", "制御値"[\s\S]*field\(outfit, "cs_modifier", "CS修正"/);
+  assert.doesNotMatch(block, /data-o="defense"|mundane_modifier/);
 });
 
 test("classic sheet delegates outfit serialization to the payload contract", () => {
   const collect = functionBlock(sheetSource, "collectOutfits", "openImport");
   assert.match(collect, /buildOutfitSavePayloads\(outfits\)/);
-  assert.doesNotMatch(collect, /payload\.defense/);
-  assert.doesNotMatch(collect, /mundane_modifier/);
+  assert.doesNotMatch(collect, /payload\.defense|mundane_modifier/);
 
   const builder = payloadSource.match(/export function buildOutfitSavePayloads\([\s\S]*$/)?.[0] || "";
   assert.ok(builder, "buildOutfitSavePayloads block should exist");
   assert.match(builder, /category === "armor"\) payload\.control_modifier/);
   assert.match(builder, /category === "tron"\) payload\.cs_modifier/);
   assert.match(builder, /category === "vehicle"[\s\S]*payload\.control_modifier[\s\S]*payload\.cs_modifier/);
-  assert.doesNotMatch(builder, /payload\.defense/);
-  assert.doesNotMatch(builder, /mundane_modifier/);
+  assert.doesNotMatch(builder, /payload\.defense|mundane_modifier/);
 });
 
 test("classic OFC TSV fallback no longer seeds combined defense", () => {
