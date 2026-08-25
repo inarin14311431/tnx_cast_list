@@ -76,7 +76,7 @@ test("style separator factory owns separator record semantics", () => {
   assert.equal(row.sort_order, 18);
 });
 
-test("outfit factory preserves canonical blank base state only", () => {
+test("outfit factory preserves the complete canonical blank editor model", () => {
   const outfit = createBlankOutfit({ key: "outfit-1", sortOrder: 3 });
 
   assert.deepEqual(outfit, {
@@ -86,15 +86,40 @@ test("outfit factory preserves canonical blank base state only", () => {
     purchase_value: "",
     experience_cost: 0,
     concealment: "",
+    concealment_penalty: "",
     attack: "",
+    parry: "",
     range: "",
+    speed: "",
+    electronic_control: "",
+    defense_s: "",
+    defense_p: "",
+    defense_i: "",
+    control_modifier: 0,
+    cs_modifier: 0,
+    ianus_surface: "",
+    ianus_deep: "",
+    ianus_none: "",
+    tron_software: "",
+    tron_support: "",
+    tron_hardware: "",
+    crew: "",
+    sf: "",
+    residence_entry: "",
+    residence_electric: "",
+    residence_area: "",
+    manufacturer: "",
+    page_number: "",
+    major_category: "",
+    minor_category: "",
     slot: "",
     description: "",
-    sort_order: 3
+    sort_order: 3,
+    _ofc_details: {}
   });
   assert.equal("defense" in outfit, false);
-  assert.equal("control_modifier" in outfit, false);
-  assert.equal("cs_modifier" in outfit, false);
+  assert.equal("control_value" in outfit, false);
+  assert.equal("cs_value" in outfit, false);
   assert.equal("mundane_modifier" in outfit, false);
 });
 
@@ -105,6 +130,8 @@ test("outfit row factory layers import or editor values over the canonical blank
   assert.equal(outfit.name, "テスト武器");
   assert.equal(outfit.attack, "+5");
   assert.equal(outfit.experience_cost, 0);
+  assert.equal(outfit.defense_s, "");
+  assert.deepEqual(outfit._ofc_details, {});
   assert.equal(outfit.sort_order, 8);
 });
 
