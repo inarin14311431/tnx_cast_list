@@ -62,6 +62,47 @@ body[data-page="acts.html"] .act-history-header h1 > small {
 .experience-spending-status { color: var(--color-muted); }
 .experience-spending-form { display: grid; grid-template-columns: 1.2fr .6fr .8fr 1.6fr auto; gap: 10px; align-items: end; margin-block: 14px; }
 
+.experience-spending-confirm {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgb(0 4 8 / 78%);
+  backdrop-filter: blur(3px);
+}
+.experience-spending-confirm__panel {
+  width: min(520px, 100%);
+  max-height: calc(100dvh - 32px);
+  overflow: auto;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-glow);
+}
+.experience-spending-confirm__eyebrow {
+  margin: 0 0 6px;
+  color: var(--color-danger);
+  font-size: .68rem;
+  letter-spacing: .12em;
+}
+.experience-spending-confirm__panel h2 { margin: 0 0 16px; color: var(--color-accent); }
+.experience-spending-confirm__details { display: grid; gap: 8px; margin: 0; }
+.experience-spending-confirm__details div {
+  display: grid;
+  grid-template-columns: 7em minmax(0, 1fr);
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
+}
+.experience-spending-confirm__details dt { color: var(--color-muted); }
+.experience-spending-confirm__details dd { margin: 0; overflow-wrap: anywhere; }
+.experience-spending-confirm__warning { margin: 16px 0 0; color: var(--color-danger); font-weight: 700; }
+.experience-spending-confirm__actions { display: flex; justify-content: flex-end; gap: 10px; margin-top: 18px; }
+.experience-spending-confirm__actions .danger { border-color: var(--color-danger); color: var(--color-danger); }
+
 .combo-editor-panel__header { padding: 16px; }
 .combo-list { display: grid; gap: 12px; padding: 16px; }
 .combo-list > article,
@@ -111,4 +152,7 @@ body[data-page="combos.html"] .combo-card__ability--life { border-color: color-m
   .experience-spending-form,
   body[data-page="combos.html"] .combo-form-grid { grid-template-columns: 1fr; }
   body[data-page="combos.html"] .combo-form-grid__wide { grid-column: auto; }
+  .experience-spending-confirm__details div { grid-template-columns: 1fr; gap: 3px; }
+  .experience-spending-confirm__actions { flex-direction: column-reverse; }
+  .experience-spending-confirm__actions button { width: 100%; }
 }
