@@ -1,0 +1,39 @@
+.experience-ticket__fields {
+  grid-template-columns: minmax(180px, .42fr) minmax(0, 1.58fr);
+}
+
+.experience-ticket__field--date {
+  min-width: 0;
+}
+
+.experience-ticket__field--cast {
+  min-width: 0;
+}
+
+.experience-ticket__field--cast > strong {
+  overflow: hidden;
+  font-size: clamp(1.05rem, 2.5vw, 1.75rem);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow-wrap: normal;
+}
+
+@media (max-width: 640px) {
+  .experience-ticket__fields {
+    grid-template-columns: minmax(112px, .42fr) minmax(0, 1.58fr);
+  }
+
+  .experience-ticket__field,
+  .experience-ticket__field:nth-child(even) {
+    grid-column: auto;
+  }
+
+  .experience-ticket__field--wide,
+  .experience-ticket__field--signature {
+    grid-column: 1 / -1;
+  }
+
+  .experience-ticket__field--cast > strong {
+    font-size: clamp(.88rem, 4vw, 1.25rem);
+  }
+}
