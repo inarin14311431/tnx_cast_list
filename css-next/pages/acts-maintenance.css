@@ -1,0 +1,68 @@
+/* Low-level ACT page compatibility and mobile viewport fixes only.
+   Expanded records are owned exclusively by acts-record.css. */
+
+.experience-spending-form,
+.experience-spending-form > label {
+  min-width: 0;
+}
+
+.experience-spending-form input[type="date"] {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+/* iOS Safari can place browser chrome over the visual viewport edge. */
+@media (max-width: 700px) {
+  body[data-page="acts.html"] .act-history-header {
+    box-sizing: border-box;
+    padding-top: max(14px, env(safe-area-inset-top));
+    padding-inline: 14px;
+    scroll-margin-top: max(14px, env(safe-area-inset-top));
+  }
+
+  body[data-page="acts.html"] .act-history-header > p {
+    margin-top: 18px;
+    font-size: .62rem;
+    letter-spacing: .16em;
+  }
+
+  body[data-page="acts.html"] .act-history-header h1 {
+    align-items: flex-start;
+    gap: 6px;
+    margin-top: 5px;
+    font-size: clamp(1.65rem, 7.5vw, 2.5rem);
+    line-height: 1.05;
+  }
+
+  body[data-page="acts.html"] .act-history-header h1 small {
+    padding-top: 4px;
+    font-size: .54rem;
+    letter-spacing: .08em;
+  }
+
+  body[data-page="acts.html"] .app-back-link { min-height: 44px; }
+  body[data-page="acts.html"] .act-history-layout { width: min(100% - 12px, 1120px); padding-block: 14px 42px; }
+  body[data-page="acts.html"] .act-history-panel { margin-bottom: 12px; }
+  body[data-page="acts.html"] .act-history-panel__header { gap: 8px; padding: 10px 12px; }
+  body[data-page="acts.html"] .act-history-panel__body { padding: 10px; }
+  body[data-page="acts.html"] .act-year-toggle { min-height: 48px; padding: 8px 10px; }
+  body[data-page="acts.html"] .act-year-group.is-expanded > .act-year-records { padding: 5px; }
+  body[data-page="acts.html"] .experience-spending-form :is(input, select, button) { min-height: 46px; }
+}
+
+@media (max-width: 560px) {
+  .experience-spending-form input[type="date"] {
+    inline-size: 100%;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+  body[data-page="acts.html"] .act-history-header { padding-top: max(20px, env(safe-area-inset-top)); }
+  body[data-page="acts.html"] .act-history-header h1 { flex-direction: column; }
+  body[data-page="acts.html"] .act-history-header h1 small { padding-top: 0; }
+  body[data-page="acts.html"] .act-history-summary { gap: 6px; }
+  body[data-page="acts.html"] .act-history-summary article { min-height: 78px; padding: 7px 5px; }
+  body[data-page="acts.html"] .act-history-summary strong { font-size: 1.45rem; }
+}
