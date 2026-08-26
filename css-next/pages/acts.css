@@ -1,3 +1,16 @@
+body[data-page="acts.html"] .act-history-header h1 {
+  width: max-content;
+  max-width: none;
+  min-width: max-content;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+}
+
+body[data-page="acts.html"] .act-history-header h1 > span,
+body[data-page="acts.html"] .act-history-header h1 > small {
+  white-space: nowrap;
+}
+
 .act-history-layout,
 .combo-editor-layout {
   width: min(1120px, calc(100% - 32px));
@@ -87,6 +100,10 @@ body[data-page="combos.html"] .combo-card__ability--life { border-color: color-m
   .experience-spending-form button { grid-column: 1 / -1; }
 }
 @media (max-width: 560px) {
+  body[data-page="acts.html"] .act-history-header h1 {
+    font-size: clamp(1.8rem, 9vw, 3rem);
+    gap: 8px;
+  }
   .act-history-panel__header,
   .combo-editor-panel__header { align-items: flex-start; flex-direction: column; }
   .act-history-summary,
