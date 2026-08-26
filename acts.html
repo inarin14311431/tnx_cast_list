@@ -4,10 +4,10 @@
   <script src="./js/theme-registry.js?v=1"></script>
   <script src="./js/css-next-theme.js?v=8"></script>
   <script src="./js/theme-scope.js?v=1"></script>
-  <link rel="stylesheet" href="./css-next/pages/acts-entry.css?v=5" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/pages/acts-entry.css?v=16" data-css-system="next">
   <link rel="stylesheet" href="./css-next/themes/index.css?v=1" data-theme-system="1">
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
   <title>参加アクト一覧 // N◎VA CAST ARCHIVE</title>
 </head>
 <body data-page="acts.html">
@@ -18,47 +18,43 @@
     <h1><span>参加アクト一覧</span><small>ACT PARTICIPATION HISTORY</small></h1>
   </header>
   <main class="act-history-layout">
-    <section class="act-history-panel">
+    <section class="act-history-panel act-history-panel--acts">
       <header class="act-history-panel__header">
-        <div><span>01</span><h2>表示対象 <small>VIEW CONTROL</small></h2></div>
+        <div><span>01</span><h2>参加アクト <small>ACT HISTORY</small></h2></div>
         <p id="history-status">履歴を読み込み中…</p>
       </header>
-      <div class="act-history-panel__body act-history-filters">
-        <label>プレイヤー <small>PLAYER</small><select id="history-player-filter"><option value="">すべてのプレイヤー</option></select></label>
-        <label>キャスト <small>CAST</small><select id="history-cast-filter"><option value="">すべてのキャスト</option></select></label>
-        <label>年 <small>YEAR</small><select id="history-year-filter"><option value="">すべての年</option></select></label>
-        <label>アクト名検索 <small>ACT SEARCH</small><input id="history-query-filter" type="search" placeholder="タイトルで絞り込み"></label>
-        <label>参加枠 <small>HANDOUT ROLE</small><select id="history-role-filter"><option value="">すべての参加枠</option></select></label>
-        <label>並び順 <small>SORT</small><select id="history-sort-filter"><option value="desc">新しい順</option><option value="asc">古い順</option></select></label>
-        <button id="history-reset" type="button"><span>表示をリセット</span><small>RESET VIEW</small></button>
-      </div>
-    </section>
-
-    <section class="act-history-summary" aria-label="参加アクト・経験点集計">
-      <article><span>参加アクト数</span><strong id="history-act-count">0</strong><small>ACTS</small></article>
-      <article><span>獲得経験点</span><strong id="history-exp-total">0</strong><small>EARNED EXP</small></article>
-      <article><span>消費経験点</span><strong id="history-spent-total">0</strong><small>SPENT EXP</small></article>
-      <article><span>残経験点</span><strong id="history-balance-total">0</strong><small>BALANCE</small></article>
-      <article><span>対象キャスト数</span><strong id="history-cast-count">0</strong><small>CASTS</small></article>
-    </section>
-
-    <section class="act-history-panel">
-      <header class="act-history-panel__header">
-        <div><span>02</span><h2>アクト履歴 <small>ACT ARCHIVE</small></h2></div>
-        <p>YEAR / ACT / ROLE / EXPERIENCE</p>
-      </header>
       <div class="act-history-panel__body">
+        <div class="act-history-filters" aria-label="参加アクトの絞り込み">
+          <label class="act-history-player-filter" hidden>プレイヤー <small>PLAYER</small><select id="history-player-filter"><option value="">すべてのプレイヤー</option></select></label>
+          <label>キャスト <small>CAST</small><select id="history-cast-filter"><option value="">すべてのキャスト</option></select></label>
+          <label>年 <small>YEAR</small><select id="history-year-filter"><option value="">すべての年</option></select></label>
+          <label class="act-history-filter--query">アクト名検索 <small>ACT SEARCH</small><input id="history-query-filter" type="search" placeholder="タイトルで絞り込み"></label>
+          <label>参加枠 <small>HANDOUT ROLE</small><select id="history-role-filter"><option value="">すべての参加枠</option></select></label>
+          <label>並び順 <small>SORT</small><select id="history-sort-filter"><option value="desc">新しい順</option><option value="asc">古い順</option></select></label>
+          <button id="history-reset" type="button"><span>表示をリセット</span><small>RESET VIEW</small></button>
+        </div>
+        <div class="act-history-resultbar">
+          <p>表示中 <strong id="history-filter-status">—</strong></p>
+          <small>FILTERED ACT RECORDS</small>
+        </div>
         <div id="act-history-list" class="act-history-list"><p class="act-history-empty">読み込み中…</p></div>
       </div>
     </section>
 
-    <section class="act-history-panel">
+    <section class="act-history-panel act-history-panel--experience">
       <header class="act-history-panel__header">
-        <div><span>03</span><h2>経験点消費履歴 <small>EXPERIENCE SPENDING</small></h2></div>
+        <div><span>02</span><h2>経験点 <small>EXPERIENCE</small></h2></div>
         <p>EARNED − SPENT = BALANCE</p>
       </header>
       <div class="act-history-panel__body">
-        <p class="experience-balance-note">消費数を登録すると履歴へ1レコード追加され、上部の残経験点を「獲得経験点－消費経験点」で再計算します。</p>
+        <section class="act-history-summary" aria-label="参加アクト・経験点集計">
+          <article><span>参加アクト数</span><strong id="history-act-count">0</strong><small>ACTS</small></article>
+          <article><span>獲得経験点</span><strong id="history-exp-total">0</strong><small>EARNED EXP</small></article>
+          <article><span>消費経験点</span><strong id="history-spent-total">0</strong><small>SPENT EXP</small></article>
+          <article><span>残経験点</span><strong id="history-balance-total">0</strong><small>BALANCE</small></article>
+          <article><span>対象キャスト数</span><strong id="history-cast-count">0</strong><small>CASTS</small></article>
+        </section>
+        <p class="experience-balance-note">消費数を登録すると履歴へ1レコード追加され、残経験点を「獲得経験点－消費経験点」で再計算します。</p>
         <form id="experience-spending-form" class="experience-spending-form">
           <label>キャスト <small>CAST</small><select id="spending-character" required></select></label>
           <label>消費経験点 <small>SPENT EXP</small><input id="spending-amount" type="number" min="1" max="9999" step="1" inputmode="numeric" required></label>
@@ -71,10 +67,8 @@
       </div>
     </section>
   </main>
-  <script type="module" src="./js/acts.js?v=3"></script>
-  <script type="module" src="./js/acts-role.js?v=2"></script>
-  <script type="module" src="./js/acts-history-enhanced.js?v=1"></script>
-  <script type="module" src="./js/acts-spending.js?v=3"></script>
-  <script type="module" src="./js/experience-ticket.js?v=2"></script>
+  <script src="./js/handle-format.js?v=3"></script>
+  <script type="module" src="./js/acts-app.js?v=1"></script>
+  <script type="module" src="./js/experience-ticket.js?v=5"></script>
 </body>
 </html>

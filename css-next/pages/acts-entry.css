@@ -3,7 +3,15 @@
 
 @import url("../index.css?v=64") layer(app);
 @import url("./auth.css?v=2") layer(auth-page);
-@import url("./acts.css?v=3") layer(acts-page);
+
+/* Act-history ownership: base/history, expanded record, spending ledger, compatibility. */
+@import url("./acts.css?v=4") layer(acts-page);
 @import url("./acts-history-enhanced.css?v=1") layer(acts-page);
-@import url("./experience-ticket.css?v=2") layer(experience-ticket);
-@import url("./experience-ticket-layout.css?v=1") layer(experience-ticket);
+@import url("./acts-clarity.css?v=1") layer(acts-page);
+@import url("./acts-record.css?v=1") layer(acts-page);
+@import url("./acts-spending.css?v=1") layer(acts-page);
+@import url("./acts-maintenance.css?v=4") layer(acts-page);
+
+/* Experience ticket is isolated from the act-history cascade. */
+@import url("./experience-ticket.css?v=3") layer(experience-ticket);
+@import url("./experience-ticket-layout.css?v=3") layer(experience-ticket);

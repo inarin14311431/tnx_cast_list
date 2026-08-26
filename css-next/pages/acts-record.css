@@ -1,0 +1,95 @@
+/* Canonical expanded ACT record layout.
+   This file owns every layout rule for .act-record.is-detail-open.
+   Do not patch the expanded record from other page stylesheets. */
+
+body[data-page="acts.html"] .act-record.is-detail-open {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, .78fr);
+  grid-template-areas:
+    "summary summary"
+    "main exp"
+    "facts exp";
+  gap: 14px 18px;
+  margin: 10px 0 12px;
+  padding: 12px;
+  overflow: hidden;
+  border: 2px solid color-mix(in srgb, var(--color-accent-strong) 72%, var(--color-border));
+  border-radius: 16px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 5%, transparent), transparent 42%),
+    color-mix(in srgb, var(--color-surface) 92%, transparent);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 20%, transparent),
+    0 0 20px color-mix(in srgb, var(--color-accent) 22%, transparent),
+    inset 0 0 26px color-mix(in srgb, var(--color-accent) 5%, transparent);
+}
+body[data-page="acts.html"] .act-record.is-detail-open::before,
+body[data-page="acts.html"] .act-record.is-detail-open::after { content: none; display: none; }
+body[data-page="acts.html"] .act-record.is-detail-open > .act-record-summary {
+  grid-area: summary; position: relative; z-index: 1; width: 100%; min-width: 0; min-height: 48px; margin: 0; padding: 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 34%, var(--color-border)); border-radius: 11px;
+  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface-alt)); box-shadow: inset 4px 0 var(--color-accent-strong);
+}
+body[data-page="acts.html"] .act-record.is-detail-open > .act-record__main { grid-area: main; display: block; min-width: 0; padding: 0; }
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__title {
+  display: flex; align-items: center; min-width: 0; min-height: 64px; margin: 0; padding: 12px 14px; overflow-wrap: anywhere;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 28%, var(--color-border)); border-radius: 12px; color: var(--color-accent-strong);
+  background: linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 72%); box-shadow: inset 4px 0 var(--color-accent-strong);
+  font-size: clamp(1.12rem, 2vw, 1.5rem); font-weight: 850; line-height: 1.3;
+}
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__title a { color: inherit; text-decoration: none; }
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__title a:is(:hover, :focus-visible) { text-decoration: underline; text-underline-offset: 4px; }
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__meta,
+body[data-page="acts.html"] .act-record.is-detail-open > .act-record__role,
+body[data-page="acts.html"] .act-record.is-detail-open > .act-record__ruler { display: none; }
+body[data-page="acts.html"] .act-record.is-detail-open > .act-record__facts {
+  grid-area: facts; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; align-content: start; min-width: 0;
+}
+body[data-page="acts.html"] .act-record__fact {
+  position: relative; display: grid; gap: 7px; min-width: 0; min-height: 66px; margin: 0; padding: 10px 12px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 22%, var(--color-border)); border-radius: 11px;
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 6%, transparent), transparent 68%), color-mix(in srgb, var(--color-bg) 34%, transparent);
+}
+body[data-page="acts.html"] .act-record__fact small { color: var(--color-muted); font: 700 .51rem/1 var(--font-data); letter-spacing: .1em; }
+body[data-page="acts.html"] .act-record__fact strong { overflow: hidden; color: var(--color-text); font-size: .82rem; font-weight: 800; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
+body[data-page="acts.html"] .act-record__fact--style strong,
+body[data-page="acts.html"] .act-record__fact--cast strong {
+  display: inline-flex; align-items: center; width: fit-content; max-width: 100%; min-height: 28px; padding: 4px 11px;
+  border: 1px solid color-mix(in srgb, var(--color-accent-strong) 58%, var(--color-border)); border-radius: 999px;
+  color: var(--color-accent-strong); background: color-mix(in srgb, var(--color-accent) 10%, transparent); font-family: var(--font-data);
+}
+body[data-page="acts.html"] .act-record.is-detail-open > .act-record__exp { grid-area: exp; display: grid; grid-template-rows: minmax(126px, 1fr) auto; gap: 9px; min-width: 0; }
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__exp label {
+  position: relative; display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto 1fr; align-items: end; min-width: 0; min-height: 126px;
+  margin: 0; padding: 13px 14px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--color-accent) 58%, var(--color-border)); border-radius: 14px;
+  background: linear-gradient(120deg, color-mix(in srgb, var(--color-accent) 10%, transparent), transparent 56%), color-mix(in srgb, var(--color-bg) 82%, black);
+}
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__exp label::after { content: "EXP"; grid-column: 2; grid-row: 2; align-self: end; padding-bottom: 8px; color: var(--color-accent-strong); font: 800 .72rem/1 var(--font-data); letter-spacing: .1em; }
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__exp label > small { grid-column: 1 / -1; grid-row: 1; color: var(--color-muted); font: 700 .54rem/1 var(--font-data); letter-spacing: .14em; }
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__exp label > input {
+  grid-column: 1; grid-row: 2; width: 100%; min-width: 0; height: auto; margin: 4px 0 0; padding: 0 48px 0 0; border: 0; outline: 0;
+  color: var(--color-accent-strong); background: transparent; box-shadow: none; font: 850 clamp(2.1rem, 4.6vw, 3.4rem)/1 var(--font-data); text-align: right;
+}
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__exp-actions { display: grid; grid-template-columns: minmax(170px, 1.35fr) minmax(90px, .72fr) minmax(100px, .78fr); gap: 8px; }
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__exp-actions > button { min-width: 0; min-height: 48px; padding: 8px 11px; border-radius: 10px; }
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__ticket { border-color: color-mix(in srgb, var(--color-accent) 72%, var(--color-border)); color: var(--color-accent-strong); background: linear-gradient(120deg, color-mix(in srgb, var(--color-accent) 14%, transparent), transparent 58%); box-shadow: inset 3px 0 color-mix(in srgb, var(--color-accent) 72%, transparent); }
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__ticket span,
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__ticket small { display: block; }
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__ticket small { margin-top: 4px; font: 700 .52rem/1 var(--font-data); letter-spacing: .13em; }
+body[data-page="acts.html"] .act-record.is-detail-open .act-record__delete { border-color: color-mix(in srgb, var(--color-danger) 58%, var(--color-border)); color: var(--color-danger); }
+@media (max-width: 900px) {
+  body[data-page="acts.html"] .act-record.is-detail-open { grid-template-columns: 1fr; grid-template-areas: "summary" "main" "facts" "exp"; gap: 10px; }
+  body[data-page="acts.html"] .act-record.is-detail-open > .act-record__exp { grid-template-rows: auto auto; }
+}
+@media (max-width: 600px) {
+  body[data-page="acts.html"] .act-record.is-detail-open { margin: 7px 0 9px; padding: 8px; border-width: 2px; border-radius: 12px; }
+  body[data-page="acts.html"] .act-record.is-detail-open > .act-record-summary { min-height: 44px; padding: 7px 9px; border-radius: 9px; }
+  body[data-page="acts.html"] .act-record.is-detail-open .act-record__title { min-height: 54px; padding: 10px 11px; border-radius: 10px; font-size: 1.08rem; }
+  body[data-page="acts.html"] .act-record.is-detail-open > .act-record__facts { grid-template-columns: 1fr 1fr; gap: 7px; }
+  body[data-page="acts.html"] .act-record__fact { min-height: 58px; padding: 8px 9px; border-radius: 9px; }
+  body[data-page="acts.html"] .act-record.is-detail-open .act-record__exp label { min-height: 94px; padding: 10px 11px; }
+  body[data-page="acts.html"] .act-record.is-detail-open .act-record__exp-actions { grid-template-columns: 1fr 1fr; }
+  body[data-page="acts.html"] .act-record.is-detail-open .act-record__ticket { grid-column: 1 / -1; }
+  body[data-page="acts.html"] .act-record.is-detail-open .act-record__exp-actions > button { min-height: 46px; }
+}
