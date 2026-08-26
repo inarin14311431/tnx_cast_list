@@ -1,0 +1,107 @@
+body[data-page="acts.html"] .act-history-filters {
+  grid-template-columns: 1fr 1fr .72fr 1.35fr .9fr auto;
+}
+body[data-page="acts.html"] .act-history-filters label { min-width: 0; }
+body[data-page="acts.html"] .act-history-filters input { width: 100%; margin-top: 5px; }
+
+.act-year-group {
+  margin-top: 8px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 64%, transparent);
+  background: color-mix(in srgb, var(--color-bg) 36%, transparent);
+}
+.act-year-toggle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto 28px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 42px;
+  padding: 7px 10px;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-surface-alt) 88%, transparent);
+  text-align: left;
+}
+.act-year-group.is-expanded > .act-year-toggle { border-bottom-color: var(--color-border-muted); }
+.act-year-toggle > span:first-child { display: flex; align-items: baseline; gap: 8px; }
+.act-year-toggle strong { color: var(--color-accent-strong); font-size: 1rem; }
+.act-year-toggle small { color: var(--color-muted); font-size: .52rem; letter-spacing: .12em; }
+.act-year-toggle > span:nth-child(2) { color: var(--color-muted); font: 600 .68rem/1 var(--font-data); letter-spacing: .08em; }
+.act-year-records { display: grid; }
+
+.act-record {
+  padding: 0;
+  border: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--color-border) 52%, transparent);
+  background: transparent;
+}
+.act-record:last-child { border-bottom: 0; }
+.act-record-summary {
+  display: grid;
+  grid-template-columns: 108px minmax(220px, 1fr) minmax(100px, .55fr) 92px 24px;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 46px;
+  padding: 8px 10px;
+  border: 0;
+  color: var(--color-text);
+  background: transparent;
+  text-align: left;
+}
+.act-record-summary:is(:hover, :focus-visible) {
+  background: color-mix(in srgb, var(--color-accent) 7%, transparent);
+  box-shadow: inset 2px 0 var(--color-accent);
+}
+.act-record-summary__date,
+.act-record-summary__role,
+.act-record-summary__exp { font-family: var(--font-data); }
+.act-record-summary__date { color: var(--color-muted); font-size: .72rem; }
+.act-record-summary__title {
+  overflow: hidden;
+  font-size: .88rem;
+  font-weight: 800;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.act-record-summary__role {
+  overflow: hidden;
+  color: var(--color-muted);
+  font-size: .7rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.act-record-summary__exp { color: var(--color-accent-strong); font-size: .74rem; font-weight: 800; text-align: right; }
+.act-record-summary__icon { color: var(--color-accent); text-align: center; }
+
+.act-record > :not(.act-record-summary) { display: none; }
+.act-record.is-detail-open > :not(.act-record-summary) { display: block; }
+.act-record.is-detail-open {
+  padding: 0 12px 12px;
+  background: color-mix(in srgb, var(--color-surface) 78%, transparent);
+}
+.act-record.is-detail-open > .act-record-summary { margin-inline: -12px; width: calc(100% + 24px); }
+.act-record.is-detail-open .act-record__main { padding-top: 8px; }
+
+@media (max-width: 1000px) {
+  body[data-page="acts.html"] .act-history-filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  body[data-page="acts.html"] .act-history-filters button { align-self: stretch; }
+  .act-record-summary { grid-template-columns: 96px minmax(180px, 1fr) minmax(90px, .5fr) 78px 22px; gap: 8px; }
+}
+
+@media (max-width: 700px) {
+  body[data-page="acts.html"] .act-history-filters { grid-template-columns: 1fr 1fr; }
+  body[data-page="acts.html"] .act-history-filters button { grid-column: 1 / -1; }
+  .act-record-summary { grid-template-columns: 88px minmax(0, 1fr) 72px 20px; }
+  .act-record-summary__role { display: none; }
+}
+
+@media (max-width: 520px) {
+  body[data-page="acts.html"] .act-history-filters { grid-template-columns: 1fr; }
+  .act-record-summary { grid-template-columns: 1fr auto; grid-template-areas: "title exp" "date icon"; }
+  .act-record-summary__title { grid-area: title; }
+  .act-record-summary__exp { grid-area: exp; }
+  .act-record-summary__date { grid-area: date; }
+  .act-record-summary__icon { grid-area: icon; }
+}
