@@ -1,8 +1,13 @@
 function reportRuntimeError(message) {
   const status = document.querySelector("#library-status");
+  document.documentElement.dataset.showcaseGeneratorState = "error";
   if (!status) return;
   status.textContent = `キャスト選択エラー：${message}`;
   status.className = "generator-status is-error";
+}
+
+function reportOptionalModuleError(name, error) {
+  console.warn(`Optional showcase module could not be initialized: ${name}`, error);
 }
 
 window.addEventListener("error", event => {
@@ -14,16 +19,39 @@ window.addEventListener("unhandledrejection", event => {
   reportRuntimeError(reason?.message || String(reason || "初期化に失敗しました。"));
 });
 
-try {
-  await import("./showcase-generator-v3.js?v=7");
-  await import("./showcase-tagline.js?v=2");
-  await import("./showcase-tagline-auto.js?v=1");
-  await import("./showcase-history-role.js?v=1");
-  await import("./showcase-dynamic-publish.js?v=4");
-} catch (error) {
-  console.error("Showcase generator could not be initialized.", error);
-  reportRuntimeError(error?.message || "初期化に失敗しました。ページを再読み込みしてください。");
+document.documentElement.dataset.showcaseGeneratorState = "loading";
+
+async function initializeShowcaseGenerator() {
+  try {
+    // Core generator and publishing are critical. Keep them independent from
+    // optional presentation helpers so a decoration failure cannot block entry.
+    // Bump the generator query whenever the core changes so iOS Safari cannot
+    // keep an older nested ES module even when the page itself is reloaded.
+    await import("./showcase-generator-v3.js?v=8");
+    await import("./showcase-dynamic-publish.js?v=5");
+    document.documentElement.dataset.showcaseGeneratorState = "ready";
+  } catch (error) {
+    console.error("Showcase generator core could not be initialized.", error);
+    reportRuntimeError(error?.message || "初期化に失敗しました。ページを再読み込みしてください。");
+    return;
+  }
+
+  const optionalModules = [
+    ["tagline", "./showcase-tagline.js?v=2"],
+    ["tagline-auto", "./showcase-tagline-auto.js?v=1"],
+    ["history-role", "./showcase-history-role.js?v=1"]
+  ];
+
+  await Promise.all(optionalModules.map(async ([name, source]) => {
+    try {
+      await import(source);
+    } catch (error) {
+      reportOptionalModuleError(name, error);
+    }
+  }));
 }
+
+void initializeShowcaseGenerator();
 
 setTimeout(() => {
   const publicStatus = document.querySelector("#library-status");
