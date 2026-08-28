@@ -15,6 +15,7 @@ const accountDelete = read("js/account-delete.js");
 const deleteFn = read("supabase/functions/delete-account/index.ts");
 const adminFn = read("supabase/functions/master-auth-users/index.ts");
 const actReadMigration = read("supabase/30_owner_scoped_act_reads.sql");
+const storageLimitMigration = read("supabase/32_character_image_upload_limits.sql");
 
 assert(
   !/service[_-]?role/i.test(client),
@@ -85,6 +86,22 @@ assert(
 assert(
   !/create policy\s+(?:act_participants_select_authenticated|acts_select_authenticated)[\s\S]*using\s*\(\s*true\s*\)/i.test(actReadMigration),
   "Act history SELECT policies must not restore authenticated-wide reads."
+);
+assert(
+  /where id\s*=\s*'character-images'/i.test(storageLimitMigration),
+  "Character image upload limits must target only the character-images bucket."
+);
+assert(
+  /file_size_limit\s*=\s*1048576/i.test(storageLimitMigration),
+  "Character image bucket must keep a 1 MiB server-side upload limit."
+);
+assert(
+  /allowed_mime_types\s*=\s*array\['image\/jpeg',\s*'image\/png',\s*'image\/webp'\]::text\[\]/i.test(storageLimitMigration),
+  "Character image bucket must restrict uploads to JPEG, PNG, and WebP."
+);
+assert(
+  !/public\s*=\s*(?:true|false)/i.test(storageLimitMigration),
+  "Storage upload limit migration must not change the bucket public/private design decision."
 );
 
 if (failures.length) {
