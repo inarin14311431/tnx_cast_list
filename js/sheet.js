@@ -135,8 +135,6 @@ function bind() {
   $("#add-connection").onclick = () => addSkill("connection", "proper", "コネ：");
   $("#add-style-skill").onclick = () => addSkill("style", "normal", "");
   $("#add-outfit").onclick = () => addOutfitForImport("other");
-  $("#import-skd").onclick = () => openImport("skd");
-  $("#import-ofc").onclick = () => openImport("ofc");
   $("#tsv-apply").onclick = event => { event.preventDefault(); applyImport(); $("#tsv-dialog").close(); };
 }
 
@@ -260,7 +258,8 @@ window.TNXSheetEditor = {
   addStyleSeparator,
   addOutfitForImport,
   clearOutfitsForImport,
-  applyOutfitDetailsForImport
+  applyOutfitDetailsForImport,
+  openTsvImport: openImport
 };
 
 function generalColumnCounts() {
@@ -482,11 +481,17 @@ function collectOutfits() {
   return buildOutfitSavePayloads(outfits);
 }
 
-function openImport(mode) { importMode = mode; $("#tsv-title").textContent = `${mode.toUpperCase()} TSV取込`; $("#tsv-text").value = ""; $("#tsv-dialog").showModal(); }
+function openImport(mode, title = "TSV取込") {
+  if (!new Set(["style", "outfit"]).has(mode)) return;
+  importMode = mode;
+  $("#tsv-title").textContent = title;
+  $("#tsv-text").value = "";
+  $("#tsv-dialog").showModal();
+}
 
 function applyImport() {
   const rows = parseSheetTsv($("#tsv-text").value);
-  if (importMode === "skd") {
+  if (importMode === "style") {
     const start = skills.length;
     const additions = rows.map((row, index) => buildStyleSkillTsvRow(row, {
       base: createBlankSkill("style", { sortOrder: start + index }),
@@ -494,13 +499,15 @@ function applyImport() {
     }));
     skills = appendRows(skills, additions);
     renderSkills();
-  } else {
+  } else if (importMode === "outfit") {
     const start = outfits.length;
     const additions = rows.map((row, index) => buildOutfitTsvRow(row, {
       base: createBlankOutfit({ sortOrder: start + index })
     }));
     outfits = appendRows(outfits, additions);
     renderOutfits();
+  } else {
+    return;
   }
   recalc(); markDirty();
 }
