@@ -21,8 +21,8 @@
       <section id="sheet-styles" class="sheet-section sheet-section--styles is-open"><button class="section-toggle" type="button"><span>02 スタイル</span><small>STYLES</small></button><div class="section-body"><div id="style-grid" class="style-grid"></div><div id="style-warning" class="warning"></div></div></section>
       <section id="sheet-ability" class="sheet-section sheet-section--ability is-open"><button class="section-toggle" type="button"><span>03 能力値・制御値・CS</span><small>ABILITY / CONTROL / CS</small></button><div class="section-body"><div id="ability-grid" class="ability-grid"></div></div></section>
       <section id="sheet-skills" class="sheet-section sheet-section--skills is-open"><button class="section-toggle" type="button"><span>04 一般技能・社会・コネ</span><small>GENERAL / SOCIAL / CONNECTIONS</small></button><div class="section-body"><div class="toolbar skill-toolbar skill-toolbar--three"><button id="add-general" type="button">一般技能を追加 <small>ADD GENERAL</small></button><button id="add-social" type="button">社会を追加 <small>ADD SOCIAL</small></button><button id="add-connection" type="button">コネを追加 <small>ADD CONNECTION</small></button></div><div id="general-skills"></div></div></section>
-      <section id="sheet-style-skills" class="sheet-section sheet-section--style-skills is-open"><button class="section-toggle" type="button"><span>05 スタイル技能</span><small>STYLE SKILLS</small></button><div class="section-body"><div class="toolbar skill-toolbar skill-toolbar--two"><button id="add-style-skill" type="button">スタイル技能を追加 <small>ADD STYLE SKILL</small></button><button id="import-skd" type="button">SKD TSV取込 <small>IMPORT</small></button></div><div id="style-skills"></div></div></section>
-      <section id="sheet-outfits" class="sheet-section sheet-section--outfits is-open"><button class="section-toggle" type="button"><span>06 アウトフィット</span><small>OUTFITS</small></button><div class="section-body"><div class="toolbar"><button id="add-outfit" type="button">アウトフィットを追加 <small>ADD OUTFIT</small></button><button id="import-ofc" type="button">OFC TSV取込 <small>IMPORT</small></button></div><div id="outfit-list"></div></div></section>
+      <section id="sheet-style-skills" class="sheet-section sheet-section--style-skills is-open"><button class="section-toggle" type="button"><span>05 スタイル技能</span><small>STYLE SKILLS</small></button><div class="section-body"><div class="toolbar skill-toolbar"><button id="add-style-skill" type="button">スタイル技能を追加 <small>ADD STYLE SKILL</small></button></div><div id="style-skills"></div></div></section>
+      <section id="sheet-outfits" class="sheet-section sheet-section--outfits is-open"><button class="section-toggle" type="button"><span>06 アウトフィット</span><small>OUTFITS</small></button><div class="section-body"><div class="toolbar"><button id="add-outfit" type="button">アウトフィットを追加 <small>ADD OUTFIT</small></button></div><div id="outfit-list"></div></div></section>
       <section id="sheet-combo-entry" class="sheet-section sheet-section--combos is-open" aria-labelledby="sheet-combo-entry-title"><header class="sheet-combo-entry__header"><div><span id="sheet-combo-entry-title">07 コンボ／技能カウンター</span><small>COMBOS / COUNTERS</small></div><span class="sheet-combo-entry__tag">ACT RUNTIME DATA</span></header><div class="section-body sheet-combo-entry__body"><div class="toolbar" aria-label="コンボ／技能カウンター操作"><button id="sheet-combo-bottom-add" type="button" aria-haspopup="dialog" aria-controls="sheet-combo-dialog" disabled>コンボ登録 <small>ADD COMBO</small></button><button id="sheet-counter-bottom-add" type="button" aria-haspopup="dialog" aria-controls="sheet-combo-dialog" disabled>技能カウンター登録 <small>ADD COUNTER</small></button></div><div class="sheet-combo-entry__summary"><strong>アクト用データ</strong><p id="sheet-combo-summary" aria-live="polite">登録状況を確認中…</p><small>判定用コンボと、1アクトの使用回数を追う技能カウンターをここから管理できます。</small></div><section class="sheet-combo-entry__registered" aria-labelledby="sheet-combo-entry-list-title"><header><div><strong id="sheet-combo-entry-list-title">登録済みコンボ／技能カウンター</strong><small>REGISTERED COMBOS / COUNTERS</small></div><span id="sheet-combo-entry-count" aria-label="登録件数">—</span></header><div id="sheet-combo-entry-list" class="sheet-combo-entry__list"><p class="sheet-combo-entry__empty">登録データを読み込み中… <small>SCANNING RUNTIME DATA...</small></p></div></section></div></section>
     </section>
   </main>
@@ -32,7 +32,8 @@
   <script src="./js/style-skill-kinds.js?v=104"></script>
   <script src="./js/mobile-editor-route.js?v=1"></script>
   <script src="./js/handle-format.js?v=2"></script>
-  <script type="module" src="./js/sheet.js?v=112"></script>
+  <script type="module" src="./js/sheet.js?v=113"></script>
+  <script type="module" src="./js/privileged-tools-bootstrap.js?v=1"></script>
   <script src="./js/general-initial-empty-slot-cleanup.js?v=2"></script>
   <script src="./js/style-mark-cycle.js?v=101"></script>
   <script type="module" src="./js/sheet-image.js?v=104"></script>
@@ -48,13 +49,9 @@
   <script src="./js/outfit-tables.js?v=103"></script>
   <script src="./js/armor-grand-total.js?v=103"></script>
   <script type="module" src="./js/experience.js?v=101"></script>
-  <script src="./js/tsv-import-guide.js?v=4"></script>
   <script src="./js/sheet-sticky-exp-panel.js?v=4"></script>
   <script type="module" src="./js/style-skill-separators.js?v=7"></script>
   <script type="module" src="./js/sheet-multiline-fields-v3.js?v=6"></script>
-  <script type="module" src="./js/sheet-master-search.js?v=2"></script>
-  <script type="module" src="./js/sheet-master-search-access.js?v=2"></script>
-  <script type="module" src="./js/sheet-master-search-filters.js?v=1"></script>
   <script src="./js/sheet-sidebar-actions.js?v=3"></script>
   <script src="./js/sheet-birthplace.js?v=1" data-sheet-birthplace></script>
   <script src="./js/sheet-open-at-top.js?v=1"></script>
@@ -62,7 +59,6 @@
   <script src="./js/outfit-display-rules-v5.js?v=6"></script>
   <script src="./js/sheet-import-style-skill-compat.js?v=4"></script>
   <script src="./js/sheet-import-outfit-compat.js?v=11"></script>
-  <script type="module" src="./js/sheet-master-autofill.js?v=8"></script>
   <script src="./js/sheet-section-nav.js?v=2"></script>
   <script type="module" src="./js/sheet-combos.js?v=6"></script>
   <script type="module" src="./js/sheet-snapshots.js?v=1"></script>
