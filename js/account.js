@@ -2,7 +2,7 @@ import { SITE_BASE_PATH } from "./config.js?v=2";
 import { supabase } from "./supabase-client.js";
 import { requireAuth, signOut } from "./auth-state.js?v=4";
 import { getStyleColor } from "./style-colors.js";
-
+import { withRequestTimeout } from "./async-timeout.js?v=1";
 const VISIBILITY_LABELS = {
   public: "公開 / PUBLIC",
   private: "非公開 / PRIVATE"
@@ -17,6 +17,7 @@ const ownedCastReset = document.querySelector("#owned-cast-reset");
 const ownedCastResultCount = document.querySelector("#owned-cast-result-count");
 let currentUser = null;
 let ownedCharacters = [];
+let accountWriteBusy = false;
 
 initializeSearchField();
 setupOwnedCastNavigation();
@@ -107,12 +108,25 @@ function setupOwnedCastControls() {
 async function loadOwnedCharacters() {
   ownedCastsContainer.textContent = "キャストデータを読み込み中…";
 
-  const { data, error } = await supabase
-    .from("characters")
-    .select("id, public_id, character_name, character_kana, handle, style_1, style_1_mark, style_2, style_2_mark, style_3, style_3_mark, visibility, updated_at")
-    .eq("owner_id", currentUser.id)
-    .order("updated_at", { ascending: false });
+  let result;
+  try {
+    result = await withRequestTimeout(
+      supabase
+        .from("characters")
+        .select("id, public_id, character_name, character_kana, handle, style_1, style_1_mark, style_2, style_2_mark, style_3, style_3_mark, visibility, updated_at")
+        .eq("owner_id", currentUser.id)
+        .order("updated_at", { ascending: false }),
+      "キャスト情報の取得がタイムアウトしました。再読み込みしてください。"
+    );
+  } catch (error) {
+    console.error(error);
+    ownedCharacters = [];
+    ownedCastsContainer.innerHTML = `<p class="auth-error">${escapeHtml(error?.message || "キャスト情報を取得できませんでした。")}</p>`;
+    if (ownedCastResultCount) ownedCastResultCount.textContent = "";
+    return;
+  }
 
+  const { data, error } = result;
   if (error) {
     console.error(error);
     ownedCharacters = [];
@@ -167,11 +181,11 @@ function renderOwnedCharacters() {
   ownedCastsContainer.innerHTML = `<div class="owned-cast-list">${filtered.map(createOwnedCastItem).join("")}</div>`;
 
   ownedCastsContainer.querySelectorAll("[data-delete]").forEach(button => {
-    button.addEventListener("click", () => deleteCharacter(button.dataset.delete));
+    button.addEventListener("click", () => deleteCharacter(button.dataset.delete, button));
   });
 
   ownedCastsContainer.querySelectorAll("[data-duplicate]").forEach(button => {
-    button.addEventListener("click", () => duplicateCharacter(button.dataset.duplicate));
+    button.addEventListener("click", () => duplicateCharacter(button.dataset.duplicate, button));
   });
 }
 
@@ -234,67 +248,98 @@ function createOwnedCastItem(character) {
   `;
 }
 
-async function deleteCharacter(publicId) {
+async function deleteCharacter(publicId, button) {
   if (!window.confirm(`${publicId} を削除します。関連する技能・装備・コンボ・参加アクト記録も削除されます。`)) return;
 
-  const { error } = await supabase
-    .from("characters")
-    .delete()
-    .eq("public_id", publicId)
-    .eq("owner_id", currentUser.id);
+  await runAccountWrite(button, async () => {
+    const { error } = await withRequestTimeout(
+      supabase
+        .from("characters")
+        .delete()
+        .eq("public_id", publicId)
+        .eq("owner_id", currentUser.id),
+      "削除の処理結果を確認できませんでした。再実行する前に登録キャスト一覧を確認してください。"
+    );
 
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  await loadOwnedCharacters();
+    if (error) throw new Error(error.message);
+    await loadOwnedCharacters();
+  });
 }
 
-async function duplicateCharacter(publicId) {
-  const { data: source, error } = await supabase
-    .from("characters")
-    .select("*")
-    .eq("public_id", publicId)
-    .eq("owner_id", currentUser.id)
-    .single();
+async function duplicateCharacter(publicId, button) {
+  await runAccountWrite(button, async () => {
+    const { data: source, error } = await withRequestTimeout(
+      supabase
+        .from("characters")
+        .select("*")
+        .eq("public_id", publicId)
+        .eq("owner_id", currentUser.id)
+        .single(),
+      "複製元キャストの取得がタイムアウトしました。"
+    );
 
-  if (error) return alert(error.message);
+    if (error) throw new Error(error.message);
 
-  const sourceId = source.id;
-  const copy = { ...source };
-  delete copy.id;
-  delete copy.public_id;
-  delete copy.created_at;
-  delete copy.updated_at;
-  copy.character_name = `${copy.character_name}（複製）`;
-  copy.visibility = "private";
+    const sourceId = source.id;
+    const copy = { ...source };
+    delete copy.id;
+    delete copy.public_id;
+    delete copy.created_at;
+    delete copy.updated_at;
+    copy.character_name = `${copy.character_name}（複製）`;
+    copy.visibility = "private";
 
-  const { data: created, error: createError } = await supabase
-    .from("characters")
-    .insert(copy)
-    .select("id, public_id")
-    .single();
+    const { data: created, error: createError } = await withRequestTimeout(
+      supabase
+        .from("characters")
+        .insert(copy)
+        .select("id, public_id")
+        .single(),
+      "複製の処理結果を確認できませんでした。再実行する前に登録キャスト一覧を確認してください。"
+    );
 
-  if (createError) return alert(createError.message);
+    if (createError) throw new Error(createError.message);
 
-  for (const table of ["character_skills", "character_outfits", "character_combos"]) {
-    const { data: rows, error: rowsError } = await supabase.from(table).select("*").eq("character_id", sourceId);
-    if (rowsError) return alert(rowsError.message);
-    if (!rows?.length) continue;
+    for (const table of ["character_skills", "character_outfits", "character_combos"]) {
+      const { data: rows, error: rowsError } = await withRequestTimeout(
+        supabase.from(table).select("*").eq("character_id", sourceId),
+        "複製元の関連データ取得がタイムアウトしました。"
+      );
+      if (rowsError) throw new Error(rowsError.message);
+      if (!rows?.length) continue;
 
-    const duplicatedRows = rows.map(row => {
-      const item = { ...row, character_id: created.id };
-      delete item.id;
-      delete item.created_at;
-      return item;
-    });
+      const duplicatedRows = rows.map(row => {
+        const item = { ...row, character_id: created.id };
+        delete item.id;
+        delete item.created_at;
+        return item;
+      });
 
-    const { error: insertError } = await supabase.from(table).insert(duplicatedRows);
-    if (insertError) return alert(insertError.message);
+      const { error: insertError } = await withRequestTimeout(
+        supabase.from(table).insert(duplicatedRows),
+        "関連データ複製の処理結果を確認できませんでした。再実行する前に登録キャスト一覧を確認してください。"
+      );
+      if (insertError) throw new Error(insertError.message);
+    }
+
+    window.location.href = `${SITE_BASE_PATH}sheet.html?id=${encodeURIComponent(created.public_id)}`;
+  });
+}
+
+async function runAccountWrite(button, operation) {
+  if (accountWriteBusy) return;
+  accountWriteBusy = true;
+  if (button) button.disabled = true;
+
+  try {
+    await operation();
+  } catch (error) {
+    console.error(error);
+    alert(error?.message || "処理に失敗しました。");
+  } finally {
+    accountWriteBusy = false;
+    if (button?.isConnected) button.disabled = false;
   }
-
-  window.location.href = `${SITE_BASE_PATH}sheet.html?id=${encodeURIComponent(created.public_id)}`;
 }
 
 function obfuscatePublicId(value) {
