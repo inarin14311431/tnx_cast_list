@@ -1,4 +1,5 @@
 import { supabase } from "./supabase-client.js";
+import { withRequestTimeout } from "./async-timeout.js?v=1";
 
 const preview = document.querySelector("#showcase-preview");
 const status = document.querySelector("#generator-status");
@@ -56,13 +57,13 @@ async function publishDynamicShowcase(button) {
     }
 
     setStatus("アクト紹介データと参加履歴を公開中…");
-    const { data: actId, error } = await supabase.rpc("publish_act_showcase_for_current_user", {
+    const { data: actId, error } = await withRequestTimeout(supabase.rpc("publish_act_showcase_for_current_user", {
       p_slug: slug,
       p_act_name: actName,
       p_ruler_name: rulerName,
       p_showcase_data: showcaseData,
       p_participant_ids: [...new Set(participantIds)]
-    });
+    }), "公開結果を確認できませんでした。通信状態を確認し、ページを再読み込みして公開状態と参加履歴を確認してください。");
     if (error) throw new Error(translateError(error));
     if (!actId) throw new Error("公開したアクト紹介を確認できませんでした。");
 
