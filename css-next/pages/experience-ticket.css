@@ -1,0 +1,154 @@
+.act-record__ticket {
+  border-color: rgb(255 212 95 / 46%);
+  color: #fff2bd;
+  background: linear-gradient(180deg, rgb(255 212 95 / 16%), rgb(255 212 95 / 6%));
+}
+.act-record__ticket:hover {
+  border-color: #ffd45f;
+  box-shadow: 0 0 16px rgb(255 212 95 / 14%);
+}
+.act-record__ticket span,
+.act-record__ticket small { display: block; }
+.act-record__ticket small { margin-top: 2px; font: 700 .52rem/1 var(--font-data); letter-spacing: .08em; opacity: .7; }
+
+.experience-ticket-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  padding: 24px;
+  background: rgb(0 5 8 / 82%);
+  backdrop-filter: blur(12px);
+}
+.experience-ticket-dialog {
+  width: min(860px, 100%);
+  padding: 14px;
+  border: 1px solid rgb(255 212 95 / 36%);
+  background: linear-gradient(145deg, rgb(12 17 21 / 98%), rgb(2 8 12 / 98%));
+  box-shadow: 0 28px 90px rgb(0 0 0 / 55%), 0 0 42px rgb(255 212 95 / 10%);
+}
+.experience-ticket-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 12px;
+}
+.experience-ticket-toolbar p { margin: 0; color: #ffe89a; font: 800 .72rem/1.25 var(--font-data); letter-spacing: .12em; }
+.experience-ticket-toolbar p small { display: block; margin-top: 4px; color: #8f9ba0; font-size: .58rem; letter-spacing: .06em; }
+.experience-ticket-toolbar > div { display: flex; gap: 8px; }
+.experience-ticket-toolbar button { min-height: 38px; padding: 6px 12px; border: 1px solid rgb(255 212 95 / 34%); color: #fff2bd; background: rgb(255 212 95 / 8%); }
+.experience-ticket-toolbar button small { margin-left: 6px; opacity: .55; }
+
+.experience-ticket {
+  position: relative;
+  overflow: hidden;
+  color: #18130f;
+  background:
+    radial-gradient(circle at 18% 16%, rgb(255 255 255 / 88%), transparent 26%),
+    repeating-linear-gradient(0deg, rgb(83 59 40 / 2%) 0 1px, transparent 1px 4px),
+    #efe7d8;
+  box-shadow: inset 0 0 0 1px #35271f, inset 0 0 0 5px #efe7d8, inset 0 0 0 6px #35271f;
+  font-family: "Yu Mincho", "Hiragino Mincho ProN", serif;
+}
+.experience-ticket::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 0 54%, rgb(255 255 255 / 24%) 55%, transparent 57% 100%);
+  opacity: .65;
+}
+.experience-ticket__brand {
+  position: relative;
+  display: flex;
+  min-height: 92px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 15px 24px;
+  color: #fff;
+  background: #241a16;
+}
+.experience-ticket__brand::after {
+  position: absolute;
+  right: -1px;
+  bottom: -1px;
+  width: 54px;
+  height: 16px;
+  content: "";
+  background: #efe7d8;
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+.experience-ticket__brand span { display: block; font-size: clamp(1.5rem, 4vw, 2.65rem); font-weight: 900; letter-spacing: .06em; white-space: nowrap; }
+.experience-ticket__brand small { display: block; margin-top: 2px; font: 700 .64rem/1.1 Georgia, serif; letter-spacing: .18em; opacity: .78; white-space: nowrap; }
+.experience-ticket__brand > strong { flex: 0 0 auto; color: #f6eee5; font: 900 clamp(1.05rem, 2vw, 1.45rem)/.9 Georgia, serif; letter-spacing: -.04em; text-align: right; white-space: nowrap; }
+.experience-ticket__brand > strong small { margin-top: 5px; font-size: .5rem; letter-spacing: .12em; }
+
+.experience-ticket__value-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: end;
+  gap: 16px;
+  padding: 20px 28px 14px;
+}
+.experience-ticket__exp-label span { display: block; font-size: 1.8rem; font-weight: 900; letter-spacing: .1em; white-space: nowrap; }
+.experience-ticket__exp-label small { display: block; margin-top: -2px; font: 700 .72rem/1 Georgia, serif; letter-spacing: .34em; text-align: center; white-space: nowrap; }
+.experience-ticket__value-row > strong { font-size: clamp(3.3rem, 10vw, 6.7rem); font-weight: 900; line-height: .78; text-align: right; white-space: nowrap; }
+.experience-ticket__unit { padding-bottom: 5px; font-size: 2rem; font-weight: 900; white-space: nowrap; }
+.experience-ticket__rule { height: 2px; margin: 0 18px; background: #2a211c; }
+.experience-ticket__fields { display: grid; grid-template-columns: 1fr .7fr; }
+.experience-ticket__field { min-height: 86px; padding: 13px 20px 15px; border-right: 1px solid #6f6259; border-bottom: 1px solid #6f6259; }
+.experience-ticket__field:nth-child(even) { border-right: 0; }
+.experience-ticket__field--wide { grid-column: 1 / -1; border-right: 0; }
+.experience-ticket__field--signature { grid-column: 1 / -1; min-height: 104px; border-right: 0; border-bottom: 0; background: rgb(36 26 22 / 5%); }
+.experience-ticket__field > span { display: block; margin-bottom: 7px; font-size: .98rem; font-weight: 900; letter-spacing: .06em; }
+.experience-ticket__field > span small { margin-left: 8px; font: 700 .58rem/1 Georgia, serif; letter-spacing: .06em; }
+.experience-ticket__field > strong { display: block; overflow: hidden; font-size: clamp(1.2rem, 3vw, 1.85rem); line-height: 1.25; text-overflow: ellipsis; white-space: nowrap; }
+.experience-ticket__field--signature > strong { font-size: clamp(1.55rem, 4vw, 2.3rem); font-style: italic; text-align: right; }
+.experience-ticket__footer { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 9px 20px 11px; color: #51443b; border-top: 1px dashed #8e8075; font: 700 .62rem/1 Georgia, serif; letter-spacing: .08em; }
+.experience-ticket__footer > * { white-space: nowrap; }
+.experience-ticket-note { margin: 10px 2px 0; color: #7f9197; font-size: .67rem; line-height: 1.55; }
+
+@media (max-width: 640px) {
+  .experience-ticket-overlay {
+    place-items: start center;
+    padding: 8px;
+  }
+  .experience-ticket-dialog {
+    width: 100%;
+    max-width: 620px;
+    padding: 8px;
+  }
+  .experience-ticket-toolbar { margin-bottom: 8px; }
+  .experience-ticket-toolbar p { display: none; }
+  .experience-ticket-toolbar > div { width: 100%; }
+  .experience-ticket-toolbar button { flex: 1; min-height: 42px; padding-inline: 8px; font-size: .8rem; white-space: nowrap; }
+  .experience-ticket-toolbar button small { display: block; margin: 3px 0 0; font-size: .48rem; }
+  .experience-ticket__brand { min-height: 64px; gap: 8px; padding: 10px 12px; }
+  .experience-ticket__brand span { font-size: clamp(1.08rem, 5.3vw, 1.48rem); letter-spacing: .03em; }
+  .experience-ticket__brand small { font-size: .46rem; letter-spacing: .11em; }
+  .experience-ticket__brand > strong { font-size: clamp(.78rem, 3.8vw, 1rem); }
+  .experience-ticket__brand > strong small { font-size: .38rem; }
+  .experience-ticket__value-row { gap: 6px; padding: 14px 12px 10px; }
+  .experience-ticket__exp-label span { font-size: .94rem; }
+  .experience-ticket__exp-label small { font-size: .48rem; }
+  .experience-ticket__value-row > strong { font-size: clamp(2.6rem, 15vw, 4rem); }
+  .experience-ticket__unit { padding-bottom: 2px; font-size: .95rem; }
+  .experience-ticket__rule { margin-inline: 10px; }
+  .experience-ticket__fields { grid-template-columns: minmax(102px, .4fr) minmax(0, 1.6fr); }
+  .experience-ticket__field,
+  .experience-ticket__field:nth-child(even) { min-height: 64px; padding: 9px 10px 10px; }
+  .experience-ticket__field--wide,
+  .experience-ticket__field--signature { grid-column: 1 / -1; }
+  .experience-ticket__field > span { margin-bottom: 4px; font-size: clamp(.58rem, 2.8vw, .75rem); letter-spacing: .02em; white-space: nowrap; }
+  .experience-ticket__field > span small { margin-left: 3px; font-size: clamp(.35rem, 1.7vw, .46rem); }
+  .experience-ticket__field > strong { font-size: clamp(.76rem, 3.6vw, 1.05rem); }
+  .experience-ticket__field--cast > strong { font-size: clamp(.7rem, 3.25vw, .96rem); }
+  .experience-ticket__field--signature { min-height: 72px; }
+  .experience-ticket__field--signature > strong { font-size: clamp(1rem, 5vw, 1.45rem); }
+  .experience-ticket__footer { gap: 6px; padding: 7px 10px 9px; font-size: .48rem; letter-spacing: .04em; }
+  .experience-ticket-note { margin-top: 8px; font-size: .58rem; line-height: 1.45; }
+}
