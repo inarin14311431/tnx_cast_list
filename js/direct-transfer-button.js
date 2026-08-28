@@ -2,6 +2,12 @@
   const ACTIVE_MODE = "bookmarklet";
   const DIRECT_TRIGGER_SELECTOR = "[data-direct-transfer-trigger], #direct-transfer-button";
   const MOBILE_TRIGGER_SELECTOR = ".direct-transfer-button--mobile[data-direct-transfer-trigger]";
+  const DESKTOP_EXPORT_ORDER = [
+    "udonarium-export-button",
+    "cocofolia-copy-button",
+    "transfer-tsv-copy-button",
+    "transfer-bookmarklet-copy-button"
+  ];
 
   function isMobileTrigger(node) {
     return node?.matches?.(MOBILE_TRIGGER_SELECTOR) === true;
@@ -34,11 +40,29 @@
     root?.querySelectorAll?.(MOBILE_TRIGGER_SELECTOR).forEach(syncMobileTrigger);
   }
 
+  function normalizeDesktopExportOrder() {
+    const container = document.querySelector(".cast-header__export-actions");
+    if (!container) return;
+
+    const buttons = DESKTOP_EXPORT_ORDER
+      .map(id => document.getElementById(id))
+      .filter(button => button?.parentElement === container);
+    if (buttons.length < 2) return;
+
+    const children = [...container.children];
+    const indexes = buttons.map(button => children.indexOf(button));
+    const isOrdered = indexes.every((index, position) => position === 0 || indexes[position - 1] < index);
+    if (isOrdered) return;
+
+    for (const button of buttons) container.append(button);
+  }
+
   function initializeBookmarkletMode() {
     document.documentElement.dataset.transferMode = ACTIVE_MODE;
     delete window.TNXDirectTransfer;
     removeInactivePostTriggers();
     syncMobileTriggers();
+    normalizeDesktopExportOrder();
 
     document.addEventListener("click", event => {
       const target = event.target instanceof Element
@@ -58,6 +82,7 @@
           syncMobileTriggers(node);
         }
       }
+      normalizeDesktopExportOrder();
     });
     observer.observe(document.body, { childList: true, subtree: true });
 
