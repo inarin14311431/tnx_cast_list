@@ -28,11 +28,6 @@ import {
   appendGeneralBlankSlots,
   orderGeneralRows
 } from "./sheet-general-skill-state.js?v=1";
-import {
-  parseSheetTsv,
-  buildStyleSkillTsvRow,
-  buildOutfitTsvRow
-} from "./sheet-tsv-import.js?v=1";
 import { renderStyleCards, renderAbilityCards } from "./sheet-character-renderer.js?v=1";
 import { calculateStyleBaselines } from "./sheet-style-baseline.js?v=1";
 import { buildStylePresentation } from "./sheet-style-presentation.js?v=1";
@@ -47,7 +42,7 @@ import { collectCharacterInputSnapshot, applyCharacterInputSnapshot } from "./sh
 import { collectAbilityInputSnapshot, applyAbilityInputSnapshot } from "./sheet-ability-input-snapshot.js?v=1";
 import { collectStyleInputSnapshot, applyStyleInputSnapshot } from "./sheet-style-input-snapshot.js?v=1";
 import { initSheetStyleInteractions } from "./sheet-style-interactions.js?v=1";
-import { appendRow, appendRows, clearRows, moveRowWithinCategory, normalizeOutfitCategory, removeRowByKey } from "./sheet-row-collection-state.js?v=2";
+import { appendRow, clearRows, moveRowWithinCategory, normalizeOutfitCategory, removeRowByKey } from "./sheet-row-collection-state.js?v=2";
 import { normalizeImportedOutfitDetails } from "./outfit-ofc-adapter.js?v=2";
 import { GENERAL_MASTER_ROWS as GENERAL_MASTER, GENERAL_BLANK_SLOT_COLUMNS } from "./general-skill-catalog.js?v=1";
 
@@ -74,7 +69,6 @@ let character = null;
 let skills = [];
 let outfits = [];
 let loading = false;
-let importMode = "";
 const styleBaseline = {};
 
 const saveCoordinator = createSheetSaveCoordinator({
@@ -135,9 +129,6 @@ function bind() {
   $("#add-connection").onclick = () => addSkill("connection", "proper", "コネ：");
   $("#add-style-skill").onclick = () => addSkill("style", "normal", "");
   $("#add-outfit").onclick = () => addOutfitForImport("other");
-  $("#import-skd").onclick = () => openImport("skd");
-  $("#import-ofc").onclick = () => openImport("ofc");
-  $("#tsv-apply").onclick = event => { event.preventDefault(); applyImport(); $("#tsv-dialog").close(); };
 }
 
 function handleSkillRowInput({ key, field, value, row }) {
@@ -480,27 +471,4 @@ function collectSkills() {
 
 function collectOutfits() {
   return buildOutfitSavePayloads(outfits);
-}
-
-function openImport(mode) { importMode = mode; $("#tsv-title").textContent = `${mode.toUpperCase()} TSV取込`; $("#tsv-text").value = ""; $("#tsv-dialog").showModal(); }
-
-function applyImport() {
-  const rows = parseSheetTsv($("#tsv-text").value);
-  if (importMode === "skd") {
-    const start = skills.length;
-    const additions = rows.map((row, index) => buildStyleSkillTsvRow(row, {
-      base: createBlankSkill("style", { sortOrder: start + index }),
-      styleKindFromLabel: label => window.TNXStyleSkillKinds?.fromLabel(label)
-    }));
-    skills = appendRows(skills, additions);
-    renderSkills();
-  } else {
-    const start = outfits.length;
-    const additions = rows.map((row, index) => buildOutfitTsvRow(row, {
-      base: createBlankOutfit({ sortOrder: start + index })
-    }));
-    outfits = appendRows(outfits, additions);
-    renderOutfits();
-  }
-  recalc(); markDirty();
 }

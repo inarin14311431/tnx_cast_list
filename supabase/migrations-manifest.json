@@ -35,6 +35,8 @@
     "27_security_privilege_hardening.sql",
     "28_troops.sql",
     "29_troop_rules_v2.sql",
-    "30_owner_scoped_act_reads.sql"
+    "30_owner_scoped_act_reads.sql",
+    "31_privileged_editor_capability_gate.sql",
+    "32_character_image_upload_limits.sql"
   ]
 }
