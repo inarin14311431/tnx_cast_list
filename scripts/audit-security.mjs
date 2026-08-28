@@ -14,7 +14,7 @@ const backup = read("js/backup.js");
 const accountDelete = read("js/account-delete.js");
 const deleteFn = read("supabase/functions/delete-account/index.ts");
 const adminFn = read("supabase/functions/master-auth-users/index.ts");
-const actReadMigration = read("supabase/16_owner_scoped_act_reads.sql");
+const actReadMigration = read("supabase/30_owner_scoped_act_reads.sql");
 
 assert(
   !/service[_-]?role/i.test(client),
