@@ -13,5 +13,5 @@
 @import url("./acts-maintenance.css?v=4") layer(acts-page);
 
 /* Experience ticket is isolated from the act-history cascade. */
-@import url("./experience-ticket.css?v=3") layer(experience-ticket);
-@import url("./experience-ticket-layout.css?v=3") layer(experience-ticket);
+@import url("./experience-ticket.css?v=4") layer(experience-ticket);
+@import url("./experience-ticket-layout.css?v=4") layer(experience-ticket);
