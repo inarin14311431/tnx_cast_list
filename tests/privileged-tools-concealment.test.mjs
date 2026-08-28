@@ -15,6 +15,7 @@ test("normal pages do not advertise privileged master tools", async () => {
     assert.doesNotMatch(source, /sheet-master-search|sheet-master-autofill|master-data-admin|master-user-delete|tsv-import-guide/);
   }
 
+  assert.doesNotMatch(sheetHtml, /tsv-dialog|tsv-apply|sheet-tsv-import/);
   assert.match(sheetHtml, /privileged-tools-bootstrap\.js/);
   assert.match(accountHtml, /privileged-tools-bootstrap\.js/);
 });
@@ -25,16 +26,16 @@ test("generic bootstrap does not disclose the protected feature", async () => {
   assert.doesNotMatch(bootstrap, /SKD|OFC|skd_master|ofc_master|master_search_users|can_use_master_search/);
 });
 
-test("core editor has no privileged import controls", async () => {
+test("core editor has no privileged or TSV import controls", async () => {
   const sheet = await read("js/sheet.js");
   assert.doesNotMatch(sheet, /import-skd|import-ofc|search-skd-master|search-ofc-master/);
-  assert.doesNotMatch(sheet, /SKD TSV|OFC TSV/);
-  assert.match(sheet, /openTsvImport/);
+  assert.doesNotMatch(sheet, /SKD TSV|OFC TSV|openTsvImport|parseSheetTsv|sheet-tsv-import|tsv-apply/);
 });
 
-test("privileged editor module owns master controls", async () => {
+test("privileged editor retains search and autofill without TSV import", async () => {
   const privileged = await read("js/sheet-privileged-tools.js");
-  assert.match(privileged, /SKD TSV取込/);
-  assert.match(privileged, /OFC TSV取込/);
   assert.match(privileged, /sheet-master-search\.js/);
+  assert.match(privileged, /sheet-master-autofill\.js/);
+  assert.match(privileged, /outfit-ofc-master-apply\.js/);
+  assert.doesNotMatch(privileged, /SKD TSV取込|OFC TSV取込|tsv-import-guide|outfit-ofc-tsv(?:-|\.)/);
 });
