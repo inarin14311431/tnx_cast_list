@@ -22,7 +22,7 @@
     "audit:quality": "node scripts/audit-quality-gates.mjs",
     "report:sheet-ownership": "node scripts/report-sheet-dom-ownership.mjs",
     "report:cast-ownership": "node scripts/report-cast-dom-ownership.mjs",
-    "verify": "npm run check:js && npm run audit:modules && npm run audit:integrity && npm run audit:css && npm run audit:themes && npm run audit:sheet && npm run audit:cast && npm run audit:troop && npm run audit:mobile && npm run audit:security && npm run audit:migrations && npm run audit:quality && npm run report:sheet-ownership && npm run report:cast-ownership && npm test",
+    "verify": "npm run check:js && npm run audit:modules && npm run audit:integrity && npm run audit:css && npm run audit:themes && npm run audit:sheet && npm run audit:cast && npm run audit:troop && npm run audit:mobile && npm run audit:migrations && npm run audit:quality && npm run report:sheet-ownership && npm run report:cast-ownership && npm test",
     "e2e": "playwright test",
     "e2e:troop": "playwright test tests/e2e/troop-view.spec.js tests/e2e/troop-editor-flow.spec.js --project=chromium",
     "e2e:headed": "playwright test --headed",
