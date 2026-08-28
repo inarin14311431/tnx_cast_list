@@ -12,6 +12,23 @@ test("テストキャストの閲覧画面を正常に表示できる", async ({
   assertNoAssetErrors();
 });
 
+test("PC閲覧のデータ出力ボタンは指定順で表示する", async ({ page }) => {
+  test.skip(!hasAuthCredentials(), "E2E_EMAIL / E2E_PASSWORD が未設定のためスキップ");
+  await page.goto(`/cast.html?id=${getTestCastId()}`);
+  await waitForCastReady(page);
+
+  const expected = [
+    "udonarium-export-button",
+    "cocofolia-copy-button",
+    "transfer-tsv-copy-button",
+    "transfer-bookmarklet-copy-button"
+  ];
+  const readOrder = () => page.locator(".cast-header__export-actions > *").evaluateAll((nodes, ids) =>
+    nodes.map(node => node.id).filter(id => ids.includes(id)), expected);
+
+  await expect.poll(readOrder).toEqual(expected);
+});
+
 test("閲覧画面に意図しない横スクロールがない", async ({ page }) => {
   test.skip(!hasAuthCredentials(), "E2E_EMAIL / E2E_PASSWORD が未設定のためスキップ");
   await page.goto(`/cast.html?id=${getTestCastId()}`);
