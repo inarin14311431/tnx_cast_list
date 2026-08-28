@@ -70,7 +70,7 @@ function openTicket(data) {
       <div class="experience-ticket-toolbar">
         <p><span>EXPERIENCE RECORD</span><small>参加履歴から自動生成</small></p>
         <div>
-          <button type="button" data-print-ticket>印刷 / PDF <small>PRINT</small></button>
+          <button type="button" data-save-ticket-png>PNG保存 <small>SAVE PNG</small></button>
           <button type="button" data-close-ticket>閉じる <small>CLOSE</small></button>
         </div>
       </div>
@@ -116,11 +116,139 @@ function openTicket(data) {
 
   overlay.addEventListener("click", event => {
     if (event.target === overlay || event.target.closest("[data-close-ticket]")) closeTicket();
-    if (event.target.closest("[data-print-ticket]")) window.print();
+    if (event.target.closest("[data-save-ticket-png]")) saveTicketPng(data);
   });
   document.body.append(overlay);
   document.body.classList.add("has-experience-ticket");
-  overlay.querySelector("[data-print-ticket]")?.focus();
+  fitTicketValues(overlay);
+  document.fonts?.ready?.then(() => fitTicketValues(overlay));
+  overlay.querySelector("[data-save-ticket-png]")?.focus();
+}
+
+function fitTicketValues(root) {
+  root.querySelectorAll(".experience-ticket__field > strong").forEach(element => {
+    element.style.fontSize = "";
+    let size = parseFloat(getComputedStyle(element).fontSize) || 16;
+    const minimum = element.closest(".experience-ticket__field--signature") ? 17 : 12;
+    while (element.scrollWidth > element.clientWidth && size > minimum) {
+      size -= 0.5;
+      element.style.fontSize = `${size}px`;
+    }
+  });
+}
+
+function saveTicketPng(data) {
+  const canvas = document.createElement("canvas");
+  canvas.width = 1600;
+  canvas.height = 1000;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return;
+  drawTicketCanvas(ctx, data, canvas.width, canvas.height);
+  const filename = `experience-ticket-${safeFilename(data.title)}-${data.serial}.png`;
+  const link = document.createElement("a");
+  link.href = canvas.toDataURL("image/png");
+  link.download = filename;
+  link.rel = "noopener";
+  document.body.append(link);
+  link.click();
+  link.remove();
+}
+
+function drawTicketCanvas(ctx, data, width, height) {
+  const paper = "#efe7d8";
+  const ink = "#18130f";
+  const dark = "#241a16";
+  ctx.fillStyle = paper;
+  ctx.fillRect(0, 0, width, height);
+  ctx.strokeStyle = "#35271f";
+  ctx.lineWidth = 4;
+  ctx.strokeRect(14, 14, width - 28, height - 28);
+
+  ctx.fillStyle = dark;
+  ctx.fillRect(0, 0, width, 178);
+  ctx.fillStyle = "#fff";
+  drawFitText(ctx, "経験点チケット", 58, 88, 900, 76, 42, "serif", "900");
+  ctx.font = "700 30px Georgia, serif";
+  ctx.fillText("EXPERIENCE TICKET", 60, 138);
+  ctx.textAlign = "right";
+  ctx.font = "900 58px Georgia, serif";
+  ctx.fillText("N◎VA", width - 58, 82);
+  ctx.font = "700 24px Georgia, serif";
+  ctx.fillText("CAST ARCHIVE", width - 58, 126);
+  ctx.textAlign = "left";
+
+  ctx.fillStyle = ink;
+  ctx.font = "900 48px serif";
+  ctx.fillText("経験点", 58, 260);
+  ctx.font = "700 24px Georgia, serif";
+  ctx.fillText("E X P", 86, 300);
+  ctx.textAlign = "right";
+  drawFitText(ctx, data.experience, width - 120, 305, 620, 170, 94, "serif", "900", "right");
+  ctx.font = "900 52px serif";
+  ctx.fillText("点", width - 55, 304);
+  ctx.textAlign = "left";
+  line(ctx, 48, 330, width - 48, 330, 4);
+
+  label(ctx, "アクトタイトル", "ACT TITLE", 58, 385);
+  drawFitText(ctx, data.title, 58, 455, width - 116, 58, 28, "serif", "900");
+  line(ctx, 0, 500, width, 500, 2, "#6f6259");
+
+  const split = 500;
+  label(ctx, "日付", "DATE", 58, 555);
+  drawFitText(ctx, data.date, 58, 625, split - 92, 52, 26, "serif", "900");
+  line(ctx, split, 500, split, 700, 2, "#6f6259");
+  label(ctx, "参加キャスト", "CAST", split + 38, 555);
+  drawFitText(ctx, data.character, split + 38, 625, width - split - 86, 48, 24, "serif", "900");
+  line(ctx, 0, 700, width, 700, 2, "#6f6259");
+
+  label(ctx, "ルーラーの署名", "RULER SIGNATURE", 58, 760);
+  ctx.textAlign = "right";
+  drawFitText(ctx, data.ruler, width - 60, 855, width - 120, 72, 34, "serif", "900", "right", "italic");
+  ctx.textAlign = "left";
+  line(ctx, 40, 912, width - 40, 912, 2, "#8e8075", true);
+
+  ctx.fillStyle = "#51443b";
+  ctx.font = "700 25px Georgia, serif";
+  ctx.fillText(data.slot || "ACT PARTICIPATION", 58, 956);
+  ctx.textAlign = "right";
+  ctx.fillText(data.serial, width - 58, 956);
+  ctx.textAlign = "left";
+}
+
+function label(ctx, ja, en, x, y) {
+  ctx.fillStyle = "#18130f";
+  ctx.font = "900 33px serif";
+  ctx.fillText(ja, x, y);
+  const offset = ctx.measureText(ja).width + 22;
+  ctx.font = "700 20px Georgia, serif";
+  ctx.fillText(en, x + offset, y);
+}
+
+function drawFitText(ctx, text, x, y, maxWidth, startSize, minSize, family, weight = "900", align = "left", style = "normal") {
+  let size = startSize;
+  ctx.textAlign = align;
+  do {
+    ctx.font = `${style} ${weight} ${size}px ${family}`;
+    if (ctx.measureText(String(text)).width <= maxWidth || size <= minSize) break;
+    size -= 2;
+  } while (size > minSize);
+  ctx.fillText(String(text), x, y);
+}
+
+function line(ctx, x1, y1, x2, y2, width = 2, color = "#2a211c", dashed = false) {
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = width;
+  ctx.setLineDash(dashed ? [10, 10] : []);
+  ctx.beginPath();
+  ctx.moveTo(x1, y1);
+  ctx.lineTo(x2, y2);
+  ctx.stroke();
+  ctx.restore();
+}
+
+function safeFilename(value) {
+  return clean(value).replace(/[\\/:*?"<>|]/g, "_").slice(0, 48) || "act";
 }
 
 function closeTicket() {
