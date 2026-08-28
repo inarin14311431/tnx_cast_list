@@ -16,6 +16,8 @@ const deleteFn = read("supabase/functions/delete-account/index.ts");
 const adminFn = read("supabase/functions/master-auth-users/index.ts");
 const actReadMigration = read("supabase/30_owner_scoped_act_reads.sql");
 const storageLimitMigration = read("supabase/32_character_image_upload_limits.sql");
+const archiveMigration = read("supabase/33_archive_legacy_migration_tables.sql");
+const pruneArchiveMigration = read("supabase/34_prune_archived_migration_tables.sql");
 
 assert(
   !/service[_-]?role/i.test(client),
@@ -102,6 +104,29 @@ assert(
 assert(
   !/public\s*=\s*(?:true|false)/i.test(storageLimitMigration),
   "Storage upload limit migration must not change the bucket public/private design decision."
+);
+assert(
+  /create schema if not exists internal_archive/i.test(archiveMigration),
+  "Legacy rollback data must be moved to a non-public archive schema."
+);
+assert(
+  /revoke all on schema internal_archive from anon/i.test(archiveMigration) &&
+    /revoke all on schema internal_archive from authenticated/i.test(archiveMigration),
+  "Archive schema must remain unavailable to normal application roles."
+);
+assert(
+  /alter table public\.character_skills_backup_style_canonical_20260825 set schema internal_archive/i.test(archiveMigration) &&
+    /alter table public\.character_outfits_backup_ofc_conversion_20260818 set schema internal_archive/i.test(archiveMigration),
+  "Final rollback anchors must leave the public schema."
+);
+assert(
+  (pruneArchiveMigration.match(/drop table if exists internal_archive\./gi) || []).length >= 12,
+  "Intermediate migration and backup tables must remain pruned from the archive."
+);
+assert(
+  /revoke all privileges on all tables in schema internal_archive from anon/i.test(pruneArchiveMigration) &&
+    /revoke all privileges on all tables in schema internal_archive from authenticated/i.test(pruneArchiveMigration),
+  "Archived rollback tables must remain inaccessible to normal application roles."
 );
 
 if (failures.length) {
