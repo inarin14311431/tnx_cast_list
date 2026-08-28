@@ -14,6 +14,7 @@ const backup = read("js/backup.js");
 const accountDelete = read("js/account-delete.js");
 const deleteFn = read("supabase/functions/delete-account/index.ts");
 const adminFn = read("supabase/functions/master-auth-users/index.ts");
+const actReadMigration = read("supabase/30_owner_scoped_act_reads.sql");
 
 assert(
   !/service[_-]?role/i.test(client),
@@ -72,6 +73,18 @@ assert(
 assert(
   /SUPABASE_SERVICE_ROLE_KEY/.test(adminFn),
   "Auth administration service-role must come from environment."
+);
+assert(
+  /create policy act_participants_select_owner[\s\S]*c\.owner_id\s*=\s*auth\.uid\(\)/i.test(actReadMigration),
+  "Act participation SELECT policy must remain scoped to the current character owner."
+);
+assert(
+  /create policy acts_select_owner_scope[\s\S]*published_by\s*=\s*auth\.uid\(\)[\s\S]*c\.owner_id\s*=\s*auth\.uid\(\)/i.test(actReadMigration),
+  "Act SELECT policy must remain scoped to the publisher or an owned participation."
+);
+assert(
+  !/create policy\s+(?:act_participants_select_authenticated|acts_select_authenticated)[\s\S]*using\s*\(\s*true\s*\)/i.test(actReadMigration),
+  "Act history SELECT policies must not restore authenticated-wide reads."
 );
 
 if (failures.length) {
