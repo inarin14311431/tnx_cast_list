@@ -18,6 +18,7 @@ const actReadMigration = read("supabase/30_owner_scoped_act_reads.sql");
 const storageLimitMigration = read("supabase/32_character_image_upload_limits.sql");
 const archiveMigration = read("supabase/33_archive_legacy_migration_tables.sql");
 const pruneArchiveMigration = read("supabase/34_prune_archived_migration_tables.sql");
+const troopsGrantMigration = read("supabase/35_least_privilege_troops_grants.sql");
 
 assert(
   !/service[_-]?role/i.test(client),
@@ -127,6 +128,14 @@ assert(
   /revoke all privileges on all tables in schema internal_archive from anon/i.test(pruneArchiveMigration) &&
     /revoke all privileges on all tables in schema internal_archive from authenticated/i.test(pruneArchiveMigration),
   "Archived rollback tables must remain inaccessible to normal application roles."
+);
+assert(
+  /revoke\s+truncate\s*,\s*references\s*,\s*trigger\s+on\s+table\s+public\.troops\s+from\s+authenticated/i.test(troopsGrantMigration),
+  "Authenticated troops access must not include TRUNCATE, REFERENCES, or TRIGGER privileges."
+);
+assert(
+  !/revoke[\s\S]*(?:select|insert|update|delete)[\s\S]*public\.troops/i.test(troopsGrantMigration),
+  "Least-privilege troops migration must preserve the CRUD privileges used by the app."
 );
 
 if (failures.length) {
