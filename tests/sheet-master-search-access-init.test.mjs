@@ -13,7 +13,8 @@ test("master search access exposes an explicit idempotent initializer", () => {
 });
 
 test("master search access preserves authorization and visibility behavior", () => {
-  assert.match(source, /supabase\.rpc\("can_use_master_search"\)/);
+  assert.match(source, /supabase\.rpc\("has_privileged_editor_tools"\)/);
+  assert.doesNotMatch(source, /can_use_master_search/);
   assert.match(source, /if \(data === true\)/);
   assert.match(source, /button\.hidden = false;/);
   assert.match(source, /button\.disabled = false;/);
