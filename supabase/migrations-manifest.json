@@ -40,6 +40,7 @@
     "32_character_image_upload_limits.sql",
     "33_archive_legacy_migration_tables.sql",
     "34_prune_archived_migration_tables.sql",
-    "35_least_privilege_troops_grants.sql"
+    "35_least_privilege_troops_grants.sql",
+    "36_hide_internal_security_helpers.sql"
   ]
 }
