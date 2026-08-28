@@ -20,7 +20,7 @@ async function initializeSheetMasterSearchAccess() {
   masterSearchAccessInitialized = true;
 
   try {
-    const { data, error } = await supabase.rpc("can_use_master_search");
+    const { data, error } = await supabase.rpc("has_privileged_editor_tools");
     if (error) throw error;
 
     if (data === true) {
