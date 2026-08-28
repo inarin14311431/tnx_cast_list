@@ -48,7 +48,7 @@ test("renderer exposes canonical category-owned control and CS fields", () => {
 });
 
 test("classic sheet delegates outfit serialization to the payload contract", () => {
-  const collect = functionBlock(sheetSource, "collectOutfits", "openImport");
+  const collect = trailingFunctionBlock(sheetSource, "collectOutfits");
   assert.match(collect, /buildOutfitSavePayloads\(outfits\)/);
   assert.doesNotMatch(collect, /payload\.defense|mundane_modifier/);
 
@@ -60,7 +60,7 @@ test("classic sheet delegates outfit serialization to the payload contract", () 
   assert.doesNotMatch(builder, /payload\.defense|mundane_modifier/);
 });
 
-test("classic OFC TSV fallback no longer seeds combined defense", () => {
+test("classic editor no longer seeds combined outfit defense", () => {
   assert.doesNotMatch(sheetSource, /defense:\s*row\.defense/);
 });
 
