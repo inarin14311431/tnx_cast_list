@@ -4,7 +4,7 @@ import { readFile, access } from "node:fs/promises";
 
 const entry = await readFile(new URL("../css-next/pages/account-entry.css", import.meta.url), "utf8");
 const base = await readFile(new URL("../css-next/pages/account.css", import.meta.url), "utf8");
-const actions = await readFile(new URL("../css-next/pages/account-action-hierarchy.css", import.meta.url), "utf8");
+const actions = await readFile(new URL("../css-next/pages/account-actions.css", import.meta.url), "utf8");
 
 test("account card layout is owned by the action layer", () => {
   assert.doesNotMatch(base, /\.owned-cast-list\s*\{/);
@@ -25,6 +25,6 @@ test("troop and act management layout is consolidated into the account action la
 
 test("account entry keeps one canonical action layer after the base stylesheet", () => {
   assert.match(entry, /account\.css\?v=12/);
-  assert.match(entry, /account-action-hierarchy\.css\?v=8/);
-  assert.doesNotMatch(entry, /account-troops/);
+  assert.match(entry, /account-actions\.css\?v=1/);
+  assert.doesNotMatch(entry, /account-action-hierarchy\.css|account-troops/);
 });
