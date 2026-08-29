@@ -5,8 +5,7 @@ const summaryCache = new Map();
 let scanTimer = 0;
 
 if (selectedCasts) {
-  const observer = new MutationObserver(scheduleScan);
-  observer.observe(selectedCasts, { childList: true, subtree: true });
+  selectedCasts.addEventListener("tnx:showcase-selection-rendered", scheduleScan);
   scheduleScan();
 }
 

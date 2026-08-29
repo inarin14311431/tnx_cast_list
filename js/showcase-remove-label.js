@@ -9,14 +9,6 @@ function updateRemoveLabels() {
 }
 
 if (selectedCasts) {
-  const observer = new MutationObserver(mutations => {
-    if (!mutations.some(mutation => mutation.addedNodes.length)) return;
-    updateRemoveLabels();
-  });
-
-  observer.observe(selectedCasts, {
-    childList: true,
-    subtree: true
-  });
+  selectedCasts.addEventListener("tnx:showcase-selection-rendered", updateRemoveLabels);
   updateRemoveLabels();
 }
