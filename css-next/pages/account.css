@@ -22,26 +22,15 @@ body[data-page="account.html"] .account-layout { display: grid; gap: 16px; margi
 .account-cast-control :is(input, select) { box-sizing: border-box; width: 100%; min-width: 0; min-height: 38px; }
 #owned-cast-reset { min-height: 38px; padding: 7px 10px; white-space: nowrap; }
 .owned-cast-result-count { margin: 0 0 10px; color: var(--color-muted); font: 700 .68rem/1.4 var(--font-data); text-align: right; }
-.owned-cast-list { display: grid; gap: 12px; }
-.owned-cast { display: flex; justify-content: space-between; gap: 14px; min-width: 0; padding: 12px 14px; border-left: 2px solid var(--color-accent); background: color-mix(in srgb, var(--color-bg) 72%, transparent); }
-.owned-cast__identity { flex: 1 1 260px; min-width: 0; padding-right: 8px; }
-.owned-cast__identity h3 { margin: 2px 0 0; }
-.owned-cast__handle { margin: 2px 0 0; color: var(--color-accent); font-size: .78rem; }
-.owned-cast__styles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; width: min(100%, 280px); margin-top: 9px; }
+.owned-cast__handle { color: var(--color-accent); }
+.owned-cast__styles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
 .owned-cast__style { --style-color: var(--color-muted); display: flex; min-width: 0; min-height: 22px; align-items: center; justify-content: center; gap: 1px; padding: 3px 1px 2px; overflow: hidden; border-bottom: 2px solid color-mix(in srgb, var(--style-color) 78%, transparent); color: color-mix(in srgb, var(--style-color) 82%, var(--color-text)); background: color-mix(in srgb, var(--style-color) 7%, transparent); font: 800 .61rem/1 var(--font-data); white-space: nowrap; }
 .owned-cast__style b { flex: 0 0 auto; color: var(--style-color); font-size: .67rem; line-height: 1; }
-.owned-cast__meta { display: flex; flex: 0 1 610px; width: min(100%, 610px); min-width: 0; max-width: 610px; flex-direction: column; align-items: flex-end; justify-content: space-between; gap: 8px; }
-.owned-cast__status-row { display: flex; width: 100%; align-items: center; justify-content: flex-end; gap: 10px; color: var(--color-muted); font: .72rem/1 var(--font-data); }
-.owned-cast__visibility { color: var(--color-text); font-size: .82rem; font-weight: 800; white-space: nowrap; }
-.owned-cast__serial { display: inline-block; padding: 6px 10px 5px; border: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent); border-bottom-width: 2px; color: var(--color-accent); background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 14%, transparent), color-mix(in srgb, var(--color-accent) 3.5%, transparent)); font-size: .72rem; font-weight: 800; letter-spacing: .12em; line-height: 1; white-space: nowrap; box-shadow: 0 0 14px color-mix(in srgb, var(--color-accent) 12%, transparent), inset 0 0 10px color-mix(in srgb, var(--color-accent) 5%, transparent); clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px); }
-.owned-cast__links { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; width: 100%; margin-top: 4px; }
+.owned-cast__status-row { width: 100%; color: var(--color-muted); font: .72rem/1 var(--font-data); }
+.owned-cast__visibility { color: var(--color-text); font-weight: 800; white-space: nowrap; }
+.owned-cast__serial { display: inline-block; border: 1px solid color-mix(in srgb, var(--color-accent) 55%, transparent); border-bottom-width: 2px; color: var(--color-accent); background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 14%, transparent), color-mix(in srgb, var(--color-accent) 3.5%, transparent)); font-weight: 800; letter-spacing: .12em; line-height: 1; white-space: nowrap; box-shadow: 0 0 14px color-mix(in srgb, var(--color-accent) 12%, transparent), inset 0 0 10px color-mix(in srgb, var(--color-accent) 5%, transparent); clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px); }
 .owned-cast__links :where(a, button) { display: grid; width: 100%; min-width: 0; min-height: 50px; place-items: center; gap: 3px; padding: 7px 5px; border: 1px solid color-mix(in srgb, var(--color-accent) 85%, transparent); color: var(--color-text); background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 20%, var(--color-surface)), color-mix(in srgb, var(--color-bg) 76%, var(--color-accent) 8%)); text-align: center; white-space: nowrap; }
-.owned-cast__management { display: flex; width: 100%; align-items: center; justify-content: flex-end; gap: 6px; margin-top: 2px; padding-top: 7px; border-top: 1px dashed var(--color-border-muted); }
-.owned-cast__management-label { margin-right: auto; color: var(--color-muted); font: 700 .62rem/1.2 var(--font-data); letter-spacing: .04em; }
-.owned-cast__management-label small { margin-left: 4px; color: color-mix(in srgb, var(--color-muted) 65%, transparent); font-size: .72em; letter-spacing: .1em; }
-.owned-cast__management button { min-width: 96px; min-height: 34px; padding: 5px 9px; }
-.owned-cast__management button .action-label__jp { font-size: .75rem; }
-.owned-cast__management button .action-label__en { font-size: .52rem; }
+.owned-cast__management-label { font-family: var(--font-data); font-weight: 700; }
 .owned-cast__management button[data-delete] { border-color: color-mix(in srgb, var(--color-danger) 90%, transparent); color: var(--color-text); background: linear-gradient(180deg, color-mix(in srgb, var(--color-danger) 28%, var(--color-surface)), color-mix(in srgb, var(--color-bg) 78%, var(--color-danger) 10%)); }
 .action-label__jp { display: block; font-size: .9rem; font-weight: 900; line-height: 1.15; letter-spacing: .01em; }
 .action-label__en { display: block; color: color-mix(in srgb, var(--color-muted) 72%, var(--color-text)); font: 700 .68rem/1.1 var(--font-data); letter-spacing: .1em; }
@@ -101,7 +90,6 @@ body[data-page="backup.html"] #import-file { width: 100%; padding: 12px; border:
   body[data-page="account.html"] .account-cast-controls { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   body[data-page="account.html"] .account-cast-control--search { grid-column: 1 / -1; }
   body[data-page="account.html"] #owned-cast-reset { width: 100%; }
-  body[data-page="account.html"] .owned-cast__links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   body[data-page="account.html"] .master-search-user-sql__actions { align-items: stretch; flex-direction: column; }
   body[data-page="account.html"] .master-search-user-sql__button-group { width: 100%; }
   body[data-page="account.html"] .master-search-user-sql__button-group button { flex: 1 1 0; }
@@ -113,13 +101,6 @@ body[data-page="backup.html"] #import-file { width: 100%; padding: 12px; border:
   body[data-page="account.html"] .account-actions { grid-template-columns: 1fr; }
   html body[data-page="account.html"] .account-cast-controls { grid-template-columns: 1fr; }
   html body[data-page="account.html"] .account-cast-control--search { grid-column: auto; }
-  body[data-page="account.html"] .owned-cast { flex-direction: column; padding: 10px; }
-  body[data-page="account.html"] .owned-cast__meta { align-items: flex-start; min-width: 0; }
-  body[data-page="account.html"] .owned-cast__status-row { justify-content: flex-start; flex-wrap: wrap; }
-  html body[data-page="account.html"] .owned-cast__links { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  body[data-page="account.html"] .owned-cast__management { align-items: stretch; flex-wrap: wrap; }
-  body[data-page="account.html"] .owned-cast__management-label { flex: 1 0 100%; }
-  body[data-page="account.html"] .owned-cast__management button { flex: 1 1 0; }
   body[data-page="account.html"] .action-label__jp { font-size: .94rem; }
   body[data-page="account.html"] .owned-cast__serial { font-size: .66rem; }
   body[data-page="account.html"] :is(.master-data-admin__header, .master-search-user-sql__header) { align-items: stretch; flex-direction: column; }
@@ -128,10 +109,4 @@ body[data-page="backup.html"] #import-file { width: 100%; padding: 12px; border:
   html body[data-page="account.html"] .master-search-user-sql__button-group { flex-direction: column; }
   body[data-page="account.html"] :is(#master-search-user-sql-copy, #master-search-user-delete) { width: 100%; }
   html body[data-page="backup.html"] .account-layout { grid-template-columns: 1fr; }
-}
-
-@media (pointer: coarse) and (min-width: 768px) and (max-width: 1100px) {
-  body[data-page="account.html"] .owned-cast__links {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
