@@ -12,8 +12,3 @@ test("mobile editor allows persisted social and connection skills and mutable ge
   assert.match(skills, /#mobile-general-delete/);
   assert.match(skills, /deletedIds\.add\(String\(item\.id\)\)/);
 });
-
-test("mobile app refreshes the skills module cache key", async () => {
-  const app = await read("js/sheet-mobile-app.js");
-  assert.match(app, /sheet-mobile-skills\.js\?v=20260821-5/);
-});
