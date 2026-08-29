@@ -12,7 +12,7 @@
 @import url("./cast-mobile-theme.css?v=1") layer(cast-mobile-theme);
 @import url("./quick-sheet-paper.css?v=2") layer(cast-quick-sheet);
 @import url("../components/armor-totals.css?v=3") layer(cast-enhancements);
-@import url("../components/skill-display-enhancements.css?v=1") layer(cast-enhancements);
+@import url("../components/skill-display.css?v=1") layer(cast-enhancements);
 @import url("./cast-cyber-effects.css?v=1") layer(cast-effects);
 @import url("./cast-cyber-runtime.css?v=2") layer(cast-runtime);
 @import url("./cast-mobile.css?v=4") layer(cast-mobile);
