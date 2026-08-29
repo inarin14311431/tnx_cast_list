@@ -128,8 +128,8 @@ test("troop styles use explicit cascade layers without important overrides", () 
   const detailEntry = read("css-next/pages/troop-entry.css");
   const registryEntry = read("css-next/pages/troops-entry.css");
   const sources = [
-    "troops.css", "troops-v4.css", "troop-combo-dialog.css",
-    "troop-combo-rule-v2.css", "troop-screen.css", "troops-registry-polish.css"
+    "troops.css", "troop-layout.css", "troop-combo-dialog.css",
+    "troop-combo-rules.css", "troop-screen.css", "troops-registry-polish.css"
   ].map(file => read(`css-next/pages/${file}`));
 
   assert.match(html, /troop-entry\.css\?v=1/);
@@ -232,7 +232,7 @@ test("account and cast have responsive troop navigation adapters", () => {
   const cast = read("js/cast-troops-link.js");
   const castHtml = read("cast.html");
   const castEntry = read("css-next/pages/cast-entry.css");
-  const mobileCss = read("css-next/pages/troops-v4.css");
+  const mobileCss = read("css-next/pages/troop-layout.css");
   assert.match(read("js/account-mobile-editor-links.js"), /troops\.html/);
   assert.match(read("js/cast-mobile-level-labels.js"), /cast-troops-link\.js/);
   assert.match(cast, /matchMedia\("\(min-width: 761px\)"\)/);
