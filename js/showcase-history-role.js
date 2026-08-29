@@ -2,12 +2,10 @@ import { supabase } from "./supabase-client.js";
 
 const selectedCasts = document.querySelector("#selected-casts");
 const generatorStatus = document.querySelector("#generator-status");
-const publishSlug = document.querySelector("#publish-slug");
 const persistedKeys = new Set();
 
 wrapHistoryRpc();
 wrapPublishFunction();
-observeCompletedOperations();
 
 function wrapHistoryRpc() {
   if (!supabase || typeof supabase.rpc !== "function" || supabase.__historyRoleRpcWrapped) return;
@@ -36,34 +34,6 @@ function wrapPublishFunction() {
     }
     return result;
   };
-}
-
-function observeCompletedOperations() {
-  if (!generatorStatus) return;
-  const observer = new MutationObserver(() => {
-    const message = String(generatorStatus.textContent || "");
-    if (!/公開処理が完了|参加アクト履歴へ登録しました/.test(message)) return;
-    window.setTimeout(persistRolesByCurrentSlug, 0);
-  });
-  observer.observe(generatorStatus, { childList: true, subtree: true, characterData: true });
-}
-
-async function persistRolesByCurrentSlug() {
-  const slug = normalizeSlug(publishSlug?.value);
-  if (!slug) return;
-
-  const { data, error } = await supabase
-    .from("acts")
-    .select("id")
-    .eq("slug", slug)
-    .maybeSingle();
-
-  if (error || !data?.id) {
-    if (error) console.error("Act ID could not be resolved for participation roles.", error);
-    return;
-  }
-
-  await persistRolesWithoutBreakingHistory(data.id);
 }
 
 async function persistRolesWithoutBreakingHistory(actId) {
@@ -106,13 +76,4 @@ function collectRoleAssignments() {
   });
 
   return assignments;
-}
-
-function normalizeSlug(value) {
-  return String(value || "")
-    .normalize("NFKC")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 64);
 }
