@@ -6,6 +6,7 @@
   const STYLE_SEPARATOR = "[[STYLE_SEPARATOR]]";
   const BASE_SKILLS = new Set(["射撃", "心理", "自我", "回避", "白兵", "圧力", "信用"]);
   const BASE_SKILL_PREFIXES = ["操縦："];
+  const ROOT_SELECTORS = ["#general-skills", "#style-skills", "#skills-container", "#quick-sheet-pages"];
   const cleanName = value => String(value || "").trim().replace(/^★\s*/, "").replace(/[;；]/g, "：");
   const isBase = value => {
     const name = cleanName(value);
@@ -84,7 +85,19 @@
   function apply() { editorStars(); editorSeparators(); viewerStars(); quickStars(); quickSeparators(); }
   let queued = false;
   const queue = () => { if (queued) return; queued = true; requestAnimationFrame(() => { queued = false; apply(); }); };
-  new MutationObserver(queue).observe(document.body, { childList:true, subtree:true });
-  document.addEventListener('change', queue, true);
-  apply();
+
+  function initialize() {
+    const roots = ROOT_SELECTORS.map(selector => document.querySelector(selector)).filter(Boolean);
+    if (roots.length) {
+      const observer = new MutationObserver(queue);
+      roots.forEach(root => {
+        observer.observe(root, { childList: true, subtree: true });
+        root.addEventListener('change', queue, true);
+      });
+    }
+    apply();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initialize, { once: true });
+  else initialize();
 })();
