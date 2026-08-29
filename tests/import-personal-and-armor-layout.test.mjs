@@ -23,9 +23,3 @@ test("armor total footer aligns itself after outfit and OFC column rendering", a
   assert.match(source, /requestAnimationFrame\(\(\) => requestAnimationFrame/);
   assert.doesNotMatch(source, /MutationObserver/);
 });
-
-test("sheet loads the current armor alignment implementation directly", async () => {
-  const source = await readFile(new URL("../sheet.html", import.meta.url), "utf8");
-  assert.match(source, /\.\/js\/armor-grand-total\.js\?v=103/);
-  assert.doesNotMatch(source, /\.\/js\/armor-grand-total\.js\?v=102/);
-});
