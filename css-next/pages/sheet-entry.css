@@ -13,7 +13,7 @@
 @import url("../editor/sidebar-actions.css?v=2") layer(sheet-editor);
 @import url("../editor/skills.css?v=3") layer(sheet-editor);
 @import url("../editor/style-skills.css?v=11") layer(sheet-editor);
-@import url("../editor/style-separator-fix.css?v=3") layer(sheet-editor);
+@import url("../editor/style-separators.css?v=1") layer(sheet-editor);
 @import url("../editor/outfits.css?v=17") layer(sheet-editor);
 @import url("../editor/import.css?v=6") layer(sheet-editor);
 @import url("../editor/button-hover.css?v=1") layer(sheet-editor);
