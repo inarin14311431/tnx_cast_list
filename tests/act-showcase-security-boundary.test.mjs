@@ -33,6 +33,12 @@ test("showcase publication requires authentication and writes only through owned
   assert.match(dynamic, /if v_user_id is null[\s\S]*Authentication is required/i);
   assert.match(dynamic, /record_act_history_for_current_user\(/);
   assert.match(dynamic, /where id = v_act_id[\s\S]*published_by = v_user_id/i);
-  assert.match(dynamic, /grant execute on function public\.publish_act_showcase_for_current_user[\s\S]*to authenticated/i);
-  assert.doesNotMatch(dynamic, /grant execute on function public\.publish_act_showcase_for_current_user[\s\S]*to anon/i);
+  assert.match(
+    dynamic,
+    /grant execute on function public\.publish_act_showcase_for_current_user\([^;]+\)\s+to\s+authenticated\s*;/i
+  );
+  assert.doesNotMatch(
+    dynamic,
+    /grant execute on function public\.publish_act_showcase_for_current_user\([^;]+\)\s+to\s+anon\b[^;]*;/i
+  );
 });
