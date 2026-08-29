@@ -105,13 +105,6 @@ function initializeSheetStickyExpPanel() {
     });
   });
 
-  if (panel) {
-    new MutationObserver(() => {
-      enforcePanelOrder();
-      queuePanelUpdate();
-    }).observe(panel, { childList: true });
-  }
-
   if (header && "ResizeObserver" in window) {
     new ResizeObserver(() => {
       updateOffset();
