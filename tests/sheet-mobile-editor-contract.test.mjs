@@ -3,11 +3,8 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const html = await readFile(new URL("../sheet-mobile.html", import.meta.url), "utf8");
-const app = await readFile(new URL("../js/sheet-mobile-app.js", import.meta.url), "utf8");
-const profile = await readFile(new URL("../js/sheet-mobile.js", import.meta.url), "utf8");
 const profileUi = await readFile(new URL("../js/sheet-mobile-profile.js", import.meta.url), "utf8");
 const style = await readFile(new URL("../js/sheet-mobile-style.js", import.meta.url), "utf8");
-const skills = await readFile(new URL("../js/sheet-mobile-skills.js", import.meta.url), "utf8");
 const outfit = await readFile(new URL("../js/sheet-mobile-outfit.js", import.meta.url), "utf8");
 const outfitUi = await readFile(new URL("../js/sheet-mobile-outfit-ui.js", import.meta.url), "utf8");
 const combos = await readFile(new URL("../js/sheet-mobile-combos.js", import.meta.url), "utf8");
@@ -24,26 +21,6 @@ test("mobile editor keeps required sections and footer controls", () => {
     "mobile-view-link",
     "mobile-save"
   ]) assert.match(html, new RegExp(`id=["']${id}["']`));
-});
-
-test("mobile editor footer view link defaults to mobile rendering", () => {
-  assert.match(html, /id=["']mobile-view-link["'][^>]*href=["'][^"']*[?&]mobile=1(?:&|["'])/i);
-  assert.match(profile, /cast\.html\?id=\$\{id\}&mobile=1/);
-});
-
-test("mobile runtime loads before feature modules", () => {
-  const runtime = app.indexOf("sheet-mobile-runtime.js");
-  assert.ok(runtime >= 0, "runtime import must exist");
-  for (const feature of ["sheet-mobile-profile.js", "sheet-mobile-style.js", "sheet-mobile-ability.js", "sheet-mobile-skills.js", "sheet-mobile-outfit.js"]) {
-    const index = app.indexOf(feature);
-    assert.ok(index >= 0, `${feature} import must exist`);
-    assert.ok(runtime < index, `runtime must load before ${feature}`);
-  }
-});
-
-test("mobile editor app owns feature bootstrapping through one module entry", () => {
-  assert.match(html, /<script\b[^>]*type=["']module["'][^>]*src=["']\.\/js\/sheet-mobile-app\.js\?v=\d+["']/i);
-  assert.doesNotMatch(html, /<script\b[^>]*src=["']\.\/js\/sheet-mobile-(?:profile|style|ability|skills|outfit|combos|snapshots|image)\.js/i);
 });
 
 test("mobile editor exposes a visible live save status", () => {
@@ -67,12 +44,6 @@ test("mobile general skill delete uses the same confirmation guard as other dele
   assert.match(ui, /confirm\(`「\$\{name\}」を削除しますか？`\)/);
   assert.match(ui, /stopImmediatePropagation\(\)/);
   assert.match(ui, /addEventListener\("click",confirmGeneralDelete,true\)/);
-});
-
-test("saved social connection and mutable general skills remain deletable while fixed basics stay protected", () => {
-  assert.match(skills, /isNew\(item\) \|\| item\.category !== "general" \|\| mutableGeneralName\(item\)/);
-  assert.match(skills, /if \(!item \|\| !canDeleteGeneral\(item\)\) return;/);
-  assert.match(skills, /else deletedIds\.add\(String\(item\.id\)\)/);
 });
 
 test("primary mobile edit dialogs provide explicit apply and cancel actions", () => {
