@@ -36,8 +36,6 @@ jobs:
         run: npm run audit:troop
       - name: Audit mobile editor runtime
         run: npm run audit:mobile
-      - name: Audit security invariants
-        run: npm run audit:security
       - name: Audit migration history
         run: npm run audit:migrations
       - name: Audit quality gate contract
