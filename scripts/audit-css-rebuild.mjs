@@ -22,9 +22,20 @@ const withoutComments = source => source.replace(/\/\*[\s\S]*?\*\//g, "");
 
 const cssRoot = path.join(root, "css-next");
 const cssFiles = await filesUnder(cssRoot, ".css");
+const cssContentOwners = new Map();
 for (const file of cssFiles) {
   const source = await readFile(file, "utf8");
   if (/!important\b/i.test(source)) violations.push(`${relative(file)}: !important is forbidden`);
+
+  const contentKey = source.trim();
+  if (contentKey) {
+    const firstOwner = cssContentOwners.get(contentKey);
+    if (firstOwner) {
+      violations.push(`${relative(file)}: duplicates stylesheet content owned by ${firstOwner}`);
+    } else {
+      cssContentOwners.set(contentKey, relative(file));
+    }
+  }
 }
 
 const commonEntry = withoutComments(await readFile(path.join(cssRoot, "index.css"), "utf8"));
@@ -75,4 +86,4 @@ if (violations.length) {
   console.error("CSS architecture audit failed:\n" + violations.map(item => `- ${item}`).join("\n"));
   process.exit(1);
 }
-console.log(`CSS architecture audit passed: ${cssFiles.length} CSS files, ${themeEnabledCount} theme-enabled pages, no runtime CSS generation.`);
+console.log(`CSS architecture audit passed: ${cssFiles.length} CSS files, ${themeEnabledCount} theme-enabled pages, no duplicate stylesheet owners or runtime CSS generation.`);
