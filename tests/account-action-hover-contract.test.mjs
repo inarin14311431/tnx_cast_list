@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 
-const css = fs.readFileSync(new URL('../css-next/pages/account-action-hierarchy.css', import.meta.url), 'utf8');
+const css = fs.readFileSync(new URL('../css-next/pages/account-actions.css', import.meta.url), 'utf8');
 
 test('owned cast action stylesheet exposes explicit hover and focus-visible feedback', () => {
   assert.match(css, /:is\(:hover, :focus-visible\)/);

@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const accountLinks = await readFile(new URL("../js/account-mobile-editor-links.js", import.meta.url), "utf8");
-const accountActionCss = await readFile(new URL("../css-next/pages/account-action-hierarchy.css", import.meta.url), "utf8");
+const accountActionCss = await readFile(new URL("../css-next/pages/account-actions.css", import.meta.url), "utf8");
 const accountIcons = await readFile(new URL("../js/account-action-icons.js", import.meta.url), "utf8");
 const troopSave = await readFile(new URL("../js/troop-save.js", import.meta.url), "utf8");
 const troopHtml = await readFile(new URL("../troop.html", import.meta.url), "utf8");

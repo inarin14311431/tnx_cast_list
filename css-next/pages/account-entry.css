@@ -5,4 +5,4 @@
 @import url("../components/style-marks.css?v=1") layer(account-components);
 @import url("./account.css?v=12") layer(account-base);
 @import url("./account-danger.css?v=1") layer(account-danger);
-@import url("./account-action-hierarchy.css?v=8") layer(account-actions);
+@import url("./account-actions.css?v=1") layer(account-actions);
