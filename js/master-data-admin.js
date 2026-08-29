@@ -2,6 +2,8 @@ import { supabase } from "./supabase-client.js";
 
 const SYNC_FUNCTION_NAME = "sync-master-data";
 const USER_LIST_FUNCTION_NAME = "master-auth-users";
+const USER_PANEL_READY_EVENT = "tnx:master-user-panel-ready";
+const USER_SELECTION_CHANGED_EVENT = "tnx:master-user-selection-changed";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 let registeredUsers = [];
@@ -15,6 +17,7 @@ async function initialize() {
   const panel = createPanel();
   const ownedPanel = layout.querySelector(".account-panel:nth-of-type(2)");
   layout.insertBefore(panel, ownedPanel || null);
+  layout.dispatchEvent(new CustomEvent(USER_PANEL_READY_EVENT, { detail: { panel } }));
 
   try {
     const status = await invokeFunction(SYNC_FUNCTION_NAME, { action: "status" });
@@ -101,6 +104,7 @@ async function loadRegisteredUsers(panel) {
   preview.value = "";
   status.textContent = "Supabase Authの登録者を読み込み中…";
   status.className = "is-loading";
+  publishUserSelection(panel);
 
   try {
     const result = await invokeFunction(USER_LIST_FUNCTION_NAME, { action: "list" });
@@ -129,6 +133,7 @@ async function loadRegisteredUsers(panel) {
     emailInput.disabled = true;
     status.textContent = formatUserListError(error);
     status.className = "is-error";
+    publishUserSelection(panel);
   } finally {
     reloadButton.disabled = false;
   }
@@ -151,6 +156,7 @@ function refreshUserSql(panel, updateStatus = true) {
       status.textContent = email ? "登録者一覧の候補からメールアドレスを選択してください。" : "メールアドレスを選択してください。";
       status.className = email ? "is-error" : "is-ready";
     }
+    publishUserSelection(panel);
     return;
   }
 
@@ -161,6 +167,11 @@ function refreshUserSql(panel, updateStatus = true) {
     status.textContent = `${selected.email} の登録SQLを生成しました。`;
     status.className = "is-ready";
   }
+  publishUserSelection(panel);
+}
+
+function publishUserSelection(panel) {
+  panel.dispatchEvent(new CustomEvent(USER_SELECTION_CHANGED_EVENT));
 }
 
 function createRegistrationSql(uid, email) {

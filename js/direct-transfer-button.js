@@ -57,6 +57,25 @@
     for (const button of buttons) container.append(button);
   }
 
+  function observationRoots() {
+    const page = document.body?.dataset.page || "";
+    if (page === "sheet.html") {
+      return [
+        document.querySelector(".sheet-layout"),
+        document.querySelector(".exp-panel")
+      ].filter(Boolean);
+    }
+    if (page === "cast.html") {
+      return [
+        document.querySelector(".cast-header"),
+        document.querySelector("#mobile-cast-view"),
+        document.querySelector("#cast-content"),
+        document.querySelector("#quick-sheet")
+      ].filter(Boolean);
+    }
+    return [];
+  }
+
   function initializeBookmarkletMode() {
     document.documentElement.dataset.transferMode = ACTIVE_MODE;
     delete window.TNXDirectTransfer;
@@ -84,7 +103,7 @@
       }
       normalizeDesktopExportOrder();
     });
-    observer.observe(document.body, { childList: true, subtree: true });
+    observationRoots().forEach(root => observer.observe(root, { childList: true, subtree: true }));
 
     import("./transfer-tsv-export.js?v=1").catch(error => {
       console.error("bookmarklet transfer adapter failed to load", error);

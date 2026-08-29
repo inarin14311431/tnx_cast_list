@@ -16,8 +16,8 @@ async function initializePrivilegedTools() {
       return;
     }
     if (page === "account.html") {
-      await import("./master-data-admin.js?v=3");
-      await import("./master-user-delete.js?v=3");
+      await import("./master-data-admin.js?v=4");
+      await import("./master-user-delete.js?v=4");
     }
   } catch (error) {
     console.warn("Privileged tools are unavailable.", error);
