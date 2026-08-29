@@ -1,0 +1,22 @@
+/* Base structure for troops.html. Shared foundations remain in troops.css. */
+.troops-hero{display:flex;justify-content:space-between;gap:20px;align-items:center;padding:18px 20px;border-top:4px solid var(--color-accent)}
+.troops-hero h2{margin:0}
+.troops-hero p:last-child{max-width:720px;color:var(--color-muted);line-height:1.65}
+.troops-filter{display:grid;grid-template-columns:repeat(2,minmax(160px,1fr)) auto;gap:12px;align-items:end;padding:14px}
+.troops-filter label{display:grid;gap:5px}
+.troop-list-status{margin:0;color:var(--color-muted);font-family:var(--font-data);text-align:right}
+.troop-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.troop-card{display:grid;gap:12px;padding:15px;border:1px solid var(--color-border-muted);border-top:4px solid var(--color-accent);background:var(--color-surface)}
+.troop-card__head{display:flex;justify-content:space-between;gap:12px}
+.troop-card__head p{margin:0;color:var(--color-muted);font:800 9px/1.2 var(--font-data)}
+.troop-card__head h2{margin:4px 0 0;font-size:18px}
+.troop-visibility{align-self:start;padding:4px 7px;border:1px solid var(--color-border-muted);font:800 10px/1 var(--font-data)}
+.troop-visibility--public{color:var(--color-success);border-color:currentColor}
+.troop-card__stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.troop-card__stats span{display:grid;gap:3px;padding:8px;background:color-mix(in srgb,var(--color-accent) 6%,transparent);color:var(--color-muted);font:700 9px/1.2 var(--font-data)}
+.troop-card__stats strong{color:var(--color-text);font-size:18px}
+.troop-card__style{font-size:13px}
+.troop-card__linkage{margin:0;color:var(--color-muted);font-size:12px}
+.troop-card__actions{display:flex;gap:8px}
+.troop-card__actions a{flex:1}
+@media(max-width:760px){.troops-hero{align-items:stretch;flex-direction:column}.troops-filter{grid-template-columns:1fr}.troop-list{grid-template-columns:1fr}.troop-card__stats{grid-template-columns:repeat(2,1fr)}}
