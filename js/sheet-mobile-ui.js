@@ -103,6 +103,8 @@ function promoteDeleteActions(root=document){
 
 function observeDeleteActions(){
   promoteDeleteActions();
+  const dialogs=[...document.querySelectorAll(".mobile-editor-dialog")];
+  if(!dialogs.length)return;
   const observer=new MutationObserver(mutations=>{
     for(const mutation of mutations){
       if(mutation.type==="attributes"){
@@ -114,7 +116,7 @@ function observeDeleteActions(){
       }
     }
   });
-  observer.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:["hidden"]});
+  dialogs.forEach(dialog=>observer.observe(dialog,{childList:true,subtree:true,attributes:true,attributeFilter:["hidden"]}));
 }
 
 function init(){
