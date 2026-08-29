@@ -15,7 +15,7 @@ test("account card layout is owned by the action layer", () => {
   assert.match(actions, /\.owned-cast__links\s*\{/);
 });
 
-test("troop and act management layout is consolidated into the account action layer", () => {
+test("troop and act management layout is consolidated into the account action layer", async () => {
   assert.match(actions, /owned-cast__management > \.owned-cast__troops/);
   assert.match(actions, /owned-cast__management:not\(\.owned-cast__management--with-troop\) > \.owned-cast__acts/);
   assert.match(actions, /grid-column:\s*1 \/ 3/);
