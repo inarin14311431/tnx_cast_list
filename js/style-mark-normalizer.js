@@ -1,6 +1,7 @@
 /* Converts textual ◎ / ● style marks into accessible, theme-aware glyphs. */
 (() => {
   const selector = ".cast-card__style-chip b, .owned-cast__style b";
+  const rootSelectors = ["#cast-grid", "#owned-casts"];
 
   function createStyleMarks(mark) {
     const value = String(mark || "").trim();
@@ -33,8 +34,9 @@
   }
 
   function bind() {
-    if (!document.body) return;
     normalize(document);
+    const roots = rootSelectors.map(selector => document.querySelector(selector)).filter(Boolean);
+    if (!roots.length) return;
     const observer = new MutationObserver(records => {
       records.forEach(record => {
         record.addedNodes.forEach(node => {
@@ -42,7 +44,7 @@
         });
       });
     });
-    observer.observe(document.body, { childList: true, subtree: true });
+    roots.forEach(root => observer.observe(root, { childList: true, subtree: true }));
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind, { once: true });

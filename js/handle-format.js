@@ -151,7 +151,9 @@
   }
 
   function initializeDisplayNormalization(){
-    normalizeDisplays(document);
+    const root=document.querySelector("main");
+    if(!root)return;
+    normalizeDisplays(root);
     const observer=new MutationObserver(mutations=>{
       for(const mutation of mutations){
         if(mutation.type==="characterData")normalizeDisplayElement(mutation.target.parentElement?.closest?.(DISPLAY_SELECTORS));
@@ -161,7 +163,7 @@
         });
       }
     });
-    observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+    observer.observe(root,{childList:true,subtree:true,characterData:true});
   }
 
   window.TNXHandleFormat={quoteHandle,splitQuotedIdentity};

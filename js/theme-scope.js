@@ -65,6 +65,8 @@
 
   function bind() {
     normalize(document);
+    const root = document.body;
+    if (!root) return;
     const observer = new MutationObserver(records => {
       records.forEach(record => {
         if (record.type === "attributes") {
@@ -76,7 +78,7 @@
         });
       });
     });
-    observer.observe(document.documentElement, {
+    observer.observe(root, {
       childList: true,
       subtree: true,
       attributes: true,
@@ -85,7 +87,8 @@
   }
 
   globalThis.TNX_THEME_SCOPE = Object.freeze({ rules: scopeRules, normalize });
-  bind();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind, { once: true });
+  else bind();
 })();
 
 import("./legal-notices.js?v=1").catch(error => console.error("Failed to load legal notices", error));
