@@ -13,9 +13,9 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout production
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Checkout verification contract
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: inarin14311431/tnx-cast-archive-test
           ref: main
@@ -30,7 +30,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
@@ -51,7 +51,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: actions/setup-node@v7
         with:
           node-version: '22'
