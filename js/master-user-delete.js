@@ -1,12 +1,14 @@
 import { supabase } from "./supabase-client.js";
 
 const FUNCTION_NAME = "master-auth-users";
+const USER_PANEL_READY_EVENT = "tnx:master-user-panel-ready";
+const USER_SELECTION_CHANGED_EVENT = "tnx:master-user-selection-changed";
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 initialize();
 
 async function initialize() {
-  const panel = await waitForElement(".master-search-user-sql", 5000);
+  const panel = await resolveUserPanel(5000);
   if (!panel) return;
 
   const actions = panel.querySelector(".master-search-user-sql__actions");
@@ -30,16 +32,8 @@ async function initialize() {
   actions.append(buttonGroup);
 
   const refresh = () => refreshDeleteState(panel, deleteButton);
-  emailInput.addEventListener("input", () => setTimeout(refresh, 0));
-  emailInput.addEventListener("change", () => setTimeout(refresh, 0));
-  panel.querySelector("#master-search-user-reload")?.addEventListener("click", () => {
-    deleteButton.disabled = true;
-    setTimeout(refresh, 600);
-  });
+  panel.addEventListener(USER_SELECTION_CHANGED_EVENT, refresh);
   deleteButton.addEventListener("click", () => deleteSelectedUser(panel, deleteButton));
-
-  const timer = window.setInterval(refresh, 300);
-  window.addEventListener("pagehide", () => clearInterval(timer), { once: true });
   refresh();
 }
 
@@ -148,26 +142,24 @@ function formatDeleteError(error) {
   return message ? `ユーザー削除に失敗しました：${message}` : "ユーザー削除に失敗しました。Edge Functionのログを確認してください。";
 }
 
-function waitForElement(selector, timeout) {
+function resolveUserPanel(timeout) {
+  const existing = document.querySelector(".master-search-user-sql");
+  if (existing) return Promise.resolve(existing);
+
+  const layout = document.querySelector(".account-layout");
+  if (!layout) return Promise.resolve(null);
+
   return new Promise(resolve => {
-    const existing = document.querySelector(selector);
-    if (existing) {
-      resolve(existing);
-      return;
-    }
-
-    const observer = new MutationObserver(() => {
-      const element = document.querySelector(selector);
-      if (!element) return;
-      observer.disconnect();
+    let settled = false;
+    const finish = panel => {
+      if (settled) return;
+      settled = true;
       clearTimeout(timer);
-      resolve(element);
-    });
-    observer.observe(document.documentElement, { childList: true, subtree: true });
-
-    const timer = setTimeout(() => {
-      observer.disconnect();
-      resolve(null);
-    }, timeout);
+      layout.removeEventListener(USER_PANEL_READY_EVENT, onReady);
+      resolve(panel);
+    };
+    const onReady = event => finish(event.detail?.panel?.querySelector?.(".master-search-user-sql") || null);
+    const timer = setTimeout(() => finish(null), timeout);
+    layout.addEventListener(USER_PANEL_READY_EVENT, onReady);
   });
 }
