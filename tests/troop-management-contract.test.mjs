@@ -106,7 +106,7 @@ test("troop general skills omit social connection and per-row EXP", () => {
 
 test("troop suits use outline and filled suit toggles", () => {
   const ui = read("js/troop-editor-ui.js");
-  const css = read("css-next/pages/troops.css");
+  const css = read("css-next/pages/troop-base.css");
   assert.match(ui, /off:"♡", on:"♥"/);
   assert.match(ui, /off:"♤", on:"♠"/);
   assert.match(css, /attr\(data-off\)/);
@@ -116,7 +116,7 @@ test("troop suits use outline and filled suit toggles", () => {
 test("utsuwa attribute is strictly hidden except for utsuwa", () => {
   const html = read("troop.html");
   const js = read("js/troop.js");
-  const css = read("css-next/pages/troops.css");
+  const css = read("css-next/pages/troop-base.css");
   assert.match(html, /id="troop-utsuwa-wrap" hidden/);
   assert.match(js, /hidden = !isUtsuwa/);
   assert.match(css, /#troop-editor \[hidden\][^{]*\{display:none\}/);
@@ -128,14 +128,17 @@ test("troop styles use explicit cascade layers without important overrides", () 
   const detailEntry = read("css-next/pages/troop-entry.css");
   const registryEntry = read("css-next/pages/troops-entry.css");
   const sources = [
-    "troops.css", "troop-layout.css", "troop-combo-dialog.css",
-    "troop-combo-rules.css", "troop-screen.css", "troops-registry.css"
+    "troops.css", "troop-base.css", "troops-registry-base.css", "troop-layout.css",
+    "troop-combo-dialog.css", "troop-combo-rules.css", "troop-screen.css",
+    "troops-registry.css"
   ].map(file => read(`css-next/pages/${file}`));
 
   assert.match(html, /troop-entry\.css\?v=1/);
   assert.match(registryHtml, /troops-entry\.css\?v=1/);
   assert.match(detailEntry, /@layer app, troop-base, troop-layout, troop-dialog, troop-combo, troop-screen/);
+  assert.match(detailEntry, /troop-base\.css\?v=1[^\n]*layer\(troop-base\)/);
   assert.match(registryEntry, /@layer app, troop-base, troop-registry/);
+  assert.match(registryEntry, /troops-registry-base\.css\?v=1[^\n]*layer\(troop-base\)/);
   assert.match(registryEntry, /troops-registry\.css\?v=1[^\n]*layer\(troop-registry\)/);
   sources.forEach(source => assert.doesNotMatch(source, /!important/));
 });
