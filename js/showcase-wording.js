@@ -45,18 +45,12 @@
     if (guide.dataset.state !== nextState) guide.dataset.state = nextState;
   }
 
-  let queued = false;
-  const queue = () => {
-    if (queued) return;
-    queued = true;
-    queueMicrotask(() => {
-      queued = false;
-      normalize();
-      ensureActTitleGuide();
-    });
-  };
+  function bind() {
+    normalize();
+    ensureActTitleGuide();
+    document.querySelector("#selected-casts")?.addEventListener("tnx:showcase-selection-rendered", () => normalize());
+  }
 
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", queue, { once: true });
-  else queue();
-  new MutationObserver(queue).observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind, { once: true });
+  else bind();
 })();
