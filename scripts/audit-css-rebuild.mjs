@@ -21,12 +21,91 @@ const relative = file => path.relative(root, file).replaceAll(path.sep, "/");
 const withoutComments = source => source.replace(/\/\*[\s\S]*?\*\//g, "");
 const stripQueryHash = value => value.split(/[?#]/, 1)[0];
 
+function maskCssCommentsAndStrings(source) {
+  let result = "";
+  let state = "code";
+  let quote = "";
+  for (let index = 0; index < source.length; index += 1) {
+    const char = source[index];
+    const next = source[index + 1];
+    if (state === "comment") {
+      if (char === "*" && next === "/") {
+        result += "  ";
+        index += 1;
+        state = "code";
+      } else result += char === "\n" ? "\n" : " ";
+      continue;
+    }
+    if (state === "string") {
+      if (char === "\\") {
+        result += char + (next || "");
+        index += 1;
+      } else if (char === quote) {
+        result += char;
+        state = "code";
+      } else result += "{};".includes(char) ? " " : char;
+      continue;
+    }
+    if (char === "/" && next === "*") {
+      result += "  ";
+      index += 1;
+      state = "comment";
+    } else if (char === '"' || char === "'") {
+      result += char;
+      quote = char;
+      state = "string";
+    } else result += char;
+  }
+  return result;
+}
+
+function collectContextualSelectors(source) {
+  const clean = maskCssCommentsAndStrings(source);
+  const stack = [];
+  const selectors = [];
+  let segmentStart = 0;
+  const normalize = value => value.replace(/\s+/g, " ").trim();
+
+  for (let index = 0; index < clean.length; index += 1) {
+    const char = clean[index];
+    if (char === "{") {
+      const prelude = normalize(clean.slice(segmentStart, index));
+      if (prelude.startsWith("@")) {
+        stack.push({ type: "at-rule", label: prelude });
+      } else {
+        const context = stack
+          .filter(item => item.type === "at-rule")
+          .map(item => item.label)
+          .join(" > ");
+        if (prelude) selectors.push({ selector: prelude, context });
+        stack.push({ type: "rule", label: prelude });
+      }
+      segmentStart = index + 1;
+    } else if (char === ";") {
+      if (!stack.length || stack.at(-1)?.type === "rule") segmentStart = index + 1;
+    } else if (char === "}") {
+      stack.pop();
+      segmentStart = index + 1;
+    }
+  }
+  return selectors;
+}
+
 const cssRoot = path.join(root, "css-next");
 const cssFiles = await filesUnder(cssRoot, ".css");
 const cssContentOwners = new Map();
 for (const file of cssFiles) {
   const source = await readFile(file, "utf8");
   if (/!important\b/i.test(source)) violations.push(`${relative(file)}: !important is forbidden`);
+
+  const selectorOwners = new Map();
+  for (const { selector, context } of collectContextualSelectors(source)) {
+    const key = `${context}\u0000${selector}`;
+    if (selectorOwners.has(key)) {
+      const suffix = context ? ` in ${context}` : " at top level";
+      violations.push(`${relative(file)}: duplicate selector ${selector}${suffix}`);
+    } else selectorOwners.set(key, true);
+  }
 
   const contentKey = source.trim();
   if (contentKey) {
@@ -126,4 +205,4 @@ if (violations.length) {
   console.error("CSS architecture audit failed:\n" + violations.map(item => `- ${item}`).join("\n"));
   process.exit(1);
 }
-console.log(`CSS architecture audit passed: ${cssFiles.length} CSS files, ${themeEnabledCount} theme-enabled pages, all CSS reachable with no duplicate stylesheet owners or runtime CSS generation.`);
+console.log(`CSS architecture audit passed: ${cssFiles.length} CSS files, ${themeEnabledCount} theme-enabled pages, all CSS reachable with no duplicate selectors, duplicate stylesheet owners or runtime CSS generation.`);
