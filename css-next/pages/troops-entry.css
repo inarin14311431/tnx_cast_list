@@ -2,5 +2,6 @@
 @layer app, troop-base, troop-registry;
 
 @import url("../index.css?v=64") layer(app);
-@import url("./troops.css?v=5") layer(troop-base);
+@import url("./troops.css?v=6") layer(troop-base);
+@import url("./troops-registry-base.css?v=1") layer(troop-base);
 @import url("./troops-registry.css?v=1") layer(troop-registry);
