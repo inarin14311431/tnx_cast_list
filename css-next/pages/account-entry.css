@@ -1,9 +1,8 @@
 /* Canonical stylesheet entry for account.html. */
-@layer app, account-components, account-base, account-danger, account-actions, account-troops;
+@layer app, account-components, account-base, account-danger, account-actions;
 
 @import url("../index.css?v=64") layer(app);
 @import url("../components/style-marks.css?v=1") layer(account-components);
-@import url("./account.css?v=11") layer(account-base);
+@import url("./account.css?v=12") layer(account-base);
 @import url("./account-danger.css?v=1") layer(account-danger);
-@import url("./account-action-hierarchy.css?v=7") layer(account-actions);
-@import url("./account-troop-links-v2.css?v=1") layer(account-troops);
+@import url("./account-action-hierarchy.css?v=8") layer(account-actions);
