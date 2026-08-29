@@ -16,9 +16,9 @@ jobs:
     timeout-minutes: 15
     steps:
       - name: Checkout production
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
       - name: Checkout approved visual reference
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: inarin14311431/tnx-cast-archive-test
           ref: main
