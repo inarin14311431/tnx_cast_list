@@ -22,11 +22,12 @@ test("paper layout owns paper counters and stable page-two section order", () =>
   assert.match(paperSource, /putBeforeFooter\(pageTwo, armor, footer\)/);
 });
 
-test("both quick-sheet layout layers preserve rerender and detail-toggle recovery", () => {
-  assert.match(compactSource, /new MutationObserver\(scheduleCompact\)/);
-  assert.match(compactSource, /#quick-sheet-detail-toggle/);
+test("both quick-sheet layout layers use explicit quick-sheet controls without subtree observers", () => {
+  for (const source of [compactSource, paperSource]) {
+    assert.doesNotMatch(source, /new\s+MutationObserver\s*\(/);
+    assert.match(source, /#cast-quick-sheet-button/);
+    assert.match(source, /#quick-sheet-detail-toggle/);
+  }
   assert.match(compactSource, /window\.addEventListener\('resize', scheduleCompact\)/);
-  assert.match(paperSource, /new MutationObserver\(scheduleNormalize\)/);
-  assert.match(paperSource, /#quick-sheet-detail-toggle/);
   assert.match(paperSource, /window\.addEventListener\("resize", scheduleNormalize\)/);
 });

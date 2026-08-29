@@ -58,12 +58,10 @@
   function normalize() {
     if (normalizing) return;
     normalizing = true;
-    observer.disconnect();
     try {
       convertCounters(pages);
       reorderPageTwo(pages);
     } finally {
-      observer.observe(pages, { childList: true, subtree: true });
       normalizing = false;
     }
   }
@@ -75,9 +73,6 @@
       normalize();
     });
   }
-
-  const observer = new MutationObserver(scheduleNormalize);
-  observer.observe(pages, { childList: true, subtree: true });
 
   document.querySelector("#cast-quick-sheet-button")?.addEventListener("click", scheduleNormalize);
   document.querySelector("#quick-sheet-detail-toggle")?.addEventListener("click", scheduleNormalize);
