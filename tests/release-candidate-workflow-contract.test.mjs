@@ -3,9 +3,10 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const regression = await readFile(new URL("../.github/workflows/regression.yml", import.meta.url), "utf8");
+const security = await readFile(new URL("../.github/workflows/security.yml", import.meta.url), "utf8");
 const playwright = await readFile(new URL("../.github/workflows/playwright.yml", import.meta.url), "utf8");
 
-test("release candidate keeps all static/runtime audits in regression CI", () => {
+test("release candidate keeps all non-security static/runtime audits in regression CI", () => {
   for (const command of [
     "npm run check:js",
     "npm run audit:modules",
@@ -17,6 +18,11 @@ test("release candidate keeps all static/runtime audits in regression CI", () =>
   ]) {
     assert.match(regression, new RegExp(command.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
+  assert.doesNotMatch(regression, /npm run audit:security/);
+});
+
+test("release candidate keeps security as an independent required workflow", () => {
+  assert.match(security, /npm run audit:security/);
 });
 
 test("release candidate keeps critical PC/public E2E paths", () => {
