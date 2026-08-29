@@ -17,7 +17,8 @@ test('owned cast actions expose accessible inline SVG icons', () => {
 
 test('account page uses the consolidated cast-card assets', () => {
   assert.match(html, /account-entry\.css(?:\?v=\d+)?/);
-  assert.match(entry, /account-action-hierarchy\.css(?:\?v=\d+)?/);
+  assert.match(entry, /account-actions\.css(?:\?v=\d+)?/);
+  assert.doesNotMatch(entry, /account-action-hierarchy\.css/);
   assert.doesNotMatch(html, /account-action-icons\.css/);
   assert.doesNotMatch(html, /account-mobile-compact\.css/);
   assert.ok(html.indexOf('account-action-icons.js') > html.indexOf('account.js'));
