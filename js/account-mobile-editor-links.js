@@ -44,18 +44,18 @@ async function initializeLinkedTroops() {
   if (!root) return;
 
   const decorate = () => root.querySelectorAll(".owned-cast").forEach(card => decorateCastCard(card, linkedTroops, castExperience));
-  decorate();
-
   let queued = false;
-  new MutationObserver(records => {
-    if (!records.some(record => record.addedNodes.length)) return;
+  const queueDecorate = () => {
     if (queued) return;
     queued = true;
     requestAnimationFrame(() => {
       queued = false;
       decorate();
     });
-  }).observe(root, { childList: true, subtree: true });
+  };
+
+  root.addEventListener("tnx:owned-casts-rendered", queueDecorate);
+  decorate();
 }
 
 function decorateCastCard(card, linkedTroops, castExperience) {

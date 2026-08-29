@@ -1,7 +1,6 @@
 /* Converts textual ◎ / ● style marks into accessible, theme-aware glyphs. */
 (() => {
   const selector = ".cast-card__style-chip b, .owned-cast__style b";
-  const rootSelectors = ["#cast-grid", "#owned-casts"];
 
   function createStyleMarks(mark) {
     const value = String(mark || "").trim();
@@ -35,16 +34,21 @@
 
   function bind() {
     normalize(document);
-    const roots = rootSelectors.map(selector => document.querySelector(selector)).filter(Boolean);
-    if (!roots.length) return;
-    const observer = new MutationObserver(records => {
-      records.forEach(record => {
-        record.addedNodes.forEach(node => {
-          if (node.nodeType === Node.ELEMENT_NODE) normalize(node);
+
+    const archiveRoot = document.querySelector("#cast-grid");
+    if (archiveRoot) {
+      const observer = new MutationObserver(records => {
+        records.forEach(record => {
+          record.addedNodes.forEach(node => {
+            if (node.nodeType === Node.ELEMENT_NODE) normalize(node);
+          });
         });
       });
-    });
-    roots.forEach(root => observer.observe(root, { childList: true, subtree: true }));
+      observer.observe(archiveRoot, { childList: true, subtree: true });
+    }
+
+    const accountRoot = document.querySelector("#owned-casts");
+    accountRoot?.addEventListener("tnx:owned-casts-rendered", () => normalize(accountRoot));
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", bind, { once: true });

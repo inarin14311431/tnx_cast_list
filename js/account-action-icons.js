@@ -1,4 +1,5 @@
 const root = document.querySelector('#owned-casts');
+const RENDER_EVENT = 'tnx:owned-casts-rendered';
 
 const ICONS = {
   open: '<path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6S2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.75"/>',
@@ -38,5 +39,10 @@ function enhance() {
   });
 }
 
-enhance();
-if (root) new MutationObserver(enhance).observe(root, { childList: true, subtree: true });
+function refresh() {
+  enhance();
+  root?.dispatchEvent(new CustomEvent(RENDER_EVENT));
+}
+
+refresh();
+if (root) new MutationObserver(refresh).observe(root, { childList: true, subtree: true });

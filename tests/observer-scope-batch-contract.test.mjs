@@ -20,9 +20,12 @@ test("theme scope waits for body and observes only the body subtree", () => {
   assert.doesNotMatch(theme, /observer\.observe\(document\.documentElement/);
 });
 
-test("style mark normalization observes only cast list roots", () => {
-  assert.match(marks, /rootSelectors = \["#cast-grid", "#owned-casts"\]/);
-  assert.match(marks, /roots\.forEach\(root => observer\.observe\(root,/);
+test("style mark normalization observes archive updates and consumes account render events", () => {
+  assert.match(marks, /const archiveRoot = document\.querySelector\("#cast-grid"\)/);
+  assert.match(marks, /observer\.observe\(archiveRoot, \{ childList: true, subtree: true \}\)/);
+  assert.match(marks, /const accountRoot = document\.querySelector\("#owned-casts"\)/);
+  assert.match(marks, /accountRoot\?\.addEventListener\("tnx:owned-casts-rendered"/);
+  assert.doesNotMatch(marks, /observer\.observe\(accountRoot/);
   assert.doesNotMatch(marks, /observer\.observe\(document\.body/);
 });
 
