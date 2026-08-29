@@ -18,5 +18,6 @@ test("sheet CS card preserves its existing calculation and synchronization hooks
   assert.match(source, /document\.addEventListener\('input'/);
   assert.match(source, /document\.addEventListener\('change'/);
   assert.match(source, /new MutationObserver\(records =>/);
-  assert.match(source, /observer\.observe\(document\.body, \{ childList: true, subtree: true \}\)/);
+  assert.match(source, /observer\.observe\(abilityGrid, \{ childList: true, subtree: true \}\)/);
+  assert.doesNotMatch(source, /observer\.observe\(document\.body/);
 });

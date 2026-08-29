@@ -199,11 +199,12 @@
       return true;
     };
 
-    if (!init()) {
+    const abilityGrid = document.querySelector('#ability-grid');
+    if (!init() && abilityGrid) {
       const observer = new MutationObserver(() => {
         if (init()) observer.disconnect();
       });
-      observer.observe(document.body, { childList: true, subtree: true });
+      observer.observe(abilityGrid, { childList: true, subtree: true });
     }
   }
 

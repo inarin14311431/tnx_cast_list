@@ -21,9 +21,10 @@
 
     if (page === "cast.html" && new URLSearchParams(location.search).get("mobile") === "1") {
       const desktopEdit = document.querySelector("#cast-edit-button");
+      const mobileView = document.querySelector("#mobile-cast-view");
       const sync = () => {
         if (!desktopEdit || desktopEdit.hidden) return;
-        const bar = document.querySelector(".mobile-cast-topbar");
+        const bar = mobileView?.querySelector(".mobile-cast-topbar");
         if (!bar || bar.querySelector("[data-mobile-editor-route]")) return;
         const link = document.createElement("a");
         link.href = `./sheet-mobile.html?id=${encodeURIComponent(id)}`;
@@ -34,7 +35,7 @@
       };
       sync();
       if (desktopEdit) new MutationObserver(sync).observe(desktopEdit, { attributes: true, attributeFilter: ["hidden", "href"] });
-      new MutationObserver(sync).observe(document.body, { childList: true, subtree: true });
+      if (mobileView) new MutationObserver(sync).observe(mobileView, { childList: true, subtree: true });
     }
   }
 
