@@ -3,4 +3,4 @@
 
 @import url("../index.css?v=64") layer(app);
 @import url("./troops.css?v=5") layer(troop-base);
-@import url("./troops-registry-polish.css?v=3") layer(troop-registry);
+@import url("./troops-registry.css?v=1") layer(troop-registry);
