@@ -1,4 +1,5 @@
 import { supabase } from "./supabase-client.js";
+import { getAccountDeletionFunctionError, validateAccountDeletionInput } from "./account-delete-rules.js";
 
 const openButton = document.querySelector("#account-delete-open");
 const dialog = document.querySelector("#account-delete-dialog");
@@ -29,12 +30,11 @@ confirmButton?.addEventListener("click", deleteAccount);
 
 async function deleteAccount() {
   if (deleting) return;
-  if (phraseField?.value.trim() !== "DELETE") {
-    return setStatus("確認欄に DELETE と入力してください。", true);
-  }
-  if (!passwordField?.value) {
-    return setStatus("現在のパスワードを入力してください。", true);
-  }
+  const validationError = validateAccountDeletionInput({
+    phrase: phraseField?.value,
+    password: passwordField?.value
+  });
+  if (validationError) return setStatus(validationError, true);
 
   deleting = true;
   setBusy(true);
@@ -63,7 +63,7 @@ async function deleteAccount() {
       }
     });
 
-    if (error) throw new Error(await getFunctionError(error));
+    if (error) throw new Error(await getAccountDeletionFunctionError(error));
     if (!data?.ok) {
       throw new Error(data?.error || "アカウント削除を完了できませんでした。");
     }
@@ -91,12 +91,4 @@ function setStatus(message, isError = false) {
   if (!status) return;
   status.textContent = message;
   status.className = `account-delete-dialog__status${isError ? " is-error" : ""}`;
-}
-
-async function getFunctionError(error) {
-  try {
-    const body = await error.context?.json?.();
-    if (body?.error) return body.error;
-  } catch {}
-  return error?.message || "アカウント削除に失敗しました。";
 }
