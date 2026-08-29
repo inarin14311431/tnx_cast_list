@@ -95,9 +95,9 @@ function bindTaglineInputs() {
 
 function observeSelectionRendering() {
   const observer = new MutationObserver(mutations => {
-    if (mutations.some(mutation => mutation.addedNodes.length || mutation.removedNodes.length)) {
-      scheduleFieldInjection();
-    }
+    if (!mutations.some(mutation => mutation.addedNodes.length || mutation.removedNodes.length)) return;
+    scheduleFieldInjection();
+    selectedCasts.dispatchEvent(new CustomEvent("tnx:showcase-selection-rendered"));
   });
   observer.observe(selectedCasts, { childList: true, subtree: true });
 }
