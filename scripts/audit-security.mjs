@@ -14,11 +14,14 @@ const backup = read("js/backup.js");
 const accountDelete = read("js/account-delete.js");
 const deleteFn = read("supabase/functions/delete-account/index.ts");
 const adminFn = read("supabase/functions/master-auth-users/index.ts");
+const actPublishSecurityMigration = read("supabase/11_showcase_publish_security.sql");
 const actReadMigration = read("supabase/30_owner_scoped_act_reads.sql");
+const privilegedGateMigration = read("supabase/31_privileged_editor_capability_gate.sql");
 const storageLimitMigration = read("supabase/32_character_image_upload_limits.sql");
 const archiveMigration = read("supabase/33_archive_legacy_migration_tables.sql");
 const pruneArchiveMigration = read("supabase/34_prune_archived_migration_tables.sql");
 const troopsGrantMigration = read("supabase/35_least_privilege_troops_grants.sql");
+const internalSecurityMigration = read("supabase/36_hide_internal_security_helpers.sql");
 
 assert(
   !/service[_-]?role/i.test(client),
@@ -79,6 +82,16 @@ assert(
   "Auth administration service-role must come from environment."
 );
 assert(
+  /create or replace function public\.record_act_publication[\s\S]*security definer/i.test(actPublishSecurityMigration) &&
+    /v_existing_publisher is distinct from p_published_by/i.test(actPublishSecurityMigration),
+  "Act publication RPC must keep its publisher ownership guard."
+);
+assert(
+  /revoke all on function public\.record_act_publication\([^;]+\) from public/i.test(actPublishSecurityMigration) &&
+    /grant execute on function public\.record_act_publication\([^;]+\) to service_role/i.test(actPublishSecurityMigration),
+  "Act publication RPC must remain service-role only."
+);
+assert(
   /create policy act_participants_select_owner[\s\S]*c\.owner_id\s*=\s*auth\.uid\(\)/i.test(actReadMigration),
   "Act participation SELECT policy must remain scoped to the current character owner."
 );
@@ -89,6 +102,15 @@ assert(
 assert(
   !/create policy\s+(?:act_participants_select_authenticated|acts_select_authenticated)[\s\S]*using\s*\(\s*true\s*\)/i.test(actReadMigration),
   "Act history SELECT policies must not restore authenticated-wide reads."
+);
+assert(
+  /create or replace function public\.has_privileged_editor_tools\(\)[\s\S]*auth\.uid\(\) is not null[\s\S]*master_search_users/i.test(privilegedGateMigration),
+  "Privileged editor capability must remain authenticated and allowlist-backed."
+);
+assert(
+  /revoke all on function public\.has_privileged_editor_tools\(\) from public, anon/i.test(privilegedGateMigration) &&
+    /grant execute on function public\.has_privileged_editor_tools\(\) to authenticated/i.test(privilegedGateMigration),
+  "Privileged editor capability RPC must not be executable by anonymous users."
 );
 assert(
   /where id\s*=\s*'character-images'/i.test(storageLimitMigration),
@@ -136,6 +158,21 @@ assert(
 assert(
   !/revoke[\s\S]*(?:select|insert|update|delete)[\s\S]*public\.troops/i.test(troopsGrantMigration),
   "Least-privilege troops migration must preserve the CRUD privileges used by the app."
+);
+assert(
+  /create schema if not exists internal_security/i.test(internalSecurityMigration) &&
+    /revoke all on schema internal_security from public, anon, authenticated/i.test(internalSecurityMigration),
+  "Internal SECURITY DEFINER helpers must remain outside the exposed public schema."
+);
+assert(
+  /drop function if exists public\.can_use_master_search\(\)/i.test(internalSecurityMigration) &&
+    /drop function if exists public\.generate_character_public_id\(\)/i.test(internalSecurityMigration),
+  "Retired public SECURITY DEFINER helpers must stay removed."
+);
+assert(
+  /alter policy skd_master_allowed_select[\s\S]*internal_security\.can_use_master_search\(\)/i.test(internalSecurityMigration) &&
+    /alter policy ofc_master_allowed_select[\s\S]*internal_security\.can_use_master_search\(\)/i.test(internalSecurityMigration),
+  "Master data RLS must continue using the internal capability helper."
 );
 
 if (failures.length) {
