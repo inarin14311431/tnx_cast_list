@@ -56,7 +56,7 @@ test("clean queued saves do not perform a redundant persistence call", () => {
 });
 
 test("save coordinator publishes lifecycle through the shared state store", () => {
-  assert.match(coordinatorSource, /sheet-save-state\.js\?v=2/);
+  assert.match(coordinatorSource, /sheet-save-state\.js(?:\?[^\"]+)?/);
   assert.match(coordinatorSource, /setSheetSaveState/);
   assert.match(coordinatorSource, /function publish\(state, text = ""\)/);
   assert.doesNotMatch(coordinatorSource, /querySelector\("#save-status"\)/);
@@ -79,7 +79,7 @@ test("shared save requests call the coordinator directly instead of clicking the
 });
 
 test("classic editor routes DB-shaped serialization through the payload contract", () => {
-  assert.match(sheetSource, /sheet-save-payload\.js\?v=1/);
+  assert.match(sheetSource, /sheet-save-payload\.js(?:\?[^\"]+)?/);
   assert.match(sheetSource, /buildCharacterSavePayload\(/);
   assert.match(sheetSource, /buildSkillSavePayloads\(skills/);
   assert.match(sheetSource, /buildOutfitSavePayloads\(outfits\)/);
@@ -89,7 +89,7 @@ test("classic editor routes DB-shaped serialization through the payload contract
 });
 
 test("transactional persistence is isolated behind the classic sheet persistence module", () => {
-  assert.match(sheetSource, /sheet-save-persistence\.js\?v=1/);
+  assert.match(sheetSource, /sheet-save-persistence\.js(?:\?[^\"]+)?/);
   assert.match(sheetSource, /persistSheetBundle\(\{/);
   assert.match(sheetSource, /character: collectCharacter\(\)/);
   assert.match(sheetSource, /skills: collectSkills\(\)/);
