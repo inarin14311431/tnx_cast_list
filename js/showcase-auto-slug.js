@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=4";
+import { nextActSlugFromRows } from "./showcase-slug.js";
 
 const slugInput = document.querySelector("#publish-slug");
 
@@ -30,12 +31,5 @@ async function getNextActSlug() {
     return "act-0001";
   }
 
-  let highest = 0;
-  for (const row of data ?? []) {
-    const match = /^act-(\d+)$/.exec(String(row.slug ?? ""));
-    if (!match) continue;
-    highest = Math.max(highest, Number(match[1]) || 0);
-  }
-
-  return `act-${String(highest + 1).padStart(4, "0")}`;
+  return nextActSlugFromRows(data);
 }
