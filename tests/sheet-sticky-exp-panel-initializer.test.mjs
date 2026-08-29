@@ -19,6 +19,6 @@ test("sticky exp panel preserves its layout and readiness hooks", () => {
   assert.match(source, /--sheet-editor-exp-shift/);
   assert.match(source, /window\.addEventListener\("scroll", queuePanelUpdate/);
   assert.match(source, /window\.addEventListener\("tnx:general-master-ready"/);
-  assert.match(source, /new MutationObserver/);
+  assert.doesNotMatch(source, /MutationObserver/);
   assert.match(source, /new ResizeObserver/);
 });
