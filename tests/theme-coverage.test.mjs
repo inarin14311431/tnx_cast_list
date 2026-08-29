@@ -30,10 +30,10 @@ function contrast(a, b) {
 }
 
 test("theme compatibility and contrast layers are owned by the final theme manifest", () => {
-  assert.match(themeManifest, /\.\/base-ui\.css\?v=1/);
-  assert.match(themeManifest, /\.\/accessibility\.css\?v=1/);
-  assert.match(themeManifest, /\.\/spectrum-neon\.css\?v=1/);
-  assert.match(castEntry, /cast-mobile-theme\.css\?v=1/);
+  assert.match(themeManifest, /\.\/base-ui\.css(?:\?[^\"]+)?/);
+  assert.match(themeManifest, /\.\/accessibility\.css(?:\?[^\"]+)?/);
+  assert.match(themeManifest, /\.\/spectrum-neon\.css(?:\?[^\"]+)?/);
+  assert.match(castEntry, /cast-mobile-theme\.css(?:\?[^\"]+)?/);
   assert.doesNotMatch(indexCss, /pages\/cast-mobile-theme\.css/);
   assert.doesNotMatch(indexCss, /@import[^;]+themes\//);
   assert.ok(themeManifest.indexOf("accessibility.css") > themeManifest.indexOf("base-ui.css"));

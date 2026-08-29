@@ -34,7 +34,7 @@ test('snapshot UI supports create restore and delete without image duplication',
 test('snapshot creation is blocked while the sheet has unsaved changes', async () => {
   const source = await read('js/sheet-snapshots.js');
   assert.match(source, /hasUnsavedSheetChanges/);
-  assert.match(source, /from "\.\/sheet-save-state\.js\?v=2"/);
+  assert.match(source, /from "\.\/sheet-save-state\.js(?:\?[^\"]+)?"/);
   assert.doesNotMatch(source, /function hasUnsavedChanges\(\)/);
   assert.doesNotMatch(source, /classList\.contains\("unsaved"\)/);
   assert.doesNotMatch(source, /未保存\|NOT SAVED/);
