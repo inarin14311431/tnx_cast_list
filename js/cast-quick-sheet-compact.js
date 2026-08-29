@@ -114,10 +114,6 @@
     });
   }
 
-  const observer = new MutationObserver(scheduleCompact);
-  observer.observe(pagesRoot, { childList: true, subtree: true });
-  observer.observe(quickSheet, { attributes: true, attributeFilter: ['hidden', 'class'] });
-
   document.querySelector('#cast-quick-sheet-button')?.addEventListener('click', scheduleCompact);
   document.querySelector('#quick-sheet-detail-toggle')?.addEventListener('click', scheduleCompact);
   window.addEventListener('resize', scheduleCompact);
