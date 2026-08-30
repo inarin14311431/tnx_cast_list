@@ -22,6 +22,14 @@ const RETURN_DESTINATIONS = {
   "troops.html": ["トループ一覧へ", "RETURN TO TROOPS"],
   "troop.html": ["トループへ", "RETURN TO TROOP"]
 };
+const PARENT_RETURN_PAGES = new Set([
+  "index.html",
+  "account.html",
+  "acts.html",
+  "showcase-generator.html",
+  "troops.html",
+  "troop.html"
+]);
 
 function whenCastReady(callback) {
   if (!content || !content.hidden) { callback(); return; }
@@ -58,10 +66,21 @@ function parseReturnDestination(value) {
     const page = url.pathname.split("/").pop() || "";
     const labels = RETURN_DESTINATIONS[page];
     if (!labels) return null;
-    return { url, labels };
+    return { url, labels, page };
   } catch {
     return null;
   }
+}
+
+function toLocalHref(url) {
+  return `${url.pathname}${url.search}${url.hash}`;
+}
+
+function parentReturnHref() {
+  const returnValue = new URLSearchParams(location.search).get("return")?.trim() || "";
+  const destination = parseReturnDestination(returnValue);
+  if (!destination || !PARENT_RETURN_PAGES.has(destination.page)) return "./index.html";
+  return toLocalHref(destination.url);
 }
 
 function applyReturnLabel(link, labels) {
@@ -77,7 +96,7 @@ function initializeReturnLink() {
   const returnValue = new URLSearchParams(location.search).get("return")?.trim() || "";
   const destination = parseReturnDestination(returnValue);
   if (!destination) return;
-  const href = `${destination.url.pathname}${destination.url.search}${destination.url.hash}`;
+  const href = toLocalHref(destination.url);
   document.querySelectorAll('.cast-header__back, #cast-error a[href="./index.html"]').forEach(link => {
     link.href = href;
     applyReturnLabel(link, destination.labels);
@@ -111,8 +130,8 @@ async function initializeOwnedEditLink() {
 
     const editUrl = new URL("./sheet.html", location.href);
     editUrl.searchParams.set("id", publicId);
-    editUrl.searchParams.set("return", `${location.pathname}${location.search}${location.hash}`);
-    editLink.href = `${editUrl.pathname}${editUrl.search}${editUrl.hash}`;
+    editUrl.searchParams.set("return", parentReturnHref());
+    editLink.href = toLocalHref(editUrl);
     editLink.hidden = false;
     editLink.style.removeProperty("display");
     editLink.removeAttribute("aria-hidden");

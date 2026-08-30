@@ -1,7 +1,12 @@
 const RETURN_DESTINATIONS = {
+  "index.html": ["キャスト一覧へ", "RETURN TO ARCHIVE"],
   "account.html": ["アカウントへ", "RETURN TO ACCOUNT"],
-  "cast.html": ["キャスト閲覧へ", "RETURN TO CAST"]
+  "acts.html": ["参加アクト一覧へ", "RETURN TO ACT HISTORY"],
+  "showcase-generator.html": ["アクト紹介生成へ", "RETURN TO SHOWCASE EDITOR"],
+  "troops.html": ["トループ一覧へ", "RETURN TO TROOPS"],
+  "troop.html": ["トループへ", "RETURN TO TROOP"]
 };
+const DEFAULT_RETURN = "./account.html";
 
 const initialParams = new URLSearchParams(location.search);
 const initialReturnValue = initialParams.get("return")?.trim() || "";
@@ -29,17 +34,13 @@ function toLocalHref(url) {
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
-function currentSheetHref(publicId = "") {
-  const url = new URL(location.href);
-  if (publicId) url.searchParams.set("id", publicId);
-  if (returnDestination) url.searchParams.set("return", initialReturnValue);
-  else url.searchParams.delete("return");
-  return toLocalHref(url);
+function parentReturnHref() {
+  return returnDestination ? toLocalHref(returnDestination.url) : DEFAULT_RETURN;
 }
 
 function updateBackLink() {
   if (!backLink || !returnDestination) return;
-  backLink.href = toLocalHref(returnDestination.url);
+  backLink.href = parentReturnHref();
   const span = backLink.querySelector("span");
   const small = backLink.querySelector("small");
   if (span) span.textContent = `< ${returnDestination.labels[0]}`;
@@ -52,7 +53,7 @@ function updateViewLink(publicId = "") {
   if (!id) return;
   const url = new URL("./cast.html", location.href);
   url.searchParams.set("id", id);
-  url.searchParams.set("return", currentSheetHref(id));
+  url.searchParams.set("return", parentReturnHref());
   const href = toLocalHref(url);
   if (viewLink.getAttribute("href") !== href) viewLink.href = href;
 }
