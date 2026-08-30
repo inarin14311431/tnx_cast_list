@@ -1,4 +1,5 @@
 const COMBO_SELECTOR = ".cast-troop-combos article, #troop-combos-view article";
+const COMBO_ROOT_SELECTOR = ".cast-troop-combos, #troop-combos-view";
 
 function decorate(root = document) {
   root.querySelectorAll(COMBO_SELECTOR).forEach(article => {
@@ -43,6 +44,8 @@ async function copyArticle(article, button) {
 }
 
 decorate();
-new MutationObserver(records => {
-  if (records.some(record => record.addedNodes.length)) decorate();
-}).observe(document.body, { childList: true, subtree: true });
+document.querySelectorAll(COMBO_ROOT_SELECTOR).forEach(root => {
+  new MutationObserver(records => {
+    if (records.some(record => record.addedNodes.length)) decorate(root);
+  }).observe(root, { childList: true, subtree: true });
+});
