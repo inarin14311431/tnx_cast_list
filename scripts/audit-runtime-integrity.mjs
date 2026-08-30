@@ -75,8 +75,23 @@ for (const [name, command] of Object.entries(packageJson.scripts || {})) {
   }
 }
 
-for (const retired of ["transfer-form-prototype.html", "js/transfer-form-prototype.js"]) {
-  if (await exists(path.join(root, retired))) problems.push(`${retired}: retired transfer prototype must not be restored`);
+const retiredFiles = [
+  "transfer-form-prototype.html",
+  "js/transfer-form-prototype.js",
+  "js/acts.js",
+  "js/acts-history-enhanced.js",
+  "js/acts-role.js",
+  "js/acts-spending.js",
+  "js/sheet-mobile-style-existing-values.js",
+  "js/outfit-ofc-tsv.js",
+  "js/outfit-ofc-tsv-category-normalize.js",
+  "js/tsv-import-current.js",
+  "js/sheet-master-search-access.js",
+  "js/general-proper-import-merge.js",
+  "js/legacy-import-finalization-status.js"
+];
+for (const retired of retiredFiles) {
+  if (await exists(path.join(root, retired))) problems.push(`${retired}: retired runtime file must not be restored`);
 }
 
 const importSource = await readFile(path.join(root, "js", "sheet-import-url.js"), "utf8");
