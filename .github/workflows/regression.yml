@@ -36,12 +36,16 @@ jobs:
         run: npm run audit:troop
       - name: Audit mobile editor runtime
         run: npm run audit:mobile
+      - name: Audit security invariants
+        run: npm run audit:security
       - name: Audit migration history
         run: npm run audit:migrations
       - name: Audit quality gate contract
         run: npm run audit:quality
       - name: Audit JavaScript reachability
         run: npm run audit:js-reachability
+      - name: Audit CI coverage contract
+        run: npm run audit:ci
       - name: Report sheet DOM ownership
         run: npm run report:sheet-ownership
       - name: Report cast DOM ownership

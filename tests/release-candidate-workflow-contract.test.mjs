@@ -6,22 +6,29 @@ const regression = await readFile(new URL("../.github/workflows/regression.yml",
 const security = await readFile(new URL("../.github/workflows/security.yml", import.meta.url), "utf8");
 const playwright = await readFile(new URL("../.github/workflows/playwright.yml", import.meta.url), "utf8");
 
-test("release candidate keeps all non-security static/runtime audits in regression CI", () => {
+test("release candidate keeps comprehensive static/runtime audits in regression CI", () => {
   for (const command of [
     "npm run check:js",
     "npm run audit:modules",
     "npm run audit:integrity",
+    "npm run audit:css",
+    "npm run audit:themes",
     "npm run audit:sheet",
     "npm run audit:cast",
+    "npm run audit:troop",
     "npm run audit:mobile",
+    "npm run audit:security",
+    "npm run audit:migrations",
+    "npm run audit:quality",
+    "npm run audit:js-reachability",
+    "npm run audit:ci",
     "npm test"
   ]) {
     assert.match(regression, new RegExp(command.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
-  assert.doesNotMatch(regression, /npm run audit:security/);
 });
 
-test("release candidate keeps security as an independent required workflow", () => {
+test("release candidate keeps security as an independent second gate", () => {
   assert.match(security, /npm run audit:security/);
 });
 
