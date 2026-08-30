@@ -1,5 +1,6 @@
 const root = document.querySelector('#owned-casts');
 const RENDER_EVENT = 'tnx:owned-casts-rendered';
+const ACCOUNT_RETURN = './account.html';
 
 const ICONS = {
   open: '<path d="M2.5 12s3.5-6 9.5-6 9.5 6 9.5 6-3.5 6-9.5 6S2.5 12 2.5 12Z"/><circle cx="12" cy="12" r="2.75"/>',
@@ -29,7 +30,19 @@ function iconNameFor(element) {
   return '';
 }
 
+function contextualizeOwnedCastLinks() {
+  root?.querySelectorAll('a[href*="cast.html?id="], a[href*="sheet.html?id="], a[href*="sheet-mobile.html?id="]').forEach(link => {
+    try {
+      const url = new URL(link.href, location.href);
+      if (url.origin !== location.origin) return;
+      url.searchParams.set('return', ACCOUNT_RETURN);
+      link.href = `${url.pathname}${url.search}${url.hash}`;
+    } catch {}
+  });
+}
+
 function enhance() {
+  contextualizeOwnedCastLinks();
   root?.querySelectorAll('.owned-cast__links a, .owned-cast__management a, .owned-cast__management button').forEach(element => {
     if (element.querySelector('.action-icon')) return;
     const name = iconNameFor(element);
