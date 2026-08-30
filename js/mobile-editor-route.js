@@ -1,5 +1,13 @@
 /* Adds mobile-editor routes on the two screens that own those transitions. */
 (() => {
+  const currentPageHref = () => `${location.pathname}${location.search}${location.hash}`;
+  const mobileEditorHref = id => {
+    const url = new URL("./sheet-mobile.html", location.href);
+    url.searchParams.set("id", id);
+    url.searchParams.set("return", currentPageHref());
+    return `${url.pathname}${url.search}${url.hash}`;
+  };
+
   function bind() {
     const page = document.body?.dataset.page || "";
     const id = new URLSearchParams(location.search).get("id")?.trim() || "";
@@ -11,7 +19,7 @@
         const link = document.createElement("a");
         link.id = "sheet-mobile-edit-link";
         link.className = "sheet-view-link";
-        link.href = `./sheet-mobile.html?id=${encodeURIComponent(id)}`;
+        link.href = mobileEditorHref(id);
         link.innerHTML = "モバイル編集 <small>MOBILE EDITOR</small>";
         const view = document.querySelector("#cast-view-button");
         if (view) view.after(link);
@@ -27,7 +35,7 @@
         const bar = mobileView?.querySelector(".mobile-cast-topbar");
         if (!bar || bar.querySelector("[data-mobile-editor-route]")) return;
         const link = document.createElement("a");
-        link.href = `./sheet-mobile.html?id=${encodeURIComponent(id)}`;
+        link.href = mobileEditorHref(id);
         link.dataset.mobileEditorRoute = "1";
         link.textContent = "編集";
         bar.append(link);

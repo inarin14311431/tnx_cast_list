@@ -13,6 +13,16 @@ initializeEditLinkAndLabels();
 initializeHandleKana();
 initializePanelClasses();
 
+const RETURN_DESTINATIONS = {
+  "index.html": ["キャスト一覧へ", "RETURN TO ARCHIVE"],
+  "account.html": ["アカウントへ", "RETURN TO ACCOUNT"],
+  "sheet.html": ["キャスト編集へ", "RETURN TO EDITOR"],
+  "acts.html": ["参加アクト一覧へ", "RETURN TO ACT HISTORY"],
+  "showcase-generator.html": ["アクト紹介生成へ", "RETURN TO SHOWCASE EDITOR"],
+  "troops.html": ["トループ一覧へ", "RETURN TO TROOPS"],
+  "troop.html": ["トループへ", "RETURN TO TROOP"]
+};
+
 function whenCastReady(callback) {
   if (!content || !content.hidden) { callback(); return; }
   const observer = new MutationObserver(() => {
@@ -40,15 +50,38 @@ function initializeReadonlyFields() {
   }).observe(content, { childList: true, subtree: true, attributes: true, attributeFilter: ["readonly"] });
 }
 
+function parseReturnDestination(value) {
+  if (!value) return null;
+  try {
+    const url = new URL(value, location.href);
+    if (url.origin !== location.origin) return null;
+    const page = url.pathname.split("/").pop() || "";
+    const labels = RETURN_DESTINATIONS[page];
+    if (!labels) return null;
+    return { url, labels };
+  } catch {
+    return null;
+  }
+}
+
+function applyReturnLabel(link, labels) {
+  if (!link || !labels) return;
+  const span = link.querySelector("span");
+  const small = link.querySelector("small");
+  if (span) span.textContent = `< ${labels[0]}`;
+  else link.textContent = `${labels[0]}戻る`;
+  if (small) small.textContent = labels[1];
+}
+
 function initializeReturnLink() {
   const returnValue = new URLSearchParams(location.search).get("return")?.trim() || "";
-  if (!returnValue) return;
-  try {
-    const returnUrl = new URL(returnValue, location.href);
-    const isArchive = returnUrl.origin === location.origin && /\/index\.html$/.test(returnUrl.pathname);
-    if (!isArchive) return;
-    document.querySelectorAll('.cast-header__back, #cast-error a[href="./index.html"]').forEach(link => { link.href = `${returnUrl.pathname}${returnUrl.search}${returnUrl.hash}`; });
-  } catch {}
+  const destination = parseReturnDestination(returnValue);
+  if (!destination) return;
+  const href = `${destination.url.pathname}${destination.url.search}${destination.url.hash}`;
+  document.querySelectorAll('.cast-header__back, #cast-error a[href="./index.html"]').forEach(link => {
+    link.href = href;
+    applyReturnLabel(link, destination.labels);
+  });
 }
 
 async function initializeOwnedEditLink() {
@@ -76,7 +109,10 @@ async function initializeOwnedEditLink() {
     const ownsCharacter = Boolean(user?.id && character?.owner_id && user.id === character.owner_id);
     if (!ownsCharacter) return;
 
-    editLink.href = `./sheet.html?id=${encodeURIComponent(publicId)}`;
+    const editUrl = new URL("./sheet.html", location.href);
+    editUrl.searchParams.set("id", publicId);
+    editUrl.searchParams.set("return", `${location.pathname}${location.search}${location.hash}`);
+    editLink.href = `${editUrl.pathname}${editUrl.search}${editUrl.hash}`;
     editLink.hidden = false;
     editLink.style.removeProperty("display");
     editLink.removeAttribute("aria-hidden");
