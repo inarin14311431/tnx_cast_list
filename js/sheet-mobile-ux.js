@@ -200,13 +200,15 @@ function init(){
   normalizeSectionLabels();
   setupActiveNav();
   syncSavingStatus();
+  const mobileRoot=document.querySelector("main");
+  if(!mobileRoot)return;
   const observer=new MutationObserver(()=>{
     installAllExplicitActions();
     installReorderModes();
     moveVisibilityToProfile();
     normalizeSectionLabels();
   });
-  observer.observe(document.body,{childList:true,subtree:true});
+  observer.observe(mobileRoot,{childList:true,subtree:true});
 }
 
 if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});
