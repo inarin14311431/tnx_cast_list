@@ -1,14 +1,12 @@
 const RETURN_LABELS = {
-  "account.html": "アカウントへ戻る",
-  "cast.html": "キャスト閲覧へ戻る",
-  "sheet.html": "PC編集へ戻る",
   "index.html": "キャスト一覧へ戻る",
+  "account.html": "アカウントへ戻る",
   "acts.html": "参加アクト一覧へ戻る",
   "showcase-generator.html": "アクト紹介生成へ戻る",
   "troops.html": "トループ一覧へ戻る",
-  "troop.html": "トループへ戻る",
-  "sheet-mobile-new.html": "新規作成へ戻る"
+  "troop.html": "トループへ戻る"
 };
+const DEFAULT_RETURN = "./account.html";
 
 const initialReturnValue = new URLSearchParams(location.search).get("return")?.trim() || "";
 const returnDestination = parseReturnDestination(initialReturnValue);
@@ -35,13 +33,18 @@ function toLocalHref(url) {
   return `${url.pathname}${url.search}${url.hash}`;
 }
 
-function currentMobileHref() {
-  return `${location.pathname}${location.search}${location.hash}`;
+function parentReturnHref() {
+  return returnDestination ? toLocalHref(returnDestination.url) : DEFAULT_RETURN;
 }
 
 function updateBackLink() {
-  if (!backLink || !returnDestination) return;
-  backLink.href = toLocalHref(returnDestination.url);
+  if (!backLink) return;
+  if (!returnDestination) {
+    backLink.href = DEFAULT_RETURN;
+    backLink.setAttribute("aria-label", "アカウントへ戻る");
+    return;
+  }
+  backLink.href = parentReturnHref();
   backLink.setAttribute("aria-label", RETURN_LABELS[returnDestination.page]);
 }
 
@@ -53,7 +56,7 @@ function contextualizeForwardLink(link, { mobileView = false } = {}) {
     if (!id) return;
     target.searchParams.set("id", id);
     if (mobileView) target.searchParams.set("mobile", "1");
-    target.searchParams.set("return", currentMobileHref());
+    target.searchParams.set("return", parentReturnHref());
     link.href = toLocalHref(target);
   } catch {}
 }
