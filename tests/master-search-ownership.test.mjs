@@ -5,9 +5,10 @@ import { readFile } from 'node:fs/promises';
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
 test('master search enhancements remain separated by responsibility', async () => {
-  const access = await read('js/sheet-master-search-access.js');
-  assert.match(access, /import "\.\/sheet-master-search-enhancements\.js"/);
-  assert.doesNotMatch(access, /outfit-ofc-tsv|tsv-category-normalize/);
+  const privileged = await read('js/sheet-privileged-tools.js');
+  assert.match(privileged, /sheet-master-search-enhancements\.js/);
+  assert.match(privileged, /outfit-ofc-master-apply\.js/);
+  assert.doesNotMatch(privileged, /outfit-ofc-tsv|tsv-category-normalize/);
 
   const entry = await read('js/sheet-master-search-enhancements.js');
   assert.match(entry, /sheet-master-search-result-ui\.js/);
