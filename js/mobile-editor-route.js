@@ -1,11 +1,33 @@
 /* Adds mobile-editor routes on the two screens that own those transitions. */
 (() => {
-  const currentPageHref = () => `${location.pathname}${location.search}${location.hash}`;
+  const PARENT_RETURN_PAGES = new Set([
+    "index.html",
+    "account.html",
+    "acts.html",
+    "showcase-generator.html",
+    "troops.html",
+    "troop.html"
+  ]);
+
+  const toLocalHref = url => `${url.pathname}${url.search}${url.hash}`;
+
+  const parentReturnHref = () => {
+    const returnValue = new URLSearchParams(location.search).get("return")?.trim() || "";
+    if (returnValue) {
+      try {
+        const url = new URL(returnValue, location.href);
+        const page = url.pathname.split("/").pop() || "";
+        if (url.origin === location.origin && PARENT_RETURN_PAGES.has(page)) return toLocalHref(url);
+      } catch {}
+    }
+    return document.body?.dataset.page === "cast.html" ? "./index.html" : "./account.html";
+  };
+
   const mobileEditorHref = id => {
     const url = new URL("./sheet-mobile.html", location.href);
     url.searchParams.set("id", id);
-    url.searchParams.set("return", currentPageHref());
-    return `${url.pathname}${url.search}${url.hash}`;
+    url.searchParams.set("return", parentReturnHref());
+    return toLocalHref(url);
   };
 
   function bind() {
