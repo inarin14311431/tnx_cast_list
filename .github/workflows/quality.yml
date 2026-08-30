@@ -40,7 +40,7 @@ jobs:
         run: npx playwright test --config=playwright.quality.config.js tests/quality/accessibility.spec.js
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: accessibility-report
           path: playwright-report/
@@ -61,7 +61,7 @@ jobs:
         run: npx playwright test --config=playwright.quality.config.js tests/quality/performance-budget.spec.js
       - name: Upload Playwright report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: performance-report
           path: playwright-report/
