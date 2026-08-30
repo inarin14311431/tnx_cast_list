@@ -14,9 +14,8 @@ test('master search keeps selected rows across filter reruns', async () => {
   assert.match(source, /__tnxMasterSearchSelectedIds/);
 });
 
-test('OFC bulk helpers use persistent master selection', async () => {
+test('OFC master apply uses persistent master selection', async () => {
   const apply = await read('js/outfit-ofc-master-apply.js');
-  const tsv = await read('js/outfit-ofc-tsv.js');
   assert.match(apply, /__tnxMasterSearchSelectedIds/);
-  assert.match(tsv, /__tnxMasterSearchSelectedIds/);
+  assert.doesNotMatch(apply, /outfit-ofc-tsv/);
 });

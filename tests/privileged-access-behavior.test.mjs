@@ -1,89 +1,31 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import vm from "node:vm";
 import { readFile } from "node:fs/promises";
 
-const original = await readFile(new URL("../js/sheet-master-search-access.js", import.meta.url), "utf8");
-const source = original.replace(/^import .*;\s*$/gm, "");
+const bootstrap = await readFile(new URL("../js/privileged-tools-bootstrap.js", import.meta.url), "utf8");
+const sheetTools = await readFile(new URL("../js/sheet-privileged-tools.js", import.meta.url), "utf8");
 
-function createButton() {
-  return {
-    hidden: false,
-    disabled: false,
-    removed: false,
-    remove() { this.removed = true; }
-  };
-}
+test("privileged tools authenticate and authorize before loading any editor tools", () => {
+  const sessionIndex = bootstrap.indexOf("supabase.auth.getSession()");
+  const rpcIndex = bootstrap.indexOf('supabase.rpc("has_privileged_editor_tools")');
+  const sheetImportIndex = bootstrap.indexOf('import("./sheet-privileged-tools.js?v=1")');
 
-async function runAccessCheck(rpcResult) {
-  const skd = createButton();
-  const ofc = createButton();
-  const dialog = { removed: false, remove() { this.removed = true; } };
-  const warnings = [];
-
-  const document = {
-    querySelector(selector) {
-      if (selector === "#search-skd-master") return skd;
-      if (selector === "#search-ofc-master") return ofc;
-      if (selector === "#master-search-dialog") return dialog;
-      return null;
-    }
-  };
-
-  const supabase = {
-    rpc(name) {
-      assert.equal(name, "has_privileged_editor_tools");
-      return Promise.resolve(rpcResult);
-    }
-  };
-
-  const context = {
-    document,
-    supabase,
-    console: { warn: (...args) => warnings.push(args) },
-    Promise
-  };
-  vm.createContext(context);
-  vm.runInContext(`${source}\nglobalThis.__accessState = { buttons, dialog };`, context);
-  await new Promise(resolve => setImmediate(resolve));
-  await new Promise(resolve => setImmediate(resolve));
-
-  return { skd, ofc, dialog, warnings };
-}
-
-test("privileged master controls start hidden and become usable only after explicit allow", async () => {
-  const { skd, ofc, dialog, warnings } = await runAccessCheck({ data: true, error: null });
-
-  assert.equal(skd.hidden, false);
-  assert.equal(skd.disabled, false);
-  assert.equal(ofc.hidden, false);
-  assert.equal(ofc.disabled, false);
-  assert.equal(skd.removed, false);
-  assert.equal(ofc.removed, false);
-  assert.equal(dialog.removed, false);
-  assert.equal(warnings.length, 0);
+  assert.ok(sessionIndex >= 0);
+  assert.ok(rpcIndex > sessionIndex);
+  assert.ok(sheetImportIndex > rpcIndex);
+  assert.match(bootstrap, /if \(sessionError \|\| !session\) return;/);
+  assert.match(bootstrap, /if \(error \|\| data !== true\) return;/);
 });
 
-test("privileged master controls fail closed when authorization is denied", async () => {
-  const { skd, ofc, dialog, warnings } = await runAccessCheck({ data: false, error: null });
-
-  assert.equal(skd.hidden, true);
-  assert.equal(skd.disabled, true);
-  assert.equal(ofc.hidden, true);
-  assert.equal(ofc.disabled, true);
-  assert.equal(skd.removed, true);
-  assert.equal(ofc.removed, true);
-  assert.equal(dialog.removed, true);
-  assert.equal(warnings.length, 0);
+test("privileged sheet tools are fail-closed and do not contain authorization fallbacks", () => {
+  assert.match(sheetTools, /sheet-master-search\.js/);
+  assert.match(sheetTools, /sheet-master-search-enhancements\.js/);
+  assert.match(sheetTools, /outfit-ofc-master-apply\.js/);
+  assert.doesNotMatch(sheetTools, /has_privileged_editor_tools|can_use_master_search|user\.email|allowedEmails/);
 });
 
-test("privileged master controls fail closed when the RPC errors", async () => {
-  const error = new Error("network failure");
-  const { skd, ofc, dialog, warnings } = await runAccessCheck({ data: null, error });
-
-  assert.equal(skd.removed, true);
-  assert.equal(ofc.removed, true);
-  assert.equal(dialog.removed, true);
-  assert.equal(warnings.length, 1);
-  assert.match(String(warnings[0][0]), /Master search access check failed/);
+test("privileged bootstrap degrades safely when authorization infrastructure fails", () => {
+  assert.match(bootstrap, /catch \(error\)/);
+  assert.match(bootstrap, /console\.warn\("Privileged tools are unavailable\."/);
+  assert.doesNotMatch(bootstrap, /catch[^}]*import\(/s);
 });

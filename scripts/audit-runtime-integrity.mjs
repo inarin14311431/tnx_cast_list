@@ -53,11 +53,10 @@ for (const file of htmlFiles) {
   }
 }
 
-// These two pre-existing generators are intentionally deferred to the larger view/theme refactor.
+// This pre-existing theme generator is intentionally deferred to the larger theme refactor.
 // Any newly introduced runtime <style> generator fails the audit immediately.
 const runtimeStyleAllowlist = new Set([
-  "js/css-next-theme.js",
-  "js/skill-display-enhancements.js"
+  "js/css-next-theme.js"
 ]);
 const jsFiles = await filesUnder(path.join(root, "js"), ".js");
 for (const file of jsFiles) {
@@ -76,8 +75,23 @@ for (const [name, command] of Object.entries(packageJson.scripts || {})) {
   }
 }
 
-for (const retired of ["transfer-form-prototype.html", "js/transfer-form-prototype.js"]) {
-  if (await exists(path.join(root, retired))) problems.push(`${retired}: retired transfer prototype must not be restored`);
+const retiredFiles = [
+  "transfer-form-prototype.html",
+  "js/transfer-form-prototype.js",
+  "js/acts.js",
+  "js/acts-history-enhanced.js",
+  "js/acts-role.js",
+  "js/acts-spending.js",
+  "js/sheet-mobile-style-existing-values.js",
+  "js/outfit-ofc-tsv.js",
+  "js/outfit-ofc-tsv-category-normalize.js",
+  "js/tsv-import-current.js",
+  "js/sheet-master-search-access.js",
+  "js/general-proper-import-merge.js",
+  "js/legacy-import-finalization-status.js"
+];
+for (const retired of retiredFiles) {
+  if (await exists(path.join(root, retired))) problems.push(`${retired}: retired runtime file must not be restored`);
 }
 
 const importSource = await readFile(path.join(root, "js", "sheet-import-url.js"), "utf8");

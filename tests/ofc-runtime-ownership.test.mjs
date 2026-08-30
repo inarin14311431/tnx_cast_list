@@ -9,9 +9,9 @@ test('OFC responsibilities keep legacy import compatibility and display separate
   assert.match(compat, /legacy-import-apply/);
   assert.match(compat, /sourceOutfits/);
 
-  const access = await read('js/sheet-master-search-access.js');
-  assert.match(access, /outfit-ofc-master-apply\.js/);
-  assert.doesNotMatch(access, /outfit-ofc-tsv|tsv-category-normalize/);
+  const privileged = await read('js/sheet-privileged-tools.js');
+  assert.match(privileged, /outfit-ofc-master-apply\.js/);
+  assert.doesNotMatch(privileged, /outfit-ofc-tsv|tsv-category-normalize/);
 
   const display = await read('js/outfit-display-rules-v5.js');
   assert.match(display, /const LAYOUTS/);
@@ -32,15 +32,13 @@ test('OFC save projection is owned by the DOM-free payload contract', async () =
   assert.doesNotMatch(fields, /BASE_SAVE_RPC|OFC_SAVE_RPC|wrapSaveRpc|enrichOutfitPayload|__tnxOfcSaveWrapped/);
 });
 
-test('retired OFC TSV import is not reachable from the editor or privileged loader', async () => {
-  const [sheet, privileged, access] = await Promise.all([
+test('retired OFC TSV import is not reachable from current editor or privileged loader', async () => {
+  const [sheet, privileged] = await Promise.all([
     read('js/sheet.js'),
-    read('js/sheet-privileged-tools.js'),
-    read('js/sheet-master-search-access.js')
+    read('js/sheet-privileged-tools.js')
   ]);
   assert.doesNotMatch(sheet, /sheet-tsv-import|parseSheetTsv|openTsvImport/);
   assert.doesNotMatch(privileged, /outfit-ofc-tsv|tsv-import-guide|TSV取込/);
-  assert.doesNotMatch(access, /outfit-ofc-tsv|tsv-category-normalize/);
 });
 
 test('OFC master application is isolated from field rendering', async () => {
@@ -53,8 +51,8 @@ test('OFC master application is isolated from field rendering', async () => {
   assert.match(apply, /outfit-ofc-utils\.js/);
   assert.doesNotMatch(apply, /save_character_bundle_with_ofc|handleTsvImport|CATEGORY_FIELDS|enhanceTable/);
 
-  const access = await read('js/sheet-master-search-access.js');
-  assert.match(access, /import "\.\/outfit-ofc-master-apply\.js(?:\?[^\"]+)?"/);
+  const privileged = await read('js/sheet-privileged-tools.js');
+  assert.match(privileged, /import\("\.\/outfit-ofc-master-apply\.js(?:\?[^\"]+)?"\)/);
 
   const fields = await read('js/outfit-ofc-fields.js');
   assert.doesNotMatch(fields, /handleMasterAdd|applyMasterRowsAfterBaseAdd|fetchMasterRows|masterRowDetails|masterRowToOutfitDetails/);

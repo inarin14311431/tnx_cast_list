@@ -7,7 +7,6 @@ import {
 } from "../js/outfit-ofc-adapter.js";
 
 const legacy = await readFile(new URL("../js/sheet-import-outfit-compat.js", import.meta.url), "utf8");
-const tsv = await readFile(new URL("../js/outfit-ofc-tsv.js", import.meta.url), "utf8");
 const master = await readFile(new URL("../js/outfit-ofc-master-apply.js", import.meta.url), "utf8");
 
 test("legacy outfit import keeps concealment value and modifier separated", () => {
@@ -26,21 +25,11 @@ test("legacy outfit import uses the shared adapter for current control and CS se
   assert.match(legacy, /ofc\("electronic_control"/);
 });
 
-test("OFC TSV keeps legacy headers external but normalizes aliases into the editor model", () => {
-  assert.match(tsv, /"control_value", "electronic_control"/);
-  assert.match(tsv, /control_modifier: row\.control_modifier \|\| row\.control_value/);
-  assert.match(tsv, /cs_modifier: row\.cs_modifier \|\| row\.cs_value/);
-  assert.match(tsv, /TNXSheetEditor\?\.applyOutfitDetailsForImport/);
-  assert.doesNotMatch(tsv, /data-o="control_modifier"/);
-  assert.doesNotMatch(tsv, /data-o="cs_modifier"/);
-  assert.doesNotMatch(tsv, /data-pc-outfit-proxy="concealment"/);
-});
-
-test("OFC master and TSV share one adapter owner", () => {
+test("OFC master application uses the shared adapter owner", () => {
   assert.match(master, /masterRowToOutfitDetails/);
-  assert.match(tsv, /masterRowToOutfitDetails/);
+  assert.match(master, /outfit-ofc-adapter\.js/);
   assert.doesNotMatch(master, /function masterRowDetails/);
-  assert.doesNotMatch(tsv, /function masterRowDetails/);
+  assert.doesNotMatch(master, /outfit-ofc-tsv/);
 });
 
 test("shared OFC adapter maps legacy master control into canonical category fields", () => {

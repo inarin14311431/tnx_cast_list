@@ -9,7 +9,6 @@ const coordinator = await readFile(new URL("../js/sheet-mobile-save-coordinator.
 const profile = await readFile(new URL("../js/sheet-mobile.js", import.meta.url), "utf8");
 const style = await readFile(new URL("../js/sheet-mobile-style.js", import.meta.url), "utf8");
 const ability = await readFile(new URL("../js/sheet-mobile-ability.js", import.meta.url), "utf8");
-const styleCompat = await readFile(new URL("../js/sheet-mobile-style-existing-values.js", import.meta.url), "utf8");
 const outfit = await readFile(new URL("../js/sheet-mobile-outfit.js", import.meta.url), "utf8");
 const combos = await readFile(new URL("../js/sheet-mobile-combos.js", import.meta.url), "utf8");
 const snapshots = await readFile(new URL("../js/sheet-mobile-snapshots.js", import.meta.url), "utf8");
@@ -39,6 +38,7 @@ test("mobile editor keeps one application entry point", () => {
   assert.match(app, /sheet-mobile-combos\.js/);
   assert.match(app, /sheet-mobile-snapshots\.js/);
   assert.match(app, /sheet-mobile-image\.js/);
+  assert.doesNotMatch(app, /sheet-mobile-style-existing-values/);
 });
 
 test("shared runtime and save coordinator load before mobile feature modules", () => {
@@ -54,11 +54,20 @@ test("shared mobile context owns authentication and character lookup", () => {
   assert.match(runtime, /requireAuth\(\)/);
   assert.match(runtime, /from\("characters"\)/);
   assert.match(runtime, /contextPromise/);
-  for (const source of [profile, style, ability, styleCompat, outfit, combos, snapshots, image, exp]) {
+  for (const source of [profile, style, ability, outfit, combos, snapshots, image, exp]) {
     assert.match(source, /getMobileEditorContext/);
     assert.doesNotMatch(source, /requireAuth/);
     assert.doesNotMatch(source, /from\(["']characters["']\)\.select/);
   }
+});
+
+test("core mobile style editor owns loaded-value hydration", () => {
+  assert.match(style, /character=context\.character/);
+  assert.match(style, /normalizeLoadedMarks\(character\)/);
+  assert.match(style, /function makeDraft\(\)/);
+  assert.match(style, /character\[`style_\$\{i\}`\]/);
+  assert.match(style, /character\[`style_\$\{i\}_mark`\]/);
+  assert.match(style, /character\[`style_\$\{i\}_attribute`\]/);
 });
 
 test("mobile save coordinator owns cross-feature flush ordering", () => {
