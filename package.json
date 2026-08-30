@@ -30,7 +30,7 @@
     "e2e:install": "playwright install chromium webkit"
   },
   "devDependencies": {
-    "@fontsource/noto-sans-jp": "5.2.8",
+    "@fontsource/noto-sans-jp": "5.3.0",
     "@playwright/test": "1.62.1"
   }
 }
