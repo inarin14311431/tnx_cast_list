@@ -40,8 +40,8 @@ jobs:
         run: npm run audit:migrations
       - name: Audit quality gate contract
         run: npm run audit:quality
-      - name: Report JavaScript reachability
-        run: npm run report:js-reachability
+      - name: Audit JavaScript reachability
+        run: npm run audit:js-reachability
       - name: Report sheet DOM ownership
         run: npm run report:sheet-ownership
       - name: Report cast DOM ownership
