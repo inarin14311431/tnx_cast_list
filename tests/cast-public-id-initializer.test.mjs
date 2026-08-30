@@ -6,8 +6,9 @@ const source = await readFile(new URL("../js/cast-view-controls.js", import.meta
 
 test("cast public ID uses an explicit idempotent initializer", () => {
   assert.match(source, /function initializeCastPublicId\(\)/);
-  assert.match(source, /root\.dataset\.castPublicIdInitialized === "1"/);
-  assert.match(source, /root\.dataset\.castPublicIdInitialized = "1"/);
+  assert.match(source, /const htmlRoot = document\.documentElement/);
+  assert.match(source, /htmlRoot\.dataset\.castPublicIdInitialized === "1"/);
+  assert.match(source, /htmlRoot\.dataset\.castPublicIdInitialized = "1"/);
   assert.match(source, /initializeCastPublicId\(\);/);
 });
 

@@ -18,10 +18,12 @@ test("mobile combo section uses the same numbered heading style as other section
   assert.match(ux, /ensureNavLink\("#mobile-combos-section","07 コンボ"\)/);
 });
 
-test("mobile nav normalization is idempotent and cannot self-trigger the child-list observer", () => {
+test("mobile nav normalization is idempotent and observes only the mobile editor root", () => {
   assert.match(ux, /if\(link\.textContent!==label\)link\.textContent=label/);
   assert.doesNotMatch(ux, /\n  link\.textContent=label;\n/);
-  assert.match(ux, /observer\.observe\(document\.body,\{childList:true,subtree:true\}\)/);
+  assert.match(ux, /const mobileRoot=document\.querySelector\("main"\)/);
+  assert.match(ux, /observer\.observe\(mobileRoot,\{childList:true,subtree:true\}\)/);
+  assert.doesNotMatch(ux, /observer\.observe\(document\.body,\{childList:true,subtree:true\}\)/);
 });
 
 test("active nav highlighting does not scroll the fully visible navigation", () => {

@@ -47,10 +47,12 @@
     function bind() {
       addDesktopToggle();
       if (useMobile && !fixMobileDesktopToggle()) {
+        const mobileRoot = document.querySelector("#mobile-cast-view");
+        if (!mobileRoot) return;
         const observer = new MutationObserver(() => {
           if (fixMobileDesktopToggle()) observer.disconnect();
         });
-        observer.observe(document.body, { childList: true, subtree: true });
+        observer.observe(mobileRoot, { childList: true, subtree: true });
       }
     }
 

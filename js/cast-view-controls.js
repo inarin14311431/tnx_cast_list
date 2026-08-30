@@ -1,8 +1,8 @@
 (() => {
   function initializeCastTabs() {
-    const root = document.documentElement;
-    if (root.dataset.castTabsInitialized === "1") return;
-    root.dataset.castTabsInitialized = "1";
+    const htmlRoot = document.documentElement;
+    if (htmlRoot.dataset.castTabsInitialized === "1") return;
+    htmlRoot.dataset.castTabsInitialized = "1";
 
     const TAB_SELECTOR = ".cast-tab[data-tab]";
     const PANEL_SELECTOR = ".cast-tab-panel[data-panel]";
@@ -140,9 +140,9 @@
 
 (() => {
   function initializeCastDescriptionControls() {
-    const root = document.documentElement;
-    if (root.dataset.castDescriptionControlsInitialized === "1") return;
-    root.dataset.castDescriptionControlsInitialized = "1";
+    const htmlRoot = document.documentElement;
+    if (htmlRoot.dataset.castDescriptionControlsInitialized === "1") return;
+    htmlRoot.dataset.castDescriptionControlsInitialized = "1";
 
     const STYLE_FIELD_SELECTOR = ".style-description-expandable";
     const OUTFIT_FIELD_SELECTOR = ".outfit-description-expandable";
@@ -260,7 +260,8 @@
       });
     }
 
-    new MutationObserver(prepareDescriptionFields).observe(document.body, { childList: true, subtree: true });
+    const castContent = document.querySelector("#cast-content");
+    if (castContent) new MutationObserver(prepareDescriptionFields).observe(castContent, { childList: true, subtree: true });
     prepareDescriptionFields();
   }
 
@@ -312,10 +313,10 @@
 
 (() => {
   function initializeCastPublicId() {
-    const root = document.documentElement;
+    const htmlRoot = document.documentElement;
     const sourceId = new URLSearchParams(window.location.search).get("id")?.trim() ?? "";
-    if (!sourceId || root.dataset.castPublicIdInitialized === "1") return;
-    root.dataset.castPublicIdInitialized = "1";
+    if (!sourceId || htmlRoot.dataset.castPublicIdInitialized === "1") return;
+    htmlRoot.dataset.castPublicIdInitialized = "1";
 
     const publicIdElement = document.querySelector("#cast-public-id");
     const statusElement = document.querySelector("#cast-status");
