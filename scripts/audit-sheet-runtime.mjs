@@ -43,24 +43,41 @@ for (const entry of localScripts) {
   }
 }
 
-const coreCount = localScripts.filter(entry => entry.local === "js/sheet.js").length;
-if (coreCount !== 1) problems.push(`sheet.html: js/sheet.js must be loaded exactly once (found ${coreCount})`);
+const appCount = localScripts.filter(entry => entry.local === "js/sheet-app.js").length;
+if (appCount !== 1) problems.push(`sheet.html: js/sheet-app.js must be loaded exactly once (found ${appCount})`);
+
+const appSource = await readFile(path.join(root, "js", "sheet-app.js"), "utf8");
+const composedModules = [...appSource.matchAll(/["']\.\/([^"']+\.js)(?:\?[^"']*)?["']/g)]
+  .map(match => `js/${match[1]}`)
+  .filter(modulePath => modulePath !== "js/app-events.js");
+const composedSeen = new Set();
+for (const modulePath of composedModules) {
+  if (composedSeen.has(modulePath)) problems.push(`js/sheet-app.js: duplicate composed module ${modulePath}`);
+  composedSeen.add(modulePath);
+  if (!await exists(path.join(root, modulePath))) problems.push(`js/sheet-app.js: missing composed module ${modulePath}`);
+  if (localScripts.some(entry => entry.local === modulePath)) {
+    problems.push(`sheet runtime: ${modulePath} is loaded both directly and through js/sheet-app.js`);
+  }
+}
+
+const coreCount = composedModules.filter(modulePath => modulePath === "js/sheet.js").length;
+if (coreCount !== 1) problems.push(`js/sheet-app.js: js/sheet.js must be composed exactly once (found ${coreCount})`);
 
 for (const required of [
   "js/sheet-sidebar-actions.js",
   "js/sheet-import-url.js",
-  "js/sheet-snapshots.js"
+  "js/sheet-snapshots.js",
+  "js/privileged-tools-bootstrap.js"
 ]) {
-  if (!localScripts.some(entry => entry.local === required)) {
-    problems.push(`sheet.html: required editor module is not loaded: ${required}`);
-  }
+  const reachable = localScripts.some(entry => entry.local === required) || composedModules.includes(required);
+  if (!reachable) problems.push(`sheet runtime: required editor module is not reachable: ${required}`);
 }
 
-const coreIndex = localScripts.findIndex(entry => entry.local === "js/sheet.js");
-for (const dependent of ["js/sheet-sidebar-actions.js", "js/sheet-import-url.js", "js/sheet-snapshots.js"]) {
-  const dependentIndex = localScripts.findIndex(entry => entry.local === dependent);
-  if (coreIndex >= 0 && dependentIndex >= 0 && dependentIndex < coreIndex) {
-    problems.push(`sheet.html: ${dependent} loads before js/sheet.js`);
+const coreIndex = composedModules.indexOf("js/sheet.js");
+for (const dependent of ["js/privileged-tools-bootstrap.js", "js/sheet-snapshots.js"]) {
+  const dependentIndex = composedModules.indexOf(dependent);
+  if (coreIndex < 0 || dependentIndex < 0 || dependentIndex < coreIndex) {
+    problems.push(`js/sheet-app.js: ${dependent} must compose after js/sheet.js`);
   }
 }
 
@@ -69,4 +86,4 @@ if (problems.length) {
   process.exit(1);
 }
 
-console.log(`Sheet runtime audit passed: ${localScripts.length} local scripts, no duplicates or missing assets.`);
+console.log(`Sheet runtime audit passed: ${localScripts.length} direct scripts, ${composedModules.length} composed modules, no duplicates or missing assets.`);
