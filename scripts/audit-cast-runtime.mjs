@@ -23,27 +23,44 @@ for (const src of cleanScripts) {
   if (!fs.existsSync(resolved)) errors.push(`missing local script: ${src}`);
 }
 
-const core = "js/cast.js";
-if (cleanScripts.filter(src => src === core).length !== 1) {
-  errors.push(`${core} must be loaded exactly once`);
+const compositionRoot = "js/cast-app.js";
+if (cleanScripts.filter(src => src === compositionRoot).length !== 1) {
+  errors.push(`${compositionRoot} must be loaded exactly once by cast.html`);
 }
 
-const coreIndex = cleanScripts.indexOf(core);
+const appSource = fs.readFileSync(path.join(root, compositionRoot), "utf8");
+const composedScripts = [...appSource.matchAll(/["'](\.\/cast[^"']*\.js(?:\?[^"']*)?)["']/g)]
+  .map(match => clean(match[1]));
+const composedDuplicates = composedScripts.filter((src, index) => composedScripts.indexOf(src) !== index);
+if (composedDuplicates.length) errors.push(`duplicate composition imports: ${[...new Set(composedDuplicates)].join(", ")}`);
+
+for (const src of composedScripts) {
+  const resolved = path.resolve(root, "js", path.basename(src));
+  if (!fs.existsSync(resolved)) errors.push(`missing composed runtime: ${src}`);
+}
+
+const core = "cast.js";
+if (composedScripts.filter(src => src === core).length !== 1) {
+  errors.push(`js/${core} must be composed exactly once by ${compositionRoot}`);
+}
+
+const coreIndex = composedScripts.indexOf(core);
 for (const dependent of [
-  "js/cast-compact-skills.js",
-  "js/cast-ui.js",
-  "js/cast-style-skills.js",
-  "js/cast-outfits.js",
-  "js/cast-mobile.js"
+  "cast-compact-skills.js",
+  "cast-ui.js",
+  "cast-style-skills.js",
+  "cast-outfits.js",
+  "cast-mobile.js"
 ]) {
-  const index = cleanScripts.indexOf(dependent);
-  if (index >= 0 && coreIndex >= 0 && index < coreIndex) {
-    errors.push(`${dependent} must remain after ${core}`);
-  }
+  const index = composedScripts.indexOf(dependent);
+  if (index < 0) errors.push(`js/${dependent} must be owned by ${compositionRoot}`);
+  else if (coreIndex >= 0 && index < coreIndex) errors.push(`js/${dependent} must remain after js/${core}`);
 }
 
 for (const retired of ["js/cast-mobile-combos.js", "js/cast-quick-outfit-pairs.js"]) {
-  if (cleanScripts.includes(retired)) errors.push(`retired runtime must not be loaded: ${retired}`);
+  if (cleanScripts.includes(retired) || composedScripts.includes(retired.replace(/^js\//, ""))) {
+    errors.push(`retired runtime must not be loaded: ${retired}`);
+  }
   if (fs.existsSync(path.join(root, retired))) errors.push(`retired runtime file must not exist: ${retired}`);
 }
 
@@ -76,5 +93,6 @@ if (errors.length) {
   process.exit(1);
 }
 
-console.log(`cast runtime audit passed: ${cleanScripts.length} local scripts`);
-cleanScripts.forEach((src, index) => console.log(`${String(index + 1).padStart(2, "0")}. ${src}`));
+console.log(`cast runtime audit passed: ${cleanScripts.length} HTML scripts, ${composedScripts.length} composed modules`);
+cleanScripts.forEach((src, index) => console.log(`H${String(index + 1).padStart(2, "0")}. ${src}`));
+composedScripts.forEach((src, index) => console.log(`C${String(index + 1).padStart(2, "0")}. js/${src}`));
