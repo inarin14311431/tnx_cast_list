@@ -7,6 +7,8 @@
   const STYLE_SKILLS_CHANGED_EVENT = "tnx:style-skills-changed";
   const INTERNAL_NORMALIZATION_EVENT = "tnxInternalNormalization";
   const DETAIL_KEYS = ["skill", "limit", "timing", "target", "range", "difficulty", "confrontation", "description", "page"];
+  let activeDescriptionResizeObserver = null;
+  let activeDescriptionTextarea = null;
 
   function balancedJson(text, start) {
     let depth = 0;
@@ -114,15 +116,35 @@
         const encoded = canonical(detail);
         if (original.value !== encoded) {
           original.value = encoded;
-          // This is a presentation-time compatibility repair, not a user edit.
-          // Keep the event available to presentation modules while allowing the
-          // sheet editor to exclude it from dirty/model synchronization.
           dispatchInternalNormalization(original);
         }
       }
     } finally {
       delete row.dataset.styleIntegrityRepairing;
     }
+  }
+
+  function syncDescriptionRowHeight(textarea) {
+    const row = textarea?.closest('tr[data-skill-key]:not(.style-skill-separator-row)');
+    if (!row) return;
+    const textareaHeight = Math.ceil(textarea.getBoundingClientRect().height);
+    row.style.minHeight = `${Math.max(50, textareaHeight + 10)}px`;
+  }
+
+  function stopDescriptionResizeTracking() {
+    if (activeDescriptionTextarea) syncDescriptionRowHeight(activeDescriptionTextarea);
+    activeDescriptionResizeObserver?.disconnect();
+    activeDescriptionResizeObserver = null;
+    activeDescriptionTextarea = null;
+  }
+
+  function startDescriptionResizeTracking(textarea) {
+    stopDescriptionResizeTracking();
+    activeDescriptionTextarea = textarea;
+    syncDescriptionRowHeight(textarea);
+    if (typeof ResizeObserver !== "function") return;
+    activeDescriptionResizeObserver = new ResizeObserver(() => syncDescriptionRowHeight(textarea));
+    activeDescriptionResizeObserver.observe(textarea);
   }
 
   function scan() {
@@ -142,6 +164,12 @@
       requestAnimationFrame(() => { queued = false; scan(); });
     };
     root.addEventListener(STYLE_SKILLS_CHANGED_EVENT, queue);
+    root.addEventListener("pointerdown", event => {
+      const textarea = event.target.closest?.('textarea[data-style-field="description"]');
+      if (textarea && root.contains(textarea)) startDescriptionResizeTracking(textarea);
+    });
+    window.addEventListener("pointerup", stopDescriptionResizeTracking, true);
+    window.addEventListener("pointercancel", stopDescriptionResizeTracking, true);
     queue();
   }
 
