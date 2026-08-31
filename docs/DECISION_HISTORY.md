@@ -105,19 +105,21 @@ Active.
 
 ---
 
-## 2026-08-31 — POST transfer retained as dormant implementation
+## 2026-08-31 — POST transfer retained as dormant implementation pending external approval
 
 **Decision**
 
-Restore and retain the POST transfer implementation for possible future adoption, but do not expose, import, or execute it in the normal user runtime.
+Restore and retain the POST transfer implementation for possible future adoption, but do not expose, import, or execute it in the normal user runtime until the operator of the destination Character Sheets site has explicitly approved that usage.
 
 **Reason**
 
-The POST approach may still be adopted later, so deleting the implementation would discard useful work. At the same time, partially activating it alongside BM would create ambiguous runtime behavior.
+The POST flow sends the same kind of data that a user would submit through ordinary operations on the destination site, but it automates submission from CAST ARCHIVE. Before exposing that integration to users, confirmation from the destination-site operator was sought as a matter of operational courtesy and integration safety. No response has been received, so approval must not be assumed from silence.
+
+The implementation is therefore preserved to avoid discarding completed work, while remaining separated from the normal runtime until approval or another explicit policy decision is obtained.
 
 **Current status**
 
-Dormant.
+Dormant; external approval pending.
 
 **Impact / references**
 
@@ -127,6 +129,7 @@ Dormant.
 - `scripts/audit-js-reachability.mjs`
 - `docs/TRANSFER_ARCHITECTURE.md`
 - dormant-module CI contract requires the adapter to exist while remaining unreachable from active runtime roots
+- a future technical validation alone is not sufficient to activate POST; the external-approval condition must also be resolved explicitly
 
 ---
 
@@ -190,6 +193,7 @@ Add an entry in the same PR whenever a change introduces or reverses a long-live
 - changing source-of-truth ownership;
 - changing a persistent data or migration contract;
 - changing required CI behavior or the meaning of a passing check;
-- introducing a compatibility policy that future work must preserve.
+- introducing a compatibility policy that future work must preserve;
+- changing an external-integration approval, permission, or operational-safety assumption.
 
 Minor UI fixes, refactors that do not change ownership/contracts, dependency updates, and ordinary bug fixes do not need entries unless they establish a new maintenance rule.
