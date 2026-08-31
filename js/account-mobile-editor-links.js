@@ -80,6 +80,7 @@ function decorateCastCard(card, linkedTroops, castExperience) {
     const acts = management.querySelector(".owned-cast__acts");
     if (acts) acts.insertAdjacentHTML("afterend", troopMarkup);
     else management.insertAdjacentHTML("afterbegin", troopMarkup);
+    management.dispatchEvent(new CustomEvent("tnx:owned-cast-actions-updated", { bubbles: true }));
   }
 
   const statusRow = card.querySelector('.owned-cast__status-row');
