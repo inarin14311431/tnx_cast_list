@@ -21,8 +21,12 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: inarin14311431/tnx-cast-archive-test
-          ref: main
+          ref: visual-regression-baseline
           path: .visual-reference
+      - name: Validate visual reference contract
+        run: |
+          test -d .visual-reference/tests/visual
+          test -f .visual-reference/playwright.visual.config.js
       - name: Sync visual test contract
         run: |
           rm -rf tests/visual
@@ -35,10 +39,8 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Compare screenshots
-        # Production intentionally retains TSV/bookmarklet transfer controls while
-        # verification may show its direct-transfer controls. That deliberate
-        # desktop toolbar difference is covered semantically by transfer E2E,
-        # so only that one reference screenshot is excluded here.
+        # Reference assets are pinned on the dedicated visual baseline branch.
+        # Update that branch deliberately when approving visual changes.
         run: npm run test:visual:production
       - name: Upload visual report and image diffs
         if: always()
