@@ -8,14 +8,14 @@
   <link rel="stylesheet" href="./css-next/themes/index.css?v=1" data-theme-system="1">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>BACKUP / RESTORE // N◎VA ARCHIVE</title>
+  <title>バックアップ／復元 // N◎VA ARCHIVE</title>
 </head>
 <body data-page="backup.html">
   <div class="background-grid"></div><div class="scanlines"></div>
-  <header class="auth-header app-header"><a class="app-back-link" href="./account.html"><span>&lt; アカウントへ</span><small>RETURN TO ACCOUNT</small></a><p>N◎VA MUNICIPAL DATABASE</p><h1>BACKUP / RESTORE</h1></header>
+  <header class="auth-header app-header"><a class="app-back-link" href="./account.html"><span>&lt; アカウントへ</span><small>RETURN TO ACCOUNT</small></a><p>N◎VA MUNICIPAL DATABASE</p><h1>バックアップ／復元 <small>BACKUP / RESTORE</small></h1></header>
   <main class="account-layout">
-    <section class="account-panel"><h2>EXPORT</h2><p>所有キャストと技能・装備・コンボをJSONで保存します。</p><button id="export-button" type="button">DOWNLOAD JSON BACKUP</button></section>
-    <section class="account-panel"><h2>IMPORT</h2><p>バックアップ内のキャストを非公開として新規登録します。</p><input id="import-file" type="file" accept="application/json"><button id="import-button" type="button">IMPORT BACKUP</button><div id="backup-message" class="auth-message" aria-live="polite"></div></section>
+    <section class="account-panel"><h2>バックアップ出力 <small>EXPORT</small></h2><p>所有キャストと技能・装備・コンボをJSONで保存します。</p><button id="export-button" type="button"><span>JSONバックアップを保存</span><small>DOWNLOAD JSON BACKUP</small></button></section>
+    <section class="account-panel"><h2>バックアップ復元 <small>IMPORT</small></h2><p>バックアップ内のキャストを非公開として新規登録します。</p><input id="import-file" type="file" accept="application/json"><button id="import-button" type="button"><span>バックアップを取り込む</span><small>IMPORT BACKUP</small></button><div id="backup-message" class="auth-message" aria-live="polite"></div></section>
   </main>
   <script type="module" src="./js/backup.js?v=30"></script>
 </body>

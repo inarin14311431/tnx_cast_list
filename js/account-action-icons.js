@@ -1,5 +1,6 @@
 const root = document.querySelector('#owned-casts');
 const RENDER_EVENT = 'tnx:owned-casts-rendered';
+const ACTIONS_UPDATED_EVENT = 'tnx:owned-cast-actions-updated';
 const ACCOUNT_RETURN = './account.html';
 
 const ICONS = {
@@ -58,4 +59,5 @@ function refresh() {
 }
 
 refresh();
+root?.addEventListener(ACTIONS_UPDATED_EVENT, enhance);
 if (root) new MutationObserver(refresh).observe(root, { childList: true, subtree: true });
