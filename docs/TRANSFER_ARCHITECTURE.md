@@ -4,7 +4,17 @@
 
 The canonical active transfer route is the **bookmarklet (BM) route**.
 
-A direct **POST route is retained as dormant implementation** because it may be adopted later. It must not be exposed, loaded or reachable in the normal user runtime until that product decision is made explicitly.
+A direct **POST route is retained as dormant implementation** because it may be adopted later. It must not be exposed, loaded or reachable in the normal user runtime until both the product decision and the external-integration approval condition are resolved explicitly.
+
+## Why POST is separated
+
+POST is separated from the active runtime primarily because explicit approval from the operator of the destination Character Sheets site has not been obtained.
+
+The POST flow sends the same kind of cast data that a user would submit through ordinary operations on the destination site, but CAST ARCHIVE would automate that submission. Even though the payload and target behavior are intended to match normal user operations, confirmation was requested before exposing the integration to ordinary users. No response has been received.
+
+Silence must not be treated as approval. Until the destination-site operator explicitly approves the integration, or a later documented policy decision replaces this requirement, POST remains dormant.
+
+This is an operational/integration boundary, not evidence that the POST implementation is technically invalid.
 
 ## Active BM route
 
@@ -58,18 +68,21 @@ Do not activate POST mode by:
 - adding an import/string-loader edge accidentally;
 - removing the module from the dormant audit without a corresponding product/UX change.
 
+Technical readiness alone is not sufficient for activation. External approval or an explicitly documented replacement policy is also required.
+
 ## Reactivation checklist
 
 If POST becomes the selected transfer method later:
 
-1. Define which screens and device classes expose POST.
-2. Review Character Sheets endpoint behavior and current cross-origin/browser constraints.
-3. Update `direct-transfer-button.js` or replace its routing contract deliberately.
-4. Remove `direct-transfer-button-post.js` from `explicitDormantModules` only when a real runtime loader exists.
-5. Add/adjust E2E coverage for new registration, update and cancellation/error behavior.
-6. Update visual baselines for any newly visible controls.
-7. Update this document and user-facing labels/help.
-8. Verify BM fallback/removal behavior explicitly rather than leaving both modes ambiguous.
+1. Confirm and document approval from the destination Character Sheets site operator, or document the later policy decision that explicitly replaces that condition.
+2. Define which screens and device classes expose POST.
+3. Review Character Sheets endpoint behavior and current cross-origin/browser constraints.
+4. Update `direct-transfer-button.js` or replace its routing contract deliberately.
+5. Remove `direct-transfer-button-post.js` from `explicitDormantModules` only when a real runtime loader exists.
+6. Add/adjust E2E coverage for new registration, update and cancellation/error behavior.
+7. Update visual baselines for any newly visible controls.
+8. Update this document, `DECISION_HISTORY.md`, and user-facing labels/help.
+9. Verify BM fallback/removal behavior explicitly rather than leaving both modes ambiguous.
 
 ## Safety and data rules
 
@@ -78,6 +91,7 @@ If POST becomes the selected transfer method later:
 - Validate update URLs/keys before submission.
 - Require explicit confirmation for destructive/update semantics.
 - Do not persist target credentials/passwords into CAST ARCHIVE data unless a separate design explicitly requires it.
+- Do not infer permission to automate an external service from technical compatibility alone.
 
 ## Tests and audits
 
