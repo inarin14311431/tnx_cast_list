@@ -21,40 +21,29 @@ jobs:
         uses: actions/checkout@v7
         with:
           repository: inarin14311431/tnx-cast-archive-test
-          ref: main
+          ref: visual-regression-baseline
           path: .visual-reference
-      - name: Check visual reference availability
-        id: visual_reference
+      - name: Validate visual reference contract
         run: |
-          if [ -d .visual-reference/tests/visual ] && [ -f .visual-reference/playwright.visual.config.js ]; then
-            echo "available=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "available=false" >> "$GITHUB_OUTPUT"
-            echo "Visual regression baseline assets are not present on main; comparison is skipped."
-          fi
+          test -d .visual-reference/tests/visual
+          test -f .visual-reference/playwright.visual.config.js
       - name: Sync visual test contract
-        if: steps.visual_reference.outputs.available == 'true'
         run: |
           rm -rf tests/visual
           cp -R .visual-reference/tests/visual tests/visual
           cp .visual-reference/playwright.visual.config.js playwright.visual.config.js
       - name: Setup Node
-        if: steps.visual_reference.outputs.available == 'true'
         uses: actions/setup-node@v7
         with:
           node-version: '22'
       - name: Install dependencies
-        if: steps.visual_reference.outputs.available == 'true'
         run: npm install
       - name: Compare screenshots
-        if: steps.visual_reference.outputs.available == 'true'
-        # Production intentionally retains TSV/bookmarklet transfer controls while
-        # verification may show its direct-transfer controls. That deliberate
-        # desktop toolbar difference is covered semantically by transfer E2E,
-        # so only that one reference screenshot is excluded here.
+        # Reference assets are pinned on the dedicated visual baseline branch.
+        # Update that branch deliberately when approving visual changes.
         run: npm run test:visual:production
       - name: Upload visual report and image diffs
-        if: always() && steps.visual_reference.outputs.available == 'true'
+        if: always()
         uses: actions/upload-artifact@v7
         with:
           name: visual-regression-report
