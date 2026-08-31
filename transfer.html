@@ -12,8 +12,8 @@
 </head>
 <body data-page="transfer.html">
   <main class="transfer-page">
-    <a id="return-to-cast" class="transfer-page__back" href="./index.html">&lt; キャスト画面へ戻る</a>
-    <h1>データ転記</h1>
+    <a id="return-to-cast" class="transfer-page__back" href="./index.html"><span>&lt; キャスト画面へ戻る</span><small>RETURN TO CAST</small></a>
+    <h1>データ転記 <small>DATA TRANSFER</small></h1>
     <p class="lead">CAST ARCHIVEのキャストデータをキャラクターシート倉庫形式へ変換し、新規登録または既存キャスト更新を行います。PC・スマートフォンのどちらからでも利用できます。</p>
     <p class="warning"><strong>実登録・実更新を行います。</strong> 送信前に転記内容と編集パスワードを確認してください。パスワードはCAST ARCHIVEには保存しません。</p>
 
@@ -22,7 +22,7 @@
         <label>CAST ARCHIVE キャストID またはURL
           <input id="source-cast" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="TNX-000117 または cast.html?id=TNX-000117">
         </label>
-        <button id="load-cast" type="button">CASTデータ読込</button>
+        <button id="load-cast" type="button"><span>CASTデータ読込</span><small>LOAD CAST DATA</small></button>
       </div>
       <p id="load-status" class="loaded" aria-live="polite">未読込です。送信はできません。</p>
 
@@ -67,7 +67,7 @@
     <section id="transfer-result" class="transfer-result" hidden tabindex="-1" aria-labelledby="transfer-result-title">
       <header class="transfer-result__header">
         <div>
-          <span>TRANSFER RESULT</span>
+          <span>転記結果 <small>TRANSFER RESULT</small></span>
           <h2 id="transfer-result-title">キャラクターシート倉庫URL</h2>
         </div>
         <strong id="transfer-result-status" class="transfer-result__status">未処理</strong>
