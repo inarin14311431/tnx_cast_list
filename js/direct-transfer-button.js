@@ -1,5 +1,7 @@
 (() => {
   const ACTIVE_MODE = "bookmarklet";
+  // Reserved for a possible future POST route. This path is not imported while BM mode is active.
+  const DORMANT_POST_ADAPTER = "./direct-transfer-button-post.js?v=3";
   const DIRECT_TRIGGER_SELECTOR = "[data-direct-transfer-trigger], #direct-transfer-button";
   const MOBILE_TRIGGER_SELECTOR = ".direct-transfer-button--mobile[data-direct-transfer-trigger]";
   const DESKTOP_EXPORT_ORDER = [
