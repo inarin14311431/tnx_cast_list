@@ -90,7 +90,7 @@ function skillRow(skill, detail, categoryRows, context) {
       const checked = locked || Boolean(skill[suit]);
       return `<td class="suit-cell"><label class="suit-check${locked ? " is-locked" : ""}"${locked ? ' title="初期取得スート"' : ""}><input data-f="${suit}" type="checkbox" ${checked ? "checked" : ""} ${locked ? "disabled data-initial-general-suit=\"1\"" : ""}><span>${MARKS[index]}</span></label></td>`;
     }).join("")}
-    ${detail ? `<td><textarea data-f="description" rows="2">${esc(skill.description || skill.timing || "")}</textarea></td>` : ""}
+    ${detail ? `<td><textarea data-f="description" data-style-field="description" rows="2">${esc(skill.description || skill.timing || "")}</textarea></td>` : ""}
     <td>${rowActions(skill, ordered, categoryRows)}</td>
   </tr>`;
 }
