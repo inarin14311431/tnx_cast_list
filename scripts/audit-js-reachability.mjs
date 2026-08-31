@@ -22,6 +22,13 @@ const explicitRuntimeRoots = new Set([
   "js/tnx-transfer-handle-repair.js"
 ]);
 
+// These modules are intentionally retained without a runtime loader. They are dormant
+// implementation assets that may be re-enabled later, so they must exist but must not
+// become runtime roots unless the active application explicitly wires them back in.
+const explicitDormantModules = new Set([
+  "js/direct-transfer-button-post.js"
+]);
+
 async function filesUnder(directory, extension) {
   const result = [];
   for (const entry of await readdir(directory, { withFileTypes: true })) {
@@ -83,6 +90,11 @@ for (const entry of explicitRuntimeRoots) {
   else runtimeRoots.add(entry);
 }
 
+for (const entry of explicitDormantModules) {
+  if (!known.has(entry)) problems.push(`explicit dormant module is missing: ${entry}`);
+  if (runtimeRoots.has(entry)) problems.push(`explicit dormant module became a runtime root: ${entry}`);
+}
+
 const reachable = new Set();
 const queue = [...runtimeRoots];
 while (queue.length) {
@@ -92,7 +104,13 @@ while (queue.length) {
   for (const next of edges.get(current) || []) if (!reachable.has(next)) queue.push(next);
 }
 
-const unreachable = [...known].filter(name => !reachable.has(name)).sort();
+for (const entry of explicitDormantModules) {
+  if (reachable.has(entry)) problems.push(`explicit dormant module became reachable: ${entry}`);
+}
+
+const unreachable = [...known]
+  .filter(name => !reachable.has(name) && !explicitDormantModules.has(name))
+  .sort();
 if (unreachable.length) {
   problems.push(...unreachable.map(name => `unreachable JavaScript module: ${name}`));
 }
@@ -102,4 +120,4 @@ if (problems.length) {
   process.exit(1);
 }
 
-console.log(`JavaScript reachability audit passed: ${known.size} files, ${runtimeRoots.size} runtime roots, ${reachable.size} reachable.`);
+console.log(`JavaScript reachability audit passed: ${known.size} files, ${runtimeRoots.size} runtime roots, ${reachable.size} reachable, ${explicitDormantModules.size} dormant.`);
