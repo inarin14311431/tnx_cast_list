@@ -1,0 +1,17 @@
+/* Let a manually resized style-skill description grow the whole grid row. */
+#style-skills .style-skill-full-table tbody tr[data-skill-key]:not(.style-skill-separator-row) {
+  align-items: stretch;
+}
+
+#style-skills .style-skill-full-table tbody tr[data-skill-key]:not(.style-skill-separator-row) > td {
+  align-items: center;
+}
+
+#style-skills .style-skill-full-table td:has(> textarea[data-style-field="description"]) {
+  align-items: stretch;
+  overflow: visible;
+}
+
+#style-skills textarea[data-style-field="description"] {
+  align-self: stretch;
+}
