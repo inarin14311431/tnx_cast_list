@@ -126,7 +126,7 @@ function restoreImport(mode,rows){
       const target=[...(outfitRoot?.querySelectorAll('[data-outfit-key]')||[])].reverse().find(item=>!used.has(item)&&compare(item.querySelector('[data-o="name"]')?.value)===compare(row.name));
       if(!target)continue;
       used.add(target);
-      const values={name:row.name,purchase_value:row.purchase,concealment:[row.concealA,row.concealB].filter(Boolean).join("/"),attack:row.attack,defense:row.defense,range:row.range,slot:row.part||row.slot,description:row.notes};
+      const values={name:row.name,purchase_value:row.purchase,concealment:row.concealA,attack:row.attack,defense:row.defense,range:row.range,slot:row.part||row.slot,description:row.notes};
       for(const [name,value] of Object.entries(values)){
         const field=target.querySelector(`textarea[data-o="${name}"]`);
         if(!field||value===undefined)continue;
@@ -134,6 +134,12 @@ function restoreImport(mode,rows){
         markOutfitEdited(field);
         field.dispatchEvent(new Event("input",{bubbles:true}));
         prepareOutfit(field);
+      }
+      const concealmentPenalty=target.querySelector('[data-ofc="concealment_penalty"]');
+      if(concealmentPenalty&&row.concealB!==undefined){
+        concealmentPenalty.value=normalize(row.concealB);
+        concealmentPenalty.dispatchEvent(new Event("input",{bubbles:true}));
+        concealmentPenalty.dispatchEvent(new Event("change",{bubbles:true}));
       }
     }
   }));
