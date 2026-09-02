@@ -48,7 +48,7 @@ function setupEvents() {
     .addEventListener("click", () => openComboDialog());
 
   document.querySelector("#close-dialog-button")
-    .addEventListener("click", closeDialog);
+    ?.addEventListener("click", closeDialog);
 
   document.querySelector("#cancel-combo-button")
     .addEventListener("click", closeDialog);

@@ -14,5 +14,5 @@ test("zero-level specialized general import clears stale fixed-slot specializati
 });
 
 test("desktop and mobile iframe fetch the refreshed importer",()=>{
-  assert.match(sheet,/sheet-import\.js\?v=103/);
+  assert.match(sheet,/sheet-import\.js\?v=104/);
 });

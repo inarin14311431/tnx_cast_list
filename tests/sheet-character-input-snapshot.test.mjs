@@ -32,6 +32,7 @@ test("character input snapshot preserves base and structured field mappings", ()
       "#summary": "summary",
       "#profile": "profile",
       "#visibility": "public",
+      "#character-sheet-url": "https://character-sheets.appspot.com/tnx/edit.html?key=abc_123-XYZ",
       "#age": "24",
       "#gender": "X"
     }),
@@ -51,7 +52,11 @@ test("character input snapshot preserves base and structured field mappings", ()
     visibility: "public",
     experience_points: 18
   });
-  assert.deepEqual(snapshot.structured, { age: "24", gender: "X" });
+  assert.deepEqual(snapshot.structured, {
+    character_sheet_url: "https://character-sheets.appspot.com/tnx/edit.html?key=abc_123-XYZ",
+    age: "24",
+    gender: "X"
+  });
 });
 
 test("missing controls fall back to empty strings", () => {
@@ -62,7 +67,7 @@ test("missing controls fall back to empty strings", () => {
   });
   assert.equal(snapshot.base.character_name, "");
   assert.equal(snapshot.base.experience_points, 0);
-  assert.deepEqual(snapshot.structured, { age: "" });
+  assert.deepEqual(snapshot.structured, { character_sheet_url: "", age: "" });
 });
 
 test("character input application restores base structured and visibility fields", () => {
@@ -76,6 +81,7 @@ test("character input application restores base structured and visibility fields
     "#summary": "",
     "#profile": "",
     "#visibility": "private",
+    "#character-sheet-url": "",
     "#age": "",
     "#gender": ""
   });
@@ -92,6 +98,7 @@ test("character input application restores base structured and visibility fields
       summary: "summary",
       profile: "profile",
       visibility: "public",
+      character_sheet_url: "https://character-sheets.appspot.com/tnx/edit.html?key=loaded_123",
       age: "31",
       gender: "X"
     },
@@ -99,6 +106,7 @@ test("character input application restores base structured and visibility fields
   });
 
   assert.equal(root.controls.get("#character-name").value, "ロードキャスト");
+  assert.equal(root.controls.get("#character-sheet-url").value, "https://character-sheets.appspot.com/tnx/edit.html?key=loaded_123");
   assert.equal(root.controls.get("#age").value, "31");
   assert.equal(root.controls.get("#visibility").value, "public");
 });
@@ -111,8 +119,28 @@ test("non-public visibility restores as private", () => {
 
 test("classic sheet delegates profile DOM collection and application to snapshot module", async () => {
   const source = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
-  assert.match(source, /sheet-character-input-snapshot\.js\?v=1/);
+  assert.match(source, /sheet-character-input-snapshot\.js\?v=6/);
   assert.match(source, /collectCharacterInputSnapshot/);
   assert.match(source, /applyCharacterInputSnapshot/);
+  const snapshotSource = await readFile(new URL("../js/sheet-character-input-snapshot.js", import.meta.url), "utf8");
+  assert.match(snapshotSource, /profile-source-field/);
+  assert.match(snapshotSource, /character-sheet-url-field/);
+  assert.doesNotMatch(snapshotSource, /basic-profile-summary/);
+
+  const html = await readFile(new URL("../sheet.html", import.meta.url), "utf8");
+  assert.match(html, /profile-source-panel wide/);
+  assert.match(html, /profile-summary-field wide/);
+  assert.match(html, /一言 <small>TAGLINE<\/small>/);
+  assert.doesNotMatch(html, /basic-profile-summary">概要/);
+  assert.match(html, /image-rights-notice/);
+  assert.match(html, /自身が使用・公開する権利を有する画像のみ登録してください。/);
+  assert.ok(html.indexOf("image-preview-panel") < html.indexOf("image-rights-notice"));
+  assert.ok(html.indexOf("image-rights-notice") < html.indexOf("image-control-panel"));
+
+  const editorCss = await readFile(new URL("../css-next/editor/editor.css", import.meta.url), "utf8");
+  assert.match(editorCss, /profile-source-field[\s\S]*character-sheet-url-field/);
+  assert.match(editorCss, /profile-text-field textarea[\s\S]*min-height: 350px/);
+  assert.match(editorCss, /image-rights-notice/);
+  assert.match(editorCss, /image-drop-zone[\s\S]*min-height: 96px/);
   assert.doesNotMatch(source, /\["character_name", "character_kana", "handle", "player_name"/);
 });

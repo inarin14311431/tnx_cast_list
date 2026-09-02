@@ -9,6 +9,7 @@
   const ROOT="#style-skills";
   const ADD="#add-style-skill";
   const BASE_IMPORT_EVENT="tnx:legacy-import-base-finished";
+  const STYLE_DETAIL_PREFIX="@@TNX_STYLE_DETAIL_V1@@";
   const frame=()=>new Promise(resolve=>requestAnimationFrame(resolve));
   const canonical=value=>String(value||"").trim()
     .replace(/\[\s*["']?([^\]"']+)["']?\s*\]/g,".$1")
@@ -98,8 +99,17 @@
       .map(([,value])=>value);
   }
 
+  function sourceRecords(data){
+    const direct=[];
+    for(const key of ["superhumanskills","styleskills","styleSkills"]){
+      if(Array.isArray(data?.[key]))direct.push(...data[key]);
+    }
+    if(direct.length)return direct;
+    return groups(fieldMap(data),["superhumanskills","styleskills","styleSkills"]);
+  }
+
   function sourceSkills(data){
-    return groups(fieldMap(data),["superhumanskills","styleskills","styleSkills"])
+    return sourceRecords(data)
       .map(item=>({...item,name:exactName(first(item,"name"))}))
       .filter(item=>item.name&&!item.name.startsWith("■")&&skillLevel(item)>0);
   }
@@ -123,6 +133,24 @@
     if(/秘技/.test(label))return "secret";
     const cost=number(first(data,"expbase","experience","cost"));
     return cost>=50?"ultimate":cost>=20?"secret":cost>0&&cost<=2?"direction":"normal";
+  }
+
+  function styleDetail(data){
+    return {
+      skill:String(first(data,"skill")??""),
+      limit:String(first(data,"limit")??""),
+      timing:String(first(data,"timing")??""),
+      target:String(first(data,"target")??""),
+      range:String(first(data,"range")??""),
+      difficulty:String(first(data,"aim","difficulty")??""),
+      confrontation:String(first(data,"confront","confrontation")??""),
+      description:String(first(data,"notes","description")??""),
+      page:String(first(data,"page")??"")
+    };
+  }
+
+  function encodeStyleDetail(data){
+    return `${STYLE_DETAIL_PREFIX}\n${JSON.stringify(styleDetail(data))}`;
   }
 
   function setValue(element,value){
@@ -223,18 +251,8 @@
     setValue(row.querySelector('[data-f="level"]'),level);
     for(const [suit,on] of Object.entries(suits))setValue(row.querySelector(`[data-f="${suit}"]`),on);
     setValue(row.querySelector('[data-f="level"]'),level);
-    const detail=[
-      first(data,"skill")&&`技能：${first(data,"skill")}`,
-      first(data,"limit")&&`上限：${first(data,"limit")}`,
-      first(data,"timing")&&`タイミング：${first(data,"timing")}`,
-      first(data,"target")&&`対象：${first(data,"target")}`,
-      first(data,"range")&&`射程：${first(data,"range")}`,
-      first(data,"aim","difficulty")&&`目標値：${first(data,"aim","difficulty")}`,
-      first(data,"confront","confrontation")&&`対決：${first(data,"confront","confrontation")}`,
-      first(data,"page")&&`参照P：${first(data,"page")}`,
-      first(data,"notes","description")
-    ].filter(Boolean).join("\n");
-    setValue(row.querySelector('[data-f="description"]'),detail);
+    setValue(row.querySelector('[data-f="description"]'),encodeStyleDetail(data));
+    window.TNXStyleSkillFields?.syncRow?.(row);
     return true;
   }
 

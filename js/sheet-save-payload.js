@@ -3,6 +3,94 @@ import { normalizeImportedOutfitDetails } from "./outfit-ofc-adapter.js?v=2";
 
 const ABILITY_KEYS = ["reason", "passion", "life", "mundane"];
 
+const STYLE_DETAIL_PREFIX = "@@TNX_STYLE_DETAIL_V1@@";
+const STYLE_DETAIL_KEYS = [
+  "skill",
+  "limit",
+  "timing",
+  "target",
+  "range",
+  "difficulty",
+  "confrontation",
+  "description",
+  "page"
+];
+const STYLE_DETAIL_LABELS = new Map([
+  ["技能", "skill"],
+  ["上限", "limit"],
+  ["タイミング", "timing"],
+  ["対象", "target"],
+  ["射程", "range"],
+  ["目標値", "difficulty"],
+  ["対決", "confrontation"],
+  ["解説", "description"],
+  ["参照", "page"],
+  ["参照P", "page"]
+]);
+
+function parseStyleDetail(value) {
+  const text = String(value ?? "");
+  const empty = Object.fromEntries(STYLE_DETAIL_KEYS.map(key => [key, ""]));
+
+  if (text.startsWith(STYLE_DETAIL_PREFIX)) {
+    try {
+      const parsed = JSON.parse(text.slice(STYLE_DETAIL_PREFIX.length).trim());
+      if (parsed && typeof parsed === "object" && !Array.isArray(parsed)) {
+        return Object.fromEntries(STYLE_DETAIL_KEYS.map(key => [key, String(parsed[key] ?? "")]));
+      }
+    } catch {}
+  }
+
+  const detail = { ...empty };
+  const description = [];
+  for (const line of text.split(/\r?\n/)) {
+    const match = line.match(/^([^：:]+)[：:]\s*(.*)$/);
+    const key = match && STYLE_DETAIL_LABELS.get(match[1].trim());
+    if (key) detail[key] = match[2];
+    else description.push(line);
+  }
+  detail.description = description.join("\n").trim();
+  return detail;
+}
+
+function encodeStyleDetail(detail) {
+  const canonical = Object.fromEntries(
+    STYLE_DETAIL_KEYS.map(key => [key, String(detail?.[key] ?? "")])
+  );
+  return `${STYLE_DETAIL_PREFIX}\n${JSON.stringify(canonical)}`;
+}
+
+function hasStyleDetailValue(value) {
+  return value !== undefined && value !== null && String(value).trim() !== "";
+}
+
+function resolveStyleSkillForSave(item) {
+  if (item?.category !== "style") return item;
+
+  const parsed = parseStyleDetail(item.description);
+  const detail = {};
+  for (const key of STYLE_DETAIL_KEYS) {
+    if (key === "description") {
+      detail[key] = parsed[key];
+      continue;
+    }
+    const explicit = item[key];
+    detail[key] = hasStyleDetailValue(explicit)
+      ? String(explicit)
+      : parsed[key];
+  }
+
+  return {
+    ...item,
+    timing: detail.timing,
+    target: detail.target,
+    range: detail.range,
+    difficulty: detail.difficulty,
+    confrontation: detail.confrontation,
+    description: encodeStyleDetail(detail)
+  };
+}
+
 export function buildCharacterSavePayload({
   base = {},
   structured = {},
@@ -83,24 +171,27 @@ export function buildSkillSavePayloads(skills = [], {
       };
     })
     .filter(item => Number(item?.level) > 0 && String(item?.name || "").trim())
-    .map((item, index) => ({
-      category: item.category,
-      name: item.name,
-      level: Number(item.level || 0),
-      free_level: Math.min(Math.max(Number(item.free_level || 0), 0), Math.max(Number(item.level || 0), 0)),
-      skill_kind: item.skill_kind,
-      reason: Boolean(item.reason),
-      passion: Boolean(item.passion),
-      life: Boolean(item.life),
-      mundane: Boolean(item.mundane),
-      timing: item.timing || "",
-      target: item.target || "",
-      range: item.range || "",
-      difficulty: item.difficulty || "",
-      confrontation: item.confrontation || "",
-      description: isStyleSeparator(item) ? styleSeparatorMarker : item.description || "",
-      sort_order: index
-    }));
+    .map((item, index) => {
+      const source = isStyleSeparator(item) ? item : resolveStyleSkillForSave(item);
+      return {
+        category: source.category,
+        name: source.name,
+        level: Number(source.level || 0),
+        free_level: Math.min(Math.max(Number(source.free_level || 0), 0), Math.max(Number(source.level || 0), 0)),
+        skill_kind: source.skill_kind,
+        reason: Boolean(source.reason),
+        passion: Boolean(source.passion),
+        life: Boolean(source.life),
+        mundane: Boolean(source.mundane),
+        timing: source.timing || "",
+        target: source.target || "",
+        range: source.range || "",
+        difficulty: source.difficulty || "",
+        confrontation: source.confrontation || "",
+        description: isStyleSeparator(item) ? styleSeparatorMarker : source.description || "",
+        sort_order: index
+      };
+    });
 }
 
 const OUTFIT_DETAIL_MODEL_FIELDS = Object.freeze({

@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { getCharacter } from "./cast-data-store.js";
+import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=1";
 import "./cast-combo-enhancements.js?v=1";
 
 /* Public cast-view shared UI only.
@@ -11,6 +12,7 @@ initializeReadonlyFields();
 initializeReturnLink();
 initializeEditLinkAndLabels();
 initializeHandleKana();
+initializeCharacterSheetLinks();
 initializePanelClasses();
 
 const RETURN_DESTINATIONS = {
@@ -171,6 +173,55 @@ function ensurePersonalDataRows() {
     const row = document.createElement("div"), dt = document.createElement("dt"), dd = document.createElement("dd");
     dt.textContent = label; dd.textContent = values.get(label) || "—"; row.append(dt, dd); return row;
   }));
+}
+
+function createCharacterSheetLinkRow(href, { mobile = false } = {}) {
+  const row = document.createElement("div");
+  row.className = mobile ? "mobile-cast-character-sheet-link" : "cast-character-sheet-link";
+  row.dataset.characterSheetLink = "1";
+  const dt = document.createElement("dt");
+  const dd = document.createElement("dd");
+  const link = document.createElement("a");
+  dt.textContent = mobile ? "CHARACTER SHEET" : "キャラクターシート倉庫";
+  link.href = href;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.textContent = "シートを開く";
+  dd.append(link);
+  row.append(dt, dd);
+  return row;
+}
+
+async function initializeCharacterSheetLinks() {
+  try {
+    const character = await getCharacter();
+    const href = normalizeCharacterSheetUrl(character?.character_sheet_url);
+    if (!href) return;
+
+    const render = () => {
+      const desktopList = document.querySelector(".cast-hero .identity-grid");
+      if (desktopList && !desktopList.querySelector('[data-character-sheet-link="1"]')) {
+        desktopList.append(createCharacterSheetLinkRow(href));
+      }
+
+      const mobileList = document.querySelector("#mobile-cast-view .mobile-cast-meta");
+      if (mobileList && !mobileList.querySelector('[data-character-sheet-link="1"]')) {
+        mobileList.append(createCharacterSheetLinkRow(href, { mobile: true }));
+      }
+
+      const mobileRequested = new URLSearchParams(location.search).get("mobile") === "1";
+      return mobileRequested ? Boolean(mobileList) : Boolean(desktopList);
+    };
+
+    if (render()) return;
+    const observer = new MutationObserver(() => {
+      if (!render()) return;
+      observer.disconnect();
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  } catch (error) {
+    console.warn("character sheet link could not be loaded", error);
+  }
 }
 
 async function initializeHandleKana() {

@@ -1,4 +1,4 @@
-import { SHEET_HELP_ORDER, SHEET_HELP_TOPICS } from "./help-content.js";
+import { SHEET_HELP_ORDER, SHEET_HELP_TOPICS } from "./help-content.js?v=3";
 
 const page = document.body?.dataset.page;
 if (page === "sheet.html") initializeSheetHelp();
@@ -41,12 +41,13 @@ function initializeSheetHelp() {
 
     const title = dialog.querySelector("#sheet-help-title");
     const body = dialog.querySelector(".sheet-help-dialog__content");
-    title.innerHTML = `${escapeHtml(topic.title)} <small>${escapeHtml(topic.en)}</small>`;
-    body.innerHTML = `<p class="sheet-help-dialog__intro">${escapeHtml(topic.intro)}</p>${topic.sections.map(section => `
-      <section class="sheet-help-block">
-        <h3>${escapeHtml(section.heading)}</h3>
-        ${section.body.map(text => `<p>${escapeHtml(text)}</p>`).join("")}
-      </section>`).join("")}`;
+    title.innerHTML = escapeHtml(topic.title) + " <small>" + escapeHtml(topic.en) + "</small>";
+    body.innerHTML = "<p class=\"sheet-help-dialog__intro\">" + escapeHtml(topic.intro) + "</p>" + topic.sections.map(section => [
+      "<section class=\"sheet-help-block\">",
+      "<h3>" + escapeHtml(section.heading) + "</h3>",
+      section.body.map(text => "<p>" + escapeHtml(text) + "</p>").join(""),
+      "</section>"
+    ].join("")).join("");
     body.scrollTop = 0;
   }
 }
@@ -72,27 +73,28 @@ function createDialog() {
   dialog.id = "sheet-help-dialog";
   dialog.className = "sheet-help-dialog";
   dialog.setAttribute("aria-labelledby", "sheet-help-title");
-  dialog.innerHTML = `
-    <div class="sheet-help-dialog__shell">
-      <header class="sheet-help-dialog__header">
-        <div><span>WEB APP GUIDE</span><strong id="sheet-help-title">ヘルプ</strong></div>
-        <button type="button" class="sheet-help-dialog__close" data-help-close aria-label="ヘルプを閉じる">×</button>
-      </header>
-      <div class="sheet-help-dialog__layout">
-        <nav class="sheet-help-dialog__nav" aria-label="ヘルプ項目">
-          ${SHEET_HELP_ORDER.map(key => {
+  dialog.innerHTML = [
+    '<div class="sheet-help-dialog__shell">',
+      '<header class="sheet-help-dialog__header">',
+        '<div><span>WEB APP GUIDE</span><strong id="sheet-help-title">ヘルプ</strong></div>',
+        '<button type="button" class="sheet-help-dialog__close" data-help-close aria-label="ヘルプを閉じる">閉じる</button>',
+      '</header>',
+      '<div class="sheet-help-dialog__layout">',
+        '<nav class="sheet-help-dialog__nav" aria-label="ヘルプ項目">',
+          SHEET_HELP_ORDER.map(key => {
             const item = SHEET_HELP_TOPICS[key];
-            return `<button type="button" data-help-topic="${key}"><span>${escapeHtml(item.title)}</span><small>${escapeHtml(item.en)}</small></button>`;
-          }).join("")}
-        </nav>
-        <article class="sheet-help-dialog__content"></article>
-      </div>
-    </div>`;
+            return '<button type="button" data-help-topic="' + key + '"><span>' + escapeHtml(item.title) + '</span><small>' + escapeHtml(item.en) + '</small></button>';
+          }).join(""),
+        '</nav>',
+        '<article class="sheet-help-dialog__content"></article>',
+      '</div>',
+    '</div>'
+  ].join("");
   return dialog;
 }
 
 function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
+  return String(value ?? "").replace(/[&<>\"']/g, char => ({
     "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
   }[char]));
 }

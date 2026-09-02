@@ -31,6 +31,29 @@
     for(const key of keys)if(object&&object[key]!==undefined&&object[key]!==null)return object[key];
     return '';
   };
+  const STYLE_DETAIL_PREFIX='@@TNX_STYLE_DETAIL_V1@@';
+  const STYLE_DETAIL_LABELS=new Set(['技能','上限','タイミング','対象','射程','目標値','対決','解説','参照','参照P']);
+  const styleDetailDescription=value=>String(value??'').split(/\r?\n/)
+    .filter(line=>{
+      const match=line.match(/^([^：:]+)[：:]\s*(.*)$/);
+      return !(match&&STYLE_DETAIL_LABELS.has(match[1].trim()));
+    })
+    .join('\n').trim();
+  const styleDetailFromSource=data=>{
+    const notes=firstDefined(data,'notes');
+    return {
+      skill:String(firstDefined(data,'skill')??''),
+      limit:String(firstDefined(data,'limit')??''),
+      timing:String(firstDefined(data,'timing')??''),
+      target:String(firstDefined(data,'target')??''),
+      range:String(firstDefined(data,'range')??''),
+      difficulty:String(firstDefined(data,'aim','difficulty')??''),
+      confrontation:String(firstDefined(data,'confront','confrontation')??''),
+      description:styleDetailDescription(notes!==''?notes:firstDefined(data,'description')),
+      page:String(firstDefined(data,'page')??'')
+    };
+  };
+  const encodeStyleDetail=detail=>`${STYLE_DETAIL_PREFIX}\n${JSON.stringify(detail)}`;
 
   function flatten(value,prefix,map){
     if(value===null||value===undefined)return;
@@ -184,7 +207,8 @@
         firstDefined(data,'page')&&`参照P：${firstDefined(data,'page')}`,
         firstDefined(data,'notes','description')
       ].filter(Boolean).join('\n');
-      await setInput(description,detail);
+      const isStyleRow=Boolean(current?.closest('#style-skills'));
+      await setInput(description,isStyleRow?encodeStyleDetail(styleDetailFromSource(data)):detail);
     }
     return true;
   }

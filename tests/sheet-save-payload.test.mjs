@@ -69,6 +69,69 @@ test("skill payload filters empty rows and preserves style separators", () => {
   assert.equal(payload[1].sort_order, 1);
 });
 
+
+test("style payload projects canonical detail into RPC columns", () => {
+  const detail = {
+    skill: "白兵",
+    limit: "3",
+    timing: "メジャー",
+    target: "単体",
+    range: "武器",
+    difficulty: "制御値",
+    confrontation: "回避",
+    description: "追加ダメージを与える。",
+    page: "TNX p.99"
+  };
+  const encoded = `@@TNX_STYLE_DETAIL_V1@@\n${JSON.stringify(detail)}`;
+  const [payload] = buildSkillSavePayloads([{
+    category: "style",
+    name: "†羅刹刃",
+    level: 1,
+    skill_kind: "secret",
+    description: encoded
+  }]);
+
+  assert.equal(payload.timing, "メジャー");
+  assert.equal(payload.target, "単体");
+  assert.equal(payload.range, "武器");
+  assert.equal(payload.difficulty, "制御値");
+  assert.equal(payload.confrontation, "回避");
+  assert.deepEqual(
+    JSON.parse(payload.description.slice("@@TNX_STYLE_DETAIL_V1@@".length).trim()),
+    detail
+  );
+});
+
+test("style payload parses legacy labeled descriptions", () => {
+  const [payload] = buildSkillSavePayloads([{
+    category: "style",
+    name: "変身",
+    level: 1,
+    description: [
+      "技能：なし",
+      "上限：5",
+      "タイミング：常時",
+      "対象：自身",
+      "射程：なし",
+      "目標値：なし",
+      "対決：なし",
+      "変身して戦う。 ",
+      "参照P：TNX p.12"
+    ].join("\n")
+  }]);
+
+  assert.equal(payload.timing, "常時");
+  assert.equal(payload.target, "自身");
+  assert.equal(payload.range, "なし");
+  assert.equal(payload.difficulty, "なし");
+  assert.equal(payload.confrontation, "なし");
+  const saved = JSON.parse(payload.description.slice("@@TNX_STYLE_DETAIL_V1@@".length).trim());
+  assert.equal(saved.skill, "なし");
+  assert.equal(saved.limit, "5");
+  assert.equal(saved.description, "変身して戦う。");
+  assert.equal(saved.page, "TNX p.12");
+});
+
 test("outfit payload emits category-owned base fields and structured OFC defense", () => {
   const payload = buildOutfitSavePayloads([
     { category: "armor", name: "ARMOR", control_modifier: -2, cs_modifier: 9, defense_s: "1", defense_p: "2", defense_i: "3" },
