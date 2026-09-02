@@ -9,7 +9,7 @@
 @import url("../components/sheet-url-import.css?v=1") layer(sheet-components);
 @import url("../components/character-sheet-compare.css?v=2") layer(sheet-components);
 
-@import url("../editor/editor.css?v=29") layer(sheet-editor);
+@import url("../editor/editor.css?v=30") layer(sheet-editor);
 @import url("../editor/divine-layout.css?v=1") layer(sheet-editor);
 @import url("../editor/sidebar-actions.css?v=2") layer(sheet-editor);
 @import url("../editor/skills.css?v=3") layer(sheet-editor);
