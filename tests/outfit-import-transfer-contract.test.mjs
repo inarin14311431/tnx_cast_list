@@ -7,12 +7,20 @@ import {
 } from "../js/outfit-ofc-adapter.js";
 
 const legacy = await readFile(new URL("../js/sheet-import-outfit-compat.js", import.meta.url), "utf8");
+const multiline = await readFile(new URL("../js/sheet-multiline-fields-v3.js", import.meta.url), "utf8");
 const master = await readFile(new URL("../js/outfit-ofc-master-apply.js", import.meta.url), "utf8");
 
 test("legacy outfit import keeps concealment value and modifier separated", () => {
   assert.match(legacy, /concealment:first\(data,"concealA","concealment"\)/);
   assert.match(legacy, /ofc\("concealment_penalty",first\(data,"concealB","concealmentPenalty","concealment_penalty"\)\)/);
   assert.doesNotMatch(legacy, /concealment:\[concealA,concealB\]/);
+});
+
+test("multiline TSV restoration does not move a lone concealment modifier into concealment value", () => {
+  assert.match(multiline, /concealment:row\.concealA/);
+  assert.match(multiline, /\[data-ofc="concealment_penalty"\]/);
+  assert.match(multiline, /concealmentPenalty\.value=normalize\(row\.concealB\)/);
+  assert.doesNotMatch(multiline, /\[row\.concealA,row\.concealB\]\.filter\(Boolean\)\.join\("\/"\)/);
 });
 
 test("legacy outfit import uses the shared adapter for current control and CS semantics", () => {

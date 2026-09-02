@@ -3,7 +3,7 @@ import { loadSheetBundle } from "./sheet-load-persistence.js?v=1";
 import { buildSkillSavePayloads, buildOutfitSavePayloads } from "./sheet-save-payload.js?v=1";
 import { getSheetSaveState, focusSheetSaveButton } from "./sheet-save-state.js?v=2";
 import { normalizeCharacterSheetUrl, buildCharacterSheetReadUrl, extractCharacterSheetKey } from "./character-sheet-url.js?v=2";
-import { canonicalizeArchiveBundle, canonicalizeCharacterSheetJsonp, diffCanonicalBundles } from "./character-sheet-jsonp-canonical.js?v=1";
+import { canonicalizeArchiveBundle, canonicalizeCharacterSheetJsonp, diffCanonicalBundles } from "./character-sheet-jsonp-canonical.js?v=2";
 import { groupCharacterSheetDifferences, summarizeCharacterSheetDifferences } from "./character-sheet-diff-display.js?v=3";
 
 const SESSION_KEY = "tnx:character-sheet-comparison:v2";
