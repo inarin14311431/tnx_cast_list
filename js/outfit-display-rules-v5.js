@@ -84,15 +84,21 @@
       ensureResidenceComposite(table, category);
       const allowed = new Set(layout.map(([type,key]) => `${type}:${key}`));
 
+      const seenHeaders = new Set();
       table.querySelectorAll("thead tr > th").forEach(cell => {
         const id = identifyHeader(cell);
-        cell.classList.toggle(HIDDEN, !id || !allowed.has(id));
+        const visible = Boolean(id && allowed.has(id) && !seenHeaders.has(id));
+        if (visible) seenHeaders.add(id);
+        cell.classList.toggle(HIDDEN, !visible);
         cell.classList.remove("outfit-rule-hidden", "outfit-rule-v4-hidden");
       });
       table.querySelectorAll("tbody > tr").forEach(row => {
+        const seenCells = new Set();
         [...row.children].forEach(cell => {
           const id = identifyCell(cell);
-          cell.classList.toggle(HIDDEN, !id || !allowed.has(id));
+          const visible = Boolean(id && allowed.has(id) && !seenCells.has(id));
+          if (visible) seenCells.add(id);
+          cell.classList.toggle(HIDDEN, !visible);
           cell.classList.remove("outfit-rule-hidden", "outfit-rule-v4-hidden");
         });
       });
