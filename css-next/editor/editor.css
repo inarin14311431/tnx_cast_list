@@ -97,7 +97,7 @@ body[data-page="sheet.html"] .form-grid { display: grid; grid-template-columns: 
 .profile-summary-field { display: grid; gap: 5px; color: var(--color-muted); font-size: .76rem; }
 .profile-summary-field > span { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; color: var(--color-accent); font: 800 .86rem/1.2 var(--font-data); letter-spacing: .04em; }
 .profile-summary-field > span small { margin-left: auto; color: var(--color-muted); font: 600 .62rem/1 var(--font-data); letter-spacing: .08em; }
-.profile-summary-field textarea { box-sizing: border-box; min-height: 54px; height: 54px; resize: vertical; line-height: 1.5; }
+.profile-summary-field textarea { box-sizing: border-box; min-height: 72px; height: 72px; resize: vertical; line-height: 1.5; }
 #personal-data-status, #life-path-status { min-height: 1.2em; margin: 9px 0 0; color: var(--color-muted); font: .66rem/1.4 var(--font-data); }
 .profile-text-field { position: relative; display: block; padding: 52px 12px 12px; color: transparent; font-size: 0; }
 .profile-text-field::before { position: absolute; top: 12px; right: 12px; left: 12px; box-sizing: border-box; height: 29px; padding: 0 90px 8px 0; border-bottom: 1px solid var(--color-border-muted); content: "背景設定"; color: var(--color-accent); font: 800 .86rem/20px var(--font-data); letter-spacing: .04em; }
