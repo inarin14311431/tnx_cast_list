@@ -1,11 +1,11 @@
-/* Character-sheets direct URL import for the sheet editor. VERSION 1.5.2 */
+/* Character-sheets direct URL import for the sheet editor. VERSION 1.6.0 */
 (()=>{
-  const VERSION='1.5.2';
+  const VERSION='1.6.0';
   const STYLE_CODE_NAMES=new Map([
     ['0','カブキ'],['1','バサラ'],['2','タタラ'],['3','ミストレス'],['4','カブト'],['5','カリスマ'],['6','マネキン'],['7','カゼ'],['8','フェイト'],['9','クロマク'],['10','エグゼク'],['11','カタナ'],['12','クグツ'],['13','カゲ'],['14','チャクラ'],['15','レッガー'],['16','カブトワリ'],['17','ハイランダー'],['18','マヤカシ'],['19','トーキー'],['20','イヌ'],['21','ニューロ'],
     ['-0','コモン'],['-1','ヒルコ'],['-2','クロガネ'],['-4','イブキ'],['-6','シキガミ'],['-7','アラシ'],['-9','カゲムシャ'],['-12','ミギウデ'],['-17','エトランゼ'],['-18','アヤカシ'],['-21','ウツワ']
   ]);
-  import('./help-ui.js?v=6').catch(error=>console.error('sheet help failed to load',error));
+  import('./help-ui.js?v=9').catch(error=>console.error('sheet help failed to load',error));
 
   const dialog=document.querySelector('#legacy-import-dialog');
   const form=dialog?.querySelector('form');
@@ -14,6 +14,9 @@
   const legacyCopy=document.querySelector('#legacy-bookmarklet-copy');
   const message=document.querySelector('#legacy-import-message');
   const importButton=document.querySelector('#legacy-import-open');
+  const saveButton=document.querySelector('#save-button');
+  const BASE_IMPORT_EVENT='tnx:legacy-import-base-finished';
+  const SOURCE_PROXY_FUNCTION='character-sheet-source';
   if(!dialog||!form||!legacyText||!legacyApply||!message||!importButton)return;
   if(dialog.dataset.urlImportReady==='1')return;
   dialog.dataset.urlImportReady='1';
@@ -183,39 +186,93 @@
     throw new Error('キャラクターシート倉庫のデータ取得に失敗しました。');
   }
 
-  function waitUntilFinished(timeout=180000){
-    return new Promise(resolve=>{
-      const started=Date.now();
-      const tick=()=>{
-        const busy=dialog.getAttribute('data-importing')==='1';
-        if(!busy||!dialog.open||Date.now()-started>timeout)return resolve();
-        setTimeout(tick,150);
+  async function fetchViaProxy(key){
+    const {supabase}=await import('./supabase-client.js');
+    const {data,error}=await supabase.functions.invoke(SOURCE_PROXY_FUNCTION,{body:{key}});
+    if(error)throw error;
+    return data;
+  }
+
+  async function fetchSource(key){
+    const failures=[];
+    try{return await fetchViaProxy(key);}
+    catch(error){
+      failures.push(`proxy: ${error?.message||error}`);
+      console.warn('character-sheets proxy import unavailable; trying direct JSONP',error);
+    }
+    try{return await fetchJsonp(key);}
+    catch(error){
+      failures.push(`direct: ${error?.message||error}`);
+      console.error('character-sheets source endpoints failed',failures);
+      throw new Error('キャラクターシート倉庫のデータ取得に失敗しました。');
+    }
+  }
+
+  function waitForBaseImport(timeout=180000){
+    return new Promise((resolve,reject)=>{
+      let settled=false;
+      let timer=0;
+      const finish=(callback,value)=>{
+        if(settled)return;
+        settled=true;
+        clearTimeout(timer);
+        document.removeEventListener(BASE_IMPORT_EVENT,onFinished);
+        callback(value);
       };
-      setTimeout(tick,150);
+      const onFinished=event=>{
+        if(event.detail?.ok)finish(resolve,event.detail);
+        else finish(reject,new Error(event.detail?.error||'基本取込に失敗しました。'));
+      };
+      document.addEventListener(BASE_IMPORT_EVENT,onFinished);
+      timer=setTimeout(()=>finish(reject,new Error('基本取込の完了を確認できませんでした。')),timeout);
     });
+  }
+
+  async function waitForStyleRepair(promise,timeout=180000){
+    if(!promise||typeof promise.then!=='function')throw new Error('スタイル技能詳細の修復処理を開始できませんでした。');
+    let timer;
+    try{
+      await Promise.race([
+        promise,
+        new Promise((_,reject)=>{timer=setTimeout(()=>reject(new Error('スタイル技能詳細の修復がタイムアウトしました。')),timeout);})
+      ]);
+    }finally{
+      clearTimeout(timer);
+    }
   }
 
   async function importFromUrl(){
     if(run.disabled)return;
+    const restoreSaveDisabled=saveButton?.disabled??false;
     run.disabled=true;
     input.disabled=true;
+    if(saveButton)saveButton.disabled=true;
     setMessage('キャラクターシート倉庫からデータを取得しています…');
     try{
       const key=resolveSource(input.value);
-      const payload=await fetchJsonp(key);
+      const payload=await fetchSource(key);
       const data=normalizePayload(payload);
       const name=String(data?.base?.name||data?.characterName||data?.name||'').trim();
       setMessage(`${name?`「${name}」を取得しました。`:''}編集画面へ反映しています…`);
       legacyText.value=JSON.stringify(data);
       legacyText.dispatchEvent(new Event('input',{bubbles:true}));
+      legacyApply.disabled=false;
+      const baseImport=waitForBaseImport();
       legacyApply.click();
-      await waitUntilFinished();
+      const styleRepair=window.TNXLegacyStyleSkillRepair;
+      styleRepair?.catch?.(()=>{});
+      await baseImport;
+      setMessage(`${name?`「${name}」の`:''}スタイル技能詳細を確認しています…`);
+      if(styleRepair)await waitForStyleRepair(styleRepair);
+      else console.warn('style-skill compatibility repair was not installed; canonical base import is retained');
+      setMessage(`${name?`「${name}」の`:''}取込みが完了しました。内容を確認して保存してください。`);
     }catch(error){
       console.error('character-sheets direct import failed',error);
       setMessage(`取込エラー：${error?.message||error}`,true);
     }finally{
       run.disabled=false;
       input.disabled=false;
+      if(saveButton)saveButton.disabled=restoreSaveDisabled;
     }
   }
 

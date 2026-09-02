@@ -18,6 +18,6 @@ test("sheet section navigation preserves its existing behavior hooks", () => {
   assert.match(source, /new IntersectionObserver/);
   assert.match(source, /scrollIntoView\(\{ behavior: "smooth", block: "start" \}\)/);
   assert.match(source, /history\.replaceState\(null, "", `#\$\{section\.id\}`\)/);
-  assert.match(source, /import\("\.\/help-ui\.js\?v=3"\)/);
+  assert.match(source, /import\("\.\/help-ui\.js\?v=6"\)/);
   assert.match(source, /import\("\.\/sheet-save-diagnostics\.js\?v=1"\)/);
 });

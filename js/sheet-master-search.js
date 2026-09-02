@@ -65,7 +65,6 @@ function createDialog() {
     <section class="master-search-shell">
       <header class="master-search-header">
         <div><p id="master-search-code">DATABASE MASTER</p><h2 id="master-search-title">SKD検索</h2></div>
-        <button id="master-search-close-x" type="button" aria-label="閉じる">×</button>
       </header>
       <div class="master-search-controls">
         <label class="master-search-keyword">検索語<input id="master-search-keyword" type="search" placeholder="名称・スタイル・メーカー・解説"></label>
@@ -86,7 +85,6 @@ function createDialog() {
 
 function bindDialogEvents() {
   const dialog = getDialog();
-  dialog.querySelector("#master-search-close-x").addEventListener("click", () => dialog.close());
   dialog.querySelector("#master-search-close").addEventListener("click", () => dialog.close());
   dialog.querySelector("#master-search-run").addEventListener("click", runSearch);
   dialog.querySelector("#master-search-keyword").addEventListener("keydown", event => {

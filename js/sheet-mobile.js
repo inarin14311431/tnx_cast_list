@@ -1,9 +1,10 @@
 import { supabase } from "./supabase-client.js";
 import { SITE_BASE_PATH } from "./config.js?v=2";
 import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=1";
+import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=2";
 
 const PROFILE_FIELDS = [
-  "character_name", "character_kana", "handle", "handle_kana", "player_name", "affiliation", "citizen_rank", "birthplace",
+  "character_name", "character_kana", "handle", "handle_kana", "player_name", "affiliation", "citizen_rank", "birthplace", "character_sheet_url",
   "age", "gender", "height", "weight", "eyes", "hair", "skin",
   "life_path_origin", "life_path_experience", "life_path_encounter", "summary", "profile", "visibility"
 ];
@@ -14,15 +15,19 @@ let character = null;
 let dirtyProfile = false;
 let saving = false;
 
+function ensureHiddenSourceField(form, field) {
+  if (form.querySelector(`[data-mobile-character-field="${field}"]`)) return;
+  const input = document.createElement("input");
+  input.type = "hidden";
+  input.dataset.mobileCharacterField = field;
+  form.append(input);
+}
+
 function ensureProfileSourceFields() {
   const form = $("#mobile-profile-form");
   if (!form) return;
-  if (!form.querySelector('[data-mobile-character-field="birthplace"]')) {
-    const input = document.createElement("input");
-    input.type = "hidden";
-    input.dataset.mobileCharacterField = "birthplace";
-    form.append(input);
-  }
+  ensureHiddenSourceField(form, "birthplace");
+  ensureHiddenSourceField(form, "character_sheet_url");
 }
 
 function setStatus(message, state = "") {
@@ -72,6 +77,9 @@ function collectProfileUpdate() {
   for (const field of ["character_name","player_name","character_kana","handle","handle_kana","affiliation","citizen_rank","birthplace"]) {
     payload[field] = String(payload[field] || "").trim();
   }
+  const normalizedSheetUrl = normalizeCharacterSheetUrl(payload.character_sheet_url);
+  if (normalizedSheetUrl === null) throw new Error("キャラクターシート倉庫URLを確認してください。");
+  payload.character_sheet_url = normalizedSheetUrl;
   if (!payload.birthplace) payload.birthplace = "Ｎ◎ＶＡ";
   payload.visibility = payload.visibility === "public" ? "public" : "private";
   return payload;
@@ -86,7 +94,13 @@ function updateLinks() {
 
 async function saveProfile() {
   if (saving || !character || !dirtyProfile) return;
-  const payload = collectProfileUpdate();
+  let payload;
+  try {
+    payload = collectProfileUpdate();
+  } catch (error) {
+    setStatus(error?.message || "入力内容を確認してください。", "error");
+    return;
+  }
   if (!payload.character_name || !payload.player_name) {
     setStatus("キャスト名とプレイヤー名は必須です。", "error");
     return;

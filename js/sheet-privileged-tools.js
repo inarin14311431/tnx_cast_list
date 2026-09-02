@@ -4,7 +4,7 @@ const editor = await waitForEditor();
 if (editor) {
   const anchors = installSearchAnchors();
   try {
-    await import("./sheet-master-search.js?v=4");
+    await import("./sheet-master-search.js?v=5");
     await Promise.all([
       import("./sheet-master-search-filters.js?v=2"),
       import("./sheet-master-search-enhancements.js?v=2"),

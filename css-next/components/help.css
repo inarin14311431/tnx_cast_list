@@ -62,13 +62,17 @@
 .sheet-help-dialog__header strong { color: var(--color-accent); font-size: 1.15rem; }
 .sheet-help-dialog__header strong small { margin-left: .45em; color: var(--color-muted); font: 700 .62rem/1 var(--font-data); letter-spacing: .1em; }
 .sheet-help-dialog__close {
-  width: 38px;
+  width: 72px;
+  min-width: 72px;
   height: 38px;
-  padding: 0;
+  padding: 6px 10px;
   border: 1px solid var(--color-border);
   background: var(--color-surface);
   color: var(--color-text);
-  font-size: 1.2rem;
+  font-size: .72rem;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
 }
 .sheet-help-dialog__close:hover,
 .sheet-help-dialog__close:focus-visible { border-color: var(--color-accent); color: var(--color-accent); }
@@ -86,7 +90,7 @@
   text-align: left;
 }
 .sheet-help-dialog__nav button span { font-weight: 800; }
-.sheet-help-dialog__nav button small { color: var(--color-muted); font: 700 .56rem/1 var(--font-data); letter-spacing: .09em; }
+.sheet-help-dialog__nav button small { display: block; color: var(--color-muted); font: 700 .56rem/1.15 var(--font-data); letter-spacing: .09em; transform: translateY(-2px); }
 .sheet-help-dialog__nav button:hover,
 .sheet-help-dialog__nav button:focus-visible,
 .sheet-help-dialog__nav button.is-active { border-color: var(--color-accent); background: color-mix(in srgb, var(--color-accent) 13%, transparent); color: var(--color-accent); }

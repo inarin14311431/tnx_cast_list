@@ -5,7 +5,7 @@ import { SITE_BASE_PATH } from "./config.js?v=2";
 import { createSheetSaveCoordinator } from "./sheet-save-coordinator.js?v=2";
 import { persistSheetBundle } from "./sheet-save-persistence.js?v=1";
 import { loadSheetBundle } from "./sheet-load-persistence.js?v=1";
-import { buildCharacterSavePayload, buildSkillSavePayloads, buildOutfitSavePayloads } from "./sheet-save-payload.js?v=1";
+import { buildCharacterSavePayload, buildSkillSavePayloads, buildOutfitSavePayloads } from "./sheet-save-payload.js?v=2";
 import {
   STYLE_SEPARATOR_MARKER,
   isStyleSeparatorRecord as isStyleSeparator,
@@ -38,7 +38,7 @@ import { countGeneralSkillColumns, chooseGeneralSkillColumn } from "./sheet-gene
 import { resolveSkillInputState } from "./sheet-skill-level-suit-state.js?v=1";
 import { buildStyleSaveRows } from "./sheet-style-save-projection.js?v=1";
 import { buildAbilitySaveSnapshot, buildCsSaveSnapshot } from "./sheet-ability-save-projection.js?v=1";
-import { collectCharacterInputSnapshot, applyCharacterInputSnapshot } from "./sheet-character-input-snapshot.js?v=1";
+import { collectCharacterInputSnapshot, applyCharacterInputSnapshot } from "./sheet-character-input-snapshot.js?v=6";
 import { collectAbilityInputSnapshot, applyAbilityInputSnapshot } from "./sheet-ability-input-snapshot.js?v=1";
 import { collectStyleInputSnapshot, applyStyleInputSnapshot } from "./sheet-style-input-snapshot.js?v=1";
 import { initSheetStyleInteractions } from "./sheet-style-interactions.js?v=1";

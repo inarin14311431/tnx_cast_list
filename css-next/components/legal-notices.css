@@ -36,6 +36,10 @@
   opacity: .86;
 }
 
+.legal-import-short-notice {
+  display: none;
+}
+
 .legal-inline-notice--important {
   padding: 10px 12px;
   border-left: 3px solid currentColor;

@@ -27,3 +27,7 @@ test("style skill integrity follows the canonical change event instead of raw in
   assert.doesNotMatch(integrity, /new MutationObserver/);
   assert.match(integrity, /root\.addEventListener\(STYLE_SKILLS_CHANGED_EVENT, queue\)/);
 });
+
+test("style detail sync keeps the hidden canonical storage value intact", () => {
+  assert.match(fields, /row\.querySelectorAll\("\[data-style-field\]"\)\.forEach\(control=>\{[\s\S]*?if\(control===original\)return;/);
+});

@@ -32,7 +32,7 @@
 .cast-troop-dialog__header::after{content:"";position:absolute;left:18px;bottom:-1px;width:92px;height:2px;background:var(--troop-basic);box-shadow:0 0 16px color-mix(in srgb,var(--troop-basic) 78%,transparent)}
 .cast-troop-dialog__header p{margin:0;font:800 9px/1.2 var(--font-data);letter-spacing:.2em;color:var(--troop-basic)}
 .cast-troop-dialog__header h2{margin:3px 0 0;font-size:22px;letter-spacing:.02em}
-.cast-troop-dialog__header button{width:36px;height:36px;padding:0;border:1px solid color-mix(in srgb,var(--troop-basic) 48%,var(--color-border-muted));background:color-mix(in srgb,var(--troop-basic) 8%,transparent);color:inherit;font-size:22px;cursor:pointer}
+.cast-troop-dialog__header button{width:72px;min-width:72px;height:36px;padding:6px 10px;border:1px solid color-mix(in srgb,var(--troop-basic) 48%,var(--color-border-muted));background:color-mix(in srgb,var(--troop-basic) 8%,transparent);color:inherit;font-size:12px;font-weight:800;line-height:1;white-space:nowrap;cursor:pointer}
 .cast-troop-dialog__header button:hover{background:var(--troop-basic);color:var(--color-filled-control-text,#fff)}
 .cast-troop-dialog__body{overflow:auto;padding:17px 18px 22px}
 

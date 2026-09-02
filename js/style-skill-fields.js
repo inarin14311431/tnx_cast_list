@@ -90,6 +90,8 @@
     const data=parse(original.value);
     let synced=false;
     row.querySelectorAll("[data-style-field]").forEach(control=>{
+      // The hidden textarea is the canonical storage channel; only visible controls are projections.
+      if(control===original)return;
       const key=control.dataset.styleField;
       const next=String(data[key]??"");
       if(control.value!==next)control.value=next;

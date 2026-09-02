@@ -29,7 +29,7 @@ function install() {
   list = panel.querySelector("#snapshot-list");
   message = panel.querySelector("#snapshot-message");
 
-  panel.querySelector("#snapshot-create").addEventListener("click", createSnapshot);
+  panel.querySelector("#snapshot-create").addEventListener("click", createSnapshotFromUi);
   list.addEventListener("click", handleListClick);
   window.addEventListener("tnx:character-saved", event => {
     characterId = event.detail?.id || characterId;
@@ -83,33 +83,54 @@ async function refresh() {
   setMessage("");
 }
 
-async function createSnapshot() {
-  if (!characterId) return;
-
+async function createCurrentSnapshot(label = "") {
+  if (!characterId) throw new Error("スナップショット対象のキャストを特定できません。");
   if (hasUnsavedSheetChanges()) {
     const warning = "未保存の変更があります。先にキャストを保存してからスナップショットを作成してください。";
     setMessage(warning, "error");
     alert(warning);
     focusSheetSaveButton();
-    return;
+    throw new Error(warning);
   }
 
+  setMessage("保存済み状態を記録中…");
+  const { data, error } = await supabase.rpc("create_character_snapshot", {
+    p_character_id: characterId,
+    p_label: String(label || "").trim()
+  });
+  if (error) throw error;
+  await refresh();
+  setMessage("スナップショットを作成しました。", "saved");
+  return data;
+}
+
+async function createBundleSnapshot(snapshotData, label = "") {
+  if (!characterId) throw new Error("スナップショット対象のキャストを特定できません。");
+  if (!snapshotData || typeof snapshotData !== "object") throw new Error("保存するスナップショットデータがありません。");
+
+  setMessage("比較版をスナップショットへ記録中…");
+  const { data, error } = await supabase.rpc("create_character_snapshot_from_bundle", {
+    p_character_id: characterId,
+    p_label: String(label || "").trim(),
+    p_snapshot_data: snapshotData
+  });
+  if (error) throw error;
+  await refresh();
+  setMessage("比較版のスナップショットを作成しました。", "saved");
+  return data;
+}
+
+async function createSnapshotFromUi() {
+  if (!characterId) return;
   const button = panel.querySelector("#snapshot-create");
   const labelInput = panel.querySelector("#snapshot-label");
   button.disabled = true;
-  setMessage("保存済み状態を記録中…");
   try {
-    const { error } = await supabase.rpc("create_character_snapshot", {
-      p_character_id: characterId,
-      p_label: labelInput.value.trim()
-    });
-    if (error) throw error;
+    await createCurrentSnapshot(labelInput.value);
     labelInput.value = "";
-    await refresh();
-    setMessage("スナップショットを作成しました。", "saved");
   } catch (error) {
     console.error(error);
-    setMessage("スナップショットの作成に失敗しました。", "error");
+    setMessage(error?.message || "スナップショットの作成に失敗しました。", "error");
   } finally {
     button.disabled = false;
   }
@@ -178,3 +199,10 @@ function formatDate(value) {
 function escapeHtml(value) {
   return String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
+
+globalThis.TNXSheetSnapshots = Object.freeze({
+  createCurrent: createCurrentSnapshot,
+  createBundle: createBundleSnapshot,
+  refresh,
+  getCharacterId: () => characterId
+});

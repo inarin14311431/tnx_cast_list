@@ -15,12 +15,22 @@ test('data import uses direct character-sheets URL and global help', async () =>
 
   const helpUi = await read('js/help-ui.js');
   assert.match(helpUi, /sheet-global-help/);
+  assert.match(helpUi, /help-content\.js\?v=3/);
   assert.doesNotMatch(helpUi, /sheet-import-help\.js/);
+
+  const helpCss = await read('css-next/components/help.css');
+  assert.match(helpCss, /transform: translateY\(-2px\)/);
 
   const helpContent = await read('js/help-content.js');
   assert.match(helpContent, /importData/);
   assert.match(helpContent, /キャラクターシート倉庫/);
   assert.match(helpContent, /PC・スマートフォンとも同じ手順/);
+  assert.match(helpContent, /comparison/);
+  assert.match(helpContent, /倉庫との差分比較/);
+  assert.match(helpContent, /取込は単純な追加ではありません/);
+  assert.match(helpContent, /能力値・制御値・CS/);
+  assert.doesNotMatch(helpContent, /masterData|マスタ|SKD|OFC/);
+  assert.match(helpContent, /A4縦の複数ページ/);
 });
 
 test('sidebar action rails follow the active theme tokens', async () => {

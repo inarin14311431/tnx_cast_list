@@ -44,7 +44,7 @@ function ensureTroopDialog() {
   const dialog = document.createElement("dialog");
   dialog.id = "cast-troop-dialog";
   dialog.className = "cast-troop-dialog";
-  dialog.innerHTML = `<div class="cast-troop-dialog__shell"><header class="cast-troop-dialog__header"><div><p>TROOP DATA</p><h2 id="cast-troop-dialog-title">トループ</h2></div><button type="button" data-troop-dialog-close aria-label="閉じる">×</button></header><div id="cast-troop-dialog-body" class="cast-troop-dialog__body"></div></div>`;
+  dialog.innerHTML = `<div class="cast-troop-dialog__shell"><header class="cast-troop-dialog__header"><div><p>TROOP DATA</p><h2 id="cast-troop-dialog-title">トループ</h2></div><button type="button" data-troop-dialog-close aria-label="閉じる">閉じる</button></header><div id="cast-troop-dialog-body" class="cast-troop-dialog__body"></div></div>`;
   dialog.addEventListener("click", event => { if (event.target === dialog) dialog.close(); });
   dialog.querySelector("[data-troop-dialog-close]").addEventListener("click", () => dialog.close());
   document.body.append(dialog);

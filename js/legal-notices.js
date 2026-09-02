@@ -128,19 +128,6 @@ function installSignupConsent() {
   bindPolicyButtons(label);
 }
 
-function installImageNotice() {
-  const forms = [...document.querySelectorAll("#image-form, form")].filter(form => form.querySelector("input[type='file'][accept*='image']"));
-  forms.forEach(form => {
-    if (form.querySelector(".legal-image-rights-notice")) return;
-    const note = document.createElement("p");
-    note.className = "legal-inline-notice legal-inline-notice--important legal-image-rights-notice";
-    note.textContent = "自身が使用・公開する権利を有する画像のみ登録してください。公式画像や第三者の著作物など、無断使用となる画像の登録はお控えください。";
-    const guidance = form.querySelector(".image-guidance");
-    if (guidance) guidance.append(note);
-    else form.querySelector("input[type='file']")?.closest("label")?.after(note);
-  });
-}
-
 function transferNoticeHtml(short = false) {
   if (short) return `キャラクターシート倉庫とのデータ取込・転記機能です。転記元・転記先サイトおよび登録データの権利を尊重し、自身が利用可能なデータのみ使用してください。詳細は <button type="button" data-open-legal="terms">利用規約</button> をご確認ください。`;
   return `本機能は「トーキョーN◎VA THE AXLERATION Cast Profile DataBase（キャラクターシート倉庫）」とのデータ取込・転記を補助する非公式機能です。本サイトと同サイトの運営者との間に提携・承認・運営上の関係はありません。個々の登録データの権利は各投稿者・作成者等に帰属します。<a href="${SOURCE_SITE_URL}" target="_blank" rel="noopener noreferrer">キャラクターシート倉庫</a>`;
@@ -183,7 +170,6 @@ function init() {
   installDialog();
   installFooter();
   installSignupConsent();
-  installImageNotice();
   installTransferNotices();
   removeMasterTsvImportUi();
   bindPolicyButtons(document);
