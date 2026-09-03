@@ -67,7 +67,6 @@ export function blankOutfit() {
     purchase_value: "",
     experience_cost: 0,
     concealment: "",
-    electronic_control: "",
     attack: "",
     range: "",
     slot: "",
@@ -125,6 +124,8 @@ export function cloneOutfit(item) {
   delete details.cs_modifier;
 
   const draft = { ...item, category, control_modifier: control, cs_modifier: cs, ofc_details: details };
+  // Top-level electronic_control is legacy read-only. Editors keep the canonical value only in ofc_details.
+  delete draft.electronic_control;
   delete draft.mundane_modifier;
   parseConcealment(draft);
   parseDefense(draft);
@@ -162,7 +163,6 @@ export function collectOutfitRecord(item, character) {
     purchase_value: String(item.purchase_value ?? ""),
     experience_cost: normalizeNumber(item.experience_cost),
     concealment,
-    electronic_control: String(details.electronic_control || ""),
     attack: item.attack || "",
     defense: "",
     range: item.range || "",
