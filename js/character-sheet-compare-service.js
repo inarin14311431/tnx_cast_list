@@ -59,6 +59,33 @@ export function normalizeCharacterSheetPayload(payload) {
   return data;
 }
 
+function hasText(value) {
+  return value !== undefined && value !== null && String(value).trim() !== "";
+}
+
+export function preserveWarehouseLifePathRawText(payload = {}) {
+  const data = payload && typeof payload === "object" && !Array.isArray(payload) ? payload : {};
+  const base = data.base && typeof data.base === "object" && !Array.isArray(data.base) ? data.base : {};
+  const source = base.lifepath && typeof base.lifepath === "object" && !Array.isArray(base.lifepath)
+    ? base.lifepath
+    : null;
+  if (!source) return data;
+
+  const lifepath = { ...source };
+  if (hasText(source.experience)) lifepath.origin = source.experience;
+  if (hasText(source.environment)) lifepath.environment = source.environment;
+  if (hasText(source.encounter)) lifepath.encounter = source.encounter;
+  else if (hasText(source.encouter)) lifepath.encounter = source.encouter;
+
+  return {
+    ...data,
+    base: {
+      ...base,
+      lifepath
+    }
+  };
+}
+
 function jsonpOnce(url, timeout = 15000) {
   return new Promise((resolve, reject) => {
     const callback = `__tnxCharacterSheetCompare_${Date.now()}_${Math.random().toString(36).slice(2)}`;
@@ -137,9 +164,10 @@ export function normalizeCanonicalForComparison(bundle = {}) {
 }
 
 export function compareCharacterSheetPayload(archiveBundle, externalPayload) {
+  const warehousePayload = preserveWarehouseLifePathRawText(normalizeCharacterSheetPayload(externalPayload));
   return diffCanonicalBundles(
     normalizeCanonicalForComparison(canonicalizeArchiveBundle(archiveBundle || {})),
-    normalizeCanonicalForComparison(canonicalizeCharacterSheetJsonp(normalizeCharacterSheetPayload(externalPayload)))
+    normalizeCanonicalForComparison(canonicalizeCharacterSheetJsonp(warehousePayload))
   );
 }
 
