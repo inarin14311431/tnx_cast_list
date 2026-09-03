@@ -6,8 +6,8 @@ const castEntry = await readFile(new URL("../css-next/pages/cast-entry.css", imp
 const mobileReadability = await readFile(new URL("../css-next/pages/cast-mobile-readability.css", import.meta.url), "utf8");
 
 test("mobile cast readability layer is loaded after the base mobile stylesheet", () => {
-  const base = castEntry.indexOf("cast-mobile.css?v=4");
-  const readability = castEntry.indexOf("cast-mobile-readability.css?v=1");
+  const base = castEntry.search(/cast-mobile\.css(?:\?v=\d+)?/);
+  const readability = castEntry.search(/cast-mobile-readability\.css(?:\?v=\d+)?/);
   assert.ok(base >= 0);
   assert.ok(readability > base);
 });
