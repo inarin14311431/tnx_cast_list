@@ -8,6 +8,11 @@ body[data-page="cast.html"] .profile-text{
   background-position:0 14px;
 }
 
+/* Collapsed public-view panels must override panel-specific display layouts such as #personal-data. */
+body[data-page="cast.html"] .data-panel.is-collapsed > :not(.data-panel__header){
+  display:none;
+}
+
 /* Preserve explicit line breaks in style-skill names on the public view. */
 body[data-page="cast.html"] .style-skill-view-table tbody tr{
   height:auto;
