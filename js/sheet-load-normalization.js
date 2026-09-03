@@ -118,7 +118,8 @@ export function normalizeLoadedOutfit(outfit = {}) {
     category,
     experience_cost: Number(outfit.experience_cost || details.permanent_cost || 0),
     range: String(outfit.range || details.range_text || ""),
-    electronic_control: String(outfit.electronic_control || details.electronic_control || ""),
+    // ofc_details is canonical. Keep the top-level column only as a legacy read fallback.
+    electronic_control: String(details.electronic_control || outfit.electronic_control || ""),
     control_modifier: Number(outfit.control_modifier || details.control_modifier || 0),
     cs_modifier: Number(outfit.cs_modifier || details.cs_modifier || 0),
     _ofc_details: details
