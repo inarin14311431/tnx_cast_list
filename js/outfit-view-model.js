@@ -25,7 +25,8 @@ export function normalizeOutfitForView(outfit = {}) {
     parry: first(outfit.parry, details.parry),
     range: first(outfit.range, details.range_text),
     speed: first(outfit.speed, details.speed),
-    electronic_control: first(outfit.electronic_control, details.electronic_control),
+    // electronic_control is canonical in ofc_details. The top-level column is legacy read-only fallback.
+    electronic_control: first(details.electronic_control, outfit.electronic_control),
     control_modifier: control,
     cs_modifier: cs,
     defense_s: first(outfit.defense_s, details.defense_s, defense.defense_s),
