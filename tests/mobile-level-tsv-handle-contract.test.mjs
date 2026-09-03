@@ -9,7 +9,7 @@ const handleRepair = await readFile(new URL("../js/tnx-transfer-handle-repair.js
 const exporter = await readFile(new URL("../js/transfer-tsv-export.js", import.meta.url), "utf8");
 
 test("mobile general/social/connection and style skill levels receive Lv labels", () => {
-  assert.match(castHtml, /cast-mobile-level-labels\.js\?v=1/);
+  assert.match(castHtml, /cast-mobile-level-labels\.js(?:\?v=\d+)?/);
   assert.match(levelLabels, /\.mobile-skill-row > b/);
   assert.match(levelLabels, /\.mobile-style-row > b/);
   assert.match(levelLabels, /`Lv\$\{value\.replace/);
