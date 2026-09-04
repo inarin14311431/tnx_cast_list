@@ -251,8 +251,6 @@ export function buildOutfitSavePayloads(outfits = []) {
         experience_cost: Number(item.experience_cost || 0),
         concealment: item.concealment || "",
         slot: item.slot || "",
-        electronic_control: String(item.electronic_control || ""),
-        defense: "",
         description: item.description || "",
         sort_order: index,
         ofc_details: buildOutfitDetails(item, category)

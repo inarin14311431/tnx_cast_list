@@ -115,6 +115,11 @@
     const actionCell=row.lastElementChild;
     if(!nameCell||!typeCell||!levelCell||suitCells.length!==4||!original||!actionCell)return;
 
+    // This textarea is the encoded backing store, not a projected editor field.
+    // Keeping it out of data-style-field prevents reference page and the other
+    // visible detail controls from being overwritten by the encoded JSON value.
+    delete original.dataset.styleField;
+
     suitCells.forEach((cell,index)=>{
       cell.classList.add("style-suit-cell",`style-suit-cell--${SUITS[index][0]}`);
       const checkbox=cell.querySelector('input[type="checkbox"]');
@@ -133,7 +138,10 @@
       if(tag==="textarea")control.rows=1;
       control.addEventListener("input",()=>{
         const values={};
-        row.querySelectorAll("[data-style-field]").forEach(element=>values[element.dataset.styleField]=element.value);
+        row.querySelectorAll("[data-style-field]").forEach(element=>{
+          if(element===original)return;
+          values[element.dataset.styleField]=element.value;
+        });
         original.value=encode(values);
         original.dispatchEvent(new Event("input",{bubbles:true}));
       });

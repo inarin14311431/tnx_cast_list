@@ -1,4 +1,4 @@
-import { getOutfits } from "./cast-data-store.js";
+import { getOutfits } from "./cast-data-store.js?v=2";
 import {
   OUTFIT_CATEGORIES,
   OUTFIT_CATEGORY_LABELS,

@@ -5,13 +5,13 @@ import { SITE_BASE_PATH } from "./config.js?v=2";
 import { createSheetSaveCoordinator } from "./sheet-save-coordinator.js?v=2";
 import { persistSheetBundle } from "./sheet-save-persistence.js?v=1";
 import { loadSheetBundle } from "./sheet-load-persistence.js?v=1";
-import { buildCharacterSavePayload, buildSkillSavePayloads, buildOutfitSavePayloads } from "./sheet-save-payload.js?v=2";
+import { buildCharacterSavePayload, buildSkillSavePayloads, buildOutfitSavePayloads } from "./sheet-save-payload.js?v=3";
 import {
   STYLE_SEPARATOR_MARKER,
   isStyleSeparatorRecord as isStyleSeparator,
   normalizeLoadedSkill,
   normalizeLoadedOutfit
-} from "./sheet-load-normalization.js?v=1";
+} from "./sheet-load-normalization.js?v=2";
 import { formatSheetPersistenceError } from "./sheet-error-message.js?v=1";
 import { initSheetRowInteractions } from "./sheet-row-interactions.js?v=1";
 import { initSheetEditorInteractions } from "./sheet-editor-interactions.js?v=1";
