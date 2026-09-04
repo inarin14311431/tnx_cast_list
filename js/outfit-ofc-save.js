@@ -21,6 +21,22 @@ function withoutRetiredModifier(payload) {
   return current;
 }
 
+function withoutLegacyElectronicControl(payload) {
+  const current = { ...payload };
+  delete current.electronic_control;
+  return current;
+}
+
+function normalizedDetailsWithLegacyFallback(item, category) {
+  const source = item?.ofc_details && typeof item.ofc_details === "object" && !Array.isArray(item.ofc_details)
+    ? { ...item.ofc_details }
+    : {};
+  if (!String(source.electronic_control ?? "").trim() && String(item?.electronic_control ?? "").trim()) {
+    source.electronic_control = String(item.electronic_control);
+  }
+  return normalizeImportedOutfitDetails(category, source);
+}
+
 export function enrichOutfitPayload(items) {
   const rows = getOutfitRows();
   const queues = rowsBySignature(rows);
@@ -35,17 +51,16 @@ export function enrichOutfitPayload(items) {
 
     if (!row) {
       const category = item.category || "other";
-      return withoutRetiredModifier({
+      return withoutLegacyElectronicControl(withoutRetiredModifier({
         ...item,
         defense: "",
         sort_order: Number.isFinite(Number(item.sort_order)) ? Number(item.sort_order) : index,
-        ofc_details: normalizeImportedOutfitDetails(category, item.ofc_details || {})
-      });
+        ofc_details: normalizedDetailsWithLegacyFallback(item, category)
+      }));
     }
 
     const details = collectDetails(row);
     const category = valueOf(row, "category") || item.category || "other";
-    const electronicControl = String(details.electronic_control || item.electronic_control || "");
     const controlModifier = outfitSupportsControl(category)
       ? Number(valueOf(row, "control_modifier") || item.control_modifier || 0)
       : 0;
@@ -53,12 +68,11 @@ export function enrichOutfitPayload(items) {
       ? Number(valueOf(row, "cs_modifier") || item.cs_modifier || 0)
       : 0;
 
-    return withoutRetiredModifier({
+    return withoutLegacyElectronicControl(withoutRetiredModifier({
       ...item,
       category,
       concealment: String(valueOf(row, "concealment") || ""),
       slot: proxyValue(row, "slot", item.slot || ""),
-      electronic_control: electronicControl,
       // Outfit defense is canonical only as structured S/P/I in ofc_details.
       // The legacy combined base column is intentionally cleared for every category.
       defense: "",
@@ -66,8 +80,13 @@ export function enrichOutfitPayload(items) {
       cs_modifier: csModifier,
       sort_order: Number.isFinite(Number(item.sort_order)) ? Number(item.sort_order) : index,
       ofc_details: normalizeImportedOutfitDetails(category, details)
-    });
+    }));
   });
+}
+
+function detailValue(row, details, field) {
+  const input = row.querySelector(`[data-ofc="${field}"]`);
+  return input ? String(input.value ?? "") : String(details[field] ?? "");
 }
 
 function collectDetails(row) {
@@ -79,9 +98,9 @@ function collectDetails(row) {
   const category = valueOf(row, "category") || row.closest("table")?.dataset.outfitSchema || "other";
   const concealmentValue = String(valueOf(row, "concealment") || "");
   const defense = {
-    defense_s: row.querySelector('[data-ofc="defense_s"]')?.value || details.defense_s || "",
-    defense_p: row.querySelector('[data-ofc="defense_p"]')?.value || details.defense_p || "",
-    defense_i: row.querySelector('[data-ofc="defense_i"]')?.value || details.defense_i || ""
+    defense_s: detailValue(row, details, "defense_s"),
+    defense_p: detailValue(row, details, "defense_p"),
+    defense_i: detailValue(row, details, "defense_i")
   };
 
   return normalizeImportedOutfitDetails(category, {
@@ -90,7 +109,7 @@ function collectDetails(row) {
     purchase_target: valueOf(row, "purchase_value"),
     permanent_cost: valueOf(row, "experience_cost"),
     concealment: concealmentValue,
-    concealment_penalty: details.concealment_penalty || "",
+    concealment_penalty: details.concealment_penalty ?? "",
     attack: valueOf(row, "attack"),
     range_text: valueOf(row, "range"),
     slot: proxyValue(row, "slot", valueOf(row, "slot") || ""),

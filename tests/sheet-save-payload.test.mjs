@@ -142,7 +142,8 @@ test("outfit payload emits category-owned base fields and structured OFC defense
 
   assert.equal(payload[0].control_modifier, -2);
   assert.equal(Object.hasOwn(payload[0], "cs_modifier"), false);
-  assert.equal(payload[0].defense, "");
+  assert.equal(Object.hasOwn(payload[0], "defense"), false);
+  assert.equal(Object.hasOwn(payload[0], "mundane_modifier"), false);
   assert.equal(payload[0].ofc_details.defense_s, "1");
   assert.equal(payload[0].ofc_details.defense_p, "2");
   assert.equal(payload[0].ofc_details.defense_i, "3");

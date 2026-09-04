@@ -12,7 +12,7 @@ test("master search access is owned by the privileged bootstrap entry point", ()
   assert.match(bootstrap, /supabase\.rpc\("has_privileged_editor_tools"\)/);
   assert.match(bootstrap, /if \(error \|\| data !== true\) return;/);
   assert.match(bootstrap, /if \(page === "sheet\.html"\)/);
-  assert.match(bootstrap, /import\("\.\/sheet-privileged-tools\.js\?v=1"\)/);
+  assert.match(bootstrap, /import\("\.\/sheet-privileged-tools\.js\?v=\d+"\)/);
   assert.doesNotMatch(bootstrap, /can_use_master_search/);
 });
 

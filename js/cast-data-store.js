@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { normalizeOutfitListForView } from "./outfit-view-model.js";
+import { normalizeOutfitListForView } from "./outfit-view-model.js?v=3";
 
 /* Shared read-only data access for the public cast view.
  * Queries intentionally match cast.js so the public-view Supabase cache can

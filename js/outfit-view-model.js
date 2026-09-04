@@ -3,7 +3,7 @@ import {
   outfitSupportsControl,
   outfitSupportsCsModifier
 } from "./outfit-contract.js";
-import { parseLegacyDefense, splitLegacyConcealment } from "./outfit-legacy-compat.js";
+import { splitLegacyConcealment } from "./outfit-legacy-compat.js";
 
 export { splitLegacyConcealment };
 
@@ -11,7 +11,6 @@ export function normalizeOutfitForView(outfit = {}) {
   const category = normalizeOutfitCategory(outfit.category);
   const details = normalizeDetails(outfit.ofc_details);
   const concealment = splitLegacyConcealment(first(details.concealment, outfit.concealment));
-  const defense = parseLegacyDefense(outfit.defense);
   const control = outfitSupportsControl(category) ? first(outfit.control_modifier) : "";
   const cs = outfitSupportsCsModifier(category) ? first(outfit.cs_modifier) : "";
 
@@ -29,9 +28,9 @@ export function normalizeOutfitForView(outfit = {}) {
     electronic_control: first(details.electronic_control, outfit.electronic_control),
     control_modifier: control,
     cs_modifier: cs,
-    defense_s: first(outfit.defense_s, details.defense_s, defense.defense_s),
-    defense_p: first(outfit.defense_p, details.defense_p, defense.defense_p),
-    defense_i: first(outfit.defense_i, details.defense_i, defense.defense_i),
+    defense_s: first(outfit.defense_s, details.defense_s),
+    defense_p: first(outfit.defense_p, details.defense_p),
+    defense_i: first(outfit.defense_i, details.defense_i),
     tron_software: first(outfit.tron_software, details.tron_software),
     tron_support: first(outfit.tron_support, details.tron_support),
     tron_hardware: first(outfit.tron_hardware, details.tron_hardware),
