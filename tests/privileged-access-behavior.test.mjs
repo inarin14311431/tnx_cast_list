@@ -8,7 +8,7 @@ const sheetTools = await readFile(new URL("../js/sheet-privileged-tools.js", imp
 test("privileged tools authenticate and authorize before loading any editor tools", () => {
   const sessionIndex = bootstrap.indexOf("supabase.auth.getSession()");
   const rpcIndex = bootstrap.indexOf('supabase.rpc("has_privileged_editor_tools")');
-  const sheetImportIndex = bootstrap.indexOf('import("./sheet-privileged-tools.js?v=1")');
+  const sheetImportIndex = bootstrap.search(/import\("\.\/sheet-privileged-tools\.js\?v=\d+"\)/);
 
   assert.ok(sessionIndex >= 0);
   assert.ok(rpcIndex > sessionIndex);

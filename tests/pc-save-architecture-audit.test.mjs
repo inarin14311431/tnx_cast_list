@@ -92,8 +92,11 @@ test("retired save compatibility cannot leak back through current save modules",
     assert.doesNotMatch(source, /control_value/);
     assert.doesNotMatch(source, /cs_value/);
   }
-  assert.match(payload, /defense:\s*""/);
+  assert.doesNotMatch(payload, /\bdefense\s*:/);
   assert.doesNotMatch(payload, /composeDefense|parseDefense|data-armor-defense/);
+  assert.match(payload, /defense_s:\s*"defense_s"/);
+  assert.match(payload, /defense_p:\s*"defense_p"/);
+  assert.match(payload, /defense_i:\s*"defense_i"/);
 });
 
 test("save-in-flight edits stay protected by revision-aware coordinator logic", () => {

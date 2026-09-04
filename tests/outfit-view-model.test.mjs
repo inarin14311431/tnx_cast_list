@@ -25,8 +25,14 @@ test("shared outfit normalization is idempotent and preserves normalized zero mo
   const once = normalizeOutfitForView({
     category: "vehicle",
     concealment: "10/0",
-    defense: "S 2 / P 3 / I 4",
-    ofc_details: { speed: "5", electronic_control: "18", crew: "2" }
+    ofc_details: {
+      speed: "5",
+      electronic_control: "18",
+      defense_s: "2",
+      defense_p: "3",
+      defense_i: "4",
+      crew: "2"
+    }
   });
   const twice = normalizeOutfitForView(once);
   assert.equal(twice.concealment, "10");
@@ -72,10 +78,12 @@ test("OFC performance fields normalize onto the shared view model", () => {
   const item = normalizeOutfitForView({
     category: "vehicle",
     electronic_control: "",
-    defense: "S 2 / P 3 / I 4",
     ofc_details: {
       speed: "5",
       electronic_control: "18",
+      defense_s: "2",
+      defense_p: "3",
+      defense_i: "4",
       crew: "2",
       sf: "1"
     }

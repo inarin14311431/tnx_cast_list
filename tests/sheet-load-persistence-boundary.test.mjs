@@ -7,7 +7,7 @@ const loadSource = await readFile(new URL("../js/sheet-load-persistence.js", imp
 const normalizationSource = await readFile(new URL("../js/sheet-load-normalization.js", import.meta.url), "utf8");
 
 test("classic sheet delegates character bundle reads to the load persistence boundary", () => {
-  assert.match(sheetSource, /sheet-load-persistence\.js\?v=1/);
+  assert.match(sheetSource, /sheet-load-persistence\.js\?v=\d+/);
   assert.match(sheetSource, /loadSheetBundle\(\{ publicId, ownerId: user\.id \}\)/);
   assert.doesNotMatch(sheetSource, /supabase\.from\("characters"\)/);
   assert.doesNotMatch(sheetSource, /supabase\.from\("character_skills"\)/);
@@ -33,7 +33,7 @@ test("load persistence rejects missing identity and propagates related-table fai
 });
 
 test("classic sheet routes loaded records through the DOM-free normalization boundary", () => {
-  assert.match(sheetSource, /sheet-load-normalization\.js\?v=1/);
+  assert.match(sheetSource, /sheet-load-normalization\.js\?v=\d+/);
   assert.match(sheetSource, /normalizeLoadedSkill\(/);
   assert.match(sheetSource, /bundle\.outfits\.map\(normalizeLoadedOutfit\)/);
   assert.match(normalizationSource, /export function normalizeLoadedSkill/);
