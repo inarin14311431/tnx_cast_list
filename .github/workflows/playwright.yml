@@ -30,6 +30,7 @@ jobs:
           tests/e2e/troop-view.spec.js
           tests/e2e/editor-help.spec.js
           tests/e2e/direct-transfer.spec.js
+          tests/e2e/character-sheet-url-import-live.spec.js
           --project=chromium
         env:
           E2E_CAST_ID: ${{ secrets.E2E_CAST_ID }}

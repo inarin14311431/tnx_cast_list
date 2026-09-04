@@ -43,6 +43,8 @@
     "35_least_privilege_troops_grants.sql",
     "36_hide_internal_security_helpers.sql",
     "37_character_sheet_url.sql",
-    "38_snapshot_from_bundle.sql"
+    "38_snapshot_from_bundle.sql",
+    "39_drop_legacy_electronic_control.sql",
+    "40_drop_legacy_outfit_defense_fields.sql"
   ]
 }
