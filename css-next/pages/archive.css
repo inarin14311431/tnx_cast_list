@@ -2,6 +2,74 @@
 .archive-control { display: grid; gap: 6px; min-width: 0; }
 .archive-control > span { font-family: var(--font-data); font-size: .68rem; letter-spacing: .08em; }
 #archive-reset { white-space: nowrap; }
+
+body[data-page="index.html"] .auth-navigation__account {
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--color-accent) 82%, var(--color-border));
+  color: var(--color-accent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent) 18%, var(--color-surface)),
+    color-mix(in srgb, var(--color-accent) 7%, var(--color-surface))
+  );
+  box-shadow: inset 3px 0 0 var(--color-accent), inset 0 1px color-mix(in srgb, var(--color-accent) 18%, transparent);
+  transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+body[data-page="index.html"] .auth-navigation__account::after {
+  position: absolute;
+  inset: 0;
+  content: "";
+  background: linear-gradient(110deg, transparent 12%, color-mix(in srgb, var(--color-accent) 13%, transparent) 44%, transparent 70%);
+  opacity: 0;
+  transform: translateX(-28%);
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+  pointer-events: none;
+}
+body[data-page="index.html"] .auth-navigation__account-main {
+  position: relative;
+  z-index: 1;
+  font-size: 1rem;
+  letter-spacing: .05em;
+}
+body[data-page="index.html"] .auth-navigation__account small {
+  position: relative;
+  z-index: 1;
+}
+body[data-page="index.html"] .auth-navigation__account:is(:hover, :focus-visible) {
+  border-color: var(--color-accent);
+  color: var(--color-text);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent) 30%, var(--color-surface)),
+    color-mix(in srgb, var(--color-accent) 13%, var(--color-surface))
+  );
+  box-shadow: var(--shadow-glow), inset 3px 0 0 var(--color-accent), inset 0 1px color-mix(in srgb, var(--color-text) 12%, transparent);
+  transform: translateY(-1px);
+}
+body[data-page="index.html"] .auth-navigation__account:is(:hover, :focus-visible)::after {
+  opacity: 1;
+  transform: translateX(18%);
+}
+body[data-page="index.html"] .auth-navigation__account:is(:hover, :focus-visible) small {
+  color: color-mix(in srgb, var(--color-text) 76%, var(--color-muted));
+}
+body[data-page="index.html"] .auth-navigation__logout {
+  border-color: color-mix(in srgb, var(--color-border) 72%, transparent);
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-muted));
+  background: color-mix(in srgb, var(--color-surface) 52%, transparent);
+  box-shadow: none;
+}
+body[data-page="index.html"] .auth-navigation__logout:is(:hover, :focus-visible) {
+  border-color: color-mix(in srgb, var(--color-accent) 58%, var(--color-border));
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface));
+  box-shadow: none;
+}
+body[data-page="index.html"] .auth-navigation__logout:is(:hover, :focus-visible) small {
+  color: var(--color-muted);
+}
+
 .archive-summary { width: min(var(--page-width), calc(100% - var(--page-gutter))); margin: 12px auto 0; }
 .archive-summary p { color: var(--color-muted); font-family: var(--font-data); font-size: .75rem; text-align: right; }
 .cast-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; width: min(var(--page-width), calc(100% - var(--page-gutter))); margin: 18px auto 30px; }
