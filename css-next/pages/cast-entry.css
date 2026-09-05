@@ -2,12 +2,12 @@
 @layer app, cast-components, cast-base, cast-details, cast-combos,
   cast-mobile-theme, cast-quick-sheet, cast-enhancements, cast-effects,
   cast-runtime, cast-mobile, cast-mobile-readability, cast-mobile-combos,
-  cast-transfer, cast-troop-modal;
+  cast-transfer, cast-troop-modal, cast-polish;
 
 @import url("../index.css?v=64") layer(app);
 @import url("../components/cast-troops.css?v=1") layer(cast-components);
 @import url("./cast.css?v=44") layer(cast-base);
-@import url("./cast-view-details.css?v=4") layer(cast-details);
+@import url("./cast-view-details.css?v=5") layer(cast-details);
 @import url("./cast-combos.css?v=2") layer(cast-combos);
 @import url("./cast-mobile-theme.css?v=1") layer(cast-mobile-theme);
 @import url("./quick-sheet-paper.css?v=2") layer(cast-quick-sheet);
@@ -21,3 +21,4 @@
 @import url("./cast-mobile-combos.css?v=3") layer(cast-mobile-combos);
 @import url("./cast-transfer.css?v=2") layer(cast-transfer);
 @import url("./cast-troop-modal.css?v=5") layer(cast-troop-modal);
+@import url("./cast-ui-polish.css?v=2") layer(cast-polish);
