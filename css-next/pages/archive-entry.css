@@ -3,4 +3,4 @@
 
 @import url("../index.css?v=64") layer(app);
 @import url("../components/style-marks.css?v=1") layer(archive-components);
-@import url("./archive.css?v=5") layer(archive-page);
+@import url("./archive.css?v=6") layer(archive-page);
