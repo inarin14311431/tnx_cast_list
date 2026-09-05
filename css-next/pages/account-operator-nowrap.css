@@ -1,0 +1,10 @@
+/* Keep compact operator metadata labels on one line where the desktop layout has room. */
+@media (min-width: 768px) {
+  body[data-page="account.html"] .account-operator-summary .account-data > div {
+    grid-template-columns: 150px minmax(0, 1fr);
+  }
+
+  body[data-page="account.html"] .account-operator-summary .account-data dt {
+    white-space: nowrap;
+  }
+}
