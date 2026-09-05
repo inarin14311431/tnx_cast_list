@@ -1,0 +1,54 @@
+/* Canonical persistent action bar for troop editing. */
+body[data-page="troop.html"] .troop-editor-actions {
+  position: sticky;
+  z-index: 24;
+  bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 9px 10px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 34%, var(--color-border));
+  background: color-mix(in srgb, var(--color-surface) 96%, transparent);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 22%), inset 3px 0 0 var(--color-accent);
+  backdrop-filter: blur(12px);
+}
+body[data-page="troop.html"] .troop-editor-actions button,
+body[data-page="troop.html"] .troop-editor-actions a {
+  min-height: 38px;
+  margin: 0;
+}
+body[data-page="troop.html"] .troop-editor-actions button[type="submit"] {
+  order: 3;
+  min-width: 150px;
+  margin-left: auto;
+  border-color: var(--color-accent);
+  color: var(--color-filled-control-text, #fff);
+  background: linear-gradient(135deg, var(--color-accent), color-mix(in srgb, var(--color-accent) 72%, var(--color-bg)));
+  box-shadow: 0 0 16px color-mix(in srgb, var(--color-accent) 20%, transparent);
+  font-weight: 900;
+}
+body[data-page="troop.html"] .troop-editor-actions #troop-delete {
+  order: 1;
+  border-color: color-mix(in srgb, var(--color-danger) 68%, var(--color-border));
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 7%, var(--color-surface));
+}
+body[data-page="troop.html"] .troop-editor-actions #troop-cancel {
+  order: 2;
+  color: var(--color-muted);
+  background: color-mix(in srgb, var(--color-surface) 78%, transparent);
+}
+
+@media (max-width: 760px) {
+  body[data-page="troop.html"] .troop-editor-actions {
+    bottom: 0;
+    gap: 6px;
+    margin-inline: -1px;
+    padding-bottom: calc(9px + env(safe-area-inset-bottom));
+  }
+  body[data-page="troop.html"] .troop-editor-actions button[type="submit"] {
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+}

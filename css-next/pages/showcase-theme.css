@@ -1,0 +1,86 @@
+/* Canonical theme integration and action hierarchy for the showcase generator. The iframe preview remains isolated. */
+body[data-page="showcase-generator.html"] {
+  --showcase-cyan: var(--color-accent);
+  --showcase-magenta: var(--color-danger);
+  --showcase-green: var(--color-success);
+  --showcase-yellow: var(--color-warning);
+  --showcase-panel: color-mix(in srgb, var(--color-surface) 96%, transparent);
+  --showcase-line: color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
+  color: var(--color-text);
+  background: radial-gradient(circle at 16% 8%, color-mix(in srgb, var(--color-accent) 9%, transparent), transparent 30%), var(--color-bg);
+}
+
+body[data-page="showcase-generator.html"] .showcase-panel {
+  --section-border: color-mix(in srgb, var(--section-accent) 46%, var(--color-border));
+  --section-fill: color-mix(in srgb, var(--section-accent) 12%, transparent);
+  --section-glow: color-mix(in srgb, var(--section-accent) 9%, transparent);
+  background: linear-gradient(135deg, var(--section-glow), transparent 35%), var(--showcase-panel);
+}
+body[data-page="showcase-generator.html"] .showcase-panel__header h2,
+body[data-page="showcase-generator.html"] .selected-cast__identity h3,
+body[data-page="showcase-generator.html"] .cast-pick-card h3 {
+  color: var(--color-text);
+}
+body[data-page="showcase-generator.html"] :is(.form-grid label, .selector-controls label, .selected-cast__fields label, .selected-cast__manual-fields label) {
+  color: color-mix(in srgb, var(--color-text) 82%, var(--color-muted));
+}
+body[data-page="showcase-generator.html"] :is(.form-grid, .selector-controls, .selected-cast__fields, .selected-cast__manual-fields) :is(input, select, textarea) {
+  border-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-bg) 74%, var(--color-surface));
+}
+body[data-page="showcase-generator.html"] .generator-action-note,
+body[data-page="showcase-generator.html"] .generator-status {
+  color: var(--color-muted);
+}
+
+/* Output hierarchy: publish > generate/history > generated utilities. */
+body[data-page="showcase-generator.html"] .generator-actions button {
+  min-height: 46px;
+  border-color: color-mix(in srgb, var(--color-border) 82%, transparent);
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-surface) 90%, transparent);
+  box-shadow: none;
+}
+body[data-page="showcase-generator.html"] .generator-actions #generate-button {
+  border-color: color-mix(in srgb, var(--color-accent) 65%, var(--color-border));
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 9%, var(--color-surface));
+}
+body[data-page="showcase-generator.html"] .generator-actions :is(#download-button, #copy-button) {
+  color: var(--color-muted);
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+}
+body[data-page="showcase-generator.html"] .generator-actions #history-button {
+  margin-left: auto;
+  border-color: color-mix(in srgb, var(--color-warning) 58%, var(--color-border));
+  color: color-mix(in srgb, var(--color-warning) 82%, var(--color-text));
+  background: color-mix(in srgb, var(--color-warning) 8%, var(--color-surface));
+}
+body[data-page="showcase-generator.html"] .generator-actions #publish-button:not(:disabled) {
+  border-color: var(--color-success);
+  color: var(--color-filled-control-text, #fff);
+  background: linear-gradient(135deg, var(--color-success), color-mix(in srgb, var(--color-success) 72%, var(--color-bg)));
+  box-shadow: 0 0 18px color-mix(in srgb, var(--color-success) 22%, transparent);
+}
+body[data-page="showcase-generator.html"] .generator-actions button:is(:hover, :focus-visible):not(:disabled) {
+  border-color: var(--color-accent);
+  color: var(--color-text);
+  transform: translateY(-1px);
+}
+body[data-page="showcase-generator.html"] .generator-actions button:disabled {
+  opacity: .45;
+  box-shadow: none;
+}
+
+@media (max-width: 767px) {
+  body[data-page="showcase-generator.html"] .generator-actions #history-button {
+    margin-left: 0;
+  }
+  body[data-page="showcase-generator.html"] .generator-actions button {
+    flex: 1 1 calc(50% - 9px);
+  }
+  body[data-page="showcase-generator.html"] .generator-actions #publish-button {
+    flex-basis: 100%;
+  }
+}

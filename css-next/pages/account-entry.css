@@ -1,10 +1,10 @@
 /* Canonical stylesheet entry for account.html. */
-@layer app, account-components, account-base, account-danger, account-actions, account-polish;
+@layer app, account-components, account-base, account-danger, account-actions, account-overview, account-operator-metadata;
 
 @import url("../index.css?v=64") layer(app);
 @import url("../components/style-marks.css?v=1") layer(account-components);
 @import url("./account.css?v=12") layer(account-base);
 @import url("./account-danger.css?v=1") layer(account-danger);
 @import url("./account-actions.css?v=1") layer(account-actions);
-@import url("./account-ui-polish.css?v=1") layer(account-polish);
-@import url("./account-operator-nowrap.css?v=1") layer(account-polish);
+@import url("./account-overview.css?v=1") layer(account-overview);
+@import url("./account-operator-metadata.css?v=1") layer(account-operator-metadata);

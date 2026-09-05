@@ -1,4 +1,4 @@
-/* Keep compact operator metadata labels on one line where the desktop layout has room. */
+/* Canonical desktop metadata sizing for the account operator summary. */
 @media (min-width: 768px) {
   body[data-page="account.html"] .account-operator-summary .account-data > div {
     grid-template-columns: 150px minmax(0, 1fr);

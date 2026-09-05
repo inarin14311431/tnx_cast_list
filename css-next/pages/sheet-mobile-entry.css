@@ -1,7 +1,7 @@
 /* Canonical stylesheet entry for the mobile editor. */
 @layer app, mobile-base, mobile-theme, mobile-ui, mobile-profile, mobile-style,
   mobile-ability, mobile-skills, mobile-outfit, mobile-combos, mobile-snapshots,
-  mobile-image, mobile-import, mobile-ux;
+  mobile-image, mobile-import, mobile-ux, mobile-shell;
 
 @import url("../index.css?v=64") layer(app);
 @import url("./sheet-mobile.css?v=5") layer(mobile-base);
@@ -17,3 +17,4 @@
 @import url("./sheet-mobile-image.css?v=2") layer(mobile-image);
 @import url("./sheet-mobile-import.css?v=2") layer(mobile-import);
 @import url("./sheet-mobile-ux.css?v=3") layer(mobile-ux);
+@import url("./sheet-mobile-shell.css?v=1") layer(mobile-shell);
