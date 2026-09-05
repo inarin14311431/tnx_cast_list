@@ -1,0 +1,228 @@
+/*
+ * Experimental desktop polish for the public cast viewer.
+ *
+ * This file is intentionally isolated from cast.css so the experiment can be
+ * rolled back by removing one import from cast-entry.css. Keep mobile rules
+ * out of this layer until the desktop direction is accepted.
+ */
+
+@media (min-width: 1200px) {
+  /* 1. Header actions: navigation -> primary action -> view/export utilities. */
+  body[data-page="cast.html"] .cast-header__actions {
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: center;
+    gap: 16px;
+    margin-left: 0;
+  }
+
+  body[data-page="cast.html"] .cast-header__primary-actions {
+    align-items: stretch;
+    gap: 6px;
+    padding-right: 16px;
+    border-right: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
+  }
+
+  body[data-page="cast.html"] .cast-header__back {
+    display: grid;
+    min-height: 43px;
+    align-content: center;
+    padding: 7px 12px;
+    border-color: color-mix(in srgb, var(--color-border) 66%, transparent);
+    color: color-mix(in srgb, var(--color-text) 78%, var(--color-muted));
+    background: transparent;
+    box-shadow: none;
+  }
+
+  body[data-page="cast.html"] .cast-header__back small {
+    color: var(--color-muted);
+  }
+
+  body[data-page="cast.html"] .cast-header__actions #cast-edit-button {
+    border-color: color-mix(in srgb, var(--color-accent) 76%, var(--color-border));
+    background: color-mix(in srgb, var(--color-accent) 14%, var(--color-surface));
+    box-shadow: inset 0 1px color-mix(in srgb, var(--color-accent) 18%, transparent);
+    transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+  }
+
+  body[data-page="cast.html"] .cast-header__actions #cast-edit-button:is(:hover, :focus-visible) {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+    background: linear-gradient(
+      135deg,
+      color-mix(in srgb, var(--color-accent) 34%, var(--color-surface)),
+      color-mix(in srgb, var(--color-accent) 16%, var(--color-surface))
+    );
+    box-shadow: 0 0 16px color-mix(in srgb, var(--color-accent) 26%, transparent), inset 0 1px color-mix(in srgb, var(--color-text) 12%, transparent);
+    transform: translateY(-1px);
+  }
+
+  body[data-page="cast.html"] .cast-header__actions #cast-edit-button:is(:hover, :focus-visible) small {
+    color: color-mix(in srgb, var(--color-text) 78%, var(--color-muted));
+  }
+
+  body[data-page="cast.html"] .cast-header__primary-actions :is(.cast-quick-sheet-link, .cast-view-mode-link, .cast-troops-jump) {
+    display: grid;
+    min-width: 128px;
+    min-height: 43px;
+    align-content: center;
+    gap: 2px;
+    padding: 7px 12px;
+    border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+    color: color-mix(in srgb, var(--color-text) 72%, var(--color-muted));
+    background: color-mix(in srgb, var(--color-surface) 42%, transparent);
+    box-shadow: none;
+    text-align: left;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  body[data-page="cast.html"] .cast-header__primary-actions :is(.cast-quick-sheet-link, .cast-view-mode-link, .cast-troops-jump) small {
+    color: color-mix(in srgb, var(--color-muted) 88%, transparent);
+  }
+
+  body[data-page="cast.html"] .cast-header__primary-actions :is(.cast-quick-sheet-link, .cast-view-mode-link, .cast-troops-jump):is(:hover, :focus-visible) {
+    border-color: color-mix(in srgb, var(--color-accent) 62%, var(--color-border));
+    color: var(--color-accent);
+    background: color-mix(in srgb, var(--color-accent) 7%, var(--color-surface));
+    box-shadow: none;
+  }
+
+  body[data-page="cast.html"] .cast-header__primary-actions :is(.cast-quick-sheet-link, .cast-view-mode-link, .cast-troops-jump):is(:hover, :focus-visible) small {
+    color: var(--color-muted);
+  }
+
+  body[data-page="cast.html"] .cast-header__export-panel {
+    align-content: center;
+    gap: 4px;
+    padding: 0 0 0 14px;
+    border: 0;
+    border-left: 1px solid color-mix(in srgb, var(--color-border) 58%, transparent);
+    background: transparent;
+    box-shadow: none;
+  }
+
+  body[data-page="cast.html"] .cast-header__export-label {
+    color: color-mix(in srgb, var(--color-muted) 82%, transparent);
+    font-size: .54rem;
+  }
+
+  /* 2. Identity metadata: keep name/styles/divine works dominant and flatten secondary facts. */
+  body[data-page="cast.html"] .cast-hero__identity {
+    height: auto;
+    min-height: 0;
+    align-self: start;
+    padding-right: 8px;
+    border-left-width: 2px;
+    background: linear-gradient(90deg, color-mix(in srgb, var(--color-accent) 7%, transparent), transparent 42%);
+  }
+
+  body[data-page="cast.html"] .identity-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0;
+    margin: 15px 10px 10px;
+  }
+
+  body[data-page="cast.html"] .identity-grid > div:not(.cast-character-sheet-link) {
+    padding: 7px 12px 8px;
+    border: 0;
+    border-right: 1px solid color-mix(in srgb, var(--color-border) 54%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--color-border) 46%, transparent);
+    background: transparent;
+    box-shadow: none;
+  }
+
+  body[data-page="cast.html"] .identity-grid > div:not(.cast-character-sheet-link):nth-child(4) {
+    border-right: 0;
+  }
+
+  body[data-page="cast.html"] .identity-grid > div:not(.cast-character-sheet-link)::after {
+    display: none;
+  }
+
+  body[data-page="cast.html"] .identity-grid dt {
+    font-size: .62rem;
+    letter-spacing: .08em;
+  }
+
+  body[data-page="cast.html"] .identity-grid dd {
+    margin-top: 3px;
+    font-size: .9rem;
+  }
+
+  body[data-page="cast.html"] .cast-summary-panel {
+    margin: 4px 10px 0;
+    padding: 10px 12px 2px;
+    border: 0;
+    border-top: 1px solid color-mix(in srgb, var(--color-border) 50%, transparent);
+    background: transparent;
+  }
+
+  body[data-page="cast.html"] .cast-summary-heading {
+    margin-bottom: 6px;
+    color: color-mix(in srgb, var(--color-accent) 58%, var(--color-muted));
+    font-size: .68rem;
+    letter-spacing: .1em;
+  }
+
+  body[data-page="cast.html"] .cast-summary {
+    color: color-mix(in srgb, var(--color-text) 88%, var(--color-muted));
+    font-size: .98rem;
+    line-height: 1.6;
+  }
+
+  /* 3. Character Sheet Warehouse: explicit lower-right secondary metadata slot. */
+  body[data-page="cast.html"] .identity-grid > .cast-character-sheet-link {
+    grid-column: 4;
+    grid-row: 2;
+    justify-self: stretch;
+    margin-top: 7px;
+    padding: 5px 0 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    text-align: right;
+  }
+
+  body[data-page="cast.html"] .identity-grid > .cast-character-sheet-link::after {
+    display: none;
+  }
+
+  body[data-page="cast.html"] .cast-character-sheet-link dt {
+    color: color-mix(in srgb, var(--color-muted) 80%, transparent);
+    font-size: .54rem;
+  }
+
+  body[data-page="cast.html"] .cast-character-sheet-link dd {
+    margin-top: 2px;
+  }
+
+  body[data-page="cast.html"] .cast-character-sheet-link a {
+    color: color-mix(in srgb, var(--color-accent) 72%, var(--color-text));
+    font-size: .78rem;
+    font-weight: 700;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 3px;
+  }
+
+  /* 4. Portrait balance: reduce width and stop forcing both hero columns to a fixed 610-650px height. */
+  body[data-page="cast.html"] .cast-hero {
+    grid-template-columns: minmax(280px, 360px) minmax(0, 1fr);
+    align-items: start;
+    gap: 24px;
+  }
+
+  body[data-page="cast.html"] .cast-hero__image-panel {
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    min-height: 0;
+    align-self: start;
+  }
+
+  body[data-page="cast.html"] .cast-hero__image-frame {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 3 / 4;
+  }
+}
