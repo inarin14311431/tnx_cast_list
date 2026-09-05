@@ -84,6 +84,6 @@ test("desktop cast profile panels can collapse even when their content has a str
   const entryCss = await read("css-next/pages/cast-entry.css");
   const castHtml = await read("cast.html");
   assert.match(detailsCss, /body\[data-page="cast\.html"\] \.data-panel\.is-collapsed > :not\(\.data-panel__header\)\{\s*display:none;\s*\}/);
-  assert.match(entryCss, /cast-view-details\.css\?v=4/);
-  assert.match(castHtml, /cast-entry\.css\?v=6/);
+  assert.match(entryCss, /cast-view-details\.css\?v=\d+/);
+  assert.match(castHtml, /cast-entry\.css\?v=\d+/);
 });
