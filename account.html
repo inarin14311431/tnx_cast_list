@@ -4,7 +4,7 @@
   <script src="./js/theme-registry.js?v=1"></script>
   <script src="./js/css-next-theme.js?v=8"></script>
   <script src="./js/theme-scope.js?v=1"></script>
-  <link rel="stylesheet" href="./css-next/pages/account-entry.css?v=1" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/pages/account-entry.css?v=2" data-css-system="next">
   <link rel="stylesheet" href="./css-next/themes/index.css?v=1" data-theme-system="1">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -27,52 +27,76 @@
   </header>
 
   <main class="account-layout">
-    <section class="account-panel">
-      <p class="account-panel__label">
-        認証済みオペレーター
-        <small>AUTHENTICATED OPERATOR</small>
-      </p>
-      <h2 id="account-email">読み込み中…</h2>
+    <section class="account-panel account-operator-panel">
+      <div class="account-operator-summary">
+        <div class="account-operator-identity">
+          <p class="account-panel__label">
+            認証済みオペレーター
+            <small>AUTHENTICATED OPERATOR</small>
+          </p>
+          <h2 id="account-email">読み込み中…</h2>
+        </div>
 
-      <dl class="account-data">
-        <div>
-          <dt>
-            ユーザーID
-            <small>USER ID</small>
-          </dt>
-          <dd id="account-user-id"></dd>
-        </div>
-        <div>
-          <dt>
-            最終ログイン
-            <small>LAST SIGN IN</small>
-          </dt>
-          <dd id="account-last-sign-in"></dd>
-        </div>
-      </dl>
+        <dl class="account-data">
+          <div>
+            <dt>
+              ユーザーID
+              <small>USER ID</small>
+            </dt>
+            <dd id="account-user-id"></dd>
+          </div>
+          <div>
+            <dt>
+              最終ログイン
+              <small>LAST SIGN IN</small>
+            </dt>
+            <dd id="account-last-sign-in"></dd>
+          </div>
+        </dl>
+      </div>
 
       <div class="account-actions">
-        <a href="./sheet.html">
-          <span>新規キャスト作成</span>
-          <small>PC EDITOR</small>
-        </a>
-        <a href="./sheet-mobile-new.html">
-          <span>新規キャスト作成</span>
-          <small>MOBILE EDITOR</small>
-        </a>
-        <a href="./acts.html">
-          <span>参加アクト一覧</span>
-          <small>ACT HISTORY</small>
-        </a>
-        <a href="./showcase-generator.html">
-          <span>アクト紹介生成</span>
-          <small>ACT SHOWCASE</small>
-        </a>
-        <a href="./backup.html">
+        <section class="account-action-group account-action-group--create" aria-labelledby="account-create-actions-heading">
+          <h3 id="account-create-actions-heading">
+            キャスト作成
+            <small>CREATE CAST</small>
+          </h3>
+          <div class="account-action-grid account-action-grid--create">
+            <a class="account-action account-action--primary" href="./sheet.html">
+              <span>新規キャスト作成</span>
+              <small>PC EDITOR</small>
+            </a>
+            <a class="account-action" href="./sheet-mobile-new.html">
+              <span>新規キャスト作成</span>
+              <small>MOBILE EDITOR</small>
+            </a>
+          </div>
+        </section>
+
+        <section class="account-action-group account-action-group--manage" aria-labelledby="account-manage-actions-heading">
+          <h3 id="account-manage-actions-heading">
+            管理・履歴
+            <small>MANAGE / HISTORY</small>
+          </h3>
+          <div class="account-action-grid account-action-grid--manage">
+            <a class="account-action" href="./acts.html">
+              <span>参加アクト一覧</span>
+              <small>ACT HISTORY</small>
+            </a>
+            <a class="account-action" href="./showcase-generator.html">
+              <span>アクト紹介生成</span>
+              <small>ACT SHOWCASE</small>
+            </a>
+          </div>
+        </section>
+      </div>
+
+      <div class="account-utility-actions" aria-label="アカウント補助操作">
+        <a class="account-utility-action account-utility-action--backup" href="./backup.html">
           <span>バックアップ／復元</span>
           <small>BACKUP / RESTORE</small>
         </a>
-        <button id="logout-button" type="button">
+        <button class="account-utility-action account-utility-action--logout" id="logout-button" type="button">
           <span>ログアウト</span>
           <small>TERMINATE ACCESS</small>
         </button>
