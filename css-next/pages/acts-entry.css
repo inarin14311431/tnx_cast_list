@@ -1,5 +1,5 @@
 /* Canonical stylesheet entry for act history and the legacy combo redirect. */
-@layer app, auth-page, acts-page, experience-ticket;
+@layer app, auth-page, acts-page, experience-ticket, acts-summary;
 
 @import url("../index.css?v=64") layer(app);
 @import url("./auth.css?v=2") layer(auth-page);
@@ -15,3 +15,6 @@
 /* Experience ticket is isolated from the act-history cascade. */
 @import url("./experience-ticket.css?v=4") layer(experience-ticket);
 @import url("./experience-ticket-layout.css?v=4") layer(experience-ticket);
+
+/* Summary hierarchy is a first-class act-history module. */
+@import url("./acts-summary.css?v=1") layer(acts-summary);

@@ -1,0 +1,31 @@
+/* Canonical mobile-editor shell: title, section navigation and save-state emphasis. */
+body[data-page="sheet-mobile.html"] .mobile-sheet-header__title small {
+  font-size: 0;
+}
+body[data-page="sheet-mobile.html"] .mobile-sheet-header__title small::after {
+  content: "CAST SHEET MOBILE EDITOR";
+  font-size: 10px;
+  letter-spacing: .12em;
+}
+
+body[data-page="sheet-mobile.html"] .mobile-sheet-nav {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body[data-page="sheet-mobile.html"] .mobile-sheet-status[data-state="error"] {
+  border-color: var(--color-danger, #e86c6c);
+}
+body[data-page="sheet-mobile.html"] .mobile-sheet-status[data-state="dirty"],
+body[data-page="sheet-mobile.html"] .mobile-sheet-actions button[data-state="dirty"] {
+  border-color: var(--color-warning, #d9b65b);
+}
+body[data-page="sheet-mobile.html"] .mobile-sheet-status[data-state="saved"],
+body[data-page="sheet-mobile.html"] .mobile-sheet-actions button[data-state="saved"] {
+  border-color: var(--color-success, #59c7a6);
+}
+
+@media (max-width: 420px) {
+  body[data-page="sheet-mobile.html"] .mobile-sheet-nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

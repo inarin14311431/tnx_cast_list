@@ -16,17 +16,15 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>コンボ編集 // N◎VA ARCHIVE</title>
 </head>
-
 <body data-page="combos.html">
   <div class="background-grid"></div>
   <div class="scanlines"></div>
 
   <header class="auth-header combo-page-header app-header">
-    <a id="return-to-cast" class="app-back-link" href="./account.html">
-      <span>&lt; キャストへ戻る</span>
-      <small>RETURN TO CAST</small>
+    <a class="app-back-link" href="./account.html">
+      <span>&lt; アカウントへ</span>
+      <small>RETURN TO ACCOUNT</small>
     </a>
-
     <p>N◎VA MUNICIPAL DATABASE</p>
     <h1>コンボ編集 <small>COMBO DATA EDITOR</small></h1>
   </header>
@@ -35,119 +33,20 @@
     <section class="combo-editor-panel">
       <header class="combo-editor-panel__header">
         <div>
-          <p id="character-id">キャスト情報を読み込み中… <small>ACCESSING...</small></p>
-          <h2 id="character-name">キャストデータ <small>CAST DATA</small></h2>
+          <p>EDITOR ROUTE UPDATED <small>INTEGRATED WORKFLOW</small></p>
+          <h2>キャストシートへ統合済み <small>COMBO EDITOR MOVED</small></h2>
         </div>
-
-        <button id="add-combo-button" type="button">
-          <span>コンボを追加</span>
-          <small>ADD COMBO</small>
-        </button>
       </header>
-
-      <div id="combo-message" class="combo-message" aria-live="polite"></div>
-
-      <div id="combo-list" class="combo-list">
-        コンボデータを読み込み中… <small>SCANNING COMBO DATA...</small>
+      <div class="combo-list">
+        <article class="combo-card">
+          <div class="combo-card__head">
+            <strong>コンボ編集はキャストシート内へ移動しました。</strong>
+          </div>
+          <p>対象キャストを「キャスト管理」から開き、編集画面の「07 コンボ／技能カウンター」を使用してください。</p>
+          <p><a href="./account.html">キャスト管理へ移動</a> ／ <a href="./index.html">キャスト一覧へ戻る</a></p>
+        </article>
       </div>
     </section>
   </main>
-
-  <dialog id="combo-dialog" class="combo-dialog">
-    <form id="combo-form" method="dialog">
-      <header class="combo-dialog__header">
-        <div>
-          <p>キャスト・コンボデータベース <small>CAST COMBO DATABASE</small></p>
-          <h2 id="combo-dialog-title">コンボを追加 <small>ADD COMBO</small></h2>
-        </div>
-
-      </header>
-
-      <input id="combo-id" name="id" type="hidden">
-
-      <div class="combo-form-grid">
-        <label>
-          <span>コンボ名 * <small>COMBO NAME</small></span>
-          <input id="combo-name" name="name" type="text" maxlength="120" required>
-        </label>
-
-        <label>
-          <span>使用能力 <small>ABILITY</small></span>
-          <select id="ability" name="ability">
-            <option value="">未指定 / NOT SET</option>
-            <option value="reason">♠ 理性 / REASON</option>
-            <option value="passion">♣ 感情 / PASSION</option>
-            <option value="life">♥ 生命 / LIFE</option>
-            <option value="mundane">♦ 外界 / MUNDANE</option>
-          </select>
-        </label>
-
-        <label class="combo-form-grid__wide">
-          <span>組み合わせ技能 <small>SKILL COMBINATION</small></span>
-          <input id="skills" name="skills" type="text" maxlength="500"
-            placeholder="例：白兵＋居合い＋修羅">
-        </label>
-
-        <label>
-          <span>判定修正 <small>MODIFIER</small></span>
-          <input id="modifier" name="modifier" type="text" maxlength="60"
-            placeholder="例：+3">
-        </label>
-
-        <label>
-          <span>達成値目安 <small>EXPECTED VALUE</small></span>
-          <input id="target-value" name="target_value" type="text" maxlength="60"
-            placeholder="例：18">
-        </label>
-
-        <label>
-          <span>タイミング <small>TIMING</small></span>
-          <input id="timing" name="timing" type="text" maxlength="100">
-        </label>
-
-        <label>
-          <span>対象 <small>TARGET</small></span>
-          <input id="target" name="target" type="text" maxlength="100">
-        </label>
-
-        <label>
-          <span>射程 <small>RANGE</small></span>
-          <input id="range" name="range" type="text" maxlength="100">
-        </label>
-
-        <label>
-          <span>1アクト使用上限 <small>USES / ACT</small></span>
-          <input id="act-use-limit" name="act_use_limit" type="number" min="1" inputmode="numeric"
-            placeholder="例：1 / 3（空欄＝回数制限なし）">
-        </label>
-
-        <label>
-          <span>表示順 <small>DISPLAY ORDER</small></span>
-          <input id="sort-order" name="sort_order" type="number" min="0" value="0">
-        </label>
-
-        <label class="combo-form-grid__wide">
-          <span>効果・解説 <small>EFFECT / DESCRIPTION</small></span>
-          <textarea id="description" name="description" rows="6" maxlength="5000"></textarea>
-        </label>
-      </div>
-
-      <footer class="combo-dialog__actions">
-        <button id="delete-combo-button" type="button" class="danger" hidden>
-          <span>削除</span><small>DELETE</small>
-        </button>
-
-        <button id="cancel-combo-button" type="button">
-          <span>閉じる</span><small>CLOSE</small>
-        </button>
-
-        <button id="save-combo-button" type="submit">
-          <span>保存</span><small>SAVE</small>
-        </button>
-      </footer>
-    </form>
-  </dialog>
-
-  <script type="module" src="./js/combos.js?v=5"></script>
 </body>
 </html>

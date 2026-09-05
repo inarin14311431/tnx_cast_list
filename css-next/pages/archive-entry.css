@@ -1,6 +1,7 @@
 /* Canonical stylesheet entry for the archive and not-found screens. */
-@layer app, archive-components, archive-page;
+@layer app, archive-components, archive-page, archive-discovery;
 
 @import url("../index.css?v=64") layer(app);
 @import url("../components/style-marks.css?v=1") layer(archive-components);
 @import url("./archive.css?v=6") layer(archive-page);
+@import url("./archive-discovery.css?v=1") layer(archive-discovery);

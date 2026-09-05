@@ -1,0 +1,56 @@
+/* Canonical archive search hierarchy and desktop card density. */
+body[data-page="index.html"] .archive-control--search > span {
+  color: var(--color-accent);
+  font-weight: 900;
+}
+body[data-page="index.html"] .archive-control--search input {
+  border-color: color-mix(in srgb, var(--color-accent) 68%, var(--color-border));
+  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-surface));
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--color-accent) 58%, transparent);
+}
+body[data-page="index.html"] .archive-control--page-size {
+  opacity: .82;
+}
+body[data-page="index.html"] #archive-reset {
+  border-color: color-mix(in srgb, var(--color-border) 72%, transparent);
+  color: var(--color-muted);
+  background: color-mix(in srgb, var(--color-surface) 70%, transparent);
+  box-shadow: none;
+}
+body[data-page="index.html"] #archive-reset:is(:hover, :focus-visible) {
+  border-color: color-mix(in srgb, var(--color-accent) 58%, var(--color-border));
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-accent) 7%, var(--color-surface));
+}
+
+@media (min-width: 1200px) {
+  body[data-page="index.html"] .archive-controls {
+    grid-template-columns: minmax(330px, 2.2fr) repeat(3, minmax(125px, 1fr)) minmax(110px, .72fr) auto;
+  }
+}
+
+@media (min-width: 768px) {
+  body[data-page="index.html"] .cast-grid {
+    gap: 18px;
+  }
+  body[data-page="index.html"] .cast-card {
+    min-height: 380px;
+  }
+  body[data-page="index.html"] .cast-card__image {
+    flex-basis: 232px;
+    height: 232px;
+    min-height: 232px;
+    max-height: 232px;
+  }
+  body[data-page="index.html"] .cast-card__body {
+    min-height: 188px;
+    padding: 15px 16px;
+  }
+  body[data-page="index.html"] .cast-card__summary {
+    margin-top: 9px;
+    -webkit-line-clamp: 3;
+  }
+  body[data-page="index.html"] .cast-card__player {
+    margin-top: 9px;
+  }
+}

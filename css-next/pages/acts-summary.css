@@ -1,0 +1,38 @@
+/* Canonical act-history summary hierarchy and EXP balance emphasis. */
+body[data-page="acts.html"] .act-history-summary article {
+  min-height: 94px;
+  border-color: color-mix(in srgb, var(--color-border) 76%, transparent);
+  background: color-mix(in srgb, var(--color-surface) 92%, transparent);
+}
+body[data-page="acts.html"] .act-history-summary article strong {
+  font-size: 1.72rem;
+}
+body[data-page="acts.html"] .act-history-summary article:nth-child(4) {
+  min-height: 116px;
+  border-color: color-mix(in srgb, var(--color-accent) 68%, var(--color-border));
+  background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 16%, var(--color-surface)), color-mix(in srgb, var(--color-accent) 5%, var(--color-surface)));
+  box-shadow: inset 3px 0 0 var(--color-accent), 0 0 18px color-mix(in srgb, var(--color-accent) 10%, transparent);
+}
+body[data-page="acts.html"] .act-history-summary article:nth-child(4) span,
+body[data-page="acts.html"] .act-history-summary article:nth-child(4) small {
+  color: color-mix(in srgb, var(--color-accent) 74%, var(--color-text));
+}
+body[data-page="acts.html"] .act-history-summary article:nth-child(4) strong {
+  color: var(--color-accent);
+  font-size: 2.45rem;
+  text-shadow: var(--shadow-glow);
+}
+
+@media (min-width: 800px) {
+  body[data-page="acts.html"] .act-history-summary {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) minmax(165px, 1.28fr) minmax(0, 1fr);
+    align-items: center;
+  }
+}
+
+@media (max-width: 799px) {
+  body[data-page="acts.html"] .act-history-summary article:nth-child(4) {
+    grid-column: 1 / -1;
+    grid-row: 1;
+  }
+}
