@@ -1,0 +1,288 @@
+/*
+ * Account overview polish.
+ * Kept in a final cascade layer so the account reorganization can be rolled
+ * back by removing one import from account-entry.css.
+ */
+
+body[data-page="account.html"] .account-operator-panel {
+  padding: 20px 22px 16px;
+}
+
+/* Compact operator identity and metadata into one summary band. */
+body[data-page="account.html"] .account-operator-summary {
+  display: grid;
+  grid-template-columns: minmax(260px, .82fr) minmax(420px, 1.18fr);
+  gap: 30px;
+  align-items: center;
+  min-width: 0;
+}
+
+body[data-page="account.html"] .account-operator-identity {
+  min-width: 0;
+}
+
+body[data-page="account.html"] .account-operator-identity .account-panel__label {
+  margin: 0 0 5px;
+  color: color-mix(in srgb, var(--color-muted) 88%, var(--color-text));
+  font-size: .68rem;
+  letter-spacing: .035em;
+}
+
+body[data-page="account.html"] .account-operator-identity > h2 {
+  margin: 0;
+  overflow-wrap: anywhere;
+  color: var(--color-accent);
+  font-size: clamp(1.15rem, 2.4vw, 1.42rem);
+  line-height: 1.25;
+}
+
+body[data-page="account.html"] .account-operator-summary .account-data {
+  display: grid;
+  gap: 0;
+  min-width: 0;
+  margin: 0;
+}
+
+body[data-page="account.html"] .account-operator-summary .account-data > div {
+  grid-template-columns: 112px minmax(0, 1fr);
+  gap: 12px;
+  min-width: 0;
+  padding: 6px 0;
+  border-bottom-color: color-mix(in srgb, var(--color-border-muted) 68%, transparent);
+}
+
+body[data-page="account.html"] .account-operator-summary .account-data > div:last-child {
+  border-bottom: 0;
+}
+
+body[data-page="account.html"] .account-operator-summary .account-data dt {
+  font-size: .66rem;
+}
+
+body[data-page="account.html"] .account-operator-summary .account-data dd {
+  min-width: 0;
+  font-size: .82rem;
+  line-height: 1.45;
+}
+
+/* Separate creation from management instead of presenting every action equally. */
+body[data-page="account.html"] .account-actions {
+  display: grid;
+  grid-template-columns: minmax(300px, .78fr) minmax(430px, 1.22fr);
+  gap: 16px;
+  align-items: start;
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid color-mix(in srgb, var(--color-border-muted) 78%, transparent);
+}
+
+body[data-page="account.html"] .account-action-group {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+body[data-page="account.html"] .account-action-group > h3 {
+  margin: 0;
+  color: color-mix(in srgb, var(--color-muted) 86%, var(--color-text));
+  font: 800 .65rem/1.25 var(--font-data);
+  letter-spacing: .08em;
+}
+
+body[data-page="account.html"] .account-action-group > h3 small {
+  margin-left: 5px;
+  color: color-mix(in srgb, var(--color-muted) 68%, transparent);
+  font-size: .7em;
+  letter-spacing: .12em;
+}
+
+body[data-page="account.html"] .account-action-grid {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+body[data-page="account.html"] .account-action-grid--create {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+body[data-page="account.html"] .account-action-grid--manage {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+body[data-page="account.html"] .account-action-grid > :where(a, button) {
+  display: grid;
+  min-width: 0;
+  min-height: 52px;
+  place-content: center;
+  gap: 2px;
+  padding: 8px 10px;
+  border: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent);
+  color: color-mix(in srgb, var(--color-text) 86%, var(--color-muted));
+  background: color-mix(in srgb, var(--color-surface-alt) 58%, transparent);
+  box-shadow: none;
+  text-align: center;
+  text-decoration: none;
+  transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast), box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+
+body[data-page="account.html"] .account-action-grid > :where(a, button) span {
+  font-weight: 800;
+}
+
+body[data-page="account.html"] .account-action-grid > :where(a, button) small {
+  color: var(--color-muted);
+  font-size: .56rem;
+}
+
+body[data-page="account.html"] .account-action-grid > :where(a, button):is(:hover, :focus-visible) {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb, var(--color-accent) 72%, var(--color-border));
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--color-accent) 12%, transparent);
+  outline: none;
+}
+
+/* PC creation is the primary creation path; mobile stays adjacent but secondary. */
+body[data-page="account.html"] .account-action-grid > .account-action--primary {
+  border-color: color-mix(in srgb, var(--color-accent) 80%, var(--color-border));
+  color: var(--color-text);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent) 22%, var(--color-surface)),
+    color-mix(in srgb, var(--color-accent) 8%, var(--color-surface))
+  );
+  box-shadow: inset 3px 0 0 var(--color-accent);
+}
+
+body[data-page="account.html"] .account-action-grid > .account-action--primary:is(:hover, :focus-visible) {
+  border-color: var(--color-accent);
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--color-accent) 32%, var(--color-surface)),
+    color-mix(in srgb, var(--color-accent) 13%, var(--color-surface))
+  );
+  box-shadow: var(--shadow-glow), inset 3px 0 0 var(--color-accent);
+}
+
+/* Backup and logout are utilities, not peers of the main workflows. */
+body[data-page="account.html"] .account-utility-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 13px;
+  padding-top: 12px;
+  border-top: 1px solid color-mix(in srgb, var(--color-border-muted) 58%, transparent);
+}
+
+body[data-page="account.html"] .account-utility-action {
+  display: grid;
+  min-width: 180px;
+  min-height: 38px;
+  place-content: center;
+  gap: 1px;
+  padding: 6px 12px;
+  border: 1px solid color-mix(in srgb, var(--color-border-muted) 78%, transparent);
+  color: color-mix(in srgb, var(--color-text) 72%, var(--color-muted));
+  background: transparent;
+  box-shadow: none;
+  font-size: .78rem;
+  text-align: center;
+  text-decoration: none;
+  transition: color var(--transition-fast), border-color var(--transition-fast), background var(--transition-fast);
+}
+
+body[data-page="account.html"] .account-utility-action small {
+  color: var(--color-muted);
+  font-size: .5rem;
+}
+
+body[data-page="account.html"] .account-utility-action--backup:is(:hover, :focus-visible) {
+  border-color: color-mix(in srgb, var(--color-accent) 55%, var(--color-border));
+  color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 6%, var(--color-surface));
+  outline: none;
+}
+
+body[data-page="account.html"] .account-utility-action--logout {
+  min-width: 142px;
+  border-color: color-mix(in srgb, var(--color-danger) 28%, var(--color-border-muted));
+  color: color-mix(in srgb, var(--color-danger) 62%, var(--color-muted));
+}
+
+body[data-page="account.html"] .account-utility-action--logout:is(:hover, :focus-visible) {
+  border-color: color-mix(in srgb, var(--color-danger) 68%, var(--color-border));
+  color: var(--color-danger);
+  background: color-mix(in srgb, var(--color-danger) 7%, var(--color-surface));
+  outline: none;
+}
+
+@media (max-width: 900px) {
+  body[data-page="account.html"] .account-operator-summary {
+    grid-template-columns: minmax(220px, .75fr) minmax(0, 1.25fr);
+    gap: 20px;
+  }
+
+  body[data-page="account.html"] .account-actions {
+    grid-template-columns: 1fr;
+  }
+
+  body[data-page="account.html"] .account-action-grid--manage {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 767px) {
+  body[data-page="account.html"] .account-operator-panel {
+    padding: 16px 14px 14px;
+  }
+
+  body[data-page="account.html"] .account-operator-summary {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  body[data-page="account.html"] .account-operator-summary .account-data > div {
+    grid-template-columns: 104px minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  body[data-page="account.html"] .account-actions {
+    gap: 13px;
+    margin-top: 12px;
+    padding-top: 12px;
+  }
+
+  body[data-page="account.html"] .account-action-grid--create {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body[data-page="account.html"] .account-action-grid--manage {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body[data-page="account.html"] .account-action-grid > :where(a, button) {
+    min-height: 48px;
+  }
+
+  body[data-page="account.html"] .account-utility-actions {
+    align-items: stretch;
+  }
+
+  body[data-page="account.html"] .account-utility-action {
+    min-width: 0;
+    flex: 1 1 0;
+  }
+}
+
+@media (max-width: 430px) {
+  body[data-page="account.html"] .account-action-grid--create {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  body[data-page="account.html"] .account-utility-actions {
+    flex-direction: column;
+  }
+}
