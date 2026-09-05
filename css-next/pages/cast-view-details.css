@@ -48,6 +48,13 @@ body[data-page="cast.html"] .cast-outfit-table .cast-outfit-col--concealment_pen
   text-align:center;
 }
 
+/* Keep the Character Sheet Warehouse shortcut at the lower-right of the desktop identity grid. */
+@media(min-width:1200px){
+  body[data-page="cast.html"] .identity-grid > .cast-character-sheet-link{
+    grid-column:4;
+  }
+}
+
 /* Divine work cards: category label at left, reading above the name. */
 body[data-page="cast.html"] .cast-divine-authority .cast-divine-card{grid-template-columns:42px minmax(0,1fr);grid-template-rows:auto auto;gap:2px 8px}
 body[data-page="cast.html"] .cast-divine-authority .divine-card__number{display:none}
