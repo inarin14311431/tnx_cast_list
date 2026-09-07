@@ -62,7 +62,7 @@ test("PC and mobile editor switches preserve the stable parent", async () => {
 
 test("new mobile cast editor returns to account rather than the creation form", async () => {
   const source = await read("js/sheet-mobile-new.js");
-  assert.match(source, /target\.searchParams\.set\("return",`\$\{SITE_BASE_PATH\}account\.html`\)/);
+  assert.match(source, /target\.searchParams\.set\("return",\s*`\$\{SITE_BASE_PATH\}account\.html`\)/);
 });
 
 test("troop list keeps filters across detail round trips", async () => {
