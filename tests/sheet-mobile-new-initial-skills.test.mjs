@@ -8,7 +8,7 @@ const SUITS = ["reason", "passion", "life", "mundane"];
 
 test("mobile new character persists the same automatically acquired general skills as PC", () => {
   const rows = buildMobileNewCharacterSkillPayloads("character-1");
-  const general = rows.filter(row => row.category === "general");
+  const general = rows.filter(row => row.category === "general" && row.skill_kind === "general");
   const expected = GENERAL_MASTER_ROWS.filter(([, , kind]) => kind === "general");
 
   assert.equal(general.length, expected.length);
@@ -19,6 +19,19 @@ test("mobile new character persists the same automatically acquired general skil
     assert.equal(row.level, 1);
     assert.equal(row.skill_kind, "general");
     for (const candidate of SUITS) assert.equal(row[candidate], candidate === suit);
+  }
+});
+
+test("mobile new character preserves the PC proper-skill starter slots", () => {
+  const rows = buildMobileNewCharacterSkillPayloads("character-1");
+  const proper = rows.filter(row => row.category === "general" && row.skill_kind === "proper");
+
+  assert.deepEqual(proper.map(row => row.name), ["製作：", "芸術：", "操縦："]);
+  for (const row of proper) {
+    assert.equal(row.character_id, "character-1");
+    assert.equal(row.level, 0);
+    assert.equal(row.free_level, 0);
+    for (const suit of SUITS) assert.equal(row[suit], false);
   }
 });
 
@@ -42,6 +55,7 @@ test("mobile new flow is wired to the shared PC initialization and save projecti
 
   assert.match(helper, /buildNewCharacterSkills/);
   assert.match(helper, /buildSkillSavePayloads/);
+  assert.match(helper, /PROPER_MASTER_NAMES/);
   assert.match(entry, /buildMobileNewCharacterSkillPayloads\(data\.id\)/);
   assert.match(entry, /\.select\("id,public_id"\)/);
   assert.match(entry, /character_skills/);
