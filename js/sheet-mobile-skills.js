@@ -1,7 +1,8 @@
+import { appendMissingInitialGeneralSkills } from "./sheet-mobile-initial-skills.js";
 import { supabase } from "./supabase-client.js";
 import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=1";
 import { moveAdjacentRow } from "./sheet-row-collection-state.js?v=2";
-import { GENERAL_MOBILE_ORDER, MUTABLE_GENERAL_PREFIXES } from "./general-skill-catalog.js?v=1";
+import { GENERAL_MOBILE_ORDER, MUTABLE_GENERAL_PREFIXES, isInitialGeneralSkill } from "./general-skill-catalog.js?v=1";
 import { normalizeStyleSkillRow } from "./sheet-mobile-style-normalizer.js?v=1";
 
 const $ = selector => document.querySelector(selector);
@@ -66,13 +67,14 @@ function minLevel(item) {
 
 function canRename(item) {
   if (!item) return false;
+  if (item.category === "general" && isInitialGeneralSkill(item.name)) return false;
   if (isNew(item)) return true;
   if (item.category !== "general") return true;
   return mutableGeneralName(item);
 }
 
 function canDeleteGeneral(item) {
-  return Boolean(item) && (isNew(item) || item.category !== "general" || mutableGeneralName(item));
+  return Boolean(item) && !(item.category === "general" && isInitialGeneralSkill(item.name)) && (isNew(item) || item.category !== "general" || mutableGeneralName(item));
 }
 
 function blankSkill(category) {
@@ -647,6 +649,10 @@ async function load() {
   const result = await supabase.from("character_skills").select("*").eq("character_id", character.id).order("sort_order");
   if (result.error) throw result.error;
   skills = (result.data || []).map(item => ({ ...item, _new: false, _separator: isSeparator(item) }));
+  const initial = appendMissingInitialGeneralSkills(skills, blankSkill);
+  skills = initial.rows;
+  for (const item of initial.added) dirtyIds.add(String(item.id));
+  if (initial.added.length) markDirty();
   renderGeneral();
   renderStyle();
 }
