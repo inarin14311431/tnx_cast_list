@@ -76,3 +76,16 @@ test("classic sheet delegates skill markup to the renderer module", async () => 
   assert.doesNotMatch(source, /function\s+rowActions\s*\(/);
   assert.doesNotMatch(source, /function\s+styleSeparatorRow\s*\(/);
 });
+
+
+test("skill renderer keeps social and connection frames when either category is empty", () => {
+  const output = renderSkillEditorSections({
+    generalRows: [skill({ _key: "g-empty-groups", name: "医療" })],
+    socialRows: [],
+    connectionRows: []
+  });
+  assert.match(output.generalHtml, /data-skill-category="social"/);
+  assert.match(output.generalHtml, /data-skill-category="connection"/);
+  assert.match(output.generalHtml, />社会 <small>SOCIAL<\/small>/);
+  assert.match(output.generalHtml, />コネクション <small>CONNECTIONS<\/small>/);
+});

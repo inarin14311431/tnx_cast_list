@@ -33,7 +33,7 @@ import { calculateStyleBaselines } from "./sheet-style-baseline.js?v=1";
 import { buildStylePresentation } from "./sheet-style-presentation.js?v=1";
 import { calculateAbilityFinals } from "./sheet-ability-calculation.js?v=1";
 import { resolveStyleBaselineValue } from "./sheet-baseline-adjustment.js?v=1";
-import { buildNewCharacterSkills } from "./sheet-new-character-state.js?v=1";
+import { buildNewCharacterSkills, appendStarterSocialConnectionRowsIfBothMissing } from "./sheet-new-character-state.js?v=2";
 import { countGeneralSkillColumns, chooseGeneralSkillColumn } from "./sheet-general-column.js?v=1";
 import { resolveSkillInputState } from "./sheet-skill-level-suit-state.js?v=1";
 import { buildStyleSaveRows } from "./sheet-style-save-projection.js?v=1";
@@ -291,6 +291,7 @@ async function loadCharacter(publicId) {
       styleKindFromLabel: label => window.TNXStyleSkillKinds?.fromLabel(label)
     }));
     ensureGeneralMasterRows(); addInitialGeneralBlankSlots();
+    skills = appendStarterSocialConnectionRowsIfBothMissing(skills);
     outfits = bundle.outfits.map(normalizeLoadedOutfit);
     renderSkills(); renderOutfits(); recalc();
     saveCoordinator.markSaved();

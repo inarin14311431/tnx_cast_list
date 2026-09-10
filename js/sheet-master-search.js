@@ -342,7 +342,11 @@ async function addSkdRow(rowData) {
   const before = new Set([...document.querySelectorAll("#style-skills [data-skill-key]")].map(row => row.dataset.skillKey));
   document.querySelector("#add-style-skill")?.click();
   const row = await waitForNewElement("#style-skills [data-skill-key]", before, "スタイル技能行を追加できませんでした。");
-  await waitFor(() => row.querySelector("[data-style-field='description']") || row.querySelector("[data-f='description']"), 1600);
+  const structuredDetailReady = await waitFor(() =>
+    row.dataset.fullStyleFields === "1"
+    && row.querySelector("[data-style-field='skill']")
+    && row.querySelector("[data-style-field='description']")
+    && row.querySelector("[data-style-field='page']"), 1600);
 
   setControl(row.querySelector("[data-f='name']"), rowData.name);
   setControl(row.querySelector("[data-f='skill_kind']"), mapSkillKind(rowData.type_label));
@@ -363,7 +367,7 @@ async function addSkdRow(rowData) {
     if (control) setControl(control, value || "");
   }
 
-  if (!row.querySelector("[data-style-field='description']")) {
+  if (!structuredDetailReady) {
     setControl(row.querySelector("[data-f='description']"), buildSkdPlainDescription(rowData));
   }
   row.scrollIntoView({ block: "center", behavior: "smooth" });

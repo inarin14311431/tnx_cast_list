@@ -19,3 +19,24 @@ test('OFC master apply uses persistent master selection', async () => {
   assert.match(apply, /__tnxMasterSearchSelectedIds/);
   assert.doesNotMatch(apply, /outfit-ofc-tsv/);
 });
+
+
+test('SKD master apply waits for full structured detail controls before mapping all fields', async () => {
+  const source = await read('js/sheet-master-search.js');
+  assert.match(source, /row\.dataset\.fullStyleFields === "1"/);
+  assert.match(source, /data-style-field='skill'/);
+  assert.match(source, /data-style-field='page'/);
+  for (const mapping of [
+    'skill: rowData.skill',
+    'limit: rowData.limit_text',
+    'timing: rowData.timing',
+    'target: rowData.target',
+    'range: rowData.range_text',
+    'difficulty: rowData.difficulty',
+    'confrontation: rowData.confrontation',
+    'description: rowData.description',
+    'page: rowData.page_number'
+  ]) assert.ok(source.includes(mapping), `missing SKD mapping: ${mapping}`);
+  assert.match(source, /if \(!structuredDetailReady\)/);
+  assert.match(source, /buildSkdPlainDescription\(rowData\)/);
+});
