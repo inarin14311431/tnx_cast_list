@@ -1,4 +1,5 @@
 import { test, expect } from "@playwright/test";
+import { hasAuthCredentials } from "./helpers.js";
 
 const ownedShowcase = {
   slug: "e2e-edit-restore",
@@ -31,6 +32,10 @@ const corsHeaders = {
   "access-control-allow-methods": "GET, POST, OPTIONS",
   "content-type": "application/json"
 };
+
+test.beforeEach(() => {
+  test.skip(!hasAuthCredentials(), "E2E_EMAIL / E2E_PASSWORD が未設定のためスキップ");
+});
 
 async function fulfillJson(route, body) {
   if (route.request().method() === "OPTIONS") return route.fulfill({ status: 204, headers: corsHeaders, body: "" });
