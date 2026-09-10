@@ -1,0 +1,38 @@
+name: Sync showcase motion fix
+
+on:
+  push:
+    branches: [sync/showcase-motion-20260910]
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: sync/showcase-motion-20260910
+          fetch-depth: 0
+      - name: Copy exact files from validation main
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf /tmp/validation
+          git clone https://github.com/inarin14311431/tnx-cast-archive-test.git /tmp/validation
+          git -C /tmp/validation checkout d9c0dfa01f03192f993b9a0c62712d90afa15115
+          cp /tmp/validation/.github/workflows/playwright.yml .github/workflows/playwright.yml
+          cp /tmp/validation/js/act-showcase-neotokyo.js js/act-showcase-neotokyo.js
+          cp /tmp/validation/tests/act-showcase-reduced-motion-sequence.test.mjs tests/act-showcase-reduced-motion-sequence.test.mjs
+          cp /tmp/validation/tests/e2e/act-showcase-reduced-motion.spec.js tests/e2e/act-showcase-reduced-motion.spec.js
+          rm .github/workflows/sync-showcase-motion.yml
+      - name: Commit synchronized files
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "検証mainの豪華版ACT紹介修正を完全同期"
+          git push origin HEAD:sync/showcase-motion-20260910
