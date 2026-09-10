@@ -18,7 +18,6 @@ export async function runNeoTokyoIntro({ intro, model }) {
   if (!intro || !model) return;
   if (prefersReducedMotion()) {
     document.body.classList.add("showcase-neotokyo-reduced");
-    return;
   }
 
   const state = createSequenceState();
