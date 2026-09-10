@@ -32,25 +32,29 @@ test("release candidate keeps security as an independent second gate", () => {
   assert.match(security, /npm run audit:security/);
 });
 
-test("release candidate keeps critical PC/public E2E paths", () => {
+test("release candidate keeps current public and authenticated audit E2E paths", () => {
   for (const spec of [
+    "tests/e2e/audit-coverage.spec.js",
     "tests/e2e/smoke.spec.js",
     "tests/e2e/cast-view.spec.js",
     "tests/e2e/troop-view.spec.js",
+    "tests/e2e/editor-help.spec.js",
+    "tests/e2e/direct-transfer.spec.js",
+    "tests/e2e/character-sheet-url-import-live.spec.js",
     "tests/e2e/authenticated.spec.js",
-    "tests/e2e/legacy-import-profile.spec.js",
-    "tests/e2e/outfit-import-transfer.spec.js",
-    "tests/e2e/sheet-row-lifecycle.spec.js",
-    "tests/e2e/sheet-save-reload-flow.spec.js",
-    "tests/e2e/style-marks.spec.js",
-    "tests/e2e/style-separator.spec.js",
-    "tests/e2e/style-skill-detail-integrity.spec.js"
+    "tests/e2e/style-skill-detail-integrity.spec.js",
+    "tests/e2e/troop-editor-flow.spec.js"
   ]) {
     assert.match(playwright, new RegExp(spec.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")));
   }
+  assert.match(playwright, /E2E_REQUIRE_AUTH:\s*"1"/);
+  assert.match(playwright, /E2E_EMAIL:\s*\$\{\{ secrets\.E2E_EMAIL \}\}/);
+  assert.match(playwright, /E2E_PASSWORD:\s*\$\{\{ secrets\.E2E_PASSWORD \}\}/);
+  assert.match(playwright, /E2E_CAST_ID:\s*\$\{\{ secrets\.E2E_CAST_ID \}\}/);
 });
 
-test("release candidate keeps critical mobile E2E paths", () => {
+test("release candidate keeps critical mobile E2E paths after authenticated editor", () => {
+  assert.match(playwright, /mobile:\s*\n\s*needs:\s*authenticated-editor/);
   for (const spec of [
     "tests/e2e/account-mobile.spec.js",
     "tests/e2e/troop-view.spec.js",

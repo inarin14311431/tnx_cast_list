@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 
 test("production cast transfer exposes bookmarklet tools instead of POST dialog", async ({ page }) => {
   await page.goto("/tests/e2e/fixtures/bookmarklet-transfer-mode.html?id=TNX-E2E");

@@ -7,7 +7,7 @@ const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 test('data import uses direct character-sheets URL and global help', async () => {
   const source = await read('js/sheet-import-url.js');
   assert.match(source, /character-sheets\.appspot\.com/);
-  assert.match(source, /\/tnx\/display/);
+  assert.match(source, /requestCharacterSheetSource/);
   assert.match(source, /legacy-import-json/);
   assert.match(source, /legacy-import-apply/);
   assert.match(source, /help-ui\.js/);

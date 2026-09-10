@@ -1,0 +1,140 @@
+/* Cyberpunk title lockup + visual-caption metadata. Loaded last so it can refine earlier showcase layers. */
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo{
+  position:relative;
+  overflow:hidden;
+  background:
+    linear-gradient(90deg,rgba(77,231,255,.055) 0 1px,transparent 1px 86px),
+    linear-gradient(0deg,rgba(255,83,190,.035) 0 1px,transparent 1px 58px),
+    radial-gradient(circle at 18% 50%,rgba(47,220,255,.105),transparent 31%),
+    radial-gradient(circle at 87% 35%,rgba(255,61,178,.11),transparent 29%),
+    linear-gradient(102deg,rgba(5,30,49,.5),rgba(3,8,18,.18) 36%,rgba(3,8,18,.14) 66%,rgba(57,10,49,.42));
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo:after{
+  position:absolute;
+  inset:92px 6% 104px;
+  z-index:-1;
+  content:"";
+  border:1px solid rgba(103,236,255,.17);
+  border-right-color:rgba(255,76,187,.2);
+  clip-path:polygon(0 18px,18px 0,31% 0,32.5% 7px,67% 7px,68.5% 0,calc(100% - 28px) 0,100% 28px,100% calc(100% - 18px),calc(100% - 18px) 100%,72% 100%,70.5% calc(100% - 7px),29% calc(100% - 7px),27.5% 100%,18px 100%,0 calc(100% - 18px));
+  box-shadow:inset 0 0 42px rgba(70,225,255,.025),0 0 36px rgba(0,0,0,.35);
+  pointer-events:none;
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta{
+  position:relative;
+  border-top:1px solid rgba(104,236,255,.55);
+  border-bottom:1px solid rgba(255,76,187,.28);
+  background:linear-gradient(90deg,rgba(24,104,130,.21),transparent 38%,transparent 65%,rgba(124,29,93,.19));
+  box-shadow:0 0 22px rgba(68,224,255,.06),inset 0 1px rgba(192,251,255,.05);
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta:before,
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta:after{
+  position:absolute;
+  top:-5px;
+  width:70px;
+  height:9px;
+  content:"";
+  border-top:2px solid #73efff;
+  border-left:2px solid #73efff;
+  opacity:.7;
+  pointer-events:none;
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta:before{left:-5px}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta:after{right:-5px;transform:scaleX(-1);border-color:#ff66c4}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo.showcase-fit-title{
+  position:relative;
+  z-index:2;
+  font-family:"Dela Gothic One","Zen Kaku Gothic New","Noto Sans JP",sans-serif;
+  font-weight:400;
+  font-style:normal;
+  font-synthesis:none;
+  letter-spacing:-.065em;
+  color:#f8fdff;
+  -webkit-text-stroke:1px rgba(224,250,255,.72);
+  text-shadow:
+    5px 0 0 rgba(45,226,255,.31),
+    -5px 0 0 rgba(255,61,178,.27),
+    0 -2px 0 rgba(255,255,255,.16),
+    0 0 18px rgba(95,231,255,.16),
+    0 20px 60px rgba(0,0,0,.7);
+  filter:drop-shadow(0 0 1px rgba(255,255,255,.5));
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo.showcase-fit-title:before{
+  color:#67f2ff;
+  opacity:.26;
+  transform:translate(6px,-2px);
+  clip-path:polygon(0 10%,100% 10%,100% 19%,0 19%,0 47%,100% 47%,100% 55%,0 55%,0 82%,100% 82%,100% 88%,0 88%);
+  animation:neotokyo-title-glitch-cyan 2.4s steps(1,end) 1;
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo.showcase-fit-title:after{
+  color:#ff55bd;
+  opacity:.22;
+  transform:translate(-6px,2px);
+  clip-path:polygon(0 25%,100% 25%,100% 33%,0 33%,0 62%,100% 62%,100% 69%,0 69%,0 91%,100% 91%,100% 96%,0 96%);
+  animation:neotokyo-title-glitch-pink 2.4s steps(1,end) 1;
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__ghost{
+  font-family:"Dela Gothic One","Zen Kaku Gothic New","Noto Sans JP",sans-serif;
+  font-weight:400;
+  transform:translate(-50%,-14%) skewX(-4deg);
+  -webkit-text-stroke:1px rgba(104,236,255,.12);
+  text-shadow:14px 0 0 rgba(255,68,183,.025),-14px 0 0 rgba(72,229,255,.025);
+  opacity:.34;
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__rule{
+  position:relative;
+  z-index:3;
+  margin-top:10px;
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__rule span{
+  padding:4px 12px;
+  border:1px solid rgba(103,242,255,.16);
+  background:rgba(5,25,35,.7);
+  clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%);
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-credit{
+  position:relative;
+  overflow:hidden;
+  clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,0 100%);
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-credit:after{
+  position:absolute;
+  right:16px;
+  bottom:8px;
+  content:"CREDIT://RULER / AUTH:PUBLIC";
+  color:rgba(255,117,205,.42);
+  font:700 .42rem/1 "Share Tech Mono",monospace;
+  letter-spacing:.13em;
+}
+
+body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__meta{
+  display:block;
+  color:#bdeeff;
+  font:700 clamp(.48rem,.67vw,.63rem)/1.45 "Share Tech Mono",monospace;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  white-space:normal;
+  text-shadow:0 0 12px rgba(94,226,255,.18);
+}
+body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__meta:before{
+  content:"▸ ";
+  color:#78ffd2;
+  text-shadow:0 0 10px rgba(86,255,203,.26);
+}
+body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__code{
+  margin-top:6px;
+}
+
+@media(max-width:760px){
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo.showcase-fit-title{
+    font-family:"Dela Gothic One","Zen Kaku Gothic New","Noto Sans JP",sans-serif;
+    letter-spacing:-.04em;
+  }
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo:after{inset:76px 3% 92px}
+  body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__meta{font-size:.46rem;letter-spacing:.07em}
+}
+
+@media(prefers-reduced-motion:reduce){
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo.showcase-fit-title:before,
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo.showcase-fit-title:after{animation:none}
+}

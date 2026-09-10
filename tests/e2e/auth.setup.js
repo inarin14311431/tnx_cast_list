@@ -8,6 +8,7 @@ setup("ログイン状態を保存", async ({ page }) => {
   await mkdir("playwright/.auth", { recursive: true });
 
   if (!hasAuthCredentials()) {
+    if (process.env.E2E_REQUIRE_AUTH === "1") throw new Error("Required E2E credentials are missing.");
     await writeFile(AUTH_STATE, JSON.stringify({ cookies: [], origins: [] }, null, 2));
     console.log("E2E auth skipped: E2E_EMAIL / E2E_PASSWORD are not configured.");
     return;

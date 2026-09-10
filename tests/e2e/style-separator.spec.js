@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 import { getTestCastId, hasAuthCredentials, waitForEditorReady } from "./helpers.js";
 
 test("スタイル技能の区切りと改行名称が上下移動後も維持される", async ({ page }) => {

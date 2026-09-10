@@ -1,67 +1,20 @@
-# Supabase SQL 管理
+# Supabase DB履歴と現行仕様
 
-このディレクトリの番号付きSQLは、運用中のSupabaseへ適用した履歴です。
+番号付きSQLは過去の変更履歴であり、現在のDBをゼロから構築する完全なスキーマではありません。適用済みかどうかを番号の存在だけで判断しないでください。
 
-現在置かれている番号付きSQLは、一覧で「未適用」としたものを除き適用済みです。
-新しい環境をゼロから構築する用途ではなく、変更内容の監査・復旧確認用として保持します。
+- 履歴の順序: `migrations-manifest.json`（05〜41、45ファイル）。過去の重複番号も保持します。
+- 変更規則: `../docs/DATABASE_MIGRATIONS.md`。
+- 2026-09-06の実DB照合・互換RPCの扱い: `../docs/DB_RECONCILIATION_20260906.md`。
+- 実DBの検証: `../scripts/database-invariants.sql` は読取り専用で8条件を検査します。`npm run check:db:live` は管理APIの `SUPABASE_ACCESS_TOKEN` が必要です。通常の `verify` はローカルファイルのみの検査で、実DB適用を証明しません。
 
-## SQL一覧
+## 維持する仕様
 
-| 番号 | ファイル | 役割 | 状態 |
-|---:|---|---|---|
-| 05 | `05_sheet_editor_migration.sql` | 統合キャラクターシート用の列追加 | 適用済み |
-| 07 | `07_act_history.sql` | アクト履歴・参加キャストの基礎テーブル | 適用済み |
-| 09 | `09_experience_spending.sql` | 経験点使用履歴 | 適用済み |
-| 10 | `10_transactional_character_save.sql` | キャスト・技能・装備の一括保存RPC | 適用済み |
-| 11 | `11_showcase_publish_security.sql` | アクト紹介公開時の所有者保護 | 適用済み |
-| 12 | `12_showcase_history_only.sql` | 公開せず履歴だけ登録するRPC | 適用済み |
-| 13 | `13_private_act_history.sql` | 自分の非公開キャストを履歴へ登録 | 適用済み |
-| 14 | `14_visibility_two_state.sql` | 公開状態を`public`・`private`へ統一 | 適用済み |
-| 15 | `15_owner_scoped_act_history.sql` | 履歴・経験点操作をキャスト所有者へ限定 | 適用済み |
-| 16 | `16_style_separator_none.sql` | スタイル技能区切りの種別を`none`へ統一 | 適用済み |
-| 18 | `18_delete_owned_act_history.sql` | 所有キャストの履歴削除RPC | 適用済み |
-| 19 | `19_act_participation_role.sql` | アクト参加枠の保存 | 適用済み |
-| 20 | `20_dynamic_act_showcase.sql` | アクト紹介データの保存・動的表示 | 適用済み |
-| 21 | `21_master_search_uid_allowlist.sql` | SKD/OFCマスタ検索のUID許可リスト | 適用済み |
-| 22 | `22_outfit_ofc_details.sql` | OFC固有項目と保存RPC | 適用済み |
-| 23 | `23_remove_legacy_github_pages_publish.sql` | 旧GitHub Pages公開用RPCを削除 | 未適用 |
-| 24 | `24_combo_act_use_limit.sql` | コンボの1アクト使用上限 | 未適用 |
-| 26 | `26_combo_multi_suit.sql` | コンボの複数使用スート保存 | 未適用 |
+画像バケットはアクト紹介の第三者共有に利用するため公開です。1 MiB・JPEG/PNG/WebPの制限は維持します。本番と検証は容量制約から同じDBを使用します。
 
-## 欠番について
+テスト対象は `inarin1431@gmail.com`（所有者UIDはE2Eポリシーに固定）の管理キャストのみです。テスト時に所有者を照合し、確認できない書込みは停止します。
 
-欠番は、重複・旧仕様・採番誤りの整理によって削除された番号です。
+## 互換RPC
 
-- `01`〜`04`：初期構築時の旧ファイル。現在の運用用SQL一覧には含めない
-- `06`：`handle_kana`追加のみの重複SQL。`05_sheet_editor_migration.sql`に包含されるため削除
-- `08`：経験点使用履歴SQLの旧番号。`09_experience_spending.sql`へ改番済み
-- `17`：アクト履歴削除SQLの旧番号。`18_delete_owned_act_history.sql`へ改番済み
+`public.can_use_master_search()` は本番の旧クライアントが使用中です。36番SQLの削除指示とは異なり、互換ラッパーとして現存しています。ログイン済み呼出しは維持し、匿名実行を禁止します。新クライアントは `has_privileged_editor_tools()` を使用します。全クライアントの移行完了前に互換関数を削除しないでください。
 
-適用済み履歴の意味を変えないため、残存ファイルを無理に連番へ改名しません。
-
-## 今後の採番規則
-
-次のDB変更は`27_機能名.sql`から追加します。
-
-- 一つの番号は一つの変更目的に限定する
-- 適用済みファイルの内容・番号は原則変更しない
-- 修正が必要な場合は既存SQLを上書きせず、新しい番号のSQLを追加する
-- 重複ファイルや説明だけのSQLは追加しない
-- SQLは可能な限り再実行可能な形にする
-- ファイル冒頭へ目的と依存する直前番号をコメントする
-- 適用後はこの一覧へ状態を追記する
-
-## 旧GitHub Pages公開機能の削除
-
-`23_remove_legacy_github_pages_publish.sql`をSQL Editorで実行すると、旧`publish-showcase` Edge Function専用の`record_act_publication` RPCを削除します。
-
-Edge Function本体とSecretはSQLでは削除できません。Supabase CLIまたはDashboardで、次を別途削除してください。
-
-```bash
-supabase functions delete publish-showcase --project-ref koprmbkoftuuffslhsvt
-supabase secrets unset GITHUB_SHOWCASE_TOKEN --project-ref koprmbkoftuuffslhsvt
-```
-
-必要に応じて、`GITHUB_SHOWCASE_REPOSITORY`、`GITHUB_SHOWCASE_BRANCH`、`GITHUB_SHOWCASE_PAGES_BASE`、`SHOWCASE_ALLOWED_ORIGINS`、`SHOWCASE_ADMIN_USER_IDS`、`SHOWCASE_ADMIN_EMAILS`も削除します。
-
-現在のアクト紹介公開は、`publish_act_showcase_for_current_user`でSupabaseへJSONを保存し、`act-showcase.html`から動的に表示する方式です。
+マスタRLSは `internal_security.can_use_master_search()` を使用します。管理テーブルのRLSポリシーを一般利用者向けに追加しないでください。

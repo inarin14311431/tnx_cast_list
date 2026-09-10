@@ -1,0 +1,8 @@
+node_modules/
+playwright/.auth/
+playwright-report*/
+test-results/
+.verification-contract/
+.visual-reference/
+
+supabase/.temp/

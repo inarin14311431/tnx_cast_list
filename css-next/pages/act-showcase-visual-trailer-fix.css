@@ -1,0 +1,48 @@
+/* Final visual review fix: keep the full trailer frame in document flow and replace duplicate visual names with code styling. */
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage:has(> .neotokyo-sequence__screen--trailer.is-visible){
+  display:block;
+  place-items:initial;
+  padding-block:clamp(18px,3vw,42px);
+  overflow-x:hidden;
+  overflow-y:auto;
+  scrollbar-gutter:stable;
+}
+
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage:has(> .neotokyo-sequence__screen--trailer.is-visible) > .neotokyo-sequence__screen--trailer{
+  width:min(1120px,100%);
+  height:auto;
+  max-height:none;
+  margin:0 auto;
+  padding-bottom:24px;
+}
+
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer .neotokyo-sequence__readout{
+  flex:0 0 auto;
+  height:auto;
+  min-height:0;
+  max-height:none;
+  overflow:visible;
+}
+
+body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__code{
+  display:block;
+  margin-top:8px;
+  color:#ff87d1;
+  font:800 clamp(.5rem,.72vw,.68rem)/1.25 "Share Tech Mono",monospace;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  text-shadow:0 0 14px rgba(255,92,196,.2);
+}
+
+@media(max-width:760px){
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage:has(> .neotokyo-sequence__screen--trailer.is-visible){
+    padding-block:12px 24px;
+  }
+  body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__code{
+    font-size:.48rem;
+    letter-spacing:.08em;
+  }
+}

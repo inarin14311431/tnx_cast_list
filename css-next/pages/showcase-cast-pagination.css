@@ -1,0 +1,5 @@
+.cast-pick-card[hidden]{display:none}
+.cast-library-more{display:grid;width:100%;min-height:48px;margin-top:12px;place-items:center;gap:4px;padding:9px 14px;border:1px solid rgba(95,234,255,.28);color:#dffbff;background:linear-gradient(90deg,rgba(95,234,255,.07),rgba(255,99,185,.05));cursor:pointer;transition:border-color .18s ease,background-color .18s ease,box-shadow .18s ease}
+.cast-library-more:hover:not(:disabled){border-color:rgba(95,234,255,.68);background:linear-gradient(90deg,rgba(95,234,255,.12),rgba(255,99,185,.08));box-shadow:0 0 22px rgba(95,234,255,.08)}
+.cast-library-more strong{font-size:.78rem;letter-spacing:.06em}.cast-library-more small{color:#759ca5;font:700 .56rem/1.2 var(--font-data);letter-spacing:.12em}.cast-library-more:disabled{opacity:.55;cursor:default}.private-history-selector .cast-library-more{border-color:rgba(255,99,185,.3);background:linear-gradient(90deg,rgba(255,99,185,.08),rgba(95,234,255,.03))}.private-history-selector .cast-library-more:hover:not(:disabled){border-color:rgba(255,99,185,.68)}
+@media(prefers-reduced-motion:reduce){.cast-library-more{transition:none}}

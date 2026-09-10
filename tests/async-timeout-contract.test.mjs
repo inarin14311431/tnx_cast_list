@@ -5,7 +5,7 @@ import test from "node:test";
 const helper = fs.readFileSync("js/async-timeout.js", "utf8");
 const account = fs.readFileSync("js/account.js", "utf8");
 const acts = fs.readFileSync("js/acts-app.js", "utf8");
-const showcase = fs.readFileSync("js/showcase-dynamic-publish.js", "utf8");
+const showcase = fs.readFileSync("js/showcase-dynamic-publish-v3.js", "utf8");
 
 test("one shared finite timeout boundary owns timer mechanics", () => {
   assert.match(helper, /DEFAULT_REQUEST_TIMEOUT_MS = 12000/);

@@ -11,3 +11,7 @@
 - `npm run audit:migrations` verifies that every top-level `supabase/*.sql` migration is tracked and that the manifest never moves backward numerically.
 
 This manifest records repository migration order; actual Supabase deployment state must still be checked before applying a database change.
+
+## Live state reconciliation
+
+The manifest is not a deployment ledger. Run `scripts/database-invariants.sql` against the deployed database after DB changes. See `DB_RECONCILIATION_20260906.md` for the applied compatibility-RPC grant correction and why the old public helper remains until production clients migrate. Do not rerun historical migration 36 as a cleanup operation.

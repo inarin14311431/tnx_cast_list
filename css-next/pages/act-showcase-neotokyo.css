@@ -1,0 +1,93 @@
+body.showcase-neotokyo-intro-active{overflow:hidden}
+.cinematic-intro.neotokyo-sequence{display:block;padding:0;background:#02050b;color:#edf8ff;transition:.55s opacity,.55s visibility}
+.cinematic-intro.neotokyo-sequence:before{inset:0;height:auto;background:radial-gradient(circle at 72% 24%,rgba(255,63,185,.11),transparent 24%),radial-gradient(circle at 18% 70%,rgba(0,229,255,.1),transparent 30%),linear-gradient(135deg,#02040a 0%,#050a17 52%,#03050a 100%);box-shadow:none;animation:none}
+.cinematic-intro.neotokyo-sequence:after{position:absolute;inset:0;z-index:0;content:"";background-image:linear-gradient(rgba(0,229,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,229,255,.035) 1px,transparent 1px),repeating-linear-gradient(to bottom,transparent 0 5px,rgba(255,255,255,.018) 6px);background-size:42px 42px,42px 42px,100% 6px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),rgba(0,0,0,.35));pointer-events:none}
+.neotokyo-sequence__shell{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;width:100%;height:100svh;min-height:560px;padding:26px 30px 22px;overflow:hidden}
+.neotokyo-sequence__header{grid-column:1/-1;display:grid;grid-template-columns:minmax(220px,1fr) auto auto;gap:32px;align-items:start;padding:0 0 18px;border-bottom:1px solid rgba(111,213,255,.25)}
+.neotokyo-sequence__brand{display:grid;grid-template-columns:auto auto;grid-template-rows:auto auto;justify-content:start;column-gap:16px;align-items:start}
+.neotokyo-sequence__brand strong{grid-row:1/3;color:#fff;font:900 2rem/.9 Orbitron,sans-serif;letter-spacing:.12em;text-shadow:0 0 24px rgba(0,225,255,.2)}
+.neotokyo-sequence__brand span{color:#e7f5ff;font:700 .67rem/1 Orbitron,sans-serif;letter-spacing:.12em}
+.neotokyo-sequence__brand small{margin-top:6px;color:#6f93ae;font:700 .52rem/1 "Share Tech Mono",monospace;letter-spacing:.12em}
+.neotokyo-sequence__system{display:grid;gap:5px;justify-items:end;color:#7da4bd;font:700 .55rem/1 "Share Tech Mono",monospace;letter-spacing:.12em}
+.neotokyo-sequence__system span:first-child{color:#79ffd0}
+.neotokyo-sequence__skip{min-width:112px;margin:0;padding:9px 12px;border:1px solid rgba(126,202,255,.35);border-radius:0;background:rgba(4,13,29,.72);color:#ccecff;font:700 .56rem/1 Orbitron,sans-serif;letter-spacing:.1em;cursor:pointer;appearance:none}
+.neotokyo-sequence__skip:hover,.neotokyo-sequence__skip:focus-visible{border-color:#72e9ff;background:rgba(14,45,76,.72);outline:none;box-shadow:0 0 22px rgba(0,221,255,.14)}
+.neotokyo-sequence__stage{position:relative;grid-row:2;display:grid;place-items:center;min-width:0;min-height:0;padding:clamp(28px,5vw,72px);overflow:hidden}
+.neotokyo-sequence__stage:before{position:absolute;inset:8% 5%;content:"";border:1px solid rgba(104,208,255,.09);clip-path:polygon(0 18px,18px 0,92% 0,100% 16%,100% 100%,8% 100%,0 84%);pointer-events:none}
+.neotokyo-sequence__stage.is-awaiting-advance{cursor:pointer}
+.neotokyo-sequence__screen{position:relative;width:min(1120px,100%);opacity:0;transform:translateY(18px);transition:.34s ease opacity,.34s ease transform}
+.neotokyo-sequence__screen.is-visible{opacity:1;transform:none}
+.neotokyo-sequence__eyebrow{margin:0 0 22px;color:#79f5d1;font:700 .66rem/1 "Share Tech Mono",monospace;letter-spacing:.2em}
+.neotokyo-sequence__micro{margin:0 0 10px;color:#6d94ae;font:700 .58rem/1 Orbitron,sans-serif;letter-spacing:.17em}
+.neotokyo-sequence__opening-title{margin:0;color:#fff;font:900 clamp(4rem,11vw,9rem)/.8 Orbitron,sans-serif;letter-spacing:-.04em;text-shadow:0 0 40px rgba(65,205,255,.18)}
+.neotokyo-sequence__opening-sub{margin:30px 0 0;color:#c6e6f4;font-size:clamp(.9rem,1.5vw,1.15rem);letter-spacing:.08em}
+.neotokyo-sequence__bootlog{display:grid;gap:8px;margin-top:34px;padding:16px 18px;border-left:1px solid #52e5ff;background:linear-gradient(90deg,rgba(7,31,54,.52),transparent);color:#7196aa;font:700 .58rem/1.5 "Share Tech Mono",monospace;letter-spacing:.08em}
+.neotokyo-sequence__bootlog span:last-child{color:#81ffd4}
+.neotokyo-sequence__act-title{max-width:1050px;margin:0;color:#fff;font:900 clamp(2.7rem,7vw,6.8rem)/1 "Noto Sans JP",Orbitron,sans-serif;letter-spacing:.01em;text-wrap:balance;text-shadow:0 8px 48px rgba(0,0,0,.5)}
+.neotokyo-sequence__ruler{margin:24px 0 0;color:#ff79d3;font:700 clamp(.72rem,1.2vw,.9rem)/1.3 Orbitron,"Noto Sans JP",sans-serif;letter-spacing:.14em}
+.neotokyo-sequence__terminal{margin:30px 0 0;color:#6b8ea6;font:700 .58rem/1.6 "Share Tech Mono",monospace;letter-spacing:.1em}
+.neotokyo-sequence__section-title{max-width:920px;margin:0;color:#fff;font:900 clamp(2rem,5vw,4.8rem)/1.08 "Noto Sans JP",Orbitron,sans-serif;text-wrap:balance}
+.neotokyo-sequence__readout{position:relative;max-width:920px;min-height:6.2em;margin:30px 0 0;padding:22px 24px 22px 28px;border-left:2px solid #67e5ff;background:linear-gradient(90deg,rgba(5,32,55,.62),rgba(5,15,30,.12));color:#d7ecf6;font-size:clamp(.9rem,1.25vw,1.08rem);line-height:2;white-space:pre-wrap;text-shadow:0 1px 12px rgba(0,0,0,.7)}
+.neotokyo-sequence__readout:after{display:inline-block;width:8px;height:1.1em;margin-left:4px;vertical-align:-.15em;content:"";background:#7aeeff;animation:neotokyo-caret .8s steps(1,end) infinite}
+.neotokyo-sequence__readout.is-placeholder{border-left-style:dashed;color:#789aaa}
+@keyframes neotokyo-caret{50%{opacity:0}}
+.neotokyo-sequence__screen--assign{display:grid;grid-template-columns:minmax(260px,.7fr) minmax(360px,1.3fr);column-gap:clamp(30px,5vw,80px);align-items:center}
+.neotokyo-sequence__screen--assign>.neotokyo-sequence__eyebrow{grid-column:1/-1}
+.neotokyo-sequence__assign-title{grid-column:1;grid-row:2;margin:0;color:transparent;-webkit-text-stroke:1px rgba(103,227,255,.72);font:900 clamp(4.5rem,10vw,9rem)/.82 Orbitron,sans-serif;letter-spacing:-.06em;writing-mode:vertical-rl;transform:rotate(180deg);justify-self:center;text-shadow:0 0 40px rgba(0,219,255,.1)}
+.neotokyo-sequence__search{grid-column:2;grid-row:2;display:grid;gap:12px;align-content:center;min-height:220px;padding:28px;border:1px solid rgba(117,207,255,.2);background:linear-gradient(135deg,rgba(7,24,48,.82),rgba(5,10,22,.62));box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
+.neotokyo-sequence__search span{color:#7d9eb5;font:700 .6rem/1.3 "Share Tech Mono",monospace;letter-spacing:.1em}
+.neotokyo-sequence__search strong{color:#7ee9ff;font:900 clamp(1.7rem,4vw,3.6rem)/1 Orbitron,sans-serif;letter-spacing:.04em;animation:neotokyo-search 1s ease-in-out infinite alternate}
+.neotokyo-sequence__search small{color:#718ba0;font:700 .55rem/1.4 "Share Tech Mono",monospace;letter-spacing:.08em}
+.neotokyo-sequence__search.is-found{border-color:rgba(115,255,204,.4)}
+.neotokyo-sequence__search.is-found strong{color:#83ffd0;animation:none;text-shadow:0 0 22px rgba(67,255,196,.22)}
+@keyframes neotokyo-search{to{opacity:.45}}
+.neotokyo-sequence__cast{grid-column:2;grid-row:2;display:grid;grid-template-columns:minmax(150px,.48fr) minmax(220px,.9fr);gap:22px;align-items:stretch;min-height:300px;padding:12px;border:1px solid rgba(120,222,255,.38);background:linear-gradient(145deg,rgba(9,33,61,.95),rgba(7,12,27,.95));box-shadow:0 24px 70px rgba(0,0,0,.42),0 0 36px rgba(59,208,255,.08);opacity:1;transform:none;animation:neotokyo-assigned .42s ease forwards}
+.neotokyo-sequence__screen--assign.is-assigned .neotokyo-sequence__search{display:none}
+@keyframes neotokyo-assigned{to{opacity:1;transform:none}}
+.neotokyo-sequence__cast-image{position:relative;min-height:276px;margin:0;overflow:hidden;background:#06101d}
+.neotokyo-sequence__cast-image:after{position:absolute;inset:0;content:"";background:linear-gradient(180deg,transparent 58%,rgba(2,7,14,.76));pointer-events:none}
+.neotokyo-sequence__cast-image img{width:100%;height:100%;object-fit:cover;filter:saturate(.9) contrast(1.07)}
+.neotokyo-sequence__cast-detail{display:flex;flex-direction:column;justify-content:center;min-width:0;padding:18px 20px}
+.neotokyo-sequence__cast-detail h3{margin:0;color:#fff;font:900 clamp(1.8rem,4vw,3.4rem)/1.05 "Noto Sans JP",Orbitron,sans-serif;overflow-wrap:anywhere}
+.neotokyo-sequence__cast-tagline{margin:15px 0 0;color:#b7cedd;font-size:.78rem;line-height:1.75;white-space:pre-wrap}
+.neotokyo-sequence__styles{display:flex;flex-wrap:wrap;gap:7px;margin-top:17px}
+.neotokyo-sequence__styles span{padding:5px 9px;border:1px solid rgba(130,194,255,.3);background:rgba(105,76,255,.17);color:#e6f4ff;font-size:.58rem}
+.neotokyo-sequence__assigned{margin-top:22px;color:#78ffd0;font:900 .72rem/1 Orbitron,sans-serif;letter-spacing:.17em;text-shadow:0 0 20px rgba(68,255,196,.2)}
+.neotokyo-sequence__screen--summary{display:flex;flex-direction:column;height:100%;max-height:100%;min-height:0;overflow:hidden}
+.neotokyo-sequence__summary-head{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-rows:auto auto;gap:8px 18px;align-items:end;margin-bottom:15px}
+.neotokyo-sequence__summary-head .neotokyo-sequence__eyebrow{grid-column:1/-1;margin:0}
+.neotokyo-sequence__summary-head .neotokyo-sequence__act-ready{grid-column:1;grid-row:2;margin:0;justify-self:start}
+.neotokyo-sequence__summary-status{grid-column:2;grid-row:2;color:#789bb2;font:700 .56rem/1.4 "Share Tech Mono",monospace;letter-spacing:.1em;text-align:right}
+.neotokyo-sequence__summary-grid{display:grid;grid-template-columns:minmax(260px,.75fr) minmax(0,1.55fr);gap:14px;flex:1;min-height:0;overflow:hidden}
+.neotokyo-sequence__overview,.neotokyo-sequence__summary-cast-area{min-width:0;min-height:0;padding:16px 18px;border:1px solid rgba(113,211,255,.2);background:linear-gradient(145deg,rgba(6,24,45,.88),rgba(5,10,22,.7));overflow:hidden}
+.neotokyo-sequence__overview{display:flex;flex-direction:column}
+.neotokyo-sequence__summary-title{margin:0;color:#fff;font:900 clamp(1.4rem,2.8vw,2.5rem)/1.12 "Noto Sans JP",Orbitron,sans-serif;text-wrap:balance}
+.neotokyo-sequence__overview-meta{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;margin:14px 0 12px;padding:10px 0;border-top:1px solid rgba(112,205,255,.12);border-bottom:1px solid rgba(112,205,255,.12)}
+.neotokyo-sequence__overview-meta dt{color:#6789a1;font:700 .5rem/1.25 Orbitron,sans-serif;letter-spacing:.12em}
+.neotokyo-sequence__overview-meta dd{margin:0;color:#dbeeff;font:700 .66rem/1.25 "Noto Sans JP",sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.neotokyo-sequence__overview-label{margin:0 0 6px;color:#ff79d3;font:700 .52rem/1.2 Orbitron,sans-serif;letter-spacing:.12em}
+.neotokyo-sequence__overview-copy{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:9;overflow:hidden;margin:0;color:#aecada;font-size:clamp(.66rem,.9vw,.78rem);line-height:1.7;white-space:pre-wrap}
+.neotokyo-sequence__summary-cast-area{display:flex;flex-direction:column}
+.neotokyo-sequence__summary-cast-area>.neotokyo-sequence__micro{margin-bottom:8px}
+.neotokyo-sequence__summary-casts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:minmax(0,1fr);gap:8px;flex:1;min-height:0}
+.neotokyo-sequence__summary-cast{display:grid;grid-template-columns:68px minmax(0,1fr);min-height:0;border:1px solid rgba(113,205,255,.15);background:rgba(4,15,31,.7);overflow:hidden}
+.neotokyo-sequence__summary-cast-image{min-height:0;margin:0;background:#06101d;overflow:hidden}
+.neotokyo-sequence__summary-cast-image img{width:100%;height:100%;object-fit:cover;filter:saturate(.9) contrast(1.05)}
+.neotokyo-sequence__summary-cast-body{display:flex;flex-direction:column;justify-content:center;min-width:0;padding:8px 10px}
+.neotokyo-sequence__summary-cast-body>.neotokyo-sequence__micro{margin-bottom:4px;color:#73dfff;font-size:.46rem}
+.neotokyo-sequence__summary-cast-body h3{margin:0;color:#fff;font:900 clamp(.78rem,1.4vw,1.08rem)/1.2 "Noto Sans JP",sans-serif;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.neotokyo-sequence__summary-cast-styles{margin:4px 0 0;color:#9dc1d8;font:700 .48rem/1.3 "Share Tech Mono",monospace;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.neotokyo-sequence__summary-cast-tagline{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;margin:5px 0 0;color:#7896aa;font-size:.56rem;line-height:1.45}
+.neotokyo-sequence__act-ready{display:inline-block;margin-top:30px;padding:11px 24px;border:1px solid #72ffd0;color:#72ffd0;font:900 clamp(.8rem,1.4vw,1.05rem)/1 Orbitron,sans-serif;letter-spacing:.22em;box-shadow:0 0 30px rgba(90,255,205,.09)}
+.neotokyo-sequence__footer{grid-column:1/-1;display:grid;grid-template-columns:minmax(180px,1fr) auto auto auto;gap:14px;align-items:center;padding-top:14px;border-top:1px solid rgba(111,213,255,.18)}
+.neotokyo-sequence__progress{height:2px;background:rgba(110,177,210,.14)}
+.neotokyo-sequence__progress i{display:block;width:var(--neotokyo-progress,0);height:100%;background:linear-gradient(90deg,#53ddff,#8dffd2,#ff75ce);box-shadow:0 0 12px rgba(69,223,255,.45);transition:.4s ease width}
+.neotokyo-sequence__footer span,.neotokyo-sequence__footer small{color:#718da2;font:700 .52rem/1 "Share Tech Mono",monospace;letter-spacing:.09em;white-space:nowrap}
+.neotokyo-sequence__advance{margin:0;padding:8px 12px;border:1px solid rgba(114,233,255,.55);border-radius:0;background:rgba(8,35,58,.78);color:#dff8ff;font:900 .54rem/1 Orbitron,sans-serif;letter-spacing:.1em;cursor:pointer;appearance:none;animation:neotokyo-advance 1.15s ease-in-out infinite alternate}
+.neotokyo-sequence__advance[hidden]{display:none}
+.neotokyo-sequence__advance:hover,.neotokyo-sequence__advance:focus-visible{border-color:#78ffd0;color:#78ffd0;outline:none;box-shadow:0 0 22px rgba(84,255,207,.13)}
+@keyframes neotokyo-advance{to{box-shadow:0 0 18px rgba(71,221,255,.18)}}
+body.showcase-neotokyo-reduced .cinematic-intro{transition:none}
+@media(max-width:760px){.neotokyo-sequence__shell{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr) auto;padding:18px 16px 16px}.neotokyo-sequence__header{grid-template-columns:1fr auto;gap:16px}.neotokyo-sequence__system{display:none}.neotokyo-sequence__brand strong{font-size:1.55rem}.neotokyo-sequence__brand small{display:none}.neotokyo-sequence__skip{min-width:auto;padding:8px 9px;font-size:.5rem}.neotokyo-sequence__rail{display:none}.neotokyo-sequence__stage{grid-column:1;grid-row:2;padding:22px 8px}.neotokyo-sequence__stage:before{inset:5% 0}.neotokyo-sequence__readout{max-height:38svh;overflow:auto;padding:16px 15px;font-size:.82rem;line-height:1.8}.neotokyo-sequence__screen--assign{display:block}.neotokyo-sequence__assign-title{writing-mode:horizontal-tb;transform:none;margin-bottom:22px;font-size:clamp(3.2rem,18vw,6rem)}.neotokyo-sequence__search{min-height:170px;padding:20px}.neotokyo-sequence__cast{display:grid;grid-template-columns:38% 1fr;min-height:230px;gap:10px}.neotokyo-sequence__cast-image{min-height:205px}.neotokyo-sequence__cast-detail{padding:12px 10px}.neotokyo-sequence__cast-tagline{display:none}.neotokyo-sequence__footer{grid-template-columns:1fr auto auto;gap:8px}.neotokyo-sequence__footer small{display:none}.neotokyo-sequence__advance{padding:7px 8px;font-size:.47rem}.neotokyo-sequence__summary-head{margin-bottom:8px}.neotokyo-sequence__summary-status{font-size:.44rem}.neotokyo-sequence__summary-grid{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr);gap:7px}.neotokyo-sequence__overview,.neotokyo-sequence__summary-cast-area{padding:9px 10px}.neotokyo-sequence__summary-title{font-size:1rem}.neotokyo-sequence__overview-meta{grid-template-columns:repeat(6,auto);gap:4px 7px;margin:6px 0}.neotokyo-sequence__overview-meta dt,.neotokyo-sequence__overview-meta dd{font-size:.42rem}.neotokyo-sequence__overview-label{display:none}.neotokyo-sequence__overview-copy{-webkit-line-clamp:3;font-size:.55rem;line-height:1.45}.neotokyo-sequence__summary-casts{gap:5px}.neotokyo-sequence__summary-cast{grid-template-columns:42px minmax(0,1fr)}.neotokyo-sequence__summary-cast-body{padding:5px 6px}.neotokyo-sequence__summary-cast-body h3{font-size:.67rem}.neotokyo-sequence__summary-cast-styles{font-size:.39rem}.neotokyo-sequence__summary-cast-tagline{display:none}}
+@media(max-height:650px) and (min-width:761px){.neotokyo-sequence__shell{padding-top:18px;padding-bottom:15px}.neotokyo-sequence__stage{padding-top:18px;padding-bottom:18px}.neotokyo-sequence__readout{max-height:220px;overflow:auto;margin-top:18px;padding-top:14px;padding-bottom:14px;line-height:1.7}.neotokyo-sequence__cast{min-height:240px}.neotokyo-sequence__cast-image{min-height:216px}.neotokyo-sequence__summary-head{margin-bottom:8px}.neotokyo-sequence__overview,.neotokyo-sequence__summary-cast-area{padding:10px 12px}.neotokyo-sequence__overview-copy{-webkit-line-clamp:5}.neotokyo-sequence__summary-cast{grid-template-columns:54px minmax(0,1fr)}.neotokyo-sequence__summary-cast-body{padding:5px 7px}.neotokyo-sequence__summary-cast-tagline{-webkit-line-clamp:1}}
+@media(prefers-reduced-motion:reduce){.neotokyo-sequence__screen,.neotokyo-sequence__progress i,.neotokyo-sequence__cast{transition:none;animation:none}.neotokyo-sequence__readout:after,.neotokyo-sequence__search strong,.neotokyo-sequence__advance{animation:none}}

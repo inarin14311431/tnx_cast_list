@@ -10,7 +10,7 @@ async function initialize() {
   if (!host || !document.querySelector("#style-skills") || !document.querySelector("#outfit-list")) return;
 
   try {
-    const { data, error } = await supabase.rpc("can_use_master_search");
+    const { data, error } = await supabase.rpc("has_privileged_editor_tools");
     if (error) throw error;
     if (data !== true) return;
 

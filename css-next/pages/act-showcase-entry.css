@@ -1,0 +1,22 @@
+/* ACT SHOWCASE page entry. Import order is explicit here so presentation ownership is visible in one place. */
+@import "./act-showcase.css?v=20260906c";
+@import "./act-showcase-poster-v2.css?v=20260907a";
+@import "./act-showcase-cast-selector.css?v=20260907a";
+@import "./act-showcase-neotokyo.css?v=20260907c";
+@import "./act-showcase-neotokyo-linked.css?v=20260907c";
+@import "./act-showcase-neotokyo-hierarchy.css?v=20260907a";
+@import "./act-showcase-cinematic.css?v=20260907a";
+@import "./act-showcase-ornament.css?v=20260907a";
+@import "./act-showcase-ornament-plus.css?v=20260907a";
+@import "./act-showcase-finale.css?v=20260907a";
+@import "./act-showcase-cinematic-readability.css?v=20260908a";
+@import "./act-showcase-layout-polish.css?v=20260908a";
+@import "./act-showcase-story-flow.css?v=20260908a";
+@import "./act-showcase-writing-patterns.css?v=20260908a";
+@import "./act-showcase-supporting-cast.css?v=20260908a";
+@import "./act-showcase-presentation-tuning.css?v=20260910a";
+@import "./act-showcase-visual-trailer-fix.css?v=20260908a";
+@import "./act-showcase-title-cyberpunk.css?v=20260908a";
+@import "./act-showcase-cinematic-v2.css?v=5";
+@import "./act-showcase-top-background-only.css?v=1";
+@import "./act-showcase-followup-v1.css?v=1";

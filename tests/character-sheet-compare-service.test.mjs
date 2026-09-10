@@ -141,22 +141,14 @@ test("loadCharacterSheetPayload uses the shared warehouse read URL and supports 
     }
   });
   assert.equal(calls.length, 1);
-  assert.equal(calls[0], "https://character-sheets.appspot.com/tnx/display?ajax=1&key=abc_123");
+  assert.equal(calls[0], sourceUrl);
   assert.equal(result.base.name, "取得成功");
 });
 
-test("loadCharacterSheetPayload retries compatible warehouse endpoints", async () => {
-  const calls = [];
-  const sourceUrl = "https://character-sheets.appspot.com/tnx/edit.html?key=retry_key";
-  const result = await loadCharacterSheetPayload(sourceUrl, {
-    request: async url => {
-      calls.push(url);
-      if (calls.length < 3) throw new Error("temporary failure");
-      return { base: { name: "再試行成功" } };
-    }
-  });
-  assert.equal(calls.length, 3);
-  assert.equal(result.base.name, "再試行成功");
-  assert.match(calls[1], /display\.html\?ajax=1&key=retry_key/);
-  assert.match(calls[2], /display\?key=retry_key&ajax=1/);
+test("source errors propagate without fallback remote execution", async () => {
+  let calls = 0;
+  await assert.rejects(loadCharacterSheetPayload("https://character-sheets.appspot.com/tnx/edit.html?key=test", {
+    request: async () => { calls += 1; throw new Error("rate limited"); }
+  }), /rate limited/);
+  assert.equal(calls, 1);
 });

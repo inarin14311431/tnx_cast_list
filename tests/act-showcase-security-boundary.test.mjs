@@ -6,7 +6,8 @@ const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const dynamic = await read("supabase/20_dynamic_act_showcase.sql");
 const ownerScope = await read("supabase/30_owner_scoped_act_reads.sql");
-const client = await read("js/act-showcase.js");
+const client = await read("js/act-showcase-page.js");
+const service = await read("js/public-showcase-service.js");
 
 test("public ACT showcase RPC returns only explicitly published showcase data", () => {
   assert.match(dynamic, /create or replace function public\.get_public_act_showcase\(p_slug text\)/i);
@@ -22,10 +23,13 @@ test("authenticated ACT history remains owner-scoped rather than globally readab
   assert.doesNotMatch(ownerScope, /create policy\s+(?:act_participants_select_authenticated|acts_select_authenticated)[\s\S]*using\s*\(\s*true\s*\)/i);
 });
 
-test("public showcase page reads through the public RPC instead of ACT tables", () => {
-  assert.match(client, /\/rest\/v1\/rpc\/get_public_act_showcase/);
-  assert.match(client, /body:\s*JSON\.stringify\(\{\s*p_slug:\s*slug\s*\}\)/);
-  assert.doesNotMatch(client, /\/rest\/v1\/(?:acts|act_participants)(?:\?|["'`])/);
+test("public showcase pages delegate public reads to the shared service", () => {
+  assert.match(client, /public-showcase-service\.js/);
+  assert.match(client, /loadPublicShowcase\(slug\)/);
+  assert.doesNotMatch(client, /\/rest\/v1\/(?:rpc\/get_public_act_showcase|acts|act_participants)/);
+  assert.match(service, /\/rest\/v1\/rpc\/\$\{name\}/);
+  assert.match(service, /get_public_act_showcase/);
+  assert.match(service, /body: JSON\.stringify\(body\)/);
 });
 
 test("showcase publication requires authentication and writes only through owned ACT history", () => {
@@ -33,12 +37,6 @@ test("showcase publication requires authentication and writes only through owned
   assert.match(dynamic, /if v_user_id is null[\s\S]*Authentication is required/i);
   assert.match(dynamic, /record_act_history_for_current_user\(/);
   assert.match(dynamic, /where id = v_act_id[\s\S]*published_by = v_user_id/i);
-  assert.match(
-    dynamic,
-    /grant execute on function public\.publish_act_showcase_for_current_user\([^;]+\)\s+to\s+authenticated\s*;/i
-  );
-  assert.doesNotMatch(
-    dynamic,
-    /grant execute on function public\.publish_act_showcase_for_current_user\([^;]+\)\s+to\s+anon\b[^;]*;/i
-  );
+  assert.match(dynamic, /grant execute on function public\.publish_act_showcase_for_current_user\([^;]+\)\s+to\s+authenticated\s*;/i);
+  assert.doesNotMatch(dynamic, /grant execute on function public\.publish_act_showcase_for_current_user\([^;]+\)\s+to\s+anon\b[^;]*;/i);
 });

@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 import { hasAuthCredentials } from "./helpers.js";
 
 test("新規キャストは固定一般技能・空欄・社会・コネの初期構成を表示する", async ({ page }) => {

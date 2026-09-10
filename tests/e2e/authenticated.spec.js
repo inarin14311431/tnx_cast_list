@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 import { getTestCastId, hasAuthCredentials, waitForEditorReady, watchPageErrors, watchStaticAssetErrors } from "./helpers.js";
 
 test("保存済みログイン状態を再利用できる", async ({ page }) => {
@@ -10,7 +10,7 @@ test("保存済みログイン状態を再利用できる", async ({ page }) => 
   await expect(page.locator("#account-email")).not.toHaveText(/読み込み中/);
 });
 
-test("編集画面のエクスポートモジュールは循環せず一度だけ初期化される", async ({ page }) => {
+test("PC編集画面は現行の主要操作を一度だけ初期化し静的資産エラーを出さない", async ({ page }) => {
   test.skip(!hasAuthCredentials(), "E2E_EMAIL / E2E_PASSWORD が未設定のためスキップ");
   const assertNoErrors = watchPageErrors(page);
   const assertNoAssetErrors = watchStaticAssetErrors(page);
@@ -18,10 +18,10 @@ test("編集画面のエクスポートモジュールは循環せず一度だ�
   await page.goto(`/sheet.html?id=${getTestCastId()}`);
   await waitForEditorReady(page);
 
-  await expect(page.locator("#cocofolia-copy-button")).toBeVisible();
-  await expect(page.locator("#udonarium-export-button")).toBeVisible();
-  await expect(page.locator("script#tnx-cocofolia-export-module")).toHaveCount(1);
-  await expect(page.locator("script#tnx-udonarium-export-module")).toHaveCount(1);
+  await expect(page.locator("#save-button")).toBeVisible();
+  await expect(page.locator("#legacy-import-open")).toBeVisible();
+  await expect(page.locator("#sheet-combo-open")).toBeVisible();
+  await expect(page.locator('script[src*="/js/sheet.js"]')).toHaveCount(1);
 
   assertNoErrors();
   assertNoAssetErrors();

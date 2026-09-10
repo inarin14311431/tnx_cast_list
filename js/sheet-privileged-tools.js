@@ -10,7 +10,7 @@ if (editor) {
       import("./sheet-master-search-enhancements.js?v=2"),
       import("./outfit-ofc-save.js?v=20260904-1"),
       import("./outfit-ofc-master-apply.js?v=20260819-3"),
-      import("./sheet-master-autofill.js?v=9")
+      import("./sheet-master-autofill.js?v=10")
     ]);
   } finally {
     anchors.forEach(anchor => anchor.remove());

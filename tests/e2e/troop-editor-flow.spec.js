@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 import { watchPageErrors, watchStaticAssetErrors } from "./helpers.js";
 
 const SUPABASE_ORIGIN = "https://koprmbkoftuuffslhsvt.supabase.co";
@@ -30,7 +30,7 @@ async function installMockSupabase(page) {
 
     if (url.pathname === "/auth/v1/user") return json(200, user);
     if (url.pathname === "/rest/v1/characters" && method === "GET") return json(200, []);
-    if (url.pathname === "/rest/v1/rpc/can_use_master_search") return json(200, false);
+    if (url.pathname === "/rest/v1/rpc/has_privileged_editor_tools") return json(200, false);
     if (url.pathname !== "/rest/v1/troops") return json(404, { message:`Unhandled E2E route: ${url.pathname}` });
 
     if (method === "POST") {

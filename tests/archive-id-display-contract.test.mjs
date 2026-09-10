@@ -15,7 +15,7 @@ test("archive cards derive the visible code from the raw route ID rather than th
 
 test("archive and cast pages load the shared display-code formatter before their adapters", () => {
   assert.match(index, /archive-id-code\.js\?v=1[\s\S]*archive-id-list-display\.js\?v=1/);
-  assert.match(cast, /archive-id-code\.js\?v=1[\s\S]*archive-id-cast-display\.js\?v=1[\s\S]*cast-cyberscan\.js\?v=75/);
+  assert.match(cast, /archive-id-code\.js\?v=1[\s\S]*archive-id-cast-display\.js\?v=1[\s\S]*cast-cyberscan\.js\?v=76/);
 });
 
 test("cast detail, mobile view and scan presentation hide the raw route ID", () => {

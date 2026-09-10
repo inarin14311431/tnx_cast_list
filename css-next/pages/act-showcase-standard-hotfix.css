@@ -1,0 +1,3 @@
+/* Standard showcase never paints a loading overlay. Only fatal load errors are shown. */
+#act-showcase-standard-status.showcase-loading[hidden]{display:none}
+#act-showcase-standard-status.showcase-loading.is-error{display:grid}

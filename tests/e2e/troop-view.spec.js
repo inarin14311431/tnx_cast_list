@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 import { getTestCastId, getTestTroopId, hasAuthCredentials, waitForCastReady, watchPageErrors, watchStaticAssetErrors } from "./helpers.js";
 
 test("トループ閲覧画面は編集画面準拠の読取り専用構成で表示する", async ({ page }, testInfo) => {

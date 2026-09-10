@@ -1,0 +1,63 @@
+body.showcase-neotokyo .neotokyo-sequence__shell{isolation:isolate;background:radial-gradient(circle at 50% 42%,rgba(10,45,65,.28),transparent 38%),linear-gradient(180deg,rgba(0,0,0,.96),rgba(1,7,14,.9) 36%,rgba(0,0,0,.97));}
+body.showcase-neotokyo .neotokyo-sequence__shell:before,body.showcase-neotokyo .neotokyo-sequence__shell:after{position:absolute;left:0;right:0;z-index:8;height:clamp(12px,2.2vh,26px);content:"";pointer-events:none;background:#000;box-shadow:0 0 28px rgba(0,0,0,.88)}
+body.showcase-neotokyo .neotokyo-sequence__shell:before{top:0}body.showcase-neotokyo .neotokyo-sequence__shell:after{bottom:0}
+body.showcase-neotokyo .neotokyo-sequence__stage:before{position:absolute;inset:0;z-index:0;content:"";pointer-events:none;background:radial-gradient(ellipse at center,transparent 44%,rgba(0,0,0,.62) 100%),linear-gradient(90deg,rgba(0,0,0,.22),transparent 18%,transparent 82%,rgba(0,0,0,.22));}
+body.showcase-neotokyo .neotokyo-sequence__screen{z-index:1}
+
+/* 01 // SYSTEM ACCESS — cinematic database aperture */
+body.showcase-neotokyo .neotokyo-sequence__screen--opening.is-cinematic-access{display:grid;align-content:center;justify-items:center;min-height:100%;text-align:center;overflow:hidden}
+body.showcase-neotokyo .neotokyo-sequence__screen--opening.is-cinematic-access:before{position:absolute;top:50%;left:50%;width:min(54vw,620px);aspect-ratio:1;content:"";pointer-events:none;border:1px solid rgba(85,226,255,.16);border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(77,227,255,.045) 0 1px,transparent 2px),repeating-radial-gradient(circle,transparent 0 58px,rgba(83,226,255,.055) 59px 60px);box-shadow:0 0 90px rgba(27,193,230,.06),inset 0 0 80px rgba(0,0,0,.7);animation:cinematic-aperture 2.8s cubic-bezier(.2,.7,.2,1) both}
+body.showcase-neotokyo .neotokyo-sequence__screen--opening.is-cinematic-access:after{position:absolute;top:0;left:50%;width:1px;height:100%;content:"";pointer-events:none;background:linear-gradient(transparent,rgba(103,230,255,.6) 48%,rgba(103,230,255,.95) 50%,rgba(103,230,255,.6) 52%,transparent);box-shadow:0 0 24px rgba(81,226,255,.7);animation:cinematic-access-scan 1.8s ease-in-out both}
+body.showcase-neotokyo .is-cinematic-access .neotokyo-sequence__eyebrow{position:relative;margin-bottom:18px;color:#6b95a9;letter-spacing:.36em;animation:cinematic-fade-up .7s .08s both}
+body.showcase-neotokyo .is-cinematic-access .neotokyo-sequence__opening-title{position:relative;margin:0;color:#f4fcff;font:900 clamp(2.1rem,6vw,5.8rem)/.92 Orbitron,"Noto Sans JP",sans-serif;letter-spacing:.08em;text-shadow:0 0 34px rgba(73,226,255,.18);animation:cinematic-access-title 1s .2s cubic-bezier(.16,.84,.24,1) both}
+body.showcase-neotokyo .is-cinematic-access .neotokyo-sequence__opening-sub{position:relative;margin:18px 0 0;color:#71e0f4;font:700 clamp(.58rem,1vw,.76rem)/1.4 "Share Tech Mono",monospace;letter-spacing:.28em;animation:cinematic-fade-up .7s .55s both}
+body.showcase-neotokyo .is-cinematic-access .neotokyo-sequence__bootlog{position:relative;width:min(580px,82vw);margin-top:34px;padding:12px 0 0;border-top:1px solid rgba(89,222,246,.18);text-align:left;opacity:.82;animation:cinematic-fade-up .7s .72s both}
+body.showcase-neotokyo .neotokyo-sequence__access-seal{position:relative;margin-top:22px;padding:7px 13px;border:1px solid rgba(84,255,182,.25);color:#5dffb1;background:rgba(31,255,160,.035);font:700 .52rem/1 "Share Tech Mono",monospace;letter-spacing:.22em;opacity:0;transform:scaleX(.7);transition:opacity .28s ease,transform .45s cubic-bezier(.16,.84,.24,1),box-shadow .45s ease}
+body.showcase-neotokyo .neotokyo-sequence__access-seal.is-authorized{opacity:1;transform:scaleX(1);box-shadow:0 0 28px rgba(78,255,174,.08)}
+
+/* 02 // TITLE & CREDITS — one-line theatrical title */
+body.showcase-neotokyo .neotokyo-sequence__screen--title{position:relative;display:grid;align-content:center;justify-items:center;text-align:center;overflow:visible}
+body.showcase-neotokyo .neotokyo-sequence__screen--title:before{position:absolute;top:50%;left:5%;right:5%;height:1px;content:"";pointer-events:none;background:linear-gradient(90deg,transparent,rgba(91,225,249,.08) 10%,rgba(91,225,249,.35) 50%,rgba(91,225,249,.08) 90%,transparent);transform:scaleX(0);animation:cinematic-title-line 1.25s .18s cubic-bezier(.18,.84,.2,1) forwards}
+body.showcase-neotokyo .neotokyo-sequence__screen--title .neotokyo-sequence__micro{margin-bottom:15px;color:#6f98a9;letter-spacing:.4em;animation:cinematic-fade-up .55s both}
+body.showcase-neotokyo .neotokyo-sequence__act-title{position:relative;width:100%;max-width:calc(100vw - 190px);margin:0 auto 24px;white-space:nowrap;overflow:visible;text-align:center;opacity:0;filter:blur(18px);transform:scale(1.08);letter-spacing:.22em;transform-origin:center;font-size:clamp(2rem,7.2vw,7rem);line-height:.98;text-shadow:0 0 46px rgba(79,224,255,.2)}
+body.showcase-neotokyo .neotokyo-sequence__act-title.is-cinematic-title{animation:cinematic-act-title 1.45s cubic-bezier(.16,.84,.24,1) forwards}
+body.showcase-neotokyo .neotokyo-sequence__ruler-credit{justify-self:center;text-align:left;opacity:0;transform:translateY(12px);animation:cinematic-credit-in .7s .95s ease forwards}
+body.showcase-neotokyo .neotokyo-sequence__act-overview{display:none}
+body.showcase-neotokyo .neotokyo-sequence__screen--title .neotokyo-sequence__terminal{margin-top:20px;opacity:0;animation:cinematic-fade-up .55s 1.18s forwards}
+
+/* 03 // ACT TRAILER — terminal input / typewriter */
+body.showcase-neotokyo .neotokyo-sequence__screen--trailer{display:grid;align-content:center;max-width:min(1020px,92vw);margin:auto}
+body.showcase-neotokyo .neotokyo-sequence__screen--trailer .neotokyo-sequence__trailer-definition{justify-self:start;animation:cinematic-fade-up .5s both}
+body.showcase-neotokyo .neotokyo-sequence__trailer-terminal{position:relative;margin-top:14px;border:1px solid rgba(88,225,248,.22);background:linear-gradient(180deg,rgba(3,14,24,.92),rgba(1,8,15,.88));box-shadow:0 28px 80px rgba(0,0,0,.38),inset 0 0 48px rgba(28,194,226,.025);overflow:hidden;animation:cinematic-terminal-in .72s cubic-bezier(.16,.84,.24,1) both}
+body.showcase-neotokyo .neotokyo-sequence__trailer-terminal:after{position:absolute;inset:0;content:"";pointer-events:none;background:repeating-linear-gradient(180deg,transparent 0 3px,rgba(110,234,255,.018) 4px 5px);mix-blend-mode:screen}
+body.showcase-neotokyo .neotokyo-sequence__terminal-bar{display:flex;align-items:center;gap:10px;min-height:34px;padding:0 13px;border-bottom:1px solid rgba(85,225,249,.15);color:#65899b;background:rgba(91,225,249,.025);font:700 .48rem/1 "Share Tech Mono",monospace;letter-spacing:.13em}
+body.showcase-neotokyo .neotokyo-sequence__terminal-bar strong{color:#7de7f9;font-weight:700}.neotokyo-sequence__terminal-bar span:last-child{margin-left:auto;color:#54ffab}
+body.showcase-neotokyo .neotokyo-sequence__readout.is-terminal-readout{position:relative;min-height:clamp(170px,29vh,300px);margin:0;padding:clamp(20px,3vw,34px);border:0;background:transparent;color:#d9f7fd;font:500 clamp(.78rem,1.25vw,1rem)/1.95 "Share Tech Mono","Noto Sans JP",monospace;letter-spacing:.035em;text-shadow:0 0 16px rgba(92,231,255,.08);white-space:pre-wrap}
+body.showcase-neotokyo .neotokyo-sequence__readout.is-terminal-readout:after{display:inline-block;width:.55em;margin-left:.16em;content:"▋";color:#6ce8ff;text-shadow:0 0 12px rgba(108,232,255,.7);animation:cinematic-cursor .82s steps(1,end) infinite}
+body.showcase-neotokyo .neotokyo-sequence__readout.is-terminal-readout.is-placeholder{color:#7595a4}
+body.showcase-neotokyo .neotokyo-sequence__overview-intro-label,body.showcase-neotokyo .neotokyo-sequence__overview-intro{display:none}
+
+/* Quote cleanup is also applied in JS; this protects old cached layouts visually. */
+body.showcase-neotokyo .neotokyo-sequence__cast-detail h3,body.showcase-neotokyo .neotokyo-sequence__summary-cast-body h3{font-variant-ligatures:none}
+
+@keyframes cinematic-aperture{0%{opacity:0;transform:translate(-50%,-50%) scale(.72) rotate(-8deg)}55%{opacity:.8}100%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(0)}}
+@keyframes cinematic-access-scan{0%{opacity:0;transform:translateX(-42vw)}20%{opacity:1}75%{opacity:.85}100%{opacity:0;transform:translateX(42vw)}}
+@keyframes cinematic-access-title{0%{opacity:0;filter:blur(14px);letter-spacing:.32em;transform:scale(.94)}100%{opacity:1;filter:blur(0);letter-spacing:.08em;transform:scale(1)}}
+@keyframes cinematic-act-title{0%{opacity:0;filter:blur(18px);transform:scale(1.08);letter-spacing:.22em}42%{opacity:1;filter:blur(1px)}100%{opacity:1;filter:blur(0);transform:scale(1);letter-spacing:.035em}}
+@keyframes cinematic-title-line{to{transform:scaleX(1)}}
+@keyframes cinematic-credit-in{to{opacity:1;transform:translateY(0)}}
+@keyframes cinematic-terminal-in{0%{opacity:0;transform:perspective(900px) rotateX(5deg) translateY(18px);filter:blur(6px)}100%{opacity:1;transform:none;filter:blur(0)}}
+@keyframes cinematic-fade-up{0%{opacity:0;transform:translateY(8px)}100%{opacity:1;transform:translateY(0)}}
+@keyframes cinematic-cursor{0%,48%{opacity:1}49%,100%{opacity:0}}
+
+@media(max-width:760px){
+ body.showcase-neotokyo .neotokyo-sequence__act-title{max-width:calc(100vw - 38px);font-size:clamp(1.25rem,8vw,3rem)}
+ body.showcase-neotokyo .is-cinematic-access .neotokyo-sequence__opening-title{font-size:clamp(1.65rem,9vw,3.2rem)}
+ body.showcase-neotokyo .is-cinematic-access .neotokyo-sequence__bootlog{width:min(86vw,520px);margin-top:24px}
+ body.showcase-neotokyo .neotokyo-sequence__screen--opening.is-cinematic-access:before{width:min(88vw,520px)}
+ body.showcase-neotokyo .neotokyo-sequence__readout.is-terminal-readout{min-height:190px;padding:18px 16px;font-size:.72rem;line-height:1.75}
+ body.showcase-neotokyo .neotokyo-sequence__terminal-bar{padding:0 9px;font-size:.42rem;letter-spacing:.08em}
+}
+@media(prefers-reduced-motion:reduce){
+ body.showcase-neotokyo .neotokyo-sequence__screen--opening.is-cinematic-access:before,body.showcase-neotokyo .neotokyo-sequence__screen--opening.is-cinematic-access:after,body.showcase-neotokyo .neotokyo-sequence__act-title.is-cinematic-title,body.showcase-neotokyo .neotokyo-sequence__ruler-credit,body.showcase-neotokyo .neotokyo-sequence__trailer-terminal{animation:none;opacity:1;filter:none;transform:none}
+}

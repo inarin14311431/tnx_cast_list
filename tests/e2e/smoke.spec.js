@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 import { watchPageErrors } from "./helpers.js";
 
 test("トップページを正常に表示できる", async ({ page }) => {
