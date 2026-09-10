@@ -5,6 +5,7 @@ import { readFile } from "node:fs/promises";
 const regression = await readFile(new URL("../.github/workflows/regression.yml", import.meta.url), "utf8");
 const security = await readFile(new URL("../.github/workflows/security.yml", import.meta.url), "utf8");
 const playwright = await readFile(new URL("../.github/workflows/playwright.yml", import.meta.url), "utf8");
+const showcaseRestoreE2e = await readFile(new URL("./e2e/showcase-editor-restore.spec.js", import.meta.url), "utf8");
 
 test("release candidate keeps comprehensive static/runtime audits in regression CI", () => {
   for (const command of [
@@ -51,6 +52,11 @@ test("release candidate keeps current public and optional-auth audit E2E paths",
   assert.match(playwright, /E2E_EMAIL:\s*\$\{\{ secrets\.E2E_EMAIL \}\}/);
   assert.match(playwright, /E2E_PASSWORD:\s*\$\{\{ secrets\.E2E_PASSWORD \}\}/);
   assert.match(playwright, /E2E_CAST_ID:\s*\$\{\{ secrets\.E2E_CAST_ID \}\}/);
+});
+
+test("authenticated showcase restore E2E skips cleanly without credentials", () => {
+  assert.match(showcaseRestoreE2e, /import \{ hasAuthCredentials \} from "\.\/helpers\.js";/);
+  assert.match(showcaseRestoreE2e, /test\.beforeEach\(\(\) => \{\s*test\.skip\(!hasAuthCredentials\(\)/);
 });
 
 test("release candidate keeps critical mobile E2E paths independently runnable", () => {
