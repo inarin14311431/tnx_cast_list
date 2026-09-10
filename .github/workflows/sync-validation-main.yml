@@ -33,16 +33,19 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          VALIDATION_COMMIT="$(git -C validation rev-parse HEAD)"
+          VALIDATION_TREE="$(git -C validation rev-parse HEAD^{tree})"
+
+          # Import the exact Git objects already materialized by the validation checkout.
+          cp -a validation/.git/objects/. prod/.git/objects/
+
           cd prod
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git cat-file -e "${VALIDATION_COMMIT}^{commit}"
+          git cat-file -e "${VALIDATION_TREE}^{tree}"
 
-          # Import the validation commit and all objects into this repository's object database.
-          git fetch ../validation main
-          VALIDATION_COMMIT="$(git rev-parse FETCH_HEAD)"
-          VALIDATION_TREE="$(git rev-parse "${VALIDATION_COMMIT}^{tree}")"
           PARENT="$(git rev-parse HEAD)"
-
           NEW_COMMIT="$(printf '%s\n' '検証環境 main を本番へ完全同期' | git commit-tree "$VALIDATION_TREE" -p "$PARENT")"
           PROD_TREE="$(git rev-parse "${NEW_COMMIT}^{tree}")"
 
