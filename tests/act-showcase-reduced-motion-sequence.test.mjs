@@ -19,13 +19,20 @@ test("retired reduced-motion browser API bridge is absent from the cinematic rou
   assert.doesNotMatch(bootstrap, /window\.matchMedia\s*=/);
 });
 
-test("NeoTokyo sequence honors the native reduced-motion preference without patching matchMedia", async () => {
+test("NeoTokyo keeps the cinematic sequence under reduced motion while CSS suppresses physical animation", async () => {
   const [sequence, css] = await Promise.all([
     read("js/act-showcase-neotokyo.js"),
     read("css-next/pages/act-showcase-neotokyo.css")
   ]);
   assert.match(sequence, /prefers-reduced-motion: reduce/);
-  assert.match(sequence, /if \(prefersReducedMotion\(\)\)/);
+  assert.match(
+    sequence,
+    /if \(prefersReducedMotion\(\)\) \{\s*document\.body\.classList\.add\("showcase-neotokyo-reduced"\);\s*\}/
+  );
+  assert.doesNotMatch(
+    sequence,
+    /if \(prefersReducedMotion\(\)\) \{\s*document\.body\.classList\.add\("showcase-neotokyo-reduced"\);\s*return;/
+  );
   assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
   assert.doesNotMatch(sequence, /window\.matchMedia\s*=/);
 });
