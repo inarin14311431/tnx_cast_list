@@ -1,3 +1,4 @@
+import { assertConfiguredEmail } from "./owner-policy.js";
 import { expect } from "@playwright/test";
 
 export function getTestCastId() {
@@ -16,6 +17,7 @@ export function hasAuthCredentials() {
 }
 
 export function authEnv() {
+  assertConfiguredEmail(process.env.E2E_EMAIL || process.env.TEST_EMAIL);
   return {
     email: process.env.E2E_EMAIL || process.env.TEST_EMAIL || "",
     password: process.env.E2E_PASSWORD || process.env.TEST_PASSWORD || ""

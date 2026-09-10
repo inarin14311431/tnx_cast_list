@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 import { getTestCastId, hasAuthCredentials, waitForEditorReady } from "./helpers.js";
 
 test("旧JSON取込はライフパス・★表示技能・明示free_level・アウトフィットを保存再読込まで維持する", async ({ page }) => {

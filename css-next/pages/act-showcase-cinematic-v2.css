@@ -1,0 +1,267 @@
+/* Final presentation overrides for the cinematic ACT showcase. */
+body.showcase-poster-v2-ready .poster-v2-nav{display:none}
+body.showcase-poster-v2-ready .poster-v2-topbar{grid-template-columns:auto 1fr;align-items:start}
+body.showcase-poster-v2-ready .poster-v2-topnote{grid-column:2;justify-self:end;font-size:clamp(.68rem,.72vw,.8rem)}
+
+/* Keep the opening as a true first viewport so the cast board never peeks in before the automatic transition. */
+body.showcase-poster-v2-ready #scene-opening{min-height:100svh}
+body.showcase-cast-entry-pending #poster-showcase-board-v2 .poster-v2-grid{visibility:hidden;opacity:0;transform:translateY(46px)}
+body.showcase-cast-entry-reveal #poster-showcase-board-v2 .poster-v2-grid{animation:showcase-cast-entry-reveal .78s cubic-bezier(.16,.82,.24,1) both}
+@keyframes showcase-cast-entry-reveal{
+  0%{opacity:0;transform:translateY(46px) scale(.985);filter:blur(4px)}
+  55%{filter:blur(0)}
+  100%{opacity:1;transform:none;filter:none}
+}
+
+/* Use the published image as a composition element instead of an over-zoomed crop. */
+body.showcase-poster-v2-ready.has-showcase-background .scene-opening:before,
+body.showcase-poster-v2-ready.showcase-published-background-restored .scene-opening:before{
+  inset:0;
+  background-image:linear-gradient(90deg,rgba(2,7,18,.92) 0%,rgba(2,7,18,.70) 38%,rgba(2,7,18,.24) 72%,rgba(2,7,18,.46) 100%),var(--showcase-background);
+  background-position:center,right center;
+  background-size:cover,contain;
+  background-repeat:no-repeat,no-repeat;
+  transform:none;
+  filter:saturate(1.04) contrast(1.03);
+}
+body.showcase-poster-v2-ready.has-showcase-background .poster-v2-board:before,
+body.showcase-poster-v2-ready.showcase-published-background-restored .poster-v2-board:before{
+  background-image:linear-gradient(180deg,rgba(3,8,19,.30),rgba(3,8,19,.88) 72%),var(--showcase-background);
+  background-position:center top,center top;
+  background-size:cover,contain;
+  background-repeat:no-repeat,no-repeat;
+}
+
+/* TITLE & CREDITS: title and subtitle are separate typographic levels. */
+.neotokyo-sequence__screen--title{
+  position:relative;
+  isolation:isolate;
+  overflow:hidden auto;
+}
+.neotokyo-sequence__screen--title:before{
+  position:absolute;
+  inset:clamp(24px,4vh,52px) clamp(24px,4vw,72px);
+  z-index:-2;
+  content:"";
+  background-image:var(--showcase-background);
+  background-position:center;
+  background-size:contain;
+  background-repeat:no-repeat;
+  opacity:.46;
+  filter:saturate(.92) brightness(.72) contrast(1.05);
+}
+.neotokyo-sequence__screen--title:after{
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  content:"";
+  background:linear-gradient(180deg,rgba(2,6,16,.30),rgba(2,6,16,.58)),linear-gradient(90deg,rgba(3,11,25,.55),rgba(15,3,23,.38));
+  pointer-events:none;
+}
+.neotokyo-sequence__screen--title .neotokyo-sequence__act-title{
+  width:min(90vw,1320px);
+  max-width:100%;
+  margin-inline:auto;
+  white-space:normal;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  font-size:clamp(2.7rem,6.1vw,7.1rem);
+  line-height:.96;
+  transform:scale(1);
+  text-wrap:balance;
+}
+/* Earlier presentation layers deliberately forced a single line. Override them with equal-or-higher specificity so long titles never escape the title frame. */
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title{
+  width:min(82vw,1240px);
+  max-width:min(82vw,1240px);
+  margin-inline:auto;
+  padding-inline:0;
+  white-space:normal;
+  text-wrap:balance;
+  overflow-wrap:anywhere;
+  word-break:normal;
+  font-size:clamp(2.7rem,5vw,6.2rem);
+  line-height:.94;
+  letter-spacing:-.045em;
+  transform:none;
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="medium"]{
+  font-size:clamp(2.6rem,4.7vw,5.7rem);
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="long"]{
+  font-size:clamp(2.4rem,4.2vw,5.1rem);
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="xlong"]{
+  font-size:clamp(2.1rem,3.7vw,4.5rem);
+}
+.neotokyo-sequence__act-subtitle{
+  width:min(86vw,1120px);
+  margin:clamp(14px,2vh,24px) auto 0;
+  color:#f1e9ff;
+  font:700 clamp(1.35rem,2.5vw,2.85rem)/1.2 "Noto Sans JP",sans-serif;
+  letter-spacing:.035em;
+  text-align:center;
+  text-wrap:balance;
+  text-shadow:0 4px 24px rgba(0,0,0,.72),0 0 18px rgba(255,98,208,.24);
+}
+
+/* The body stays locked during the cinematic intro, so ACT TRAILER must scroll inside the stage. The stage is the only scroll owner; the screen and readout stay overflow-visible. */
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage.is-trailer-scroll{
+  place-items:start center;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior-y:contain;
+  scroll-behavior:smooth;
+  scrollbar-gutter:stable;
+  scroll-padding-bottom:clamp(60px,9vh,110px);
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage.is-trailer-scroll .neotokyo-sequence__screen--trailer{
+  height:auto;
+  min-height:100%;
+  max-height:none;
+  align-self:start;
+  overflow:visible;
+  padding-bottom:clamp(80px,12vh,150px);
+}
+.neotokyo-sequence__trailer-definition,
+.cinematic-trailer-band{display:none}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer .neotokyo-sequence__readout{
+  flex:0 0 auto;
+  min-height:1.8em;
+  max-height:none;
+  overflow:visible;
+  font-size:clamp(1.05rem,1.45vw,1.38rem);
+  line-height:1.9;
+}
+#poster-showcase-board-v2 .poster-v2-panel--visual{
+  scroll-margin-top:clamp(18px,3vh,36px);
+}
+
+/* Assigned cast: make the one-line tagline use the free vertical space without wrapping. */
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__cast-tagline{
+  margin:2px 0 14px;
+  max-width:100%;
+  color:#c9ddeb;
+  font-size:clamp(.96rem,1.2vw,1.18rem);
+  line-height:1.45;
+  white-space:nowrap;
+  overflow:visible;
+}
+
+/* All three styles are real cards. The handout-selected style is highlighted without shrinking the others into weak chips. */
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__styles{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:9px;
+  width:min(100%,620px);
+  margin-top:2px;
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__styles span{
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  min-width:0;
+  min-height:46px;
+  padding:10px 12px;
+  border:1px solid rgba(111,177,218,.34);
+  background:linear-gradient(145deg,rgba(18,35,67,.88),rgba(8,16,35,.9));
+  color:#cde5f5;
+  opacity:.94;
+  font:800 clamp(.7rem,.9vw,.88rem)/1.2 "Noto Sans JP",sans-serif;
+  letter-spacing:.02em;
+  text-align:center;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.018),0 8px 20px rgba(0,0,0,.15);
+  transform:none;
+  overflow:hidden;
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__styles span:after{
+  position:absolute;
+  left:10px;
+  right:10px;
+  bottom:5px;
+  height:1px;
+  content:"";
+  background:linear-gradient(90deg,transparent,rgba(102,219,255,.46),transparent);
+  opacity:.65;
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__styles span.is-role-primary{
+  border-color:#77ffd1;
+  background:linear-gradient(110deg,rgba(31,95,82,.96),rgba(24,40,71,.94));
+  color:#a8ffe4;
+  opacity:1;
+  box-shadow:0 0 0 1px rgba(119,255,209,.16),0 0 30px rgba(94,255,210,.24),inset 0 0 22px rgba(93,255,211,.07);
+  transform:translateY(-1px);
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__styles span.is-role-primary:before{
+  margin-right:6px;
+  content:"ACTIVE //";
+  color:#66f0ca;
+  font:800 .42rem/1 Orbitron,sans-serif;
+  letter-spacing:.07em;
+  white-space:nowrap;
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__styles span.is-role-duplicate{
+  opacity:.94;
+}
+
+/* Do not let decorative microcopy become unreadable on a desktop monitor. */
+body.showcase-poster-v2-ready .opening-content .scene-index{font-size:clamp(.72rem,.78vw,.86rem)}
+body.showcase-poster-v2-ready .opening-kicker{font-size:clamp(.82rem,.88vw,.98rem)}
+body.showcase-poster-v2-ready .opening-ruler{font-size:clamp(.82rem,.9vw,1rem)}
+body.showcase-poster-v2-ready .opening-scroll{font-size:clamp(.72rem,.78vw,.84rem)}
+body.showcase-poster-v2-ready .poster-v2-brand__sub{font-size:clamp(.68rem,.72vw,.8rem)}
+body.showcase-poster-v2-ready .poster-v2-topnote small{font-size:clamp(.64rem,.68vw,.74rem)}
+body.showcase-poster-v2-ready .poster-v2-aside strong,
+body.showcase-poster-v2-ready .poster-v2-aside span,
+body.showcase-poster-v2-ready .poster-v2-aside small{font-size:clamp(.68rem,.72vw,.8rem);line-height:1.5}
+body.showcase-poster-v2-ready .poster-v2-panel__head span{font-size:clamp(.68rem,.74vw,.82rem)}
+body.showcase-poster-v2-ready .poster-v2-panel__head strong{font-size:clamp(.78rem,.82vw,.92rem)}
+body.showcase-poster-v2-ready .poster-v2-reading{font-size:clamp(.78rem,.82vw,.92rem)}
+body.showcase-poster-v2-ready .poster-v2-tags span{font-size:clamp(.7rem,.75vw,.82rem)}
+body.showcase-poster-v2-ready .poster-v2-meta dt,
+body.showcase-poster-v2-ready .poster-v2-meta dd{font-size:clamp(.8rem,.84vw,.94rem);line-height:1.45}
+body.showcase-poster-v2-ready .poster-v2-cta{font-size:clamp(.76rem,.82vw,.9rem)}
+body.showcase-poster-v2-ready .poster-v2-handout-copy{font-size:clamp(.92rem,1vw,1.08rem);line-height:1.95}
+body.showcase-poster-v2-ready .poster-v2-credit-row span{font-size:clamp(.74rem,.8vw,.9rem)}
+body.showcase-poster-v2-ready .poster-v2-credit-row strong{font-size:clamp(.9rem,.96vw,1.04rem)}
+body.showcase-poster-v2-ready .poster-v2-credit-note{font-size:clamp(.8rem,.86vw,.94rem)}
+
+@media (max-width:760px){
+  body.showcase-poster-v2-ready .poster-v2-topbar{grid-template-columns:1fr}
+  body.showcase-poster-v2-ready .poster-v2-topnote{grid-column:1;justify-self:start}
+  body.showcase-poster-v2-ready.has-showcase-background .scene-opening:before,
+  body.showcase-poster-v2-ready.showcase-published-background-restored .scene-opening:before{
+    background-image:linear-gradient(180deg,rgba(2,7,18,.38),rgba(2,7,18,.86) 72%),var(--showcase-background);
+    background-position:center,center 12%;
+    background-size:cover,contain;
+  }
+  .neotokyo-sequence__screen--title .neotokyo-sequence__act-title{
+    width:92vw;
+    font-size:clamp(2.15rem,10.5vw,4.4rem);
+  }
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title{
+    width:90vw;
+    max-width:90vw;
+    font-size:clamp(2rem,8.6vw,3.4rem);
+    letter-spacing:-.035em;
+  }
+  .neotokyo-sequence__act-subtitle{
+    width:88vw;
+    font-size:clamp(1.12rem,5vw,1.7rem);
+  }
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__styles{
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:5px;
+  }
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__styles span{
+    min-height:38px;
+    padding:7px 6px;
+    font-size:.62rem;
+  }
+}
+
+@media (prefers-reduced-motion:reduce){
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage.is-trailer-scroll{scroll-behavior:auto}
+  body.showcase-cast-entry-reveal #poster-showcase-board-v2 .poster-v2-grid{animation:none}
+}

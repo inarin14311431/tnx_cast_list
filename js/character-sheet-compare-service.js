@@ -1,4 +1,4 @@
-import { buildCharacterSheetReadUrl, extractCharacterSheetKey } from "./character-sheet-url.js?v=2";
+import { requestCharacterSheetSource } from "./character-sheet-source.js?v=1";
 import {
   canonicalizeArchiveBundle,
   canonicalizeCharacterSheetJsonp,
@@ -86,57 +86,8 @@ export function preserveWarehouseLifePathRawText(payload = {}) {
   };
 }
 
-function jsonpOnce(url, timeout = 15000) {
-  return new Promise((resolve, reject) => {
-    const callback = `__tnxCharacterSheetCompare_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-    const script = document.createElement("script");
-    let done = false;
-    const finish = (fn, value) => {
-      if (done) return;
-      done = true;
-      clearTimeout(timer);
-      try {
-        delete window[callback];
-      } catch {
-        window[callback] = undefined;
-      }
-      script.remove();
-      fn(value);
-    };
-    const timer = setTimeout(
-      () => finish(reject, new Error("キャラクターシート倉庫の応答がタイムアウトしました。")),
-      timeout
-    );
-    window[callback] = value => finish(resolve, value);
-    script.onerror = () => finish(reject, new Error("キャラクターシート倉庫のデータ取得に失敗しました。"));
-    const request = new URL(url);
-    request.searchParams.set("callback", callback);
-    script.src = request.href;
-    document.head.append(script);
-  });
-}
-
-export async function loadCharacterSheetPayload(sourceUrl, { request = jsonpOnce } = {}) {
-  const primary = buildCharacterSheetReadUrl(sourceUrl);
-  const key = extractCharacterSheetKey(sourceUrl);
-  if (!primary || !key) throw new Error("キャラクターシート倉庫URLを解析できませんでした。");
-
-  const encoded = encodeURIComponent(key);
-  const urls = [
-    primary,
-    `https://character-sheets.appspot.com/tnx/display.html?ajax=1&key=${encoded}`,
-    `https://character-sheets.appspot.com/tnx/display?key=${encoded}&ajax=1`,
-    `https://character-sheets.appspot.com/tnx/display.html?key=${encoded}&ajax=1`
-  ];
-  let lastError;
-  for (const url of urls) {
-    try {
-      return normalizeCharacterSheetPayload(await request(url));
-    } catch (error) {
-      lastError = error;
-    }
-  }
-  throw lastError || new Error("キャラクターシート倉庫からデータを取得できませんでした。");
+export async function loadCharacterSheetPayload(sourceUrl, { request = requestCharacterSheetSource } = {}) {
+  return normalizeCharacterSheetPayload(await request(sourceUrl));
 }
 
 function normalizeConcealmentForComparison(value) {

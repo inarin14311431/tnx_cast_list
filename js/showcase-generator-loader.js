@@ -23,12 +23,13 @@ document.documentElement.dataset.showcaseGeneratorState = "loading";
 
 async function initializeShowcaseGenerator() {
   try {
-    // Core generator and publishing are critical. Keep them independent from
-    // optional presentation helpers so a decoration failure cannot block entry.
-    // Bump the generator query whenever the core changes so iOS Safari cannot
-    // keep an older nested ES module even when the page itself is reloaded.
+    // Guest registration is initialized before the dynamic publisher so it can
+    // persist supporting-cast data before the showcase publish click continues.
     await import("./showcase-generator-v3.js?v=8");
-    await import("./showcase-dynamic-publish.js?v=7");
+    await import("./showcase-act-subtitle.js?v=1");
+    await import("./showcase-guests.js?v=1");
+    await import("./showcase-dynamic-publish-v3.js?v=1");
+    await import("./showcase-publish-url-canonicalizer.js?v=1");
     document.documentElement.dataset.showcaseGeneratorState = "ready";
   } catch (error) {
     console.error("Showcase generator core could not be initialized.", error);
@@ -49,6 +50,14 @@ async function initializeShowcaseGenerator() {
       reportOptionalModuleError(name, error);
     }
   }));
+
+  try {
+    await import("./showcase-edit-restore.js?v=1");
+    await import("./showcase-delete.js?v=1");
+    await import("./showcase-owned-list.js?v=2");
+  } catch (error) {
+    reportOptionalModuleError("edit-management", error);
+  }
 }
 
 void initializeShowcaseGenerator();

@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 import { getTestCastId, hasAuthCredentials, waitForEditorReady } from "./helpers.js";
 
 test("スタイル技能の編集内容は保存・再読込後も候補表示まで維持される", async ({ page }) => {

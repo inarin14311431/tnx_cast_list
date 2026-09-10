@@ -1,0 +1,144 @@
+/* Follow-up fixes for the cinematic ACT SHOWCASE. */
+
+/* The selected ACT background belongs to the opening hero only. */
+body#act-showcase-page.showcase-poster-v2-ready .ambient-stage::before,
+body#act-showcase-page.showcase-poster-v2-ready .poster-v2-board::before{
+  display:none;
+  content:none;
+  background:none;
+  background-image:none;
+}
+body#act-showcase-page.showcase-poster-v2-ready .poster-v2-board{
+  background:#030813;
+}
+
+/* CAST MATCHING should read as a distinct system state, not ordinary copy. */
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked{
+  position:relative;
+  isolation:isolate;
+  place-content:center;
+  justify-items:center;
+  gap:14px;
+  text-align:center;
+  overflow:hidden;
+  border:1px solid rgba(93,225,255,.52);
+  background:radial-gradient(circle at 50% 48%,rgba(44,199,255,.13),transparent 32%),linear-gradient(135deg,rgba(7,28,53,.97),rgba(3,9,21,.97));
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.025),0 0 34px rgba(56,210,255,.08);
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked::before{
+  position:absolute;
+  inset:-40%;
+  z-index:-1;
+  content:"";
+  background:conic-gradient(from 0deg,transparent 0 64%,rgba(81,225,255,.18) 72%,transparent 82%);
+  animation:showcase-match-sweep 1.6s linear infinite;
+  pointer-events:none;
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked>span{
+  color:#9ccce2;
+  font-size:.64rem;
+  letter-spacing:.16em;
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked>strong{
+  display:grid;
+  justify-items:center;
+  gap:12px;
+  margin:2px 0;
+  color:#9af2ff;
+  font-size:clamp(1.9rem,4.1vw,4.2rem);
+  letter-spacing:.06em;
+  animation:showcase-match-text 1s ease-in-out infinite alternate;
+  text-shadow:0 0 26px rgba(67,220,255,.28);
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked>strong::before{
+  display:grid;
+  width:104px;
+  aspect-ratio:1;
+  place-items:center;
+  content:"";
+  border:2px solid rgba(114,235,255,.7);
+  border-top-color:#fff;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(79,225,255,.14) 0 9%,transparent 10% 42%,rgba(79,225,255,.08) 43% 45%,transparent 46%);
+  box-shadow:0 0 0 12px rgba(72,219,255,.035),0 0 32px rgba(72,219,255,.24),inset 0 0 28px rgba(72,219,255,.08);
+  animation:showcase-match-orbit 1.05s linear infinite;
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked>strong::after{
+  content:"照合中";
+  color:#78eaff;
+  font:900 .64rem/1 Orbitron,"Noto Sans JP",sans-serif;
+  letter-spacing:.24em;
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked>small{
+  color:#7ea7ba;
+  font-size:.58rem;
+  letter-spacing:.12em;
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked.is-found{
+  border-color:rgba(112,255,205,.78);
+  background:radial-gradient(circle at 50% 48%,rgba(70,255,201,.18),transparent 34%),linear-gradient(135deg,rgba(7,43,45,.97),rgba(3,18,27,.97));
+  box-shadow:0 0 0 1px rgba(112,255,205,.16),0 0 54px rgba(70,255,201,.18),inset 0 0 46px rgba(70,255,201,.05);
+  animation:showcase-match-found-panel .55s cubic-bezier(.2,.8,.2,1) both;
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked.is-found::before{
+  animation:none;
+  opacity:0;
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked.is-found>strong{
+  color:#9affd9;
+  animation:none;
+  text-shadow:0 0 30px rgba(72,255,200,.34);
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked.is-found>strong::before{
+  content:"✓";
+  border-color:#82ffd5;
+  border-top-color:#82ffd5;
+  background:rgba(51,190,149,.12);
+  color:#a8ffe1;
+  font:900 3.35rem/1 Orbitron,sans-serif;
+  animation:showcase-match-check .5s cubic-bezier(.16,.84,.28,1.24) both;
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked.is-found>strong::after{
+  content:"完了！";
+  color:#82ffd5;
+  letter-spacing:.2em;
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--linked.is-searching .neotokyo-sequence__link-status{
+  color:#79eaff;
+  font-weight:900;
+  text-shadow:0 0 18px rgba(73,225,255,.34);
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--linked.is-found .neotokyo-sequence__link-status{
+  color:#82ffd5;
+  font-weight:900;
+  text-shadow:0 0 20px rgba(76,255,201,.36);
+}
+
+/* Guest summaries are archive text: never clamp or ellipsize them. */
+body#act-showcase-page .poster-supporting-cast__grid{align-items:start}
+body#act-showcase-page .poster-supporting-card{height:auto;min-height:190px;align-items:stretch}
+body#act-showcase-page .poster-supporting-card__body{align-content:start}
+body#act-showcase-page .poster-supporting-card__summary{
+  display:block;
+  margin:10px 0 0;
+  overflow:visible;
+  color:#abc4cf;
+  font-size:.7rem;
+  line-height:1.65;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  -webkit-line-clamp:unset;
+  -webkit-box-orient:initial;
+}
+
+@keyframes showcase-match-sweep{to{transform:rotate(360deg)}}
+@keyframes showcase-match-orbit{to{transform:rotate(360deg)}}
+@keyframes showcase-match-text{to{opacity:.62}}
+@keyframes showcase-match-found-panel{0%{transform:scale(.98);filter:brightness(1.65)}100%{transform:none;filter:none}}
+@keyframes showcase-match-check{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.12);opacity:1}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked::before,
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked>strong,
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked>strong::before,
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked.is-found{animation:none}
+}

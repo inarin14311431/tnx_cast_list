@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 import { hasAuthCredentials } from "./helpers.js";
 
 test("一般技能の追加は少ない側へ入り、同数なら左を選ぶ", async ({ page }) => {

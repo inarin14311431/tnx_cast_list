@@ -96,3 +96,11 @@ npx.cmd playwright show-report
 - `E2E_TROOP_ID`
 
 Secretsが未登録でも公開画面のテストは実行され、認証必須テストはskipされます。
+
+## Approved test scope (2026-09-06)
+
+Live test casts are limited to the account `inarin1431@gmail.com`. `owner-policy.js` fixes the verified UID; environment variables cannot override it. `safe-test.js` checks the session with Auth, queries cast ownership before use, filters cast reads, and blocks unscoped or unrelated mutations at the network boundary. Synthetic mocked tests do not write to the shared DB.
+
+Set `E2E_REQUIRE_AUTH=1` for required authenticated runs; missing credentials must fail rather than look successful through skips. The verification workflow queues runs and runs its desktop/mobile write jobs sequentially. GitHub concurrency does not coordinate another repository: do not run production write tests concurrently until the same coordination policy is applied there.
+
+Existing save tests restore their edited values in `finally`. Forced cancellation can bypass that cleanup: do not cancel a running write job. Before running live write tests, retain a recovery snapshot of the selected cast. Do not restore over unrelated newer user changes.

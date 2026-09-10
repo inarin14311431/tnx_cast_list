@@ -1,8 +1,9 @@
+import { requestCharacterSheetSource } from "./character-sheet-source.js?v=1";
 import { supabase } from "./supabase-client.js";
 import { loadSheetBundle } from "./sheet-load-persistence.js?v=1";
 import { buildSkillSavePayloads, buildOutfitSavePayloads } from "./sheet-save-payload.js?v=1";
 import { getSheetSaveState, focusSheetSaveButton } from "./sheet-save-state.js?v=2";
-import { normalizeCharacterSheetUrl, buildCharacterSheetReadUrl, extractCharacterSheetKey } from "./character-sheet-url.js?v=2";
+import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=2";
 import { canonicalizeArchiveBundle, canonicalizeCharacterSheetJsonp, diffCanonicalBundles } from "./character-sheet-jsonp-canonical.js?v=2";
 import { groupCharacterSheetDifferences, summarizeCharacterSheetDifferences } from "./character-sheet-diff-display.js?v=3";
 
@@ -52,12 +53,8 @@ function readSession(){try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)
 function clearSession(){sessionStorage.removeItem(SESSION_KEY);}
 
 async function fetchCharacterSheetPayload(sourceUrl){
-  const primary=buildCharacterSheetReadUrl(sourceUrl),key=extractCharacterSheetKey(sourceUrl);if(!primary||!key)throw new Error("キャラクターシート倉庫URLを解析できませんでした。");
-  const encoded=encodeURIComponent(key),urls=[primary,`https://character-sheets.appspot.com/tnx/display.html?ajax=1&key=${encoded}`,`https://character-sheets.appspot.com/tnx/display?key=${encoded}&ajax=1`,`https://character-sheets.appspot.com/tnx/display.html?key=${encoded}&ajax=1`];
-  let lastError;for(const url of urls){try{return normalizePayload(await jsonpOnce(url));}catch(error){lastError=error;}}
-  throw lastError||new Error("キャラクターシート倉庫からデータを取得できませんでした。");
+  return normalizePayload(await requestCharacterSheetSource(sourceUrl));
 }
-function jsonpOnce(url,timeout=15000){return new Promise((resolve,reject)=>{const callback=`__tnxCompare_${Date.now()}_${Math.random().toString(36).slice(2)}`,script=document.createElement("script");let done=false;const finish=(fn,value)=>{if(done)return;done=true;clearTimeout(timer);try{delete window[callback];}catch{window[callback]=undefined;}script.remove();fn(value);};const timer=setTimeout(()=>finish(reject,new Error("キャラクターシート倉庫の応答がタイムアウトしました。")),timeout);window[callback]=value=>finish(resolve,value);script.onerror=()=>finish(reject,new Error("キャラクターシート倉庫のデータ取得に失敗しました。"));const request=new URL(url);request.searchParams.set("callback",callback);script.src=request.href;document.head.append(script);});}
 function parseJsonData(value){if(typeof value!=="string")return value;let source=value.trim();if(!source)return value;if(source.endsWith(";"))source=source.slice(0,-1).trim();if(source.startsWith("(")&&source.endsWith(")"))source=source.slice(1,-1).trim();try{return JSON.parse(source);}catch{return value;}}
 function mergeWrapperMetadata(parsed,wrapper){if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))return parsed;const result={...parsed};for(const key of ["outline","name","nameKana","player","display"])if((result[key]===undefined||result[key]===null||result[key]==="")&&wrapper?.[key]!==undefined)result[key]=wrapper[key];return result;}
 function normalizePayload(payload){let data=payload;for(let i=0;i<6;i+=1){if(typeof data==="string"){const parsed=parseJsonData(data);if(parsed!==data){data=parsed;continue;}break;}if(data&&typeof data==="object"&&typeof data.jsonData==="string"&&data.jsonData.trim()){const parsed=parseJsonData(data.jsonData);if(parsed!==data.jsonData){data=mergeWrapperMetadata(parsed,data);continue;}}if(data&&typeof data==="object"&&data.data&&typeof data.data==="object"&&!data.base&&!data.skills1&&!data.superhumanskills&&!data.weapons){data=mergeWrapperMetadata(data.data,data);continue;}break;}if(!data||typeof data!=="object")throw new Error("倉庫データをTNXキャラクターとして認識できませんでした。");if(!data.outline&&data.styles&&typeof data.styles==="object"&&!Array.isArray(data.styles)){const names=[data.styles.style1,data.styles.style2,data.styles.style3].map(value=>STYLE_CODE_NAMES.get(String(value??""))||"");if(names.every(Boolean))data={...data,outline:`STYLE:${names.join("=")}`};}return data;}

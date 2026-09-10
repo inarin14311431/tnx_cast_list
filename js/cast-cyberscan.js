@@ -4,7 +4,8 @@
   // overlay with timers even after CSS animations are disabled, so skip the
   // presentation-only effect for automated browsers while keeping production
   // behavior unchanged.
-  if(navigator.webdriver===true)return;
+  if(navigator.webdriver===true&&new URLSearchParams(location.search).get('scan')!=='full')return;
+  if(window.matchMedia?.('(prefers-reduced-motion: reduce)').matches===true)return;
   if(window.matchMedia?.('(max-width: 600px)').matches===true)return;
   document.body.classList.add('cast-scan-mode');
   const publicId=new URLSearchParams(location.search).get('id')?.trim()||'UNKNOWN';

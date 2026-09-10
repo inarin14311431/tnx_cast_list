@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="450" viewBox="0 0 800 450" role="img" aria-label="木更津湖港湾の夜景">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#06111d"/><stop offset=".55" stop-color="#143449"/><stop offset="1" stop-color="#08121a"/></linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#071d2a"/><stop offset="1" stop-color="#010509"/></linearGradient>
+    <linearGradient id="haze"><stop stop-color="#8be9ff" stop-opacity=".24"/><stop offset="1" stop-color="#8be9ff" stop-opacity="0"/></linearGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="800" height="450" fill="url(#sky)"/>
+  <circle cx="618" cy="92" r="42" fill="#d9f8ff" opacity=".75"/>
+  <ellipse cx="430" cy="224" rx="340" ry="76" fill="url(#haze)"/>
+  <g fill="#09131a">
+    <path d="M0 185h64v100H0zM43 164h51v121H43zM88 198h76v87H88zM608 173h70v112h-70zM668 142h66v143h-66zM725 188h75v97h-75z"/>
+    <path d="M176 219h34v66h-34zM224 205h48v80h-48zM544 214h42v71h-42z"/>
+  </g>
+  <g fill="#75efff" opacity=".65"><rect x="52" y="181" width="30" height="3"/><rect x="111" y="215" width="34" height="3"/><rect x="681" y="159" width="38" height="3"/><rect x="624" y="190" width="36" height="3"/></g>
+  <path d="M126 250 C260 158 522 156 690 250" fill="none" stroke="#121b25" stroke-width="16"/>
+  <path d="M126 247 C260 155 522 153 690 247" fill="none" stroke="#65f1ff" stroke-width="2" opacity=".82" filter="url(#glow)"/>
+  <g stroke="#253d4c" stroke-width="4"><path d="M181 213v72M245 184v101M315 165v120M400 155v130M490 165v120M574 190v95M640 219v66"/></g>
+  <rect y="285" width="800" height="165" fill="url(#water)"/>
+  <g opacity=".38" filter="url(#glow)">
+    <path d="M142 289 92 450h64l14-161zM246 289l-24 161h55l-3-161zM399 289l-18 161h40l-3-161zM575 289l20 161h58l-50-161zM688 289l38 161h39l-59-161z" fill="#24dff5"/>
+    <path d="M203 289 180 396h24l19-107zM522 289l18 118h23l-25-118z" fill="#ff5ca8"/>
+  </g>
+  <g stroke="#6ccdde" stroke-opacity=".22"><path d="M0 326h800M0 357h800M0 393h800M0 425h800"/></g>
+  <path d="M0 284h800" stroke="#a3f5ff" stroke-opacity=".6"/>
+</svg>

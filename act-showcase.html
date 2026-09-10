@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>ACT CAST FILE</title>
+  <title>ACT SHOWCASE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css-next/pages/act-showcase.css?v=1">
+  <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Sans+JP:wght@400;500;700;900&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./css-next/pages/act-showcase-entry.css?v=1">
 </head>
 <body id="act-showcase-page">
   <div id="cinematic-intro" class="cinematic-intro" aria-hidden="true">
@@ -14,30 +14,46 @@
     <div class="cinematic-intro__inner">
       <p class="cinematic-intro__overline">N◎VA MUNICIPAL DATABASE</p>
       <h1 class="cinematic-intro__title">ACT SHOWCASE</h1>
-      <p class="cinematic-intro__sub">CAST FILE INITIALIZING...</p>
+      <p class="cinematic-intro__sub">PUBLIC ARCHIVE ACCESS</p>
     </div>
   </div>
 
   <div id="act-showcase-status" class="showcase-loading">アクト紹介を読み込み中…</div>
+
   <div id="act-showcase-root" hidden>
-    <header class="hero wrap">
-      <div class="hero__content">
-        <p class="hero__code">N◎VA MUNICIPAL DATABASE // ACT ARCHIVE</p>
-        <h1 id="showcase-title">ACT CAST FILE<span id="showcase-subtitle">CAST SHOWCASE</span></h1>
-        <p id="showcase-act-name" class="hero__act"></p>
-        <p id="showcase-ruler" class="hero__ruler" hidden></p>
-        <p id="showcase-intro" class="hero__intro" hidden></p>
-      </div>
-      <div class="hero__scroll-cue" aria-hidden="true"><span>SCROLL TO CAST</span><i></i></div>
-    </header>
-    <nav class="cast-nav"><div id="showcase-navigation" class="wrap"></div></nav>
-    <main id="showcase-casts" class="cast-list wrap"></main>
-    <section class="showcase-end wrap" aria-label="キャスト紹介終了">
-      <p>END OF CAST FILE</p>
-      <strong>THE ACT BEGINS NOW</strong>
-    </section>
-    <footer class="footer wrap">「トーキョーN◎VA THE AXLERATION」は有限会社ファーイースト・アミューズメント・リサーチの著作物です。</footer>
+    <div class="ambient-stage" aria-hidden="true">
+      <span class="ambient-stage__grid"></span>
+      <span class="ambient-stage__scan"></span>
+      <span class="ambient-stage__flare ambient-stage__flare--cyan"></span>
+      <span class="ambient-stage__flare ambient-stage__flare--pink"></span>
+    </div>
+
+    <main id="showcase-story" class="showcase-story">
+      <section id="scene-opening" class="showcase-scene scene-opening" data-scene="opening" aria-labelledby="opening-act-name">
+        <div class="opening-world" aria-hidden="true">
+          <div class="opening-city"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></div>
+          <div class="opening-horizon"></div>
+          <div class="opening-floor"></div>
+          <div class="opening-door opening-door--left"><i></i></div>
+          <div class="opening-door opening-door--right"><i></i></div>
+        </div>
+        <div class="scene-shell opening-content">
+          <div class="opening-systemline"><span>N◎VA MUNICIPAL DATABASE</span><span>PUBLIC ACT FILE</span></div>
+          <p class="scene-index">01 // OPENING</p>
+          <p id="showcase-kicker" class="opening-kicker">PUBLIC ACT SHOWCASE</p>
+          <h1 id="opening-act-name">ACT CAST FILE</h1>
+          <p id="opening-subtitle" class="opening-subtitle">CAST SHOWCASE</p>
+          <p id="opening-ruler" class="opening-ruler" hidden></p>
+          <button type="button" class="opening-scroll"><span>SCROLL TO SHOWCASE</span><i></i></button>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="scene-shell">「トーキョーN◎VA THE AXLERATION」は有限会社ファーイースト・アミューズメント・リサーチの著作物です。</div>
+    </footer>
   </div>
-  <script type="module" src="./js/act-showcase.js?v=7"></script>
+
+  <script type="module" src="./js/act-showcase-bootstrap.js?v=1"></script>
 </body>
 </html>

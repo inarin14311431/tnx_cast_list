@@ -1,0 +1,10 @@
+/* Poster-v2 uses the ACT background only for the opening hero.
+   The board and ambient layer intentionally keep their own dark UI treatment. */
+body.showcase-poster-v2-ready.has-showcase-background .ambient-stage::before {
+  display: none;
+}
+
+body.showcase-poster-v2-ready .poster-v2-board::before {
+  background-image: linear-gradient(180deg, rgba(3, 8, 19, .12), rgba(3, 8, 19, .96) 68%);
+  background-color: #030813;
+}

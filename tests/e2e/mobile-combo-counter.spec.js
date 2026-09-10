@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 import { getTestCastId, hasAuthCredentials, watchPageErrors, watchStaticAssetErrors } from "./helpers.js";
 
 test("モバイル表示のコンボ使用回数を再読み込み後も保持しRESETできる", async ({ page }) => {

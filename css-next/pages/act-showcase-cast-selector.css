@@ -1,0 +1,6 @@
+body.showcase-poster-v2-ready .poster-v2-roster__item[role="button"]{cursor:pointer;outline:none;transition:border-color .18s ease,background .18s ease,box-shadow .18s ease,transform .18s ease}
+body.showcase-poster-v2-ready .poster-v2-roster__item[role="button"]:hover,body.showcase-poster-v2-ready .poster-v2-roster__item[role="button"]:focus-visible{border-color:rgba(127,225,255,.55);background:rgba(19,55,91,.58);box-shadow:inset 0 0 0 1px rgba(127,225,255,.12),0 0 24px rgba(65,192,255,.08);transform:translateY(-1px)}
+body.showcase-poster-v2-ready .poster-v2-roster__item.is-active{border-color:rgba(127,225,255,.72);background:linear-gradient(90deg,rgba(65,192,255,.20),rgba(116,77,255,.11));box-shadow:inset 3px 0 0 #7fe1ff,inset 0 0 0 1px rgba(127,225,255,.10)}
+body.showcase-poster-v2-ready .poster-v2-roster__item.is-active>span{color:#7fe1ff}
+body.showcase-poster-v2-ready .poster-v2-roster__item.is-active>strong{color:#fff}
+@media (prefers-reduced-motion:reduce){body.showcase-poster-v2-ready .poster-v2-roster__item[role="button"]{transition:none}}

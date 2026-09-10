@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 import { getTestCastId, hasAuthCredentials, waitForCastReady, watchPageErrors, watchStaticAssetErrors } from "./helpers.js";
 
 test("テストキャストの閲覧画面を正常に表示できる", async ({ page }) => {

@@ -1,0 +1,97 @@
+/* NeoTokyo title logo + final briefing. Loaded after the existing showcase layers. */
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo{width:min(1320px,100%);isolation:isolate}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo:before{position:absolute;inset:-8% -5%;z-index:-2;content:"";background:radial-gradient(circle at 77% 35%,rgba(255,69,188,.16),transparent 31%),radial-gradient(circle at 22% 58%,rgba(44,221,255,.14),transparent 34%);filter:blur(4px);pointer-events:none}
+.neotokyo-title-logo__meta{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;margin:0 0 18px;padding:8px 12px;border-top:1px solid rgba(122,235,255,.35);border-bottom:1px solid rgba(122,235,255,.18);background:linear-gradient(90deg,rgba(25,90,116,.16),transparent 48%,rgba(123,32,94,.13));color:#79bed4;font:700 .52rem/1.3 "Share Tech Mono",monospace;letter-spacing:.15em;text-transform:uppercase}
+.neotokyo-title-logo__meta span:nth-child(2){justify-self:center;color:#98abc4}
+.neotokyo-title-logo__meta .is-live{justify-self:end;color:#74ffd0;text-shadow:0 0 12px rgba(64,255,191,.34)}
+.neotokyo-title-logo__ghost{position:absolute;left:-1.4%;top:23%;z-index:-1;max-width:110%;margin:0;color:transparent;-webkit-text-stroke:1px rgba(114,235,255,.12);font:900 clamp(4.2rem,10vw,10.5rem)/.86 "Noto Sans JP",Orbitron,sans-serif;letter-spacing:.025em;white-space:nowrap;opacity:.68;transform:translateY(-14%);filter:blur(.25px);pointer-events:none;user-select:none}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo{position:relative;max-width:1180px;margin:0;padding:8px 0 15px;color:#f8fdff;font:900 clamp(3.6rem,7.8vw,8.2rem)/.93 "Noto Sans JP",Orbitron,sans-serif;letter-spacing:.015em;text-wrap:balance;text-shadow:3px 0 0 rgba(0,221,255,.28),-3px 0 0 rgba(255,67,186,.22),0 12px 56px rgba(0,0,0,.66),0 0 38px rgba(73,214,255,.18);filter:drop-shadow(0 12px 28px rgba(0,0,0,.34));isolation:isolate}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo:before,.cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo:after{position:absolute;inset:8px 0 15px;z-index:-1;content:attr(data-title);font:inherit;letter-spacing:inherit;pointer-events:none;opacity:0}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo:before{color:#61efff;transform:translate(4px,-1px);clip-path:polygon(0 8%,100% 8%,100% 31%,0 31%,0 58%,100% 58%,100% 68%,0 68%);animation:neotokyo-title-glitch-cyan 1.55s steps(1,end) 1}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo:after{color:#ff4dbb;transform:translate(-4px,1px);clip-path:polygon(0 34%,100% 34%,100% 48%,0 48%,0 72%,100% 72%,100% 84%,0 84%);animation:neotokyo-title-glitch-pink 1.55s steps(1,end) 1}
+.neotokyo-title-logo__rule{display:grid;grid-template-columns:minmax(70px,1fr) auto minmax(120px,2.1fr);gap:12px;align-items:center;margin:3px 0 22px;color:#7ea8bd;font:700 .48rem/1 "Share Tech Mono",monospace;letter-spacing:.2em}
+.neotokyo-title-logo__rule i{display:block;height:1px;background:linear-gradient(90deg,#76edff,rgba(118,237,255,.06));box-shadow:0 0 9px rgba(74,223,255,.28)}
+.neotokyo-title-logo__rule i:last-child{background:linear-gradient(90deg,rgba(255,85,192,.1),#ff66c7)}
+.neotokyo-title-logo__rule span{color:#89ffd4;text-shadow:0 0 10px rgba(98,255,204,.25)}
+body.showcase-neotokyo-title-logo-active .neotokyo-sequence__ruler-credit{position:relative;padding-left:18px;border-left:2px solid rgba(255,91,193,.62)}
+@keyframes neotokyo-title-glitch-cyan{0%,8%{opacity:0}9%{opacity:.7;transform:translate(8px,-2px)}12%{opacity:0}22%{opacity:.42;transform:translate(3px,1px)}26%,100%{opacity:0}}
+@keyframes neotokyo-title-glitch-pink{0%,13%{opacity:0}14%{opacity:.62;transform:translate(-7px,2px)}18%{opacity:0}27%{opacity:.34;transform:translate(-2px,-1px)}31%,100%{opacity:0}}
+
+/* Final assignment briefing */
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale{position:relative;width:min(1480px,100%);height:100%;max-height:100%;padding:2px 0 0;overflow:hidden;isolation:isolate}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale:before{position:absolute;inset:0;z-index:-3;content:"";background:radial-gradient(circle at 20% 45%,rgba(0,212,255,.105),transparent 30%),radial-gradient(circle at 86% 62%,rgba(255,62,178,.11),transparent 32%);pointer-events:none}
+.neotokyo-finale__signal{position:absolute;inset:0 0 auto;z-index:-1;display:flex;gap:9px;height:3px;opacity:.75;pointer-events:none}
+.neotokyo-finale__signal i{flex:1;background:linear-gradient(90deg,rgba(107,240,255,.08),#76efff 50%,rgba(255,85,193,.14));transform-origin:left;animation:neotokyo-finale-signal 3.6s ease-in-out infinite alternate}
+.neotokyo-finale__signal i:nth-child(2n){animation-delay:-1.1s}.neotokyo-finale__signal i:nth-child(3n){animation-delay:-2.2s}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-head{position:relative;display:grid;grid-template-columns:auto 1fr auto;grid-template-rows:auto auto auto;gap:5px 18px;align-items:end;margin:0 0 12px;padding:13px 17px 14px;border:1px solid rgba(119,222,255,.23);border-left:3px solid #72ecff;background:linear-gradient(100deg,rgba(9,42,66,.75),rgba(4,14,29,.78) 58%,rgba(49,13,43,.7));box-shadow:0 12px 34px rgba(0,0,0,.22),inset 0 1px rgba(182,247,255,.05)}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-head:after{position:absolute;right:12px;top:10px;width:58px;height:58px;content:"N◎VA";display:grid;place-items:center;border:1px solid rgba(255,91,193,.25);border-radius:50%;color:rgba(255,113,208,.35);font:900 .62rem/1 Orbitron,sans-serif;letter-spacing:.1em;box-shadow:0 0 22px rgba(255,69,180,.08);pointer-events:none}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-head .neotokyo-sequence__eyebrow{grid-column:1/-1;grid-row:1;margin:0;color:#79ffd0}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__act-ready{grid-column:1;grid-row:2/4;align-self:center;color:#fff;font:900 clamp(2.1rem,4vw,4.2rem)/.9 Orbitron,sans-serif;letter-spacing:-.025em;text-shadow:3px 0 rgba(0,222,255,.22),-3px 0 rgba(255,78,184,.16),0 0 30px rgba(90,225,255,.12)}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-status{grid-column:3;grid-row:2;color:#77ffd1;font-size:.5rem;text-align:right;padding-right:74px}
+.neotokyo-finale__title-lockup{grid-column:2/4;grid-row:3;display:grid;gap:2px;min-width:0;padding-right:72px}
+.neotokyo-finale__title-lockup span,.neotokyo-finale__title-lockup small{color:#7b99ad;font:700 .46rem/1.3 "Share Tech Mono",monospace;letter-spacing:.13em}
+.neotokyo-finale__title-lockup strong{min-width:0;overflow:hidden;color:#f7fbff;font:900 clamp(1.15rem,2.2vw,2.15rem)/1.08 "Noto Sans JP",Orbitron,sans-serif;letter-spacing:.02em;text-overflow:ellipsis;white-space:nowrap;text-shadow:0 0 24px rgba(99,213,255,.18)}
+.neotokyo-finale__title-lockup small{color:#ff75c9}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-grid{position:relative;display:grid;grid-template-columns:minmax(245px,.64fr) minmax(0,1.9fr);gap:14px;flex:1;min-height:0;overflow:hidden}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__overview,.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-cast-area{border-color:rgba(114,220,255,.25);background:linear-gradient(150deg,rgba(7,29,52,.94),rgba(4,10,23,.86));box-shadow:inset 0 0 0 1px rgba(255,255,255,.018),0 16px 42px rgba(0,0,0,.2)}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-finale__core{position:relative;border-left:2px solid rgba(109,238,255,.62);overflow:hidden}
+.neotokyo-finale__core:before{position:absolute;right:-56px;top:72px;width:180px;height:180px;content:"";border:1px solid rgba(102,230,255,.12);border-radius:50%;box-shadow:inset 0 0 0 20px rgba(97,230,255,.025),inset 0 0 0 42px rgba(255,76,187,.018);pointer-events:none}
+.neotokyo-finale__core-head{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:4px 10px;align-items:end;margin:-2px 0 12px;padding:0 0 10px;border-bottom:1px solid rgba(113,229,255,.2)}
+.neotokyo-finale__core-head span{grid-row:1/3;color:#83eaff;font:900 .72rem/1 Orbitron,sans-serif;letter-spacing:.14em}
+.neotokyo-finale__core-head strong{justify-self:end;color:#78ffd0;font:900 .62rem/1 Orbitron,sans-serif;letter-spacing:.15em;text-shadow:0 0 15px rgba(91,255,195,.22)}
+.neotokyo-finale__core-head small{justify-self:end;color:#65859a;font:700 .45rem/1 "Share Tech Mono",monospace;letter-spacing:.12em}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-title{font-size:clamp(1.18rem,1.9vw,1.7rem);text-shadow:0 0 18px rgba(83,212,255,.14)}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-ruler{margin-top:10px;padding:9px 10px;border:1px solid rgba(255,86,190,.18);background:linear-gradient(90deg,rgba(255,75,183,.08),transparent)}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__overview-intro,.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__overview-copy{font-size:.64rem;line-height:1.55}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__overview-copy{-webkit-line-clamp:5}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-finale__cast-bay{position:relative;overflow:hidden;border-top:2px solid rgba(255,82,190,.38)}
+.neotokyo-finale__cast-bay:before{position:absolute;left:17px;top:13px;content:"ASSIGNMENT BAY // CAST ASSEMBLY";color:#7594a8;font:700 .43rem/1 "Share Tech Mono",monospace;letter-spacing:.14em;pointer-events:none}
+.neotokyo-finale__links{position:absolute;left:18px;right:18px;top:40px;height:20px;display:flex;justify-content:space-around;z-index:0;opacity:.42;pointer-events:none}
+.neotokyo-finale__links:before{position:absolute;left:3%;right:3%;top:8px;height:1px;content:"";background:linear-gradient(90deg,rgba(91,224,255,.06),rgba(91,224,255,.56) 20%,rgba(255,82,190,.46) 80%,rgba(255,82,190,.05));box-shadow:0 0 10px rgba(76,220,255,.2)}
+.neotokyo-finale__links i{position:relative;width:7px;height:7px;margin-top:5px;border:1px solid #72eaff;border-radius:50%;background:#071522;box-shadow:0 0 9px rgba(87,224,255,.46)}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-cast-area>.neotokyo-sequence__micro{position:relative;z-index:2;margin:8px 0 18px;text-align:right;color:#ff79cf}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-casts{position:relative;z-index:1;grid-auto-rows:minmax(0,1fr);gap:9px;flex:1;min-height:0}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-casts[data-cast-count="1"]{grid-template-columns:minmax(360px,560px);justify-content:center}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-casts[data-cast-count="2"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-casts[data-cast-count="3"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-casts[data-cast-count="4"]{grid-template-columns:repeat(2,minmax(0,1fr))}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-casts[data-cast-count="5"],.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-casts[data-cast-count="6"]{grid-template-columns:repeat(3,minmax(0,1fr))}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-finale__cast-card{position:relative;grid-template-columns:minmax(82px,34%) minmax(0,1fr);border-color:rgba(105,218,255,.25);background:linear-gradient(135deg,rgba(8,34,59,.95),rgba(6,11,25,.92));box-shadow:inset 0 1px rgba(181,241,255,.035),0 10px 22px rgba(0,0,0,.2);overflow:hidden;transition:.2s ease border-color,.2s ease transform,.2s ease box-shadow}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-finale__cast-card:before{position:absolute;left:7px;top:7px;z-index:3;content:attr(data-pc);padding:3px 6px;border:1px solid rgba(110,230,255,.35);background:rgba(2,12,24,.78);color:#8beeff;font:900 .45rem/1 Orbitron,sans-serif;letter-spacing:.1em;box-shadow:0 0 12px rgba(61,220,255,.1)}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-finale__cast-card:hover{border-color:rgba(128,240,255,.55);transform:translateY(-2px);box-shadow:0 0 26px rgba(71,218,255,.1),0 14px 28px rgba(0,0,0,.25)}
+.neotokyo-finale__cast-card .neotokyo-sequence__summary-cast-image{position:relative;min-height:0}
+.neotokyo-finale__cast-card .neotokyo-sequence__summary-cast-image:after{position:absolute;inset:0;content:"";background:linear-gradient(180deg,transparent 55%,rgba(1,8,18,.46)),linear-gradient(90deg,transparent 78%,rgba(3,12,27,.45));pointer-events:none}
+.neotokyo-finale__cast-card .neotokyo-sequence__summary-cast-image img{filter:saturate(.96) contrast(1.1)}
+.neotokyo-finale__cast-card .neotokyo-sequence__summary-cast-body{position:relative;padding:12px 12px 11px}
+.neotokyo-finale__cast-card .neotokyo-sequence__summary-cast-body:after{position:absolute;right:8px;bottom:8px;width:22px;height:1px;content:"";background:#ff68c6;box-shadow:0 0 8px rgba(255,80,187,.36)}
+.neotokyo-finale__cast-card .neotokyo-sequence__summary-cast-body h3{font-size:clamp(.85rem,1.2vw,1.12rem);line-height:1.08}
+.neotokyo-finale__cast-card .neotokyo-sequence__summary-cast-role{color:#80ffd2;text-shadow:0 0 9px rgba(67,255,194,.16)}
+.neotokyo-finale__cast-card .neotokyo-sequence__summary-cast-tagline{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden}
+.neotokyo-finale__assigned-badge{position:absolute;right:8px;top:7px;z-index:3;color:#73ffd0;font:900 .42rem/1 Orbitron,sans-serif;letter-spacing:.13em;text-shadow:0 0 10px rgba(79,255,195,.34)}
+body.showcase-neotokyo-finale-active .neotokyo-sequence__advance{border-color:#7aeeff;background:linear-gradient(100deg,rgba(21,74,104,.9),rgba(38,21,75,.88));color:#fff;box-shadow:0 0 24px rgba(73,217,255,.16),inset 0 0 22px rgba(77,223,255,.05);text-shadow:0 0 12px rgba(92,231,255,.2)}
+body.showcase-neotokyo-finale-active .neotokyo-sequence__advance:before{content:"ENTER ACT // ";color:#79ffd1}
+@keyframes neotokyo-finale-signal{from{opacity:.16;transform:scaleX(.48)}to{opacity:.82;transform:scaleX(1)}}
+
+@media(max-width:1099px){
+  .neotokyo-title-logo__meta{grid-template-columns:1fr auto}.neotokyo-title-logo__meta span:nth-child(2){display:none}
+  .neotokyo-title-logo__ghost{font-size:clamp(3.2rem,12vw,6rem);white-space:normal}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo{font-size:clamp(2.7rem,10vw,5.3rem)}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-grid{grid-template-columns:minmax(200px,.75fr) minmax(0,1.5fr)}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-casts[data-cast-count]{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-finale__cast-card{grid-template-columns:72px minmax(0,1fr)}
+}
+@media(max-width:760px){
+  .neotokyo-title-logo__meta .is-live{display:none}.neotokyo-title-logo__meta{grid-template-columns:1fr}
+  .neotokyo-title-logo__ghost{opacity:.32}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale{overflow:auto}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-head{grid-template-columns:1fr;padding:10px 12px}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__act-ready{grid-column:1;grid-row:2;font-size:2.2rem}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-status{grid-column:1;grid-row:3;padding:0;text-align:left}
+  .neotokyo-finale__title-lockup{grid-column:1;grid-row:4;padding:0}.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-head:after{display:none}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-grid{display:block;overflow:visible}.neotokyo-finale__core{margin-bottom:10px}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-casts[data-cast-count]{grid-template-columns:1fr}.neotokyo-finale__links{display:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo:before,.cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo:after,.neotokyo-finale__signal i{animation:none}
+  .neotokyo-finale__cast-card{transition:none}
+}

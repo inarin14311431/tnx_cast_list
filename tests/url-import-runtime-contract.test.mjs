@@ -9,17 +9,12 @@ test("supabase client does not load retired transfer TSV module", async () => {
   assert.doesNotMatch(source, /transfer-tsv-export\.js/);
 });
 
-test("character-sheets URL import provides multiple JSONP endpoint candidates", async () => {
-  const source = await read("js/sheet-import-url.js");
-  assert.match(source, /VERSION='1\.6\.0'/);
-  assert.match(source, /\/tnx\/display\?ajax=1&key=/);
-  assert.match(source, /\/tnx\/display\.html\?ajax=1&key=/);
-  assert.match(source, /async function fetchJsonp\(key\)/);
-  assert.match(source, /SOURCE_PROXY_FUNCTION='character-sheet-source'/);
-  assert.match(source, /async function fetchViaProxy\(key\)/);
-  assert.match(source, /supabase\.functions\.invoke\(SOURCE_PROXY_FUNCTION/);
-  assert.match(source, /async function fetchSource\(key\)/);
-  assert.match(source, /character-sheets JSONP endpoints failed/);
+test("URL import and both comparisons use the data-only source transport", async () => {
+  for (const file of ["js/sheet-import-url.js", "js/sheet-character-sheet-compare.js", "js/character-sheet-compare-service.js"]) {
+    const source = await read(file);
+    assert.match(source, /requestCharacterSheetSource/);
+    assert.doesNotMatch(source, /jsonpOnce|fetchJsonp|script\.src/);
+  }
 });
 
 test("URL import unwraps parenthesized jsonData used by character-sheets", async () => {

@@ -1,7 +1,7 @@
 import { supabase } from "./supabase-client.js";
 import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=1";
 import { normalizeOutfitListForView } from "./outfit-view-model.js";
-import { compareCharacterSheetSource } from "./character-sheet-compare-service.js?v=1";
+import { compareCharacterSheetSource } from "./character-sheet-compare-service.js?v=2";
 import {
   groupCharacterSheetDifferences,
   summarizeCharacterSheetDifferences

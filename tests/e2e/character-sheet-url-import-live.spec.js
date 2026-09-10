@@ -1,4 +1,5 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
+import { TEST_OWNER_ID } from "./owner-policy.js";
 
 const PUBLIC_CASTS = [
   { publicId: "TNX-000029", expectedName: "トリル" },
@@ -59,16 +60,17 @@ function normalizeWarehousePayload(payload) {
 }
 
 async function getRegisteredUrl(page, publicId) {
-  return page.evaluate(async id => {
+  return page.evaluate(async ({id, ownerId}) => {
     const { supabase } = await import("/js/supabase-client.js");
     const { data, error } = await supabase
       .from("characters")
       .select("character_name,character_sheet_url")
       .eq("public_id", id)
+      .eq("owner_id", ownerId)
       .maybeSingle();
     if (error) throw new Error(error.message);
     return data;
-  }, publicId);
+  }, {id: publicId, ownerId: TEST_OWNER_ID});
 }
 
 function warehouseKey(url) {

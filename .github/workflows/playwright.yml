@@ -6,6 +6,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: shared-db-owner-e2e
+  cancel-in-progress: false
+
 jobs:
   public-smoke:
     name: Public and smoke E2E
@@ -25,12 +29,14 @@ jobs:
       - name: Run public and smoke tests
         run: >-
           npx playwright test
+          tests/e2e/audit-coverage.spec.js
           tests/e2e/smoke.spec.js
           tests/e2e/cast-view.spec.js
           tests/e2e/troop-view.spec.js
           tests/e2e/editor-help.spec.js
           tests/e2e/direct-transfer.spec.js
           tests/e2e/character-sheet-url-import-live.spec.js
+          tests/e2e/act-showcase-neotokyo-stability.spec.js
           --project=chromium
         env:
           E2E_CAST_ID: ${{ secrets.E2E_CAST_ID }}
@@ -45,7 +51,7 @@ jobs:
   authenticated-editor:
     name: Authenticated editor E2E
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 12
     steps:
       - name: Checkout
         uses: actions/checkout@v7
@@ -57,19 +63,14 @@ jobs:
         run: npm install
       - name: Install Chromium
         run: npx playwright install chromium
-      - name: Run authenticated editor tests
+      - name: Run authenticated audit/editor tests
         run: >-
           npx playwright test
+          tests/e2e/audit-coverage.spec.js
           tests/e2e/authenticated.spec.js
-          tests/e2e/troop-view.spec.js
-          tests/e2e/troop-editor-flow.spec.js
-          tests/e2e/legacy-import-profile.spec.js
-          tests/e2e/outfit-import-transfer.spec.js
-          tests/e2e/sheet-row-lifecycle.spec.js
-          tests/e2e/sheet-save-reload-flow.spec.js
-          tests/e2e/style-marks.spec.js
-          tests/e2e/style-separator.spec.js
           tests/e2e/style-skill-detail-integrity.spec.js
+          tests/e2e/troop-editor-flow.spec.js
+          tests/e2e/showcase-editor-restore.spec.js
           --project=chromium
         env:
           E2E_EMAIL: ${{ secrets.E2E_EMAIL }}

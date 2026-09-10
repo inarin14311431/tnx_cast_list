@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 import { getTestCastId, hasAuthCredentials, waitForEditorReady } from "./helpers.js";
 
 const PREFIX = "@@TNX_STYLE_DETAIL_V1@@";

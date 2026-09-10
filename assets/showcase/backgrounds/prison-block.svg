@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-label="監視設備に囲まれた近未来監獄区画の背景">
+  <defs>
+    <linearGradient id="ceiling" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#0a1118"/><stop offset="1" stop-color="#020507"/></linearGradient>
+    <linearGradient id="floor" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#17212a"/><stop offset="1" stop-color="#030507"/></linearGradient>
+    <linearGradient id="cell" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#071019"/><stop offset=".5" stop-color="#111c25"/><stop offset="1" stop-color="#05090e"/></linearGradient>
+    <radialGradient id="lamp"><stop stop-color="#ff5b6e" stop-opacity=".85"/><stop offset="1" stop-color="#ff213f" stop-opacity="0"/></radialGradient>
+    <filter id="blur"><feGaussianBlur stdDeviation="10"/></filter>
+  </defs>
+  <rect width="1200" height="675" fill="#020406"/>
+  <path d="M0 0h1200v230L600 310 0 230z" fill="url(#ceiling)"/>
+  <path d="M0 675V230l600 80 600-80v445z" fill="url(#floor)"/>
+  <path d="M0 231 600 310 1200 231" fill="none" stroke="#9ed7df" stroke-opacity=".15"/>
+  <g fill="url(#cell)" stroke="#52636d" stroke-opacity=".28">
+    <path d="M0 136 520 238v334L0 650z"/>
+    <path d="M1200 136 680 238v334l520 78z"/>
+  </g>
+  <g stroke="#728590" stroke-opacity=".36" stroke-width="5">
+    <path d="M92 154v475M230 183v427M365 209v380M492 232v337"/>
+    <path d="M1108 154v475M970 183v427M835 209v380M708 232v337"/>
+  </g>
+  <g fill="#020405" stroke="#9bb2ba" stroke-opacity=".22">
+    <path d="M24 202 173 226v172L24 384zM192 235l133 21v151l-133-17zM342 263l120 18v134l-120-13z"/>
+    <path d="M1176 202 1027 226v172l149-14zM1008 235l-133 21v151l133-17zM858 263l-120 18v134l120-13z"/>
+  </g>
+  <g stroke="#c6d9df" stroke-opacity=".19" stroke-width="3">
+    <path d="M54 207v182M82 211v181M110 216v179M138 220v177M216 239v153M242 243v152M268 247v151M294 251v149M367 267v137M391 271v135M415 274v133M439 278v131"/>
+    <path d="M1146 207v182M1118 211v181M1090 216v179M1062 220v177M984 239v153M958 243v152M932 247v151M906 251v149M833 267v137M809 271v135M785 274v133M761 278v131"/>
+  </g>
+  <g fill="#ff3853">
+    <circle cx="140" cy="185" r="6"/><circle cx="310" cy="220" r="5"/><circle cx="1058" cy="185" r="6"/><circle cx="890" cy="220" r="5"/>
+  </g>
+  <g fill="url(#lamp)" filter="url(#blur)" opacity=".7"><circle cx="140" cy="185" r="54"/><circle cx="1058" cy="185" r="54"/></g>
+  <path d="M600 310v365" stroke="#b3cad1" stroke-opacity=".17"/>
+  <g stroke="#6c7b83" stroke-opacity=".18"><path d="M600 345 0 303M600 397 0 374M600 454 0 451M600 521 0 543M600 598 0 649"/><path d="M600 345 1200 303M600 397 1200 374M600 454 1200 451M600 521 1200 543M600 598 1200 649"/></g>
+  <g transform="translate(520 122)">
+    <rect x="0" y="0" width="160" height="62" rx="5" fill="#050a0e" stroke="#d4e8ed" stroke-opacity=".28"/>
+    <rect x="18" y="17" width="124" height="5" fill="#ff3c58" opacity=".7"/>
+    <rect x="18" y="33" width="78" height="4" fill="#8eb4bd" opacity=".32"/>
+    <rect x="18" y="44" width="102" height="4" fill="#8eb4bd" opacity=".24"/>
+  </g>
+  <path d="M555 184h90l-14 62h-62z" fill="#071017" stroke="#7b8f98" stroke-opacity=".3"/>
+  <circle cx="600" cy="219" r="14" fill="#111a20" stroke="#ff405a" stroke-opacity=".65"/>
+  <circle cx="600" cy="219" r="4" fill="#ff405a"/>
+  <g fill="#d9eef1" opacity=".2"><rect x="588" y="325" width="24" height="4"/><rect x="581" y="378" width="38" height="4"/><rect x="572" y="439" width="56" height="4"/></g>
+  <rect x="0" y="0" width="1200" height="675" fill="none" stroke="#b7d9df" stroke-opacity=".08"/>
+</svg>

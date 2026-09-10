@@ -1,4 +1,4 @@
-import { test, expect } from "@playwright/test";
+import { test, expect } from "./safe-test.js";
 import { hasAuthCredentials } from "./helpers.js";
 
 const MARK_SIZE = 10;

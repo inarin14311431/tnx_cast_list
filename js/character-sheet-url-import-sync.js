@@ -50,7 +50,7 @@ function handleImportStart(event) {
 
 if (typeof document !== "undefined") {
   document.addEventListener("click", handleImportStart);
-  import("./sheet-character-sheet-compare.js?v=6").catch(error => {
+  import("./sheet-character-sheet-compare.js?v=7").catch(error => {
     console.error("character sheet comparison could not be initialized", error);
   });
 }

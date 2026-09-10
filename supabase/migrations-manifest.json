@@ -45,6 +45,12 @@
     "37_character_sheet_url.sql",
     "38_snapshot_from_bundle.sql",
     "39_drop_legacy_electronic_control.sql",
-    "40_drop_legacy_outfit_defense_fields.sql"
+    "40_drop_legacy_outfit_defense_fields.sql",
+    "41_reconcile_compatibility_rpc_access.sql",
+    "42_act_showcase_guests.sql",
+    "43_act_showcase_editor_restore.sql",
+    "44_act_showcase_delete.sql",
+    "45_act_showcase_delete_guest_columns.sql",
+    "46_act_showcase_delete_public_url.sql"
   ]
 }

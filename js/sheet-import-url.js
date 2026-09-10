@@ -16,7 +16,7 @@
   const importButton=document.querySelector('#legacy-import-open');
   const saveButton=document.querySelector('#save-button');
   const BASE_IMPORT_EVENT='tnx:legacy-import-base-finished';
-  const SOURCE_PROXY_FUNCTION='character-sheet-source';
+
   if(!dialog||!form||!legacyText||!legacyApply||!message||!importButton)return;
   if(dialog.dataset.urlImportReady==='1')return;
   dialog.dataset.urlImportReady='1';
@@ -144,68 +144,9 @@
     return data;
   }
 
-  function jsonpOnce(url,timeout=12000){
-    return new Promise((resolve,reject)=>{
-      const callback=`__tnxSheetUrlImport_${Date.now()}_${Math.random().toString(36).slice(2)}`;
-      const script=document.createElement('script');
-      let settled=false;
-      const cleanup=()=>{
-        try{delete window[callback];}catch{window[callback]=undefined;}
-        script.remove();
-      };
-      const finish=(fn,value)=>{
-        if(settled)return;
-        settled=true;
-        clearTimeout(timer);
-        cleanup();
-        fn(value);
-      };
-      const timer=setTimeout(()=>finish(reject,new Error('応答がタイムアウトしました。')),timeout);
-      window[callback]=payload=>finish(resolve,payload);
-      script.onerror=()=>finish(reject,new Error('データ取得リクエストに失敗しました。'));
-      const request=new URL(url);
-      request.searchParams.set('callback',callback);
-      script.src=request.toString();
-      document.head.append(script);
-    });
-  }
-
-  async function fetchJsonp(key){
-    const encoded=encodeURIComponent(key);
-    const urls=[
-      `https://character-sheets.appspot.com/tnx/display?ajax=1&key=${encoded}`,
-      `https://character-sheets.appspot.com/tnx/display.html?ajax=1&key=${encoded}`,
-      `https://character-sheets.appspot.com/tnx/display?key=${encoded}&ajax=1`,
-      `https://character-sheets.appspot.com/tnx/display.html?key=${encoded}&ajax=1`
-    ];
-    const failures=[];
-    for(const url of urls){
-      try{return await jsonpOnce(url);}catch(error){failures.push(`${url}: ${error?.message||error}`);}
-    }
-    console.error('character-sheets JSONP endpoints failed',failures);
-    throw new Error('キャラクターシート倉庫のデータ取得に失敗しました。');
-  }
-
-  async function fetchViaProxy(key){
-    const {supabase}=await import('./supabase-client.js');
-    const {data,error}=await supabase.functions.invoke(SOURCE_PROXY_FUNCTION,{body:{key}});
-    if(error)throw error;
-    return data;
-  }
-
   async function fetchSource(key){
-    const failures=[];
-    try{return await fetchViaProxy(key);}
-    catch(error){
-      failures.push(`proxy: ${error?.message||error}`);
-      console.warn('character-sheets proxy import unavailable; trying direct JSONP',error);
-    }
-    try{return await fetchJsonp(key);}
-    catch(error){
-      failures.push(`direct: ${error?.message||error}`);
-      console.error('character-sheets source endpoints failed',failures);
-      throw new Error('キャラクターシート倉庫のデータ取得に失敗しました。');
-    }
+    const {requestCharacterSheetSource}=await import('./character-sheet-source.js?v=1');
+    return requestCharacterSheetSource(`https://character-sheets.appspot.com/tnx/edit.html?key=${encodeURIComponent(key)}`);
   }
 
   function waitForBaseImport(timeout=180000){

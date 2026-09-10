@@ -9,6 +9,7 @@ begin;
 -- 2. Rewrite only the outfit INSERT portion of save_character_bundle.
 -- 3. Verify the rewritten function no longer refers to the retired fields.
 -- 4. Drop the columns only after all checks pass.
+
 do $$
 begin
   if exists (
