@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
-import { buildNewCharacterSkills } from "../js/sheet-new-character-state.js";
+import { buildNewCharacterSkills, appendStarterSocialConnectionRowsIfBothMissing } from "../js/sheet-new-character-state.js";
 import { createBlankSkill, createSkillRow } from "../js/sheet-row-factory.js";
 
 const SUITS = ["reason", "passion", "life", "mundane"];
@@ -62,6 +62,24 @@ test("new character state uses shared row and collection factories while remaini
   assert.match(helperSource, /createSkillRow\("general"/);
   assert.match(helperSource, /appendRows/);
   assert.doesNotMatch(helperSource, /\.push\(/);
-  assert.match(sheetSource, /sheet-new-character-state\.js\?v=1/);
+  assert.match(sheetSource, /sheet-new-character-state\.js\?v=2/);
   assert.match(sheetSource, /buildNewCharacterSkills\(/);
+});
+
+
+test("legacy empty social and connection state restores only the canonical starter package", () => {
+  key = 0;
+  const existing = [makeRow("general", { name: "医療" })];
+  const restored = appendStarterSocialConnectionRowsIfBothMissing(existing, { createSkillRow: makeRow });
+  assert.deepEqual(restored.filter(row => row.category === "social").map(row => row.name), ["社会：N◎VA", "社会：", "社会：", "社会："]);
+  assert.deepEqual(restored.filter(row => row.category === "connection").map(row => row.name), ["コネ：", "コネ：", "コネ："]);
+  assert.equal(restored.length, existing.length + 7);
+});
+
+test("starter recovery does not invent rows when either social or connection data already exists", () => {
+  key = 0;
+  const socialOnly = [makeRow("social", { name: "社会：企業" })];
+  const connectionOnly = [makeRow("connection", { name: "コネ：テスト" })];
+  assert.equal(appendStarterSocialConnectionRowsIfBothMissing(socialOnly, { createSkillRow: makeRow }).length, 1);
+  assert.equal(appendStarterSocialConnectionRowsIfBothMissing(connectionOnly, { createSkillRow: makeRow }).length, 1);
 });

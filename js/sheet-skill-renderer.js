@@ -46,7 +46,7 @@ export function renderSkillEditorSections({
 }
 
 function skillTable(jp, en, rows, detail, category = "", context = {}) {
-  if (!rows.length && !category.startsWith("general")) return "";
+  if (!rows.length && category.split(" ")[0] === "style") return "";
   return `<section class="skill-group ${esc(category)}" data-skill-category="${esc(category.split(" ")[0])}"><h3 class="skill-group-title">${jp} <small>${en}</small></h3>
     <table class="skill-table ${detail ? "has-detail" : "no-detail"}"><thead><tr><th class="name-col">名称</th><th class="type-col">種別</th><th class="lv-col">LV</th>${MARKS.map(mark => `<th class="suit-col">${mark}</th>`).join("")}${detail ? "<th>詳細</th>" : ""}<th></th></tr></thead><tbody>${rows.map(item => skillRow(item, detail, rows, context)).join("")}</tbody></table></section>`;
 }
