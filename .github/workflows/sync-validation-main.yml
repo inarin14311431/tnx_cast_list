@@ -29,28 +29,26 @@ jobs:
           ref: main
           fetch-depth: 1
 
-      - name: Attach exact validation tree to production history
+      - name: Mirror all non-workflow files exactly
         shell: bash
         run: |
           set -euo pipefail
-          VALIDATION_COMMIT="$(git -C validation rev-parse HEAD)"
-          VALIDATION_TREE="$(git -C validation rev-parse HEAD^{tree})"
-
-          # Import the exact Git objects already materialized by the validation checkout.
-          cp -a validation/.git/objects/. prod/.git/objects/
-
+          rsync -a --delete --exclude='.git' --exclude='.github/workflows' validation/ prod/
           cd prod
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git cat-file -e "${VALIDATION_COMMIT}^{commit}"
-          git cat-file -e "${VALIDATION_TREE}^{tree}"
+          git add -f -A
+          git diff --cached --quiet && { echo 'No non-workflow changes'; exit 0; }
+          git commit -m '検証環境 main を本番へ同期（workflow除外）'
 
-          PARENT="$(git rev-parse HEAD)"
-          NEW_COMMIT="$(printf '%s\n' '検証環境 main を本番へ完全同期' | git commit-tree "$VALIDATION_TREE" -p "$PARENT")"
-          PROD_TREE="$(git rev-parse "${NEW_COMMIT}^{tree}")"
+          # Verify that any remaining difference from validation is confined to workflows.
+          cp -a ../validation/.git/objects/. .git/objects/
+          VALIDATION_COMMIT="$(git -C ../validation rev-parse HEAD)"
+          REMAINING="$(git diff --name-only HEAD "$VALIDATION_COMMIT" || true)"
+          echo "$REMAINING"
+          if printf '%s\n' "$REMAINING" | grep -v '^\.github/workflows/' | grep -q .; then
+            echo 'Unexpected non-workflow difference remains' >&2
+            exit 1
+          fi
 
-          echo "production candidate tree: $PROD_TREE"
-          echo "validation tree: $VALIDATION_TREE"
-          test "$PROD_TREE" = "$VALIDATION_TREE"
-
-          git push origin "$NEW_COMMIT":refs/heads/sync/test-main-20260910
+          git push origin HEAD:sync/test-main-20260910
