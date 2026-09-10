@@ -1,0 +1,27 @@
+name: Temporary apply skill fixes
+on: [push]
+permissions:
+  contents: write
+jobs:
+  apply:
+    if: github.ref_name == 'fix/skd-skill-empty-sections-20260911'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+      - name: Apply focused patch
+        run: python tools/tmp_apply_skill_fixes.py
+      - name: Commit focused patch
+        shell: bash
+        run: |
+          git diff --check
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add js/sheet-master-search.js js/sheet-new-character-state.js js/sheet-skill-renderer.js js/sheet.js tests/master-search-selection.test.mjs tests/sheet-new-character-state.test.mjs tests/sheet-skill-renderer.test.mjs
+          if git diff --cached --quiet; then
+            echo 'No implementation changes to commit.'
+            exit 0
+          fi
+          git commit -m 'SKD技能反映と空の社会・コネ枠を修正'
+          git push origin HEAD:${{ github.ref_name }}
