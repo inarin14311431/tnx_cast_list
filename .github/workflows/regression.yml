@@ -26,6 +26,8 @@ jobs:
         run: npm run audit:integrity
       - name: Audit CSS architecture
         run: npm run audit:css
+      - name: Audit ACT showcase architecture
+        run: npm run audit:showcase
       - name: Audit theme system
         run: npm run audit:themes
       - name: Audit PC editor runtime
