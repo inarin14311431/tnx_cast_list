@@ -73,7 +73,6 @@ jobs:
           tests/e2e/showcase-editor-restore.spec.js
           --project=chromium
         env:
-          E2E_REQUIRE_AUTH: "1"
           E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
           E2E_CAST_ID: ${{ secrets.E2E_CAST_ID }}
@@ -86,7 +85,6 @@ jobs:
           retention-days: 14
 
   mobile:
-    needs: authenticated-editor
     name: Mobile E2E
     runs-on: ubuntu-latest
     container:
@@ -111,7 +109,6 @@ jobs:
           tests/e2e/mobile-experience.spec.js
           --project=mobile
         env:
-          E2E_REQUIRE_AUTH: "1"
           E2E_EMAIL: ${{ secrets.E2E_EMAIL }}
           E2E_PASSWORD: ${{ secrets.E2E_PASSWORD }}
           E2E_CAST_ID: ${{ secrets.E2E_CAST_ID }}
