@@ -98,3 +98,17 @@
   cursor: text;
   opacity: 1;
 }
+
+/* The style table still contains a legacy 17-column divider selector with higher
+   specificity. Match that specificity here so the native two-cell divider wins. */
+#style-skills .style-skill-full-table tbody tr.style-skill-separator-row[data-skill-key] {
+  grid-template-columns: minmax(0, 1fr) var(--style-action-column);
+}
+
+#style-skills .style-skill-full-table tbody tr.style-skill-separator-row[data-skill-key] > .style-separator-main {
+  grid-column: 1;
+}
+
+#style-skills .style-skill-full-table tbody tr.style-skill-separator-row[data-skill-key] > .style-separator-actions {
+  grid-column: 2;
+}
