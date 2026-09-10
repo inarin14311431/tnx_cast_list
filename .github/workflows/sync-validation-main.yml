@@ -1,0 +1,48 @@
+name: Sync validation main to production branch
+
+on:
+  push:
+    branches:
+      - sync/test-main-20260910
+    paths:
+      - .github/workflows/sync-validation-main.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout production sync branch
+        uses: actions/checkout@v4
+        with:
+          path: prod
+          ref: sync/test-main-20260910
+          fetch-depth: 0
+
+      - name: Checkout validation main
+        uses: actions/checkout@v4
+        with:
+          repository: inarin14311431/tnx-cast-archive-test
+          path: validation
+          ref: main
+          fetch-depth: 1
+
+      - name: Mirror validation tree exactly
+        shell: bash
+        run: |
+          set -euo pipefail
+          rsync -a --delete --exclude='.git' validation/ prod/
+          cd prod
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          git diff --cached --quiet && { echo 'Already synchronized'; exit 0; }
+          git commit -m '検証環境 main を本番へ完全同期'
+          PROD_TREE="$(git rev-parse HEAD^{tree})"
+          VALIDATION_TREE="$(git -C ../validation rev-parse HEAD^{tree})"
+          echo "production tree: $PROD_TREE"
+          echo "validation tree: $VALIDATION_TREE"
+          test "$PROD_TREE" = "$VALIDATION_TREE"
+          git push origin HEAD:sync/test-main-20260910
