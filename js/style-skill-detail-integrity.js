@@ -1,5 +1,6 @@
 /* Keep structured style-skill detail payloads canonical during normal editing.
  * Legacy import reconciliation belongs to sheet-import-style-skill-compat.js.
+ * Detail DOM creation/readiness is owned by style-skill-fields.js.
  */
 (() => {
   import("./skill-display-enhancements.js?v=1");
@@ -148,6 +149,7 @@
   }
 
   function scan() {
+    window.TNXStyleSkillFields?.enhance?.();
     document.querySelectorAll('#style-skills tr[data-skill-key]').forEach(repairRow);
   }
 
@@ -157,6 +159,8 @@
     if (root.dataset.styleDetailIntegrityInitialized === "1") return;
     root.dataset.styleDetailIntegrityInitialized = "1";
 
+    // Preserve the established event ordering: projected controls finish their own
+    // input handlers before the canonical integrity repair reads the backing value.
     let queued = false;
     const queue = () => {
       if (queued) return;

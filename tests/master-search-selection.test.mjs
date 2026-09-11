@@ -23,9 +23,7 @@ test('OFC master apply uses persistent master selection', async () => {
 
 test('SKD master apply waits for full structured detail controls before mapping all fields', async () => {
   const source = await read('js/sheet-master-search.js');
-  assert.match(source, /row\.dataset\.fullStyleFields === "1"/);
-  assert.match(source, /data-style-field='skill'/);
-  assert.match(source, /data-style-field='page'/);
+  assert.match(source, /TNXStyleSkillFields\?\.waitUntilReady\?\.\(row,\s*1600\)/);
   for (const mapping of [
     'skill: rowData.skill',
     'limit: rowData.limit_text',

@@ -99,8 +99,20 @@
   opacity: 1;
 }
 
-/* The style table still contains a legacy 17-column divider selector with higher
-   specificity. Match that specificity here so the native two-cell divider wins. */
+#style-skills .style-skill-separator-row :is(input, textarea)[data-f="name"]:hover {
+  border-color: var(--color-accent);
+  background: color-mix(in srgb, var(--color-field) 88%, var(--color-accent) 12%);
+}
+
+#style-skills .style-skill-separator-row :is(input, textarea)[data-f="name"]:focus {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 1px;
+  border-color: var(--color-accent);
+  background: var(--color-field);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--color-accent) 16%, transparent);
+}
+
+/* Match the normal table selector specificity so the native two-cell divider wins. */
 #style-skills .style-skill-full-table tbody tr.style-skill-separator-row[data-skill-key] {
   grid-template-columns: minmax(0, 1fr) var(--style-action-column);
 }
