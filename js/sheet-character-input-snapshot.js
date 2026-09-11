@@ -1,6 +1,10 @@
 import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=2";
 import "./character-sheet-url-import-sync.js?v=5";
 
+if (typeof document !== "undefined") {
+  import("./character-share-editor.js?v=1");
+}
+
 const BASE_FIELD_SELECTORS = {
   character_name: "#character-name",
   character_kana: "#character-kana",
@@ -15,6 +19,30 @@ const BASE_FIELD_SELECTORS = {
 const BUILTIN_STRUCTURED_FIELD_SELECTORS = {
   character_sheet_url: "#character-sheet-url"
 };
+
+const VISIBILITY_VALUES = new Set(["public", "unlisted", "private"]);
+
+function ensureVisibilityOptions(root = document) {
+  const select = root.querySelector("#visibility");
+  if (!select) return;
+
+  const options = select.options ? [...select.options] : [];
+  if (options.some(option => option.value === "unlisted")) return;
+
+  const ownerDocument = root.ownerDocument || (typeof root.createElement === "function" ? root : null);
+  if (!ownerDocument?.createElement || typeof select.insertBefore !== "function") return;
+
+  const option = ownerDocument.createElement("option");
+  option.value = "unlisted";
+  option.textContent = "限定公開 / UNLISTED";
+  const privateOption = options.find(item => item.value === "private");
+  select.insertBefore(option, privateOption || null);
+}
+
+function normalizeVisibility(value) {
+  const normalized = String(value || "");
+  return VISIBILITY_VALUES.has(normalized) ? normalized : "private";
+}
 
 function ensureCharacterSheetUrlField(root = document) {
   if (root.querySelector("#character-sheet-url")) return;
@@ -65,6 +93,7 @@ export function collectCharacterInputSnapshot({
   experienceTotal = 0
 } = {}) {
   ensureCharacterSheetUrlField(root);
+  ensureVisibilityOptions(root);
   const value = selector => root.querySelector(selector)?.value ?? "";
   const text = selector => root.querySelector(selector)?.textContent ?? "";
 
@@ -73,7 +102,7 @@ export function collectCharacterInputSnapshot({
       ...Object.fromEntries(
         Object.entries(BASE_FIELD_SELECTORS).map(([name, selector]) => [name, value(selector)])
       ),
-      visibility: value("#visibility"),
+      visibility: normalizeVisibility(value("#visibility")),
       experience_points: Number(experienceTotal ?? text("#exp-total") ?? 0)
     },
     structured: {
@@ -91,6 +120,7 @@ export function applyCharacterInputSnapshot({
   structuredFields = []
 } = {}) {
   ensureCharacterSheetUrlField(root);
+  ensureVisibilityOptions(root);
   const setValue = (selector, value) => {
     const element = root.querySelector(selector);
     if (element) element.value = value ?? "";
@@ -105,7 +135,10 @@ export function applyCharacterInputSnapshot({
   for (const [name, selector] of structuredFields) {
     setValue(selector, data[name] ?? "");
   }
-  setValue("#visibility", data.visibility === "public" ? "public" : "private");
+  setValue("#visibility", normalizeVisibility(data.visibility));
 }
 
-if (typeof document !== "undefined") ensureCharacterSheetUrlField(document);
+if (typeof document !== "undefined") {
+  ensureCharacterSheetUrlField(document);
+  ensureVisibilityOptions(document);
+}

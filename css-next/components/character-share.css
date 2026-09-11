@@ -1,0 +1,53 @@
+.character-share-panel {
+  margin: .75rem 0;
+  padding: .8rem;
+  border: 1px solid currentColor;
+  border-radius: .35rem;
+  background: rgba(0, 0, 0, .12);
+}
+
+.character-share-panel strong {
+  display: block;
+  font-size: .88rem;
+}
+
+.character-share-panel small {
+  display: block;
+  opacity: .72;
+  font-size: .68rem;
+  letter-spacing: .06em;
+}
+
+.character-share-panel p {
+  margin: .4rem 0;
+  font-size: .76rem;
+  line-height: 1.5;
+}
+
+.character-share-panel__controls button {
+  width: 100%;
+  min-height: 40px;
+  white-space: nowrap;
+}
+
+.character-share-panel__status {
+  min-height: 1.2em;
+  opacity: .8;
+}
+
+.character-share-panel__url {
+  overflow-wrap: anywhere;
+  user-select: all;
+}
+
+.mobile-sheet-actions .character-share-panel {
+  flex: 1 1 100%;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 720px) {
+  .character-share-panel__controls button {
+    min-height: 44px;
+  }
+}

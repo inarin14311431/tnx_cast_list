@@ -8,6 +8,7 @@ const PROFILE_FIELDS = [
   "age", "gender", "height", "weight", "eyes", "hair", "skin",
   "life_path_origin", "life_path_experience", "life_path_encounter", "summary", "profile", "visibility"
 ];
+const VISIBILITY_VALUES = new Set(["public", "unlisted", "private"]);
 
 const $ = selector => document.querySelector(selector);
 let user = null;
@@ -81,7 +82,7 @@ function collectProfileUpdate() {
   if (normalizedSheetUrl === null) throw new Error("キャラクターシート倉庫URLを確認してください。");
   payload.character_sheet_url = normalizedSheetUrl;
   if (!payload.birthplace) payload.birthplace = "Ｎ◎ＶＡ";
-  payload.visibility = payload.visibility === "public" ? "public" : "private";
+  payload.visibility = VISIBILITY_VALUES.has(payload.visibility) ? payload.visibility : "private";
   return payload;
 }
 
