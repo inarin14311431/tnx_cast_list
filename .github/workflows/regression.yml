@@ -20,6 +20,8 @@ jobs:
           node-version: '22'
       - name: Check JavaScript syntax
         run: npm run check:js
+      - name: Audit editor cache policy
+        run: npm run audit:cache
       - name: Audit module dependency graph
         run: npm run audit:modules
       - name: Audit runtime integrity
