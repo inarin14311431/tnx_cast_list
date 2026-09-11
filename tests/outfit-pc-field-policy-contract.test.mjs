@@ -8,7 +8,7 @@ test("PC outfit policy consumes the shared outfit contract", () => {
   assert.match(source, /OUTFIT_BASE_FIELDS/);
   assert.match(source, /OUTFIT_FIELD_LABELS/);
   assert.match(source, /normalizeOutfitCategory/);
-  assert.match(source, /from "\.\/outfit-contract\.js\?v=2"/);
+  assert.match(source, /from "\.\/outfit-contract\.js(?:\?v=[^"]+)?"/);
 });
 
 test("PC outfit policy consumes shared legacy concealment parsing directly", () => {

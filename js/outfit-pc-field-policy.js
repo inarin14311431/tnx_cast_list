@@ -3,7 +3,7 @@ import {
   OUTFIT_BASE_FIELDS,
   OUTFIT_FIELD_LABELS,
   normalizeOutfitCategory
-} from "./outfit-contract.js?v=2";
+} from "./outfit-contract.js?v=3";
 import { splitLegacyConcealment } from "./outfit-legacy-compat.js?v=1";
 
 const ROOT = "#outfit-list";

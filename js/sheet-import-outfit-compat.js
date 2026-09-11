@@ -3,7 +3,7 @@
   const APPLY="#legacy-import-apply",TEXT="#legacy-import-json",ROOT="#outfit-list",MESSAGE="#legacy-import-message",DIALOG="#legacy-import-dialog";
   const BASE_IMPORT_EVENT="tnx:legacy-import-base-finished";
   const PREFIXES=["weapons","armours","armors","cyberwares","trons","vehicles","residences","outfits"];
-  const OUTFIT_ADAPTER=import("./outfit-ofc-adapter.js?v=1");
+  const OUTFIT_ADAPTER=import("./outfit-ofc-adapter.js?v=2");
   let normalizeImportedOutfitDetails=(category,value)=>value;
   const sleep=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const frame=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
