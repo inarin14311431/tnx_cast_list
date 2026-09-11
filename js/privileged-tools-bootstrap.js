@@ -12,7 +12,7 @@ async function initializePrivilegedTools() {
 
     const page = document.body?.dataset?.page || "";
     if (page === "sheet.html") {
-      await import("./sheet-privileged-tools.js?v=3");
+      await import("./sheet-privileged-tools.js?v=4");
       return;
     }
     if (page === "account.html") {
