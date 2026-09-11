@@ -3,6 +3,7 @@
   const PREFIX="@@TNX_STYLE_DETAIL_V1@@";
   const SEPARATOR_MARKER="[[STYLE_SEPARATOR]]";
   const STYLE_SKILLS_CHANGED_EVENT="tnx:style-skills-changed";
+  const DETAIL_READY_EVENT="tnx:style-skill-detail-ready";
   const SUITS=[
     ["reason","♠"],
     ["passion","♣"],
@@ -48,6 +49,11 @@
     const original=row.querySelector('textarea[data-f="description"]');
     if(!original)return false;
     return String(parse(original.value).description||"").startsWith(SEPARATOR_MARKER);
+  }
+
+  function isReady(row){
+    if(!row||isSeparatorRow(row)||row.dataset.fullStyleFields!=="1")return false;
+    return FIELDS.every(([key])=>row.querySelector(`[data-style-field="${key}"]`));
   }
 
   function ensureKindOptions(row){
@@ -157,6 +163,7 @@
     cells.push(actionCell);
     row.replaceChildren(...cells);
     row.dataset.fullStyleFields="1";
+    row.dispatchEvent(new CustomEvent(DETAIL_READY_EVENT,{bubbles:false}));
   }
 
   function enhance(){
@@ -168,6 +175,27 @@
     rebuildHeader(table);
     table.querySelectorAll("tbody tr[data-skill-key]").forEach(rebuildRow);
     return true;
+  }
+
+  function waitUntilReady(row,timeout=1600){
+    if(isReady(row))return Promise.resolve(row);
+    if(!row)return Promise.resolve(null);
+    return new Promise(resolve=>{
+      let settled=false;
+      let timer=0;
+      const finish=value=>{
+        if(settled)return;
+        settled=true;
+        row.removeEventListener(DETAIL_READY_EVENT,onReady);
+        if(timer)clearTimeout(timer);
+        resolve(value);
+      };
+      const onReady=()=>{if(isReady(row))finish(row);};
+      row.addEventListener(DETAIL_READY_EVENT,onReady);
+      timer=setTimeout(()=>finish(isReady(row)?row:null),Math.max(0,Number(timeout)||0));
+      enhance();
+      if(isReady(row))finish(row);
+    });
   }
 
   function syncAll(){
@@ -205,7 +233,7 @@
     queue();
   }
 
-  window.TNXStyleSkillFields={enhance,syncAll,syncRow:syncRowFromOriginal};
+  window.TNXStyleSkillFields={enhance,isReady,waitUntilReady,syncAll,syncRow:syncRowFromOriginal};
   if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",initialize,{once:true});
   else initialize();
 })();
