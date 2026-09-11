@@ -107,7 +107,7 @@ export function buildCharacterSavePayload({
     citizen_rank: String(base.citizen_rank || "").trim(),
     summary: String(base.summary || ""),
     profile: String(base.profile || ""),
-    visibility: base.visibility === "public" ? "public" : "private",
+    visibility: ["public", "unlisted", "private"].includes(base.visibility) ? base.visibility : "private",
     experience_points: Number(base.experience_points || 0)
   };
 

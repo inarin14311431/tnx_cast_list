@@ -8,6 +8,7 @@
 @import url("../components/sheet-snapshots.css?v=1") layer(sheet-components);
 @import url("../components/sheet-url-import.css?v=1") layer(sheet-components);
 @import url("../components/character-sheet-compare.css?v=2") layer(sheet-components);
+@import url("../components/character-share.css?v=1") layer(sheet-components);
 
 @import url("../editor/editor.css?v=30") layer(sheet-editor);
 @import url("../editor/divine-layout.css?v=1") layer(sheet-editor);
