@@ -12,6 +12,7 @@ if (editor) {
       import("./outfit-ofc-master-apply.js?v=20260819-3"),
       import("./sheet-master-autofill.js?v=10")
     ]);
+    await import("./sheet-tsv-import.js?v=1");
   } finally {
     anchors.forEach(anchor => anchor.remove());
   }
