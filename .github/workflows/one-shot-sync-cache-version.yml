@@ -28,7 +28,6 @@ jobs:
             "scripts/editor-cache-audit-lib.mjs"
             "scripts/audit-editor-cache-policy.mjs"
             "package.json"
-            ".github/workflows/regression.yml"
             "js/character-sheet-jsonp-canonical.js"
             "js/outfit-ofc-adapter.js"
             "js/outfit-ofc-utils.js"
