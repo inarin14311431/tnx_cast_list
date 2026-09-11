@@ -1,0 +1,12 @@
+{
+  "policyVersion": 1,
+  "scope": [
+    "sheet.html",
+    "sheet-mobile.html"
+  ],
+  "enforcement": {
+    "mixedVersioning": "report",
+    "versionMismatch": "report",
+    "pcMobileSharedMismatch": "error"
+  }
+}

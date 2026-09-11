@@ -1,7 +1,7 @@
 import {
   normalizeOutfitCategory,
   normalizeOutfitDetailCompatibility
-} from "./outfit-contract.js";
+} from "./outfit-contract.js?v=3";
 
 export function masterRowToOutfitDetails(row = {}) {
   const raw = row?.raw_data && typeof row.raw_data === "object" && !Array.isArray(row.raw_data) ? row.raw_data : {};

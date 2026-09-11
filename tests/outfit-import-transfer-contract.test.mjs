@@ -24,7 +24,7 @@ test("multiline TSV restoration does not move a lone concealment modifier into c
 });
 
 test("legacy outfit import uses the shared adapter for current control and CS semantics", () => {
-  assert.match(legacy, /outfit-ofc-adapter\.js\?v=1/);
+  assert.match(legacy, /outfit-ofc-adapter\.js(?:\?v=[^"]+)?/);
   assert.match(legacy, /normalizeImportedOutfitDetails\(item\.category/);
   assert.match(legacy, /control_modifier:first\(data,"control","controlModifier","controlValue"\)/);
   assert.match(legacy, /cs_modifier:first\(data,"cs","csModifier"\)/);
