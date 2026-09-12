@@ -8,6 +8,6 @@ const response = await fetch('https://api.supabase.com/v1/projects/koprmbkoftuuf
 });
 if (!response.ok) throw new Error(`Database metadata audit request failed (${response.status}).`);
 const rows = await response.json();
-if (!Array.isArray(rows) || rows.length !== 8) throw new Error('Unexpected database audit result.');
+if (!Array.isArray(rows) || rows.length !== 10) throw new Error('Unexpected database audit result.');
 for (const row of rows) console.log(`${row.passed === true ? 'PASS' : 'FAIL'} ${row.check_name}`);
 if (rows.some(row => row.passed !== true)) process.exitCode=1;
