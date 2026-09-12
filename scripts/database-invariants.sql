@@ -22,4 +22,14 @@ union all
 select 'retired_public_id_helper_absent', to_regprocedure('public.generate_character_public_id()') is null
 union all
 select 'administrative_tables_not_client_writable',
-  not exists (select 1 from (values ('app_administrators'),('master_search_users')) t(name) where has_table_privilege('authenticated','public.'||t.name,'INSERT,UPDATE,DELETE,TRUNCATE'));
+  not exists (select 1 from (values ('app_administrators'),('master_search_users')) t(name) where has_table_privilege('authenticated','public.'||t.name,'INSERT,UPDATE,DELETE,TRUNCATE'))
+union all
+select 'showcase_guest_mutation_authenticated_only',
+  case when to_regprocedure('public.replace_act_showcase_guests_for_current_user(text,jsonb)') is null then false
+       else not has_function_privilege('anon','public.replace_act_showcase_guests_for_current_user(text,jsonb)','execute')
+        and has_function_privilege('authenticated','public.replace_act_showcase_guests_for_current_user(text,jsonb)','execute') end
+union all
+select 'save_rpc_preserves_unlisted_visibility',
+  (select count(*)=1 and bool_and(position('''unlisted''' in pg_get_functiondef(p.oid)) > 0)
+   from pg_proc p join pg_namespace n on n.oid=p.pronamespace
+   where n.nspname='public' and p.proname='save_character_bundle');
