@@ -101,7 +101,8 @@ test("cinematic presentation is wired through one CSS entry and one module boots
   const localCss = [...html.matchAll(/href="(\.\/css-next\/[^"]+)"/g)].map(match => match[1]);
   const localScripts = [...html.matchAll(/src="(\.\/js\/[^"]+)"/g)].map(match => match[1]);
   assert.deepEqual(localCss, ["./css-next/pages/act-showcase-entry.css?v=1"]);
-  assert.deepEqual(localScripts, ["./js/act-showcase-bootstrap.js?v=1"]);
+  assert.equal(localScripts.length, 1);
+  assert.match(localScripts[0], /^\.\/js\/act-showcase-bootstrap\.js\?v=\d+$/);
   assert.match(entryCss, /act-showcase-cinematic-v2\.css\?v=\d+/);
   assert.match(bootstrap, /act-showcase-cinematic-layout-v2\.js\?v=\d+/);
   assert.match(bootstrap, /act-showcase-page\.js\?v=/);

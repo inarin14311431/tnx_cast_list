@@ -16,6 +16,6 @@
 @import url("./sheet-mobile-snapshots.css?v=2") layer(mobile-snapshots);
 @import url("./sheet-mobile-image.css?v=2") layer(mobile-image);
 @import url("./sheet-mobile-import.css?v=2") layer(mobile-import);
-@import url("./sheet-mobile-ux.css?v=3") layer(mobile-ux);
-@import url("../components/character-share.css?v=1") layer(mobile-share);
+@import url("./sheet-mobile-ux.css?v=4") layer(mobile-ux);
+@import url("../components/character-share.css?v=2") layer(mobile-share);
 @import url("./sheet-mobile-shell.css?v=1") layer(mobile-shell);
