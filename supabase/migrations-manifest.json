@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "policy": "Applied migration files are immutable. Preserve historical duplicate numeric prefixes; append new migrations using a new highest prefix and add them to this manifest.",
+  "policy": "Applied migration files are immutable. Preserve historical duplicate numeric prefixes in the supabase root. New migrations live under supabase/migrations with YYYYMMDD_... names; every applied migration must be listed here.",
   "files": [
     "05_sheet_editor_migration.sql",
     "06_handle_kana.sql",
@@ -51,6 +51,8 @@
     "43_act_showcase_editor_restore.sql",
     "44_act_showcase_delete.sql",
     "45_act_showcase_delete_guest_columns.sql",
-    "46_act_showcase_delete_public_url.sql"
+    "46_act_showcase_delete_public_url.sql",
+    "migrations/20260912_preserve_unlisted_visibility.sql",
+    "migrations/20260912_audit_priority_hardening.sql"
   ]
 }
