@@ -1,0 +1,18 @@
+/* Native form-control fallbacks for the Neon Sign theme.
+ * Desktop browsers may render the opened <select> popup with an OS light
+ * surface even when the document itself uses color-scheme: dark. Give native
+ * option rows explicit dark colors so the menu remains readable.
+ */
+:root[data-theme="spectrum-neon"] select {
+  color-scheme: dark;
+}
+
+:root[data-theme="spectrum-neon"] select option,
+:root[data-theme="spectrum-neon"] select optgroup {
+  background-color: #080b19;
+  color: #f7f9ff;
+}
+
+:root[data-theme="spectrum-neon"] select option:disabled {
+  color: #b5c2dc;
+}
