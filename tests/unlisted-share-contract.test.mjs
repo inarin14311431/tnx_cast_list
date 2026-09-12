@@ -11,7 +11,7 @@ const supabaseClient = fs.readFileSync(new URL('../js/supabase-client.js', impor
 test('desktop and mobile editors preserve all three visibility states', () => {
   assert.match(desktopSnapshot, /new Set\(\["public", "unlisted", "private"\]\)/);
   assert.match(mobileEditor, /new Set\(\["public", "unlisted", "private"\]\)/);
-  assert.match(mobileApp, /character-share-editor\.js\?v=1/);
+  assert.match(mobileApp, /character-share-editor\.js\?v=[0-9-]+/);
 });
 
 test('unlisted editor exposes an owner-only share URL control', () => {

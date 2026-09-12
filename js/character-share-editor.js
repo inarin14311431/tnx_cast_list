@@ -58,10 +58,10 @@ function activeShareUrl() {
 
 function findPanelHost() {
   const mobileActions = document.querySelector(".mobile-sheet-actions");
-  if (mobileActions) return { host: mobileActions, before: document.querySelector("#mobile-save") };
+  if (mobileActions) return { host: mobileActions, before: document.querySelector("#mobile-save"), mobile: true };
   const visibility = document.querySelector("#visibility");
   const label = visibility?.closest("label");
-  return label?.parentElement ? { host: label.parentElement, before: label.nextSibling } : null;
+  return label?.parentElement ? { host: label.parentElement, before: label.nextSibling, mobile: false } : null;
 }
 
 function ensurePanel() {
@@ -72,9 +72,17 @@ function ensurePanel() {
 
   panel = document.createElement("section");
   panel.id = "character-share-panel";
-  panel.className = "character-share-panel";
+  panel.className = target.mobile
+    ? "character-share-panel character-share-panel--mobile"
+    : "character-share-panel";
   panel.hidden = !shouldShowSharePanel();
-  panel.innerHTML = `
+  panel.innerHTML = target.mobile ? `
+    <div class="character-share-panel__controls">
+      <button id="character-share-copy" type="button">公開URLをコピー</button>
+    </div>
+    <p id="character-share-status" class="character-share-panel__status character-share-panel__status--sr-only" aria-live="polite"></p>
+    <p id="character-share-url-fallback" class="character-share-panel__url character-share-panel__url--sr-only" hidden></p>
+  ` : `
     <strong>限定公開URL <small>UNLISTED SHARE LINK</small></strong>
     <p>URLを知っている人のみ閲覧できます。一覧・検索には表示されません。</p>
     <div class="character-share-panel__controls">
@@ -114,7 +122,12 @@ function renderPanel() {
   const button = panel.querySelector("#character-share-copy");
   const isSavedUnlisted = savedVisibility() === "unlisted";
   const url = activeShareUrl();
-  if (button) button.disabled = !url;
+  if (button) {
+    button.disabled = !url;
+    button.textContent = panel.classList.contains("character-share-panel--mobile")
+      ? "公開URLをコピー"
+      : "URLをコピー";
+  }
   setFallbackUrl();
 
   if (!currentCharacter?.id) {
