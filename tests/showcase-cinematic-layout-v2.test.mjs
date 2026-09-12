@@ -100,7 +100,8 @@ test("finished cinematic sequence does not schedule an automatic page scroll", (
 test("cinematic presentation is wired through one CSS entry and one module bootstrap", () => {
   const localCss = [...html.matchAll(/href="(\.\/css-next\/[^"]+)"/g)].map(match => match[1]);
   const localScripts = [...html.matchAll(/src="(\.\/js\/[^"]+)"/g)].map(match => match[1]);
-  assert.deepEqual(localCss, ["./css-next/pages/act-showcase-entry.css?v=1"]);
+  assert.equal(localCss.length, 1);
+  assert.match(localCss[0], /^\.\/css-next\/pages\/act-showcase-entry\.css\?v=\d+$/);
   assert.equal(localScripts.length, 1);
   assert.match(localScripts[0], /^\.\/js\/act-showcase-bootstrap\.js\?v=\d+$/);
   assert.match(entryCss, /act-showcase-cinematic-v2\.css\?v=\d+/);
