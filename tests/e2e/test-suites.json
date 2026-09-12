@@ -1,0 +1,70 @@
+{
+  "schemaVersion": 1,
+  "groups": {
+    "ci-public": {
+      "project": "chromium",
+      "purpose": "PR-safe public and smoke coverage",
+      "tests": [
+        "tests/e2e/audit-public.spec.js",
+        "tests/e2e/smoke.spec.js",
+        "tests/e2e/cast-view.spec.js",
+        "tests/e2e/troop-view.spec.js",
+        "tests/e2e/editor-help.spec.js",
+        "tests/e2e/direct-transfer.spec.js",
+        "tests/e2e/character-sheet-url-import-live.spec.js",
+        "tests/e2e/act-showcase-neotokyo-stability.spec.js",
+        "tests/e2e/act-showcase-reduced-motion.spec.js",
+        "tests/e2e/act-showcase-final-trailer.spec.js"
+      ]
+    },
+    "ci-editor": {
+      "project": "chromium",
+      "purpose": "PR-safe authenticated editor coverage without intentional live writes",
+      "tests": [
+        "tests/e2e/audit-editor-health.spec.js",
+        "tests/e2e/authenticated.spec.js",
+        "tests/e2e/style-skill-detail-integrity.spec.js",
+        "tests/e2e/skd-master-search.spec.js",
+        "tests/e2e/tsv-bulk-import.spec.js",
+        "tests/e2e/troop-editor-flow.spec.js",
+        "tests/e2e/showcase-editor-restore.spec.js"
+      ]
+    },
+    "ci-mobile": {
+      "project": "mobile",
+      "purpose": "PR-safe mobile coverage",
+      "tests": [
+        "tests/e2e/account-mobile.spec.js",
+        "tests/e2e/troop-view.spec.js",
+        "tests/e2e/mobile-combo-counter.spec.js",
+        "tests/e2e/mobile-experience.spec.js"
+      ]
+    },
+    "live-write": {
+      "project": "chromium",
+      "purpose": "Explicit live-write verification against the approved test owner only",
+      "tests": [
+        "tests/e2e/audit-editor-live.spec.js",
+        "tests/e2e/legacy-import-profile.spec.js",
+        "tests/e2e/outfit-import-transfer.spec.js",
+        "tests/e2e/sheet-save-reload-flow.spec.js"
+      ]
+    },
+    "manual-ui": {
+      "project": "chromium",
+      "purpose": "Focused historical UI regressions retained for targeted/manual verification",
+      "tests": [
+        "tests/e2e/sheet-ability-final.spec.js",
+        "tests/e2e/sheet-baseline-adjustment.spec.js",
+        "tests/e2e/sheet-general-column.spec.js",
+        "tests/e2e/sheet-new-character-state.spec.js",
+        "tests/e2e/sheet-row-lifecycle.spec.js",
+        "tests/e2e/sheet-skill-level-suit.spec.js",
+        "tests/e2e/sheet-style-baseline.spec.js",
+        "tests/e2e/sheet-style-presentation.spec.js",
+        "tests/e2e/style-marks.spec.js",
+        "tests/e2e/style-separator.spec.js"
+      ]
+    }
+  }
+}

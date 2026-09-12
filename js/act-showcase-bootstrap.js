@@ -16,4 +16,5 @@ await import("./act-showcase-tagline-quotes.js?v=2");
 await import("./act-showcase-cinematic-layout-v2.js?v=6");
 await import("./act-showcase-page.js?v=20260910a");
 await import("./act-showcase-supporting-cast.js?v=4");
+await import("./act-showcase-final-trailer.js?v=1");
 await import("./act-showcase-display-normalizer.js?v=1");
