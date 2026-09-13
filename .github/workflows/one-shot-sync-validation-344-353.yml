@@ -1,0 +1,82 @@
+name: One-shot sync validation PRs 344-353
+
+on:
+  push:
+    branches:
+      - sync/validation-344-353-20260913
+    paths:
+      - .github/workflows/one-shot-sync-validation-344-353.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Sync verified files from validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          source_commit="a3844e9ff7f0233d097cff67af47aed6b7cf977a"
+          files=(
+            "act-showcase.html"
+            "act-showcase-standard.html"
+            "acts.html"
+            "showcase-generator.html"
+            "css-next/pages/act-showcase-entry.css"
+            "css-next/pages/act-showcase-final-trailer.css"
+            "css-next/pages/act-showcase-neotokyo-hierarchy.css"
+            "css-next/pages/act-showcase-handout-live-frame.css"
+            "css-next/pages/acts-entry.css"
+            "css-next/pages/experience-ticket.css"
+            "js/act-showcase-bootstrap.js"
+            "js/act-showcase-final-trailer.js"
+            "js/act-showcase-cinematic-enhancer.js"
+            "js/act-showcase-cinematic-layout-v2.js"
+            "js/act-showcase-finale-enhancer.js"
+            "js/act-showcase-story-flow.js"
+            "js/act-showcase-scenario-writer.js"
+            "js/act-showcase-standard-scenario-writer.js"
+            "js/act-showcase-trailer-live-frame.js"
+            "js/act-showcase-board-layout.js"
+            "js/act-showcase-handout-live-frame.js"
+            "js/act-showcase-supporting-cast.js"
+            "js/act-showcase-writing-patterns.js"
+            "js/showcase-dynamic-publish-v3.js"
+            "js/showcase-generator-loader.js"
+            "js/showcase-scenario-writer.js"
+            "js/experience-ticket.js"
+            "tests/experience-ticket-contract.test.mjs"
+            "tests/act-showcase-finale-contract.test.mjs"
+            "tests/act-showcase-observer-stability.test.mjs"
+            "tests/act-showcase-cinematic-polish.test.mjs"
+            "tests/act-showcase-live-frame-scenario-writer.test.mjs"
+            "tests/act-showcase-handout-live-frame-stability.test.mjs"
+            "tests/act-showcase-trailer-frame-smoothing.test.mjs"
+            "tests/showcase-neotokyo-public-url.test.mjs"
+            "tests/showcase-publish-modes.test.mjs"
+            "tests/e2e/act-showcase-final-trailer.spec.js"
+            "tests/e2e/act-showcase-title-render-order.spec.js"
+            "tests/e2e/test-suites.json"
+          )
+          for path in "${files[@]}"; do
+            mkdir -p "$(dirname "$path")"
+            curl --fail --silent --show-error --location \
+              "https://raw.githubusercontent.com/inarin14311431/tnx-cast-archive-test/${source_commit}/${path}" \
+              --output "$path"
+          done
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "${files[@]}"
+          if git diff --cached --quiet; then
+            echo "No verified differences to sync."
+            exit 0
+          fi
+          git commit -m "Sync validation PRs #344-#353"
+          git push origin HEAD
