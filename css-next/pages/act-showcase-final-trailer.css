@@ -1,17 +1,175 @@
-body.showcase-poster-v2-ready .poster-v2-final-trailer{position:relative;z-index:5;display:grid;min-height:96svh;place-items:center;padding:clamp(72px,10vh,132px) 32px 84px;overflow:hidden;background:linear-gradient(180deg,rgba(3,8,19,.92),rgba(2,6,15,.985)),var(--showcase-background);background-position:center;background-size:cover}
-body.showcase-poster-v2-ready .poster-v2-final-trailer:before{position:absolute;inset:0;content:"";background:linear-gradient(rgba(127,215,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(127,215,255,.035) 1px,transparent 1px),radial-gradient(circle at 50% 18%,rgba(88,177,255,.12),transparent 38%);background-size:42px 42px,42px 42px,auto;pointer-events:none}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__frame{position:relative;width:min(1080px,100%);padding:clamp(24px,4vw,54px);border:1px solid rgba(127,215,255,.28);background:linear-gradient(145deg,rgba(7,20,43,.86),rgba(3,10,25,.94));box-shadow:0 32px 100px rgba(0,0,0,.52),inset 0 0 0 1px rgba(255,255,255,.025);backdrop-filter:blur(14px)}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__frame:before,body.showcase-poster-v2-ready .poster-v2-final-trailer__frame:after{position:absolute;width:90px;height:1px;content:"";background:#75dfff;box-shadow:0 0 18px rgba(117,223,255,.6)}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__frame:before{top:-1px;left:28px}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__frame:after{right:28px;bottom:-1px}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__head{display:flex;justify-content:space-between;gap:24px;padding-bottom:18px;border-bottom:1px solid rgba(127,215,255,.18);color:#8eb7dc;font:700 .62rem/1.4 "Share Tech Mono",monospace;letter-spacing:.13em}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__head strong{color:#d9eaff;font-weight:700;text-align:right}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__body{max-width:860px;margin:clamp(48px,8vh,86px) auto;text-align:center}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__kicker{margin:0;color:#69e4ff;font:800 .72rem/1 Orbitron,sans-serif;letter-spacing:.28em}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__act{margin:18px 0 0;color:#9bb5d3;font:700 .72rem/1.5 "Share Tech Mono",monospace;letter-spacing:.12em}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__title{margin:16px 0 0;color:#fff;font:900 clamp(2.2rem,6vw,5.8rem)/.98 Orbitron,"Noto Sans JP",sans-serif;letter-spacing:-.035em;text-shadow:0 0 34px rgba(105,228,255,.18)}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__copy{max-width:800px;margin:clamp(34px,5vh,54px) auto 0;padding:clamp(22px,3vw,34px);border-top:1px solid rgba(255,112,204,.24);border-bottom:1px solid rgba(105,228,255,.24);color:#c7dbe5;font-size:clamp(.95rem,1.45vw,1.12rem);font-weight:500;line-height:2;letter-spacing:.015em;text-align:left;white-space:pre-wrap}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__footer{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding-top:18px;border-top:1px solid rgba(127,215,255,.18);font-family:"Share Tech Mono",monospace;letter-spacing:.12em}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__footer span{color:#7997b8;font-size:.6rem}
-body.showcase-poster-v2-ready .poster-v2-final-trailer__footer strong{color:#fff;font:800 clamp(1rem,2vw,1.45rem)/1 Orbitron,sans-serif;letter-spacing:.08em}
-@media(max-width:760px){body.showcase-poster-v2-ready .poster-v2-final-trailer{min-height:auto;padding:70px 18px}body.showcase-poster-v2-ready .poster-v2-final-trailer__frame{padding:24px 20px}body.showcase-poster-v2-ready .poster-v2-final-trailer__head,body.showcase-poster-v2-ready .poster-v2-final-trailer__footer{align-items:flex-start;flex-direction:column}body.showcase-poster-v2-ready .poster-v2-final-trailer__head strong{text-align:left}body.showcase-poster-v2-ready .poster-v2-final-trailer__body{margin:46px auto}body.showcase-poster-v2-ready .poster-v2-final-trailer__copy{padding:20px 0;text-align:left}}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage{
+  position:relative;
+  z-index:6;
+  display:grid;
+  min-height:94svh;
+  place-items:start center;
+  overflow:hidden;
+  margin:0;
+  padding:clamp(52px,7vh,82px) clamp(28px,7vw,112px) clamp(116px,15vh,188px);
+  isolation:isolate;
+  background:
+    radial-gradient(circle at 18% 24%,rgba(68,206,255,.16),transparent 28%),
+    radial-gradient(circle at 84% 72%,rgba(255,73,190,.14),transparent 32%),
+    linear-gradient(180deg,rgba(3,7,19,.98),rgba(3,8,20,.90) 48%,rgba(2,5,14,.98)),
+    var(--showcase-background);
+  background-position:center;
+  background-size:cover;
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage::before{
+  position:absolute;
+  inset:auto -4vw 12%;
+  z-index:-1;
+  content:"ACT TRAILER";
+  color:rgba(167,218,255,.035);
+  font:900 clamp(5.2rem,17vw,18rem)/.78 Orbitron,sans-serif;
+  letter-spacing:.035em;
+  text-align:center;
+  white-space:nowrap;
+  transform:skewY(-3deg);
+  pointer-events:none;
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage::after{
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  content:"";
+  background:
+    linear-gradient(90deg,transparent 0 8%,rgba(123,209,255,.10) 8% calc(8% + 1px),transparent calc(8% + 1px) 92%,rgba(255,92,201,.09) 92% calc(92% + 1px),transparent calc(92% + 1px)),
+    repeating-linear-gradient(0deg,transparent 0 5px,rgba(154,207,255,.018) 5px 6px);
+  mask-image:linear-gradient(180deg,transparent,black 18%,black 84%,transparent);
+  pointer-events:none;
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner{
+  position:relative;
+  width:min(1120px,100%);
+  text-align:center;
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::before,
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::after{
+  position:absolute;
+  top:50%;
+  width:42px;
+  height:1px;
+  content:"";
+  background:linear-gradient(90deg,transparent,#67d7ff);
+  box-shadow:0 0 16px rgba(103,215,255,.45);
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::before{left:-74px}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::after{right:-74px;transform:scaleX(-1)}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap:16px;
+  margin:0 0 18px;
+  color:#75dfff;
+  font:700 .62rem/1.2 "Share Tech Mono",monospace;
+  letter-spacing:.16em;
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline::before,
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline::after{
+  width:min(110px,12vw);
+  height:1px;
+  content:"";
+  background:linear-gradient(90deg,transparent,rgba(117,223,255,.75));
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline::after{transform:scaleX(-1)}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline small{
+  color:#7189a8;
+  font:700 .54rem/1.2 "Share Tech Mono",monospace;
+  letter-spacing:.1em;
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading{
+  margin:0;
+  color:#f5fbff;
+  font:900 clamp(3.25rem,8vw,7.2rem)/.92 Orbitron,"Noto Sans JP",sans-serif;
+  letter-spacing:.105em;
+  text-indent:.105em;
+  text-shadow:0 0 22px rgba(88,215,255,.26),0 0 54px rgba(255,79,199,.12),0 12px 40px rgba(0,0,0,.65);
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading::after{
+  display:block;
+  width:min(620px,72%);
+  height:2px;
+  margin:28px auto 0;
+  content:"";
+  background:linear-gradient(90deg,transparent,#55d8ff 28%,#fff 50%,#ff67c9 72%,transparent);
+  box-shadow:0 0 18px rgba(98,214,255,.34);
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__title{
+  margin:24px 0 0;
+  color:#ff8dda;
+  font:700 clamp(.86rem,1.4vw,1.15rem)/1.4 Orbitron,"Noto Sans JP",sans-serif;
+  letter-spacing:.12em;
+  text-shadow:0 0 18px rgba(255,91,204,.28);
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap{
+  position:relative;
+  width:min(920px,100%);
+  margin:clamp(46px,6vw,72px) auto 0;
+  padding:0 clamp(18px,4vw,58px);
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap::before,
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap::after{
+  position:absolute;
+  top:-20px;
+  width:64px;
+  height:18px;
+  content:"";
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap::before{
+  left:0;
+  border-top:1px solid #61d7ff;
+  border-left:1px solid #61d7ff;
+  box-shadow:-5px -5px 22px rgba(97,215,255,.14);
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap::after{
+  right:0;
+  border-top:1px solid #ff69c7;
+  border-right:1px solid #ff69c7;
+  box-shadow:5px -5px 22px rgba(255,105,199,.12);
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy{
+  margin:0;
+  color:#d8e9f2;
+  font:500 clamp(1rem,1.55vw,1.28rem)/2.2 "Noto Sans JP",sans-serif;
+  letter-spacing:.035em;
+  white-space:pre-wrap;
+  text-wrap:pretty;
+  text-shadow:0 2px 18px rgba(0,0,0,.72);
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer{
+  display:grid;
+  grid-template-columns:minmax(24px,1fr) auto minmax(24px,1fr);
+  align-items:center;
+  gap:18px;
+  width:min(760px,88%);
+  margin:clamp(58px,7vw,84px) auto 0;
+  color:#607895;
+  font:700 .52rem/1 "Share Tech Mono",monospace;
+  letter-spacing:.15em;
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i{
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(120,199,255,.32));
+}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:last-child{transform:scaleX(-1)}
+
+@media(max-width:760px){
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage{
+    min-height:88svh;
+    padding:42px 20px 104px;
+  }
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage::before{bottom:18%;font-size:clamp(4rem,23vw,8rem)}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::before,
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::after{display:none}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline{gap:10px;font-size:.54rem;letter-spacing:.1em}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline small{display:none}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading{font-size:clamp(2.45rem,14vw,4.3rem);letter-spacing:.06em;text-indent:.06em}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading::after{margin-top:22px}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__title{margin-top:20px;font-size:.78rem;letter-spacing:.08em}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap{margin-top:42px;padding-inline:18px}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy{font-size:.94rem;line-height:1.95;letter-spacing:.02em}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer{width:94%;gap:10px;margin-top:52px;font-size:.44rem;letter-spacing:.08em}
+}

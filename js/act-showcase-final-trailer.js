@@ -1,4 +1,4 @@
-import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=20260912a";
+import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=1";
 
 if (document.body?.id === "act-showcase-page") {
   const slug = normalizeShowcaseSlug(new URLSearchParams(location.search).get("id"));
@@ -8,74 +8,70 @@ if (document.body?.id === "act-showcase-page") {
 async function initializeFinalTrailer(slug) {
   try {
     const data = await loadPublicShowcase(slug);
-    const model = normalizeTrailer(data);
-    if (!model.trailer) return;
+    const trailer = normalizeTrailer(data);
+    if (!trailer.body || document.querySelector("#poster-final-act-trailer")) return;
 
-    const story = document.querySelector("#showcase-story");
-    if (!story || document.querySelector("#poster-final-act-trailer")) return;
-
-    const section = createTrailerSection(model);
-    mountAtStoryEnd(story, section);
+    mountAtFinalBoardTop(createTrailerSection(trailer));
   } catch (error) {
     console.warn("Final ACT TRAILER could not be rendered.", error);
   }
 }
 
 function normalizeTrailer(data) {
-  const trailerSource = data?.trailer && typeof data.trailer === "object" && !Array.isArray(data.trailer)
+  const source = data?.trailer && typeof data.trailer === "object" && !Array.isArray(data.trailer)
     ? data.trailer
     : null;
-  const trailer = trailerSource
-    ? text(trailerSource.body || trailerSource.text)
-    : text(data?.trailer || data?.actTrailer || data?.trailerText || data?.trailerBody || data?.intro);
-  const trailerTitle = trailerSource
-    ? text(trailerSource.title)
-    : text(data?.trailerTitle);
-
   return {
-    actName: text(data?.actName || data?.heroTitle || data?.pageTitle) || "ACT SHOWCASE",
-    trailerTitle: trailerTitle || "ACT TRAILER",
-    trailer
+    title: source ? text(source.title) : text(data?.trailerTitle),
+    body: source
+      ? text(source.body || source.text)
+      : text(data?.intro || data?.trailer || data?.actTrailer || data?.trailerText || data?.trailerBody)
   };
 }
 
-function createTrailerSection(model) {
-  const section = node("section", "poster-v2-final-trailer");
+function createTrailerSection(trailer) {
+  const section = node("section", "poster-v2-trailer-stage");
   section.id = "poster-final-act-trailer";
-  section.setAttribute("aria-labelledby", "poster-final-act-trailer-title");
+  section.setAttribute("aria-labelledby", "poster-final-act-trailer-heading");
 
-  const frame = node("div", "poster-v2-final-trailer__frame");
-  const head = node("header", "poster-v2-final-trailer__head");
-  head.append(
-    node("span", "", "FINAL PAGE // PRE-ACT READOUT"),
-    node("strong", "", "N◎VA MUNICIPAL DATABASE // ACT ARCHIVE")
+  const inner = node("div", "poster-v2-trailer-stage__inner");
+  const overline = node("p", "poster-v2-trailer-stage__overline");
+  overline.append(
+    node("span", "", "05 / FINAL TRANSMISSION"),
+    node("small", "", "N◎VA MUNICIPAL DATABASE // ACT ARCHIVE")
   );
 
-  const body = node("div", "poster-v2-final-trailer__body");
-  body.append(
-    node("p", "poster-v2-final-trailer__kicker", "ACT TRAILER"),
-    node("p", "poster-v2-final-trailer__act", model.actName),
-    node("h2", "poster-v2-final-trailer__title", model.trailerTitle),
-    node("p", "poster-v2-final-trailer__copy", model.trailer)
-  );
-  body.querySelector("h2").id = "poster-final-act-trailer-title";
+  const heading = node("h2", "poster-v2-trailer-stage__heading", "ACT TRAILER");
+  heading.id = "poster-final-act-trailer-heading";
+  inner.append(overline, heading);
 
-  const footer = node("footer", "poster-v2-final-trailer__footer");
+  if (trailer.title) {
+    inner.append(node("p", "poster-v2-trailer-stage__title", trailer.title));
+  }
+
+  const copyWrap = node("div", "poster-v2-trailer-stage__copy-wrap");
+  copyWrap.append(node("blockquote", "poster-v2-trailer-stage__copy", trailer.body));
+  inner.append(copyWrap);
+
+  const footer = node("div", "poster-v2-trailer-stage__footer");
+  footer.setAttribute("aria-hidden", "true");
   footer.append(
-    node("span", "", "END OF ACT FILE"),
-    node("strong", "", "THE ACT BEGINS NOW")
+    node("i", ""),
+    node("span", "", "END OF ACT FILE // ACCESS LOG CLOSED"),
+    node("i", "")
   );
-
-  frame.append(head, body, footer);
-  section.append(frame);
+  inner.append(footer);
+  section.append(inner);
   return section;
 }
 
-function mountAtStoryEnd(story, section) {
+function mountAtFinalBoardTop(section) {
   const mount = () => {
-    const board = story.querySelector("#poster-showcase-board-v2");
-    if (!board) return false;
-    story.append(section);
+    const board = document.getElementById("poster-showcase-board-v2");
+    const frame = board?.querySelector(":scope > .poster-v2-frame");
+    if (!board || !frame) return false;
+
+    board.insertBefore(section, frame);
     return true;
   };
   if (mount()) return;
@@ -84,7 +80,7 @@ function mountAtStoryEnd(story, section) {
     if (!mount()) return;
     observer.disconnect();
   });
-  observer.observe(story, { childList: true, subtree: true });
+  observer.observe(document.documentElement, { childList: true, subtree: true });
 }
 
 function node(tag, className = "", value = "") {

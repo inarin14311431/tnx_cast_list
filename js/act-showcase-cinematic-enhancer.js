@@ -65,7 +65,7 @@
     screen.querySelectorAll(".neotokyo-sequence__act-overview").forEach(node => node.remove());
     const title = screen.querySelector(".neotokyo-sequence__act-title");
     if (!title) return;
-    requestAnimationFrame(() => title.classList.add("is-cinematic-title"));
+    title.classList.add("is-cinematic-title");
   }
 
   function enhanceTrailer(screen) {

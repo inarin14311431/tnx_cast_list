@@ -15,7 +15,7 @@ test("new showcase links expose filename-defined standard and cinematic routes w
   assert.match(publisher, /act-showcase\.html\?id=\$\{encodeURIComponent\(slug\)\}/);
   assert.doesNotMatch(publisher, /showcaseMode=cinematic/);
   assert.doesNotMatch(publisher, /bgSample=neotokyo/);
-  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=1/);
+  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=2/);
   assert.equal(await exists("js/showcase-mode-compat.js"), false);
   assert.match(bootstrap, /searchParams\.delete\("showcaseMode"\)/);
   assert.doesNotMatch(bootstrap, /bgSample/);

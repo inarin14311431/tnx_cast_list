@@ -19,7 +19,7 @@ test("dynamic publisher emits current publication URLs without retired mode/samp
     read("js/showcase-generator-loader.js"),
     read("js/showcase-dynamic-publish-v3.js")
   ]);
-  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=1/);
+  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=2/);
   assert.doesNotMatch(loader, /showcase-dynamic-publish-v2\.js/);
   assert.match(publisher, /act-showcase-standard\.html\?id=/);
   assert.match(publisher, /act-showcase\.html\?id=/);

@@ -12,6 +12,14 @@
     return element;
   };
 
+  const classifyTitleFit = value => {
+    const length = Array.from(String(value || "").replace(/[\s　]+/g, "")).length;
+    if (length <= 10) return "short";
+    if (length <= 14) return "medium";
+    if (length <= 20) return "long";
+    return "xlong";
+  };
+
   const decorateTitle = screen => {
     if (!screen || screen.dataset.titleLogoEnhanced === "1") return;
     const title = screen.querySelector(".neotokyo-sequence__act-title");
@@ -20,8 +28,13 @@
     const titleText = title.textContent.trim() || "ACT SHOWCASE";
     screen.dataset.titleLogoEnhanced = "1";
     screen.classList.add("neotokyo-sequence__screen--title-logo");
-    title.classList.add("neotokyo-sequence__act-title--logo");
+    title.classList.add(
+      "neotokyo-sequence__act-title--logo",
+      "showcase-fit-title",
+      "is-cinematic-title"
+    );
     title.dataset.title = titleText;
+    title.dataset.fit = classifyTitleFit(titleText);
 
     const meta = node("div", "neotokyo-title-logo__meta");
     meta.append(
@@ -38,7 +51,8 @@
     rule.append(node("i", ""), node("span", "", "TITLE VERIFIED"), node("i", ""));
 
     title.before(meta, ghost);
-    title.after(rule);
+    const subtitle = screen.querySelector(".neotokyo-sequence__act-subtitle");
+    (subtitle || title).after(rule);
   };
 
   const decorateSummary = screen => {
