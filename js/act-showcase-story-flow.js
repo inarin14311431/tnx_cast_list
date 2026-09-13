@@ -232,22 +232,35 @@
 
   let queued = false;
   const sync = () => {
+    // Title markup must be finalized before swapScreen() exposes it on the next animation frame.
+    // Deferring this decoration to rAF made the title-note appear one frame late and caused layout jitter.
+    intro?.querySelectorAll(".neotokyo-sequence__screen--title").forEach(decorateTitle);
+
     if (queued) return;
     queued = true;
     requestAnimationFrame(() => {
       queued = false;
       intro?.querySelectorAll(".neotokyo-sequence__screen--linked").forEach(decorateLinked);
       intro?.querySelectorAll(".neotokyo-sequence__screen--trailer").forEach(decorateTrailer);
-      intro?.querySelectorAll(".neotokyo-sequence__screen--title").forEach(decorateTitle);
       intro?.querySelectorAll(".neotokyo-sequence__screen--summary").forEach(decorateSummary);
       splitGenderId();
     });
   };
 
-  const observer = new MutationObserver(sync);
-  // Screen replacement and typed text already generate child mutations. Observing class changes here
-  // causes decorateLinked() to observe the very role classes it owns and can create an endless rAF loop.
-  if (intro) observer.observe(intro, { childList: true, subtree: true });
-  if (story) observer.observe(story, { childList: true, subtree: true });
+  const hasStructuralElementMutation = record => record.type === "childList"
+    && [...record.addedNodes, ...record.removedNodes].some(item => item.nodeType === Node.ELEMENT_NODE);
+  const hasLinkedScreenStateMutation = record => record.type === "attributes"
+    && record.attributeName === "class"
+    && record.target instanceof Element
+    && record.target.matches(".neotokyo-sequence__screen--linked");
+  const observer = new MutationObserver(records => {
+    if (!records.some(record => hasStructuralElementMutation(record) || hasLinkedScreenStateMutation(record))) return;
+    sync();
+  });
+  // Typewriter text changes are intentionally ignored. Linked-screen class changes are observed only
+  // on the screen root, so is-read/is-assigned state transitions still update context without following
+  // the role-chip classes that this module itself owns.
+  if (intro) observer.observe(intro, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
+  if (story) observer.observe(story, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
   sync();
 })();

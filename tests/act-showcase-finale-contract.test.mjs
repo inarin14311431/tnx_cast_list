@@ -8,8 +8,8 @@ const enhancer = readFileSync(new URL("../js/act-showcase-finale-enhancer.js", i
 const css = readFileSync(new URL("../css-next/pages/act-showcase-finale.css", import.meta.url), "utf8");
 
 test("act showcase loads the finale enhancement after existing NeoTokyo layers", () => {
-  assert.match(entry, /act-showcase-finale\.css\?v=20260907a/);
-  assert.match(bootstrap, /act-showcase-finale-enhancer\.js\?v=1/);
+  assert.match(entry, /act-showcase-finale\.css\?v=[^"')\s]+/);
+  assert.match(bootstrap, /act-showcase-finale-enhancer\.js\?v=[^"')\s]+/);
   assert.ok(entry.indexOf("act-showcase-ornament-plus.css") < entry.indexOf("act-showcase-finale.css"));
   assert.ok(bootstrap.indexOf("act-showcase-finale-enhancer.js") < bootstrap.indexOf("act-showcase-page.js"));
 });

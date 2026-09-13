@@ -6,6 +6,7 @@ const status = document.querySelector("#generator-status");
 const slugField = document.querySelector("#publish-slug");
 const actNameField = document.querySelector("#act-name");
 const rulerField = document.querySelector("#ruler-name");
+const scenarioWriterField = document.querySelector("#scenario-writer-name");
 const legacyPublishButton = document.querySelector("#publish-button");
 const publishButtons = [...document.querySelectorAll("[data-publish-mode]")];
 const MAX_SHOWCASE_BYTES = 500 * 1024;
@@ -62,6 +63,8 @@ async function publishDynamicShowcase(button, mode) {
     const showcaseData = await extractShowcaseData(source);
     const actName = String(actNameField?.value || showcaseData.actName || slug).trim();
     const rulerName = String(rulerField?.value || showcaseData.rulerName || "").trim();
+    const scenarioWriterName = String(scenarioWriterField?.value || showcaseData.scenarioWriterName || "").trim();
+    showcaseData.scenarioWriterName = scenarioWriterName;
 
     const payloadBytes = getJsonByteLength(showcaseData);
     if (payloadBytes > MAX_SHOWCASE_BYTES) {
@@ -146,7 +149,8 @@ async function extractShowcaseData(source) {
     heroTitle: doc.querySelector(".hero h1")?.childNodes?.[0]?.textContent?.trim() || "ACT CAST FILE",
     heroSubTitle: doc.querySelector(".hero h1 span")?.textContent?.trim() || "CAST SHOWCASE",
     actName: doc.querySelector(".hero__act")?.textContent?.trim() || "",
-    rulerName: (doc.querySelector(".hero__ruler")?.textContent || "").replace(/^RULER[：:]\s*/i, "").trim(),
+    rulerName: (doc.querySelector(".hero__ruler:not(.hero__scenario-writer)")?.textContent || "").replace(/^RULER[：:]\s*/i, "").trim(),
+    scenarioWriterName: (doc.querySelector(".hero__scenario-writer")?.textContent || "").replace(/^SCENARIO WRITER[：:]\s*/i, "").trim(),
     trailer: trailerBody ? { title: "ACT TRAILER", body: trailerBody } : null,
     background,
     casts: cards,

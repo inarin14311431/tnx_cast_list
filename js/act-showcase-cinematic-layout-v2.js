@@ -3,6 +3,8 @@
 
   const intro = document.querySelector("#cinematic-intro");
   const openingSubtitle = document.querySelector("#opening-subtitle");
+  const supportsResizeObserver = typeof ResizeObserver === "function";
+  const trailerScrollTargets = new WeakMap();
   let trailerFrame = 0;
 
   const enhance = root => {
@@ -21,14 +23,32 @@
 
   if (intro) {
     const observer = new MutationObserver(records => {
+      let surfaceMayHaveChanged = false;
       for (const record of records) {
-        if (record.type === "characterData") scheduleTrailerFrame(record.target.parentElement);
-        for (const node of record.addedNodes || []) {
-          if (node.nodeType === Node.ELEMENT_NODE) enhance(node);
+        const recordTarget = record.target instanceof Element ? record.target : record.target.parentElement;
+        const trailerReadout = recordTarget?.closest?.(
+          ".neotokyo-sequence__screen--trailer .neotokyo-sequence__readout"
+        );
+
+        if (record.type === "characterData") {
+          if (!supportsResizeObserver) scheduleTrailerFrame(recordTarget);
+          continue;
         }
-        if (record.target instanceof Element) scheduleTrailerFrame(record.target);
+
+        let hasElementChange = false;
+        for (const node of record.addedNodes || []) {
+          if (node.nodeType !== Node.ELEMENT_NODE) continue;
+          hasElementChange = true;
+          enhance(node);
+        }
+        for (const node of record.removedNodes || []) {
+          if (node.nodeType === Node.ELEMENT_NODE) hasElementChange = true;
+        }
+
+        if (!trailerReadout || !supportsResizeObserver) scheduleTrailerFrame(recordTarget);
+        if (hasElementChange) surfaceMayHaveChanged = true;
       }
-      syncTrailerScrollSurface();
+      if (surfaceMayHaveChanged) syncTrailerScrollSurface();
     });
     observer.observe(intro, {
       subtree: true,
@@ -65,7 +85,9 @@
       const subtitle = document.createElement("p");
       subtitle.className = "neotokyo-sequence__act-subtitle";
       subtitle.textContent = text;
-      title.insertAdjacentElement("afterend", subtitle);
+      const rule = screen.querySelector(".neotokyo-title-logo__rule");
+      if (rule) rule.before(subtitle);
+      else title.insertAdjacentElement("afterend", subtitle);
     }
   }
 
@@ -80,7 +102,11 @@
     const active = Boolean(stage.querySelector(".neotokyo-sequence__screen--trailer"));
     const wasActive = stage.classList.contains("is-trailer-scroll");
     stage.classList.toggle("is-trailer-scroll", active);
-    if (active !== wasActive) stage.scrollTop = 0;
+    if (active !== wasActive) {
+      stage.scrollTop = 0;
+      trailerScrollTargets.delete(stage);
+    }
+    if (!active) trailerScrollTargets.delete(stage);
   }
 
   function attachTrailerFollow(scope) {
@@ -90,8 +116,10 @@
     readouts.forEach(readout => {
       if (readout.dataset.followTyping === "true") return;
       readout.dataset.followTyping = "true";
-      const resize = new ResizeObserver(() => scheduleTrailerFrame(readout));
-      resize.observe(readout);
+      if (supportsResizeObserver) {
+        const resize = new ResizeObserver(() => scheduleTrailerFrame(readout));
+        resize.observe(readout);
+      }
       scheduleTrailerFrame(readout);
     });
   }
@@ -112,8 +140,15 @@
 
     stage.classList.add("is-trailer-scroll");
     const targetTop = Math.max(0, stage.scrollHeight - stage.clientHeight);
-    if (targetTop <= stage.scrollTop + 1) return;
+    const previousTarget = trailerScrollTargets.get(stage);
 
+    if (targetTop <= stage.scrollTop + 1) {
+      trailerScrollTargets.set(stage, targetTop);
+      return;
+    }
+    if (Number.isFinite(previousTarget) && Math.abs(targetTop - previousTarget) <= 1) return;
+
+    trailerScrollTargets.set(stage, targetTop);
     const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
     stage.scrollTo({
       top: targetTop,

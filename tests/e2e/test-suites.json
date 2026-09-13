@@ -13,6 +13,7 @@
         "tests/e2e/direct-transfer.spec.js",
         "tests/e2e/character-sheet-url-import-live.spec.js",
         "tests/e2e/act-showcase-neotokyo-stability.spec.js",
+        "tests/e2e/act-showcase-title-render-order.spec.js",
         "tests/e2e/act-showcase-reduced-motion.spec.js",
         "tests/e2e/act-showcase-final-trailer.spec.js"
       ]

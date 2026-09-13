@@ -60,22 +60,30 @@ async function registerRoutes(page, data = showcase, guests = guest) {
   await page.route("**/rest/v1/rpc/get_public_act_showcase_guests", route => mockRpc(route, guests));
 }
 
-test("豪華版の最終ページに通常版と同じ公開トレーラーを表示する", async ({ page }) => {
+test("豪華版のACT TRAILERを最終ボードの一番上かつキャストカード枠の外に表示する", async ({ page }) => {
   await registerRoutes(page);
   await page.goto("/act-showcase.html?id=e2e-final-trailer", { waitUntil: "domcontentloaded" });
 
-  const trailer = page.locator("#poster-final-act-trailer");
+  const board = page.locator("#poster-showcase-board-v2");
+  const frame = board.locator(":scope > .poster-v2-frame");
+  const trailer = board.locator(":scope > #poster-final-act-trailer");
+  await expect(board).toHaveCount(1);
+  await expect(frame).toHaveCount(1);
   await expect(trailer).toHaveCount(1);
-  await expect(trailer.locator(".poster-v2-final-trailer__title")).toHaveText("THE LAST SIGNAL");
-  await expect(trailer.locator(".poster-v2-final-trailer__copy")).toHaveText(showcase.trailer.body);
+  await expect(frame.locator("#poster-final-act-trailer")).toHaveCount(0);
+  await expect(trailer.locator(".poster-v2-trailer-stage__heading")).toHaveText("ACT TRAILER");
+  await expect(trailer.locator(".poster-v2-trailer-stage__title")).toHaveText(showcase.trailer.title);
+  await expect(trailer.locator(".poster-v2-trailer-stage__copy")).toHaveText(showcase.trailer.body);
   await expect(page.locator("#poster-supporting-cast")).toHaveCount(1);
 
-  await expect.poll(() => page.locator("#showcase-story").evaluate(story => story.lastElementChild?.id || ""), {
-    timeout: 8_000
-  }).toBe("poster-final-act-trailer");
+  const firstChildId = await board.evaluate(node => node.firstElementChild?.id || "");
+  expect(firstChildId).toBe("poster-final-act-trailer");
+  const order = await board.evaluate(node => [...node.children].map(child => child.id || child.className));
+  expect(order[0]).toBe("poster-final-act-trailer");
+  expect(String(order[1])).toContain("poster-v2-frame");
 });
 
-test("公開トレーラー未登録時は最終トレーラーページを追加しない", async ({ page }) => {
+test("公開トレーラー未登録時は最終ボードにACT TRAILERを追加しない", async ({ page }) => {
   await registerRoutes(page, { ...showcase, trailer: null }, []);
   await page.goto("/act-showcase.html?id=e2e-no-final-trailer", { waitUntil: "domcontentloaded" });
   await expect(page.locator("#poster-showcase-board-v2")).toHaveCount(1);

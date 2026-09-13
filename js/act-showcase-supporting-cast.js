@@ -32,11 +32,19 @@ async function initializeSupportingCast(showcaseSlug) {
       }
     });
   };
-  const observer = new MutationObserver(sync);
-  // Dynamic showcase screens are inserted/replaced as child nodes. Keep every sync idempotent:
-  // this observer must never create another child mutation when the visible value is unchanged.
+  const observer = new MutationObserver(records => {
+    if (!hasStructuralElementMutation(records)) return;
+    sync();
+  });
+  // Dynamic showcase screens are inserted/replaced as elements. Typewriter updates only replace
+  // text nodes, so ignore those high-frequency mutations and keep structural repair idempotent.
   observer.observe(document.body, { childList: true, subtree: true });
   sync();
+}
+
+function hasStructuralElementMutation(records) {
+  return records.some(record => record.type === "childList" && [...record.addedNodes, ...record.removedNodes]
+    .some(node => node.nodeType === Node.ELEMENT_NODE));
 }
 
 function normalizeGuest(row) {

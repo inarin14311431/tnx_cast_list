@@ -27,9 +27,10 @@ async function initializeShowcaseGenerator() {
     // both standard and cinematic buttons save the same supporting-cast data.
     await import("./showcase-generator-v3.js?v=8");
     await import("./showcase-act-subtitle.js?v=1");
+    await import("./showcase-scenario-writer.js?v=1");
     await import("./showcase-guests.js?v=1");
     await import("./showcase-guest-publish-bridge.js?v=1");
-    await import("./showcase-dynamic-publish-v3.js?v=1");
+    await import("./showcase-dynamic-publish-v3.js?v=2");
     await import("./showcase-publish-url-canonicalizer.js?v=1");
     document.documentElement.dataset.showcaseGeneratorState = "ready";
   } catch (error) {

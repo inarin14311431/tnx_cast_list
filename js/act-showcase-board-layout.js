@@ -100,7 +100,12 @@
     });
   };
 
-  const observer = new MutationObserver(sync);
+  const hasStructuralElementMutation = records => records.some(record => record.type === "childList"
+    && [...record.addedNodes, ...record.removedNodes].some(item => item.nodeType === Node.ELEMENT_NODE));
+  const observer = new MutationObserver(records => {
+    if (!hasStructuralElementMutation(records)) return;
+    sync();
+  });
   if (story) observer.observe(story, { childList: true, subtree: true });
   if (intro) observer.observe(intro, { childList: true, subtree: true });
   sync();

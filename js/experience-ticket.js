@@ -39,7 +39,11 @@ function readTicketData(record) {
   const rulerText = clean(record.querySelector(".act-record__ruler")?.textContent);
   const ruler = rulerText.replace(/^RULER[：:]\s*/i, "") || "—";
   const experience = String(Math.max(0, Number(record.querySelector("[data-experience-input]")?.value || 0)));
-  const character = clean(record.closest(".act-character-group")?.querySelector(".act-character-toggle__name")?.textContent) || "—";
+  const character = clean(
+    record.dataset.historyCast
+    || record.querySelector(".act-record-summary__cast")?.textContent
+    || record.closest(".act-character-group")?.querySelector(".act-character-toggle__name")?.textContent
+  ) || "—";
   const id = String(record.dataset.participationId || "0").replace(/[^0-9A-Za-z_-]/g, "");
   return {
     title,

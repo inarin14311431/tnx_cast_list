@@ -196,9 +196,18 @@
     });
   };
 
-  const observer = new MutationObserver(sync);
-  // Typed text and screen replacement are sufficient to schedule normalization. Watching the
-  // sequence's own class changes makes route decoration observe its own writes and can churn forever.
-  observer.observe(intro, { childList: true, subtree: true });
+  const hasStructuralElementMutation = record => record.type === "childList"
+    && [...record.addedNodes, ...record.removedNodes].some(item => item.nodeType === Node.ELEMENT_NODE);
+  const hasLinkedScreenStateMutation = record => record.type === "attributes"
+    && record.attributeName === "class"
+    && record.target instanceof Element
+    && record.target.matches(".neotokyo-sequence__screen--linked");
+  const observer = new MutationObserver(records => {
+    if (!records.some(record => hasStructuralElementMutation(record) || hasLinkedScreenStateMutation(record))) return;
+    sync();
+  });
+  // Trailer typing has its own debounced observer above. The global observer only needs structural
+  // renders plus linked-screen state changes, so handout typewriter text does not rescan every frame.
+  observer.observe(intro, { childList: true, subtree: true, attributes: true, attributeFilter: ["class"] });
   sync();
 })();

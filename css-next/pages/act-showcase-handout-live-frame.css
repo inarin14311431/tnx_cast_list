@@ -1,0 +1,39 @@
+/* HANDOUT live readout ownership.
+   During handout reading the stage owns vertical overflow, matching ACT TRAILER.
+   Once assignment splitting begins, these rules release control to the linked layout. */
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage.is-handout-scroll{
+  place-items:start center;
+  overflow-x:hidden;
+  overflow-y:auto;
+  overscroll-behavior-y:contain;
+  scrollbar-gutter:stable;
+  scroll-padding-bottom:clamp(18px,4svh,54px);
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage.is-handout-scroll .neotokyo-sequence__screen--linked:not(.is-splitting){
+  align-self:start;
+  height:auto;
+  min-height:100%;
+  max-height:none;
+  overflow:visible;
+  padding-bottom:clamp(22px,5svh,66px);
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage.is-handout-scroll .neotokyo-sequence__screen--linked:not(.is-splitting) .neotokyo-sequence__linked-layout{
+  flex:0 0 auto;
+  height:auto;
+  min-height:0;
+  overflow:visible;
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage.is-handout-scroll .neotokyo-sequence__screen--linked:not(.is-splitting) .neotokyo-sequence__handout-panel{
+  height:auto;
+  min-height:0;
+  overflow:visible;
+}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage.is-handout-scroll .neotokyo-sequence__screen--linked:not(.is-splitting) .neotokyo-sequence__handout-panel .neotokyo-sequence__readout{
+  flex:0 0 auto;
+  max-height:none;
+  overflow:visible;
+  overscroll-behavior:auto;
+}
+@media(prefers-reduced-motion:reduce){
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage.is-handout-scroll .neotokyo-sequence__handout-panel .neotokyo-sequence__readout{transition:none}
+}
