@@ -15,6 +15,10 @@
 .character-sheet-compare-choice h3{margin:0 0 4px}
 .character-sheet-compare-choice button{display:grid;text-align:left;gap:3px;padding:11px}
 .character-sheet-compare-choice small{opacity:.8}
+.character-sheet-compare-dialog:not(:has(.character-sheet-compare-overview ul)) .character-sheet-compare-choice,
+.character-sheet-compare-dialog:not(:has(.character-sheet-compare-overview ul)) #compare-copy{display:none}
+.character-sheet-compare-dialog:not(:has(.character-sheet-compare-overview ul)) .character-sheet-compare-actions{justify-content:flex-end}
+#character-sheet-compare-message:empty{display:none}
 #character-sheet-compare-message[data-state="error"]{color:#ff8f8f}
 .character-sheet-compare-busy{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;background:rgba(0,0,0,.82)}
 .character-sheet-compare-busy>div{display:grid;gap:8px;text-align:center;padding:24px;border:1px solid currentColor;background:var(--panel-bg,#0b1118)}

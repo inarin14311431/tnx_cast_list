@@ -83,8 +83,8 @@ function captureOutfits(){const rows=[];document.querySelectorAll(".outfit-card[
 function showComparisonModal(context){
   document.querySelector("#character-sheet-compare-dialog")?.remove();const dialog=document.createElement("dialog");dialog.id="character-sheet-compare-dialog";dialog.className="character-sheet-compare-dialog";const diffs=groupCharacterSheetDifferences(context.differences),summaries=summarizeCharacterSheetDifferences(diffs);
   const overview=summaries.length?`<div class="character-sheet-compare-overview"><p>キャラクターシート倉庫のデータと比べ、CAST ARCHIVEでは次の差分があります。</p><ul>${summaries.map(summary=>`<li>${esc(summary)}</li>`).join("")}</ul></div>`:`<div class="character-sheet-compare-overview"><p>キャラクターシート倉庫のデータと比べ、差分はありません。CAST ARCHIVEとキャラクターシート倉庫は一致しています。</p></div>`;
-  dialog.innerHTML=`<form method="dialog"><header class="character-sheet-compare-header"><div><h2>キャラクターシート倉庫との差分</h2><small>${esc(formatDate(context.comparedAt))}</small></div></header><section class="character-sheet-compare-meta"><strong>差分 ${summaries.length}件</strong><a href="${esc(context.sourceUrl)}" target="_blank" rel="noopener noreferrer">キャラクターシート倉庫を開く</a></section>${overview}<section class="character-sheet-compare-choice"><h3>どちらを編集画面に残しますか？</h3><button id="compare-adopt-warehouse" type="button"><strong>CAST ARCHIVEを保存して、倉庫版を採用</strong><small>現在のCAST ARCHIVEをスナップショットに残し、比較した倉庫版を編集画面へ反映します。</small></button><button id="compare-keep-archive" type="button"><strong>倉庫版を保存して、CAST ARCHIVE版を採用</strong><small>比較した倉庫版をスナップショットに残し、現在の編集画面はそのまま維持します。</small></button></section><footer class="character-sheet-compare-actions"><button id="compare-copy" type="button">差分をコピー</button><button value="cancel">閉じる</button></footer><p id="character-sheet-compare-message" aria-live="polite"></p></form>`;
-  document.body.append(dialog);dialog.querySelector("#compare-copy").addEventListener("click",()=>copyDifferences(context));dialog.querySelector("#compare-adopt-warehouse").addEventListener("click",()=>adoptWarehouse(context,dialog));dialog.querySelector("#compare-keep-archive").addEventListener("click",()=>keepArchive(context,dialog));dialog.addEventListener("close",()=>{if(dialog.returnValue==="cancel")clearSession();});dialog.showModal();
+  dialog.innerHTML=`<form method="dialog"><header class="character-sheet-compare-header"><div><h2>キャラクターシート倉庫との差分</h2><small>${esc(formatDate(context.comparedAt))}</small></div></header><section class="character-sheet-compare-meta"><strong>差分 ${summaries.length}件</strong><a href="${esc(context.sourceUrl)}" target="_blank" rel="noopener noreferrer">キャラクターシート倉庫を開く</a></section>${overview}<section class="character-sheet-compare-choice"><h3>キャラクターシート倉庫の状態を編集画面へ反映しますか？</h3><button id="compare-adopt-warehouse" type="button"><strong>倉庫の状態を反映する</strong><small>反映直前の編集状態を「比較前 yyyy/MM/dd hh:mm」でスナップショットに残してから、既存の倉庫取込を実行します。</small></button></section><footer class="character-sheet-compare-actions"><button id="compare-copy" type="button">差分をコピー</button><button id="compare-close" value="cancel">閉じる</button></footer><p id="character-sheet-compare-message" aria-live="polite"></p></form>`;
+  document.body.append(dialog);dialog.querySelector("#compare-copy").addEventListener("click",()=>copyDifferences(context));dialog.querySelector("#compare-adopt-warehouse").addEventListener("click",()=>adoptWarehouse(context,dialog));dialog.addEventListener("cancel",event=>{if(dialog.dataset.busy==="1")event.preventDefault();});dialog.addEventListener("close",()=>{if(dialog.returnValue==="cancel")clearSession();});dialog.showModal();
 }
 async function copyDifferences(context){
   const diffs=groupCharacterSheetDifferences(context.differences),summaries=summarizeCharacterSheetDifferences(diffs);
@@ -94,11 +94,27 @@ async function copyDifferences(context){
   const output=lines.join("\n");
   try{await navigator.clipboard.writeText(output);setMessage("差分をクリップボードへコピーしました。","saved");}catch{prompt("差分をコピーしてください。",output);}
 }
-async function adoptWarehouse(context,dialog){if(!confirm("現在のCAST ARCHIVEをスナップショットに保存し、比較したキャラクターシート倉庫版を編集画面へ反映します。続行しますか？"))return;disableChoices(dialog,true);try{const snapshots=await waitForSnapshots();setMessage("CAST ARCHIVE版をスナップショットへ保存しています…");await snapshots.createCurrent(`比較前 CAST ARCHIVE ${formatDate(context.comparedAt)}`);setMessage("キャラクターシート倉庫版を編集画面へ反映しています…");await applyLegacyPayload(context.externalPayload);setCharacterSheetUrl(context.sourceUrl);clearSession();dialog.close("adopted");}catch(error){console.error(error);setMessage(`処理に失敗しました：${error?.message||error}`,"error");disableChoices(dialog,false);}}
-async function keepArchive(context,dialog){if(!confirm("比較したキャラクターシート倉庫版をスナップショットに保存し、現在のCAST ARCHIVE版を編集画面に残します。続行しますか？"))return;disableChoices(dialog,true);try{const snapshots=await waitForSnapshots();setMessage("キャラクターシート倉庫版をスナップショットへ変換しています…");await applyLegacyPayload(context.externalPayload);setCharacterSheetUrl(context.sourceUrl);const warehouseBundle=captureEditorBundle(context.sourceUrl),snapshotData={character:{...context.archiveBundle.character,...warehouseBundle.character,character_sheet_url:context.sourceUrl},skills:warehouseBundle.skills,outfits:warehouseBundle.outfits};setMessage("キャラクターシート倉庫版をスナップショットへ保存しています…");await snapshots.createBundle(snapshotData,`キャラクターシート倉庫 ${formatDate(context.comparedAt)}`);clearSession();dialog.close("kept-archive");location.reload();}catch(error){console.error(error);setMessage(`スナップショット作成に失敗しました：${error?.message||error}`,"error");disableChoices(dialog,false);}}
+async function adoptWarehouse(context,dialog){
+  if(dialog.dataset.busy==="1")return;
+  if(!confirm("反映直前の編集状態をスナップショットに保存してから、比較したキャラクターシート倉庫の状態を編集画面へ反映します。続行しますか？"))return;
+  disableChoices(dialog,true);
+  try{
+    const snapshots=await waitForSnapshots();
+    const snapshotAt=new Date();
+    const editedBundle=captureEditorBundle(context.sourceUrl);
+    const snapshotData={character:{...(context.archiveBundle?.character||{}),...(editedBundle.character||{}),character_sheet_url:context.sourceUrl},skills:editedBundle.skills||[],outfits:editedBundle.outfits||[]};
+    setMessage("反映直前の編集状態をスナップショットへ保存しています…");
+    await snapshots.createBundle(snapshotData,`比較前 ${formatDate(snapshotAt)}`);
+    setMessage("キャラクターシート倉庫の状態を編集画面へ反映しています…");
+    await applyLegacyPayload(context.externalPayload);
+    setCharacterSheetUrl(context.sourceUrl);
+    clearSession();
+    dialog.close("adopted");
+  }catch(error){console.error(error);setMessage(`処理に失敗しました：${error?.message||error}`,"error");disableChoices(dialog,false);}
+}
 function setCharacterSheetUrl(sourceUrl){const target=document.querySelector("#character-sheet-url");if(target){target.value=sourceUrl;target.dispatchEvent(new Event("input",{bubbles:true}));target.dispatchEvent(new Event("change",{bubbles:true}));}}
-function waitForSnapshots(timeout=10000){const started=Date.now();return new Promise((resolve,reject)=>{const tick=()=>{if(window.TNXSheetSnapshots?.createCurrent&&window.TNXSheetSnapshots?.createBundle)return resolve(window.TNXSheetSnapshots);if(Date.now()-started>timeout)return reject(new Error("既存スナップショット機能を利用できません。"));setTimeout(tick,100);};tick();});}
-function disableChoices(dialog,disabled){dialog.querySelectorAll("#compare-adopt-warehouse,#compare-keep-archive,#compare-copy").forEach(button=>button.disabled=disabled);}
+function waitForSnapshots(timeout=10000){const started=Date.now();return new Promise((resolve,reject)=>{const tick=()=>{if(window.TNXSheetSnapshots?.createBundle)return resolve(window.TNXSheetSnapshots);if(Date.now()-started>timeout)return reject(new Error("既存スナップショット機能を利用できません。"));setTimeout(tick,100);};tick();});}
+function disableChoices(dialog,disabled){dialog.dataset.busy=disabled?"1":"0";dialog.querySelectorAll("#compare-adopt-warehouse,#compare-copy,#compare-close").forEach(button=>button.disabled=disabled);}
 function setMessage(text,state=""){const node=document.querySelector("#character-sheet-compare-message");if(node){node.textContent=text;node.dataset.state=state;}}
 function showBusy(){hideBusy();const overlay=document.createElement("div");overlay.id="character-sheet-compare-busy";overlay.className="character-sheet-compare-busy";overlay.innerHTML="<div><strong>キャラクターシート倉庫を取得して比較しています…</strong><small>JSONPデータとCAST ARCHIVE保存データを直接比較しています。</small></div>";document.body.append(overlay);}
 function hideBusy(){document.querySelector("#character-sheet-compare-busy")?.remove();}

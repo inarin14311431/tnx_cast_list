@@ -4,6 +4,10 @@ import {
   canonicalizeCharacterSheetJsonp,
   diffCanonicalBundles
 } from "./character-sheet-jsonp-canonical.js?v=2";
+import {
+  alignCanonicalBundlesForComparison,
+  stripLegacyArchiveOutfitElectronicControl
+} from "./character-sheet-compare-matching.js?v=1";
 
 function parseJsonData(value) {
   if (typeof value !== "string") return value;
@@ -116,10 +120,12 @@ export function normalizeCanonicalForComparison(bundle = {}) {
 
 export function compareCharacterSheetPayload(archiveBundle, externalPayload) {
   const warehousePayload = preserveWarehouseLifePathRawText(normalizeCharacterSheetPayload(externalPayload));
-  return diffCanonicalBundles(
-    normalizeCanonicalForComparison(canonicalizeArchiveBundle(archiveBundle || {})),
-    normalizeCanonicalForComparison(canonicalizeCharacterSheetJsonp(warehousePayload))
+  const archiveCanonical = normalizeCanonicalForComparison(
+    canonicalizeArchiveBundle(stripLegacyArchiveOutfitElectronicControl(archiveBundle || {}))
   );
+  const warehouseCanonical = normalizeCanonicalForComparison(canonicalizeCharacterSheetJsonp(warehousePayload));
+  const [alignedArchive, alignedWarehouse] = alignCanonicalBundlesForComparison(archiveCanonical, warehouseCanonical);
+  return diffCanonicalBundles(alignedArchive, alignedWarehouse);
 }
 
 export async function compareCharacterSheetSource(sourceUrl, archiveBundle, options = {}) {

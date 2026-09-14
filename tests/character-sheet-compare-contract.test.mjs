@@ -5,6 +5,7 @@ import { canonicalizeArchiveBundle, canonicalizeCharacterSheetJsonp, diffCanonic
 
 const compare = fs.readFileSync(new URL("../js/sheet-character-sheet-compare.js", import.meta.url), "utf8");
 const snapshots = fs.readFileSync(new URL("../js/sheet-snapshots.js", import.meta.url), "utf8");
+const snapshotSchema = fs.readFileSync(new URL("../supabase/11_character_snapshots.sql", import.meta.url), "utf8");
 const migration = fs.readFileSync(new URL("../supabase/38_snapshot_from_bundle.sql", import.meta.url), "utf8");
 
 test("comparison reads JSONP directly without running the importer first", () => {
@@ -17,12 +18,14 @@ test("comparison reads JSONP directly without running the importer first", () =>
   assert.doesNotMatch(start, /location\.reload/);
 });
 
-test("comparison remains read-only until the user chooses a side", () => {
+test("comparison stays read-only until warehouse apply is explicitly chosen", () => {
   assert.match(compare, /getSheetSaveState\(\)\s*!==\s*"saved"/);
   assert.match(compare, /showComparisonModal/);
   assert.match(compare, /compare-adopt-warehouse/);
-  assert.match(compare, /compare-keep-archive/);
+  assert.match(compare, /倉庫の状態を反映する/);
+  assert.match(compare, /id="compare-close"[^>]*>閉じる</);
   assert.match(compare, /差分をコピー/);
+  assert.doesNotMatch(compare, /compare-keep-archive/);
   assert.doesNotMatch(compare, /persistSheetBundle/);
   assert.doesNotMatch(compare, /save_character_bundle/);
 });
@@ -34,19 +37,44 @@ test("comparison modal and clipboard use concise warehouse-baseline summaries", 
   assert.doesNotMatch(compare, /function renderDifference/);
   assert.match(compare, /summaries\.forEach/);
   assert.match(compare, /summaries\.map/);
-  assert.match(compare, /summaries\.forEach/);
   assert.match(compare, /navigator\.clipboard\.writeText/);
 });
 
-test("choice actions use the legacy importer only after an explicit choice", () => {
-  const adopt = compare.slice(compare.indexOf("async function adoptWarehouse"), compare.indexOf("async function keepArchive"));
-  const keep = compare.slice(compare.indexOf("async function keepArchive"), compare.indexOf("function setCharacterSheetUrl"));
-  assert.match(adopt, /snapshots\.createCurrent/);
-  assert.match(adopt, /applyLegacyPayload\(context\.externalPayload\)/);
-  assert.match(keep, /applyLegacyPayload\(context\.externalPayload\)/);
-  assert.match(keep, /captureEditorBundle/);
-  assert.match(keep, /snapshots\.createBundle/);
-  assert.match(keep, /location\.reload/);
+test("warehouse apply snapshots the current editor bundle before running the legacy importer", () => {
+  const adopt = compare.slice(compare.indexOf("async function adoptWarehouse"), compare.indexOf("function setCharacterSheetUrl"));
+  assert.match(adopt, /captureEditorBundle\(context\.sourceUrl\)/);
+  assert.match(adopt, /context\.archiveBundle\?\.character/);
+  assert.match(adopt, /snapshots\.createBundle/);
+  assert.doesNotMatch(adopt, /snapshots\.createCurrent/);
+  assert.match(adopt, /`比較前 \$\{formatDate\(snapshotAt\)\}`/);
+  assert.match(adopt, /await applyLegacyPayload\(context\.externalPayload\)/);
+  const captureAt = adopt.indexOf("captureEditorBundle(context.sourceUrl)");
+  const snapshotAt = adopt.indexOf("await snapshots.createBundle");
+  const importAt = adopt.indexOf("await applyLegacyPayload(context.externalPayload)");
+  assert.ok(captureAt >= 0 && captureAt < snapshotAt, "editor state must be captured before snapshot persistence");
+  assert.ok(snapshotAt >= 0 && snapshotAt < importAt, "snapshot persistence must finish before warehouse import starts");
+});
+
+test("snapshot failure blocks warehouse import and one apply click cannot start a second run", () => {
+  const adopt = compare.slice(compare.indexOf("async function adoptWarehouse"), compare.indexOf("function setCharacterSheetUrl"));
+  assert.match(adopt, /if\(dialog\.dataset\.busy==="1"\)return/);
+  assert.match(adopt, /disableChoices\(dialog,true\)/);
+  assert.match(adopt, /await snapshots\.createBundle[\s\S]*await applyLegacyPayload/);
+  assert.match(compare, /dialog\.dataset\.busy=disabled\?"1":"0"/);
+  assert.match(compare, /#compare-adopt-warehouse,#compare-copy,#compare-close/);
+});
+
+test("close only dismisses the comparison and never snapshots or imports", () => {
+  const modal = compare.slice(compare.indexOf("function showComparisonModal"), compare.indexOf("async function copyDifferences"));
+  assert.match(modal, /id="compare-close" value="cancel">閉じる/);
+  assert.doesNotMatch(modal, /querySelector\("#compare-close"\)\.addEventListener/);
+  assert.doesNotMatch(modal, /createCurrent|createBundle|applyLegacyPayload/);
+});
+
+test("pre-apply label is minute precision while snapshot rows retain full timestamp precision", () => {
+  assert.match(compare, /new Intl\.DateTimeFormat\("ja-JP",\{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"\}\)/);
+  assert.match(snapshotSchema, /created_at timestamptz not null default now\(\)/);
+  assert.doesNotMatch(snapshotSchema, /date_trunc\s*\(\s*['"]minute['"]/i);
 });
 
 test("comparison reuses the existing snapshot table and restore format", () => {
