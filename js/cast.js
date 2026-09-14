@@ -1289,7 +1289,7 @@ function createComboUsageTracker(comboId, usedCount, limit, compact = false, ite
     <div class="combo-card__usage${compact ? " combo-card__usage--counter" : ""}${reached ? " is-limit-reached" : ""}"
       data-combo-usage data-combo-id="${escapeHtml(comboId)}" data-combo-label="${escapeHtml(accessibleName)}">
       <div class="combo-card__usage-status">
-        <span>1アクト使用回数 <small>ACT USES</small></span>
+        <span>使用回数 <small>USES</small></span>
         <strong>使用 <b data-combo-used>${usedCount}</b> / ${limit}</strong>
         <em data-combo-remaining>${reached ? "上限到達" : `残り ${remaining}回`}</em>
       </div>
