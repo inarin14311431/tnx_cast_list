@@ -3,6 +3,7 @@ import { supabase } from "./supabase-client.js";
 import { requireAuth, signOut } from "./auth-state.js?v=4";
 import { getStyleColor } from "./style-colors.js";
 import { withRequestTimeout } from "./async-timeout.js?v=1";
+import "./archive-id-code.js?v=1";
 const VISIBILITY_LABELS = {
   public: "公開 / PUBLIC",
   private: "非公開 / PRIVATE"
@@ -211,7 +212,7 @@ function visibilityLabel(value) {
 
 function createOwnedCastItem(character) {
   const id = encodeURIComponent(character.public_id);
-  const displayId = obfuscatePublicId(character.public_id);
+  const displayId = window.TNXArchiveId.format(character.public_id);
   const styles = [
     [character.style_1, character.style_1_mark],
     [character.style_2, character.style_2_mark],
@@ -249,7 +250,8 @@ function createOwnedCastItem(character) {
 }
 
 async function deleteCharacter(publicId, button) {
-  if (!window.confirm(`${publicId} を削除します。関連する技能・装備・コンボ・参加アクト記録も削除されます。`)) return;
+  const displayId = window.TNXArchiveId.format(publicId);
+  if (!window.confirm(`${displayId} を削除します。関連する技能・装備・コンボ・参加アクト記録も削除されます。`)) return;
 
   await runAccountWrite(button, async () => {
     const { error } = await withRequestTimeout(
@@ -340,16 +342,6 @@ async function runAccountWrite(button, operation) {
     accountWriteBusy = false;
     if (button?.isConnected) button.disabled = false;
   }
-}
-
-function obfuscatePublicId(value) {
-  const source = `TNX_CAST_ARCHIVE::${String(value ?? "")}`;
-  let hash = 0x811c9dc5;
-  for (let index = 0; index < source.length; index++) {
-    hash ^= source.charCodeAt(index);
-    hash = Math.imul(hash, 0x01000193);
-  }
-  return `TNX-${(hash >>> 0).toString(16).toUpperCase().padStart(8, "0")}`;
 }
 
 function formatDate(value) {
