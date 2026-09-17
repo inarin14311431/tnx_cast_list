@@ -1,3 +1,5 @@
+await import("./act-showcase-theme-runtime.js?v=2");
+
 const current = new URL(location.href);
 if (String(current.searchParams.get("showcaseMode") || "").toLowerCase() === "cinematic") {
   current.searchParams.delete("showcaseMode");
@@ -13,11 +15,10 @@ await import("./act-showcase-story-flow.js?v=20260913b");
 await import("./act-showcase-writing-patterns.js?v=20260913a");
 await import("./act-showcase-visual-caption-code.js?v=3");
 await import("./act-showcase-tagline-quotes.js?v=2");
-await import("./act-showcase-cinematic-layout-v2.js?v=8");
-await import("./act-showcase-trailer-live-frame.js?v=2");
+await import("./act-showcase-cinematic-layout-v2.js?v=10");
 await import("./act-showcase-handout-live-frame.js?v=2");
-await import("./act-showcase-page.js?v=20260910a");
+await import("./act-showcase-page.js?v=20260915a");
 await import("./act-showcase-scenario-writer.js?v=2");
 await import("./act-showcase-supporting-cast.js?v=5");
-await import("./act-showcase-final-trailer.js?v=7");
+await import("./act-showcase-final-trailer.js?v=8");
 await import("./act-showcase-display-normalizer.js?v=1");

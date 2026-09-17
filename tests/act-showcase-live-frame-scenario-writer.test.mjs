@@ -4,37 +4,34 @@ import { readFileSync } from "node:fs";
 
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 const bootstrap = read("js/act-showcase-bootstrap.js");
-const liveFrame = read("js/act-showcase-trailer-live-frame.js");
+const cinematicLayout = read("js/act-showcase-cinematic-layout-v2.js");
 const generatorLoader = read("js/showcase-generator-loader.js");
 const generatorScenario = read("js/showcase-scenario-writer.js");
 const dynamicPublish = read("js/showcase-dynamic-publish-v3.js");
 const showcaseScenario = read("js/act-showcase-scenario-writer.js");
 const standardScenario = read("js/act-showcase-standard-scenario-writer.js");
-const cinematicHtml = read("act-showcase.html");
 const standardHtml = read("act-showcase-standard.html");
-const generatorHtml = read("showcase-generator.html");
 const entryCss = read("css-next/pages/act-showcase-entry.css");
 const hierarchyCss = read("css-next/pages/act-showcase-neotokyo-hierarchy.css");
+const emphasisCss = read("css-next/pages/act-showcase-visual-emphasis.css");
+const sceneCss = read("css-next/pages/act-showcase-theme-scene-contract.css");
 
-test("ACT TRAILER restores a size-driven live terminal height without replacing stage scrolling", () => {
-  assert.match(bootstrap, /act-showcase-cinematic-enhancer\.js\?v=4/);
-  assert.match(bootstrap, /act-showcase-trailer-live-frame\.js\?v=2/);
-  assert.ok(bootstrap.indexOf("act-showcase-cinematic-enhancer.js") < bootstrap.indexOf("act-showcase-trailer-live-frame.js"));
-  assert.ok(bootstrap.indexOf("act-showcase-trailer-live-frame.js") < bootstrap.indexOf("act-showcase-page.js"));
-  assert.match(liveFrame, /readout\.scrollHeight/);
-  assert.match(liveFrame, /bar\?\.offsetHeight/);
-  assert.match(liveFrame, /verticalPadding \+ 30/);
-  assert.match(liveFrame, /terminal\.style\.height = `\$\{targetHeight\}px`/);
-  assert.match(liveFrame, /height \.16s cubic-bezier\(\.22,\.61,\.36,1\)/);
-  assert.match(liveFrame, /MutationObserver/);
-  assert.match(liveFrame, /ResizeObserver/);
-  assert.match(liveFrame, /lastHeights/);
-  assert.doesNotMatch(liveFrame, /scrollIntoView|window\.scrollBy/);
+test("ACT TRAILER no longer uses an inline terminal sizing module", () => {
+  assert.doesNotMatch(bootstrap, /act-showcase-trailer-live-frame\.js/);
+  assert.match(bootstrap, /act-showcase-cinematic-layout-v2\.js\?v=/);
+  assert.match(cinematicLayout, /readout\.getBoundingClientRect\(\)\.bottom \+ window\.scrollY/);
+  assert.match(cinematicLayout, /window\.scrollTo\(\{/);
+  assert.doesNotMatch(cinematicLayout, /readout\.scrollTo\(\{/);
+  assert.doesNotMatch(cinematicLayout, /terminal\.style\.(?:height|maxHeight|overflow)/);
+  assert.match(emphasisCss, /showcase-trailer-document-scroll[\s\S]*stage\.is-trailer-scroll\{[\s\S]*overflow:visible/);
+  assert.match(emphasisCss, /showcase-trailer-document-scroll[\s\S]*readout\.is-terminal-readout\{[\s\S]*overflow:visible/);
 });
 
 test("scenario writer is mounted at the same form level as RULER and invalidates stale generated output", () => {
-  assert.match(generatorLoader, /showcase-scenario-writer\.js\?v=1/);
-  assert.ok(generatorLoader.indexOf("showcase-scenario-writer.js") < generatorLoader.indexOf("showcase-dynamic-publish-v3.js"));
+  assert.match(generatorLoader, /showcase-scenario-writer\.js\?v=/);
+  assert.match(generatorLoader, /showcase-dedicated-output\.js\?v=/);
+  assert.ok(generatorLoader.indexOf("showcase-scenario-writer.js") < generatorLoader.indexOf("showcase-dedicated-output.js"));
+  assert.ok(generatorLoader.indexOf("showcase-dedicated-output.js") < generatorLoader.indexOf("showcase-dynamic-publish-v3.js"));
   assert.match(generatorScenario, /scenario-writer-name/);
   assert.match(generatorScenario, /showcase-credit-fields/);
   assert.match(generatorScenario, /gridTemplateColumns = "repeat\(2, minmax\(0, 1fr\)\)"/);
@@ -59,12 +56,12 @@ test("dynamic publishing stores scenarioWriterName in the public showcase JSON",
 });
 
 test("cinematic and standard public pages render SCENARIO WRITER at the same visual level as RULER", () => {
-  assert.match(bootstrap, /act-showcase-scenario-writer\.js\?v=2/);
+  assert.match(bootstrap, /act-showcase-scenario-writer\.js\?v=/);
   assert.match(showcaseScenario, /className = "opening-ruler opening-scenario-writer"/);
   assert.match(showcaseScenario, /className = "poster-v2-credit-row"/);
   assert.match(showcaseScenario, /ruler\.cloneNode\(true\)/);
   assert.match(showcaseScenario, /SCENARIO WRITER/);
-  assert.match(standardHtml, /act-showcase-standard-scenario-writer\.js\?v=1/);
+  assert.match(standardHtml, /act-showcase-standard-scenario-writer\.js\?v=/);
   assert.match(standardScenario, /className = "hero__ruler hero__scenario-writer"/);
 });
 
@@ -73,12 +70,18 @@ test("RULER and SCENARIO WRITER title labels use the same compact horizontal cre
   assert.match(hierarchyCss, /\.neotokyo-sequence__ruler-label\{[^}]*writing-mode:horizontal-tb[^}]*transform:none[^}]*white-space:nowrap/);
   assert.doesNotMatch(hierarchyCss, /writing-mode:vertical-rl|rotate\(180deg\)/);
   assert.match(hierarchyCss, /\[data-scenario-writer-credit="title"\]\{margin-top:10px\}/);
+  assert.match(sceneCss, /neotokyo-sequence__ruler-name/);
+  assert.match(sceneCss, /neotokyo-sequence__ruler-role/);
 });
 
-test("entry cache keys expose the latest generator, cinematic bootstrap, title-credit CSS, and handout live frame", () => {
-  assert.match(generatorHtml, /showcase-generator-loader\.js\?v=29/);
-  assert.match(cinematicHtml, /act-showcase-entry\.css\?v=8/);
-  assert.match(cinematicHtml, /act-showcase-bootstrap\.js\?v=11/);
-  assert.match(entryCss, /act-showcase-neotokyo-hierarchy\.css\?v=20260913a/);
-  assert.match(entryCss, /act-showcase-handout-live-frame\.css\?v=1/);
+test("showcase entry keeps the final theme layers wired without pinning cache revisions here", () => {
+  assert.match(entryCss, /act-showcase-neotokyo-hierarchy\.css\?v=/);
+  assert.match(entryCss, /act-showcase-handout-live-frame\.css\?v=/);
+  assert.match(entryCss, /act-showcase-dedicated-themes\.css\?v=/);
+  assert.match(entryCss, /act-showcase-theme-surface-system\.css\?v=/);
+  assert.match(entryCss, /act-showcase-theme-phase-contract\.css\?v=/);
+  assert.match(entryCss, /act-showcase-theme-legibility\.css\?v=/);
+  assert.match(entryCss, /act-showcase-theme-scene-contract\.css\?v=/);
+  assert.match(standardHtml, /act-showcase-theme-surface-system\.css\?v=/);
+  assert.doesNotMatch(entryCss, /act-showcase-theme-coverage\.css|act-showcase-cinematic-theme\.css/);
 });

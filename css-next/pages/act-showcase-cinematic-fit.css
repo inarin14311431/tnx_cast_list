@@ -1,0 +1,24 @@
+/* Cinematic text fitting owns presentation only. JS may classify content via data-fit, but never writes font metrics inline. */
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__cast-tagline.showcase-fit-tagline[data-fit="medium"]{
+  font-size:clamp(.9rem,1.08vw,1.08rem);
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__cast-tagline.showcase-fit-tagline[data-fit="long"]{
+  font-size:clamp(.84rem,.96vw,.98rem);
+  letter-spacing:-.01em;
+}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__cast-tagline.showcase-fit-tagline[data-fit="xlong"]{
+  font-size:clamp(.78rem,.84vw,.9rem);
+  letter-spacing:-.02em;
+}
+
+@media (max-width:760px){
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__cast-tagline.showcase-fit-tagline[data-fit="medium"]{
+    font-size:clamp(.8rem,3vw,.92rem);
+  }
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__cast-tagline.showcase-fit-tagline[data-fit="long"]{
+    font-size:clamp(.74rem,2.7vw,.86rem);
+  }
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__cast-tagline.showcase-fit-tagline[data-fit="xlong"]{
+    font-size:clamp(.7rem,2.45vw,.8rem);
+  }
+}

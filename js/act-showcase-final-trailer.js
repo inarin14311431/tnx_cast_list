@@ -45,8 +45,9 @@ function createTrailerSection(trailer) {
   heading.id = "poster-final-act-trailer-heading";
   inner.append(overline, heading);
 
-  if (trailer.title) {
-    inner.append(node("p", "poster-v2-trailer-stage__title", trailer.title));
+  const subtitle = normalizeTrailerSubtitle(trailer.title);
+  if (subtitle) {
+    inner.append(node("p", "poster-v2-trailer-stage__title", subtitle));
   }
 
   const copyWrap = node("div", "poster-v2-trailer-stage__copy-wrap");
@@ -63,6 +64,12 @@ function createTrailerSection(trailer) {
   inner.append(footer);
   section.append(inner);
   return section;
+}
+
+function normalizeTrailerSubtitle(value) {
+  const title = text(value);
+  if (!title || /^ACT\s*TRAILER$/i.test(title)) return "アクトトレーラー";
+  return title;
 }
 
 function mountAtFinalBoardTop(section) {

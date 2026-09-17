@@ -5,6 +5,7 @@ const preview = document.querySelector("#showcase-preview");
 const status = document.querySelector("#generator-status");
 const slugField = document.querySelector("#publish-slug");
 const actNameField = document.querySelector("#act-name");
+const showcaseThemeField = document.querySelector("#showcase-theme");
 const rulerField = document.querySelector("#ruler-name");
 const scenarioWriterField = document.querySelector("#scenario-writer-name");
 const legacyPublishButton = document.querySelector("#publish-button");
@@ -65,6 +66,7 @@ async function publishDynamicShowcase(button, mode) {
     const rulerName = String(rulerField?.value || showcaseData.rulerName || "").trim();
     const scenarioWriterName = String(scenarioWriterField?.value || showcaseData.scenarioWriterName || "").trim();
     showcaseData.scenarioWriterName = scenarioWriterName;
+    showcaseData.theme = normalizeShowcaseTheme(showcaseThemeField?.value);
 
     const payloadBytes = getJsonByteLength(showcaseData);
     if (payloadBytes > MAX_SHOWCASE_BYTES) {
@@ -83,8 +85,8 @@ async function publishDynamicShowcase(button, mode) {
     if (!actId) throw new Error("公開したアクト紹介を確認できませんでした。");
 
     const publicPath = mode === "standard"
-      ? `./act-showcase-standard.html?id=${encodeURIComponent(slug)}`
-      : `./act-showcase.html?id=${encodeURIComponent(slug)}`;
+      ? `./act-showcase-standard.html?id=${encodeURIComponent(slug)}&theme=${encodeURIComponent(showcaseData.theme)}`
+      : `./act-showcase.html?id=${encodeURIComponent(slug)}&theme=${encodeURIComponent(showcaseData.theme)}`;
     const publicUrl = new URL(publicPath, location.href).href;
     const modeLabel = mode === "standard" ? "従来版" : "豪華版";
     setStatus(`${modeLabel}の公開処理が完了しました。参加アクト履歴にも反映しました。 <a href="${escapeAttribute(publicUrl)}" target="_blank" rel="noopener">${modeLabel}の公開ページを開く</a>`, "success", true);
@@ -151,7 +153,7 @@ async function extractShowcaseData(source) {
     actName: doc.querySelector(".hero__act")?.textContent?.trim() || "",
     rulerName: (doc.querySelector(".hero__ruler:not(.hero__scenario-writer)")?.textContent || "").replace(/^RULER[：:]\s*/i, "").trim(),
     scenarioWriterName: (doc.querySelector(".hero__scenario-writer")?.textContent || "").replace(/^SCENARIO WRITER[：:]\s*/i, "").trim(),
-    trailer: trailerBody ? { title: "ACT TRAILER", body: trailerBody } : null,
+    trailer: trailerBody ? { title: "アクトトレーラー", body: trailerBody } : null,
     background,
     casts: cards,
     publishedAt: new Date().toISOString()
@@ -234,6 +236,11 @@ function setStatus(message, state = "", allowHtml = false) {
   if (allowHtml) status.innerHTML = message;
   else status.textContent = message;
   status.className = `generator-status${state ? ` is-${state}` : ""}`;
+}
+
+function normalizeShowcaseTheme(value) {
+  const theme = String(value || "").trim().toLowerCase();
+  return ["nova", "intron", "vlad", "lutetia"].includes(theme) ? theme : "nova";
 }
 
 function normalizeSlug(value) {
