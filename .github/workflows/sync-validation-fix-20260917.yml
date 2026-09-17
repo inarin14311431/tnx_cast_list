@@ -1,0 +1,101 @@
+name: One-shot validation sync 2026-09-17
+
+on:
+  push:
+    branches:
+      - sync/fix-validation-374-20260917
+    paths:
+      - .github/workflows/sync-validation-fix-20260917.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync-validation-fix:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout production sync branch
+        uses: actions/checkout@v4
+        with:
+          ref: sync/fix-validation-374-20260917
+          fetch-depth: 0
+
+      - name: Checkout fixed validation revision
+        uses: actions/checkout@v4
+        with:
+          repository: inarin14311431/tnx-cast-archive-test
+          ref: 4e333f5193c91bc90a03db1449cd8f5948d25944
+          path: .validation-source
+
+      - name: Copy FIX scope from validation
+        shell: bash
+        run: |
+          set -euo pipefail
+          files=(
+            'act-showcase-standard.html'
+            'act-showcase.html'
+            'css-next/pages/act-showcase-cinematic-fit.css'
+            'css-next/pages/act-showcase-dedicated-themes.css'
+            'css-next/pages/act-showcase-entry.css'
+            'css-next/pages/act-showcase-standard-hotfix.css'
+            'css-next/pages/act-showcase-theme-legibility.css'
+            'css-next/pages/act-showcase-theme-phase-contract.css'
+            'css-next/pages/act-showcase-theme-scene-contract.css'
+            'css-next/pages/act-showcase-theme-surface-system.css'
+            'css-next/pages/act-showcase-visual-emphasis.css'
+            'js/act-showcase-bootstrap.js'
+            'js/act-showcase-cinematic-layout-v2.js'
+            'js/act-showcase-cinematic-polish.js'
+            'js/act-showcase-final-trailer.js'
+            'js/act-showcase-page.js'
+            'js/act-showcase-standard.js'
+            'js/act-showcase-theme-runtime.js'
+            'js/showcase-dedicated-output.js'
+            'js/showcase-dynamic-publish-v3.js'
+            'js/showcase-edit-restore.js'
+            'js/showcase-generator-loader.js'
+            'js/showcase-generator-v3.js'
+            'showcase-generator.html'
+            'tests/act-showcase-cinematic-polish.test.mjs'
+            'tests/act-showcase-cinematic-readability.test.mjs'
+            'tests/act-showcase-live-frame-scenario-writer.test.mjs'
+            'tests/act-showcase-trailer-caret.test.mjs'
+            'tests/act-showcase-trailer-frame-smoothing.test.mjs'
+            'tests/e2e/act-showcase-neotokyo-stability.spec.js'
+            'tests/showcase-asset-version-contract.test.mjs'
+            'tests/showcase-cinematic-layout-v2.test.mjs'
+            'tests/showcase-cinematic-theme-coverage.test.mjs'
+            'tests/showcase-css-js-responsibility.test.mjs'
+            'tests/showcase-editor-restore.test.mjs'
+            'tests/showcase-neotokyo-public-url.test.mjs'
+            'tests/showcase-publish-modes.test.mjs'
+            'tests/showcase-standard-guest-background-regression.test.mjs'
+            'tests/showcase-theme-phase-contract.test.mjs'
+            'tests/showcase-theme-prototype.test.mjs'
+            'tests/showcase-theme-surface-system.test.mjs'
+            'tests/showcase-visual-emphasis-contract.test.mjs'
+          )
+          for path in "${files[@]}"; do
+            test -f ".validation-source/$path"
+            mkdir -p "$(dirname "$path")"
+            cp ".validation-source/$path" "$path"
+          done
+          rm -f js/act-showcase-trailer-live-frame.js
+          rm -rf .validation-source
+          rm -f .github/workflows/sync-validation-fix-20260917.yml
+
+      - name: Run production unit and regression tests
+        run: npm test
+
+      - name: Commit synchronized FIX
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -A
+          if git diff --cached --quiet; then
+            exit 0
+          fi
+          git commit -m '検証環境 PR #362〜#374 を本番同期'
+          git push origin HEAD:sync/fix-validation-374-20260917
