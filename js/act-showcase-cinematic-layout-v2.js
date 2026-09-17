@@ -4,7 +4,7 @@
   const intro = document.querySelector("#cinematic-intro");
   const openingSubtitle = document.querySelector("#opening-subtitle");
   const supportsResizeObserver = typeof ResizeObserver === "function";
-  const trailerScrollTargets = new WeakMap();
+  const trailerPageTargets = new WeakMap();
   let trailerFrame = 0;
 
   const enhance = root => {
@@ -31,7 +31,7 @@
         );
 
         if (record.type === "characterData") {
-          if (!supportsResizeObserver) scheduleTrailerFrame(recordTarget);
+          if (trailerReadout) scheduleTrailerFrame(trailerReadout);
           continue;
         }
 
@@ -45,7 +45,8 @@
           if (node.nodeType === Node.ELEMENT_NODE) hasElementChange = true;
         }
 
-        if (!trailerReadout || !supportsResizeObserver) scheduleTrailerFrame(recordTarget);
+        if (trailerReadout) scheduleTrailerFrame(trailerReadout);
+        else if (!supportsResizeObserver) scheduleTrailerFrame(recordTarget);
         if (hasElementChange) surfaceMayHaveChanged = true;
       }
       if (surfaceMayHaveChanged) syncTrailerScrollSurface();
@@ -58,8 +59,6 @@
   }
 
   window.addEventListener("resize", () => {
-    intro?.querySelectorAll(".neotokyo-sequence__cast--linked .neotokyo-sequence__cast-tagline")
-      .forEach(tagline => fitAssignedTagline(tagline));
     const readout = intro?.querySelector(".neotokyo-sequence__screen--trailer .neotokyo-sequence__readout");
     if (readout) scheduleTrailerFrame(readout);
   }, { passive: true });
@@ -99,14 +98,20 @@
   function syncTrailerScrollSurface() {
     const stage = intro?.querySelector(".neotokyo-sequence__stage");
     if (!stage) return;
-    const active = Boolean(stage.querySelector(".neotokyo-sequence__screen--trailer"));
+    const screen = stage.querySelector(".neotokyo-sequence__screen--trailer");
+    const readout = screen?.querySelector(".neotokyo-sequence__readout");
+    const active = Boolean(screen);
     const wasActive = stage.classList.contains("is-trailer-scroll");
     stage.classList.toggle("is-trailer-scroll", active);
+    document.body.classList.toggle("showcase-trailer-document-scroll", active);
+
     if (active !== wasActive) {
-      stage.scrollTop = 0;
-      trailerScrollTargets.delete(stage);
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+      if (readout) {
+        readout.scrollTop = 0;
+        trailerPageTargets.delete(readout);
+      }
     }
-    if (!active) trailerScrollTargets.delete(stage);
   }
 
   function attachTrailerFollow(scope) {
@@ -139,18 +144,23 @@
     if (!screen || !stage) return;
 
     stage.classList.add("is-trailer-scroll");
-    const targetTop = Math.max(0, stage.scrollHeight - stage.clientHeight);
-    const previousTarget = trailerScrollTargets.get(stage);
+    document.body.classList.add("showcase-trailer-document-scroll");
+    readout.scrollTop = 0;
 
-    if (targetTop <= stage.scrollTop + 1) {
-      trailerScrollTargets.set(stage, targetTop);
+    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const viewportPadding = Math.max(72, Math.min(140, window.innerHeight * 0.14));
+    const readoutBottom = readout.getBoundingClientRect().bottom + window.scrollY;
+    const targetTop = Math.max(0, readoutBottom - (window.innerHeight - viewportPadding));
+    const previousTarget = trailerPageTargets.get(readout);
+
+    if (targetTop <= window.scrollY + 1) {
+      trailerPageTargets.set(readout, targetTop);
       return;
     }
     if (Number.isFinite(previousTarget) && Math.abs(targetTop - previousTarget) <= 1) return;
 
-    trailerScrollTargets.set(stage, targetTop);
-    const reduced = matchMedia("(prefers-reduced-motion: reduce)").matches;
-    stage.scrollTo({
+    trailerPageTargets.set(readout, targetTop);
+    window.scrollTo({
       top: targetTop,
       left: 0,
       behavior: reduced ? "auto" : "smooth"
@@ -172,23 +182,7 @@
         role.textContent = String(role.textContent || "").replace(/[◎●]/g, "").trim();
         role.dataset.presentationClean = "true";
       }
-      const tagline = card.querySelector(".neotokyo-sequence__cast-tagline");
-      if (tagline) fitAssignedTagline(tagline);
     }
-  }
-
-  function fitAssignedTagline(tagline) {
-    if (!tagline?.isConnected) return;
-    requestAnimationFrame(() => {
-      if (!tagline.isConnected || tagline.clientWidth <= 0) return;
-      tagline.style.removeProperty("font-size");
-      let size = parseFloat(getComputedStyle(tagline).fontSize) || 16;
-      const minimum = 13;
-      while (tagline.scrollWidth > tagline.clientWidth + 1 && size > minimum) {
-        size = Math.max(minimum, size - .5);
-        tagline.style.fontSize = `${size}px`;
-      }
-    });
   }
 
   function normalizeOpeningSubtitle() {

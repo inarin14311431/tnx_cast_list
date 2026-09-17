@@ -26,6 +26,7 @@ async function initialize() {
     if (!slug) throw new Error("アクト識別名が指定されていません。");
 
     const data = await loadPublicShowcase(slug);
+    globalThis.TNX_SHOWCASE_THEME?.applySaved(data?.theme);
     const model = createShowcaseModel(data);
     renderOpening(model);
     applyBackground(model.background);

@@ -18,6 +18,7 @@ async function initialize() {
     const slug = normalizeShowcaseSlug(new URLSearchParams(location.search).get("id"));
     if (!slug) throw new Error("アクト識別名が指定されていません。");
     const data = await loadPublicShowcase(slug);
+    globalThis.TNX_SHOWCASE_THEME?.applySaved(data?.theme);
     if (!data || typeof data !== "object" || Array.isArray(data)) {
       throw new Error("指定されたアクト紹介は公開されていません。公開画面から再度公開してください。");
     }
@@ -52,7 +53,7 @@ function renderShowcase(data) {
 
   const background = safeImageUrl(data.background);
   if (background) {
-    document.body.style.backgroundImage = `linear-gradient(rgba(2,8,12,.58),rgba(2,8,12,.92)),url("${escapeCssString(background)}")`;
+    document.body.style.backgroundImage = `linear-gradient(rgba(var(--showcase-bg-rgb,2,8,12),.58),rgba(var(--showcase-bg-rgb,2,8,12),.92)),url("${escapeCssString(background)}")`;
   }
 
   const castList = Array.isArray(data.casts) ? data.casts.slice(0, 6) : [];

@@ -20,6 +20,7 @@ const FALLBACK_CHARACTER_COLUMNS = `
 const elements = {
   pageTitle: document.querySelector("#page-title"),
   actName: document.querySelector("#act-name"),
+  showcaseTheme: document.querySelector("#showcase-theme"),
   rulerName: document.querySelector("#ruler-name"),
   publishSlug: document.querySelector("#publish-slug"),
   introText: document.querySelector("#intro-text"),
@@ -83,6 +84,7 @@ function bindEvents() {
   });
   [elements.pageTitle, elements.actName, elements.rulerName, elements.introText, elements.backgroundUrl]
     .forEach(field => field?.addEventListener("input", () => invalidateGeneratedHtml("アクト情報が変更されました。HTMLを再生成してください。")));
+  elements.showcaseTheme?.addEventListener("change", () => invalidateGeneratedHtml("紹介テーマが変更されました。HTMLを再生成してください。"));
   elements.backgroundFile?.addEventListener("change", () => invalidateGeneratedHtml("背景画像が変更されました。HTMLを再生成してください。"));
   elements.generateButton?.addEventListener("click", generateShowcase);
   elements.downloadButton?.addEventListener("click", downloadShowcase);
@@ -409,6 +411,7 @@ async function generateShowcase() {
       title: elements.pageTitle?.value.trim() || "ACT CAST FILE",
       actName: elements.actName?.value.trim() || "トーキョーＮ◎ＶＡ アクト参加キャスト",
       rulerName: elements.rulerName?.value.trim() || "",
+      theme: normalizeShowcaseTheme(elements.showcaseTheme?.value),
       intro: elements.introText?.value.trim() || "",
       background,
       casts: selectedCasts
@@ -442,14 +445,14 @@ function renderShowcase(data) {
   const navigation = data.casts.map((item, index) => `<a href="#cast-${index + 1}"><span>${String(index + 1).padStart(2, "0")}</span>${escapeHtml(item.character.character_name)}</a>`).join("");
   const cards = data.casts.map(createOutputCastCard).join("\n");
   return `<!doctype html>
-<html lang="ja">
+<html lang="ja" data-showcase-theme="${escapeAttribute(normalizeShowcaseTheme(data.theme))}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>${escapeHtml(data.title)}</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
-<style>${createOutputCss(backgroundStyle)}</style>
+<style>${createOutputCss(backgroundStyle, data.theme)}</style>
 </head>
 <body>
 <header class="hero wrap"><div><p class="hero__code">N◎VA MUNICIPAL DATABASE // ACT ARCHIVE</p><h1>${escapeHtml(data.title)}<span>CAST SHOWCASE</span></h1><p class="hero__act">${escapeHtml(data.actName)}</p>${data.rulerName ? `<p class="hero__ruler">RULER：${escapeHtml(data.rulerName)}</p>` : ""}${data.intro ? `<p class="hero__intro">${escapeHtml(data.intro)}</p>` : ""}</div></header>
@@ -460,11 +463,27 @@ function renderShowcase(data) {
 </html>`;
 }
 
-function createOutputCss(backgroundStyle) {
+function normalizeShowcaseTheme(value) {
+  const theme = String(value || "").trim().toLowerCase();
+  return ["nova", "intron", "vlad", "lutetia"].includes(theme) ? theme : "nova";
+}
+
+function getOutputThemeVariables(value) {
+  const palettes = {
+    nova: ["#02080c", "#00efff", "#ff54b5", "#61ffb1", "#edfbff", "#89afb9", "1,9,14"],
+    intron: ["#f2f2f0", "#111111", "#9b3268", "#236b49", "#111111", "#5f5f5b", "255,255,255"],
+    vlad: ["#020202", "#ff4d62", "#ff6b7c", "#d8a4aa", "#f7eeee", "#b89b9f", "22,7,10"],
+    lutetia: ["#050c18", "#6ea1ff", "#b79cff", "#8fd7ff", "#eef6ff", "#9bb1cc", "13,28,49"]
+  };
+  const [bg, cyan, pink, green, text, muted, panelRgb] = palettes[normalizeShowcaseTheme(value)];
+  return `:root{--showcase-bg:${bg};--cyan:${cyan};--pink:${pink};--green:${green};--text:${text};--muted:${muted};--panel:rgba(${panelRgb},.92)}`;
+}
+
+function createOutputCss(backgroundStyle, theme) {
   return `
-:root{--cyan:#00efff;--pink:#ff54b5;--green:#61ffb1;--text:#edfbff;--muted:#89afb9}
+${getOutputThemeVariables(theme)}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
-body{margin:0;min-height:100vh;color:var(--text);font-family:"Noto Sans JP","Yu Gothic",sans-serif;background-color:#02080c;${backgroundStyle}background-size:cover;background-position:center top;background-attachment:fixed}
+body{margin:0;min-height:100vh;color:var(--text);font-family:"Noto Sans JP","Yu Gothic",sans-serif;background-color:var(--showcase-bg);${backgroundStyle}background-size:cover;background-position:center top;background-attachment:fixed}
 body:before{position:fixed;inset:0;z-index:-1;content:"";background:linear-gradient(rgba(0,239,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(0,239,255,.035) 1px,transparent 1px);background-size:48px 48px}
 .wrap{width:min(1280px,calc(100% - 28px));margin:auto}.hero{min-height:55vh;display:grid;place-items:center;padding:70px 0 40px;text-align:center}
 .hero__code{margin:0;color:var(--green);font:700 .72rem/1 "Share Tech Mono",monospace;letter-spacing:.28em}.hero h1{margin:14px 0 0;font:900 clamp(2.5rem,8vw,6.8rem)/.88 Orbitron,sans-serif;letter-spacing:-.05em;text-shadow:0 0 32px rgba(0,239,255,.3)}

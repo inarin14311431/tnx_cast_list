@@ -17,10 +17,17 @@ test("current dynamic publisher stores trailer and not legacy intro", async () =
     read("js/showcase-generator-loader.js"),
     read("js/showcase-dynamic-publish-v3.js")
   ]);
-  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=2/);
+  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=4/);
   assert.match(publisher, /version: 2/);
-  assert.match(publisher, /trailer: trailerBody \? \{ title: "ACT TRAILER", body: trailerBody \} : null/);
+  assert.match(publisher, /trailer: trailerBody \? \{ title: "アクトトレーラー", body: trailerBody \} : null/);
   assert.doesNotMatch(publisher, /\n\s*intro:/);
+});
+
+test("final ACT TRAILER keeps the English main heading and localizes the duplicate subtitle", async () => {
+  const source = await read("js/act-showcase-final-trailer.js");
+  assert.match(source, /poster-v2-trailer-stage__heading", "ACT TRAILER"/);
+  assert.match(source, /return "アクトトレーラー"/);
+  assert.match(source, /\^ACT\\s\*TRAILER\$\/i/);
 });
 
 test("showcase publish normalizes nested handle quotation marks without changing stored character data", async () => {
@@ -91,4 +98,19 @@ test("ACT TRAILER is presented as PC terminal input with a blinking cursor", asy
 test("cinematic override follows CSS audit rule and contains no important declarations", async () => {
   const css = await read("css-next/pages/act-showcase-cinematic.css");
   assert.doesNotMatch(css, /!important/);
+});
+
+test("finale access gate uses the destiny phrase with an intentional two-line title", async () => {
+  const [polish, emphasis] = await Promise.all([
+    read("js/act-showcase-cinematic-polish.js"),
+    read("css-next/pages/act-showcase-visual-emphasis.css")
+  ]);
+  assert.match(polish, /ACT ENTRY \/\/ AUTHORIZED/);
+  assert.match(polish, /\["THUS OPENS", "THE GATE OF DESTINY"\]/);
+  assert.match(polish, /neotokyo-finale__access-title-line/);
+  assert.match(polish, /OPEN FULL SHOWCASE/);
+  assert.doesNotMatch(polish, /ACCESS \/\/ AUTHORIZED|label\.textContent = "ACCESS ACT"/);
+  assert.match(emphasis, /neotokyo-finale__access-title-line\{[\s\S]*display:block/);
+  assert.match(emphasis, /white-space:nowrap/);
+  assert.doesNotMatch(emphasis, /!important/);
 });

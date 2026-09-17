@@ -24,6 +24,7 @@
       <div class="showcase-panel__body form-grid">
         <label>ページタイトル<input id="page-title" type="text" value="ACT CAST FILE"></label>
         <label>アクト名／サブタイトル<input id="act-name" type="text" value="トーキョーＮ◎ＶＡ アクト参加キャスト"></label>
+        <label>紹介テーマ <small>ACT SHOWCASE THEME</small><select id="showcase-theme"><option value="nova" selected>ネオン・グリッド / NEON GRID</option><option value="intron">モノクローム・ドシエ / DOSSIER</option><option value="vlad">クリムゾン・ノワール / CRIMSON NOIR</option><option value="lutetia">オービタル・グラス / ORBITAL GLASS</option></select><small>アクト紹介専用テーマです。HTML生成・スタンダード版・豪華版の3出力へ共通適用します。</small></label>
         <label>RULER名<input id="ruler-name" type="text" placeholder="例：稲荷秋"></label>
         <label>アクト識別名<input id="publish-slug" type="text" placeholder="自動設定：act-0001"><small>履歴登録とアクト紹介の公開に共通して使用します。同じ識別名は、登録した本人だけが更新できます。</small></label>
         <label class="form-grid__wide">アクトトレーラー <small>ACT TRAILER // プレアクトで読み上げるトレーラー</small><textarea id="intro-text" rows="8" placeholder="――それは、運命を変える夜。&#10;トーキョーN◎VAに新たなアクトが始まる。"></textarea><small>複数行の文章をそのまま貼り付けできます。入力した改行は公開ページにも保持されます。</small></label>
@@ -70,17 +71,17 @@
           <button id="copy-button" type="button" disabled>HTMLコピー <small>COPY</small></button>
           <button id="history-button" class="is-history" type="button">履歴のみ登録 <small>HISTORY ONLY</small></button>
           <button id="publish-button" class="is-publish" type="button" disabled hidden aria-hidden="true" tabindex="-1">アクト紹介を公開 <small>PUBLISH SHOWCASE</small></button>
-          <button id="publish-standard-button" class="is-publish" type="button" data-publish-mode="standard" disabled>従来版で公開 <small>STANDARD SHOWCASE</small></button>
+          <button id="publish-standard-button" class="is-publish" type="button" data-publish-mode="standard" disabled>スタンダード版で公開 <small>STANDARD SHOWCASE</small></button>
           <button id="publish-cinematic-button" class="is-publish" type="button" data-publish-mode="cinematic" disabled>豪華版で公開 <small>CINEMATIC SHOWCASE</small></button>
         </div>
-        <p class="generator-action-note">HTML出力は従来どおりダウンロード・コピーできます。公開は同じアクト紹介データを使い、「従来版」と「豪華版」のどちらの表示で開くかを選べます。どちらも同じ公開状態を共有するため、公開データを削除すると両方のURLから閲覧できなくなります。参加履歴と経験点の対象になるのは自分が所有する登録済みキャストだけです。非公開キャストを含む場合は公開できません。</p>
+        <p class="generator-action-note">HTML出力はスタンダード版と同じレイアウト・テーマで生成され、ダウンロード・コピーできます。公開は同じアクト紹介データを使い、「スタンダード版」と「豪華版」のどちらの表示で開くかを選べます。どちらも同じ公開状態を共有するため、公開データを削除すると両方のURLから閲覧できなくなります。参加履歴と経験点の対象になるのは自分が所有する登録済みキャストだけです。非公開キャストを含む場合は公開できません。</p>
         <p id="generator-status" class="generator-status">待機中</p><iframe id="showcase-preview" class="showcase-preview" title="生成HTMLプレビュー"></iframe>
       </div>
     </section>
   </main>
   <script src="./js/showcase-handle-normalizer.js?v=1"></script>
   <script src="./js/showcase-trailer-multiline.js?v=1"></script>
-  <script type="module" src="./js/showcase-generator-loader.js?v=29"></script>
+  <script type="module" src="./js/showcase-generator-loader.js?v=35"></script>
   <script type="module" src="./js/showcase-cast-pagination.js?v=1"></script>
   <script type="module" src="./js/showcase-background-preset-picker.js?v=7"></script>
   <script type="module" src="./js/showcase-auto-slug.js?v=2"></script>

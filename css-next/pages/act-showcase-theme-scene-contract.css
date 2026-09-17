@@ -1,0 +1,314 @@
+/* ACT SHOWCASE cinematic scene completion contract.
+   Loaded after legibility: legacy scene components must consume the active ACT theme
+   instead of leaking the original cyan/pink prototype palette or browser-white surfaces. */
+
+:root[data-showcase-theme]{
+  --showcase-scene-bg:var(--showcase-readable-page);
+  --showcase-scene-surface:var(--showcase-readable-surface);
+  --showcase-scene-surface-strong:var(--showcase-readable-surface-strong);
+  --showcase-scene-glass:rgba(var(--showcase-surface-rgb),.78);
+  --showcase-scene-glass-soft:rgba(var(--showcase-surface-rgb),.60);
+  --showcase-scene-text:var(--showcase-readable-text);
+  --showcase-scene-muted:var(--showcase-readable-muted);
+  --showcase-scene-accent:var(--showcase-primary);
+  --showcase-scene-accent-2:var(--showcase-secondary);
+  --showcase-scene-accent-3:var(--showcase-tertiary);
+  --showcase-scene-border:rgba(var(--showcase-primary-rgb),.34);
+  --showcase-scene-border-2:rgba(var(--showcase-secondary-rgb),.36);
+  --showcase-scene-shadow:0 20px 56px rgba(var(--showcase-bg-rgb),.34);
+  --showcase-scene-glow:0 0 22px rgba(var(--showcase-primary-rgb),.16);
+}
+:root[data-showcase-theme="nova"]{
+  --showcase-scene-bg:#02070b;
+  --showcase-scene-surface:rgba(5,18,27,.94);
+  --showcase-scene-surface-strong:rgba(3,11,17,.985);
+  --showcase-scene-glass:rgba(5,20,30,.78);
+  --showcase-scene-glass-soft:rgba(5,20,30,.58);
+  --showcase-scene-text:#f4fdff;
+  --showcase-scene-muted:#a8c8d0;
+}
+:root[data-showcase-theme="intron"]{
+  --showcase-scene-bg:#ecebe7;
+  --showcase-scene-surface:rgba(255,255,255,.96);
+  --showcase-scene-surface-strong:rgba(250,249,245,.985);
+  --showcase-scene-glass:rgba(255,255,255,.80);
+  --showcase-scene-glass-soft:rgba(248,247,243,.64);
+  --showcase-scene-text:#171717;
+  --showcase-scene-muted:#514e48;
+  --showcase-scene-border:rgba(23,23,23,.28);
+  --showcase-scene-border-2:rgba(143,49,91,.34);
+  --showcase-scene-shadow:0 18px 44px rgba(23,23,23,.12);
+  --showcase-scene-glow:none;
+}
+:root[data-showcase-theme="vlad"]{
+  --showcase-scene-bg:#070203;
+  --showcase-scene-surface:rgba(29,8,12,.94);
+  --showcase-scene-surface-strong:rgba(13,3,5,.985);
+  --showcase-scene-glass:rgba(31,8,12,.80);
+  --showcase-scene-glass-soft:rgba(31,8,12,.60);
+  --showcase-scene-text:#fff4f5;
+  --showcase-scene-muted:#cfabb0;
+}
+:root[data-showcase-theme="lutetia"]{
+  --showcase-scene-bg:#050b18;
+  --showcase-scene-surface:rgba(12,25,48,.94);
+  --showcase-scene-surface-strong:rgba(6,13,28,.985);
+  --showcase-scene-glass:rgba(12,27,53,.76);
+  --showcase-scene-glass-soft:rgba(12,27,53,.56);
+  --showcase-scene-text:#f3f8ff;
+  --showcase-scene-muted:#b9cbe8;
+}
+
+/* Shared cinematic ground: gaps between panels must never fall back to white/neutral grey. */
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__shell,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage{
+  color:var(--showcase-scene-text);
+  background-color:var(--showcase-scene-bg);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence:before{
+  background:
+    radial-gradient(circle at 72% 24%,rgba(var(--showcase-secondary-rgb),.11),transparent 25%),
+    radial-gradient(circle at 18% 70%,rgba(var(--showcase-primary-rgb),.10),transparent 31%),
+    var(--showcase-scene-bg);
+}
+
+/* ACT TITLE: one themed surface, readable subtitle and credits. */
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo{
+  color:var(--showcase-scene-text);
+  border-color:var(--showcase-scene-border);
+  background:
+    radial-gradient(circle at 16% 34%,rgba(var(--showcase-primary-rgb),.10),transparent 28%),
+    radial-gradient(circle at 84% 28%,rgba(var(--showcase-secondary-rgb),.10),transparent 27%),
+    var(--showcase-scene-surface-strong);
+  box-shadow:var(--showcase-scene-shadow),inset 0 0 0 1px rgba(var(--showcase-primary-rgb),.05);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo.showcase-fit-title{
+  color:var(--showcase-scene-text);
+  background:linear-gradient(90deg,rgba(var(--showcase-primary-rgb),.08),var(--showcase-scene-glass) 32% 68%,rgba(var(--showcase-secondary-rgb),.09));
+  border:1px solid var(--showcase-scene-border);
+  -webkit-text-stroke:1px rgba(var(--showcase-primary-rgb),.28);
+  text-shadow:3px 0 rgba(var(--showcase-primary-rgb),.22),-3px 0 rgba(var(--showcase-secondary-rgb),.20),0 18px 48px rgba(var(--showcase-bg-rgb),.46);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__title-note,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__subtitle,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-subtitle,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo [data-act-subtitle]{
+  color:var(--showcase-scene-accent-2);
+  text-shadow:0 1px 0 rgba(var(--showcase-bg-rgb),.75),0 0 16px rgba(var(--showcase-secondary-rgb),.14);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-credit{
+  border:1px solid var(--showcase-scene-border);
+  border-left:3px solid var(--showcase-scene-accent-2);
+  color:var(--showcase-scene-text);
+  background:linear-gradient(90deg,rgba(var(--showcase-secondary-rgb),.11),var(--showcase-scene-surface) 38%,var(--showcase-scene-surface-strong));
+  box-shadow:0 12px 28px rgba(var(--showcase-bg-rgb),.20);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-label{
+  color:var(--showcase-scene-accent-2);
+  text-shadow:none;
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-name{
+  color:var(--showcase-scene-text);
+  text-shadow:0 2px 18px rgba(var(--showcase-bg-rgb),.26);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-role{
+  color:var(--showcase-scene-muted);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-credit:after{
+  color:var(--showcase-scene-muted);
+  opacity:.86;
+}
+
+/* Header metadata is a real three-column HUD; do not let its labels collide. */
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(240px,.9fr) minmax(0,1fr);
+  gap:18px;
+  align-items:center;
+  min-width:0;
+  padding-inline:12px;
+  border-color:var(--showcase-scene-border);
+  color:var(--showcase-scene-muted);
+  background:linear-gradient(90deg,rgba(var(--showcase-primary-rgb),.08),var(--showcase-scene-glass-soft),rgba(var(--showcase-secondary-rgb),.08));
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta>*{
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta>*:nth-child(2){text-align:center}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta>*:last-child{text-align:right}
+
+/* Caret: a single theme accent, with no legacy black cap. */
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout:after,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout-cursor,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cursor,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__caret{
+  width:5px;
+  min-width:5px;
+  border:0;
+  border-radius:0;
+  background:var(--showcase-scene-accent);
+  box-shadow:0 0 12px rgba(var(--showcase-primary-rgb),.44);
+  filter:none;
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout-cursor:before,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout-cursor:after,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cursor:before,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cursor:after{
+  border:0;
+  background:var(--showcase-scene-accent);
+  box-shadow:none;
+}
+
+/* Trailer transition: frosted themed HUD instead of neutral grey. */
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__trailer-outro{
+  border-top-color:var(--showcase-scene-border);
+  border-bottom-color:var(--showcase-scene-border-2);
+  background:linear-gradient(90deg,rgba(var(--showcase-primary-rgb),.10),var(--showcase-scene-glass),rgba(var(--showcase-secondary-rgb),.10));
+  box-shadow:0 12px 30px rgba(var(--showcase-bg-rgb),.16),inset 0 0 0 1px rgba(var(--showcase-primary-rgb),.04);
+  -webkit-backdrop-filter:blur(12px) saturate(120%);
+  backdrop-filter:blur(12px) saturate(120%);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__trailer-outro span{color:var(--showcase-scene-accent-3)}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__trailer-outro strong{color:var(--showcase-scene-text);text-shadow:none}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__trailer-outro small{color:var(--showcase-scene-muted)}
+
+/* HANDOUT context: restore the glass/blur layer and keep the same identity on compact layouts. */
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__handout-context{
+  border:1px solid var(--showcase-scene-border);
+  border-left:3px solid var(--showcase-scene-accent);
+  background:linear-gradient(105deg,rgba(var(--showcase-primary-rgb),.09),var(--showcase-scene-glass) 46%,rgba(var(--showcase-secondary-rgb),.08));
+  box-shadow:0 14px 34px rgba(var(--showcase-bg-rgb),.18),inset 0 0 0 1px rgba(var(--showcase-primary-rgb),.035);
+  -webkit-backdrop-filter:blur(16px) saturate(128%);
+  backdrop-filter:blur(16px) saturate(128%);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__context-kicker{
+  color:var(--showcase-scene-accent-3);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__context-cell{
+  border-left-color:var(--showcase-scene-border);
+  background:var(--showcase-scene-glass-soft);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__context-cell span{color:var(--showcase-scene-muted)}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__context-cell strong{color:var(--showcase-scene-text)}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__context-cell.is-role strong{color:var(--showcase-scene-accent-3);text-shadow:none}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__context-cell.is-ps strong{color:var(--showcase-scene-accent-2)}
+
+/* HANDOUT body: never fall back to browser white in dark themes. */
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__handout-panel{
+  border-color:var(--showcase-scene-border);
+  color:var(--showcase-scene-text);
+  background:linear-gradient(135deg,rgba(var(--showcase-primary-rgb),.07),var(--showcase-scene-glass));
+  box-shadow:var(--showcase-scene-shadow);
+  -webkit-backdrop-filter:blur(13px) saturate(118%);
+  backdrop-filter:blur(13px) saturate(118%);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__handout-panel .neotokyo-sequence__section-title,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__handout-title{
+  color:var(--showcase-scene-text);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__handout-panel .neotokyo-sequence__micro,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__handout-panel .neotokyo-sequence__terminal{
+  color:var(--showcase-scene-muted);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__handout-panel .neotokyo-sequence__readout{
+  border:1px solid var(--showcase-scene-border);
+  border-left:3px solid var(--showcase-scene-accent);
+  color:var(--showcase-scene-text);
+  background:var(--showcase-scene-surface-strong);
+  text-shadow:none;
+  box-shadow:inset 0 0 0 1px rgba(var(--showcase-primary-rgb),.025);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--linked.is-read .neotokyo-sequence__handout-panel,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--linked.is-splitting .neotokyo-sequence__handout-panel{
+  border-color:var(--showcase-scene-border);
+  background:linear-gradient(135deg,rgba(var(--showcase-primary-rgb),.09),var(--showcase-scene-glass));
+}
+
+/* Assignment bridge: its line, node and label belong to the selected theme. */
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__link-bridge span{
+  border:1px solid var(--showcase-scene-border);
+  color:var(--showcase-scene-accent);
+  background:var(--showcase-scene-surface-strong);
+  box-shadow:0 0 18px rgba(var(--showcase-primary-rgb),.10);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__link-line,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__link-bridge .neotokyo-story__signal{
+  background:linear-gradient(180deg,transparent,var(--showcase-scene-accent) 18%,var(--showcase-scene-accent-3) 50%,var(--showcase-scene-accent-2) 82%,transparent);
+  box-shadow:0 0 16px rgba(var(--showcase-primary-rgb),.34);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__signal-node,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__link-pulse{
+  border-color:var(--showcase-scene-accent-3);
+  background:var(--showcase-scene-surface-strong);
+  box-shadow:0 0 14px rgba(var(--showcase-tertiary-rgb),.30);
+}
+
+/* Assignment/search/cast and summary blocks: eliminate prototype grey islands. */
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__assign-panel,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__assign-frame,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__overview,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__summary-cast-area{
+  color:var(--showcase-scene-text);
+  border-color:var(--showcase-scene-border);
+  background:linear-gradient(135deg,rgba(var(--showcase-primary-rgb),.06),var(--showcase-scene-surface));
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__assigned-route,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__entry-vectors{
+  border-color:var(--showcase-scene-border);
+  color:var(--showcase-scene-text);
+  background:linear-gradient(100deg,rgba(var(--showcase-primary-rgb),.07),var(--showcase-scene-glass-soft),rgba(var(--showcase-secondary-rgb),.06));
+  -webkit-backdrop-filter:blur(10px);
+  backdrop-filter:blur(10px);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__assigned-route>span,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__entry-vector span{color:var(--showcase-scene-accent)}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__assigned-route>strong,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__entry-vector strong,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__ignition{color:var(--showcase-scene-text)}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__entry-vectors>p{color:var(--showcase-scene-accent-2)}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__entry-vector b,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__route-trace b.is-active{color:var(--showcase-scene-accent-3)}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__route-trace b{color:var(--showcase-scene-muted)}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__route-trace i{background:linear-gradient(90deg,var(--showcase-scene-accent),var(--showcase-scene-accent-3))}
+
+/* DOSSIER remains deliberately light: remove glow and text-shadow instead of forcing dark cinematic islands. */
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo.showcase-fit-title{
+  color:#171717;
+  -webkit-text-stroke:0;
+  text-shadow:none;
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-name,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__trailer-outro strong{
+  color:#171717;
+  text-shadow:none;
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout:after{
+  box-shadow:none;
+}
+
+@media(max-width:900px){
+  :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta{
+    grid-template-columns:minmax(0,1fr) minmax(160px,.8fr) minmax(0,1fr);
+    gap:8px;
+    padding-inline:8px;
+  }
+}
+@media(max-width:760px){
+  :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta{
+    grid-template-columns:minmax(0,1fr) auto;
+  }
+  :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta>*:nth-child(2){display:none}
+  :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__trailer-outro{
+    grid-template-columns:1fr;
+    gap:5px;
+  }
+  :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__trailer-outro strong,
+  :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__trailer-outro small{text-align:left}
+}

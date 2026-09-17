@@ -7,6 +7,7 @@ const elements = {
   host: document.querySelector(".showcase-panel .showcase-panel__body.form-grid"),
   pageTitle: document.querySelector("#page-title"),
   actName: document.querySelector("#act-name"),
+  showcaseTheme: document.querySelector("#showcase-theme"),
   rulerName: document.querySelector("#ruler-name"),
   publishSlug: document.querySelector("#publish-slug"),
   introText: document.querySelector("#intro-text"),
@@ -138,6 +139,8 @@ async function restoreOwnedShowcase(slug) {
 function restoreBasicFields(data, showcase, slug) {
   setField(elements.pageTitle, showcase.pageTitle || "ACT CAST FILE");
   setField(elements.actName, showcase.actName || data?.actName || slug);
+  setField(elements.showcaseTheme, ["nova", "intron", "vlad", "lutetia"].includes(showcase.theme) ? showcase.theme : "nova");
+  elements.showcaseTheme?.dispatchEvent(new Event("change", { bubbles: true }));
   setField(elements.rulerName, showcase.rulerName || data?.rulerName || "");
   setField(elements.introText, showcase.trailer?.body || showcase.intro || "");
 

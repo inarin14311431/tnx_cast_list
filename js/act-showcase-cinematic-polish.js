@@ -11,6 +11,12 @@
       if (length <= 20) return "long";
       return "xlong";
     }
+    if (kind === "tagline") {
+      if (length <= 24) return "short";
+      if (length <= 40) return "medium";
+      if (length <= 60) return "long";
+      return "xlong";
+    }
     if (length <= 7) return "short";
     if (length <= 12) return "medium";
     if (length <= 16) return "long";
@@ -20,11 +26,18 @@
   const fit = (element, kind) => {
     if (!element) return;
     const value = element.textContent.trim();
-    element.classList.add(kind === "title" ? "showcase-fit-title" : "showcase-fit-cast-name");
+    const fitClass = kind === "title"
+      ? "showcase-fit-title"
+      : kind === "tagline"
+        ? "showcase-fit-tagline"
+        : "showcase-fit-cast-name";
+    element.classList.add(fitClass);
     const size = classify(value, kind);
     element.dataset.fit = size;
-    const assigned = element.closest(".neotokyo-sequence__cast--linked");
-    if (assigned) assigned.dataset.nameFit = size;
+    if (kind === "cast") {
+      const assigned = element.closest(".neotokyo-sequence__cast--linked");
+      if (assigned) assigned.dataset.nameFit = size;
+    }
   };
 
   let typographyFrame = 0;
@@ -34,6 +47,7 @@
     for (const element of pageRoot.querySelectorAll(".poster-v2-name")) fit(element, "cast");
     for (const element of intro.querySelectorAll(".neotokyo-sequence__act-title")) fit(element, "title");
     for (const element of intro.querySelectorAll(".neotokyo-sequence__cast-detail h3,.neotokyo-sequence__summary-cast-body h3")) fit(element, "cast");
+    for (const element of intro.querySelectorAll(".neotokyo-sequence__cast--linked .neotokyo-sequence__cast-tagline")) fit(element, "tagline");
   };
 
   const queueTypography = () => {
@@ -55,12 +69,20 @@
     const button = document.createElement("button");
     button.type = "button";
     button.className = "neotokyo-finale__access-button";
-    button.setAttribute("aria-label", "アクト紹介本編を開く");
+    button.setAttribute("aria-label", "THUS OPENS THE GATE OF DESTINY — OPEN FULL SHOWCASE");
 
     const code = document.createElement("span");
-    code.textContent = "ACCESS // AUTHORIZED";
+    code.textContent = "ACT ENTRY // AUTHORIZED";
+
     const label = document.createElement("strong");
-    label.textContent = "ACCESS ACT";
+    label.className = "neotokyo-finale__access-title";
+    for (const text of ["THUS OPENS", "THE GATE OF DESTINY"]) {
+      const line = document.createElement("span");
+      line.className = "neotokyo-finale__access-title-line";
+      line.textContent = text;
+      label.append(line);
+    }
+
     const note = document.createElement("small");
     note.textContent = "OPEN FULL SHOWCASE";
     button.append(code, label, note);

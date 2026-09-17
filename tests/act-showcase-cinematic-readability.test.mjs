@@ -34,9 +34,11 @@ test("act titles and cast names use length-aware fitting on desktop", () => {
   assert.match(css, /data-name-fit="xlong"/);
 });
 
-test("final ACT READY screen exposes a prominent ACCESS ACT control", () => {
+test("final ACT READY screen exposes the prominent destiny gate control", () => {
   assert.match(polish, /neotokyo-finale__access-button/);
-  assert.match(polish, /ACCESS ACT/);
+  assert.match(polish, /ACT ENTRY \/\/ AUTHORIZED/);
+  assert.match(polish, /\["THUS OPENS", "THE GATE OF DESTINY"\]/);
+  assert.match(polish, /neotokyo-finale__access-title-line/);
   assert.match(polish, /OPEN FULL SHOWCASE/);
   assert.match(css, /neotokyo-finale__access-button/);
   assert.match(css, /neotokyo-access-scan/);

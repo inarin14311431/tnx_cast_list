@@ -12,6 +12,7 @@ const cinematic = await readFile(new URL("../js/act-showcase-cinematic-layout-v2
 const css = await readFile(new URL("../css-next/pages/act-showcase-cinematic-v2.css", import.meta.url), "utf8");
 const neotokyoCss = await readFile(new URL("../css-next/pages/act-showcase-neotokyo.css", import.meta.url), "utf8");
 const presentation = await readFile(new URL("../css-next/pages/act-showcase-presentation-tuning.css", import.meta.url), "utf8");
+const emphasisCss = await readFile(new URL("../css-next/pages/act-showcase-visual-emphasis.css", import.meta.url), "utf8");
 
 test("generator separates ACT title and subtitle before dynamic publishing", () => {
   const subtitleImport = loader.search(/import\("\.\/showcase-act-subtitle\.js\?v=\d+"\)/);
@@ -49,26 +50,28 @@ test("cinematic title is multiline-safe and renders a separate subtitle", () => 
   assert.doesNotMatch(presentation, /white-space\s*:\s*nowrap/);
 });
 
-test("cinematic trailer uses the stage as the single scroll owner while the body remains locked", () => {
+test("cinematic trailer grows its frame and lets the browser page own follow scrolling", () => {
   assert.match(neotokyoCss, /body\.showcase-neotokyo-intro-active\{overflow:hidden\}/);
   assert.match(cinematic, /syncTrailerScrollSurface/);
   assert.match(cinematic, /stage\.classList\.toggle\("is-trailer-scroll", active\)/);
-  assert.match(cinematic, /stage\.scrollHeight - stage\.clientHeight/);
-  assert.match(cinematic, /stage\.scrollTo\(\{/);
+  assert.match(cinematic, /document\.body\.classList\.toggle\("showcase-trailer-document-scroll", active\)/);
+  assert.match(cinematic, /readout\.getBoundingClientRect\(\)\.bottom \+ window\.scrollY/);
+  assert.match(cinematic, /window\.scrollTo\(\{/);
   assert.match(cinematic, /behavior: reduced \? "auto" : "smooth"/);
-  assert.match(cinematic, /new ResizeObserver/);
-  assert.match(css, /neotokyo-sequence__stage\.is-trailer-scroll\{[\s\S]*?overflow-y:auto/);
-  assert.match(css, /neotokyo-sequence__stage\.is-trailer-scroll \.neotokyo-sequence__screen--trailer\{[\s\S]*?overflow:visible/);
-  assert.match(css, /screen--trailer \.neotokyo-sequence__readout\{[\s\S]*?max-height:none;[\s\S]*?overflow:visible/);
-  assert.doesNotMatch(presentation, /neotokyo-sequence__screen--trailer/);
+  assert.match(cinematic, /record\.type === "characterData"[\s\S]*scheduleTrailerFrame\(trailerReadout\)/);
+  assert.match(emphasisCss, /showcase-trailer-document-scroll[\s\S]*\.cinematic-intro\.neotokyo-sequence\{[\s\S]*position:relative[\s\S]*overflow:visible/);
+  assert.match(emphasisCss, /showcase-trailer-document-scroll[\s\S]*stage\.is-trailer-scroll\{[\s\S]*overflow:visible/);
+  assert.match(emphasisCss, /showcase-trailer-document-scroll[\s\S]*screen--trailer\{[\s\S]*max-height:none[\s\S]*overflow:visible/);
+  assert.match(emphasisCss, /showcase-trailer-document-scroll[\s\S]*readout\.is-terminal-readout\{[\s\S]*max-height:none[\s\S]*overflow:visible/);
+  assert.doesNotMatch(cinematic, /readout\.scrollTo\(/);
+  assert.doesNotMatch(cinematic, /stage\.scrollTo\(/);
   assert.doesNotMatch(cinematic, /window\.scrollBy\(/);
-  assert.doesNotMatch(cinematic, /screen\.scrollTop = screen\.scrollHeight/);
 });
 
 test("assigned cast removes suit marks only from the participation slot and keeps three full style cards", () => {
   assert.match(cinematic, /neotokyo-sequence__role-slot strong/);
   assert.match(cinematic, /replace\(\/\[◎●\]\/g, ""\)/);
-  assert.match(cinematic, /fitAssignedTagline/);
+  assert.doesNotMatch(cinematic, /fitAssignedTagline|tagline\.style\.fontSize/);
   assert.match(css, /grid-template-columns:repeat\(3,minmax\(0,1fr\)\)/);
   assert.match(css, /min-height:46px/);
   assert.match(css, /span\.is-role-primary/);
@@ -101,11 +104,11 @@ test("cinematic presentation is wired through one CSS entry and one module boots
   const localCss = [...html.matchAll(/href="(\.\/css-next\/[^"]+)"/g)].map(match => match[1]);
   const localScripts = [...html.matchAll(/src="(\.\/js\/[^"]+)"/g)].map(match => match[1]);
   assert.equal(localCss.length, 1);
-  assert.match(localCss[0], /^\.\/css-next\/pages\/act-showcase-entry\.css\?v=\d+$/);
+  assert.match(localCss[0], /^\.\/css-next\/pages\/act-showcase-entry\.css\?v=[A-Za-z0-9._-]+$/);
   assert.equal(localScripts.length, 1);
-  assert.match(localScripts[0], /^\.\/js\/act-showcase-bootstrap\.js\?v=\d+$/);
-  assert.match(entryCss, /act-showcase-cinematic-v2\.css\?v=\d+/);
-  assert.match(bootstrap, /act-showcase-cinematic-layout-v2\.js\?v=\d+/);
+  assert.match(localScripts[0], /^\.\/js\/act-showcase-bootstrap\.js\?v=[A-Za-z0-9._-]+$/);
+  assert.match(entryCss, /act-showcase-cinematic-v2\.css\?v=[A-Za-z0-9._-]+/);
+  assert.match(bootstrap, /act-showcase-cinematic-layout-v2\.js\?v=[A-Za-z0-9._-]+/);
   assert.match(bootstrap, /act-showcase-page\.js\?v=/);
   assert.doesNotMatch(bootstrap, /showcase-mode-compat/);
   assert.doesNotMatch(bootstrap, /act-showcase-background-resolver/);
