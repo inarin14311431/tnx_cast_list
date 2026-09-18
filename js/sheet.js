@@ -44,7 +44,7 @@ import { collectStyleInputSnapshot, applyStyleInputSnapshot } from "./sheet-styl
 import { initSheetStyleInteractions } from "./sheet-style-interactions.js?v=1";
 import { appendRow, clearRows, moveRowWithinCategory, normalizeOutfitCategory, removeRowByKey } from "./sheet-row-collection-state.js?v=2";
 import { normalizeImportedOutfitDetails } from "./outfit-ofc-adapter.js?v=2";
-import { GENERAL_MASTER_ROWS as GENERAL_MASTER, GENERAL_BLANK_SLOT_COLUMNS } from "./general-skill-catalog.js?v=1";
+import { GENERAL_MASTER_ROWS as GENERAL_MASTER, GENERAL_BLANK_SLOT_COLUMNS } from "./general-skill-catalog.js?v=2";
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];

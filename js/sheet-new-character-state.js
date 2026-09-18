@@ -1,8 +1,8 @@
 import {
   reconcileGeneralMasterRows,
   appendGeneralBlankSlots
-} from "./sheet-general-skill-state.js";
-import { createSkillRow as defaultCreateSkillRow } from "./sheet-row-factory.js";
+} from "./sheet-general-skill-state.js?v=1";
+import { createSkillRow as defaultCreateSkillRow } from "./sheet-row-factory.js?v=2";
 import { appendRows } from "./sheet-row-collection-state.js?v=2";
 
 export const STARTER_SOCIAL_CONNECTION_ROWS = Object.freeze([
