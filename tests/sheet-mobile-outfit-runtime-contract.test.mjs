@@ -30,10 +30,10 @@ test("mobile outfit keeps category rules in model and UI owners", () => {
 });
 
 test("mobile outfit groups common, performance, and description fields by responsibility", () => {
-  const baseBlock = ui.match(/function commonBaseFields[\s\S]*?^}\n/m)?.[0] || "";
-  const concealBlock = ui.match(/function concealFields[\s\S]*?^}\n/m)?.[0] || "";
-  const descriptionBlock = ui.match(/function descriptionFields[\s\S]*?^}\n/m)?.[0] || "";
-  const performanceBlock = ui.match(/function performanceFields[\s\S]*?^}\n/m)?.[0] || "";
+  const baseBlock = ui.match(/function commonBaseFields[\s\S]*?^}\r?\n/m)?.[0] || "";
+  const concealBlock = ui.match(/function concealFields[\s\S]*?^}\r?\n/m)?.[0] || "";
+  const descriptionBlock = ui.match(/function descriptionFields[\s\S]*?^}\r?\n/m)?.[0] || "";
+  const performanceBlock = ui.match(/function performanceFields[\s\S]*?^}\r?\n/m)?.[0] || "";
 
   for (const token of ["名称", "購入", "常備化"]) assert.match(baseBlock, new RegExp(token));
   assert.match(baseBlock, /concealFields\(item\)/);
@@ -69,7 +69,7 @@ test("mobile outfit reads old combined defense but never re-emits it", () => {
 });
 
 test("mobile outfit does not generate retired mundane_modifier", () => {
-  const blankBlock = model.match(/export function blankOutfit\(\)[\s\S]*?^}\n/m)?.[0] || "";
+  const blankBlock = model.match(/export function blankOutfit\(\)[\s\S]*?^}\r?\n/m)?.[0] || "";
   const collectBlock = model.match(/export function collectOutfitRecord\([\s\S]*$/m)?.[0] || "";
   assert.doesNotMatch(blankBlock, /mundane_modifier/);
   assert.doesNotMatch(collectBlock, /mundane_modifier:/);
