@@ -6,7 +6,7 @@ import { initializeTroopEditorUi, refreshTroopEditorUi } from "./troop-editor-ui
 import { initializeTroopLayout, refreshTroopAbilityPairs } from "./troop-layout-refine.js";
 import { refreshTroopComboRules } from "./troop-combo-rule-v2.js";
 import { unpackTroopComboRule } from "./troop-combo-codec.js";
-import { initialGeneralSkillSuit } from "./general-skill-catalog.js";
+import { initialGeneralSkillSuit } from "./general-skill-catalog.js?v=2";
 
 const params = new URLSearchParams(location.search);
 const publicId = params.get("id")?.trim() || "";

@@ -1,7 +1,7 @@
 import { requestCharacterSheetSource } from "./character-sheet-source.js?v=1";
 import { supabase } from "./supabase-client.js";
 import { loadSheetBundle } from "./sheet-load-persistence.js?v=1";
-import { buildSkillSavePayloads, buildOutfitSavePayloads } from "./sheet-save-payload.js?v=1";
+import { buildSkillSavePayloads, buildOutfitSavePayloads } from "./sheet-save-payload.js?v=3";
 import { getSheetSaveState, focusSheetSaveButton } from "./sheet-save-state.js?v=2";
 import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=2";
 import { canonicalizeArchiveBundle, canonicalizeCharacterSheetJsonp, diffCanonicalBundles } from "./character-sheet-jsonp-canonical.js?v=2";

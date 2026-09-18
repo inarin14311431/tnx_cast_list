@@ -1,4 +1,4 @@
-import { GENERAL_MASTER_ROWS, initialGeneralSkillSuit, STARRED_GENERAL_NAMES } from "./general-skill-catalog.js";
+import { GENERAL_MASTER_ROWS, initialGeneralSkillSuit, STARRED_GENERAL_NAMES } from "./general-skill-catalog.js?v=2";
 
 const ABILITIES = ["reason", "passion", "life", "mundane"];
 const SUITS = {

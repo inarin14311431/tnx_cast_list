@@ -1,4 +1,4 @@
-import { GENERAL_MASTER_ROWS, initialGeneralSkillSuit } from "./general-skill-catalog.js";
+import { GENERAL_MASTER_ROWS, initialGeneralSkillSuit } from "./general-skill-catalog.js?v=2";
 import { initializeTroopComboRules, prepareTroopComboDialog, refreshTroopComboRules } from "./troop-combo-rule-v2.js";
 
 const ABILITIES = ["reason", "passion", "life", "mundane"];

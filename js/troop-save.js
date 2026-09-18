@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
-import { initialGeneralSkillSuit } from "./general-skill-catalog.js";
+import { initialGeneralSkillSuit } from "./general-skill-catalog.js?v=2";
 
 const editor = document.querySelector("#troop-editor");
 const status = document.querySelector("#troop-editor-status");
