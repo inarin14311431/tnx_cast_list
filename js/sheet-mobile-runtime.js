@@ -1,18 +1,20 @@
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=4";
+import { getPublicIdParam } from "./public-id-param.js?v=1";
 
 let contextPromise = null;
 
-export function getMobilePublicId() {
-  return new URLSearchParams(location.search).get("id")?.trim() || "";
-}
+// Re-exported under its original name so the existing importers of this
+// module do not need to change; other call sites here use getPublicIdParam
+// directly since "export ... from" does not create a local binding.
+export { getPublicIdParam as getMobilePublicId };
 
 export function getMobileEditorContext() {
   if (contextPromise) return contextPromise;
   contextPromise = (async () => {
     const user = await requireAuth();
-    if (!user) return { user: null, character: null, publicId: getMobilePublicId() };
-    const publicId = getMobilePublicId();
+    if (!user) return { user: null, character: null, publicId: getPublicIdParam() };
+    const publicId = getPublicIdParam();
     if (!publicId) return { user, character: null, publicId };
     const { data, error } = await supabase
       .from("characters")

@@ -97,7 +97,7 @@ body[data-page="index.html"] .auth-navigation__logout:is(:hover, :focus-visible)
 .cast-card__summary { display: -webkit-box; margin-top: 12px; overflow: hidden; color: var(--color-muted); line-height: 1.7; -webkit-box-orient: vertical; -webkit-line-clamp: 4; }
 .cast-card__serial { align-self: flex-end; margin-top: auto; padding: 7px 11px; border: 1px solid var(--color-border); color: var(--color-accent); background: var(--color-accent-soft); font-size: .68rem; font-weight: 800; letter-spacing: .12em; }
 .cast-card__serial::before { display: block; margin-bottom: 3px; color: var(--color-muted); content: "ARCHIVE ID"; font-size: .5rem; letter-spacing: .16em; }
-:where(.empty-message, .error-message) { grid-column: 1 / -1; padding: 36px; border: 1px solid var(--color-border-muted); background: var(--color-surface); text-align: center; }
+:where(.empty-message, .error-message, .error-state) { grid-column: 1 / -1; padding: 36px; border: 1px solid var(--color-border-muted); background: var(--color-surface); text-align: center; }
 .archive-pagination { display: flex; align-items: center; justify-content: center; gap: 14px; width: min(var(--page-width), calc(100% - var(--page-gutter))); margin: 0 auto 80px; }
 .archive-pagination p { min-width: 92px; color: var(--color-accent); font-family: var(--font-data); font-weight: 800; letter-spacing: .12em; text-align: center; }
 .archive-pagination button { min-width: 142px; }

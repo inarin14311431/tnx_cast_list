@@ -1,7 +1,15 @@
 import { supabase } from "./supabase-client.js";
 import { hasUnsavedSheetChanges, focusSheetSaveButton } from "./sheet-save-state.js?v=2";
+import {
+  MAX_SNAPSHOTS,
+  formatDate,
+  listSnapshots,
+  createSnapshot,
+  createBundleSnapshot as createBundleSnapshotRpc,
+  restoreSnapshot,
+  deleteSnapshot
+} from "./sheet-snapshot-service.js?v=1";
 
-const MAX_SNAPSHOTS = 10;
 let characterId = null;
 let publicId = new URLSearchParams(location.search).get("id") || "";
 let panel = null;
@@ -68,12 +76,7 @@ function enable() {
 async function refresh() {
   if (!characterId) return;
   setMessage("履歴を確認中…");
-  const { data, error } = await supabase
-    .from("character_snapshots")
-    .select("id,label,created_at")
-    .eq("character_id", characterId)
-    .order("created_at", { ascending: false })
-    .limit(MAX_SNAPSHOTS);
+  const { data, error } = await listSnapshots(characterId);
   if (error) {
     renderEmpty("DB設定後に利用できます。");
     setMessage("");
@@ -94,10 +97,7 @@ async function createCurrentSnapshot(label = "") {
   }
 
   setMessage("保存済み状態を記録中…");
-  const { data, error } = await supabase.rpc("create_character_snapshot", {
-    p_character_id: characterId,
-    p_label: String(label || "").trim()
-  });
+  const { data, error } = await createSnapshot(characterId, label);
   if (error) throw error;
   await refresh();
   setMessage("スナップショットを作成しました。", "saved");
@@ -109,11 +109,7 @@ async function createBundleSnapshot(snapshotData, label = "") {
   if (!snapshotData || typeof snapshotData !== "object") throw new Error("保存するスナップショットデータがありません。");
 
   setMessage("比較版をスナップショットへ記録中…");
-  const { data, error } = await supabase.rpc("create_character_snapshot_from_bundle", {
-    p_character_id: characterId,
-    p_label: String(label || "").trim(),
-    p_snapshot_data: snapshotData
-  });
+  const { data, error } = await createBundleSnapshotRpc(characterId, snapshotData, label);
   if (error) throw error;
   await refresh();
   setMessage("比較版のスナップショットを作成しました。", "saved");
@@ -145,7 +141,7 @@ async function handleListClick(event) {
   if (restore) {
     if (!confirm("このスナップショットの状態へ復元します。現在の保存済みデータは上書きされます。続行しますか？")) return;
     setMessage("復元中…");
-    const { error } = await supabase.rpc("restore_character_snapshot", { p_snapshot_id: id });
+    const { error } = await restoreSnapshot(id);
     if (error) {
       console.error(error);
       setMessage("復元に失敗しました。", "error");
@@ -156,7 +152,7 @@ async function handleListClick(event) {
   }
 
   if (!confirm("このスナップショットを削除しますか？")) return;
-  const { error } = await supabase.from("character_snapshots").delete().eq("id", id);
+  const { error } = await deleteSnapshot(id);
   if (error) {
     console.error(error);
     setMessage("削除に失敗しました。", "error");
@@ -188,12 +184,6 @@ function setMessage(text, state = "") {
   if (!message) return;
   message.textContent = text;
   message.dataset.state = state;
-}
-
-function formatDate(value) {
-  try {
-    return new Intl.DateTimeFormat("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(new Date(value));
-  } catch { return String(value || ""); }
 }
 
 function escapeHtml(value) {

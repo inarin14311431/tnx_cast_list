@@ -12,6 +12,7 @@ const ability = await readFile(new URL("../js/sheet-mobile-ability.js", import.m
 const outfit = await readFile(new URL("../js/sheet-mobile-outfit.js", import.meta.url), "utf8");
 const combos = await readFile(new URL("../js/sheet-mobile-combos.js", import.meta.url), "utf8");
 const snapshots = await readFile(new URL("../js/sheet-mobile-snapshots.js", import.meta.url), "utf8");
+const snapshotService = await readFile(new URL("../js/sheet-snapshot-service.js", import.meta.url), "utf8");
 const image = await readFile(new URL("../js/sheet-mobile-image.js", import.meta.url), "utf8");
 const exp = await readFile(new URL("../js/sheet-mobile-header-exp.js", import.meta.url), "utf8");
 const uiCss = await readFile(new URL("../css-next/pages/sheet-mobile-ui.css", import.meta.url), "utf8");
@@ -105,11 +106,16 @@ test("mobile general skill experience fallback matches PC proper-skill inference
 });
 
 test("snapshot feature keeps create, restore, delete and dirty-state safeguards", () => {
-  assert.match(snapshots, /MAX_SNAPSHOTS=10/);
-  assert.match(snapshots, /create_character_snapshot/);
-  assert.match(snapshots, /restore_character_snapshot/);
-  assert.match(snapshots, /from\("character_snapshots"\)\.delete\(\)/);
+  assert.match(snapshots, /from "\.\/sheet-snapshot-service\.js\?v=1"/);
+  assert.match(snapshots, /createSnapshot\(characterId,label\.value\.trim\(\)\)/);
+  assert.match(snapshots, /restoreSnapshot\(id\)/);
+  assert.match(snapshots, /deleteSnapshot\(id\)/);
   assert.match(snapshots, /if\(dirty\(\)\)/);
+
+  assert.match(snapshotService, /export const MAX_SNAPSHOTS = 10/);
+  assert.match(snapshotService, /create_character_snapshot/);
+  assert.match(snapshotService, /restore_character_snapshot/);
+  assert.match(snapshotService, /from\("character_snapshots"\)\.delete\(\)/);
 });
 
 test("image feature keeps upload, focus save, clear and owned-storage cleanup", () => {

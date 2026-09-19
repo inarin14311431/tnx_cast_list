@@ -21,11 +21,14 @@ test('snapshot restore reuses transactional character save', async () => {
 
 test('snapshot UI supports create restore and delete without image duplication', async () => {
   const source = await read('js/sheet-snapshots.js');
-  assert.match(source, /MAX_SNAPSHOTS = 10/);
-  assert.match(source, /create_character_snapshot/);
-  assert.match(source, /restore_character_snapshot/);
-  assert.match(source, /character_snapshots/);
+  const service = await read('js/sheet-snapshot-service.js');
+  assert.match(source, /from "\.\/sheet-snapshot-service\.js\?v=1"/);
+  assert.match(service, /export const MAX_SNAPSHOTS = 10/);
+  assert.match(service, /create_character_snapshot/);
+  assert.match(service, /restore_character_snapshot/);
+  assert.match(service, /character_snapshots/);
   assert.doesNotMatch(source, /storage\.from|upload|image blob/i);
+  assert.doesNotMatch(service, /storage\.from|upload|image blob/i);
 
   const html = await read('sheet.html');
   assert.match(html, /sheet-snapshots\.js/);
