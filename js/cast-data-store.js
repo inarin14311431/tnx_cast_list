@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { normalizeOutfitListForView } from "./outfit-view-model.js?v=3";
+import { getPublicIdParam as getPublicId } from "./public-id-param.js?v=1";
 
 /* Shared read-only data access for the public cast view.
  * Queries intentionally match cast.js so the public-view Supabase cache can
@@ -9,10 +10,6 @@ let characterPromise = null;
 let skillsPromise = null;
 let outfitsPromise = null;
 let combosPromise = null;
-
-function getPublicId() {
-  return new URLSearchParams(location.search).get("id")?.trim() || "";
-}
 
 export async function getCharacter() {
   if (characterPromise) return characterPromise;

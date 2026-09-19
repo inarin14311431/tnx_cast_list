@@ -2,6 +2,7 @@ import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=4";
 import { requestSheetSave, waitForSheetSaved } from "./sheet-save-state.js?v=2";
 import { getImageFocusX, getImageFocusY, getImageObjectPosition, getImageScale, getImageTransformOrigin, getImageZoom, setImageFocusX, setImageFocusY, setImageZoom } from "./image-focus.js?v=3";
+import { getPublicIdParam as getPublicId } from "./public-id-param.js?v=1";
 
 const BUCKET_NAME="character-images";
 const MAX_SOURCE_FILE_SIZE=20*1024*1024;
@@ -61,10 +62,6 @@ async function initialize(){
   const publicId=getPublicId();
   if(publicId)await loadCharacter(publicId);
   else setMessage("画像はキャスト本体の初回保存後に登録されます。","");
-}
-
-function getPublicId(){
-  return new URLSearchParams(location.search).get("id")?.trim()||"";
 }
 
 async function loadCharacter(publicId){

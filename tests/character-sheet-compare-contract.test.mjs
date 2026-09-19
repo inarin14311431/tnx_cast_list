@@ -5,6 +5,7 @@ import { canonicalizeArchiveBundle, canonicalizeCharacterSheetJsonp, diffCanonic
 
 const compare = fs.readFileSync(new URL("../js/sheet-character-sheet-compare.js", import.meta.url), "utf8");
 const snapshots = fs.readFileSync(new URL("../js/sheet-snapshots.js", import.meta.url), "utf8");
+const snapshotService = fs.readFileSync(new URL("../js/sheet-snapshot-service.js", import.meta.url), "utf8");
 const snapshotSchema = fs.readFileSync(new URL("../supabase/11_character_snapshots.sql", import.meta.url), "utf8");
 const migration = fs.readFileSync(new URL("../supabase/38_snapshot_from_bundle.sql", import.meta.url), "utf8");
 
@@ -78,7 +79,8 @@ test("pre-apply label is minute precision while snapshot rows retain full timest
 });
 
 test("comparison reuses the existing snapshot table and restore format", () => {
-  assert.match(snapshots, /create_character_snapshot_from_bundle/);
+  assert.match(snapshotService, /create_character_snapshot_from_bundle/);
+  assert.match(snapshots, /createBundleSnapshotRpc\(characterId, snapshotData, label\)/);
   assert.match(snapshots, /TNXSheetSnapshots/);
   assert.match(migration, /returns public\.character_snapshots/);
   assert.match(migration, /insert into public\.character_snapshots/);

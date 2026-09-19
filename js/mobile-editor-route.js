@@ -1,38 +1,25 @@
 /* Adds mobile-editor routes on the two screens that own those transitions. */
 (() => {
-  const PARENT_RETURN_PAGES = new Set([
-    "index.html",
-    "account.html",
-    "acts.html",
-    "showcase-generator.html",
-    "troops.html",
-    "troop.html"
-  ]);
+  const corePromise = import("./sheet-navigation-core.js?v=1");
 
-  const toLocalHref = url => `${url.pathname}${url.search}${url.hash}`;
+  function parentReturnHref(core) {
+    const returnValue = core.readTrimmedSearchParam(location.search, "return");
+    const destination = core.parseReturnDestination(returnValue, { origin: location.origin, baseHref: location.href });
+    const fallback = document.body?.dataset.page === "cast.html" ? "./index.html" : "./account.html";
+    return core.resolveParentReturnHref(destination, { fallback });
+  }
 
-  const parentReturnHref = () => {
-    const returnValue = new URLSearchParams(location.search).get("return")?.trim() || "";
-    if (returnValue) {
-      try {
-        const url = new URL(returnValue, location.href);
-        const page = url.pathname.split("/").pop() || "";
-        if (url.origin === location.origin && PARENT_RETURN_PAGES.has(page)) return toLocalHref(url);
-      } catch {}
-    }
-    return document.body?.dataset.page === "cast.html" ? "./index.html" : "./account.html";
-  };
-
-  const mobileEditorHref = id => {
+  function mobileEditorHref(id, core) {
     const url = new URL("./sheet-mobile.html", location.href);
     url.searchParams.set("id", id);
-    url.searchParams.set("return", parentReturnHref());
-    return toLocalHref(url);
-  };
+    url.searchParams.set("return", parentReturnHref(core));
+    return core.toLocalHref(url);
+  }
 
-  function bind() {
+  async function bind() {
+    const core = await corePromise;
     const page = document.body?.dataset.page || "";
-    const id = new URLSearchParams(location.search).get("id")?.trim() || "";
+    const id = core.readTrimmedSearchParam(location.search, "id");
     if (!id) return;
 
     if (page === "sheet.html") {
@@ -41,7 +28,7 @@
         const link = document.createElement("a");
         link.id = "sheet-mobile-edit-link";
         link.className = "sheet-view-link";
-        link.href = mobileEditorHref(id);
+        link.href = mobileEditorHref(id, core);
         link.innerHTML = "モバイル編集 <small>MOBILE EDITOR</small>";
         const view = document.querySelector("#cast-view-button");
         if (view) view.after(link);
@@ -57,7 +44,7 @@
         const bar = mobileView?.querySelector(".mobile-cast-topbar");
         if (!bar || bar.querySelector("[data-mobile-editor-route]")) return;
         const link = document.createElement("a");
-        link.href = mobileEditorHref(id);
+        link.href = mobileEditorHref(id, core);
         link.dataset.mobileEditorRoute = "1";
         link.textContent = "編集";
         bar.append(link);

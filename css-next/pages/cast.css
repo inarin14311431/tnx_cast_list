@@ -530,8 +530,6 @@ body[data-page="cast.html"].is-quick-sheet-open > :is(.cast-header, .cast-conten
 
 .cast-error { width: min(760px, calc(100% - 32px)); margin: 48px auto 0; padding: 28px; border: 1px solid var(--color-danger); background: var(--color-surface); text-align: center; }
 .cast-error__code { color: var(--color-danger); font-size: 1.15rem; }
-.cast-data-rain { position: fixed; inset: 0; z-index: -1; overflow: hidden; pointer-events: none; color: var(--color-accent); opacity: .22; font: 10px/1.55 var(--font-data); }
-.cast-data-rain span { position: absolute; top: -35%; white-space: pre; animation: cast-data-rain-fall linear infinite; filter: drop-shadow(0 0 4px currentColor); }
 .cast-access-overlay { position: fixed; inset: 0; z-index: 9999; display: grid; place-items: center; padding: 24px; color: var(--color-text); background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--color-text) 3%, transparent) 0 1px, transparent 1px 4px), radial-gradient(circle at center, var(--color-accent-soft), transparent 44%), var(--color-bg); transition: opacity .5s ease, visibility .5s ease; }
 .cast-access-overlay.is-complete { visibility: hidden; opacity: 0; pointer-events: none; }
 .cast-access-overlay.is-fast-scan { background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--color-text) 2%, transparent) 0 1px, transparent 1px 4px), radial-gradient(circle at center, color-mix(in srgb, var(--color-accent) 8%, transparent), transparent 42%), var(--color-bg); transition-duration: .18s; }
@@ -553,7 +551,6 @@ body[data-page="cast.html"].is-quick-sheet-open > :is(.cast-header, .cast-conten
 .cast-access-log p { margin: 0; }
 .cast-access-log strong { color: var(--color-accent); }
 .cast-access-log .ok { color: var(--color-accent-strong); }
-@keyframes cast-data-rain-fall { to { transform: translateY(170vh); } }
 
 @media (max-width: 1409px) {
   body[data-page="cast.html"] .cast-skill-layout { grid-template-columns: 1fr; }
