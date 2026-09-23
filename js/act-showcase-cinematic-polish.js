@@ -45,7 +45,11 @@
     typographyFrame = 0;
     fit(document.querySelector("#opening-act-name"), "title");
     for (const element of pageRoot.querySelectorAll(".poster-v2-name")) fit(element, "cast");
-    for (const element of intro.querySelectorAll(".neotokyo-sequence__act-title")) fit(element, "title");
+    // .neotokyo-sequence__act-title is intentionally not fit() here: js/act-showcase-finale-enhancer.js's
+    // decorateTitle() sets its dataset.fit synchronously inside its own MutationObserver callback, so the
+    // classification is already final on the very first frame the title becomes visible (see
+    // tests/e2e/act-showcase-title-render-order.spec.js). Doing it again here via requestAnimationFrame
+    // would settle one frame later and briefly leave dataset.fit unset on that first visible frame.
     for (const element of intro.querySelectorAll(".neotokyo-sequence__cast-detail h3,.neotokyo-sequence__summary-cast-body h3")) fit(element, "cast");
     for (const element of intro.querySelectorAll(".neotokyo-sequence__cast--linked .neotokyo-sequence__cast-tagline")) fit(element, "tagline");
   };

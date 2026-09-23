@@ -5,6 +5,10 @@ const SOURCE_SELECTOR = "#character-sheets-import-url";
 const TARGET_SELECTOR = "#character-sheet-url";
 const DIALOG_SELECTOR = "#legacy-import-dialog";
 const MESSAGE_SELECTOR = "#legacy-import-message";
+// Dispatched by js/sheet-import.js (and consumed the same way by
+// js/sheet-import-outfit-compat.js's waitBaseImport()) once the base
+// JSON import settles, with detail.ok reporting the real outcome.
+const BASE_IMPORT_EVENT = "tnx:legacy-import-base-finished";
 
 function setStoredUrl(url) {
   const target = document.querySelector(TARGET_SELECTOR);
@@ -14,8 +18,16 @@ function setStoredUrl(url) {
   target.dispatchEvent(new Event("change", { bubbles: true }));
 }
 
-function importSucceeded(dialog, message) {
+export function importSucceeded(dialog, message, baseImportOk) {
   if (dialog?.dataset.importing === "1") return false;
+  // tnx:legacy-import-base-finished's detail.ok is the authoritative signal
+  // for the base import: unlike the message text/state below, it cannot go
+  // stale if the base importer finishes later than our own polling timeout
+  // (e.g. it was delayed by a background/hidden tab) and then overwrites the
+  // message with a success string after we already gave up.
+  if (baseImportOk !== undefined) return baseImportOk;
+  // Fallback for the rare case the event never arrived at all (e.g. the
+  // dialog was closed before it fired): keep the previous message-based guess.
   if (message?.dataset.state === "error") return false;
   return !String(message?.textContent || "").includes("取込エラー");
 }
@@ -25,13 +37,25 @@ function waitForImportCompletion(candidateUrl, timeout = 180000) {
   const message = document.querySelector(MESSAGE_SELECTOR);
   const started = Date.now();
   let sawBusy = dialog?.dataset.importing === "1";
+  let baseImportOk;
+
+  const onBaseImportFinished = event => {
+    baseImportOk = Boolean(event.detail?.ok);
+  };
+  document.addEventListener(BASE_IMPORT_EVENT, onBaseImportFinished);
+
+  const stopListening = () => document.removeEventListener(BASE_IMPORT_EVENT, onBaseImportFinished);
 
   const tick = () => {
-    if (!dialog || Date.now() - started > timeout) return;
+    if (!dialog || Date.now() - started > timeout) {
+      stopListening();
+      return;
+    }
     if (dialog.dataset.importing === "1") sawBusy = true;
     const finished = sawBusy && dialog.dataset.importing !== "1";
     if (finished) {
-      if (importSucceeded(dialog, message)) setStoredUrl(candidateUrl);
+      stopListening();
+      if (importSucceeded(dialog, message, baseImportOk)) setStoredUrl(candidateUrl);
       return;
     }
     window.setTimeout(tick, 150);

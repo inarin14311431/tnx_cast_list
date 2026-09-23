@@ -13,7 +13,13 @@
   const reportProgress=(percent,label,detail='')=>window.TNXLegacyImportProgress?.update?.(percent,label,detail);
 
   const exporter=`javascript:(()=>{const label=e=>{const id=e.id;const l=id&&document.querySelector('label[for="'+CSS.escape(id)+'"]');return(l?.innerText||e.closest('label')?.innerText||e.closest('th,td')?.innerText||'').trim()};const section=e=>{let n=e;while(n&&n!==document.body){const h=n.querySelector?.(':scope>h1,:scope>h2,:scope>h3,:scope>legend');if(h)return h.innerText.trim();n=n.parentElement}return''};const fields=[...document.querySelectorAll('input,select,textarea')].filter(e=>!['button','submit','password'].includes(e.type)).map(e=>({path:e.id||e.name||'',id:e.id||'',name:e.name||'',type:e.type||e.tagName.toLowerCase(),value:e.type==='checkbox'||e.type==='radio'?(e.checked?(e.value||true):false):e.value,checked:!!e.checked,label:label(e),section:section(e)}));const data={format:'tnx-character-sheets-v2',url:location.href,exportedAt:new Date().toISOString(),title:document.title,fields};const out=JSON.stringify(data,null,2);navigator.clipboard.writeText(out).then(()=>alert('キャラシJSONをコピーしました。')).catch(()=>prompt('JSONをコピーしてください',out));})();`;
-  const wait=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+  /* requestAnimationFrame never fires while the tab is hidden (backgrounded/occluded),
+   * so chaining it alone can stall this pacing indefinitely during a long import.
+   * setTimeout keeps running (throttled) in that state, so fall back to it while hidden. */
+  const wait=()=>new Promise(resolve=>{
+    if(document.hidden)setTimeout(resolve,32);
+    else requestAnimationFrame(()=>requestAnimationFrame(resolve));
+  });
   const cleanName=value=>String(value||'').trim().replace(/^[★†※■┗]+\s*/,'').replace(/Ｎ◎ＶＡ/g,'N◎VA');
   const parseCastName=value=>{const raw=String(value||'').trim();const match=raw.match(/^[\s　]*[“”"「『](.+?)[“”"」』][\s　]*(.+)$/);return match?{handle:match[1].trim(),name:match[2].trim()}:{handle:'',name:raw}};
   const number=value=>{const match=String(value??'').match(/-?\d+/);return match?Number(match[0]):0};
@@ -398,7 +404,7 @@
       reportProgress(42,'スタイル技能を取込中',`スタイル技能${stats.style}件の取込を完了`);
       reportProgress(50,'基本取込完了','プロフィール・技能の基本取込を完了しました');
 
-      document.dispatchEvent(new Event('input',{bubbles:true}));
+      document.body.dispatchEvent(new Event('input',{bubbles:true}));
       window.TNXExperience?.queue?.();
       const summary=`一般技能${stats.general}件、社会${stats.social}件、コネ${stats.connection}件、スタイル技能${stats.style}件`;
       const finalizing=dialog.getAttribute('data-importing')==='1';

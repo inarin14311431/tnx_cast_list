@@ -13,7 +13,7 @@ test("act showcase loads the cyberpunk title layer and display helpers through i
   assert.ok(html.includes("family=Dela+Gothic+One"));
   assert.match(entry, /act-showcase-title-cyberpunk\.css\?v=[^\"']+/);
   assert.match(bootstrap, /act-showcase-visual-caption-code\.js\?v=[^\"']+/);
-  assert.match(bootstrap, /act-showcase-tagline-quotes\.js\?v=[^\"']+/);
+  assert.match(bootstrap, /act-showcase-display-normalizer\.js\?v=[^\"']+/);
 });
 
 test("cyberpunk title keeps the title as a logo rather than plain gothic text", async () => {
@@ -25,13 +25,13 @@ test("cyberpunk title keeps the title as a logo rather than plain gothic text", 
 });
 
 test("cast visual caption replaces the duplicate tagline with visual metadata", async () => {
-  const [code, quotes] = await Promise.all([
+  const [code, normalizer] = await Promise.all([
     read("js/act-showcase-visual-caption-code.js"),
-    read("js/act-showcase-tagline-quotes.js")
+    read("js/act-showcase-display-normalizer.js")
   ]);
   assert.ok(code.includes("ENTRY STYLE //"));
   assert.ok(code.includes("AFFILIATION //"));
   assert.ok(code.includes("poster-v2-visual__meta"));
   assert.ok(code.includes("CAST VISUAL // PUBLIC ARCHIVE"));
-  assert.ok(!quotes.includes("poster-v2-visual__caption > span"));
+  assert.ok(!normalizer.includes(".poster-v2-visual__caption > span"));
 });

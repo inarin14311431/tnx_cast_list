@@ -183,10 +183,10 @@
       renameBaseLabels();
 
       document.addEventListener('input', event => {
-        if (event.target.matches('#reason-base,#reason-mod,#passion-base,#passion-mod,#life-base,#life-mod,#cs-mod')) queueMicrotask(recalculateCs);
+        if (event.target?.matches?.('#reason-base,#reason-mod,#passion-base,#passion-mod,#life-base,#life-mod,#cs-mod')) queueMicrotask(recalculateCs);
       });
       document.addEventListener('change', event => {
-        if (event.target.matches('#reason-base,#reason-mod,#passion-base,#passion-mod,#life-base,#life-mod,#cs-mod')) queueMicrotask(recalculateCs);
+        if (event.target?.matches?.('#reason-base,#reason-mod,#passion-base,#passion-mod,#life-base,#life-mod,#cs-mod')) queueMicrotask(recalculateCs);
       });
 
       const abilityGrid = document.querySelector('#ability-grid');

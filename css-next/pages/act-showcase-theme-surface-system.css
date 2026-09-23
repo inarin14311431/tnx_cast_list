@@ -401,6 +401,10 @@
     radial-gradient(circle at 14% 8%,var(--showcase-page-wash),transparent 30%),
     radial-gradient(circle at 88% 32%,var(--showcase-page-wash-2),transparent 32%),
     var(--showcase-bg);
+  background-repeat:no-repeat;
+  background-size:cover;
+  background-position:center top;
+  background-attachment:fixed;
 }
 :root[data-showcase-theme] #act-showcase-standard-page .hero,
 :root[data-showcase-theme] #act-showcase-standard-page .showcase-end{border-color:var(--showcase-line-soft)}
