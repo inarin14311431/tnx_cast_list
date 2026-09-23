@@ -39,9 +39,6 @@
     if (screen.classList.contains("neotokyo-sequence__screen--opening")) enhanceAccess(screen);
     if (screen.classList.contains("neotokyo-sequence__screen--title")) enhanceTitle(screen);
     if (screen.classList.contains("neotokyo-sequence__screen--trailer")) enhanceTrailer(screen);
-    if (screen.classList.contains("neotokyo-sequence__screen--summary")) {
-      screen.querySelectorAll(".neotokyo-sequence__overview-intro-label,.neotokyo-sequence__overview-intro").forEach(node => node.remove());
-    }
   }
 
   function enhanceAccess(screen) {
@@ -62,7 +59,6 @@
   }
 
   function enhanceTitle(screen) {
-    screen.querySelectorAll(".neotokyo-sequence__act-overview").forEach(node => node.remove());
     const title = screen.querySelector(".neotokyo-sequence__act-title");
     if (!title) return;
     title.classList.add("is-cinematic-title");

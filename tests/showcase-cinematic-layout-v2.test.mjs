@@ -56,8 +56,8 @@ test("cinematic trailer grows its frame and lets the browser page own follow scr
   assert.match(cinematic, /stage\.classList\.toggle\("is-trailer-scroll", active\)/);
   assert.match(cinematic, /document\.body\.classList\.toggle\("showcase-trailer-document-scroll", active\)/);
   assert.match(cinematic, /readout\.getBoundingClientRect\(\)\.bottom \+ window\.scrollY/);
-  assert.match(cinematic, /window\.scrollTo\(\{/);
-  assert.match(cinematic, /behavior: reduced \? "auto" : "smooth"/);
+  assert.match(cinematic, /window\.scrollTo\(\{ top: targetTop, left: 0, behavior: "auto" \}\)/);
+  assert.match(cinematic, /window\.scrollTo\(\{ top: targetTop, left: 0, behavior: "smooth" \}\)/);
   assert.match(cinematic, /record\.type === "characterData"[\s\S]*scheduleTrailerFrame\(trailerReadout\)/);
   assert.match(emphasisCss, /showcase-trailer-document-scroll[\s\S]*\.cinematic-intro\.neotokyo-sequence\{[\s\S]*position:relative[\s\S]*overflow:visible/);
   assert.match(emphasisCss, /showcase-trailer-document-scroll[\s\S]*stage\.is-trailer-scroll\{[\s\S]*overflow:visible/);
@@ -78,11 +78,17 @@ test("assigned cast removes suit marks only from the participation slot and keep
   assert.match(css, /white-space:nowrap/);
 });
 
-test("cinematic presentation does not render fake navigation and removes duplicate trailer labels", () => {
+test("cinematic presentation does not render fake navigation", () => {
   assert.doesNotMatch(page, /poster-v2-nav/);
-  assert.match(cinematic, /neotokyo-sequence__trailer-definition,.cinematic-trailer-band/);
-  assert.match(css, /cinematic-trailer-band\{display:none\}/);
   assert.doesNotMatch(css, /poster-v2-nav\{display:none!important\}/);
+});
+
+test("trailer screen no longer builds a third ACT TRAILER label duplicating the eyebrow and PRE-ACT READOUT micro line", async () => {
+  const neotokyo = await readFile(new URL("../js/act-showcase-neotokyo.js", import.meta.url), "utf8");
+  assert.doesNotMatch(neotokyo, /neotokyo-sequence__trailer-definition/);
+  assert.doesNotMatch(cinematic, /simplifyTrailer|neotokyo-sequence__trailer-definition|cinematic-trailer-band/);
+  assert.match(neotokyo, /textNode\("p", "neotokyo-sequence__eyebrow", "03 \/\/ ACT TRAILER"\)/);
+  assert.match(neotokyo, /textNode\("p", "neotokyo-sequence__micro", "PRE-ACT READOUT \/ PUBLIC BROADCAST"\)/);
 });
 
 test("opening and title stages use the published background without forcing a zoom crop", () => {

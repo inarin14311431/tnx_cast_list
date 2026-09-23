@@ -14,7 +14,6 @@ await import("./act-showcase-board-layout.js?v=20260913a");
 await import("./act-showcase-story-flow.js?v=20260913b");
 await import("./act-showcase-writing-patterns.js?v=20260913a");
 await import("./act-showcase-visual-caption-code.js?v=3");
-await import("./act-showcase-tagline-quotes.js?v=2");
 await import("./act-showcase-cinematic-layout-v2.js?v=10");
 await import("./act-showcase-handout-live-frame.js?v=2");
 await import("./act-showcase-page.js?v=20260915a");

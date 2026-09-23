@@ -5,6 +5,8 @@
   const openingSubtitle = document.querySelector("#opening-subtitle");
   const supportsResizeObserver = typeof ResizeObserver === "function";
   const trailerPageTargets = new WeakMap();
+  const trailerScrollThrottle = new WeakMap();
+  const TRAILER_SCROLL_THROTTLE_MS = 200;
   let trailerFrame = 0;
 
   const enhance = root => {
@@ -12,7 +14,6 @@
     if (!scope) return;
     normalizeNodeLabel(scope);
     enhanceTitleScreen(scope);
-    simplifyTrailer(scope);
     attachTrailerFollow(scope);
     polishAssignedPresentation(scope);
     normalizeOpeningSubtitle();
@@ -90,11 +91,6 @@
     }
   }
 
-  function simplifyTrailer(scope) {
-    if (scope.matches?.(".neotokyo-sequence__trailer-definition,.cinematic-trailer-band")) scope.remove();
-    scope.querySelectorAll?.(".neotokyo-sequence__trailer-definition,.cinematic-trailer-band").forEach(node => node.remove());
-  }
-
   function syncTrailerScrollSurface() {
     const stage = intro?.querySelector(".neotokyo-sequence__stage");
     if (!stage) return;
@@ -160,11 +156,31 @@
     if (Number.isFinite(previousTarget) && Math.abs(targetTop - previousTarget) <= 1) return;
 
     trailerPageTargets.set(readout, targetTop);
-    window.scrollTo({
-      top: targetTop,
-      left: 0,
-      behavior: reduced ? "auto" : "smooth"
-    });
+    scrollTrailerReadoutIntoView(readout, targetTop, reduced);
+  }
+
+  // The typewriter grows the readout roughly every 16-34ms, but a smooth scroll takes longer than
+  // that to settle. Calling window.scrollTo() on every growth tick was measured (live) to restart
+  // the animation as little as ~70ms apart, so it never completed and produced visible jank.
+  // Throttling actual smooth scrollTo() calls to once per TRAILER_SCROLL_THROTTLE_MS lets each one
+  // mostly settle before the next starts. A call arriving too soon schedules a trailing re-check
+  // instead of being dropped, so the readout still catches up once the window elapses, using
+  // whatever the latest target is by then rather than the stale one from when it was requested.
+  // prefers-reduced-motion jumps ("auto") have no animation to interrupt, so those are unthrottled.
+  function scrollTrailerReadoutIntoView(readout, targetTop, reduced) {
+    if (reduced) {
+      window.scrollTo({ top: targetTop, left: 0, behavior: "auto" });
+      return;
+    }
+    const state = trailerScrollThrottle.get(readout);
+    const now = performance.now();
+    if (!state || now - state.lastCallAt >= TRAILER_SCROLL_THROTTLE_MS) {
+      trailerScrollThrottle.set(readout, { lastCallAt: now });
+      window.scrollTo({ top: targetTop, left: 0, behavior: "smooth" });
+      return;
+    }
+    clearTimeout(state.timer);
+    state.timer = window.setTimeout(() => scheduleTrailerFrame(readout), TRAILER_SCROLL_THROTTLE_MS - (now - state.lastCallAt));
   }
 
   function polishAssignedPresentation(scope) {

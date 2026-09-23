@@ -21,26 +21,6 @@
     return element;
   };
 
-  const parseField = (lines, patterns) => {
-    for (const line of lines) {
-      for (const pattern of patterns) {
-        const match = line.match(pattern);
-        if (match && clean(match[1])) return clean(match[1]);
-      }
-    }
-    return "";
-  };
-
-  const parseHandout = value => {
-    const lines = clean(value).split(/\r?\n/).map(clean).filter(Boolean);
-    return {
-      entry: parseField(lines, [/(?:キャスト|PC)\s*\d*\s*推奨\s*[:：]\s*(.+)$/iu]),
-      setting: parseField(lines, [/^設定\s*[:：]\s*(.+)$/u]),
-      connection: parseField(lines, [/^コネ\s*[:：]\s*(.+)$/u]),
-      ps: parseField(lines, [/^(?:PS|ＰＳ)\s*[:：]\s*(.+)$/iu])
-    };
-  };
-
   const readRole = sequence => {
     if (sequence.dataset.storyRole) return sequence.dataset.storyRole;
     const source = clean(sequence.querySelector(".neotokyo-sequence__assign-sub")?.textContent);
@@ -79,6 +59,13 @@
     }
   };
 
+  // このensureHandoutContext()は「枠組み」(.neotokyo-story__handout-contextセクション・kicker文言・
+  // ROLEセルのみを持つcells)の初期構築だけを担う。ENTRY/CONNECTION/PSセルの実際の内容や
+  // .neotokyo-story__assigned-route>strongの文言は、js/act-showcase-writing-patterns.jsの
+  // normalizeHandoutContext()/normalizeAssignedRoute()が本文をより高度なパーサーで解析し直して
+  // 決定・上書きする(story-flow.js自身のこの関数はもうcellsにROLE以外を追加しない)。
+  // writing-patterns.jsが何らかの理由で動作しなくなると、ROLE以外のセルとassigned-routeの文言は
+  // プレースホルダー(「—」/「HANDOUT CHANNEL VERIFIED // CAST FILE LINKED」)のまま表示される。
   const ensureHandoutContext = sequence => {
     const panel = sequence.querySelector(".neotokyo-sequence__handout-panel");
     const heading = panel?.querySelector(".neotokyo-sequence__handout-title");
@@ -100,14 +87,6 @@
     const context = panel.querySelector(".neotokyo-story__handout-context");
     if (!context || context.dataset.storyFilled === "1") return;
     context.dataset.storyFilled = "1";
-    const parsed = parseHandout(panel.querySelector(".neotokyo-sequence__readout")?.textContent);
-    const cells = context.querySelector(".neotokyo-story__context-cells");
-    if (parsed.entry) cells.append(createContextCell("ENTRY", compact(parsed.entry, 34)));
-    if (parsed.connection) cells.append(createContextCell("CONNECTION", compact(parsed.connection, 38)));
-    if (parsed.ps) cells.append(createContextCell("PS", compact(parsed.ps, 42), "is-ps"));
-    sequence.dataset.storySetting = compact(parsed.setting, 96);
-    sequence.dataset.storyConnection = compact(parsed.connection, 96);
-    sequence.dataset.storyPs = compact(parsed.ps, 96);
   };
 
   const ensureAssignedJourney = sequence => {

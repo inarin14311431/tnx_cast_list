@@ -14,13 +14,14 @@ test("story flow enhancement loads after layout polish and before the module ren
   assert.ok(bootstrap.indexOf("act-showcase-story-flow.js") < bootstrap.indexOf("act-showcase-page.js"));
 });
 
-test("handout context is derived from registered source text instead of invented metadata", () => {
+test("handout context section only builds the ROLE-only framework and no longer parses handout content itself", () => {
   assert.match(js, /CAST INVOLVEMENT/);
-  assert.match(js, /キャスト\|PC/);
-  assert.match(js, /設定/);
-  assert.match(js, /コネ/);
-  assert.match(js, /(?:PS|ＰＳ)/);
   assert.match(js, /ENTRY VECTOR \/\/ 参加経緯/);
+  assert.match(js, /createContextCell\("ROLE", role \|\| "UNREGISTERED", "is-role"\)/);
+  assert.doesNotMatch(js, /parseHandout/);
+  assert.doesNotMatch(js, /dataset\.storySetting\s*=/);
+  assert.doesNotMatch(js, /dataset\.storyConnection\s*=/);
+  assert.doesNotMatch(js, /dataset\.storyPs\s*=/);
 });
 
 test("participation style highlights only the first matching duplicate", () => {

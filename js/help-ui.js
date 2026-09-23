@@ -19,7 +19,7 @@ function initializeSheetHelp() {
       renderTopic(topicButton.dataset.helpTopic);
       return;
     }
-    if (event.target.matches("[data-help-close]")) dialog.close();
+    if (event.target?.matches?.("[data-help-close]")) dialog.close();
     else if (event.target === dialog) dialog.close();
   });
 

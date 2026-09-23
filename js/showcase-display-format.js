@@ -7,6 +7,8 @@ const QUOTE_PAIRS = [
   ["'", "'"]
 ];
 
+const TAGLINE_FALLBACKS = new Set(["PUBLIC CAST ARCHIVE", "PUBLIC CAST"]);
+
 export function stripOuterDisplayQuotes(value) {
   let source = String(value ?? "").trim();
   let changed = true;
@@ -42,6 +44,8 @@ export function formatShowcaseFullName(handle, name) {
 }
 
 export function formatShowcaseTagline(value) {
+  const trimmed = String(value ?? "").trim();
+  if (TAGLINE_FALLBACKS.has(trimmed)) return trimmed;
   const tagline = stripOuterDisplayQuotes(value);
   return tagline ? `「${tagline}」` : "";
 }

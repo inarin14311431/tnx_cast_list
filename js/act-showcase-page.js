@@ -175,8 +175,9 @@ function renderPoster(model) {
   board.id = "poster-showcase-board-v2";
   board.setAttribute("aria-label", "アクト紹介ショーケース");
   const frame = el("div", "poster-v2-frame");
+  frame.append(createActMetaBar(model));
   let activeCastIndex = 0;
-  let grid = createCastGrid(model, model.casts[activeCastIndex]);
+  let grid = createCastGrid(model.casts[activeCastIndex]);
   frame.append(grid);
 
   let roster = null;
@@ -184,7 +185,7 @@ function renderPoster(model) {
     roster = createRoster(model.casts, index => {
       if (index === activeCastIndex || !model.casts[index]) return;
       activeCastIndex = index;
-      const nextGrid = createCastGrid(model, model.casts[activeCastIndex]);
+      const nextGrid = createCastGrid(model.casts[activeCastIndex]);
       grid.replaceWith(nextGrid);
       grid = nextGrid;
       setActiveRosterItem(roster, activeCastIndex);
@@ -207,15 +208,52 @@ function renderPoster(model) {
   return board;
 }
 
-function createCastGrid(model, cast) {
+// RULER / KEY STYLE come from `model` directly (not read back from the DOM) and the PUBLIC DATA
+// bar is built in its final poster-v2-grid--showcase3 form from the start. Previously a throwaway
+// poster-v2-panel--credits panel was created here just so js/act-showcase-board-layout.js's
+// polishBoard() could scrape RULER/KEY STYLE off it a frame later, then delete it; that transient
+// panel is gone now. board-layout.js's polishBoard()/ensureActMeta() are intentionally left in
+// place unmodified as a no-op safety net (they only act on a poster-v2-panel--credits panel or a
+// grid that isn't already poster-v2-grid--showcase3, neither of which this file produces anymore).
+function createActMetaBar(model) {
+  const bar = el("section", "poster-v2-act-meta");
+  bar.setAttribute("aria-label", "アクト公開情報");
+
+  const identity = el("div", "poster-v2-act-meta__identity");
+  identity.append(
+    textEl("span", "poster-v2-act-meta__eyebrow", "ACT FILE // PUBLIC DATA"),
+    textEl("strong", "poster-v2-act-meta__title", model.actName || "ACT SHOWCASE"),
+    textEl("small", "", "N◎VA MUNICIPAL DATABASE // PUBLIC ARCHIVE")
+  );
+
+  const styles = [...new Set(model.casts.flatMap(item =>
+    Array.isArray(item?.styles) ? item.styles.map(style => text(style?.label)).filter(Boolean) : []
+  ))];
+  const status = el("div", "poster-v2-act-meta__status");
+  status.append(el("i", ""), textEl("span", "", "PUBLIC LINK"), textEl("strong", "", "VERIFIED"));
+
+  bar.append(
+    identity,
+    createActMetaCell("RULER", model.rulerName || "—", "is-ruler"),
+    createActMetaCell("KEY STYLE", styles.slice(0, 3).join(" × ") || "—", "is-style"),
+    status
+  );
+  return bar;
+}
+
+function createActMetaCell(label, value, className) {
+  const cell = el("div", `poster-v2-act-meta__cell ${className}`);
+  cell.append(textEl("span", "", label), textEl("strong", "", value));
+  return cell;
+}
+
+function createCastGrid(cast) {
   const visual = createVisualPanel(cast);
   const profile = createProfilePanel(cast);
   const handout = createHandoutPanel([cast]);
-  const credits = createCreditsPanel(model);
-  const grid = el("div", `poster-v2-grid ${handout ? "poster-v2-grid--4" : "poster-v2-grid--3"}`);
+  const grid = el("div", "poster-v2-grid poster-v2-grid--showcase3");
   grid.append(visual, profile);
   if (handout) grid.append(handout);
-  grid.append(credits);
   return grid;
 }
 
@@ -304,27 +342,6 @@ function createHandoutPanel(casts) {
   return panel;
 }
 
-function createCreditsPanel(model) {
-  const panel = createPanel("03 / CREDITS", "PUBLIC DATA", "poster-v2-panel--credits");
-  const body = panel.querySelector(".poster-v2-panel__body");
-  const names = model.casts.map(item => text(item?.fullName)).filter(Boolean);
-  const styles = [...new Set(model.casts.flatMap(item =>
-    Array.isArray(item?.styles) ? item.styles.map(style => text(style?.label)).filter(Boolean) : []
-  ))];
-  const table = el("div", "poster-v2-credit-table");
-  table.append(
-    creditRow("RULER", model.rulerName || "—"),
-    creditRow("CAST", names.join(" / ") || "—"),
-    creditRow("KEY STYLE", styles.slice(0, 3).join(" × ") || "—")
-  );
-  body.append(
-    table,
-    textEl("p", "poster-v2-credit-kicker", "データの向こうに、人がいる。"),
-    textEl("p", "poster-v2-credit-note", `${model.actName}\nPUBLIC ACT SHOWCASE / NOVA MUNICIPAL DATABASE`)
-  );
-  return panel;
-}
-
 function createRoster(casts, onSelect) {
   const roster = el("div", "poster-v2-roster");
   roster.append(textEl("div", "poster-v2-roster__title", "CAST FILES // SELECT CAST"));
@@ -371,12 +388,6 @@ function createPanel(slot, title, extraClass) {
   head.append(textEl("span", "", slot), textEl("strong", "", title));
   panel.append(head, el("div", "poster-v2-panel__body"));
   return panel;
-}
-
-function creditRow(label, value) {
-  const row = el("div", "poster-v2-credit-row");
-  row.append(textEl("span", "", label), textEl("strong", "", value));
-  return row;
 }
 
 function initializeMotion(openingSection, board) {
