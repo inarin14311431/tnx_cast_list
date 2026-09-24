@@ -235,6 +235,7 @@ body.showcase-poster-v2-ready .poster-v2-credit-note{font-size:clamp(.8rem,.86vw
     background-image:linear-gradient(180deg,rgba(2,7,18,.38),rgba(2,7,18,.86) 72%),var(--showcase-background);
     background-position:center,center 12%;
     background-size:cover,contain;
+    background-repeat:no-repeat,no-repeat;
   }
   .neotokyo-sequence__screen--title .neotokyo-sequence__act-title{
     width:92vw;

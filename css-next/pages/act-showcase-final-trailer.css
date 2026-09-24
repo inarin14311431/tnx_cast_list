@@ -15,6 +15,7 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage{
     var(--showcase-background);
   background-position:center;
   background-size:cover;
+  background-repeat:no-repeat;
 }
 body.showcase-poster-v2-ready .poster-v2-trailer-stage::after{
   position:absolute;

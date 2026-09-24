@@ -129,7 +129,7 @@
 :root[data-showcase-theme] .ambient-stage{
   background:radial-gradient(circle at 18% 18%,rgba(var(--showcase-primary-rgb),.11),transparent 30%),radial-gradient(circle at 82% 60%,rgba(var(--showcase-secondary-rgb),.09),transparent 32%),var(--showcase-bg)
 }
-:root[data-showcase-theme] body.has-showcase-background .ambient-stage:before{background-image:linear-gradient(rgba(var(--showcase-bg-rgb),.76),rgba(var(--showcase-bg-rgb),.94)),var(--showcase-background)}
+:root[data-showcase-theme] body.has-showcase-background .ambient-stage:before{background-image:linear-gradient(rgba(var(--showcase-bg-rgb),.76),rgba(var(--showcase-bg-rgb),.94)),var(--showcase-background);background-position:center;background-size:cover;background-repeat:no-repeat}
 :root[data-showcase-theme] .ambient-stage__grid,:root[data-showcase-theme] .opening-floor{background-image:linear-gradient(rgba(var(--showcase-primary-rgb),.11) 1px,transparent 1px),linear-gradient(90deg,rgba(var(--showcase-primary-rgb),.11) 1px,transparent 1px)}
 :root[data-showcase-theme] .ambient-stage__flare--cyan{background:var(--showcase-primary)}
 :root[data-showcase-theme] .ambient-stage__flare--pink{background:var(--showcase-secondary)}
@@ -202,7 +202,7 @@
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__styles span.is-role-primary{border-color:var(--showcase-tertiary);background:linear-gradient(110deg,rgba(var(--showcase-tertiary-rgb),.18),rgba(var(--showcase-surface-rgb),.96));color:var(--showcase-tertiary);box-shadow:0 0 30px rgba(var(--showcase-tertiary-rgb),.20)}
 
 /* Final ACT TRAILER stage */
-:root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-trailer-stage{background:radial-gradient(circle at 18% 24%,rgba(var(--showcase-primary-rgb),.16),transparent 28%),radial-gradient(circle at 84% 72%,rgba(var(--showcase-secondary-rgb),.14),transparent 32%),linear-gradient(180deg,rgba(var(--showcase-bg-rgb),.98),rgba(var(--showcase-surface-rgb),.91) 48%,rgba(var(--showcase-bg-rgb),.98)),var(--showcase-background)}
+:root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-trailer-stage{background:radial-gradient(circle at 18% 24%,rgba(var(--showcase-primary-rgb),.16),transparent 28%),radial-gradient(circle at 84% 72%,rgba(var(--showcase-secondary-rgb),.14),transparent 32%),linear-gradient(180deg,rgba(var(--showcase-bg-rgb),.98),rgba(var(--showcase-surface-rgb),.91) 48%,rgba(var(--showcase-bg-rgb),.98)),var(--showcase-background);background-position:center;background-size:cover;background-repeat:no-repeat}
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline{color:var(--showcase-primary)}
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading{color:var(--showcase-text);text-shadow:0 0 22px var(--showcase-glow),0 0 54px var(--showcase-glow-secondary),0 12px 40px rgba(var(--showcase-bg-rgb),.68)}
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading:after{background:linear-gradient(90deg,transparent,var(--showcase-primary) 28%,var(--showcase-text) 50%,var(--showcase-secondary) 72%,transparent);box-shadow:0 0 18px var(--showcase-glow)}

@@ -8,6 +8,8 @@
     linear-gradient(180deg,rgba(var(--showcase-bg-rgb),.16),rgba(var(--showcase-bg-rgb),.50)),
     var(--showcase-background);
   background-position:center center;
+  background-size:cover,contain;
+  background-repeat:no-repeat,no-repeat;
   filter:saturate(1.12) contrast(1.05) brightness(1.02);
 }
 
@@ -41,6 +43,20 @@
    the theme phase contract specificity because this final layer owns presentation overflow. */
 :root[data-showcase-theme] body#act-showcase-page.showcase-neotokyo-intro-active.showcase-trailer-document-scroll{
   overflow-y:auto;
+}
+
+/* #act-showcase-root (the already-fully-built final poster page, including its own "05 / FINAL
+   TRANSMISSION" ACT TRAILER recap) is unhidden and laid out in the document well before the intro
+   sequence finishes. Normally that is harmless: the intro is a fixed, opaque, full-viewport
+   overlay and the body has overflow:hidden, so root's content is never reachable. The instant this
+   phase switches the intro to position:relative and the body to overflow-y:auto (both required so
+   the browser viewport itself can smoothly follow the growing trailer text), root also rejoins the
+   normal scrollable flow right after the intro - so a free user scroll (wheel, trackpad,
+   scrollbar), which the auto-follow scrollTo() calls above never clamp, could scroll straight past
+   the intro into root and reveal the finished page underneath. Keeping root out of the render tree
+   for as long as the intro sequence is active removes it from the scrollable area entirely. */
+:root[data-showcase-theme] body#act-showcase-page.showcase-neotokyo-intro-active #act-showcase-root{
+  display:none;
 }
 
 :root[data-showcase-theme] body#act-showcase-page.showcase-trailer-document-scroll .cinematic-intro.neotokyo-sequence{
@@ -161,6 +177,9 @@ body#act-showcase-page.showcase-neotokyo-finale-active .neotokyo-finale__access-
   background-image:
     linear-gradient(180deg,rgba(236,235,231,.28),rgba(236,235,231,.56)),
     var(--showcase-background);
+  background-position:center,right center;
+  background-size:cover,contain;
+  background-repeat:no-repeat,no-repeat;
   filter:saturate(.84) contrast(.98) brightness(1.06);
 }
 
