@@ -16,19 +16,6 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage{
   background-position:center;
   background-size:cover;
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage::before{
-  position:absolute;
-  inset:auto -4vw 12%;
-  z-index:-1;
-  content:"ACT TRAILER";
-  color:rgba(167,218,255,.035);
-  font:900 clamp(5.2rem,17vw,18rem)/.78 Orbitron,sans-serif;
-  letter-spacing:.035em;
-  text-align:center;
-  white-space:nowrap;
-  transform:skewY(-3deg);
-  pointer-events:none;
-}
 body.showcase-poster-v2-ready .poster-v2-trailer-stage::after{
   position:absolute;
   inset:0;
@@ -161,7 +148,6 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:last-child{tran
     min-height:88svh;
     padding:42px 20px 104px;
   }
-  body.showcase-poster-v2-ready .poster-v2-trailer-stage::before{bottom:18%;font-size:clamp(4rem,23vw,8rem)}
   body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::before,
   body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::after{display:none}
   body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline{gap:10px;font-size:.54rem;letter-spacing:.1em}
