@@ -45,7 +45,7 @@ export const test = base.extend({
         let body;
         try { body = req.postDataJSON(); } catch { body = null; }
         if (permitsMutation({ table, method, search: url.searchParams, body, castIds, authenticated: Boolean(token) })) return route.continue();
-      } else if (url.pathname.startsWith('/storage/v1/object/public/character-images/') && ['GET', 'HEAD'].includes(method)) {
+      } else if ((url.pathname.startsWith('/storage/v1/object/public/character-images/') || url.pathname.startsWith('/storage/v1/render/image/public/character-images/')) && ['GET', 'HEAD'].includes(method)) {
         return route.continue();
       } else if (url.pathname.startsWith('/auth/v1/')) {
         return route.continue();

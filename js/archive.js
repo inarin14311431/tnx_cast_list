@@ -1,7 +1,7 @@
 import { supabase } from "./supabase-client.js";
 import { renderAuthNavigation } from "./auth-state.js?v=4";
 import { getStyleColor } from "./style-colors.js";
-import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=3";
+import { getImageObjectPosition, getImageScale, getImageTransformOrigin, toThumbnailUrl } from "./image-focus.js?v=4";
 import { toUserFacingErrorMessage, renderErrorState } from "./error-state.js?v=1";
 
 const ALLOWED_PAGE_SIZES = new Set([12, 25, 50, 100]);
@@ -216,7 +216,7 @@ function createCharacterCard(character) {
     <article class="cast-card">
       <a href="${escapeAttribute(castUrl.href)}" data-archive-cast-link>
         <div class="cast-card__image">
-          <img src="${escapeAttribute(imageUrl)}" alt="${escapeAttribute(character.character_name)}" loading="lazy" style="object-position:${escapeAttribute(imagePosition)};--tnx-image-scale:${getImageScale(character.image_url)};--tnx-image-origin:${escapeAttribute(getImageTransformOrigin(character.image_url))}">
+          <img src="${escapeAttribute(toThumbnailUrl(imageUrl))}" alt="${escapeAttribute(character.character_name)}" loading="lazy" style="object-position:${escapeAttribute(imagePosition)};--tnx-image-scale:${getImageScale(character.image_url)};--tnx-image-origin:${escapeAttribute(getImageTransformOrigin(character.image_url))}">
           <span class="cast-card__scanline"></span>
         </div>
         <div class="cast-card__body">
