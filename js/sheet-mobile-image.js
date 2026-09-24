@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=1";
-import { getImageFocusX,getImageFocusY,getImageZoom,setImageFocusX,setImageFocusY,setImageZoom } from "./image-focus.js?v=3";
+import { getImageFocusX,getImageFocusY,getImageZoom,setImageFocusX,setImageFocusY,setImageZoom } from "./image-focus.js?v=4";
 
 const $=s=>document.querySelector(s);
 const BUCKET="character-images",PLACEHOLDER="./assets/placeholders/scan-failed.webp";

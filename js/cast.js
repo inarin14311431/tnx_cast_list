@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=3";
+import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
 import { normalizeOutfitListForView, formatPurchasePair, formatConcealmentPair } from "./outfit-view-model.js";
 import { AppError, toUserFacingErrorMessage, renderErrorState } from "./error-state.js?v=1";
 import { getPublicIdParam as getPublicId } from "./public-id-param.js?v=1";
