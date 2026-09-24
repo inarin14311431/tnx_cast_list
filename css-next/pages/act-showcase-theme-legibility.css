@@ -114,6 +114,9 @@
   background-image:
     linear-gradient(180deg,rgba(var(--showcase-bg-rgb),.42),rgba(var(--showcase-bg-rgb),.82)),
     var(--showcase-background);
+  background-position:center,right center;
+  background-size:cover,contain;
+  background-repeat:no-repeat,no-repeat;
   filter:saturate(.92) contrast(1.04);
 }
 :root[data-showcase-theme] body#act-showcase-page.showcase-poster-v2-ready .scene-opening:after{
@@ -186,6 +189,9 @@
   background-image:
     linear-gradient(180deg,rgba(236,235,231,.62),rgba(236,235,231,.88)),
     var(--showcase-background);
+  background-position:center,right center;
+  background-size:cover,contain;
+  background-repeat:no-repeat,no-repeat;
   filter:saturate(.60) contrast(.96) brightness(1.10);
 }
 
