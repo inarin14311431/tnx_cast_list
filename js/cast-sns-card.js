@@ -228,7 +228,9 @@ function loadImage(src) {
   });
 }
 
-function splitPhrase(value, maxLength = 30) { const chars = Array.from(String(value || "").trim()); if (chars.length <= maxLength) return [chars.join("")]; const first = chars.slice(0, maxLength).join(""); const secondChars = chars.slice(maxLength, maxLength * 2); const second = secondChars.join(""); return [first, chars.length > maxLength * 2 ? `${second.slice(0, -1)}…` : second]; }\n\nfunction createCardSvg(cast, theme, image) {
+function splitPhrase(value, maxLength = 30) { const chars = Array.from(String(value || "").trim()); if (chars.length <= maxLength) return [chars.join("")]; const first = chars.slice(0, maxLength).join(""); const secondChars = chars.slice(maxLength, maxLength * 2); const second = secondChars.join(""); return [first, chars.length > maxLength * 2 ? `${second.slice(0, -1)}…` : second]; }
+
+function createCardSvg(cast, theme, image) {
   const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&apos;" }[char]));
   const quote = value => {
     const text = String(value || "").replace(/^[“”"「『]|[“”"」』]$/g, "").trim();
