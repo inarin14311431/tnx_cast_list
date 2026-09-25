@@ -8,6 +8,7 @@ const generatorSource = await readFile(new URL("../js/showcase-generator-v3.js",
 const publisherSource = await readFile(new URL("../js/showcase-dynamic-publish-v3.js", import.meta.url), "utf8");
 const standardShowcaseSource = await readFile(new URL("../js/act-showcase-standard.js", import.meta.url), "utf8");
 const neotokyoShowcaseSource = await readFile(new URL("../js/act-showcase-neotokyo.js", import.meta.url), "utf8");
+const snsCardSource = await readFile(new URL("../js/cast-sns-card.js", import.meta.url), "utf8");
 
 // Card list locations must fall back to the full-size image_url whenever image_thumbnail_url is
 // empty (for example after a mobile image replacement or in a separately provisioned environment).
@@ -23,6 +24,12 @@ test("showcase generator's three per-character card renders all fall back from i
   const matches = [...generatorSource.matchAll(/character\.image_thumbnail_url \|\| character\.image_url \|\| "\.\/assets\/placeholders\/scan-failed\.webp"/g)];
   assert.equal(matches.length, 3, "expected the library picker, selected-cast preview and published output cast card to all use the fallback");
   assert.match(generatorSource, /image_url, image_thumbnail_url, summary, age, gender, visibility, updated_at/);
+});
+
+test("SNS card export prefers the stored thumbnail and falls back to the full-size image", () => {
+  assert.match(snsCardSource, /const thumbnailUrl = character\.image_thumbnail_url \|\| ""/);
+  assert.match(snsCardSource, /readImageAsDataUrl\(thumbnailUrl \|\| character\.image_url\)/);
+  assert.match(snsCardSource, /readImageAsDataUrl\(character\.image_url\)/);
 });
 
 test("published cast showcases preserve and render the thumbnail URL selected by the generator", () => {
