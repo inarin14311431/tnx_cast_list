@@ -92,7 +92,13 @@ async function openDialog() {
   try {
     character = await getCharacter();
     if (!character) throw new Error("キャストデータを取得できませんでした。");
-    imageDataUrl = await readImageAsDataUrl(character.image_url);
+    const thumbnailUrl = character.image_thumbnail_url || "";
+    try {
+      imageDataUrl = await readImageAsDataUrl(thumbnailUrl || character.image_url);
+    } catch (error) {
+      if (!thumbnailUrl || !character.image_url || thumbnailUrl === character.image_url) throw error;
+      imageDataUrl = await readImageAsDataUrl(character.image_url);
+    }
     await renderPreview();
   } catch (error) {
     console.error(error);

@@ -120,7 +120,8 @@ test("snapshot feature keeps create, restore, delete and dirty-state safeguards"
 
 test("image feature keeps upload, focus save, clear and owned-storage cleanup", () => {
   assert.match(image, /storage\.from\(BUCKET\)\.upload/);
-  assert.match(image, /update\(\{image_url:next,image_thumbnail_url:null\}\)/);
+  assert.match(image, /const thumbnailFile=await createThumbnail\(optimizedFile\)/);
+  assert.match(image, /update\(\{image_url:next,image_thumbnail_url:publicThumbnailUrl\}\)/);
   assert.match(image, /update\(\{image_url:"",image_thumbnail_url:null\}\)/);
   assert.match(image, /removeOwned/);
   assert.match(image, /MAX_SOURCE=20\*1024\*1024/);
