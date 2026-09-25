@@ -1,9 +1,21 @@
 import { supabase } from "./supabase-client.js";
 import { renderAuthNavigation } from "./auth-state.js?v=4";
 import { getStyleColor } from "./style-colors.js";
-import { getImageObjectPosition, getImageScale, getImageTransformOrigin, toThumbnailUrl } from "./image-focus.js?v=4";
+import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
 import { toUserFacingErrorMessage, renderErrorState } from "./error-state.js?v=1";
 
+const FULL_CHARACTER_COLUMNS = `
+  id, public_id, player_name, character_name, character_kana, handle,
+  affiliation, citizen_rank, experience_points,
+  style_1, style_1_mark, style_2, style_2_mark, style_3, style_3_mark,
+  image_url, image_thumbnail_url, summary, updated_at
+`;
+const FALLBACK_CHARACTER_COLUMNS = `
+  id, public_id, player_name, character_name, character_kana, handle,
+  affiliation, citizen_rank, experience_points,
+  style_1, style_1_mark, style_2, style_2_mark, style_3, style_3_mark,
+  image_url, summary, updated_at
+`;
 const ALLOWED_PAGE_SIZES = new Set([12, 25, 50, 100]);
 const ALLOWED_SORTS = new Set(["updated-desc", "updated-asc", "name-asc", "name-desc", "exp-desc", "exp-asc"]);
 const DEFAULT_PAGE_SIZE = 12;
@@ -80,16 +92,7 @@ async function loadCharacters() {
   castGrid.innerHTML = "";
   statusText.textContent = "公開キャストを読み込み中…";
   try {
-    const { data, error } = await supabase
-      .from("characters")
-      .select(`
-        id, public_id, player_name, character_name, character_kana, handle,
-        affiliation, citizen_rank, experience_points,
-        style_1, style_1_mark, style_2, style_2_mark, style_3, style_3_mark,
-        image_url, summary, updated_at
-      `)
-      .eq("visibility", "public")
-      .order("updated_at", { ascending: false });
+    const { data, error } = await queryPublicCharacters();
     if (error) throw error;
     allCharacters = data ?? [];
     populateFilters(allCharacters);
@@ -106,6 +109,28 @@ async function loadCharacters() {
     if (pagination) pagination.hidden = true;
     renderErrorState(castGrid, { message, onRetry: loadCharacters });
   }
+}
+
+async function queryPublicCharacters() {
+  const result = await supabase
+    .from("characters")
+    .select(FULL_CHARACTER_COLUMNS)
+    .eq("visibility", "public")
+    .order("updated_at", { ascending: false });
+  if (result.error && isMissingColumnError(result.error)) {
+    console.warn("Optional character columns are unavailable. Retrying with the compatible column set.", result.error);
+    return supabase
+      .from("characters")
+      .select(FALLBACK_CHARACTER_COLUMNS)
+      .eq("visibility", "public")
+      .order("updated_at", { ascending: false });
+  }
+  return result;
+}
+
+function isMissingColumnError(error) {
+  const message = String(error?.message ?? "");
+  return /column .* does not exist|could not find .* column|PGRST204/i.test(message);
 }
 
 function populateFilters(characters) {
@@ -196,7 +221,7 @@ function renderCharacters(characters) {
 }
 
 function createCharacterCard(character) {
-  const imageUrl = character.image_url || "./assets/placeholders/scan-failed.webp";
+  const imageUrl = character.image_thumbnail_url || character.image_url || "./assets/placeholders/scan-failed.webp";
   const imagePosition = getImageObjectPosition(character.image_url);
   const displayId = obfuscatePublicId(character.public_id);
   const archiveReturnUrl = `./index.html${window.location.search}`;
@@ -216,7 +241,7 @@ function createCharacterCard(character) {
     <article class="cast-card">
       <a href="${escapeAttribute(castUrl.href)}" data-archive-cast-link>
         <div class="cast-card__image">
-          <img src="${escapeAttribute(toThumbnailUrl(imageUrl))}" alt="${escapeAttribute(character.character_name)}" loading="lazy" style="object-position:${escapeAttribute(imagePosition)};--tnx-image-scale:${getImageScale(character.image_url)};--tnx-image-origin:${escapeAttribute(getImageTransformOrigin(character.image_url))}">
+          <img src="${escapeAttribute(imageUrl)}" alt="${escapeAttribute(character.character_name)}" loading="lazy" style="object-position:${escapeAttribute(imagePosition)};--tnx-image-scale:${getImageScale(character.image_url)};--tnx-image-origin:${escapeAttribute(getImageTransformOrigin(character.image_url))}">
           <span class="cast-card__scanline"></span>
         </div>
         <div class="cast-card__body">
