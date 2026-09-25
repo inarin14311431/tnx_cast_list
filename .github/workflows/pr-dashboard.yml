@@ -1,0 +1,74 @@
+name: PR history dashboard
+
+on:
+  schedule:
+    # 06:00 JST daily = 21:00 UTC the previous day
+    - cron: "0 21 * * *"
+  push:
+    branches: [main]
+    paths-ignore:
+      - "dashboard/data.json"
+  repository_dispatch:
+    types: [staging-updated]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pr-dashboard
+  cancel-in-progress: false
+
+jobs:
+  build:
+    if: github.repository == 'inarin14311431/tnx_cast_list'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout production (full history)
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          path: prod-repo
+
+      - name: Checkout validation repo (full history)
+        uses: actions/checkout@v7
+        with:
+          repository: inarin14311431/tnx-cast-archive-test
+          ref: main
+          fetch-depth: 0
+          path: staging-repo
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+
+      - name: Build dashboard data
+        working-directory: prod-repo
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          STAGING_REPO_DIR: ${{ github.workspace }}/staging-repo
+          PROD_REPO_DIR: ${{ github.workspace }}/prod-repo
+        run: node dashboard/scripts/build-dashboard-data.mjs
+
+      - name: Commit and push if changed
+        working-directory: prod-repo
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- dashboard/data.json; then
+            echo "No changes to dashboard/data.json"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dashboard/data.json
+          git commit -m "chore(dashboard): update PR history data [skip ci]"
+          for attempt in 1 2 3; do
+            if git push; then
+              exit 0
+            fi
+            echo "push rejected, rebasing onto latest main (attempt $attempt)"
+            git pull --rebase origin main
+          done
+          git push

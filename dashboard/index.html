@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PR履歴ダッシュボード | CAST ARCHIVE</title>
+<meta name="description" content="検証環境(tnx-cast-archive-test)と本番環境(tnx_cast_list)のPull Request履歴を横断表示し、本番未反映の検証変更を可視化するダッシュボード">
+<meta name="robots" content="noindex">
+<link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="page-head">
+    <div>
+      <h1>PR履歴ダッシュボード</h1>
+      <div class="sub" id="generatedAt">読み込み中...</div>
+    </div>
+    <button class="theme-toggle" id="themeToggle" type="button">🌓 テーマ切替</button>
+  </header>
+
+  <section id="summarySection">
+    <h2>サマリー</h2>
+    <div class="summary-grid" id="summaryGrid"></div>
+  </section>
+
+  <section id="unreflectedSection">
+    <h2>未反映一覧 <span class="count-pill" id="unreflectedCount">0</span></h2>
+    <p class="hint">本番に未反映と推定される検証PRを、マージが古い順に表示します。</p>
+    <div class="unreflected-list" id="unreflectedList"></div>
+  </section>
+
+  <section id="statusSection">
+    <h2>反映状況(検証PR一覧)</h2>
+    <p class="hint">検証環境でマージ済みの各PRが、本番へ反映済みか未反映かを表示します。判定根拠(番号明記・ファイル一致・タイトル類似)も併記します。</p>
+    <div class="filters">
+      <input type="search" id="statusSearch" placeholder="PR番号・タイトルで検索">
+      <select id="statusFilter">
+        <option value="all">すべての状態</option>
+        <option value="reflected">反映済み</option>
+        <option value="not-reflected">未反映</option>
+        <option value="out-of-scope">対象外</option>
+      </select>
+      <select id="evidenceFilter">
+        <option value="all">すべての根拠</option>
+        <option value="number">番号明記</option>
+        <option value="file-match">ファイル一致(推定)</option>
+        <option value="title-similarity">タイトル類似(推定)</option>
+      </select>
+    </div>
+    <div class="card status-table-wrap">
+      <table class="status-table">
+        <thead>
+          <tr>
+            <th>検証PR</th>
+            <th>タイトル</th>
+            <th>マージ日</th>
+            <th>状態</th>
+            <th>根拠 / 本番PR</th>
+          </tr>
+        </thead>
+        <tbody id="statusTbody"></tbody>
+      </table>
+    </div>
+    <div class="pager">
+      <button id="pagerPrev" type="button">◀ 前へ</button>
+      <span class="page-info" id="pagerInfo"></span>
+      <button id="pagerNext" type="button">次へ ▶</button>
+    </div>
+  </section>
+
+  <section id="timelineSection">
+    <h2>タイムライン</h2>
+    <div class="legend">
+      <span class="item"><span class="repo-dot test"></span>検証 (tnx-cast-archive-test)</span>
+      <span class="item"><span class="repo-dot prod"></span>本番 (tnx_cast_list)</span>
+    </div>
+    <div class="filters">
+      <select id="timelineRepoFilter">
+        <option value="all">すべてのリポジトリ</option>
+        <option value="test">検証のみ</option>
+        <option value="prod">本番のみ</option>
+      </select>
+      <select id="timelineTypeFilter">
+        <option value="all">すべての種類</option>
+        <option value="sync">同期</option>
+        <option value="feat">feat</option>
+        <option value="fix">fix</option>
+        <option value="refactor">refactor</option>
+        <option value="chore">chore</option>
+        <option value="docs">docs</option>
+        <option value="other">other</option>
+      </select>
+    </div>
+    <div class="card">
+      <div class="timeline-list" id="timelineList"></div>
+    </div>
+  </section>
+
+  <section id="weeklySection">
+    <h2>週次PR数の推移</h2>
+    <div class="legend">
+      <span class="item"><span class="repo-dot test"></span>検証</span>
+      <span class="item"><span class="repo-dot prod"></span>本番</span>
+    </div>
+    <div class="card chart-card">
+      <svg id="weeklyChart" viewBox="0 0 900 260" preserveAspectRatio="xMidYMid meet" role="img" aria-label="週次マージ済みPR数の推移"></svg>
+    </div>
+  </section>
+
+  <footer class="note">
+    <p>このダッシュボードは GitHub Actions により自動生成されています(検証・本番いずれかの main への push、毎日 JST 早朝、または手動実行)。「反映済み」のうち番号明記以外は推定であり、確実な判定ではありません。</p>
+    <details>
+      <summary>判定方法について</summary>
+      <ul>
+        <li><strong>番号明記</strong>: 本番PRの本文・タイトルに検証PR番号が明記されている場合(範囲指定・列挙を含む)。</li>
+        <li><strong>ファイル一致(推定)</strong>: 検証PRが変更したアプリ実行ファイル(js/, css-next/, *.html, config/, supabase/)の内容が、本番mainの現在の内容と一致する場合。</li>
+        <li><strong>タイトル類似(推定)</strong>: 上記で判定できない場合に、PRタイトルの類似度で本番側の対応PRを推定します。</li>
+        <li>アプリの実行に関わるファイルを変更していない検証PR(テスト・ドキュメントのみ等)は「対象外」として扱います。</li>
+      </ul>
+      <p id="validationNote"></p>
+    </details>
+  </footer>
+</div>
+<script src="dashboard.js"></script>
+</body>
+</html>
