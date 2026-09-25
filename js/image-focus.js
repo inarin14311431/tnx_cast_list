@@ -84,27 +84,6 @@ export function setImageZoom(imageUrl, zoom) {
   return nextHash ? `${base}#${nextHash}` : base;
 }
 
-const STORAGE_OBJECT_PATH = "/storage/v1/object/public/";
-const STORAGE_RENDER_PATH = "/storage/v1/render/image/public/";
-const THUMBNAIL_RESIZE_MODE = "contain";
-const THUMBNAIL_QUALITY = 70;
-
-export function toThumbnailUrl(imageUrl, { width = 420, height = 2000 } = {}) {
-  const { base, hash } = splitImageUrl(imageUrl);
-  if (!base.includes(STORAGE_OBJECT_PATH)) return imageUrl;
-
-  const [path, existingQuery] = base.split("?");
-  const renderPath = path.replace(STORAGE_OBJECT_PATH, STORAGE_RENDER_PATH);
-  const params = new URLSearchParams(existingQuery ?? "");
-  params.set("width", String(width));
-  params.set("height", String(height));
-  params.set("resize", THUMBNAIL_RESIZE_MODE);
-  params.set("quality", String(THUMBNAIL_QUALITY));
-
-  const transformed = `${renderPath}?${params.toString()}`;
-  return hash ? `${transformed}#${hash}` : transformed;
-}
-
 export function getImageObjectPosition(imageUrl) {
   return `${getImageFocusX(imageUrl)}% ${getImageFocusY(imageUrl)}%`;
 }

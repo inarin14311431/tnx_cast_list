@@ -12,6 +12,9 @@ const MIN_LONG_EDGE=1100;
 const TARGET_FILE_SIZE=500*1024;
 const MAX_OUTPUT_FILE_SIZE=1024*1024;
 const OUTPUT_TYPE="image/webp";
+const THUMBNAIL_MIN_LONG_EDGE=120;
+const THUMBNAIL_MAX_OUTPUT_FILE_SIZE=200*1024;
+const THUMBNAIL_QUALITY_STEPS=[.82,.74,.66,.58,.5,.42];
 const PLACEHOLDER="./assets/placeholders/scan-failed.webp";
 
 const form=document.querySelector("#image-form");
@@ -65,12 +68,7 @@ async function initialize(){
 }
 
 async function loadCharacter(publicId){
-  const {data,error}=await supabase
-    .from("characters")
-    .select("id,public_id,character_name,owner_id,image_url")
-    .eq("public_id",publicId)
-    .eq("owner_id",currentUser.id)
-    .maybeSingle();
+  const {data,error}=await queryOwnedCharacter(publicId);
 
   if(error)throw error;
   if(!data)throw new Error("指定されたキャストを編集する権限がありません。");
@@ -87,6 +85,30 @@ async function loadCharacter(publicId){
     fileInfo.textContent="NO IMAGE DATA";
   }
   return character;
+}
+
+async function queryOwnedCharacter(publicId){
+  const result=await supabase
+    .from("characters")
+    .select("id,public_id,character_name,owner_id,image_url,image_thumbnail_url")
+    .eq("public_id",publicId)
+    .eq("owner_id",currentUser.id)
+    .maybeSingle();
+  if(result.error&&isMissingColumnError(result.error)){
+    console.warn("Optional character columns are unavailable. Retrying with the compatible column set.",result.error);
+    return supabase
+      .from("characters")
+      .select("id,public_id,character_name,owner_id,image_url")
+      .eq("public_id",publicId)
+      .eq("owner_id",currentUser.id)
+      .maybeSingle();
+  }
+  return result;
+}
+
+function isMissingColumnError(error){
+  const message=String(error?.message??"");
+  return /column .* does not exist|could not find .* column|PGRST204/i.test(message);
 }
 
 async function handleFileSelection(){
@@ -207,6 +229,54 @@ async function optimizeImage(file){
   }
 }
 
+async function createThumbnail(file,{maxLongEdge=420,targetSize=40*1024}={}){
+  const drawable=await decodeImage(file);
+  try{
+    const originalWidth=drawable.width;
+    const originalHeight=drawable.height;
+    if(!originalWidth||!originalHeight)throw new Error("画像サイズを確認できませんでした。");
+
+    const initialScale=Math.min(1,maxLongEdge/Math.max(originalWidth,originalHeight));
+    let width=Math.max(1,Math.round(originalWidth*initialScale));
+    let height=Math.max(1,Math.round(originalHeight*initialScale));
+    let smallest=null;
+    let targetCandidate=null;
+
+    for(let dimensionPass=0;dimensionPass<6;dimensionPass+=1){
+      const canvas=renderToCanvas(drawable.source,width,height);
+      for(const quality of THUMBNAIL_QUALITY_STEPS){
+        const blob=await canvasToBlob(canvas,OUTPUT_TYPE,quality);
+        const candidate={blob,width,height};
+        if(!smallest||blob.size<smallest.blob.size)smallest=candidate;
+        if(blob.size<=targetSize){
+          targetCandidate=candidate;
+          break;
+        }
+      }
+      if(targetCandidate)break;
+
+      const longEdge=Math.max(width,height);
+      if(longEdge<=THUMBNAIL_MIN_LONG_EDGE)break;
+      const scale=Math.max(THUMBNAIL_MIN_LONG_EDGE/longEdge,.86);
+      width=Math.max(1,Math.round(width*scale));
+      height=Math.max(1,Math.round(height*scale));
+    }
+
+    const selected=targetCandidate||smallest;
+    if(!selected)throw new Error("サムネイル画像を生成できませんでした。");
+    if(selected.blob.size>THUMBNAIL_MAX_OUTPUT_FILE_SIZE)throw new Error("サムネイル画像を十分に圧縮できませんでした。");
+
+    const thumbnailFile=new File(
+      [selected.blob],
+      `${safeFileBase(file.name)}-thumb.webp`,
+      {type:OUTPUT_TYPE,lastModified:Date.now()}
+    );
+    return{file:thumbnailFile,width:selected.width,height:selected.height};
+  }finally{
+    drawable.close();
+  }
+}
+
 async function decodeImage(file){
   if("createImageBitmap" in window){
     let bitmap;
@@ -306,6 +376,7 @@ async function uploadImage(event){
   processing=true;
   setControlsDisabled(true);
   let uploadedPath="";
+  let uploadedThumbnailPath="";
   try{
     const requestedFocusX=focusXInput.value;
     const requestedFocusY=focusYInput.value;
@@ -318,18 +389,32 @@ async function uploadImage(event){
     updateZoomValue(requestedZoom);
     applyPreviewFocus();
     const previousImageUrl=target.image_url||"";
+    const previousThumbnailUrl=target.image_thumbnail_url||"";
     setMessage("圧縮済み画像をアップロードしています…","loading");
 
+    const timestamp=Date.now();
     const extension=getFileExtension(uploadFile);
-    uploadedPath=`${currentUser.id}/${target.public_id}/${Date.now()}.${extension}`;
+    uploadedPath=`${currentUser.id}/${target.public_id}/${timestamp}.${extension}`;
     const {error:uploadError}=await supabase.storage
       .from(BUCKET_NAME)
       .upload(uploadedPath,uploadFile,{cacheControl:"86400",contentType:uploadFile.type,upsert:false});
     if(uploadError)throw uploadError;
 
+    setMessage("サムネイル画像を生成しています…","loading");
+    const thumbnail=await createThumbnail(uploadFile);
+    const thumbnailExtension=getFileExtension(thumbnail.file);
+    uploadedThumbnailPath=`${currentUser.id}/${target.public_id}/${timestamp}-thumb.${thumbnailExtension}`;
+    const {error:thumbnailUploadError}=await supabase.storage
+      .from(BUCKET_NAME)
+      .upload(uploadedThumbnailPath,thumbnail.file,{cacheControl:"86400",contentType:thumbnail.file.type,upsert:false});
+    if(thumbnailUploadError)throw thumbnailUploadError;
+
     const {data:publicUrlData}=supabase.storage.from(BUCKET_NAME).getPublicUrl(uploadedPath);
     const publicImageUrl=publicUrlData.publicUrl;
     if(!publicImageUrl)throw new Error("公開URLを取得できませんでした。");
+    const {data:publicThumbnailUrlData}=supabase.storage.from(BUCKET_NAME).getPublicUrl(uploadedThumbnailPath);
+    const publicThumbnailUrl=publicThumbnailUrlData.publicUrl;
+    if(!publicThumbnailUrl)throw new Error("サムネイルの公開URLを取得できませんでした。");
     const imageUrl=setImageZoom(
       setImageFocusY(
         setImageFocusX(publicImageUrl,requestedFocusX),
@@ -340,13 +425,15 @@ async function uploadImage(event){
 
     const {error:updateError}=await supabase
       .from("characters")
-      .update({image_url:imageUrl})
+      .update({image_url:imageUrl,image_thumbnail_url:publicThumbnailUrl})
       .eq("id",target.id)
       .eq("owner_id",currentUser.id);
     if(updateError)throw updateError;
 
     character.image_url=imageUrl;
+    character.image_thumbnail_url=publicThumbnailUrl;
     await removeOwnedStorageObject(previousImageUrl);
+    await removeOwnedStorageObject(previousThumbnailUrl);
 
     const uploadedSize=uploadFile.size;
     releasePreviewUrl();
@@ -361,6 +448,7 @@ async function uploadImage(event){
     document.dispatchEvent(new CustomEvent("tnx-image-updated",{detail:{imageUrl}}));
   }catch(error){
     console.error(error);
+    if(uploadedThumbnailPath)await removeStoragePath(uploadedThumbnailPath);
     if(uploadedPath)await removeStoragePath(uploadedPath);
     setMessage(translateUploadError(error),"error");
   }finally{
@@ -395,15 +483,18 @@ async function clearImageReference(){
   setControlsDisabled(true);
   try{
     const previousImageUrl=character.image_url||"";
+    const previousThumbnailUrl=character.image_thumbnail_url||"";
     const {error}=await supabase
       .from("characters")
-      .update({image_url:""})
+      .update({image_url:"",image_thumbnail_url:""})
       .eq("id",character.id)
       .eq("owner_id",currentUser.id);
     if(error)throw error;
 
     character.image_url="";
+    character.image_thumbnail_url="";
     await removeOwnedStorageObject(previousImageUrl);
+    await removeOwnedStorageObject(previousThumbnailUrl);
     resetSelection();
     setFocusControl("");
     setMessage("キャスト画像を解除しました。","success");
