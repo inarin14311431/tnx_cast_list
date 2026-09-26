@@ -22,5 +22,5 @@ test("the fourth-column pin exists only inside the desktop media rule", () => {
 
 test("cast viewer cache generations include the placement update", () => {
   assert.match(entry, /cast-view-details\.css\?v=5/);
-  assert.match(castHtml, /cast-entry\.css\?v=9/);
+  assert.match(castHtml, /cast-entry\.css\?v=10/);
 });
