@@ -17,14 +17,11 @@
 
   const content = document.querySelector("#cast-content");
   const enhanceBase = () => { enhanceStyles(); enhanceDivines(); enhanceStyleSkillPanel(); };
-  if (!content || !content.hidden) enhanceBase();
-  else {
-    const observer = new MutationObserver(() => {
-      if (content.hidden) return;
-      observer.disconnect();
-      enhanceBase();
-    });
-    observer.observe(content, { attributes: true, attributeFilter: ["hidden"] });
+  const applyAfterCastRender = () => enhanceBase();
+  if (!content || !content.hidden) {
+    applyAfterCastRender();
+  } else {
+    window.addEventListener("tnx:cast-rendered", applyAfterCastRender, { once: true });
   }
   document.addEventListener("tnx:style-skills-rendered", enhanceStyleSkillPanel);
 

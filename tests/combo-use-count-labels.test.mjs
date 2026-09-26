@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 
 const sheet = await readFile(new URL("../sheet.html", import.meta.url), "utf8");
 const cast = await readFile(new URL("../js/cast.js", import.meta.url), "utf8");
+const rules = await readFile(new URL("../js/cast-combo-rules.js", import.meta.url), "utf8");
 const castMobile = await readFile(new URL("../js/cast-mobile.js", import.meta.url), "utf8");
 const castHtml = await readFile(new URL("../cast.html", import.meta.url), "utf8");
 
@@ -22,11 +23,12 @@ test("combo usage labels are generic instead of act-specific", () => {
 
 test("usage limit storage contract remains unchanged", () => {
   assert.match(sheet, /id="sheet-combo-act-use-limit"/);
-  assert.match(cast, /act_use_limit/);
+  assert.match(rules, /act_use_limit/);
+  assert.match(cast, /getComboActUseLimit/);
   assert.match(castMobile, /act_use_limit/);
 });
 
 test("cast usage label changes have cache-buster updates", () => {
-  assert.match(castHtml, /\.\/js\/cast\.js\?v=96/);
+  assert.match(castHtml, /\.\/js\/cast\.js\?v=97/);
   assert.match(castHtml, /\.\/js\/cast-mobile\.js\?v=6/);
 });

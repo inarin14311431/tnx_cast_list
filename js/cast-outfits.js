@@ -1,3 +1,4 @@
+import { escapeHtml, escapeAttribute as escapeHtmlAttribute } from "./dom-escape.js";
 import { getOutfits } from "./cast-data-store.js?v=2";
 import {
   OUTFIT_CATEGORIES,
@@ -26,12 +27,7 @@ async function initializeCastOutfits() {
 function waitForCastReady() {
   if (!content || !content.hidden) return Promise.resolve();
   return new Promise(resolve => {
-    const observer = new MutationObserver(() => {
-      if (content.hidden) return;
-      observer.disconnect();
-      resolve();
-    });
-    observer.observe(content, { attributes: true, attributeFilter: ["hidden"] });
+    window.addEventListener("tnx:cast-rendered", resolve, { once: true });
   });
 }
 
@@ -87,7 +83,7 @@ function createCell(field, item) {
     const value = text === "—" ? "" : text;
     return `<td class="cast-outfit-col--description style-view-cell style-view-cell--description"><textarea class="style-field-scroll style-description-expandable outfit-description-expandable" rows="1" wrap="soft" readonly aria-label="解説">${escapeHtml(value)}</textarea></td>`;
   }
-  return `<td class="cast-outfit-col--${field}"><span class="cast-outfit-value" title="${escapeAttribute(text)}">${escapeHtml(text)}</span></td>`;
+  return `<td class="cast-outfit-col--${field}"><span class="cast-outfit-value" title="${escapeAttributeWithNewlines(text)}">${escapeHtml(text)}</span></td>`;
 }
 
 function displayItem(category, item) {
@@ -125,12 +121,6 @@ function displayValue(value) {
   return value === null || value === undefined || String(value).trim() === "" ? "—" : String(value);
 }
 
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  }[char]));
-}
-
 function escapeAttribute(value) {
-  return escapeHtml(value).replace(/\r?\n/g, "&#10;");
+  return escapeHtmlAttribute(value).replace(/\r?\n/g, "&#10;");
 }

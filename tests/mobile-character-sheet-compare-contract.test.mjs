@@ -42,7 +42,8 @@ test("canonical comparison remains centralized in the shared service", () => {
 test("source panel construction remains idempotent across viewer enhancement passes", () => {
   assert.match(mobileSource, /!section\.querySelector\("\.mobile-cast-source-panel"\)/);
   assert.match(mobileSource, /section\.dataset\.mobileProfileEnhanced = "1"/);
-  assert.match(mobileSource, /section\?\.dataset\.mobileProfileEnhanced !== "1"/);
+  assert.match(mobileSource, /mobileProfileAligned === "1"/);
+  assert.match(mobileSource, /tnx:mobile-cast-rendered/);
 });
 
 test("warehouse comparison is owned by the mobile editor", () => {

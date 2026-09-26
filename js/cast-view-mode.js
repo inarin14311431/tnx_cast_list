@@ -47,12 +47,7 @@
     function bind() {
       addDesktopToggle();
       if (useMobile && !fixMobileDesktopToggle()) {
-        const mobileRoot = document.querySelector("#mobile-cast-view");
-        if (!mobileRoot) return;
-        const observer = new MutationObserver(() => {
-          if (fixMobileDesktopToggle()) observer.disconnect();
-        });
-        observer.observe(mobileRoot, { childList: true, subtree: true });
+        window.addEventListener("tnx:mobile-cast-rendered", fixMobileDesktopToggle, { once: true });
       }
     }
 

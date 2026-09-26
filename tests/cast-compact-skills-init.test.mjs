@@ -11,12 +11,13 @@ test("compact skill initialization is explicit and idempotent", () => {
   assert.match(source, /initializeCastCompactSkills\(\);/);
 });
 
-test("compact skill view preserves cast readiness observer flow", () => {
+test("compact skill view preserves cast readiness render flow", () => {
   assert.match(source, /if \(!content\.hidden\) \{/);
-  assert.match(source, /new MutationObserver/);
-  assert.match(source, /attributeFilter: \["hidden"\]/);
-  assert.match(source, /observer\.disconnect\(\)/);
+  assert.match(source, /tnx:cast-rendered/);
+  assert.match(source, /applyAfterCastRender/);
+  assert.match(source, /once: true/);
   assert.match(source, /finalize\(\)/);
+  assert.doesNotMatch(source, /new MutationObserver/);
 });
 
 test("compact skill view preserves general social and connection layout contracts", () => {

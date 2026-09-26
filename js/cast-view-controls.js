@@ -126,13 +126,18 @@
       scheduleMeasure();
     });
 
-    new MutationObserver(() => {
+    const applyAfterCastRender = () => {
       setExpanded(false);
       scheduleMeasure();
-    }).observe(summary, { childList: true, characterData: true, subtree: true });
+    };
+    const castContent = document.querySelector("#cast-content");
+    if (!castContent || !castContent.hidden) {
+      applyAfterCastRender();
+    } else {
+      window.addEventListener("tnx:cast-rendered", applyAfterCastRender, { once: true });
+    }
 
     window.addEventListener("resize", scheduleMeasure, { passive: true });
-    scheduleMeasure();
   }
 
   initializeCastSummaryControl();
@@ -261,8 +266,12 @@
     }
 
     const castContent = document.querySelector("#cast-content");
-    if (castContent) new MutationObserver(prepareDescriptionFields).observe(castContent, { childList: true, subtree: true });
-    prepareDescriptionFields();
+    const applyAfterCastRender = () => prepareDescriptionFields();
+    if (!castContent || !castContent.hidden) {
+      applyAfterCastRender();
+    } else {
+      window.addEventListener("tnx:cast-rendered", applyAfterCastRender, { once: true });
+    }
   }
 
   initializeCastDescriptionControls();
@@ -304,8 +313,12 @@
         .forEach(setupPanel);
     };
 
-    new MutationObserver(setup).observe(root, { childList: true, subtree: true });
-    setup();
+    const applyAfterCastRender = () => setup();
+    if (!root.hidden) {
+      applyAfterCastRender();
+    } else {
+      window.addEventListener("tnx:cast-rendered", applyAfterCastRender, { once: true });
+    }
   }
 
   initializeCastPanelCollapse();

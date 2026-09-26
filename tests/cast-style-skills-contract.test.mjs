@@ -26,8 +26,8 @@ test("style skill view preserves editor-like detail table contracts", () => {
   assert.match(source, /tnx:style-skills-rendered/);
 });
 
-test("style skill view preserves cast readiness observer contract", () => {
-  assert.match(source, /new MutationObserver/);
-  assert.match(source, /attributeFilter: \["hidden"\]/);
-  assert.match(source, /observer\.disconnect\(\)/);
+test("style skill view preserves cast readiness render contract", () => {
+  assert.match(source, /tnx:cast-rendered/);
+  assert.match(source, /window\.addEventListener\("tnx:cast-rendered", callback, \{ once: true \}\)/);
+  assert.doesNotMatch(source, /new MutationObserver/);
 });

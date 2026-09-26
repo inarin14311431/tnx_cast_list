@@ -1,3 +1,4 @@
+import { applyStylePresentation, applyAbilityFinals } from "./sheet-presentation-dom.js?v=1";
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=4";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
@@ -42,6 +43,8 @@ import { collectCharacterInputSnapshot, applyCharacterInputSnapshot } from "./sh
 import { collectAbilityInputSnapshot, applyAbilityInputSnapshot } from "./sheet-ability-input-snapshot.js?v=1";
 import { collectStyleInputSnapshot, applyStyleInputSnapshot } from "./sheet-style-input-snapshot.js?v=1";
 import { initSheetStyleInteractions } from "./sheet-style-interactions.js?v=1";
+import { applyCharacterToEditor, applyStyleAttributeVisibility } from "./sheet-character-application.js?v=1";
+import { initSheetActionBindings } from "./sheet-action-bindings.js?v=1";
 import { appendRow, clearRows, moveRowWithinCategory, normalizeOutfitCategory, removeRowByKey } from "./sheet-row-collection-state.js?v=2";
 import { normalizeImportedOutfitDetails } from "./outfit-ofc-adapter.js?v=2";
 import { GENERAL_MASTER_ROWS as GENERAL_MASTER, GENERAL_BLANK_SLOT_COLUMNS } from "./general-skill-catalog.js?v=2";
@@ -123,12 +126,15 @@ function bind() {
     onDeleteOutfit: deleteOutfitByKey
   });
 
-  $("#save-button").onclick = () => saveCoordinator.save(true);
-  $("#add-general").onclick = addGeneralSkill;
-  $("#add-social").onclick = () => addSkill("social", "proper", "社会：");
-  $("#add-connection").onclick = () => addSkill("connection", "proper", "コネ：");
-  $("#add-style-skill").onclick = () => addSkill("style", "normal", "");
-  $("#add-outfit").onclick = () => addOutfitForImport("other");
+  initSheetActionBindings({
+    root: document,
+    onSave: () => saveCoordinator.save(true),
+    onAddGeneral: addGeneralSkill,
+    onAddSocial: () => addSkill("social", "proper", "社会："),
+    onAddConnection: () => addSkill("connection", "proper", "コネ："),
+    onAddStyleSkill: () => addSkill("style", "normal", ""),
+    onAddOutfit: () => addOutfitForImport("other")
+  });
 }
 
 function handleSkillRowInput({ key, field, value, row }) {
@@ -304,12 +310,18 @@ async function loadCharacter(publicId) {
 }
 
 function fillCharacter(data) {
-  applyCharacterInputSnapshot({ root: document, data, structuredFields: STRUCTURED_FIELDS });
-  applyStyleInputSnapshot({ root: document, data });
-  for (let i = 1; i <= 3; i++) toggleAttribute(i);
-  calculateBaselines();
-  applyAbilityInputSnapshot({ root: document, abilities: ABILITIES, data, baselines: styleBaseline });
-  updateDivines(false);
+  applyCharacterToEditor({
+    root: document,
+    data,
+    structuredFields: STRUCTURED_FIELDS,
+    abilities: ABILITIES,
+    styleBaseline,
+    applyCharacterInputSnapshot,
+    applyStyleInputSnapshot,
+    applyAbilityInputSnapshot,
+    calculateBaselines,
+    updateDivines
+  });
 }
 
 function renderStyles() {
@@ -318,17 +330,10 @@ function renderStyles() {
   initSheetStyleInteractions({
     root,
     onStyleChange() {
-      for (let i = 1; i <= 3; i++) toggleAttribute(i);
+      for (let i = 1; i <= 3; i++) applyStyleAttributeVisibility({ root: document, index: i });
       updateDivines(true);
     }
   });
-}
-
-function toggleAttribute(i) {
-  const wrap = $(`#style-${i}-attribute-wrap`), select = $(`#style-${i}-attribute`);
-  if (!wrap || !select) return;
-  const enabled = $(`#style-${i}`).value === "ウツワ";
-  wrap.hidden = !enabled; if (!enabled) select.value = "";
 }
 
 function currentStyleSlots() {
@@ -353,12 +358,7 @@ function updateDivines(apply) {
     slots: currentStyleSlots(),
     styleData: STYLE_DATA
   });
-  presentation.divines.forEach((divine, index) => {
-    const i = index + 1;
-    $(`#divine-${i}`).textContent = divine.name;
-    $(`#divine-${i}-yomi`).textContent = divine.yomi;
-  });
-  $("#style-warning").textContent = presentation.warning;
+  applyStylePresentation(document, presentation);
   if (!apply || loading) return;
   const old = { ...styleBaseline }; calculateBaselines();
   for (const [key] of ABILITIES) {
@@ -433,11 +433,7 @@ function recalc() {
     values: input.values,
     cs: input.cs
   });
-  for (const [key] of ABILITIES) {
-    $(`#${key}-final`).textContent = finals[key];
-    $(`#${key}-control-final`).textContent = finals[`${key}-control`];
-  }
-  $("#cs-final").textContent = finals.cs;
+  applyAbilityFinals(document, ABILITIES, finals);
   window.TNXExperience?.queue?.();
 }
 function markDirty() { if (loading) return; saveCoordinator.markDirty(); }

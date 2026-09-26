@@ -1,13 +1,4 @@
-function esc(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  }[char]));
-}
-
+import { escapeHtml as esc } from "./dom-escape.js?v=1";
 export function renderStyleCards({
   styleData = [],
   utsuwaAttributes = [],

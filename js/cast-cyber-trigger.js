@@ -32,8 +32,7 @@
     }
   }
 
-  const observer=new MutationObserver(()=>start());
-  observer.observe(content,{attributes:true,attributeFilter:['hidden'],childList:true,subtree:true});
+  window.addEventListener('tnx:cast-rendered',start,{once:true});
   window.addEventListener('tnx:cast-scan-complete',event=>{
     if(event.detail?.success!==false)start();
   },{once:true});
@@ -42,5 +41,4 @@
   window.setTimeout(start,700);
   window.setTimeout(start,1400);
   window.setTimeout(start,3200);
-  window.setTimeout(()=>observer.disconnect(),6000);
 })();

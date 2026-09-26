@@ -34,13 +34,11 @@ const PARENT_RETURN_PAGES = new Set([
 ]);
 
 function whenCastReady(callback) {
-  if (!content || !content.hidden) { callback(); return; }
-  const observer = new MutationObserver(() => {
-    if (content.hidden) return;
-    observer.disconnect();
+  if (!content || !content.hidden) {
     callback();
-  });
-  observer.observe(content, { attributes: true, attributeFilter: ["hidden"] });
+    return;
+  }
+  window.addEventListener("tnx:cast-rendered", callback, { once: true });
 }
 
 function initializeReadonlyFields() {
@@ -51,13 +49,7 @@ function initializeReadonlyFields() {
     if (root.matches(selector)) root.tabIndex = -1;
     root.querySelectorAll(selector).forEach(field => { field.tabIndex = -1; });
   };
-  apply(content);
-  new MutationObserver(mutations => {
-    mutations.forEach(mutation => {
-      if (mutation.type === "attributes") apply(mutation.target);
-      mutation.addedNodes.forEach(apply);
-    });
-  }).observe(content, { childList: true, subtree: true, attributes: true, attributeFilter: ["readonly"] });
+  whenCastReady(() => apply(content));
 }
 
 function parseReturnDestination(value) {
@@ -198,6 +190,7 @@ async function initializeCharacterSheetLinks() {
     const href = normalizeCharacterSheetUrl(character?.character_sheet_url);
     if (!href) return;
 
+    const mobileRequested = new URLSearchParams(location.search).get("mobile") === "1";
     const render = () => {
       const desktopList = document.querySelector(".cast-hero .identity-grid");
       if (desktopList && !desktopList.querySelector('[data-character-sheet-link="1"]')) {
@@ -209,21 +202,23 @@ async function initializeCharacterSheetLinks() {
         mobileList.append(createCharacterSheetLinkRow(href, { mobile: true }));
       }
 
-      const mobileRequested = new URLSearchParams(location.search).get("mobile") === "1";
       return mobileRequested ? Boolean(mobileList) : Boolean(desktopList);
     };
 
     if (render()) return;
-    const observer = new MutationObserver(() => {
-      if (!render()) return;
-      observer.disconnect();
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
+
+    const eventName = mobileRequested
+      ? "tnx:mobile-cast-rendered"
+      : "tnx:cast-rendered";
+
+    const handleRendered = () => {
+      render();
+    };
+    window.addEventListener(eventName, handleRendered, { once: true });
   } catch (error) {
     console.warn("character sheet link could not be loaded", error);
   }
 }
-
 async function initializeHandleKana() {
   const publicId = new URLSearchParams(location.search).get("id")?.trim() || "";
   const handle = document.querySelector("#cast-handle");

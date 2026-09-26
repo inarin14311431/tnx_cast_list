@@ -48,16 +48,20 @@ for (const retired of ["js/cast-mobile-combos.js", "js/cast-quick-outfit-pairs.j
 }
 
 const castSource = fs.readFileSync(path.join(root, "js/cast.js"), "utf8");
+const quickHtmlSource = fs.readFileSync(path.join(root, "js/cast-quick-sheet-html.js"), "utf8");
 const compactSource = fs.readFileSync(path.join(root, "js/cast-quick-sheet-compact.js"), "utf8");
 const mobileSource = fs.readFileSync(path.join(root, "js/cast-mobile.js"), "utf8");
 
-if (!castSource.includes("formatPurchasePair(outfit)")) {
-  errors.push("cast.js must own quick-sheet purchase pair rendering");
+if (!castSource.includes("createQuickSheetHtml(context, usageState)")) {
+  errors.push("cast.js must delegate quick-sheet HTML with explicit usage state");
 }
-if (!castSource.includes("formatConcealmentPair(outfit)")) {
-  errors.push("cast.js must own quick-sheet concealment pair rendering");
+if (!quickHtmlSource.includes("formatPurchasePair(outfit)")) {
+  errors.push("quick-sheet HTML must own purchase pair rendering");
 }
-if (/\bcs_value\b/.test(castSource)) {
+if (!quickHtmlSource.includes("formatConcealmentPair(outfit)")) {
+  errors.push("quick-sheet HTML must own concealment pair rendering");
+}
+if (/\bcs_value\b/.test(castSource + quickHtmlSource)) {
   errors.push("cast.js must not use legacy cs_value in public rendering");
 }
 if (/cast-quick-outfit-pairs/.test(compactSource)) {

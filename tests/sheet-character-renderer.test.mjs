@@ -47,11 +47,14 @@ test("ability renderer preserves ability/control/current/mod/final and CS contra
 test("character renderer stays DOM-free and sheet delegates only markup generation", async () => {
   const rendererSource = await readFile(new URL("../js/sheet-character-renderer.js", import.meta.url), "utf8");
   const sheetSource = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
+  const applicationSource = await readFile(new URL("../js/sheet-character-application.js", import.meta.url), "utf8");
 
   assert.doesNotMatch(rendererSource, /document\.|window\.|supabase|localStorage|sessionStorage|addEventListener/);
   assert.match(sheetSource, /sheet-character-renderer\.js\?v=1/);
   assert.match(sheetSource, /renderStyleCards\(/);
   assert.match(sheetSource, /renderAbilityCards\(ABILITIES\)/);
-  assert.match(sheetSource, /function toggleAttribute\(/);
+  assert.match(sheetSource, /applyCharacterToEditor\(/);
+  assert.doesNotMatch(sheetSource, /function toggleAttribute\(/);
+  assert.match(applicationSource, /applyStyleAttributeVisibility/);
   assert.match(sheetSource, /function updateDivines\(/);
 });

@@ -200,15 +200,16 @@
   function initialize() {
     const root = document.querySelector(ROOT_SELECTOR);
     if (!root) return;
-    apply(root);
-    enhanceProfile(root);
-    const observer = new MutationObserver(() => {
+
+    const applyAfterMobileRender = () => {
       apply(root);
-      const section = findProfileSection(root);
-      if (root.dataset.mobileProfileAligned !== "1" || section?.dataset.mobileProfileEnhanced !== "1") enhanceProfile(root);
-      else enhanceStaticLabels(root);
-    });
-    observer.observe(root, { childList: true, subtree: true });
+      enhanceProfile(root);
+    };
+    if (root.querySelector(".mobile-cast-main")) {
+      applyAfterMobileRender();
+    } else {
+      window.addEventListener("tnx:mobile-cast-rendered", applyAfterMobileRender, { once: true });
+    }
   }
 
   if (document.readyState === "loading") {

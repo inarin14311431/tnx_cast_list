@@ -11,12 +11,20 @@ test("cast panel collapse uses an explicit idempotent initializer", () => {
   assert.match(source, /initializeCastPanelCollapse\(\);/);
 });
 
-test("cast panel collapse preserves click keyboard and mutation setup", () => {
-  assert.match(source, /panel\.querySelector\(":scope > \.data-panel__header"\)/);
-  assert.match(source, /panel\.classList\.toggle\("is-collapsed"\)/);
-  assert.match(source, /header\.addEventListener\("click", toggle\)/);
-  assert.match(source, /header\.addEventListener\("keydown"/);
-  assert.match(source, /event\.key === "Enter" \|\| event\.key === " "/);
-  assert.match(source, /panel\.dataset\.collapseReady = "1"/);
-  assert.match(source, /new MutationObserver\(setup\)\.observe\(root, \{ childList: true, subtree: true \}\)/);
+test("cast panel collapse preserves click keyboard and render setup", () => {
+  const start = source.indexOf("function initializeCastPanelCollapse");
+  const end = source.indexOf("\n})();", start);
+  const initializer = source.slice(start, end);
+
+  assert.match(initializer, /panel\.querySelector\(":scope > \.data-panel__header"\)/);
+  assert.match(initializer, /panel\.classList\.toggle\("is-collapsed"\)/);
+  assert.match(initializer, /header\.addEventListener\("click", toggle\)/);
+  assert.match(initializer, /header\.addEventListener\("keydown"/);
+  assert.match(initializer, /event\.key === "Enter" \|\| event\.key === " "/);
+  assert.match(initializer, /panel\.dataset\.collapseReady = "1"/);
+  assert.match(initializer, /tnx:cast-rendered/);
+  assert.match(initializer, /applyAfterCastRender/);
+  assert.match(initializer, /once: true/);
+  assert.doesNotMatch(initializer, /new MutationObserver/);
+  assert.doesNotMatch(initializer, /\.observe\(/);
 });
