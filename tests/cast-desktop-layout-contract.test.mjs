@@ -8,7 +8,7 @@ const castHtml = await readFile(new URL("../cast.html", import.meta.url), "utf8"
 const castUi = await readFile(new URL("../js/cast-ui.js", import.meta.url), "utf8");
 
 test("desktop cast layout is a canonical final cascade layer", () => {
-  assert.match(entry, /cast-transfer, cast-troop-modal, cast-desktop;/);
+  assert.match(entry, /cast-transfer, cast-troop-modal, cast-desktop, cast-style-table;/);
   assert.match(entry, /cast-desktop-layout\.css\?v=1/);
   assert.doesNotMatch(entry, /polish/);
   assert.match(css, /@media \(min-width: 1200px\)/);
@@ -29,7 +29,7 @@ test("desktop cast layout remains theme-driven", () => {
   assert.match(css, /var\(--color-text\)/);
   assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b/i);
   assert.doesNotMatch(css, /body\[data-page="account\.html"\]/);
-  const pageCssIndex = castHtml.indexOf('./css-next/pages/cast-entry.css?v=9');
+  const pageCssIndex = castHtml.indexOf('./css-next/pages/cast-entry.css?v=10');
   const themeCssIndex = castHtml.indexOf('./css-next/themes/index.css?v=1');
   assert.ok(pageCssIndex >= 0 && themeCssIndex > pageCssIndex);
 });
