@@ -1,5 +1,6 @@
 const TEST_SLUG = "inarin14311431/tnx-cast-archive-test";
 const PROD_SLUG = "inarin14311431/tnx_cast_list";
+const DATA_BRANCH_URL = `https://raw.githubusercontent.com/${PROD_SLUG}/dashboard-data/dashboard/data.json`;
 
 const STATUS_LABEL = { reflected: "反映済み", "not-reflected": "未反映", "out-of-scope": "対象外" };
 const EVIDENCE_LABEL = { number: "番号明記", "file-match": "ファイル一致", "title-similarity": "タイトル類似", "number-unmerged": "未マージPRのみ言及" };
@@ -45,7 +46,12 @@ function el(tag, attrs = {}, children = []) {
 async function main() {
   let data;
   try {
-    const res = await fetch("data.json", { cache: "no-store" });
+    const localHosts = new Set(["localhost", "127.0.0.1", "[::1]"]);
+    const dataUrl = location.protocol === "file:" || localHosts.has(location.hostname)
+      ? "data.json"
+      : DATA_BRANCH_URL;
+    const res = await fetch(dataUrl, { cache: "no-store" });
+    if (!res.ok) throw new Error(`Dashboard data request failed: ${res.status}`);
     data = await res.json();
   } catch (e) {
     document.getElementById("generatedAt").textContent = "データの読み込みに失敗しました。";

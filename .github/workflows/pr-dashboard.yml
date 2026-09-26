@@ -52,23 +52,26 @@ jobs:
           PROD_REPO_DIR: ${{ github.workspace }}/prod-repo
         run: node dashboard/scripts/build-dashboard-data.mjs
 
-      - name: Commit and push if changed
+      - name: Publish data to dashboard-data branch
         working-directory: prod-repo
         run: |
           set -euo pipefail
+          cp dashboard/data.json "${RUNNER_TEMP}/pr-dashboard-data.json"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          if git ls-remote --exit-code --heads origin dashboard-data >/dev/null 2>&1; then
+            git fetch origin dashboard-data
+            git switch --force-create dashboard-data origin/dashboard-data
+          else
+            git switch --create dashboard-data
+          fi
+
+          cp "${RUNNER_TEMP}/pr-dashboard-data.json" dashboard/data.json
           if git diff --quiet -- dashboard/data.json; then
             echo "No changes to dashboard/data.json"
             exit 0
           fi
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
           git add dashboard/data.json
           git commit -m "chore(dashboard): update PR history data [skip ci]"
-          for attempt in 1 2 3; do
-            if git push; then
-              exit 0
-            fi
-            echo "push rejected, rebasing onto latest main (attempt $attempt)"
-            git pull --rebase origin main
-          done
-          git push
+          git push origin HEAD:dashboard-data
