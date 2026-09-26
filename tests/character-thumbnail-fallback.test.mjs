@@ -5,6 +5,7 @@ import { readFile } from "node:fs/promises";
 const archiveSource = await readFile(new URL("../js/archive.js", import.meta.url), "utf8");
 const sheetImageSource = await readFile(new URL("../js/sheet-image.js", import.meta.url), "utf8");
 const generatorSource = await readFile(new URL("../js/showcase-generator-v3.js", import.meta.url), "utf8");
+const outputSource = await readFile(new URL("../js/showcase-output-html.js", import.meta.url), "utf8");
 const publisherSource = await readFile(new URL("../js/showcase-dynamic-publish-v3.js", import.meta.url), "utf8");
 const standardShowcaseSource = await readFile(new URL("../js/act-showcase-standard.js", import.meta.url), "utf8");
 const neotokyoShowcaseSource = await readFile(new URL("../js/act-showcase-neotokyo.js", import.meta.url), "utf8");
@@ -21,7 +22,7 @@ test("archive card list falls back from image_thumbnail_url to image_url and no 
 });
 
 test("showcase generator's three per-character card renders all fall back from image_thumbnail_url to image_url", () => {
-  const matches = [...generatorSource.matchAll(/character\.image_thumbnail_url \|\| character\.image_url \|\| "\.\/assets\/placeholders\/scan-failed\.webp"/g)];
+  const matches = [...(generatorSource + outputSource).matchAll(/character\.image_thumbnail_url \|\| character\.image_url \|\| "\.\/assets\/placeholders\/scan-failed\.webp"/g)];
   assert.equal(matches.length, 3, "expected the library picker, selected-cast preview and published output cast card to all use the fallback");
   assert.match(generatorSource, /image_url, image_thumbnail_url, summary, age, gender, visibility, updated_at/);
 });

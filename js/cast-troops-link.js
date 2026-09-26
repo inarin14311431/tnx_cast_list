@@ -1,21 +1,23 @@
+import { escapeHtml } from "./dom-escape.js";
 import { supabase } from "./supabase-client.js";
+import { getCharacter } from "./cast-data-store.js";
 
 const publicId = new URLSearchParams(location.search).get("id")?.trim() || "";
 const desktopMedia = window.matchMedia("(min-width: 761px)");
 if (publicId) void initialize();
 
 async function initialize() {
-  const characterResult = await supabase.from("characters").select("id, experience_points").eq("public_id", publicId).maybeSingle();
-  if (characterResult.error || !characterResult.data) return;
+  const character = await getCharacter();
+  if (!character) return;
   const troopResult = await supabase.from("troops")
     .select("public_id, name, visibility, level, member_max, style_1, utsuwa_attribute, experience_spent, reason_value, reason_control, passion_value, passion_control, life_value, life_control, mundane_value, mundane_control, skills, combos, outfits, notes")
-    .eq("character_id", characterResult.data.id)
+    .eq("character_id", character.id)
     .order("name");
   if (troopResult.error || !troopResult.data?.length) return;
 
   const troops = troopResult.data;
   const troopExperience = troops.reduce((sum, troop) => sum + Math.max(0, Number(troop.experience_spent) || 0), 0);
-  const castExperience = Number(characterResult.data.experience_points) || 0;
+  const castExperience = Number(character.experience_points) || 0;
   const expText = `${castExperience}＋${troopExperience}`;
   watchDesktopExperience(expText);
   ensureTroopDialog();
@@ -129,28 +131,33 @@ function suits(skill) {
 
 function watchDesktopExperience(expText) {
   const exp = document.querySelector("#cast-exp");
+  const content = document.querySelector("#cast-content");
   const castStatus = document.querySelector("#cast-status");
   if (!exp) return;
+
   const apply = () => setTextIfChanged(exp, `${expText} EXP`);
-  if (!castStatus || castStatus.textContent?.trim() === "ACCESS GRANTED") {
+  const rendered = content && !content.hidden;
+  const granted = !castStatus || castStatus.textContent?.trim() === "ACCESS GRANTED";
+
+  if (rendered || granted) {
     apply();
     return;
   }
-  const observer = new MutationObserver(() => {
-    if (castStatus.textContent?.trim() !== "ACCESS GRANTED") return;
-    apply();
-    observer.disconnect();
-  });
-  observer.observe(castStatus, { childList: true, characterData: true, subtree: true });
+
+  window.addEventListener("tnx:cast-rendered", apply, { once: true });
 }
 
 function watchUntilExperienceRendered(root, expText, targetSelector) {
   if (!root) return;
   if (decorateExperience(expText, targetSelector)) return;
-  const observer = new MutationObserver(() => {
-    if (decorateExperience(expText, targetSelector)) observer.disconnect();
-  });
-  observer.observe(root, { childList: true, subtree: true });
+
+  const eventName = targetSelector === ".mobile-cast-meta"
+    ? "tnx:mobile-cast-rendered"
+    : "tnx:quick-sheet-rendered";
+
+  window.addEventListener(eventName, () => {
+    decorateExperience(expText, targetSelector);
+  }, { once: true });
 }
 
 function setTextIfChanged(node, value) {
@@ -181,4 +188,3 @@ function decorateExperience(expText, scope = "") {
 }
 
 function num(value) { return Math.max(0, Number(value) || 0); }
-function escapeHtml(value) { return String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }

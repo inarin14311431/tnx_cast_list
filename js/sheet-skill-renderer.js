@@ -1,3 +1,4 @@
+import { escapeHtml as esc } from "./dom-escape.js?v=1";
 import { initialGeneralSkillSuit } from "./general-skill-catalog.js?v=2";
 
 const SUITS = ["reason", "passion", "life", "mundane"];
@@ -11,16 +12,6 @@ const DEFAULT_KIND_LABELS = {
   ultimate: "奥義",
   direction: "演出"
 };
-
-function esc(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  }[char]));
-}
 
 export function renderSkillEditorSections({
   generalRows = [],

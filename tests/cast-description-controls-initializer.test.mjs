@@ -12,16 +12,22 @@ test("cast description controls use an explicit idempotent initializer", () => {
   assert.match(source, /initializeCastDescriptionControls\(\);/);
 });
 
-test("cast description controls preserve individual bulk keyboard and scoped mutation behavior", () => {
-  assert.match(source, /const STYLE_FIELD_SELECTOR = "\.style-description-expandable"/);
-  assert.match(source, /const OUTFIT_FIELD_SELECTOR = "\.outfit-description-expandable"/);
-  assert.match(source, /\.style-description-toggle-all/);
-  assert.match(source, /resizeDescriptionField\(field, expanded\)/);
-  assert.match(source, /document\.addEventListener\("click"/);
-  assert.match(source, /document\.addEventListener\("keydown"/);
-  assert.match(source, /\["Enter", " "\]\.includes\(event\.key\)/);
-  assert.match(source, /field\.dataset\.descriptionClickReady = "1"/);
-  assert.match(source, /const castContent = document\.querySelector\("#cast-content"\)/);
-  assert.match(source, /new MutationObserver\(prepareDescriptionFields\)\.observe\(castContent, \{ childList: true, subtree: true \}\)/);
-  assert.doesNotMatch(source, /new MutationObserver\(prepareDescriptionFields\)\.observe\(document\.body/);
+test("cast description controls preserve individual bulk keyboard and render initialization behavior", () => {
+  const start = source.indexOf("function initializeCastDescriptionControls");
+  const end = source.indexOf("\n})();", start);
+  const initializer = source.slice(start, end);
+
+  assert.match(initializer, /const STYLE_FIELD_SELECTOR = "\.style-description-expandable"/);
+  assert.match(initializer, /const OUTFIT_FIELD_SELECTOR = "\.outfit-description-expandable"/);
+  assert.match(initializer, /\.style-description-toggle-all/);
+  assert.match(initializer, /resizeDescriptionField\(field, expanded\)/);
+  assert.match(initializer, /document\.addEventListener\("click"/);
+  assert.match(initializer, /document\.addEventListener\("keydown"/);
+  assert.match(initializer, /\["Enter", " "\]\.includes\(event\.key\)/);
+  assert.match(initializer, /field\.dataset\.descriptionClickReady = "1"/);
+  assert.match(initializer, /tnx:cast-rendered/);
+  assert.match(initializer, /applyAfterCastRender/);
+  assert.match(initializer, /once: true/);
+  assert.doesNotMatch(initializer, /new MutationObserver/);
+  assert.doesNotMatch(initializer, /observe\(castContent/);
 });

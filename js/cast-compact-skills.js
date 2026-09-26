@@ -157,16 +157,12 @@ function initializeCastCompactSkills() {
   const content = document.querySelector("#cast-content");
   if (!content || content.dataset.castCompactSkillsInitialized === "1") return;
   content.dataset.castCompactSkillsInitialized = "1";
+  const applyAfterCastRender = () => finalize();
   if (!content.hidden) {
-    finalize();
-    return;
+    applyAfterCastRender();
+  } else {
+    window.addEventListener("tnx:cast-rendered", applyAfterCastRender, { once: true });
   }
-  const observer = new MutationObserver(() => {
-    if (content.hidden) return;
-    observer.disconnect();
-    finalize();
-  });
-  observer.observe(content, { attributes: true, attributeFilter: ["hidden"] });
 }
 
 initializeCastCompactSkills();

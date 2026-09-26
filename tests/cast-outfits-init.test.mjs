@@ -15,8 +15,9 @@ test("cast outfits preserves load, ready wait, and render flow", () => {
   assert.match(source, /const outfits = await getOutfits\(\)/);
   assert.match(source, /await waitForCastReady\(\)/);
   assert.match(source, /render\(outfits\)/);
-  assert.match(source, /new MutationObserver/);
-  assert.match(source, /attributeFilter: \["hidden"\]/);
+  assert.match(source, /tnx:cast-rendered/);
+  assert.match(source, /window\.addEventListener\("tnx:cast-rendered", resolve, \{ once: true \}\)/);
+  assert.doesNotMatch(source, /new MutationObserver/);
 });
 
 test("cast outfits keeps armor totals and description controls", () => {

@@ -1,3 +1,5 @@
+import { escapeHtml } from "./dom-escape.js";
+const esc = escapeHtml;
 import { getStyleSkills } from "./cast-data-store.js";
 import "./skill-display-enhancements.js?v=1";
 
@@ -9,7 +11,6 @@ const FIELDS = [
   ["description", "解説"], ["page", "参照P"]
 ];
 const SUITS = [["reason", "理性", "♠"], ["passion", "感情", "♣"], ["life", "生命", "♥"], ["mundane", "外界", "♦"]];
-const esc = value => String(value ?? "").replace(/[&<>\"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
 const normalizeNewlines = value => String(value ?? "").replace(/\r\n?/g, "\n").replace(/\\n/g, "\n");
 const multilineHtml = value => esc(normalizeNewlines(value)).replace(/\n/g, "<br>");
 
@@ -81,12 +82,7 @@ function renderTable(section, skills) {
 function whenCastReady(callback) {
   const content = document.querySelector("#cast-content");
   if (!content || !content.hidden) { callback(); return; }
-  const observer = new MutationObserver(() => {
-    if (content.hidden) return;
-    observer.disconnect();
-    callback();
-  });
-  observer.observe(content, { attributes: true, attributeFilter: ["hidden"] });
+  window.addEventListener("tnx:cast-rendered", callback, { once: true });
 }
 
 async function initializeCastStyleSkills() {

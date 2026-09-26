@@ -1,3 +1,4 @@
+import { escapeHtml as esc } from "./dom-escape.js?v=1";
 const OUTFIT_LABELS = Object.freeze({
   weapon: "武器",
   armor: "防具",
@@ -16,16 +17,6 @@ const OFC_FIELDS = new Set([
   "crew", "sf", "residence_entry", "residence_electric", "residence_area",
   "manufacturer", "page_number", "major_category", "minor_category"
 ]);
-
-function esc(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  }[char]));
-}
 
 function field(outfit, key, label, { type = "text", className = "" } = {}) {
   const value = type === "number" ? Number(outfit[key] || 0) : outfit[key] ?? "";

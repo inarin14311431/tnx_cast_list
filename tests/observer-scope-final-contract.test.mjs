@@ -8,10 +8,11 @@ const castViewMode = await read("js/cast-view-mode.js");
 const mobileExp = await read("js/sheet-mobile-header-exp.js");
 const troopCombo = await read("js/troop-combo-copy.js");
 
-test("cast mobile readiness observer is scoped to the mobile cast root", () => {
-  assert.match(castViewMode, /const mobileRoot = document\.querySelector\("#mobile-cast-view"\)/);
-  assert.match(castViewMode, /observer\.observe\(mobileRoot, \{ childList: true, subtree: true \}\)/);
-  assert.doesNotMatch(castViewMode, /observer\.observe\(document\.body/);
+test("cast mobile readiness uses the mobile render event", () => {
+  assert.match(castViewMode, /tnx:mobile-cast-rendered/);
+  assert.match(castViewMode, /once: true/);
+  assert.doesNotMatch(castViewMode, /MutationObserver/);
+  assert.doesNotMatch(castViewMode, /\.observe\(/);
 });
 
 test("mobile experience observer is scoped to the mobile editor root", () => {

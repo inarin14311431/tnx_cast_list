@@ -22,9 +22,11 @@ test("style skill presentation owns dedicated style rendering and render event",
 });
 
 test("both skill presentation modules retain cast-ready delayed rendering boundaries", () => {
-  assert.match(compactSource, /new MutationObserver\(/);
-  assert.match(compactSource, /attributeFilter:\s*\["hidden"\]/);
+  assert.match(compactSource, /tnx:cast-rendered/);
+  assert.match(compactSource, /once: true/);
   assert.match(styleSource, /whenCastReady\(/);
-  assert.match(styleSource, /new MutationObserver\(/);
-  assert.match(styleSource, /attributeFilter:\s*\["hidden"\]/);
+  assert.match(styleSource, /tnx:cast-rendered/);
+  assert.match(styleSource, /once: true/);
+  assert.doesNotMatch(compactSource, /new MutationObserver/);
+  assert.doesNotMatch(styleSource, /new MutationObserver/);
 });

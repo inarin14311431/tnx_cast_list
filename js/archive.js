@@ -1,3 +1,4 @@
+import { escapeHtml, escapeAttribute } from "./dom-escape.js";
 import { supabase } from "./supabase-client.js";
 import { renderAuthNavigation } from "./auth-state.js?v=4";
 import { getStyleColor } from "./style-colors.js";
@@ -269,8 +270,6 @@ function obfuscatePublicId(value) {
 
 function normalizeText(value) { return String(value ?? "").normalize("NFKC").toLowerCase().replace(/\s+/g, " ").trim(); }
 function localeCompareJa(a, b) { return String(a ?? "").localeCompare(String(b ?? ""), "ja", { sensitivity: "base", numeric: true }); }
-function escapeHtml(value) { return String(value ?? "").replace(/[&<>"']/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[char])); }
-function escapeAttribute(value) { return escapeHtml(value); }
 function getArchiveState() { return { q: searchInput?.value ?? "", style: styleFilter?.value ?? "", player: playerFilter?.value ?? "", sort: ALLOWED_SORTS.has(sortSelect?.value) ? sortSelect.value : DEFAULT_SORT, size: getPageSize(), page: currentPage }; }
 function syncArchiveStateToUrl() { const state=getArchiveState(),url=new URL(window.location.href); for (const key of ["q","style","player","sort","size","page"]) { const value=state[key]; const defaultValue=key==="sort"?DEFAULT_SORT:key==="size"?DEFAULT_PAGE_SIZE:key==="page"?1:""; if(value===defaultValue||value==="")url.searchParams.delete(key); else url.searchParams.set(key,String(value)); } history.replaceState(null,"",url); }
 function restoreArchiveStateFromUrl() { const params=new URLSearchParams(window.location.search); if(searchInput)searchInput.value=params.get("q")??""; if(styleFilter&&params.get("style"))styleFilter.value=params.get("style"); if(playerFilter&&params.get("player"))playerFilter.value=params.get("player"); if(sortSelect)sortSelect.value=ALLOWED_SORTS.has(params.get("sort"))?params.get("sort"):DEFAULT_SORT; if(pageSizeSelect){const size=Number(params.get("size"));pageSizeSelect.value=String(ALLOWED_PAGE_SIZES.has(size)?size:DEFAULT_PAGE_SIZE);} currentPage=Math.max(1,Number(params.get("page"))||1); }

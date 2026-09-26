@@ -15,7 +15,9 @@ test("cast view mode preserves mobile selection and toggle hooks", () => {
   assert.match(source, /requestedMode === "1" \|\| \(requestedMode !== "0" && autoMobile\)/);
   assert.match(source, /history\.replaceState\(null, "", modeUrl\("1"\)\)/);
   assert.match(source, /document\.addEventListener\("DOMContentLoaded", bind, \{ once: true \}\)/);
-  assert.match(source, /new MutationObserver/);
+  assert.match(source, /tnx:mobile-cast-rendered/);
+  assert.match(source, /once: true/);
+  assert.doesNotMatch(source, /new MutationObserver/);
   assert.match(source, /mobile-cast-requested/);
   assert.match(source, /data-cast-mobile-toggle/);
   assert.match(source, /mobile-cast-topbar__desktop/);

@@ -12,9 +12,16 @@ test("cast summary control uses an explicit idempotent initializer", () => {
 });
 
 test("cast summary control preserves expansion and measurement hooks", () => {
-  assert.match(source, /toggle\.addEventListener\("click"/);
-  assert.match(source, /new MutationObserver\(\(\) => \{/);
-  assert.match(source, /observe\(summary, \{ childList: true, characterData: true, subtree: true \}\)/);
-  assert.match(source, /window\.addEventListener\("resize", scheduleMeasure, \{ passive: true \}\)/);
-  assert.match(source, /toggle\.hidden = summary\.scrollHeight <= summary\.clientHeight \+ 1/);
+  const start = source.indexOf("function initializeCastSummaryControl");
+  const end = source.indexOf("\n})();", start);
+  const initializer = source.slice(start, end);
+
+  assert.match(initializer, /toggle\.addEventListener\("click"/);
+  assert.match(initializer, /tnx:cast-rendered/);
+  assert.match(initializer, /applyAfterCastRender/);
+  assert.match(initializer, /once: true/);
+  assert.doesNotMatch(initializer, /new MutationObserver/);
+  assert.doesNotMatch(initializer, /observe\(summary/);
+  assert.match(initializer, /window\.addEventListener\("resize", scheduleMeasure, \{ passive: true \}\)/);
+  assert.match(initializer, /toggle\.hidden = summary\.scrollHeight <= summary\.clientHeight \+ 1/);
 });
