@@ -4,7 +4,7 @@ import { loadSheetBundle } from "./sheet-load-persistence.js?v=1";
 import { buildSkillSavePayloads, buildOutfitSavePayloads } from "./sheet-save-payload.js?v=3";
 import { getSheetSaveState, focusSheetSaveButton } from "./sheet-save-state.js?v=2";
 import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=2";
-import { canonicalizeArchiveBundle, canonicalizeCharacterSheetJsonp, diffCanonicalBundles } from "./character-sheet-jsonp-canonical.js?v=2";
+import { compareCharacterSheetPayload, normalizeCharacterSheetPayload } from "./character-sheet-compare-service.js?v=2";
 import { groupCharacterSheetDifferences, summarizeCharacterSheetDifferences } from "./character-sheet-diff-display.js?v=3";
 
 const SESSION_KEY = "tnx:character-sheet-comparison:v2";
@@ -48,16 +48,15 @@ async function loadCurrentArchiveBundle(){
   const {data:auth}=await supabase.auth.getUser();if(!auth?.user)throw new Error("ログイン状態を確認できませんでした。");
   return loadSheetBundle({publicId,ownerId:auth.user.id});
 }
-function compareArchiveToJsonp(archiveBundle,externalPayload){return diffCanonicalBundles(canonicalizeArchiveBundle(archiveBundle),canonicalizeCharacterSheetJsonp(externalPayload));}
+// PC/モバイルで判定を揃えるため、比較は共通サービス(同名行の照合・秘匿値の正規化・ライフパス原文優先)に委ねる。
+function compareArchiveToJsonp(archiveBundle,externalPayload){return compareCharacterSheetPayload(archiveBundle,externalPayload);}
 function readSession(){try{return JSON.parse(sessionStorage.getItem(SESSION_KEY)||"null");}catch{return null;}}
 function clearSession(){sessionStorage.removeItem(SESSION_KEY);}
 
 async function fetchCharacterSheetPayload(sourceUrl){
   return normalizePayload(await requestCharacterSheetSource(sourceUrl));
 }
-function parseJsonData(value){if(typeof value!=="string")return value;let source=value.trim();if(!source)return value;if(source.endsWith(";"))source=source.slice(0,-1).trim();if(source.startsWith("(")&&source.endsWith(")"))source=source.slice(1,-1).trim();try{return JSON.parse(source);}catch{return value;}}
-function mergeWrapperMetadata(parsed,wrapper){if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))return parsed;const result={...parsed};for(const key of ["outline","name","nameKana","player","display"])if((result[key]===undefined||result[key]===null||result[key]==="")&&wrapper?.[key]!==undefined)result[key]=wrapper[key];return result;}
-function normalizePayload(payload){let data=payload;for(let i=0;i<6;i+=1){if(typeof data==="string"){const parsed=parseJsonData(data);if(parsed!==data){data=parsed;continue;}break;}if(data&&typeof data==="object"&&typeof data.jsonData==="string"&&data.jsonData.trim()){const parsed=parseJsonData(data.jsonData);if(parsed!==data.jsonData){data=mergeWrapperMetadata(parsed,data);continue;}}if(data&&typeof data==="object"&&data.data&&typeof data.data==="object"&&!data.base&&!data.skills1&&!data.superhumanskills&&!data.weapons){data=mergeWrapperMetadata(data.data,data);continue;}break;}if(!data||typeof data!=="object")throw new Error("倉庫データをTNXキャラクターとして認識できませんでした。");if(!data.outline&&data.styles&&typeof data.styles==="object"&&!Array.isArray(data.styles)){const names=[data.styles.style1,data.styles.style2,data.styles.style3].map(value=>STYLE_CODE_NAMES.get(String(value??""))||"");if(names.every(Boolean))data={...data,outline:`STYLE:${names.join("=")}`};}return data;}
+function normalizePayload(payload){let data=normalizeCharacterSheetPayload(payload);if(!data.outline&&data.styles&&typeof data.styles==="object"&&!Array.isArray(data.styles)){const names=[data.styles.style1,data.styles.style2,data.styles.style3].map(value=>STYLE_CODE_NAMES.get(String(value??""))||"");if(names.every(Boolean))data={...data,outline:`STYLE:${names.join("=")}`};}return data;}
 
 function applyLegacyPayload(payload){
   return new Promise((resolve,reject)=>{
