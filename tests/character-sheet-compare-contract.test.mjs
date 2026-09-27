@@ -10,9 +10,13 @@ const snapshotSchema = fs.readFileSync(new URL("../supabase/11_character_snapsho
 const migration = fs.readFileSync(new URL("../supabase/38_snapshot_from_bundle.sql", import.meta.url), "utf8");
 
 test("comparison reads JSONP directly without running the importer first", () => {
-  assert.match(compare, /canonicalizeCharacterSheetJsonp\(externalPayload\)/);
-  assert.match(compare, /canonicalizeArchiveBundle\(archiveBundle\)/);
-  assert.match(compare, /diffCanonicalBundles/);
+  // 比較本体は共通サービスへ移った。サービス側がJSONPを取込処理を通さず直接正規化していることを確認する。
+  assert.match(compare, /compareCharacterSheetPayload\(archiveBundle,externalPayload\)/);
+  const service = fs.readFileSync(new URL("../js/character-sheet-compare-service.js", import.meta.url), "utf8");
+  assert.match(service, /canonicalizeCharacterSheetJsonp\(warehousePayload\)/);
+  assert.match(service, /canonicalizeArchiveBundle\(/);
+  assert.match(service, /diffCanonicalBundles\(alignedArchive, alignedWarehouse\)/);
+  assert.doesNotMatch(service, /applyLegacyPayload|legacy-import/);
   const start = compare.slice(compare.indexOf("async function startComparison"), compare.indexOf("async function restoreComparison"));
   assert.doesNotMatch(start, /applyLegacyPayload/);
   assert.doesNotMatch(start, /captureEditorBundle/);
@@ -143,4 +147,10 @@ test("direct JSONP comparison still reports real semantic changes", () => {
   const archive = { character:{character_name:"メラキ",reason_base:4,reason_gear:0,reason_control_base:10,reason_control_gear:1},skills:[],outfits:[] };
   const differences = diffCanonicalBundles(canonicalizeArchiveBundle(archive), canonicalizeCharacterSheetJsonp(raw));
   assert.ok(differences.some(item=>item.category==="abilities"&&item.path==="reason_base"&&item.archive===4&&item.warehouse===5));
+});
+test("PC warehouse comparison uses the same shared comparison service as the mobile editor", () => {
+  assert.match(compare, /import \{ compareCharacterSheetPayload, normalizeCharacterSheetPayload \} from "\.\/character-sheet-compare-service\.js\?v=2";/);
+  assert.match(compare, /function compareArchiveToJsonp\(archiveBundle,externalPayload\)\{return compareCharacterSheetPayload\(archiveBundle,externalPayload\);\}/);
+  assert.doesNotMatch(compare, /diffCanonicalBundles|canonicalizeCharacterSheetJsonp|canonicalizeArchiveBundle/);
+  assert.match(compare, /function normalizePayload\(payload\)\{let data=normalizeCharacterSheetPayload\(payload\);/);
 });

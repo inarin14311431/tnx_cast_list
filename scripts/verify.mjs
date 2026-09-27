@@ -8,6 +8,7 @@
  * in sync or that audit will fail.
  */
 import { spawnSync } from "node:child_process";
+import { parseTestSummary } from "./verify-test-summary.mjs";
 
 const VERBOSE = process.env.VERIFY_VERBOSE === "1";
 const TAIL_LINES = 80;
@@ -65,18 +66,12 @@ function runStep(name) {
   return { name, ok: !crashed && code === 0, code, output };
 }
 
-/* node --test's spec reporter ends with a summary block ("ℹ pass N" / "ℹ fail N") and, only
- * when something failed, a "failing tests:" recap that lists just the failing tests (name,
- * "test at <file>:<line>:<col>", and the error) - exactly the slice we want, already assembled
- * by node itself. */
+/* Force the spec reporter so Node 22/24 and TTY/non-TTY execution produce the same output.
+ * The parser still accepts TAP summaries as a defensive fallback for unexpected environments. */
 function runTests() {
-  const { output, code, crashed } = runNpm(["test"]);
+  const { output, code, crashed } = runNpm(["run", "test:verbose"]);
   printIfVerbose("test", output);
-  const passMatch = output.match(/^ℹ pass (\d+)$/m);
-  const failMatch = output.match(/^ℹ fail (\d+)$/m);
-  const parsed = Boolean(passMatch && failMatch);
-  const pass = parsed ? Number(passMatch[1]) : null;
-  const fail = parsed ? Number(failMatch[1]) : null;
+  const { parsed, pass, fail } = parseTestSummary(output);
   const ok = !crashed && parsed && code === 0 && fail === 0;
   return { name: "test", ok, code, output, pass, fail, parsed };
 }
@@ -84,7 +79,7 @@ function runTests() {
 function summarizeTestFailure(result) {
   if (!result.parsed) {
     return [
-      "could not parse a pass/fail summary (\"ℹ pass N\" / \"ℹ fail N\") from `npm test` output; treating as a failure",
+      "could not parse a pass/fail summary (\"ℹ pass N\" / \"ℹ fail N\" or \"# pass N\" / \"# fail N\") from Node test output; treating as a failure",
       tailLines(result.output, TAIL_LINES)
     ].join("\n");
   }

@@ -42,8 +42,11 @@ if (!verifyScript.includes('"audit:ci"')) {
 if (!regression.includes("npm run audit:ci")) {
   failures.push("regression workflow must run audit:ci");
 }
-if (!verifyScript.includes('["test"]')) {
-  failures.push("scripts/verify.mjs must finish with Node regression tests");
+if (!verifyScript.includes('["run", "test:verbose"]')) {
+  failures.push("scripts/verify.mjs must finish with deterministic spec-reporter Node regression tests");
+}
+if (packageJson.scripts?.["test:verbose"] !== "node --test --test-reporter=spec tests/*.test.mjs") {
+  failures.push('package.json "test:verbose" must pin the Node spec reporter');
 }
 if (!regression.includes("npm test")) {
   failures.push("regression workflow must run Node regression tests");
