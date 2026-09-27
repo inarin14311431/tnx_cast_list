@@ -50,7 +50,7 @@ test("character renderer stays DOM-free and sheet delegates only markup generati
   const applicationSource = await readFile(new URL("../js/sheet-character-application.js", import.meta.url), "utf8");
 
   assert.doesNotMatch(rendererSource, /document\.|window\.|supabase|localStorage|sessionStorage|addEventListener/);
-  assert.match(sheetSource, /sheet-character-renderer\.js\?v=1/);
+  assert.match(sheetSource, /sheet-character-renderer\.js\?v=3/);
   assert.match(sheetSource, /renderStyleCards\(/);
   assert.match(sheetSource, /renderAbilityCards\(ABILITIES\)/);
   assert.match(sheetSource, /applyCharacterToEditor\(/);

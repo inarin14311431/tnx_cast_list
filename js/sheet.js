@@ -1,4 +1,4 @@
-import { applyStylePresentation, applyAbilityFinals } from "./sheet-presentation-dom.js?v=1";
+import { applyStylePresentation, applyAbilityFinals } from "./sheet-presentation-dom.js?v=3";
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=4";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
@@ -29,7 +29,7 @@ import {
   appendGeneralBlankSlots,
   orderGeneralRows
 } from "./sheet-general-skill-state.js?v=1";
-import { renderStyleCards, renderAbilityCards } from "./sheet-character-renderer.js?v=1";
+import { renderStyleCards, renderAbilityCards } from "./sheet-character-renderer.js?v=3";
 import { calculateStyleBaselines } from "./sheet-style-baseline.js?v=1";
 import { buildStylePresentation } from "./sheet-style-presentation.js?v=1";
 import { calculateAbilityFinals } from "./sheet-ability-calculation.js?v=1";

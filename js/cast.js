@@ -482,7 +482,7 @@ function renderAbilities(character) {
   document.querySelector("#ability-grid").innerHTML =
     abilities
       .map(ability => `
-        <article class="ability-card">
+        <article class="ability-card" data-ability-key="${ability.key.toLowerCase()}">
           <header>
             <span>${ability.symbol}</span>
             <span>${ability.key}</span>
