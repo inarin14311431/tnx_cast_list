@@ -12,6 +12,12 @@ export function applyAbilityFinals(root, abilities, finals) {
   for (const [key] of abilities) {
     root.querySelector(`#${key}-final`).textContent = finals[key];
     root.querySelector(`#${key}-control-final`).textContent = finals[`${key}-control`];
+    (root.querySelectorAll?.(`[data-ability-tooltip="${key}"]`) || []).forEach(tooltip => {
+      const value = tooltip.querySelector("[data-ability-tooltip-value]");
+      const control = tooltip.querySelector("[data-ability-tooltip-control]");
+      if (value) value.textContent = finals[key];
+      if (control) control.textContent = finals[`${key}-control`];
+    });
   }
   root.querySelector("#cs-final").textContent = finals.cs;
 }
