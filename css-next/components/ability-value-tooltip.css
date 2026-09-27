@@ -1,0 +1,78 @@
+/* PC-only hover detail for the four ability labels. */
+.ability-value-trigger {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  white-space: nowrap;
+}
+th .ability-value-trigger {
+  width: 100%;
+  min-height: 1.2em;
+  cursor: help;
+}
+body[data-page="sheet.html"] th .ability-value-trigger {
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+.ability-value-tooltip {
+  position: absolute;
+  z-index: 30;
+  left: 50%;
+  top: calc(100% + 5px);
+  display: grid;
+  width: 72px;
+  gap: 2px;
+  padding: 5px 6px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 55%, var(--color-border));
+  color: var(--color-text);
+  background: color-mix(in srgb, var(--color-surface) 98%, transparent);
+  box-shadow: 0 6px 16px rgb(0 0 0 / 28%);
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, 3px);
+  transition: opacity .1s ease, transform .1s ease;
+}
+[data-ability-tooltip="reason"] .ability-value-tooltip {
+  left: 0;
+  transform: translateY(3px);
+}
+[data-ability-tooltip="mundane"] .ability-value-tooltip {
+  right: 0;
+  left: auto;
+  transform: translateY(3px);
+}
+.ability-value-tooltip__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: 5px;
+  color: var(--color-muted);
+  font-size: .62rem;
+  font-weight: 700;
+  line-height: 1.2;
+}
+.ability-value-tooltip__row strong {
+  color: var(--color-text);
+  font-size: .82rem;
+  line-height: 1;
+  text-align: right;
+}
+@media (hover: hover) and (pointer: fine) {
+  .ability-value-trigger:hover .ability-value-tooltip {
+    opacity: 1;
+  }
+  [data-ability-tooltip="reason"]:hover .ability-value-tooltip,
+  [data-ability-tooltip="mundane"]:hover .ability-value-tooltip {
+    transform: translateY(0);
+  }
+  :not([data-ability-tooltip="reason"]):not([data-ability-tooltip="mundane"]).ability-value-trigger:hover .ability-value-tooltip {
+    transform: translate(-50%, 0);
+  }
+}
+@media (hover: none), (pointer: coarse) {
+  .ability-value-tooltip {
+    display: none;
+  }
+}
