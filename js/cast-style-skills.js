@@ -37,6 +37,7 @@ function ensureDedicatedPanel(section) {
   if (!section) return null;
   const existing = document.querySelector("#style-skill-panel");
   if (existing) {
+    existing.classList.add("cast-style-skill-analysis");
     const body = existing.querySelector(".style-skill-panel__body");
     if (body && section.parentElement !== body) body.append(section);
     section.querySelector(":scope > h3")?.setAttribute("hidden", "");
@@ -46,7 +47,7 @@ function ensureDedicatedPanel(section) {
   if (!sourcePanel) return null;
   const panel = document.createElement("section");
   panel.id = "style-skill-panel";
-  panel.className = "data-panel data-panel--wide panel-style-skills";
+  panel.className = "data-panel data-panel--wide panel-style-skills cast-style-skill-analysis";
   panel.innerHTML = '<header class="data-panel__header"><h2>スタイル技能 <small>STYLE SKILLS</small></h2></header><div class="style-skill-panel__body"></div>';
   panel.querySelector(".style-skill-panel__body").append(section);
   sourcePanel.insertAdjacentElement("afterend", panel);

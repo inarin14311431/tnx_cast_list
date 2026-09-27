@@ -11,7 +11,6 @@ const content = document.querySelector("#cast-content");
 initializeReadonlyFields();
 initializeReturnLink();
 initializeEditLinkAndLabels();
-initializeHandleKana();
 initializeCharacterSheetLinks();
 initializePanelClasses();
 
@@ -167,14 +166,14 @@ function ensurePersonalDataRows() {
   }));
 }
 
-function createCharacterSheetLinkRow(href, { mobile = false } = {}) {
+function createCharacterSheetLinkRow(href) {
   const row = document.createElement("div");
-  row.className = mobile ? "mobile-cast-character-sheet-link" : "cast-character-sheet-link";
+  row.className = "mobile-cast-character-sheet-link";
   row.dataset.characterSheetLink = "1";
   const dt = document.createElement("dt");
   const dd = document.createElement("dd");
   const link = document.createElement("a");
-  dt.textContent = mobile ? "CHARACTER SHEET" : "キャラクターシート倉庫";
+  dt.textContent = "CHARACTER SHEET";
   link.href = href;
   link.target = "_blank";
   link.rel = "noopener noreferrer";
@@ -182,6 +181,18 @@ function createCharacterSheetLinkRow(href, { mobile = false } = {}) {
   dd.append(link);
   row.append(dt, dd);
   return row;
+}
+
+// Desktop hero: a standalone action under the identity facts, not a dt/dd pair.
+function createCharacterSheetLink(href) {
+  const link = document.createElement("a");
+  link.className = "cast-character-sheet-link";
+  link.dataset.characterSheetLink = "1";
+  link.href = href;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+  link.innerHTML = '<span>外部シートを開く</span><small>CHARACTER SHEET</small><span class="cast-character-sheet-link__arrow" aria-hidden="true">↗</span>';
+  return link;
 }
 
 async function initializeCharacterSheetLinks() {
@@ -192,17 +203,18 @@ async function initializeCharacterSheetLinks() {
 
     const mobileRequested = new URLSearchParams(location.search).get("mobile") === "1";
     const render = () => {
-      const desktopList = document.querySelector(".cast-hero .identity-grid");
-      if (desktopList && !desktopList.querySelector('[data-character-sheet-link="1"]')) {
-        desktopList.append(createCharacterSheetLinkRow(href));
+      const desktopSlot = document.querySelector(".cast-hero #cast-character-sheet-slot");
+      if (desktopSlot && !desktopSlot.querySelector('[data-character-sheet-link="1"]')) {
+        desktopSlot.append(createCharacterSheetLink(href));
+        desktopSlot.hidden = false;
       }
 
       const mobileList = document.querySelector("#mobile-cast-view .mobile-cast-meta");
       if (mobileList && !mobileList.querySelector('[data-character-sheet-link="1"]')) {
-        mobileList.append(createCharacterSheetLinkRow(href, { mobile: true }));
+        mobileList.append(createCharacterSheetLinkRow(href));
       }
 
-      return mobileRequested ? Boolean(mobileList) : Boolean(desktopList);
+      return mobileRequested ? Boolean(mobileList) : Boolean(desktopSlot);
     };
 
     if (render()) return;
@@ -219,19 +231,6 @@ async function initializeCharacterSheetLinks() {
     console.warn("character sheet link could not be loaded", error);
   }
 }
-async function initializeHandleKana() {
-  const publicId = new URLSearchParams(location.search).get("id")?.trim() || "";
-  const handle = document.querySelector("#cast-handle");
-  const handleKana = document.querySelector("#cast-handle-kana");
-  if (handle?.textContent.trim() === "NO HANDLE") handle.textContent = "";
-  if (!publicId || !handleKana) return;
-  try {
-    const character = await getCharacter();
-    const value = String(character?.handle_kana || "").trim();
-    handleKana.textContent = value ? `“${value}”` : "";
-  } catch (error) { console.warn("handle kana could not be loaded", error); }
-}
-
 function initializePanelClasses() {
   whenCastReady(() => {
     const panels = [...document.querySelectorAll("#tab-session .data-layout > .data-panel")];

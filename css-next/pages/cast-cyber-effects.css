@@ -9,21 +9,16 @@ body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero__image-scan::
 
 /* The first-screen identity block is where acquisition effects are visible. */
 body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero { animation:castHeroAcquire .62s ease-out both; }
-body[data-page="cast.html"] #cast-content:not([hidden]) .cast-name-readings,
 body[data-page="cast.html"] #cast-content:not([hidden]) .cast-name-primary,
-body[data-page="cast.html"] #cast-content:not([hidden]) .hero-divine-panel,
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero-divines,
 body[data-page="cast.html"] #cast-content:not([hidden]) .identity-grid,
-body[data-page="cast.html"] #cast-content:not([hidden]) .cast-summary-panel { animation:castIdentityAcquire .38s ease-out both; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero-summary { animation:castIdentityAcquire .38s ease-out both; }
 body[data-page="cast.html"] #cast-content:not([hidden]) .cast-name-primary { animation-delay:.12s; }
-body[data-page="cast.html"] #cast-content:not([hidden]) .hero-divine-panel { animation-delay:1.25s; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero-divines { animation-delay:1.25s; }
 body[data-page="cast.html"] #cast-content:not([hidden]) .identity-grid { animation-delay:1.42s; }
-body[data-page="cast.html"] #cast-content:not([hidden]) .cast-summary-panel { animation-delay:1.55s; }
+body[data-page="cast.html"] #cast-content:not([hidden]) .cast-hero-summary { animation-delay:.2s; }
 
-/* Style cards authenticate one by one: flash, settle, then hand off to the next slot. */
-body[data-page="cast.html"] #cast-content:not([hidden]) .cast-style-card-simple { animation:castStyleVerify .52s ease-out both; }
-body[data-page="cast.html"] #cast-content:not([hidden]) .cast-style-card-simple:nth-child(1) { animation-delay:.38s; }
-body[data-page="cast.html"] #cast-content:not([hidden]) .cast-style-card-simple:nth-child(2) { animation-delay:.68s; }
-body[data-page="cast.html"] #cast-content:not([hidden]) .cast-style-card-simple:nth-child(3) { animation-delay:.98s; }
+/* Style slots animate only when cast-cyber-trigger.js adds .cast-style-verify (cast-cyber-runtime.css). */
 
 /* ARCHIVE ID gets an obvious narrow scanner instead of a faint full-panel sheen. */
 body[data-page="cast.html"] .cast-header__public-id { position:relative;overflow:hidden;isolation:isolate; }
@@ -32,9 +27,8 @@ body[data-page="cast.html"] .cast-header__public-id::after { position:absolute;z
 @keyframes castPortraitScan { 0%,15%{top:-4%;opacity:0}20%{opacity:.95}70%{top:94%;opacity:.9}76%,100%{top:104%;opacity:0} }
 @keyframes castHeroAcquire { from{opacity:.42;filter:brightness(1.35) saturate(.75);transform:translateY(5px)} 55%{opacity:1;filter:brightness(1.12) saturate(1.08)} to{opacity:1;filter:none;transform:none} }
 @keyframes castIdentityAcquire { from{opacity:0;transform:translateX(8px);filter:brightness(1.3)} to{opacity:1;transform:none;filter:none} }
-@keyframes castStyleVerify { 0%{opacity:.3;transform:translateY(3px);filter:brightness(.75)} 45%{opacity:1;transform:translateY(0);filter:brightness(2) saturate(1.45);box-shadow:inset 0 0 28px color-mix(in srgb,var(--style-local) 24%,transparent),0 0 24px color-mix(in srgb,var(--style-local) 45%,transparent)} 100%{opacity:1;filter:none} }
 @keyframes castIdTrace { 0%,58%{left:-18px;opacity:0}62%{opacity:1}78%{left:calc(100% + 8px);opacity:1}82%,100%{left:calc(100% + 8px);opacity:0} }
 
-@media (prefers-reduced-motion: reduce) { body[data-page="cast.html"] #cast-content .cast-hero__image-scan::before,body[data-page="cast.html"] #cast-content .cast-hero,body[data-page="cast.html"] #cast-content .cast-name-readings,body[data-page="cast.html"] #cast-content .cast-name-primary,body[data-page="cast.html"] #cast-content .cast-style-card-simple,body[data-page="cast.html"] #cast-content .hero-divine-panel,body[data-page="cast.html"] #cast-content .identity-grid,body[data-page="cast.html"] #cast-content .cast-summary-panel,body[data-page="cast.html"] .cast-header__public-id::after { animation:none; } body[data-page="cast.html"] #cast-content .cast-hero__image-scan::before{top:48%;opacity:.38} }
+@media (prefers-reduced-motion: reduce) { body[data-page="cast.html"] #cast-content .cast-hero__image-scan::before,body[data-page="cast.html"] #cast-content .cast-hero,body[data-page="cast.html"] #cast-content .cast-name-primary,body[data-page="cast.html"] #cast-content .cast-hero-divines,body[data-page="cast.html"] #cast-content .identity-grid,body[data-page="cast.html"] #cast-content .cast-hero-summary,body[data-page="cast.html"] .cast-header__public-id::after { animation:none; } body[data-page="cast.html"] #cast-content .cast-hero__image-scan::before{top:48%;opacity:.38} }
 @media (max-width:600px) { body[data-page="cast.html"] #cast-content .cast-hero__image-frame::before,body[data-page="cast.html"] #cast-content .cast-hero__image-frame::after,body[data-page="cast.html"] #cast-content .cast-hero__image-scan::before,body[data-page="cast.html"] #cast-content .cast-hero__image-scan::after{display:none} }
 @media print { body[data-page="cast.html"] #cast-content .cast-hero__image-frame::before,body[data-page="cast.html"] #cast-content .cast-hero__image-frame::after,body[data-page="cast.html"] #cast-content .cast-hero__image-scan,body[data-page="cast.html"] .cast-header__public-id::after{display:none} }
