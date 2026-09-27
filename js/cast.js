@@ -1,5 +1,6 @@
 import { createQuickSheetHtml, createQuickPageHeader, createQuickPageFooter } from "./cast-quick-sheet-html.js?v=1";
-import { displayValue, formatHandle } from "./cast-display-format.js?v=1";
+import { displayValue } from "./cast-display-format.js?v=1";
+import { buildDivineSlots, buildStyleSlots, stripOuterQuotes } from "./cast-hero-view.js?v=1";
 import { COMBO_ABILITY_LABELS, getComboActUseLimit, isSkillCounterCombo, getComboSkills, getComboValue } from "./cast-combo-rules.js?v=2";
 import { supabase } from "./supabase-client.js";
 import { escapeHtml } from "./dom-escape.js";
@@ -133,17 +134,18 @@ function renderCharacter(
     `${character.character_name} // N◎VA CAST ARCHIVE`;
 
   setText("#cast-public-id", character.public_id);
-  setText("#cast-handle", formatHandle(character.handle));
-  setText("#cast-name", character.character_name);
-  setText("#cast-kana", character.character_kana);
-  setText("#cast-player", character.player_name);
-  setText("#cast-affiliation", character.affiliation);
-  setText("#cast-rank", character.citizen_rank);
-  setText(
+  renderNames(character);
+  setIdentityValue("#cast-player", character.player_name);
+  setIdentityValue("#cast-affiliation", character.affiliation);
+  setIdentityValue("#cast-rank", character.citizen_rank);
+  setIdentityValue(
     "#cast-exp",
     `${character.experience_points ?? 0} EXP`
   );
-  setText("#cast-summary", character.summary);
+  // Reveal the summary with the first paint; cast-view-controls.js only measures the toggle.
+  const summary = String(character.summary ?? "").trim();
+  document.querySelector("#cast-summary").textContent = summary;
+  document.querySelector("#cast-summary-panel").hidden = !summary;
 
   const viewOutfits = normalizeOutfitListForView(outfits);
   renderImage(character);
@@ -407,38 +409,35 @@ function renderImage(character) {
   );
 }
 
+function renderNames(character) {
+  const handle = stripOuterQuotes(character.handle);
+  const handleElement = document.querySelector("#cast-handle");
+  // Quotes stay outside the ruby so handle-format.js sees an already-quoted handle.
+  handleElement.innerHTML = handle
+    ? `“${renderRuby(handle, stripOuterQuotes(character.handle_kana))}”`
+    : "";
+  handleElement.hidden = !handle;
+  document.querySelector("#cast-name").innerHTML =
+    renderRuby(displayValue(character.character_name), character.character_kana);
+}
+
+function renderRuby(base, reading) {
+  const text = String(reading ?? "").trim();
+  return text
+    ? `<ruby>${escapeHtml(base)}<rt>${escapeHtml(text)}</rt></ruby>`
+    : escapeHtml(base);
+}
+
+// Styles with a persona/key mark get the wider, cut-corner slot; others stay a light band.
 function renderStyles(character) {
-  const styles = [
-    {
-      name: character.style_1,
-      mark: character.style_1_mark,
-      divine: character.divine_1
-    },
-    {
-      name: character.style_2,
-      mark: character.style_2_mark,
-      divine: character.divine_2
-    },
-    {
-      name: character.style_3,
-      mark: character.style_3_mark,
-      divine: character.divine_3
-    }
-  ].filter(style => style.name);
-
   document.querySelector("#cast-styles").innerHTML =
-    styles
-      .map((style, index) => `
-        <article class="style-chip">
-          <span class="style-chip__index">
-            0${index + 1}
-          </span>
-
-          <span class="style-chip__name">
-            ${escapeHtml(style.name)}
-          </span>
-
-          ${style.mark ? `<span class="style-chip__mark" aria-label="${escapeHtml(style.mark)}">${renderStyleMark(style.mark)}</span>` : ""}
+    buildStyleSlots(character)
+      .map(style => `
+        <article class="cast-style-slot ${style.state}${style.featured ? " is-featured" : ""}" data-cast-style-slot="${style.number}"${style.role ? ` data-style-role="${style.role}"` : ""}>
+          ${style.role ? `<span class="cast-style-slot__role">${style.role}</span>` : ""}
+          <span class="cast-style-slot__index">${style.number}</span>
+          <span class="cast-style-slot__name">${escapeHtml(style.name)}</span>
+          ${style.mark ? `<span class="cast-style-slot__mark" role="img" aria-label="${escapeHtml(style.mark)}">${renderStyleMark(style.mark)}</span>` : ""}
         </article>
       `)
       .join("");
@@ -538,21 +537,9 @@ function renderAbilities(character) {
   );
 }
 
+// Divine work n takes the role color of style n; the reading row keeps its height when empty.
 function renderDivineWorks(character) {
-  const divineWorks = [
-    {
-      style: character.style_1,
-      name: character.divine_1
-    },
-    {
-      style: character.style_2,
-      name: character.divine_2
-    },
-    {
-      style: character.style_3,
-      name: character.divine_3
-    }
-  ].filter(item => item.style || item.name);
+  const divineWorks = buildDivineSlots(character);
 
   const container =
     document.querySelector("#divine-list");
@@ -564,19 +551,11 @@ function renderDivineWorks(character) {
   }
 
   container.innerHTML = divineWorks
-    .map((item, index) => `
-      <article class="divine-card">
-        <span class="divine-card__number">
-          0${index + 1}
-        </span>
-
-        <span class="divine-card__style">
-          ${escapeHtml(item.style)}
-        </span>
-
-        <strong class="divine-card__name">
-          ${escapeHtml(item.name || "UNREGISTERED")}
-        </strong>
+    .map(item => `
+      <article class="cast-divine-slot ${item.state}${item.state === "is-standard" ? "" : " is-featured"}" data-divine-code="${item.code}">
+        <span class="cast-divine-slot__code">${item.code}</span>
+        <span class="cast-divine-slot__yomi"${item.yomi ? "" : ' aria-hidden="true"'}>${escapeHtml(item.yomi)}</span>
+        <strong class="cast-divine-slot__name">${escapeHtml(item.name || "UNREGISTERED")}</strong>
       </article>
     `)
     .join("");
@@ -1130,6 +1109,15 @@ function setText(selector, value) {
   }
 
   element.textContent = displayValue(value);
+}
+
+// Identity values are clipped to one line; the title keeps the full text reachable.
+function setIdentityValue(selector, value) {
+  setText(selector, value);
+  const element = document.querySelector(selector);
+  if (!element) return;
+  if (String(value ?? "").trim()) element.title = element.textContent;
+  else element.removeAttribute("title");
 }
 
 function showError(message, onRetry) {

@@ -1,4 +1,4 @@
-/* Trigger visible cyber effects after cast data and enhanced style cards exist. */
+/* Trigger visible cyber effects after cast data and style slots exist. Cards stay visible without this script. */
 (function(){
   // Keep automated visual captures deterministic. These effects re-trigger via
   // timers and class mutations even when Playwright disables CSS animations.
@@ -12,7 +12,7 @@
   function start(){
     if(started||content.hidden)return;
     if(document.querySelector('.cast-access-overlay'))return;
-    const cards=[...document.querySelectorAll('#cast-styles .cast-style-card-simple')];
+    const cards=[...document.querySelectorAll('#cast-styles .cast-style-slot')];
     if(cards.length<1)return;
     started=true;
     body.classList.remove('cast-cyber-enter');
