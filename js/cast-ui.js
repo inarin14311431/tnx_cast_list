@@ -1,7 +1,7 @@
 import { supabase } from "./supabase-client.js";
-import { getCharacter } from "./cast-data-store.js";
+import { getCharacter } from "./cast-data-store.js?v=2";
 import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=1";
-import "./cast-combo-enhancements.js?v=1";
+import "./cast-combo-enhancements.js?v=2";
 
 /* Public cast-view shared UI only.
  * Skill table rendering/layout belongs to cast-compact-skills.js and cast-style-skills.js.

@@ -10,6 +10,8 @@
     "test:visual:production": "playwright test --config=playwright.visual.config.js --project=visual-desktop --grep-invert '\\u30ad\\u30e3\\u30b9\\u30c8\\u95b2\\u89a7 spectrum-neon' && playwright test --config=playwright.visual.config.js --project=visual-mobile",
     "test:quality": "playwright test --config=playwright.quality.config.js",
     "check:js": "node scripts/check-js.mjs",
+    "preload:update": "node scripts/generate-modulepreload.mjs",
+    "audit:modulepreload": "node scripts/generate-modulepreload.mjs --check",
     "audit:js-baseline": "node scripts/audit-js-baseline.mjs",
     "audit:cache": "node scripts/audit-editor-cache-policy.mjs",
     "audit:modules": "node scripts/audit-module-graph.mjs",

@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 const source = await readFile(new URL("../js/tnx-direct-transfer-data.js", import.meta.url), "utf8");
 
 test("direct transfer consumes the shared normalized outfit view model", () => {
-  assert.match(source, /import \{ normalizeOutfitForView \} from "\.\/outfit-view-model\.js\?v=2"/);
+  assert.match(source, /import \{ normalizeOutfitForView \} from "\.\/outfit-view-model\.js\?v=3"/);
   assert.match(source, /outfits: \(outfits \|\| \[\]\)\.map\(normalizeOutfitForView\)/);
   assert.match(source, /outfits\.map\(normalizeOutfitForView\)/);
   assert.match(source, /const normalized = normalizeOutfitForView\(outfit\)/);

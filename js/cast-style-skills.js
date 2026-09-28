@@ -1,6 +1,6 @@
 import { escapeHtml } from "./dom-escape.js";
 const esc = escapeHtml;
-import { getStyleSkills } from "./cast-data-store.js";
+import { getStyleSkills } from "./cast-data-store.js?v=2";
 import "./skill-display-enhancements.js?v=1";
 
 const PREFIX = "@@TNX_STYLE_DETAIL_V1@@";

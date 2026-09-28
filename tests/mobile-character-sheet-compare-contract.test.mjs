@@ -47,7 +47,7 @@ test("source panel construction remains idempotent across viewer enhancement pas
 });
 
 test("warehouse comparison is owned by the mobile editor", () => {
-  assert.match(editorApp, /sheet-mobile-character-sheet-compare\.js\?v=1/);
+  assert.match(editorApp, /sheet-mobile-character-sheet-compare\.js\?v=2/);
   assert.match(editorCompare, /倉庫との差分を確認/);
   assert.match(editorCompare, /compareCharacterSheetSource/);
   assert.match(editorCompare, /data-mobile-profile-group=\"source\"/);

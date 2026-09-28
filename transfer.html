@@ -1,6 +1,14 @@
 <!doctype html>
 <html lang="ja">
 <head>
+  <!-- modulepreload:start -->
+  <link rel="modulepreload" href="./js/tnx-direct-transfer-data.js?v=4">
+  <link rel="modulepreload" href="./js/supabase-client.js">
+  <link rel="modulepreload" href="./js/vendor/supabase-js.js">
+  <link rel="modulepreload" href="./js/outfit-view-model.js?v=3">
+  <link rel="modulepreload" href="./js/outfit-contract.js?v=3">
+  <link rel="modulepreload" href="./js/outfit-legacy-compat.js?v=1">
+  <!-- modulepreload:end -->
   <script>if(new URLSearchParams(location.search).get("embed")==="1")document.documentElement.classList.add("is-transfer-embed");</script>
   <script src="./js/css-next-theme.js"></script>
   <link rel="stylesheet" href="./css-next/index.css?v=56" data-css-system="next">
@@ -87,6 +95,6 @@
       <a id="transfer-result-link" class="transfer-result__link" href="#" target="_blank" rel="noopener" hidden>キャラクターシート倉庫で開く</a>
     </section>
   </main>
-  <script type="module" src="./js/transfer.js?v=4"></script>
+  <script type="module" src="./js/transfer.js?v=5"></script>
 </body>
 </html>
