@@ -1,6 +1,6 @@
 import { escapeHtml } from "./dom-escape.js";
 import { supabase } from "./supabase-client.js";
-import { getCharacter } from "./cast-data-store.js";
+import { getCharacter } from "./cast-data-store.js?v=2";
 
 const publicId = new URLSearchParams(location.search).get("id")?.trim() || "";
 const desktopMedia = window.matchMedia("(min-width: 761px)");

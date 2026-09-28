@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { normalizeOutfitForView } from "./outfit-view-model.js?v=2";
+import { normalizeOutfitForView } from "./outfit-view-model.js?v=3";
 
 const STYLE_CODES = new Map([
   ["カブキ", "0"], ["バサラ", "1"], ["タタラ", "2"], ["ミストレス", "3"], ["カブト", "4"], ["カリスマ", "5"],
