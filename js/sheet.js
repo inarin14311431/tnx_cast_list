@@ -39,7 +39,7 @@ import { countGeneralSkillColumns, chooseGeneralSkillColumn } from "./sheet-gene
 import { resolveSkillInputState } from "./sheet-skill-level-suit-state.js?v=1";
 import { buildStyleSaveRows } from "./sheet-style-save-projection.js?v=1";
 import { buildAbilitySaveSnapshot, buildCsSaveSnapshot } from "./sheet-ability-save-projection.js?v=1";
-import { collectCharacterInputSnapshot, applyCharacterInputSnapshot } from "./sheet-character-input-snapshot.js?v=7";
+import { collectCharacterInputSnapshot, applyCharacterInputSnapshot } from "./sheet-character-input-snapshot.js?v=8";
 import { collectAbilityInputSnapshot, applyAbilityInputSnapshot } from "./sheet-ability-input-snapshot.js?v=1";
 import { collectStyleInputSnapshot, applyStyleInputSnapshot } from "./sheet-style-input-snapshot.js?v=1";
 import { initSheetStyleInteractions } from "./sheet-style-interactions.js?v=1";
