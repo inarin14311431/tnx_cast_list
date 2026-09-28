@@ -26,3 +26,5 @@ Require these checks before `main` can be updated:
 The verification repository is the approved source for `quality-gates.json` and visual reference snapshots. Production CI rejects a quality-contract version mismatch.
 
 Repository-side workflow files and audits enforce the checks themselves. GitHub branch protection/ruleset settings must additionally make the checks mandatory at the repository level.
+
+Because "require the branch to be up to date before merging" (`strict_required_status_checks_policy`) is enabled, `main` after a merge is always identical to what the PR already validated. So a push to `main` only re-runs `Regression checks / verify`; the other checks run on pull requests only.
