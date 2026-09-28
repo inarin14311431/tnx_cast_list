@@ -1,6 +1,6 @@
 import { escapeHtml } from "./dom-escape.js";
-import { getCharacter } from "./cast-data-store.js";
-import { getImageFocusX, getImageFocusY, getImageZoom } from "./image-focus.js?v=3";
+import { getCharacter } from "./cast-data-store.js?v=2";
+import { getImageFocusX, getImageFocusY, getImageZoom } from "./image-focus.js?v=4";
 import { stripOuterQuotes } from "./cast-hero-view.js?v=1";
 import { computeNameLayout, createCanvasMeasurer, approximateTextWidth, OPEN_QUOTE, CLOSE_QUOTE, READING_GAP, READING_LETTER_SPACING_EM } from "./cast-sns-name-layout.js?v=1";
 

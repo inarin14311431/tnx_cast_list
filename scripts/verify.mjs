@@ -15,6 +15,7 @@ const TAIL_LINES = 80;
 
 const STEPS = [
   "check:js",
+  "audit:modulepreload",
   "audit:js-baseline",
   "audit:cache",
   "audit:modules",
