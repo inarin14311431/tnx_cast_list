@@ -7,7 +7,7 @@ const dashboard = await readFile(new URL("../dashboard/dashboard.js", import.met
 const html = await readFile(new URL("../dashboard/index.html", import.meta.url), "utf8");
 
 test("dashboard publisher writes generated data to its unprotected data branch", () => {
-  assert.match(workflow, /git switch --force-create dashboard-data origin\/dashboard-data/);
+  assert.match(workflow, /git switch --discard-changes --force-create dashboard-data origin\/dashboard-data/);
   assert.match(workflow, /git push origin HEAD:dashboard-data/);
   assert.doesNotMatch(workflow, /git push(?:\s+origin)?(?:\s+HEAD)?:?main/);
   assert.doesNotMatch(workflow, /^\s*git push\s*$/m);

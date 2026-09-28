@@ -62,7 +62,7 @@ jobs:
 
           if git ls-remote --exit-code --heads origin dashboard-data >/dev/null 2>&1; then
             git fetch origin dashboard-data
-            git switch --force-create dashboard-data origin/dashboard-data
+            git switch --discard-changes --force-create dashboard-data origin/dashboard-data
           else
             git switch --create dashboard-data
           fi
