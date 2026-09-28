@@ -20,6 +20,8 @@ jobs:
           node-version: '22'
       - name: Check JavaScript syntax
         run: npm run check:js
+      - name: Audit modulepreload links
+        run: npm run audit:modulepreload
       - name: Audit JavaScript baseline
         run: npm run audit:js-baseline
       - name: Audit editor cache policy

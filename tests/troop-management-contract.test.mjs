@@ -205,7 +205,8 @@ test("troop editor runtime uses explicit initializers without DOM recovery obser
   assert.match(layout, /export function initializeTroopLayout/);
   assert.match(comboRules, /export function initializeTroopComboRules/);
   assert.doesNotMatch(`${ui}\n${layout}\n${comboRules}`, /MutationObserver|stopImmediatePropagation/);
-  assert.doesNotMatch(html, /troop-(?:editor-ui|layout-refine|fields-v6|combo-rule-v2)\.js/);
+  const htmlWithoutModulepreload = html.replace(/<!-- modulepreload:start -->[\s\S]*?<!-- modulepreload:end -->/, "");
+  assert.doesNotMatch(htmlWithoutModulepreload, /troop-(?:editor-ui|layout-refine|fields-v6|combo-rule-v2)\.js/);
 });
 
 test("cast troop modal uses editor section colors and compact CS pairs", () => {
@@ -215,7 +216,7 @@ test("cast troop modal uses editor section colors and compact CS pairs", () => {
   const css = read("css-next/pages/cast-troop-modal.css");
   assert.match(castHtml, /cast-entry\.css(?:\?v=\d+)?/);
   assert.match(castEntry, /cast-troop-modal\.css\?v=5[^\n]*layer\(cast-troop-modal\)/);
-  assert.match(castHtml, /cast-troops-link\.js\?v=7/);
+  assert.match(castHtml, /cast-troops-link\.js\?v=8/);
   assert.match(castHtml, /troop-combo-copy\.js\?v=2/);
   assert.match(cast, /cast-troop-block--abilities/);
   assert.match(cast, /cast-troop-block--combos/);

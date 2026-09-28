@@ -3,7 +3,7 @@ import {
   GENERAL_SKILL_REQUIRED_FAMILIES,
   SKILL_SUITS,
   COMPACT_SKILL_HEADERS
-} from "./cast-view-definitions.js";
+} from "./cast-view-definitions.js?v=3";
 
 /* Public compact skill renderer/layout.
  * Owns General / Social / Connection tables and their final placement.
