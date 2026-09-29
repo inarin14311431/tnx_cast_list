@@ -4,13 +4,12 @@ import { loadSheetBundle } from "./sheet-load-persistence.js?v=1";
 import { buildSkillSavePayloads, buildOutfitSavePayloads } from "./sheet-save-payload.js?v=3";
 import { getSheetSaveState, focusSheetSaveButton } from "./sheet-save-state.js?v=2";
 import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=2";
-import { compareCharacterSheetPayload, normalizeCharacterSheetPayload } from "./character-sheet-compare-service.js?v=2";
+import { compareCharacterSheetPayload, normalizeCharacterSheetPayload } from "./character-sheet-compare-service.js?v=3";
 import { groupCharacterSheetDifferences, summarizeCharacterSheetDifferences } from "./character-sheet-diff-display.js?v=3";
 
 const SESSION_KEY = "tnx:character-sheet-comparison:v2";
 const STYLE_SEPARATOR_MARKER = "[[STYLE_SEPARATOR]]";
 const CATEGORY_LABELS = {basic:"基本情報",personal:"パーソナル／ライフパス",styles:"スタイル",abilities:"能力値・制御値・CS",general:"一般技能",social:"社会",connection:"コネ",styleSkills:"スタイル技能",outfits:"アウトフィット"};
-const STYLE_CODE_NAMES = new Map([["0","カブキ"],["1","バサラ"],["2","タタラ"],["3","ミストレス"],["4","カブト"],["5","カリスマ"],["6","マネキン"],["7","カゼ"],["8","フェイト"],["9","クロマク"],["10","エグゼク"],["11","カタナ"],["12","クグツ"],["13","カゲ"],["14","チャクラ"],["15","レッガー"],["16","カブトワリ"],["17","ハイランダー"],["18","マヤカシ"],["19","トーキー"],["20","イヌ"],["21","ニューロ"],["-0","コモン"],["-1","ヒルコ"],["-2","クロガネ"],["-4","イブキ"],["-6","シキガミ"],["-7","アラシ"],["-9","カゲムシャ"],["-12","ミギウデ"],["-17","エトランゼ"],["-18","アヤカシ"],["-21","ウツワ"]]);
 
 queueMicrotask(()=>{installCompareButton();restoreComparison().catch(error=>console.error("character sheet comparison restore failed",error));});
 
@@ -56,7 +55,7 @@ function clearSession(){sessionStorage.removeItem(SESSION_KEY);}
 async function fetchCharacterSheetPayload(sourceUrl){
   return normalizePayload(await requestCharacterSheetSource(sourceUrl));
 }
-function normalizePayload(payload){let data=normalizeCharacterSheetPayload(payload);if(!data.outline&&data.styles&&typeof data.styles==="object"&&!Array.isArray(data.styles)){const names=[data.styles.style1,data.styles.style2,data.styles.style3].map(value=>STYLE_CODE_NAMES.get(String(value??""))||"");if(names.every(Boolean))data={...data,outline:`STYLE:${names.join("=")}`};}return data;}
+function normalizePayload(payload){return normalizeCharacterSheetPayload(payload);}
 
 function applyLegacyPayload(payload){
   return new Promise((resolve,reject)=>{

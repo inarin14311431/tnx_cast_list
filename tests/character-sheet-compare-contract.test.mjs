@@ -149,8 +149,9 @@ test("direct JSONP comparison still reports real semantic changes", () => {
   assert.ok(differences.some(item=>item.category==="abilities"&&item.path==="reason_base"&&item.archive===4&&item.warehouse===5));
 });
 test("PC warehouse comparison uses the same shared comparison service as the mobile editor", () => {
-  assert.match(compare, /import \{ compareCharacterSheetPayload, normalizeCharacterSheetPayload \} from "\.\/character-sheet-compare-service\.js\?v=2";/);
+  assert.match(compare, /import \{ compareCharacterSheetPayload, normalizeCharacterSheetPayload \} from "\.\/character-sheet-compare-service\.js\?v=3";/);
   assert.match(compare, /function compareArchiveToJsonp\(archiveBundle,externalPayload\)\{return compareCharacterSheetPayload\(archiveBundle,externalPayload\);\}/);
   assert.doesNotMatch(compare, /diffCanonicalBundles|canonicalizeCharacterSheetJsonp|canonicalizeArchiveBundle/);
-  assert.match(compare, /function normalizePayload\(payload\)\{let data=normalizeCharacterSheetPayload\(payload\);/);
+  // Legacy-style-code outline completion moved into the shared compare-service (character-sheet-style-codes.js).
+  assert.match(compare, /function normalizePayload\(payload\)\{return normalizeCharacterSheetPayload\(payload\);\}/);
 });
