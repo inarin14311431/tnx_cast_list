@@ -17,8 +17,11 @@ test("account card layout is owned by the action layer", () => {
 
 test("troop and act management layout is consolidated into the account action layer", async () => {
   assert.match(actions, /owned-cast__management > \.owned-cast__troops/);
-  assert.match(actions, /owned-cast__management:not\(\.owned-cast__management--with-troop\) > \.owned-cast__acts/);
-  assert.match(actions, /grid-column:\s*1 \/ 3/);
+  // The act link keeps the same single-column width as the primary OPEN / EDIT SHEET actions.
+  assert.match(actions, /\.owned-cast__management\s*\{\s*grid-template-columns:\s*repeat\(3, minmax\(0, 1fr\)\)/);
+  assert.match(actions, /\.owned-cast__management > \.owned-cast__acts\s*\{\s*grid-column:\s*1;/);
+  assert.doesNotMatch(actions, /owned-cast__management:not\(\.owned-cast__management--with-troop\) > \.owned-cast__acts/);
+  assert.match(actions, /owned-cast__management--with-troop > :is\(\.owned-cast__management-label, button\)\s*\{\s*grid-column:\s*3;/);
   assert.doesNotMatch(entry, /account-troop-links-v2\.css/);
   await assert.rejects(access(new URL("../css-next/pages/account-troop-links-v2.css", import.meta.url)));
 });
