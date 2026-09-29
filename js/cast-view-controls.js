@@ -319,6 +319,9 @@
     } else {
       window.addEventListener("tnx:cast-rendered", applyAfterCastRender, { once: true });
     }
+    // The style-skill panel is built asynchronously and can be inserted after the
+    // pass above already ran, so it needs its own (idempotent) setup call.
+    document.addEventListener("tnx:style-skills-rendered", setup);
   }
 
   initializeCastPanelCollapse();

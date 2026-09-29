@@ -17,8 +17,8 @@ test("account keeps acts visible and only adds troop shortcut for linked casts",
   assert.match(accountLinks, /if \(!linked\) \{\s*existing\?\.remove\(\)/s);
   assert.match(accountLinks, /owned-cast__acts/);
   assert.match(accountLinks, /owned-cast__troops/);
-  assert.match(accountActionCss, /owned-cast__management:not\(\.owned-cast__management--with-troop\).*owned-cast__acts/s);
-  assert.match(accountActionCss, /grid-column: 1 \/ 3/);
+  assert.match(accountActionCss, /\.owned-cast__management > \.owned-cast__acts\s*\{\s*grid-column:\s*1;/);
+  assert.match(accountActionCss, /owned-cast__management--with-troop > :is\(\.owned-cast__management-label, button\)/);
 });
 
 test("linked troop shortcut has its own icon and EXP is aggregated into cast breakdown", () => {

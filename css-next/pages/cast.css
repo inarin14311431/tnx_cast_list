@@ -154,8 +154,8 @@ body[data-page="cast.html"] .cast-header__actions { display: grid; grid-template
 .data-panel__header h2::after, .cast-outfit-title h2::after { content: " ]"; color: var(--color-accent-strong); }
 .data-panel__header small { color: var(--color-muted); font-size: .66rem; }
 .data-panel > .data-panel__header { cursor: pointer; user-select: none; }
-.data-panel > .data-panel__header::after { position: absolute; top: 50%; right: 18px; content: "−"; color: currentColor; font-size: 24px; line-height: 1; transform: translateY(-50%); }
-.data-panel.is-collapsed > .data-panel__header::after { content: "＋"; }
+.data-panel > .data-panel__header::after { position: absolute; top: 50%; right: 18px; content: "⌄"; color: var(--color-accent); font-size: 1.35rem; line-height: 1; transform: translateY(-50%) rotate(180deg); transition: transform var(--transition-fast), color var(--transition-fast); }
+.data-panel.is-collapsed > .data-panel__header::after { color: var(--color-muted); transform: translateY(-50%) rotate(-90deg); }
 .data-panel.is-collapsed > :not(.data-panel__header) { display: none; }
 .data-panel > .data-panel__header:focus-visible { outline: 2px solid var(--color-accent-strong); outline-offset: -3px; }
 .data-panel > :not(header) { padding: 14px; }

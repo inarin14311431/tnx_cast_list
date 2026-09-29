@@ -15,7 +15,7 @@ test('data import uses direct character-sheets URL and global help', async () =>
 
   const helpUi = await read('js/help-ui.js');
   assert.match(helpUi, /sheet-global-help/);
-  assert.match(helpUi, /help-content\.js\?v=3/);
+  assert.match(helpUi, /help-content\.js\?v=4/);
   assert.doesNotMatch(helpUi, /sheet-import-help\.js/);
 
   const helpCss = await read('css-next/components/help.css');

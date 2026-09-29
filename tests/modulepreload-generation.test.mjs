@@ -34,7 +34,7 @@ test("cast.html preloads the unified single-version cast-data-store.js used acro
 
 test("sheet.html preloads statically reachable modules but not dynamic-import-only ones", () => {
   const block = modulepreloadBlock(sheetHtml);
-  assert.match(block, /href="\.\/js\/help-ui\.js\?v=9"/);
+  assert.match(block, /href="\.\/js\/help-ui\.js\?v=10"/);
   assert.doesNotMatch(block, /character-sheet-source\.js/);
 });
 

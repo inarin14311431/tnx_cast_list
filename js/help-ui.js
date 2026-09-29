@@ -1,4 +1,4 @@
-import { SHEET_HELP_ORDER, SHEET_HELP_TOPICS } from "./help-content.js?v=3";
+import { SHEET_HELP_ORDER, SHEET_HELP_TOPICS } from "./help-content.js?v=4";
 
 const page = document.body?.dataset.page;
 if (page === "sheet.html") initializeSheetHelp();

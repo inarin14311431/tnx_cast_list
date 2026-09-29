@@ -28,3 +28,13 @@ test("cast panel collapse preserves click keyboard and render setup", () => {
   assert.doesNotMatch(initializer, /new MutationObserver/);
   assert.doesNotMatch(initializer, /\.observe\(/);
 });
+
+test("cast panel collapse re-scans when the style-skill panel is inserted later", () => {
+  // cast-style-skills.js builds #style-skill-panel asynchronously (after getStyleSkills()
+  // resolves), which can land after the one-time "tnx:cast-rendered" pass above already ran.
+  const start = source.indexOf("function initializeCastPanelCollapse");
+  const end = source.indexOf("\n})();", start);
+  const initializer = source.slice(start, end);
+
+  assert.match(initializer, /addEventListener\("tnx:style-skills-rendered",\s*setup\)/);
+});
