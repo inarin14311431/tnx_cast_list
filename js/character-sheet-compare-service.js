@@ -8,6 +8,7 @@ import {
   alignCanonicalBundlesForComparison,
   stripLegacyArchiveOutfitElectronicControl
 } from "./character-sheet-compare-matching.js?v=1";
+import { completeOutlineFromStyleCodes } from "./character-sheet-style-codes.js?v=1";
 
 function parseJsonData(value) {
   if (typeof value !== "string") return value;
@@ -60,7 +61,7 @@ export function normalizeCharacterSheetPayload(payload) {
   if (!data || typeof data !== "object" || Array.isArray(data)) {
     throw new Error("倉庫データをTNXキャラクターとして認識できませんでした。");
   }
-  return data;
+  return completeOutlineFromStyleCodes(data);
 }
 
 function hasText(value) {
