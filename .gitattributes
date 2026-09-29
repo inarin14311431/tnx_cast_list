@@ -1,0 +1,7 @@
+js/** text eol=lf
+css-next/** text eol=lf
+tests/** text eol=lf
+scripts/** text eol=lf
+*.html text eol=lf
+*.json text eol=lf
+*.md text eol=lf
