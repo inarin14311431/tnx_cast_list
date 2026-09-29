@@ -28,7 +28,8 @@ async function createCast() {
   if (busy || !user) return;
   const characterName = $("#mobile-new-character-name")?.value.trim() || "";
   const playerName = $("#mobile-new-player-name")?.value.trim() || "";
-  const visibility = $("#mobile-new-visibility")?.value === "public" ? "public" : "private";
+  const rawVisibility = $("#mobile-new-visibility")?.value;
+  const visibility = ["public", "unlisted"].includes(rawVisibility) ? rawVisibility : "private";
   if (!characterName || !playerName) {
     status("キャスト名とプレイヤー名を入力してください。", "error");
     return;

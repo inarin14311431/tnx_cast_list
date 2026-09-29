@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { buildCharacterSheetsPayload } from "../js/tnx-direct-transfer-data.js";
+
+globalThis.window = globalThis.window || {};
+globalThis.window.location = globalThis.window.location || { href: "https://example.test/", search: "" };
+
+const { buildCharacterSheetsPayload } = await import("../js/tnx-direct-transfer-data.js");
 
 function baseCharacter() {
   return {

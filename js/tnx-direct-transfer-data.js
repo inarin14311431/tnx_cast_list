@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { normalizeOutfitForView } from "./outfit-view-model.js?v=3";
+import { getCurrentUser } from "./auth-state.js?v=4";
 
 const STYLE_CODES = new Map([
   ["カブキ", "0"], ["バサラ", "1"], ["タタラ", "2"], ["ミストレス", "3"], ["カブト", "4"], ["カリスマ", "5"],
@@ -83,6 +84,39 @@ export function resolvePublicId(raw) {
   } catch {
     return value;
   }
+}
+
+const DISPLAY_CODE_PATTERN = /^TNX-[2-9A-HJ-NP-Z]{4}-[2-9A-HJ-NP-Z]{4}$/;
+export const DISPLAY_CODE_NOT_OWNED_MESSAGE = "このコードは、ログイン中のアカウントのキャストにありません。キャスト画面のURLを貼り付けてください。";
+
+export function isDisplayCode(raw) {
+  return DISPLAY_CODE_PATTERN.test(text(raw).toUpperCase());
+}
+
+async function fetchOwnedPublicIds(ownerId) {
+  const { data, error } = await supabase
+    .from("characters")
+    .select("public_id")
+    .eq("owner_id", ownerId);
+  if (error) throw error;
+  return (data || []).map(row => row.public_id).filter(Boolean);
+}
+
+// 表示コードは内部IDから一方向ハッシュで生成されており逆引きできないため、
+// ログイン中の本人のキャストと一致するかどうかで照合する（他人のキャストは引けない）。
+export async function resolveTransferSourceId(raw) {
+  const value = text(raw);
+  if (!value) return "";
+  if (/^TNX-\d+$/i.test(value)) return value.toUpperCase();
+  if (isDisplayCode(value)) {
+    const displayCode = value.toUpperCase();
+    const user = await getCurrentUser();
+    const ownedIds = user ? await fetchOwnedPublicIds(user.id) : [];
+    const match = ownedIds.find(id => window.TNXArchiveId.format(id) === displayCode);
+    if (!match) throw new Error(DISPLAY_CODE_NOT_OWNED_MESSAGE);
+    return match;
+  }
+  return resolvePublicId(value);
 }
 
 export function buildCharacterSheetsPayload(bundle, { hideFromList = false } = {}) {

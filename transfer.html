@@ -2,15 +2,18 @@
 <html lang="ja">
 <head>
   <!-- modulepreload:start -->
-  <link rel="modulepreload" href="./js/tnx-direct-transfer-data.js?v=4">
+  <link rel="modulepreload" href="./js/tnx-direct-transfer-data.js?v=5">
   <link rel="modulepreload" href="./js/supabase-client.js">
   <link rel="modulepreload" href="./js/vendor/supabase-js.js">
   <link rel="modulepreload" href="./js/outfit-view-model.js?v=3">
   <link rel="modulepreload" href="./js/outfit-contract.js?v=3">
   <link rel="modulepreload" href="./js/outfit-legacy-compat.js?v=1">
+  <link rel="modulepreload" href="./js/auth-state.js?v=4">
+  <link rel="modulepreload" href="./js/config.js?v=2">
   <!-- modulepreload:end -->
   <script>if(new URLSearchParams(location.search).get("embed")==="1")document.documentElement.classList.add("is-transfer-embed");</script>
   <script src="./js/css-next-theme.js"></script>
+  <script src="./js/archive-id-code.js?v=1"></script>
   <link rel="stylesheet" href="./css-next/index.css?v=56" data-css-system="next">
   <link rel="stylesheet" href="./css-next/pages/transfer.css?v=2">
   <meta charset="utf-8">
@@ -28,7 +31,7 @@
     <form id="transfer-form" autocomplete="off">
       <div class="source-row">
         <label>CAST ARCHIVE キャストID またはURL
-          <input id="source-cast" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="TNX-000117 または cast.html?id=TNX-000117">
+          <input id="source-cast" type="text" inputmode="url" autocomplete="off" spellcheck="false" placeholder="TNX-XXXX-XXXX（表示コード）または cast.html?id=…">
         </label>
         <button id="load-cast" type="button"><span>CASTデータ読込</span><small>LOAD CAST DATA</small></button>
       </div>
@@ -95,6 +98,6 @@
       <a id="transfer-result-link" class="transfer-result__link" href="#" target="_blank" rel="noopener" hidden>キャラクターシート倉庫で開く</a>
     </section>
   </main>
-  <script type="module" src="./js/transfer.js?v=5"></script>
+  <script type="module" src="./js/transfer.js?v=6"></script>
 </body>
 </html>
