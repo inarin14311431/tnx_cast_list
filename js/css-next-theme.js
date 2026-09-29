@@ -65,7 +65,8 @@
     const picker = isIndexPage()
       ? `<label class="japanese-army-theme-picker"><span>表示テーマ <small>COLOR THEME</small></span><select data-theme-select aria-label="表示テーマ"></select></label>`
       : "";
-    overlay.innerHTML = `${picker}<div class="japanese-army-warning" role="alert"><p class="japanese-army-seal">日本国電脳鎖国結界</p><div class="japanese-army-error">不法接続</div><p class="japanese-army-declaration">国外網からの未承認アクセスを検知</p><p class="japanese-army-order">本接続は国家防衛規定に基づき強制遮断された。<br>直ちに回線を切断せよ。再接続を厳禁する。</p></div><p class="japanese-army-error-code">NATIONAL BORDER FIREWALL // ACCESS VIOLATION RECORDED</p>`;
+    const homeLink = `<a class="japanese-army-home-link" href="./index.html">ホームへ戻る / RETURN HOME</a>`;
+    overlay.innerHTML = `${picker}${homeLink}<div class="japanese-army-warning" role="alert"><p class="japanese-army-seal">日本国電脳鎖国結界</p><div class="japanese-army-error">不法接続</div><p class="japanese-army-declaration">国外網からの未承認アクセスを検知</p><p class="japanese-army-order">本接続は国家防衛規定に基づき強制遮断された。<br>直ちに回線を切断せよ。再接続を厳禁する。</p></div><p class="japanese-army-error-code">NATIONAL BORDER FIREWALL // ACCESS VIOLATION RECORDED</p>`;
     document.body.append(overlay);
   }
 

@@ -1,4 +1,4 @@
-import { fetchTransferBundle, resolvePublicId, buildCharacterSheetsPayload } from "./tnx-direct-transfer-data.js?v=4";
+import { fetchTransferBundle, resolvePublicId, resolveTransferSourceId, buildCharacterSheetsPayload } from "./tnx-direct-transfer-data.js?v=5";
 
 const REGISTER_URL = "https://character-sheets.appspot.com/tnx/register";
 const TARGET_EDIT_URL = "https://character-sheets.appspot.com/tnx/edit.html";
@@ -163,19 +163,31 @@ function invalidateLoadedData(message = "CASTデータが変更されました�
 
 async function loadCast() {
   if (loading) return;
-  const publicId = resolvePublicId(sourceInput.value);
-  if (!publicId) {
-    invalidateLoadedData("CAST ARCHIVEのキャストIDまたはURLを入力してください。");
-    loadStatus.dataset.state = "error";
-    return;
-  }
 
   loading = true;
   loadButton.disabled = true;
   loadStatus.dataset.state = "";
-  loadStatus.textContent = `${publicId} を読み込んでいます…`;
+  loadStatus.textContent = "入力内容を確認しています…";
   status.textContent = "未送信です。";
   confirmInput.checked = false;
+
+  let publicId = "";
+  let resolveErrorMessage = "";
+  try {
+    publicId = await resolveTransferSourceId(sourceInput.value);
+  } catch (error) {
+    resolveErrorMessage = error instanceof Error ? error.message : "CAST ARCHIVEのキャストIDまたはURLを入力してください。";
+  }
+
+  if (!publicId) {
+    invalidateLoadedData(resolveErrorMessage || "CAST ARCHIVEのキャストIDまたはURLを入力してください。");
+    loadStatus.dataset.state = "error";
+    loading = false;
+    loadButton.disabled = false;
+    return;
+  }
+
+  loadStatus.textContent = `${publicId} を読み込んでいます…`;
 
   try {
     const bundle = await fetchTransferBundle(publicId);

@@ -356,6 +356,14 @@ body[data-page="account.html"] .owned-cast__management > .owned-cast__acts {
   grid-row: 1;
 }
 
+/* Transfer link sits in its own row under the act link, in column 1 only, so it
+   never competes with the label/duplicate/delete cluster or the troop link
+   above it for the same columns. */
+body[data-page="account.html"] .owned-cast__management > .owned-cast__transfer {
+  grid-column: 1;
+  grid-row: 2;
+}
+
 body[data-page="account.html"] .owned-cast__management > .owned-cast__troops {
   grid-column: 2;
   grid-row: 1;

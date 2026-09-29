@@ -42,7 +42,9 @@ jobs:
         with:
           name: visual-regression-report
           path: |
-            playwright-report-visual/
-            test-results/visual/
+            playwright-report-visual-desktop/
+            playwright-report-visual-mobile/
+            test-results/visual-desktop/
+            test-results/visual-mobile/
           if-no-files-found: ignore
           retention-days: 14

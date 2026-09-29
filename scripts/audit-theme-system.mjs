@@ -78,7 +78,7 @@ for (const file of htmlFiles) {
   const assets = [...source.matchAll(/<(?:script|link)\b[^>]*(?:src|href)=["']([^"']+)["'][^>]*>/gi)].map(match => match[1]);
   const stylesheets = assets.filter(asset => /\.css(?:\?|$)/.test(asset));
   const registryIndex = assets.findIndex(asset => asset === "./js/theme-registry.js?v=1");
-  const controllerIndex = assets.findIndex(asset => asset === "./js/css-next-theme.js?v=8");
+  const controllerIndex = assets.findIndex(asset => asset === "./js/css-next-theme.js?v=9");
   const scopeIndex = assets.findIndex(asset => asset === "./js/theme-scope.js?v=1");
   if (!(registryIndex >= 0 && controllerIndex > registryIndex && scopeIndex > controllerIndex)) problems.push(`${relative(file)}: theme scripts are missing or out of order`);
   if (stylesheets.filter(asset => asset === "./css-next/themes/index.css?v=1").length !== 1) problems.push(`${relative(file)}: final theme bundle must be linked exactly once`);

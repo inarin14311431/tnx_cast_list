@@ -51,6 +51,22 @@ html[data-theme="japanese-army"] .japanese-army-theme-picker select {
   box-shadow: none;
 }
 
+html[data-theme="japanese-army"] .japanese-army-home-link {
+  position: absolute;
+  top: clamp(18px, 4vw, 40px);
+  left: clamp(18px, 4vw, 40px);
+  z-index: 4;
+  color: #eceee6;
+  font: 700 13px/1.4 "Courier New", monospace;
+  letter-spacing: .08em;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+html[data-theme="japanese-army"] .japanese-army-home-link:is(:hover, :focus-visible) {
+  color: #e04738;
+}
+
 html[data-theme="japanese-army"] .japanese-army-warning {
   align-self: center;
   width: min(1100px, 94vw);
