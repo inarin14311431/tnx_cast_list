@@ -12,11 +12,6 @@
 body[data-page="sheet.html"] .skill-toolbar--three { display: none; }
 #general-skills .skill-table { width: 100%; min-width: 0; table-layout: fixed; font-size: clamp(.78rem, .66vw, .94rem); }
 #general-skills .skill-table :is(th, td) { min-width: 0; padding: 4px 2px; overflow: hidden; }
-#general-skills .skill-table th.suit-col:has(.ability-value-trigger) {
-  position: relative;
-  z-index: 4;
-  overflow: visible;
-}
 #general-skills .skill-table .name-col { width: clamp(72px, 8.5em, 116px); }
 #general-skills .skill-table .type-col { width: clamp(46px, 4vw, 58px); }
 #general-skills .skill-table .lv-col { width: 34px; }

@@ -89,11 +89,6 @@ body[data-page="sheet.html"] .skill-toolbar--two.has-style-divider { align-items
   line-height: 1.08;
   text-align: center;
 }
-#style-skills .style-skill-full-table th.suit-col:has(.ability-value-trigger) {
-  position: relative;
-  z-index: 4;
-  overflow: visible;
-}
 
 #style-skills .style-skill-full-table :is(input, select, textarea) {
   box-sizing: border-box;

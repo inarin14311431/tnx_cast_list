@@ -29,6 +29,6 @@ test("usage limit storage contract remains unchanged", () => {
 });
 
 test("cast usage label changes have cache-buster updates", () => {
-  assert.match(castHtml, /\.\/js\/cast\.js\?v=101/);
+  assert.match(castHtml, /\.\/js\/cast\.js\?v=102/);
   assert.match(castHtml, /\.\/js\/cast-mobile\.js\?v=7/);
 });

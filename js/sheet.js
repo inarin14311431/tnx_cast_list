@@ -1,4 +1,4 @@
-import { applyStylePresentation, applyAbilityFinals } from "./sheet-presentation-dom.js?v=3";
+import { applyStylePresentation, applyAbilityFinals } from "./sheet-presentation-dom.js?v=4";
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=4";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";

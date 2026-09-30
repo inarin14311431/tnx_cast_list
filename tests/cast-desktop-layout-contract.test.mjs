@@ -50,7 +50,7 @@ test("desktop cast layout remains theme-driven", () => {
   assert.match(css, /var\(--color-text\)/);
   assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b/i);
   assert.doesNotMatch(css, /body\[data-page="account\.html"\]/);
-  const pageCssIndex = castHtml.indexOf('./css-next/pages/cast-entry.css?v=20');
+  const pageCssIndex = castHtml.indexOf('./css-next/pages/cast-entry.css?v=21');
   const themeCssIndex = castHtml.indexOf('./css-next/themes/index.css?v=1');
   assert.ok(pageCssIndex >= 0 && themeCssIndex > pageCssIndex);
 });

@@ -9,15 +9,6 @@ import {
  * Owns General / Social / Connection tables and their final placement.
  */
 function initializeCastCompactSkills() {
-  const ABILITY_KEYS = ["reason", "passion", "life", "mundane"];
-  const readAbilitySnapshot = key => {
-    const values = document.querySelectorAll(`[data-ability-key="${key}"] .ability-card__numbers strong`);
-    return { value: values[0]?.textContent?.trim() || "—", control: values[1]?.textContent?.trim() || "—" };
-  };
-  const abilityHeaderMarkup = (label, key) => {
-    const { value, control } = readAbilitySnapshot(key);
-    return `<span class="ability-value-trigger" data-ability-tooltip="${key}">${label}<span class="ability-value-tooltip" role="tooltip"><span class="ability-value-tooltip__row">能力 <strong>${value}</strong></span><span class="ability-value-tooltip__row">制御 <strong>${control}</strong></span></span></span>`;
-  };
   const normalizeName = value => String(value || "").trim().replace(/[;；]/g, "：");
   const familyName = value => {
     const name = normalizeName(value);
@@ -52,15 +43,7 @@ function initializeCastCompactSkills() {
     const header = table.tHead?.rows?.[0];
     if (header) {
       while (header.cells.length > 6) header.deleteCell(header.cells.length - 1);
-      COMPACT_SKILL_HEADERS.forEach((label, index) => {
-        const cell = header.cells[index];
-        if (!cell) return;
-        if (index >= 2) {
-          cell.innerHTML = abilityHeaderMarkup(label, ABILITY_KEYS[index - 2]);
-        } else {
-          cell.textContent = label;
-        }
-      });
+      COMPACT_SKILL_HEADERS.forEach((label, index) => { if (header.cells[index]) header.cells[index].textContent = label; });
     }
     const tbody = table.tBodies?.[0];
     if (!tbody) return null;
