@@ -76,27 +76,7 @@ function queueRefresh(){
   });
 }
 function arrangeSkillUi(){replaceSuitHeaders();ensureGroupActions();markGeneralRows();}
-function replaceSuitHeaders(){
-  const suits={
-    "♠":["reason","理性"],
-    "♣":["passion","感情"],
-    "♥":["life","生命"],
-    "♦":["mundane","外界"],
-    "理性":["reason","理性"],
-    "感情":["passion","感情"],
-    "生命":["life","生命"],
-    "外界":["mundane","外界"]
-  };
-  document.querySelectorAll("#general-skills th.suit-col,#style-skills th.suit-col").forEach(cell=>{
-    if(cell.querySelector("[data-ability-tooltip]"))return;
-    const hit=suits[cell.textContent.trim()];
-    if(!hit)return;
-    const [key,label]=hit;
-    const value=document.querySelector(`#${key}-final`)?.textContent?.trim()||"0";
-    const control=document.querySelector(`#${key}-control-final`)?.textContent?.trim()||"0";
-    cell.innerHTML=`<span class="ability-value-trigger" data-ability-tooltip="${key}">${label}<span class="ability-value-tooltip" role="tooltip"><span class="ability-value-tooltip__row">能力 <strong data-ability-tooltip-value>${value}</strong></span><span class="ability-value-tooltip__row">制御 <strong data-ability-tooltip-control>${control}</strong></span></span></span>`;
-  });
-}
+function replaceSuitHeaders(){const labels={"♠":"理性","♣":"感情","♥":"生命","♦":"外界"};document.querySelectorAll("#general-skills th.suit-col,#style-skills th.suit-col").forEach(cell=>{const label=labels[cell.textContent.trim()];if(label)cell.textContent=label;});}
 
 function ensureGroupActions(){
   document.querySelectorAll(".skill-group").forEach(group=>{
