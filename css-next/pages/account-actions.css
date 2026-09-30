@@ -357,6 +357,13 @@ body[data-page="account.html"] .owned-cast__management > .owned-cast__acts {
 }
 
 
+/* Transfer action keeps its historical layout slot, but now routes to the cast view
+   where bookmarklet / TSV transfer tools live. */
+body[data-page="account.html"] .owned-cast__management > .owned-cast__transfer {
+  grid-column: 1;
+  grid-row: 2;
+}
+
 body[data-page="account.html"] .owned-cast__management > .owned-cast__troops {
   grid-column: 2;
   grid-row: 1;
