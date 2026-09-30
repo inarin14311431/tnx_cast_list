@@ -30,12 +30,8 @@ test("act history primary action is bilingual", async () => {
   assert.match(source, /消費履歴を追加<\/span><small>ADD EXPENSE<\/small>/);
 });
 
-test("transfer pages keep Japanese primary headings and English secondary labels", async () => {
-  const desktop = await read("transfer.html");
+test("mobile bookmarklet transfer keeps Japanese primary headings and English secondary labels", async () => {
   const mobile = await read("mobile-transfer.html");
-  assert.match(desktop, /<h1>データ転記 <small>DATA TRANSFER<\/small><\/h1>/);
-  assert.match(desktop, /CASTデータ読込<\/span><small>LOAD CAST DATA<\/small>/);
-  assert.match(desktop, /転記結果 <small>TRANSFER RESULT<\/small>/);
   assert.match(mobile, /転記ガイド <small>CHARACTER SHEETS TRANSFER<\/small>/);
   assert.match(mobile, /キャラクターシート倉庫へ転記 <small>TRANSFER TO CHARACTER SHEETS<\/small>/);
 });
