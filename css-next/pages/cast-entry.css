@@ -2,7 +2,7 @@
 @layer app, cast-components, cast-base, cast-details, cast-combos,
   cast-mobile-theme, cast-quick-sheet, cast-enhancements, cast-effects,
   cast-runtime, cast-mobile, cast-mobile-readability, cast-mobile-combos,
-  cast-transfer, cast-troop-modal, cast-desktop, cast-style-table;
+  cast-sns-card, cast-troop-modal, cast-desktop, cast-style-table;
 
 @import url("../index.css?v=64") layer(app);
 @import url("../components/cast-troops.css?v=1") layer(cast-components);
@@ -21,8 +21,7 @@
 @import url("./cast-mobile-readability.css?v=4") layer(cast-mobile-readability);
 @import url("./cast-mobile-character-sheet-link.css?v=1") layer(cast-mobile-readability);
 @import url("./cast-mobile-combos.css?v=3") layer(cast-mobile-combos);
-@import url("./cast-transfer.css?v=2") layer(cast-transfer);
-@import url("./cast-sns-card.css?v=1") layer(cast-transfer);
+@import url("./cast-sns-card.css?v=1") layer(cast-sns-card);
 @import url("./cast-troop-modal.css?v=5") layer(cast-troop-modal);
 @import url("./cast-desktop-layout.css?v=5") layer(cast-desktop);
 @import url("./cast-outfit-column-widths.css?v=1") layer(cast-desktop);
