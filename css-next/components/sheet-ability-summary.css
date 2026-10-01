@@ -1,0 +1,19 @@
+/* Inline final ability values; table geometry remains owned by the skill tables. */
+.sheet-ability-summary {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: baseline;
+  gap: .75rem;
+  margin-left: auto;
+  color: var(--color-text);
+  font: 800 1rem/1.2 var(--font-data);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.sheet-ability-summary[hidden] { display: none; }
+.sheet-ability-summary__item { display: inline-flex; gap: .18em; }
+.sheet-ability-summary__suit {
+  color: var(--color-muted);
+  font: 900 1.08rem/1 var(--font-data);
+}
