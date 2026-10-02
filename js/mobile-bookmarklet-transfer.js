@@ -73,13 +73,13 @@ async function copyMobileBookmarklet() {
   try {
     await writeClipboard(bookmarklet);
     setStatus(
-      "スマホ用転記BMをコピーしました。ブックマークURLを最新版へ更新してください。",
+      "スマホ用転記ブックマークレットをコピーしました。ブックマークURLを最新版へ更新してください。",
       "success"
     );
   } catch (error) {
     console.error(error);
     setStatus(
-      error instanceof Error ? error.message : "転記BMをコピーできませんでした。",
+      error instanceof Error ? error.message : "転記ブックマークレットをコピーできませんでした。",
       "error"
     );
   }

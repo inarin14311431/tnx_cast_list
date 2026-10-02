@@ -397,16 +397,16 @@
       await importStyles(map);
       await importAbilities(map);
       msg.textContent='技能を反映しています…';
-      reportProgress(28,'技能を取込中','一般技能・社会・コネを反映しています');
+      reportProgress(28,'技能を取込中','一般技能・社会・コネクションを反映しています');
       await importGeneral(map,stats);
-      reportProgress(36,'技能を取込中',`一般技能${stats.general}件・社会${stats.social}件・コネ${stats.connection}件を反映`);
+      reportProgress(36,'技能を取込中',`一般技能${stats.general}件・社会${stats.social}件・コネクション${stats.connection}件を反映`);
       await importStyleSkills(map,stats);
       reportProgress(42,'スタイル技能を取込中',`スタイル技能${stats.style}件の取込を完了`);
       reportProgress(50,'基本取込完了','プロフィール・技能の基本取込を完了しました');
 
       document.body.dispatchEvent(new Event('input',{bubbles:true}));
       window.TNXExperience?.queue?.();
-      const summary=`一般技能${stats.general}件、社会${stats.social}件、コネ${stats.connection}件、スタイル技能${stats.style}件`;
+      const summary=`一般技能${stats.general}件、社会${stats.social}件、コネクション${stats.connection}件、スタイル技能${stats.style}件`;
       const finalizing=dialog.getAttribute('data-importing')==='1';
       msg.textContent=finalizing
         ?`基本取込が完了しました（${summary}）。引き続き最終変換を行っています…`

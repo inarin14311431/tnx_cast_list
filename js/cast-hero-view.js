@@ -83,7 +83,7 @@ export function buildDivineSlots(character) {
         slot,
         style,
         name,
-        code: `MIRACLE-${number}`,
+        code: `DIVINE WORK ${number}`,
         yomi: name ? resolveDivineYomi(name, character?.[`divine_${slot}_yomi`]) : "",
         state: style ? styleStateFor(character?.[`style_${slot}_mark`]) : "is-standard"
       };

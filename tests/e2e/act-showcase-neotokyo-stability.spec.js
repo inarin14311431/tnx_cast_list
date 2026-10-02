@@ -30,7 +30,7 @@ const showcase = {
         { label: "PLAYER", value: "E2E" },
         { label: "AFFILIATION", value: "TEST NODE" },
         { label: "AGE", value: "20" },
-        { label: "GENDER / ID", value: "— / E2E" }
+        { label: "GENDER / RANK", value: "— / E2E" }
       ],
       handout: {
         title: "『カブト』用ハンドアウト",

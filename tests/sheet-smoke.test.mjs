@@ -25,7 +25,7 @@ test('sheet keeps the requested sidebar action order', async () => {
 
 test('viewer-only transfer actions are not part of editor markup', async () => {
   const html = await read('sheet.html');
-  for (const label of ['ココフォリア', 'ユドナリウム', '転記TSV', '転記BM']) {
+  for (const label of ['ココフォリア', 'ユドナリウム', '転記TSV', '転記ブックマークレット']) {
     assert.doesNotMatch(html, new RegExp(label));
   }
 });

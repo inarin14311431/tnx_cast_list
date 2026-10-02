@@ -7,11 +7,12 @@ AIや新規担当者が「何が完了済みで、何が途中か」を誤認し
 
 ## 1. Runtime同期基準点
 
-- 検証repo main: `fd180d61290d83d829d8d70080e3fcc2c91cad01`(PR #475, 2026-10-01)
-- 本番repo main: `d06613b024dc941e4514b448d3b77bd409bfd50b`(検証PR #475までのruntime同期を
-  明記, 2026-10-01)
-- 2026-10-02にGitHub APIで両repoのmainを直接確認し、上記が最新の同期済み基準点であることを
-  確認済み。共有Supabase/DB変更は含まれない。
+- 検証repo main: `fd683d8`(PR #477 マージ点, 2026-10-02)
+- 本番repo main: 検証PR #477までのruntime同期PRのmerge commit(同期元: 検証 `fd683d8`)。同期前の
+  本番mainは `39dcac6`。merge後のSHAは本番repoの同期PRを参照。
+- runtime同期済み範囲: 検証PR #477まで(`.owned-cast__hint`と`20260930_character_share_links.sql`
+  /manifest行を含む)。`20260930_character_share_links.sql`は稼働中DB定義の記録でありrepoへの
+  commitのみ、実DBへの適用はしない。共有Supabase/DBの変更は含まれない。
 
 **runtime/applicationの同期基準**であり、設計資料やREADMEだけのcommitで各repoのmain SHAは
 その後進む。固定値を最新mainと解釈しないこと。テスト・CI構成の同期は別で、意図的に同期しない

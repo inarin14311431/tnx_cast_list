@@ -7,7 +7,7 @@ const DEFAULT_KIND_LABELS = {
   general: "一般",
   proper: "固有名詞",
   none: "なし",
-  normal: "通常",
+  normal: "特技",
   secret: "秘技",
   ultimate: "奥義",
   direction: "演出"

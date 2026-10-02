@@ -21,7 +21,7 @@
     "text", "kind", "number", "suit", "suit", "suit", "suit",
     "text", "text", "text", "text", "text", "text", "text", "text", "text"
   ];
-  const KIND_ORDER = new Map([["通常", 0], ["秘技", 1], ["奥義", 2], ["演出", 3], ["なし", 4]]);
+  const KIND_ORDER = new Map([["特技", 0], ["秘技", 1], ["奥義", 2], ["演出", 3], ["なし", 4]]);
   const SEPARATOR_SELECTOR = ".style-skill-public-separator";
   const DEFAULT_STATUS = "見出しをクリックで並べ替え／見出しの右端をドラッグで列幅を変更";
   const collator = new Intl.Collator("ja", { numeric: true, sensitivity: "base" });

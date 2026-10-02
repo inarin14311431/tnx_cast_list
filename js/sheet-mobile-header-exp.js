@@ -5,7 +5,7 @@ import { isInitialGeneralSkill } from "./general-skill-catalog.js?v=2";
 import { CREATION_ALLOWANCE, paidFixedInitialGeneralLevel, paidSocialConnectionInitialCost, paidSkillLevel, resolveCanonicalCurrent, steppedExperienceCost } from "./sheet-experience-rules.js?v=6";
 const ABILITIES=["reason","passion","life","mundane"];
 const STYLE_COST={none:0,normal:10,secret:20,ultimate:50,direction:2};
-const KIND_FROM_LABEL={なし:"none",通常:"normal",秘技:"secret",奥義:"ultimate",演出:"direction"};
+const KIND_FROM_LABEL={なし:"none",特技:"normal",秘技:"secret",奥義:"ultimate",演出:"direction"};
 const $=selector=>document.querySelector(selector),num=value=>{const parsed=Number(value);return Number.isFinite(parsed)?parsed:0;};let character=null,skillMeta=new Map(),troopExperience=0,hasLinkedTroops=false;
 function inject(){if($("#mobile-exp-total"))return;const title=$(".mobile-sheet-header__title");if(!title)return;const row=document.createElement("span");row.className="mobile-header-exp";row.innerHTML=`<span>消費経験点</span><strong id="mobile-exp-total">0</strong>`;title.append(row);}
 function displayTotal(total){return hasLinkedTroops?`${total}＋${troopExperience}`:String(total);}

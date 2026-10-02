@@ -14,16 +14,16 @@ const quickHashes = {
   long: '346f0fff58185439fad4837d02fedbf99c6d28a9922d8647914332db2a112914'
 };
 const showcaseHashes = {
-  'nova-plain': '04d73f1e7a31dd161b5ffa670250beb6641fc81637e3b667d95f175f8fa284b0',
-  'nova-background': 'ac1156647a6700dfc4abbd38c3c843f553a46ef6dd09e2ef3213ade0fc3965e3',
-  'intron-plain': 'c2e4ae56019d9a631c49892d751e2440402b4fed2738d3038b043a71b5026ad7',
-  'intron-background': '481d0b5e5cbe25717a8f2c113396466ecdaa3c7c4ce6a613cf6cff4e9a5378ff',
-  'vlad-plain': 'c53facb358a76caf1724bcdbf91b8a7d0836cb479ebcbbfa5a1082ad870db00d',
-  'vlad-background': '79ad7707e82d4f63785e480079ec4c19f2f179624c5b6e84605c88be2659b8a3',
-  'lutetia-plain': '820d8c32fabe0dabd43c259b37fe7e5cebc75240196aa171c9be792e57d5ed87',
-  'lutetia-background': '0d1d282109e2a8106fc0b5369190f918218c0fb88e4d44c6e4ef7d9baf1493da',
-  'unknown-plain': '04d73f1e7a31dd161b5ffa670250beb6641fc81637e3b667d95f175f8fa284b0',
-  'unknown-background': 'ac1156647a6700dfc4abbd38c3c843f553a46ef6dd09e2ef3213ade0fc3965e3'
+  'nova-plain': '6aecfd2c7286173f54ac4ab17804d0fb2572d2648abd6938c8de0d7b00c538d1',
+  'nova-background': '5f4e9609113c3e18811c41ba080ef1f5835b1392e2eab70c74546308b8e70b3a',
+  'intron-plain': '5c8bc4ef380b96953f6de952396cbd29366045f123f6c71af9b49d317c38a422',
+  'intron-background': 'c50b3e68b745b1b918549216972180485d2d1ee416d04e66ba45559629d7e086',
+  'vlad-plain': '0858527282f1cbf48f2c770ba1a44bdc973b8e43bf9853d7c3b6ee966e733465',
+  'vlad-background': 'a77b2450f63496f5d972044cfc761e68759f740dd14d1aff067dd9a882faceea',
+  'lutetia-plain': '2f00abd0d6c8e0d612b391b039b52782894f28519f98c8b58b371fcc3ac1a5dd',
+  'lutetia-background': 'ead0e2ebff58a6f57d404f8fca8059eb7e0def6ce9383df8a660b3aecb67e74c',
+  'unknown-plain': '6aecfd2c7286173f54ac4ab17804d0fb2572d2648abd6938c8de0d7b00c538d1',
+  'unknown-background': '5f4e9609113c3e18811c41ba080ef1f5835b1392e2eab70c74546308b8e70b3a'
 };
 const hash = html => createHash('sha256').update(html).digest('hex');
 for (const { name, data } of quickCases) {

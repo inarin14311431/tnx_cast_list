@@ -101,7 +101,7 @@ function displayItem(category, item) {
 function createArmorFooter(schema, totals) {
   const first = schema.indexOf("defense_s");
   const tail = schema.length - first - 3;
-  return `<tfoot><tr class="cast-armor-total-row"><th colspan="${first}">防御値合計</th><td class="cast-armor-total">${totals.s}</td><td class="cast-armor-total">${totals.p}</td><td class="cast-armor-total">${totals.i}</td>${tail > 0 ? `<td colspan="${tail}"></td>` : ""}</tr></tfoot>`;
+  return `<tfoot><tr class="cast-armor-total-row"><td class="cast-outfit-col--category"></td><th colspan="${first - 1}">防御値合計</th><td class="cast-armor-total">${totals.s}</td><td class="cast-armor-total">${totals.p}</td><td class="cast-armor-total">${totals.i}</td>${tail > 0 ? `<td colspan="${tail}"></td>` : ""}</tr></tfoot>`;
 }
 
 function armorTotals(items) {

@@ -14,7 +14,7 @@ const STYLE_SEPARATOR = "[[STYLE_SEPARATOR]]";
 const DETAIL_FIELDS = ["skill","limit","timing","target","range","difficulty","confrontation","description","page"];
 const STYLE_COLUMN_FIELDS = ["timing","target","range","difficulty","confrontation"];
 const CATEGORY_LABELS = {general:"一般技能",social:"社会",connection:"コネ"};
-const KIND_LABELS = {normal:"通常",secret:"秘技",ultimate:"奥義",direction:"演出",none:"なし"};
+const KIND_LABELS = {normal:"特技",secret:"秘技",ultimate:"奥義",direction:"演出",none:"なし"};
 
 let character = null;
 let skills = [];
@@ -223,7 +223,7 @@ function assignStyleControl(control, value) {
 function styleCard(item) {
   const detail = parseDetail(item);
   const pending = isNew(item) || dirtyIds.has(String(item.id));
-  return `<div class="mobile-style-skill-row${pending ? " is-pending" : ""}" data-style-order-id="${esc(item.id)}"><button type="button" class="mobile-edit-card mobile-style-skill-card${pending ? " is-pending" : ""}" data-style-id="${esc(item.id)}"><span class="mobile-style-skill-card__primary"><span class="mobile-edit-card__name">${esc(item.name || "名称未入力")}</span><span class="mobile-edit-card__suits">${suitString(item)}</span><span class="mobile-edit-card__level">LV${num(item.level)}</span></span><span class="mobile-style-skill-card__secondary"><span>${esc(KIND_LABELS[item.skill_kind] || "通常")}</span><span>${esc(detail.skill || "—")}</span><span>${esc(detail.timing || item.timing || "—")}</span><span>${esc(detail.target || item.target || "—")}</span></span>${pending ? '<span class="mobile-unsaved-label">未保存</span>' : ""}</button><div class="mobile-style-skill-row__actions"><button type="button" data-move-style="up" aria-label="上へ">↑</button><button type="button" data-move-style="down" aria-label="下へ">↓</button></div></div>`;
+  return `<div class="mobile-style-skill-row${pending ? " is-pending" : ""}" data-style-order-id="${esc(item.id)}"><button type="button" class="mobile-edit-card mobile-style-skill-card${pending ? " is-pending" : ""}" data-style-id="${esc(item.id)}"><span class="mobile-style-skill-card__primary"><span class="mobile-edit-card__name">${esc(item.name || "名称未入力")}</span><span class="mobile-edit-card__suits">${suitString(item)}</span><span class="mobile-edit-card__level">LV${num(item.level)}</span></span><span class="mobile-style-skill-card__secondary"><span>${esc(KIND_LABELS[item.skill_kind] || "特技")}</span><span>${esc(detail.skill || "—")}</span><span>${esc(detail.timing || item.timing || "—")}</span><span>${esc(detail.target || item.target || "—")}</span></span>${pending ? '<span class="mobile-unsaved-label">未保存</span>' : ""}</button><div class="mobile-style-skill-row__actions"><button type="button" data-move-style="up" aria-label="上へ">↑</button><button type="button" data-move-style="down" aria-label="下へ">↓</button></div></div>`;
 }
 
 function separatorCard(item) {

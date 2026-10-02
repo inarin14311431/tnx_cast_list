@@ -2,7 +2,7 @@
 (function(){
   const definitions=[
     {value:"none",label:"なし",cost:0},
-    {value:"normal",label:"通常",cost:10},
+    {value:"normal",label:"特技",cost:10},
     {value:"secret",label:"秘技",cost:20},
     {value:"ultimate",label:"奥義",cost:50},
     {value:"direction",label:"演出",cost:2}

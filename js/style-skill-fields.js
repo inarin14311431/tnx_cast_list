@@ -62,7 +62,7 @@
     if(isSeparatorRow(row)||select.dataset.styleSeparatorLocked==="1")return;
 
     const definitions=window.TNXStyleSkillKinds?.definitions||[
-      {value:"normal",label:"通常"},{value:"secret",label:"秘技"},{value:"ultimate",label:"奥義"},{value:"direction",label:"演出"}
+      {value:"normal",label:"特技"},{value:"secret",label:"秘技"},{value:"ultimate",label:"奥義"},{value:"direction",label:"演出"}
     ];
     const selected=select.value;
     const current=[...select.options];
