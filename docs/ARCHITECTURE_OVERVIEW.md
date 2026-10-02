@@ -50,7 +50,7 @@ CSSは `css-next/` のentry + cascade layer + theme manifestで管理する。
 
 ### 補助
 
-- `transfer.html` / `mobile-transfer.html`
+- `mobile-transfer.html`
 - `backup.html`
 - `manual-data-import.html`
 
@@ -262,7 +262,9 @@ Security audit     -> security invariant
 live-write E2E     -> 実DB保存/復元（明示実行のみ）
 ```
 
-この分類は設計方針であり、2026-09-17時点でmanifestを使った分類runnerは検証repoにのみ導入済み。本番の既存CIには保存・原状復帰テストが含まれる。runtimeが同期済みでも、npm scriptsやCIの実行対象が同じとは限らない。
+この分類は設計方針である。manifestを使った分類runnerの導入状況、runtime同期とCI/テスト構成同期の
+差は`docs/TESTING_STRATEGY.md`第6節を確認する。runtimeが同期済みでも、npm scriptsやCIの実行対象が
+同じとは限らない。
 
 詳細: `docs/TESTING_STRATEGY.md` 第6節（環境差を含む）。
 
