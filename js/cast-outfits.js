@@ -54,7 +54,7 @@ function createSection(category, jp, en, items) {
   const schema = OUTFIT_SCHEMAS[category];
   const totals = category === "armor" ? armorTotals(items) : null;
   return `<section class="data-panel panel-outfits cast-outfit-section cast-outfit-section--${category}">
-    <header class="cast-outfit-title"><h2>${escapeHtml(jp)} <small>${escapeHtml(en)}</small></h2></header>
+    <header class="cast-outfit-title"><h2>${escapeHtml(jp)} <small>${escapeHtml(en)}</small></h2>${createTitleToggle()}</header>
     <div class="cast-outfit-table-scroll">
       <table class="cast-outfit-table" data-outfit-category="${category}">
         <thead><tr>${schema.map(createHeader).join("")}</tr></thead>
@@ -63,6 +63,11 @@ function createSection(category, jp, en, items) {
       </table>
     </div>
   </section>`;
+}
+
+// Tablet widths (768-1024px) hide the description column, so the bulk toggle is also offered in the section title.
+function createTitleToggle() {
+  return `<button type="button" class="style-description-toggle-all outfit-description-toggle-all cast-outfit-title__toggle" aria-pressed="false" aria-label="すべての解説を表示">全表示</button>`;
 }
 
 function createHeader(field) {
@@ -74,7 +79,18 @@ function createHeader(field) {
 
 function createRow(category, schema, item) {
   const source = displayItem(category, item);
-  return `<tr>${schema.map(field => createCell(field, source)).join("")}</tr>`;
+  return `<tr>${schema.map(field => createCell(field, source)).join("")}</tr>${createDescriptionRow(schema, source)}`;
+}
+
+// Shown only at tablet widths (CSS), where the category and description columns are hidden.
+// Items without a description get no row.
+// The colspan is the number of columns left visible there, so it must not exceed that count.
+function createDescriptionRow(schema, item) {
+  const text = displayValue(item.description);
+  if (text === "—") return "";
+  const value = text;
+  const colspan = schema.length - 2;
+  return `<tr class="cast-outfit-description-row"><td colspan="${colspan}" class="cast-outfit-description-cell style-view-cell style-view-cell--description"><textarea class="style-field-scroll style-description-expandable outfit-description-expandable" rows="1" wrap="soft" readonly aria-label="解説">${escapeHtml(value)}</textarea></td></tr>`;
 }
 
 function createCell(field, item) {
@@ -101,7 +117,7 @@ function displayItem(category, item) {
 function createArmorFooter(schema, totals) {
   const first = schema.indexOf("defense_s");
   const tail = schema.length - first - 3;
-  return `<tfoot><tr class="cast-armor-total-row"><td class="cast-outfit-col--category"></td><th colspan="${first - 1}">防御値合計</th><td class="cast-armor-total">${totals.s}</td><td class="cast-armor-total">${totals.p}</td><td class="cast-armor-total">${totals.i}</td>${tail > 0 ? `<td colspan="${tail}"></td>` : ""}</tr></tfoot>`;
+  return `<tfoot><tr class="cast-armor-total-row"><td class="cast-outfit-col--category"></td><th colspan="${first - 1}">防御値合計</th><td class="cast-armor-total">${totals.s}</td><td class="cast-armor-total">${totals.p}</td><td class="cast-armor-total">${totals.i}</td>${tail > 0 ? `<td colspan="${tail}" class="cast-armor-total-tail cast-armor-total-tail--wide"></td>` : ""}${tail > 1 ? `<td colspan="${tail - 1}" class="cast-armor-total-tail cast-armor-total-tail--narrow"></td>` : ""}</tr></tfoot>`;
 }
 
 function armorTotals(items) {

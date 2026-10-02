@@ -29,7 +29,45 @@ test("tron CS modifier stays compact and description receives remaining width", 
 
 test("cast page loads the refreshed outfit definitions and layout assets", () => {
   assert.match(outfits, /cast-view-definitions\.js\?v=3/);
-  assert.match(entry, /cast-outfit-column-widths\.css\?v=1/);
-  assert.match(castHtml, /cast-entry\.css\?v=21/);
-  assert.match(castHtml, /cast-outfits\.js\?v=7/);
+  assert.match(entry, /cast-outfit-column-widths\.css\?v=3/);
+  assert.match(castHtml, /cast-entry\.css\?v=23/);
+  assert.match(castHtml, /cast-outfits\.js\?v=9/);
+});
+
+test("items without a description get no tablet description row, and name/slot cells wrap on tablet", () => {
+  assert.match(outfits, /if \(text === "—"\) return "";/);
+  assert.match(layout, /td\.cast-outfit-col--name, td\.cast-outfit-col--slot\) \{ white-space: normal;/);
+  assert.match(layout, /\.cast-outfit-value \{ white-space: normal;/);
+});
+
+const castCss = await readFile(new URL("../css-next/pages/cast.css", import.meta.url), "utf8");
+const controls = await readFile(new URL("../js/cast-view-controls.js", import.meta.url), "utf8");
+const tabletBlock = layout.slice(layout.indexOf("@media screen and (min-width: 768px) and (max-width: 1024px)"));
+
+test("tablet layout moves the description into a row under each item", () => {
+  assert.match(outfits, /<tr class="cast-outfit-description-row"><td colspan="\$\{colspan\}"/);
+  assert.match(outfits, /const colspan = schema\.length - 2;/);
+  assert.match(outfits, /\$\{createDescriptionRow\(schema, source\)\}/);
+  assert.match(castCss, /\.cast-outfit-table \.cast-outfit-description-row[^{]*\{ display: none; \}/);
+  assert.match(tabletBlock, /\.cast-outfit-table \.cast-outfit-description-row \{ display: table-row; \}/);
+  assert.match(tabletBlock, /\.cast-outfit-col--description \{ display: none; \}/);
+  assert.match(tabletBlock, /\.cast-outfit-table \{\s*min-width: 0;/);
+});
+
+test("tablet rules are screen-only so print never shows the description row", () => {
+  assert.ok(tabletBlock.startsWith("@media screen and (min-width: 768px) and (max-width: 1024px)"));
+});
+
+test("armor footer keeps a wide and a narrow tail cell so the tablet footer matches the visible columns", () => {
+  assert.match(outfits, /cast-armor-total-tail--wide/);
+  assert.match(outfits, /colspan="\$\{tail - 1\}" class="cast-armor-total-tail cast-armor-total-tail--narrow"/);
+  assert.match(tabletBlock, /\.cast-armor-total-tail--wide \{ display: none; \}/);
+  assert.match(tabletBlock, /\.cast-armor-total-tail--narrow \{ display: table-cell; \}/);
+});
+
+test("both description copies expand together and every bulk toggle stays in sync", () => {
+  assert.match(controls, /function pairedDescriptionField\(field\)/);
+  assert.match(controls, /if \(paired\) applyDescriptionState\(paired, expanded\)/);
+  assert.match(controls, /function updateButtons\(scope, expanded\)/);
+  assert.match(outfits, /cast-outfit-title__toggle/);
 });

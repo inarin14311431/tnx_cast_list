@@ -152,7 +152,22 @@
     const STYLE_FIELD_SELECTOR = ".style-description-expandable";
     const OUTFIT_FIELD_SELECTOR = ".outfit-description-expandable";
 
+    // Outfit rows render the description twice (table cell for desktop, a full-width row below for
+    // tablet widths). Only one is visible at a time, so both are kept in the same state.
+    function pairedDescriptionField(field) {
+      const row = field.closest("tr");
+      const sibling = row?.classList.contains("cast-outfit-description-row") ? row.previousElementSibling : row?.nextElementSibling;
+      if (!sibling || sibling.classList.contains("cast-outfit-description-row") === row.classList.contains("cast-outfit-description-row")) return null;
+      return sibling.querySelector(OUTFIT_FIELD_SELECTOR);
+    }
+
     function resizeDescriptionField(field, expanded) {
+      applyDescriptionState(field, expanded);
+      const paired = pairedDescriptionField(field);
+      if (paired) applyDescriptionState(paired, expanded);
+    }
+
+    function applyDescriptionState(field, expanded) {
       field.classList.toggle("is-expanded", expanded);
       field.closest("tr")?.classList.toggle("is-description-expanded", expanded);
       field.scrollTop = 0;
@@ -176,8 +191,11 @@
       [...scope.querySelectorAll(selector)].forEach(field => resizeDescriptionField(field, expanded));
     }
 
+    function updateButtons(scope, expanded) {
+      scope.querySelectorAll(".style-description-toggle-all").forEach(button => updateButton(button, expanded));
+    }
+
     function updateButton(button, expanded) {
-      if (!button) return;
       button.textContent = expanded ? "縮小" : "全表示";
       button.setAttribute("aria-pressed", String(expanded));
       button.setAttribute("aria-label", expanded ? "すべての解説を縮小" : "すべての解説を表示");
@@ -197,7 +215,7 @@
       const fields = [...scope.querySelectorAll(selector)];
       const allExpanded = fields.length > 0 && fields.every(field => field.classList.contains("is-expanded"));
       scope.classList.toggle("is-description-all-expanded", allExpanded);
-      updateButton(scope.querySelector(".style-description-toggle-all"), allExpanded);
+      updateButtons(scope, allExpanded);
     }
 
     function isScrollbarInteraction(event, field) {
@@ -222,7 +240,7 @@
         const expanded = !scope.classList.contains("is-description-all-expanded");
         setDescriptionFields(scope, selector, expanded);
         scope.classList.toggle("is-description-all-expanded", expanded);
-        updateButton(button, expanded);
+        updateButtons(scope, expanded);
 
         if (!outfitSection) {
           const table = scope.querySelector(".style-skill-view-table");
@@ -264,6 +282,16 @@
         field.setAttribute("title", "クリックでこの解説だけ全文表示／折りたたみ");
       });
     }
+
+    // Expanded heights are measured for the visible copy; re-measure when the layout switches
+    // between the desktop cell and the tablet row.
+    function refitExpandedOutfitFields() {
+      document.querySelectorAll(`${OUTFIT_FIELD_SELECTOR}.is-expanded`).forEach(field => {
+        field.style.setProperty("height", "auto", "important");
+        field.style.setProperty("height", `${Math.max(35, field.scrollHeight + 2)}px`, "important");
+      });
+    }
+    window.matchMedia("(min-width: 768px) and (max-width: 1024px)").addEventListener("change", refitExpandedOutfitFields);
 
     const castContent = document.querySelector("#cast-content");
     const applyAfterCastRender = () => prepareDescriptionFields();
