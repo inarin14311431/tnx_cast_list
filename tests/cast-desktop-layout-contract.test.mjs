@@ -31,7 +31,7 @@ test("styles and divine works share one bilingual section heading grammar; the n
 test("primary and secondary identity labels share one accent hierarchy", () => {
   assert.match(castHtml, /class="identity-label">プレイヤー <small>PLAYER<\/small>/);
   assert.match(castHtml, /class="identity-label">所属 <small>AFFILIATION<\/small>/);
-  assert.match(castHtml, /class="identity-label">市民ランク <small>RANK<\/small>/);
+  assert.match(castHtml, /class="identity-label">市民ランク <small>CITIZEN RANK<\/small>/);
   assert.match(castHtml, /class="identity-label">消費経験点 <small>EXP<\/small>/);
   assert.match(castCss, /\.identity-grid dt \{[^}]*font: 800 \.7rem\/1\.2 var\(--font-sans\);/);
   assert.match(castCss, /\.identity-grid dt small \{ color: var\(--color-accent\); font: 700 \.72em\/1 var\(--font-data\);/);

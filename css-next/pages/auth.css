@@ -29,3 +29,8 @@ body > .auth-header { padding-top: 30px; }
   body[data-page="login.html"] .auth-panel,
   body[data-page="password-reset.html"] .auth-panel { padding: 24px 18px; }
 }
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  body[data-page="login.html"] .auth-header { grid-template-columns: 1fr; align-items: start; }
+  body[data-page="login.html"] .auth-header > :where(p, h1) { justify-self: start; text-align: left; }
+}

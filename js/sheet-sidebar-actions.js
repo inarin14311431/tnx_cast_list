@@ -9,7 +9,7 @@
     const LABELS = {
       view: /キャストを閲覧/,
       transferTsv: /転記TSV/,
-      transferBm: /転記BM/,
+      transferBm: /転記ブックマークレット/,
       import: /データ取込/,
       autofill: /SKD・OFC補完|補完/
     };
@@ -72,7 +72,7 @@
         const label = labelOf(element);
         let group = '';
         if (element.id === 'save-button' || /保存済み|未保存|保存中|保存失敗/.test(label)) group = 'save';
-        else if (/キャストを閲覧|転記TSV|転記BM|データ取込|SKD・OFC補完/.test(label)) group = 'action';
+        else if (/キャストを閲覧|転記TSV|転記ブックマークレット|データ取込|SKD・OFC補完/.test(label)) group = 'action';
 
         if (!group) {
           if (element.dataset.actionGroup) delete element.dataset.actionGroup;

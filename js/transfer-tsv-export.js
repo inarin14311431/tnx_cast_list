@@ -25,7 +25,7 @@ function ensureButtons() {
   let transfer = document.querySelector("#transfer-tsv-copy-button");
   let bookmarklet = document.querySelector("#transfer-bookmarklet-copy-button");
   if (!transfer) transfer = createButton("transfer-tsv-copy-button", "transfer-tsv-copy-button", "転記TSV", "COPY TRANSFER DATA");
-  if (!bookmarklet) bookmarklet = createButton("transfer-bookmarklet-copy-button", "transfer-bookmarklet-copy-button", "転記BM", "COPY BOOKMARKLET");
+  if (!bookmarklet) bookmarklet = createButton("transfer-bookmarklet-copy-button", "transfer-bookmarklet-copy-button", "転記ブックマークレット", "COPY BOOKMARKLET");
 
   const editorPanel = document.querySelector(".exp-panel");
   const headerActions = document.querySelector(".cast-header__export-actions") || document.querySelector(".cast-header__actions");
@@ -408,7 +408,7 @@ function setState(button, state, message = "", bookmarklet = false) {
   button.dataset.copyState = state;
   button.disabled = state === "copying" || (!bookmarklet && !publicId);
   const labels = bookmarklet ? {
-    idle: ["転記BM", "COPY BOOKMARKLET"], copying: ["生成中…", "BUILDING TOOL"], success: ["BMコピー済み", "ADD TO BOOKMARKS"], error: ["コピー失敗", "COPY ERROR"]
+    idle: ["転記ブックマークレット", "COPY BOOKMARKLET"], copying: ["生成中…", "BUILDING TOOL"], success: ["ブックマークレットコピー済み", "ADD TO BOOKMARKS"], error: ["コピー失敗", "COPY ERROR"]
   } : {
     idle: ["転記TSV", "COPY TRANSFER DATA"], copying: ["生成中…", "BUILDING TSV"], success: ["TSVコピー済み", "RUN BOOKMARKLET"], error: ["コピー失敗", "COPY ERROR"]
   };

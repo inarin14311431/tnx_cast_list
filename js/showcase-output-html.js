@@ -1,6 +1,7 @@
 import { normalizeShowcaseTheme, createOutputCss } from "./showcase-output-css.js?v=1";
 import { STYLE_COLORS } from "./style-colors.js";
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
+import { formatShowcaseHandle, formatShowcaseFullName } from "./showcase-display-format.js?v=1";
 
 // Standalone output and selection UI share formatting, but not browser state.
 export function renderShowcase(data, baseUrl) {
@@ -23,7 +24,7 @@ export function renderShowcase(data, baseUrl) {
 <header class="hero wrap"><div><p class="hero__code">N◎VA MUNICIPAL DATABASE // ACT ARCHIVE</p><h1>${escapeHtml(data.title)}<span>CAST SHOWCASE</span></h1><p class="hero__act">${escapeHtml(data.actName)}</p>${data.rulerName ? `<p class="hero__ruler">RULER：${escapeHtml(data.rulerName)}</p>` : ""}${data.intro ? `<p class="hero__intro">${escapeHtml(data.intro)}</p>` : ""}</div></header>
 <nav class="cast-nav"><div class="wrap">${navigation}</div></nav>
 <main class="cast-list wrap">${cards}</main>
-<footer class="footer wrap">「トーキョーN◎VA THE AXLERATION」は有限会社ファーイースト・アミューズメント・リサーチの著作物です。</footer>
+<footer class="footer wrap">(C)FarEast Amusement Research Co.,Ltd.／(C)GameField Co.,Ltd.</footer>
 </body>
 </html>`;
 }
@@ -62,7 +63,7 @@ function createOutputCastCard(item, index, baseUrl) {
     ${reading ? `<p class="cast-card__reading">${escapeHtml(reading)}</p>` : ""}
     <h2 class="cast-card__name${nameClass}">${escapeHtml(fullName)}</h2>
     ${styles ? `<div class="cast-card__styles">${styles}</div>` : ""}
-    <div class="cast-card__meta"><div><small>PLAYER</small><strong>${escapeHtml(character.player_name || "—")}</strong></div><div><small>AFFILIATION</small><strong>${escapeHtml(character.affiliation || "—")}</strong></div><div><small>AGE</small><strong>${escapeHtml(character.age || "—")}</strong></div><div><small>GENDER / ID</small><strong>${escapeHtml([character.gender, character.citizen_rank].filter(Boolean).join(" / ") || "—")}</strong></div></div>
+    <div class="cast-card__meta"><div><small>PLAYER</small><strong>${escapeHtml(character.player_name || "—")}</strong></div><div><small>AFFILIATION</small><strong>${escapeHtml(character.affiliation || "—")}</strong></div><div><small>AGE</small><strong>${escapeHtml(character.age || "—")}</strong></div><div><small>GENDER / RANK</small><strong>${escapeHtml([character.gender, character.citizen_rank].filter(Boolean).join(" / ") || "—")}</strong></div></div>
     ${handout}
     ${link}
   </div>
@@ -99,9 +100,9 @@ export function getStyles(character) {
 }
 
 export function getStyleNames(character) { return getStyles(character).map(item => item.name); }
-export function formatHandle(handle) { const value = String(handle ?? "").trim(); return value ? `“${value}”` : ""; }
-export function formatFullName(character) { return [formatHandle(character.handle), character.character_name].filter(Boolean).join(" "); }
-export function formatReading(character) { const handleKana = String(character.handle_kana ?? "").trim(); const nameKana = String(character.character_kana ?? "").trim(); return [handleKana ? `“${handleKana}”` : "", nameKana].filter(Boolean).join(" "); }
+export function formatHandle(handle) { return formatShowcaseHandle(handle); }
+export function formatFullName(character) { return formatShowcaseFullName(character.handle, character.character_name); }
+export function formatReading(character) { const handleKana = formatShowcaseHandle(character.handle_kana); const nameKana = String(character.character_kana ?? "").trim(); return [handleKana, nameKana].filter(Boolean).join(" "); }
 export function obfuscatePublicId(value) { const source = `TNX_CAST_ARCHIVE::${String(value ?? "")}`; let hash = 0x811c9dc5; for (let index = 0; index < source.length; index++) { hash ^= source.charCodeAt(index); hash = Math.imul(hash, 0x01000193); } return `TNX-${(hash >>> 0).toString(16).toUpperCase().padStart(8, "0")}`; }
 export function escapeHtml(value) { return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;"); }
 export function escapeAttribute(value) { return escapeHtml(value); }

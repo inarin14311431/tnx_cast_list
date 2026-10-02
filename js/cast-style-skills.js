@@ -69,7 +69,7 @@ function createSeparatorRow(skill) { return `<tr class="style-skill-public-separ
 function createSkillRow(skill) {
   const detail = parseDetail(skill.description);
   if (String(detail.description || "").startsWith(SEPARATOR_MARKER)) return createSeparatorRow(skill);
-  const kind = { none: "なし", normal: "通常", secret: "秘技", ultimate: "奥義", direction: "演出" }[skill.skill_kind] || skill.skill_kind || "";
+  const kind = { none: "なし", normal: "特技", secret: "秘技", ultimate: "奥義", direction: "演出" }[skill.skill_kind] || skill.skill_kind || "";
   return `<tr>${fieldCell(skill.name, "name")}${fieldCell(kind, "kind")}${fieldCell(skill.level, "level")}${SUITS.map(([key,,mark]) => `<td class="style-suit-cell"><span class="style-suit-mark ${skill[key] ? "is-active" : ""}">${mark}</span></td>`).join("")}${FIELDS.map(([key]) => fieldCell(detail[key], key)).join("")}</tr>`;
 }
 function renderTable(section, skills) {

@@ -32,6 +32,6 @@ test("act history primary action is bilingual", async () => {
 
 test("mobile bookmarklet transfer keeps Japanese primary headings and English secondary labels", async () => {
   const mobile = await read("mobile-transfer.html");
-  assert.match(mobile, /転記ガイド <small>CHARACTER SHEETS TRANSFER<\/small>/);
-  assert.match(mobile, /キャラクターシート倉庫へ転記 <small>TRANSFER TO CHARACTER SHEETS<\/small>/);
+  assert.match(mobile, /転記ガイド <small>TRANSFER GUIDE<\/small>/);
+  assert.match(mobile, /キャラクターシート倉庫へ転記 <small>TRANSFER<\/small>/);
 });

@@ -296,6 +296,7 @@ body[data-page="cast.html"] .ability-grid { display: grid; grid-template-columns
 .cast-outfit-table[data-outfit-category="residence"] { min-width: 1080px; }
 .cast-outfit-table[data-outfit-category="other"] { min-width: 920px; }
 .cast-armor-total-row > * { background: var(--color-accent-soft); font-weight: 800; }
+.cast-armor-total-row > .cast-outfit-col--category { border-right: 0; }
 body[data-page="cast.html"] #skills-container .data-table tbody td,
 body[data-page="cast.html"] .style-skill-view-table tbody td:not(.style-view-cell--description),
 body[data-page="cast.html"] .cast-outfit-table tbody td:not(.cast-outfit-col--description) { border-right-color: color-mix(in srgb, var(--color-border-muted) 42%, transparent); border-left-color: color-mix(in srgb, var(--color-border-muted) 42%, transparent); }
@@ -613,6 +614,10 @@ body[data-page="cast.html"].is-quick-sheet-open > :is(.cast-header, .cast-conten
   body[data-page="cast.html"] .combo-card__detail-copy, body[data-page="cast.html"] .combo-card__usage { grid-column: 1; }
   body[data-page="cast.html"] .combo-card__usage { width: 100%; }
   body[data-page="cast.html"] .combo-skill-counter > .combo-card__usage--counter { width: auto; }
+}
+@media (min-width: 768px) and (max-width: 1024px) {
+  body[data-page="cast.html"] .cast-general-columns { grid-template-columns: 1fr; }
+  body[data-page="cast.html"] .cast-outfit-table .cast-outfit-col--category { display: none; }
 }
 @media (max-width: 767px) {
   body[data-page="cast.html"] .cast-header { position: relative; grid-template-columns: 1fr; align-items: start; }
