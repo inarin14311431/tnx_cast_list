@@ -45,3 +45,52 @@
     min-width: 1248px;
   }
 }
+
+/* Tablet (768-1024px): the description moves out of the numeric columns into a full-width row
+ * under each item (.cast-outfit-description-row), so the numeric columns fit the viewport.
+ * Screen only: print and the quick sheet never show the description row.
+ */
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  body[data-page="cast.html"] .cast-outfit-table {
+    min-width: 0;
+    font-size: .74rem;
+  }
+
+  body[data-page="cast.html"] .cast-outfit-table :is(th, td) { padding: 4px 2px; }
+  body[data-page="cast.html"] .cast-outfit-table thead th { font-size: .64rem; }
+  body[data-page="cast.html"] .cast-outfit-table tfoot th { padding-right: 6px; }
+
+  body[data-page="cast.html"] .cast-outfit-table :is(th, td).cast-outfit-col--description { display: none; }
+  body[data-page="cast.html"] .cast-outfit-table .cast-armor-total-tail--wide { display: none; }
+  body[data-page="cast.html"] .cast-outfit-table .cast-armor-total-tail--narrow { display: table-cell; }
+
+  body[data-page="cast.html"] .cast-outfit-table .cast-outfit-col--name { width: 72px; min-width: 72px; max-width: 72px; }
+  body[data-page="cast.html"] .cast-outfit-table :is(.cast-outfit-col--purchase_value, .cast-outfit-col--experience_cost, .cast-outfit-col--page_number) { width: 40px; min-width: 40px; max-width: 40px; }
+  body[data-page="cast.html"] .cast-outfit-table .cast-outfit-col--concealment { width: 44px; min-width: 44px; max-width: 44px; }
+  body[data-page="cast.html"] .cast-outfit-table .cast-outfit-col--concealment_penalty { width: 48px; min-width: 48px; max-width: 48px; }
+  body[data-page="cast.html"] .cast-outfit-table .cast-outfit-col--attack { width: 48px; min-width: 48px; max-width: 48px; }
+  body[data-page="cast.html"] .cast-outfit-table .cast-outfit-col--range { width: 44px; min-width: 44px; max-width: 44px; }
+  body[data-page="cast.html"] .cast-outfit-table :is(.cast-outfit-col--parry, .cast-outfit-col--ianus_surface, .cast-outfit-col--ianus_deep, .cast-outfit-col--ianus_none) { width: 36px; min-width: 36px; max-width: 36px; }
+  body[data-page="cast.html"] .cast-outfit-table :is(.cast-outfit-col--defense_s, .cast-outfit-col--defense_p, .cast-outfit-col--defense_i, .cast-outfit-col--tron_software, .cast-outfit-col--tron_support, .cast-outfit-col--tron_hardware) { width: 30px; min-width: 30px; max-width: 30px; }
+  body[data-page="cast.html"] .cast-outfit-table :is(.cast-outfit-col--speed, .cast-outfit-col--electronic_control, .cast-outfit-col--control_modifier, .cast-outfit-col--crew, .cast-outfit-col--sf, .cast-outfit-col--residence_entry) { width: 38px; min-width: 38px; max-width: 38px; }
+  body[data-page="cast.html"] .cast-outfit-table .cast-outfit-col--cs_modifier { width: 46px; min-width: 46px; max-width: 46px; }
+  body[data-page="cast.html"] .cast-outfit-table .cast-outfit-col--residence_electric_area { width: 52px; min-width: 52px; max-width: 52px; }
+  body[data-page="cast.html"] .cast-outfit-table .cast-outfit-col--slot { width: 56px; min-width: 56px; max-width: 56px; }
+  body[data-page="cast.html"] .cast-outfit-table[data-outfit-category="residence"] .cast-outfit-col--slot { width: 52px; min-width: 52px; max-width: 52px; }
+
+  body[data-page="cast.html"] .cast-outfit-table tbody :is(td.cast-outfit-col--name, td.cast-outfit-col--slot) { white-space: normal; line-height: 1.25; }
+  body[data-page="cast.html"] .cast-outfit-table tbody :is(td.cast-outfit-col--name, td.cast-outfit-col--slot) .cast-outfit-value { white-space: normal; overflow-wrap: anywhere; text-overflow: clip; }
+
+  body[data-page="cast.html"] .cast-outfit-table .cast-outfit-description-row { display: table-row; }
+  body[data-page="cast.html"] .cast-outfit-table tbody .cast-outfit-description-row > td {
+    height: 45px;
+    min-height: 45px;
+    padding: 4px;
+    border-top: 0;
+    text-overflow: clip;
+  }
+  body[data-page="cast.html"] .cast-outfit-table tbody .cast-outfit-description-row.is-description-expanded > td { height: auto; min-height: 0; vertical-align: top; }
+
+  body[data-page="cast.html"] .cast-outfit-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  body[data-page="cast.html"] .cast-outfit-title .cast-outfit-title__toggle { display: inline-grid; margin-left: 0; }
+}

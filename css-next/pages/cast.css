@@ -295,6 +295,8 @@ body[data-page="cast.html"] .ability-grid { display: grid; grid-template-columns
 .cast-outfit-table[data-outfit-category="vehicle"] { min-width: 1280px; }
 .cast-outfit-table[data-outfit-category="residence"] { min-width: 1080px; }
 .cast-outfit-table[data-outfit-category="other"] { min-width: 920px; }
+/* Tablet-only pieces (768-1024px, see cast-outfit-column-widths.css): description row, narrow footer cell, title toggle. */
+.cast-outfit-table .cast-outfit-description-row, .cast-outfit-table .cast-armor-total-tail--narrow, .cast-outfit-title .cast-outfit-title__toggle { display: none; }
 .cast-armor-total-row > * { background: var(--color-accent-soft); font-weight: 800; }
 .cast-armor-total-row > .cast-outfit-col--category { border-right: 0; }
 body[data-page="cast.html"] #skills-container .data-table tbody td,
