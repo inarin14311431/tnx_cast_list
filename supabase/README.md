@@ -2,9 +2,9 @@
 
 番号付きSQLは過去の変更履歴であり、現在のDBをゼロから構築する完全なスキーマではありません。適用済みかどうかを番号の存在だけで判断しないでください。
 
-- 履歴の順序: `migrations-manifest.json`（05〜41、45ファイル）。過去の重複番号も保持します。
+- 履歴の順序: `migrations-manifest.json`。範囲と件数はこのファイルを参照してください。過去の重複番号も保持します。
 - 変更規則: `../docs/DATABASE_MIGRATIONS.md`。
-- 2026-09-06の実DB照合・互換RPCの扱い: `../docs/DB_RECONCILIATION_20260906.md`。
+- 2026-09-06の実DB照合・互換RPCの扱い(当時の記録): `../docs/archive/DB_RECONCILIATION_20260906.md`。
 - 実DBの検証: `../scripts/database-invariants.sql` は読取り専用で8条件を検査します。`npm run check:db:live` は管理APIの `SUPABASE_ACCESS_TOKEN` が必要です。通常の `verify` はローカルファイルのみの検査で、実DB適用を証明しません。
 
 ## 維持する仕様
