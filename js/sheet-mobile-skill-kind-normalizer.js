@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=1";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
 
 const PROPER_GENERAL_PREFIXES=["製作：","芸術：","操縦："];
 let character=null;

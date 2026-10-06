@@ -1,5 +1,5 @@
 import { loadPublicShowcaseGuests, normalizeShowcaseSlug } from "./public-showcase-service.js?v=1";
-import { formatShowcaseFullName, formatShowcaseTagline } from "./showcase-display-format.js?v=1";
+import { formatShowcaseFullName, formatShowcaseTagline, normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=1";
 
 const slug = normalizeShowcaseSlug(new URLSearchParams(location.search).get("id"));
 if (slug) void renderGuests(slug);
@@ -31,6 +31,7 @@ function normalizeGuest(row) {
   return {
     handle: clean(row?.handle),
     name: clean(row?.name),
+    displayName: normalizeShowcaseDisplayQuotes(formatShowcaseFullName(clean(row?.handle), clean(row?.name))),
     personaStyle: clean(row?.persona_style),
     affiliation: clean(row?.affiliation),
     gender: clean(row?.gender),
@@ -46,7 +47,7 @@ function createNavigationItem(guest, index) {
   anchor.href = `#guest-${index + 1}`;
   const number = document.createElement("span");
   number.textContent = `G${String(index + 1).padStart(2, "0")}`;
-  anchor.append(number, formatShowcaseFullName(guest.handle, guest.name));
+  anchor.append(number, guest.displayName);
   return anchor;
 }
 
@@ -57,14 +58,14 @@ function createGuestCard(guest, index) {
   const imageWrap = element("div", "cast-card__image");
   const image = document.createElement("img");
   image.src = guest.imageUrl || "./assets/placeholders/scan-failed.webp";
-  image.alt = formatShowcaseFullName(guest.handle, guest.name);
+  image.alt = guest.displayName;
   image.loading = "lazy";
   image.decoding = "async";
   imageWrap.append(image);
 
   const body = element("div", "cast-card__body");
   body.append(paragraph("cast-card__slot", `GUEST ${String(index + 1).padStart(2, "0")} // SUPPORTING CAST`));
-  body.append(heading("h2", "cast-card__name", formatShowcaseFullName(guest.handle, guest.name)));
+  body.append(heading("h2", "cast-card__name", guest.displayName));
 
   if (guest.personaStyle) {
     const styles = element("div", "cast-card__styles");

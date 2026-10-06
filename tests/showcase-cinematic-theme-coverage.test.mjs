@@ -3,24 +3,27 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const entry = await readFile(new URL("../css-next/pages/act-showcase-entry.css", import.meta.url), "utf8");
-const dedicatedTheme = await readFile(new URL("../css-next/pages/act-showcase-dedicated-themes.css", import.meta.url), "utf8");
 const surfaceSystem = await readFile(new URL("../css-next/pages/act-showcase-theme-surface-system.css", import.meta.url), "utf8");
+// The dedicated theme tokens were merged into the head of the surface-system stylesheet.
+const dedicatedTheme = surfaceSystem;
 const phaseContract = await readFile(new URL("../css-next/pages/act-showcase-theme-phase-contract.css", import.meta.url), "utf8");
 const legibility = await readFile(new URL("../css-next/pages/act-showcase-theme-legibility.css", import.meta.url), "utf8");
 const sceneContract = await readFile(new URL("../css-next/pages/act-showcase-theme-scene-contract.css", import.meta.url), "utf8");
 const visualEmphasis = await readFile(new URL("../css-next/pages/act-showcase-visual-emphasis.css", import.meta.url), "utf8");
-const combinedTheme = `${dedicatedTheme}\n${surfaceSystem}\n${phaseContract}\n${legibility}\n${sceneContract}\n${visualEmphasis}`;
+const combinedTheme = `${surfaceSystem}\n${phaseContract}\n${legibility}\n${sceneContract}\n${visualEmphasis}`;
 
 const ids = ["nova", "intron", "vlad", "lutetia"];
 
 test("dedicated ACT tokens, shared surfaces, phase, legibility, scene completion, and visual emphasis load in order", () => {
-  const dedicated = entry.indexOf("act-showcase-dedicated-themes.css");
+  assert.equal(entry.indexOf("act-showcase-dedicated-themes.css"), -1, "dedicated tokens now live at the head of the surface-system stylesheet");
+  const dedicated = surfaceSystem.indexOf("ACT SHOWCASE dedicated themes.");
   const surface = entry.indexOf("act-showcase-theme-surface-system.css");
+  const surfaceSection = surfaceSystem.indexOf("ACT SHOWCASE surface system.");
   const phase = entry.indexOf("act-showcase-theme-phase-contract.css");
   const readable = entry.indexOf("act-showcase-theme-legibility.css");
   const scene = entry.indexOf("act-showcase-theme-scene-contract.css");
   const emphasis = entry.indexOf("act-showcase-visual-emphasis.css");
-  assert.ok(dedicated >= 0 && surface > dedicated && phase > surface && readable > phase && scene > readable && emphasis > scene);
+  assert.ok(dedicated >= 0 && surfaceSection > dedicated && surface >= 0 && phase > surface && readable > phase && scene > readable && emphasis > scene);
   assert.match(entry.trim().split("\n").at(-1), /^@import "\.\/act-showcase-visual-emphasis\.css\?v=[A-Za-z0-9._-]+";$/);
   assert.doesNotMatch(entry, /act-showcase-theme\.css|act-showcase-theme-coverage\.css|act-showcase-cinematic-theme\.css/);
 });

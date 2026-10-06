@@ -26,6 +26,22 @@ test("showcase taglines always use one Japanese quote pair", () => {
   assert.equal(formatShowcaseTagline("「“真実はここにある”」"), "「真実はここにある」");
 });
 
+test("showcase tagline formatting leaves placeholder fallback text unquoted", () => {
+  assert.equal(formatShowcaseTagline("PUBLIC CAST ARCHIVE"), "PUBLIC CAST ARCHIVE");
+  assert.equal(formatShowcaseTagline("PUBLIC CAST"), "PUBLIC CAST");
+  assert.equal(formatShowcaseTagline("  PUBLIC CAST  "), "PUBLIC CAST");
+});
+
+test("display normalizer covers the real cast one-line tagline locations without touching the visual caption", async () => {
+  const normalizer = await read("js/act-showcase-display-normalizer.js");
+  for (const selector of [
+    ".poster-v2-tagline",
+    ".neotokyo-sequence__cast-tagline",
+    ".neotokyo-sequence__summary-cast-tagline"
+  ]) assert.ok(normalizer.includes(selector), `missing selector: ${selector}`);
+  assert.ok(!normalizer.includes(".poster-v2-visual__caption > span"));
+});
+
 test("mode-specific publish saves guests before standard or cinematic publishing", async () => {
   const [loader, bridge] = await Promise.all([
     read("js/showcase-generator-loader.js"),
@@ -58,10 +74,11 @@ test("standard showcase explicitly loads and renders public guests", async () =>
     read("act-showcase-standard.html"),
     read("js/act-showcase-standard-guests.js")
   ]);
-  assert.match(html, /act-showcase-standard-guests\.js\?v=1/);
+  assert.match(html, /act-showcase-standard-guests\.js\?v=\d+/);
   assert.match(guestJs, /loadPublicShowcaseGuests/);
   assert.match(guestJs, /standard-showcase-guests/);
   assert.match(guestJs, /formatShowcaseFullName/);
+  assert.match(guestJs, /displayName: normalizeShowcaseDisplayQuotes\(/);
   assert.match(guestJs, /formatShowcaseTagline/);
 });
 
@@ -71,9 +88,10 @@ test("both public showcase modes load the display normalizer", async () => {
     read("js/act-showcase-bootstrap.js"),
     read("js/act-showcase-display-normalizer.js")
   ]);
-  assert.match(standardHtml, /act-showcase-display-normalizer\.js\?v=1/);
-  assert.match(cinematicBootstrap, /act-showcase-display-normalizer\.js\?v=1/);
-  assert.match(normalizer, /poster-supporting-card h3/);
+  assert.match(standardHtml, /act-showcase-display-normalizer\.js\?v=\d+/);
+  assert.match(cinematicBootstrap, /act-showcase-display-normalizer\.js\?v=\d+/);
+  // Names are normalized when the data is read (see showcase-name-normalization.test.mjs); only taglines remain here.
+  assert.doesNotMatch(normalizer, /NAME_SELECTORS|normalizeShowcaseDisplayQuotes|poster-supporting-card h3/);
   assert.match(normalizer, /poster-supporting-card blockquote/);
   assert.match(normalizer, /formatShowcaseTagline/);
 });

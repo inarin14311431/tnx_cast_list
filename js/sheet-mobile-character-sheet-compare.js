@@ -1,11 +1,12 @@
 import { supabase } from "./supabase-client.js";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=1";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
 import { normalizeOutfitListForView } from "./outfit-view-model.js?v=3";
 import { compareCharacterSheetSource } from "./character-sheet-compare-service.js?v=3";
 import {
   groupCharacterSheetDifferences,
   summarizeCharacterSheetDifferences
 } from "./character-sheet-diff-display.js?v=3";
+import { escapeHtml } from "./dom-escape.js?v=2";
 
 const PROFILE_FIELDS = [
   "character_name", "character_kana", "handle", "handle_kana", "player_name", "affiliation", "citizen_rank", "birthplace", "character_sheet_url",
@@ -24,12 +25,6 @@ function currentCharacter(base) {
     if (input) character[field] = input.value;
   });
   return character;
-}
-
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  }[char]));
 }
 
 function renderResult(container, summaries) {

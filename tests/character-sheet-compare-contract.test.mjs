@@ -152,6 +152,6 @@ test("PC warehouse comparison uses the same shared comparison service as the mob
   assert.match(compare, /import \{ compareCharacterSheetPayload, normalizeCharacterSheetPayload \} from "\.\/character-sheet-compare-service\.js\?v=3";/);
   assert.match(compare, /function compareArchiveToJsonp\(archiveBundle,externalPayload\)\{return compareCharacterSheetPayload\(archiveBundle,externalPayload\);\}/);
   assert.doesNotMatch(compare, /diffCanonicalBundles|canonicalizeCharacterSheetJsonp|canonicalizeArchiveBundle/);
-  // Legacy-style-code outline completion moved into the shared compare-service (character-sheet-style-codes.js).
   assert.match(compare, /function normalizePayload\(payload\)\{return normalizeCharacterSheetPayload\(payload\);\}/);
+  assert.doesNotMatch(compare, /STYLE_CODE_NAMES/);
 });

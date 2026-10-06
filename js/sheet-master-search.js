@@ -1,4 +1,5 @@
 import { supabase } from "./supabase-client.js";
+import { escapeHtml, escapeAttributeWithBacktick as escapeAttribute } from "./dom-escape.js?v=2";
 
 const PAGE_SIZE = 60;
 const OUTFIT_TARGETS = {
@@ -550,10 +551,3 @@ function cssEscape(value) {
   return window.CSS?.escape ? CSS.escape(String(value)) : String(value).replace(/["\\]/g, "\\$&");
 }
 
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character]));
-}
-
-function escapeAttribute(value) {
-  return escapeHtml(value).replace(/`/g, "&#96;");
-}

@@ -1,6 +1,8 @@
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
-import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=4";
+import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=6";
 import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=1";
+import { buildVisualCaption } from "./act-showcase-visual-caption.js?v=1";
+import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=1";
 
 const POSTER_SAMPLE_BACKGROUND = "./assets/showcase/act-showcase-moon-city-v2.svg";
 const HANDOUT_PLACEHOLDERS = new Set([
@@ -67,8 +69,8 @@ function createShowcaseModel(data) {
   const casts = Array.isArray(data.casts)
     ? data.casts.slice(0, 6).map(cast => ({
         ...cast,
-        fullName: normalizeDisplayQuotes(cast?.fullName || cast?.full_name || cast?.name),
-        reading: normalizeDisplayQuotes(cast?.reading)
+        fullName: normalizeShowcaseDisplayQuotes(cast?.fullName || cast?.full_name || cast?.name),
+        reading: normalizeShowcaseDisplayQuotes(cast?.reading)
       }))
     : [];
   if (!casts.length) throw new Error("このアクト紹介には表示できるキャストがありません。");
@@ -213,8 +215,8 @@ function renderPoster(model) {
 // poster-v2-panel--credits panel was created here just so js/act-showcase-board-layout.js's
 // polishBoard() could scrape RULER/KEY STYLE off it a frame later, then delete it; that transient
 // panel is gone now. board-layout.js's polishBoard()/ensureActMeta() are intentionally left in
-// place unmodified as a no-op safety net (they only act on a poster-v2-panel--credits panel or a
-// grid that isn't already poster-v2-grid--showcase3, neither of which this file produces anymore).
+// place as a no-op safety net (they only act on a grid that isn't already poster-v2-grid--showcase3,
+// which this file no longer produces; the credits-panel handling itself was removed).
 function createActMetaBar(model) {
   const bar = el("section", "poster-v2-act-meta");
   bar.setAttribute("aria-label", "アクト公開情報");
@@ -259,7 +261,6 @@ function createCastGrid(cast) {
 
 function createVisualPanel(cast) {
   const name = text(cast?.fullName) || "CAST";
-  const tagline = text(cast?.tagline);
   const visual = createPanel("01 / CAST", "CAST VISUAL", "poster-v2-panel--visual");
   const visualImage = el("div", "poster-v2-visual");
   const image = document.createElement("img");
@@ -276,8 +277,17 @@ function createVisualPanel(cast) {
   });
   visualImage.append(image);
 
+  // The caption is built in its final form here (assigned style, affiliation, identity code), so
+  // nothing rewrites it afterwards. Rules live in act-showcase-visual-caption.js.
+  const { meta, code } = buildVisualCaption(cast, name);
   const caption = el("div", "poster-v2-visual__caption");
-  caption.append(textEl("span", "", tagline || "PUBLIC CAST ARCHIVE"), textEl("strong", "", name));
+  const metaLine = textEl("span", "poster-v2-visual__meta", meta);
+  metaLine.dataset.visualMetaApplied = "true";
+  metaLine.setAttribute("aria-label", "キャスト公開ビジュアル情報");
+  const codeLine = textEl("strong", "poster-v2-visual__code", code);
+  codeLine.dataset.visualCodeApplied = "true";
+  codeLine.setAttribute("aria-label", "公開ビジュアル識別コード");
+  caption.append(metaLine, codeLine);
   visualImage.append(caption);
   visual.querySelector(".poster-v2-panel__body").append(visualImage);
   return visual;
@@ -503,16 +513,6 @@ function escapeCssString(value) {
     "\n": "",
     "\r": ""
   }[character]));
-}
-
-function normalizeDisplayQuotes(value) {
-  return String(value ?? "")
-    .replace(/“\s*[“"「『‘']+/g, "“")
-    .replace(/[”"」』’']+\s*”/g, "”")
-    .replace(/“{2,}/g, "“")
-    .replace(/”{2,}/g, "”")
-    .replace(/"{2,}/g, '"')
-    .trim();
 }
 
 function smoothstep(a, b, value) {

@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { compactSource } from "./helpers/compact-source.mjs";
 import { readFile } from "node:fs/promises";
 
-const mobileExp=await readFile(new URL("../js/sheet-mobile-header-exp.js",import.meta.url),"utf8");
+const mobileExp=compactSource(await readFile(new URL("../js/sheet-mobile-header-exp.js",import.meta.url),"utf8"));
 const desktopExp=await readFile(new URL("../js/experience.js",import.meta.url),"utf8");
 const normalizer=await readFile(new URL("../js/sheet-mobile-skill-kind-normalizer.js",import.meta.url),"utf8");
 const app=await readFile(new URL("../js/sheet-mobile-app.js",import.meta.url),"utf8");
@@ -48,5 +49,5 @@ test("mobile app loads skill-kind normalization before experience calculation",(
   const normalizeIndex=app.indexOf("sheet-mobile-skill-kind-normalizer.js");
   const expIndex=app.indexOf("sheet-mobile-header-exp.js");
   assert.ok(normalizeIndex>=0&&normalizeIndex<expIndex);
-  assert.match(app,/sheet-mobile-header-exp\.js\?v=20260824-1/);
+  assert.match(app,/sheet-mobile-header-exp\.js\?v=20260824-3/);
 });

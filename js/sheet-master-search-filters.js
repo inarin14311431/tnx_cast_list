@@ -1,4 +1,5 @@
 import { supabase } from "./supabase-client.js";
+import { escapeHtml } from "./dom-escape.js?v=2";
 
 const PAGE_SIZE = 1000;
 const RESULT_PAGE_SIZE = 50;
@@ -91,10 +92,6 @@ function replaceOptions(select, defaultLabel, values, selected) {
 
 function unique(values) {
   return [...new Set(values.map(value => String(value || "").trim()).filter(Boolean))].sort((a, b) => a.localeCompare(b, "ja"));
-}
-
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[character]));
 }
 
 function installResultPaginationQueryPatch() {

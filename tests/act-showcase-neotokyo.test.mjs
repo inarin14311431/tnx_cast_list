@@ -37,6 +37,27 @@ test("ACT system access is automatic while title and later narrative phases wait
   assert.match(source, /OPEN FULL SHOWCASE/);
 });
 
+test("title and summary screens no longer duplicate the subtitle already shown on #opening-subtitle", async () => {
+  const [neotokyo, enhancer, hierarchyCss] = await Promise.all([
+    read("js/act-showcase-neotokyo.js"),
+    read("js/act-showcase-cinematic-enhancer.js"),
+    read("css-next/pages/act-showcase-neotokyo-hierarchy.css")
+  ]);
+  // js/act-showcase-neotokyo.js's showActTitle()/showSummary() used to read model.heroSubTitle via
+  // getActOverview() and build a .neotokyo-sequence__act-overview / .neotokyo-sequence__overview-intro
+  // box labeled "ACT OVERVIEW // アクト概要" on each screen. #opening-subtitle already shows the exact
+  // same label (via this CSS file's `#opening-subtitle:before{content:"ACT OVERVIEW // アクト概要"}`)
+  // immediately followed by model.heroSubTitle itself, so those boxes were a pure duplicate. Confirmed
+  // by live rendering before removing them.
+  assert.doesNotMatch(neotokyo, /getActOverview|neotokyo-sequence__act-overview|neotokyo-sequence__overview-intro/);
+  assert.match(hierarchyCss, /#opening-subtitle:before\{[^}]*content:"ACT OVERVIEW \/\/ アクト概要"/);
+  // js/act-showcase-cinematic-enhancer.js used to delete those same boxes right after this file built
+  // them; that removal (and the now-empty summary-screen branch it lived in) is gone too, since the
+  // boxes are never created in the first place. enhanceTitle()'s own title-logo decoration is untouched.
+  assert.doesNotMatch(enhancer, /neotokyo-sequence__act-overview|neotokyo-sequence__overview-intro/);
+  assert.match(enhancer, /title\.classList\.add\("is-cinematic-title"\)/);
+});
+
 test("NeoTokyo handout remains visible and shifts left while ASSIGN opens on the right", async () => {
   const [source, css] = await Promise.all([
     read("js/act-showcase-neotokyo.js"),

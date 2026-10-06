@@ -1,5 +1,7 @@
 export function normalizeShowcaseTheme(value) {
-  const theme = String(value || "").trim().toLowerCase();
+  const theme = String(value || "")
+    .trim()
+    .toLowerCase();
   return ["nova", "intron", "vlad", "lutetia"].includes(theme) ? theme : "nova";
 }
 
@@ -29,4 +31,3 @@ body:before{position:fixed;inset:0;z-index:-1;content:"";background:linear-gradi
 @media(max-width:760px){body{background-attachment:scroll}.hero{min-height:auto;padding:56px 0}.cast-card,.cast-card:nth-child(even){grid-template-columns:1fr}.cast-card:nth-child(even) .cast-card__image{order:0}.cast-card__image{min-height:420px}.cast-card__image:after,.cast-card:nth-child(even) .cast-card__image:after{background:linear-gradient(180deg,transparent 68%,rgba(1,9,14,.94))}.cast-card__body{padding:26px 26px 96px}.cast-card__name,.cast-card__name--long{font-size:clamp(1.7rem,8vw,2.55rem);white-space:normal}.cast-card__name--very-long{font-size:clamp(1.45rem,6.7vw,2rem);white-space:normal}.cast-card__meta{grid-template-columns:1fr}.cast-card__handout summary{align-items:flex-start;flex-direction:column}.cast-card__handout-action{display:none}.style.style--handout-role{min-width:104px;padding:8px 12px 9px}}
   `;
 }
-

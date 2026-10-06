@@ -1,5 +1,6 @@
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
 import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=1";
+import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=1";
 
 const status = document.querySelector("#act-showcase-standard-status");
 const root = document.querySelector("#act-showcase-standard-root");
@@ -56,7 +57,14 @@ function renderShowcase(data) {
     document.body.style.backgroundImage = `linear-gradient(rgba(var(--showcase-bg-rgb,2,8,12),.58),rgba(var(--showcase-bg-rgb,2,8,12),.92)),url("${escapeCssString(background)}")`;
   }
 
-  const castList = Array.isArray(data.casts) ? data.casts.slice(0, 6) : [];
+  // Names are normalized here, when the data is read, so the cards below are built from final strings.
+  const castList = Array.isArray(data.casts)
+    ? data.casts.slice(0, 6).map(item => ({
+        ...item,
+        fullName: normalizeShowcaseDisplayQuotes(item?.fullName),
+        reading: normalizeShowcaseDisplayQuotes(item?.reading)
+      }))
+    : [];
   if (!castList.length) throw new Error("このアクト紹介には表示できるキャストがありません。");
   navigation.replaceChildren(...castList.map((item, index) => createNavigationItem(item, index)));
   casts.replaceChildren(...castList.map((item, index) => createCastCard(item, index)));

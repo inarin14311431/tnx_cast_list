@@ -1,4 +1,5 @@
 import { SHEET_HELP_ORDER, SHEET_HELP_TOPICS } from "./help-content.js?v=4";
+import { escapeHtml } from "./dom-escape.js?v=2";
 
 const page = document.body?.dataset.page;
 if (page === "sheet.html") initializeSheetHelp();
@@ -93,8 +94,3 @@ function createDialog() {
   return dialog;
 }
 
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>\"']/g, char => ({
-    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-  }[char]));
-}

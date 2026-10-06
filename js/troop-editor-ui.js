@@ -1,5 +1,6 @@
 import { GENERAL_MASTER_ROWS, initialGeneralSkillSuit } from "./general-skill-catalog.js?v=2";
 import { initializeTroopComboRules, prepareTroopComboDialog, refreshTroopComboRules } from "./troop-combo-rule-v2.js";
+import { escapeHtml, escapeAttribute as escapeAttr } from "./dom-escape.js?v=2";
 
 const ABILITIES = ["reason", "passion", "life", "mundane"];
 const SUITS = {
@@ -252,5 +253,4 @@ function comboRows() {
   return comboStorage ? [...comboStorage.children].filter(row => row.matches(".troop-editor-row--combo")) : [];
 }
 function rowValue(row, field) { return String(row.querySelector(`[data-field="${field}"]`)?.value || "").trim(); }
-function escapeHtml(value) { return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-function escapeAttr(value) { return escapeHtml(value); }
+

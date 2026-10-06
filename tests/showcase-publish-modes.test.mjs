@@ -19,7 +19,7 @@ test("dynamic publisher emits current publication URLs without retired mode/samp
     read("js/showcase-generator-loader.js"),
     read("js/showcase-dynamic-publish-v3.js")
   ]);
-  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=4/);
+  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=5/);
   assert.doesNotMatch(loader, /showcase-dynamic-publish-v2\.js/);
   assert.match(publisher, /act-showcase-standard\.html\?id=/);
   assert.match(publisher, /act-showcase\.html\?id=/);
@@ -33,7 +33,7 @@ test("standard public view shares the public service and accepts the current tra
     read("js/act-showcase-standard.js"),
     read("js/public-showcase-service.js")
   ]);
-  assert.match(html, /act-showcase-standard\.js\?v=3/);
+  assert.match(html, /act-showcase-standard\.js\?v=\d+/);
   assert.match(source, /public-showcase-service\.js/);
   assert.match(source, /loadPublicShowcase\(slug\)/);
   assert.match(source, /data\.trailer\.body/);

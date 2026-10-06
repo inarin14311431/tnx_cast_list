@@ -4,8 +4,9 @@
   <!-- modulepreload:start -->
   <link rel="modulepreload" href="./js/supabase-client.js">
   <link rel="modulepreload" href="./js/vendor/supabase-js.js">
-  <link rel="modulepreload" href="./js/auth-state.js?v=4">
+  <link rel="modulepreload" href="./js/auth-state.js?v=5">
   <link rel="modulepreload" href="./js/config.js?v=2">
+  <link rel="modulepreload" href="./js/dom-escape.js?v=2">
   <!-- modulepreload:end -->
   <script src="./js/theme-registry.js?v=1"></script>
   <script src="./js/css-next-theme.js?v=9"></script>
@@ -23,6 +24,6 @@
     <section class="account-panel"><h2>バックアップ出力 <small>EXPORT</small></h2><p>所有キャストと技能・アウトフィット・コンボをJSONで保存します。</p><button id="export-button" type="button"><span>JSONバックアップを保存</span><small>DOWNLOAD JSON BACKUP</small></button></section>
     <section class="account-panel"><h2>バックアップ復元 <small>IMPORT</small></h2><p>バックアップ内のキャストを非公開として新規登録します。</p><input id="import-file" type="file" accept="application/json"><button id="import-button" type="button"><span>バックアップを取り込む</span><small>IMPORT BACKUP</small></button><div id="backup-message" class="auth-message" aria-live="polite"></div></section>
   </main>
-  <script type="module" src="./js/backup.js?v=30"></script>
+  <script type="module" src="./js/backup.js?v=31"></script>
 </body>
 </html>

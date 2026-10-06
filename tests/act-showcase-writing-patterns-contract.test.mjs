@@ -31,6 +31,25 @@ test("handout parser accepts common N◎VA metadata variants", async () => {
   assert.match(js, /compact/);
 });
 
+test("writing-patterns owns the final handout context content, replacing whatever story-flow built first", async () => {
+  const [writing, story] = await Promise.all([
+    read("js/act-showcase-writing-patterns.js"),
+    read("js/act-showcase-story-flow.js")
+  ]);
+  // story-flow.js only ever builds the ROLE-only framework (see act-showcase-story-flow-contract.test.mjs);
+  // it must not decide the ENTRY/CONNECTION/PS cell content or the assigned-route wording itself.
+  assert.doesNotMatch(story, /parseHandout/);
+  // normalizeHandoutContext() fully replaces the cells (not append), so whatever framework story-flow
+  // built is discarded and rebuilt from this module's own analysis on every content change.
+  assert.match(writing, /cells\.replaceChildren\(createCell\("ROLE", roleValue, "is-role"\)\)/);
+  assert.match(writing, /sequence\.dataset\.storyConnection = compact\(preferredRoute, 110\)/);
+  assert.match(writing, /sequence\.dataset\.storyPs = compact\(analysis\.fields\.get\("ps"\)\?\.value \|\| "", 96\)/);
+  // normalizeAssignedRoute() then overwrites the assigned-route <strong> text using those same
+  // writing-patterns-owned dataset values, not any value story-flow.js may have set.
+  assert.match(writing, /const value = clean\(sequence\.dataset\.storyConnection\) \|\| clean\(sequence\.dataset\.storyPs\)/);
+  assert.match(writing, /if \(value && route\.textContent !== value\) route\.textContent = value/);
+});
+
 test("trailer patterns preserve author line breaks and adapt typography", async () => {
   const [js, css] = await Promise.all([
     read("js/act-showcase-writing-patterns.js"),
@@ -45,10 +64,14 @@ test("trailer patterns preserve author line breaks and adapt typography", async 
 });
 
 test("writing pattern title rules remain responsive without important declarations", async () => {
+  // The base and data-fit title sizes in this file were fully shadowed by act-showcase-cinematic-v2.css
+  // (same selector, same property, loaded later) and were removed; the effective sizes live there.
   const css = await read("css-next/pages/act-showcase-writing-patterns.css");
-  assert.match(css, /font-size:clamp\(5\.6rem,8\.6vw,10\.2rem\)/);
-  assert.match(css, /data-fit=\"medium\"/);
-  assert.match(css, /data-fit=\"long\"/);
-  assert.match(css, /data-fit=\"xlong\"/);
+  const effective = await read("css-next/pages/act-showcase-cinematic-v2.css");
+  assert.match(effective, /font-size:clamp\(2\.7rem,5vw,6\.2rem\)/);
+  assert.match(effective, /data-fit=\"medium\"/);
+  assert.match(effective, /data-fit=\"long\"/);
+  assert.match(effective, /data-fit=\"xlong\"/);
   assert.doesNotMatch(css, /!important/);
+  assert.doesNotMatch(effective, /!important/);
 });

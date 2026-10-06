@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=4";
+import { requireAuth } from "./auth-state.js?v=5";
 import { getPublicIdParam } from "./public-id-param.js?v=1";
 
 let contextPromise = null;

@@ -6,6 +6,7 @@ import { getSheetSaveState, focusSheetSaveButton } from "./sheet-save-state.js?v
 import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=2";
 import { compareCharacterSheetPayload, normalizeCharacterSheetPayload } from "./character-sheet-compare-service.js?v=3";
 import { groupCharacterSheetDifferences, summarizeCharacterSheetDifferences } from "./character-sheet-diff-display.js?v=3";
+import { escapeHtml as esc } from "./dom-escape.js?v=2";
 
 const SESSION_KEY = "tnx:character-sheet-comparison:v2";
 const STYLE_SEPARATOR_MARKER = "[[STYLE_SEPARATOR]]";
@@ -118,4 +119,3 @@ function showBusy(){hideBusy();const overlay=document.createElement("div");overl
 function hideBusy(){document.querySelector("#character-sheet-compare-busy")?.remove();}
 function displayValue(value){if(value===""||value===null||value===undefined)return"（空欄）";if(typeof value==="boolean")return value?"あり":"なし";return typeof value==="object"?JSON.stringify(value):String(value);}
 function formatDate(value){try{return new Intl.DateTimeFormat("ja-JP",{year:"numeric",month:"2-digit",day:"2-digit",hour:"2-digit",minute:"2-digit"}).format(new Date(value));}catch{return String(value||"");}}
-function esc(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}

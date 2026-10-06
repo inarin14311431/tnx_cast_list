@@ -18,7 +18,8 @@ const [surface, phase, legibility, scene, emphasis, entry, standardHtml, output,
 ]);
 
 test("shared surface system is followed by phase behavior, legibility, scene completion, and visual emphasis", () => {
-  assert.ok(entry.indexOf("act-showcase-dedicated-themes.css") < entry.indexOf("act-showcase-theme-surface-system.css"));
+  assert.equal(entry.indexOf("act-showcase-dedicated-themes.css"), -1);
+  assert.ok(surface.indexOf("ACT SHOWCASE dedicated themes.") < surface.indexOf("ACT SHOWCASE surface system."));
   assert.ok(entry.indexOf("act-showcase-theme-surface-system.css") < entry.indexOf("act-showcase-theme-phase-contract.css"));
   assert.ok(entry.indexOf("act-showcase-theme-phase-contract.css") < entry.indexOf("act-showcase-theme-legibility.css"));
   assert.ok(entry.indexOf("act-showcase-theme-legibility.css") < entry.indexOf("act-showcase-theme-scene-contract.css"));
@@ -50,6 +51,19 @@ test("reviewed cinematic surfaces remain theme-owned", () => {
   assert.match(surface, /--showcase-surface-0/);
   assert.match(surface, /--showcase-border-strong/);
   assert.match(surface, /--showcase-name-surface/);
+});
+
+test("standard showcase page background does not tile when the page is taller than the viewport", async () => {
+  const standardCss = await read("css-next/pages/act-showcase-standard.css");
+  // js/act-showcase-standard.js sets document.body.style.backgroundImage (fixed + cover), so
+  // background-repeat must be explicit here too. Without it, the default `repeat` tiles the
+  // cover-sized image down the page whenever content grows taller than one viewport.
+  assert.match(standardCss, /body\{[^}]*background-attachment:fixed[^}]*background-repeat:no-repeat/);
+  // :root[data-showcase-theme] #act-showcase-standard-page{...} (this file) uses the `background`
+  // shorthand, which implicitly resets background-repeat to its initial `repeat` value for any
+  // sub-property it doesn't mention. Its ID selector outranks act-showcase-standard.css's bare
+  // `body` selector, so that implicit `repeat` silently wins unless repeated here explicitly.
+  assert.match(surface, /#act-showcase-standard-page\{[^}]*background:[\s\S]*?;[^}]*background-repeat:no-repeat/);
 });
 
 test("ACT TRAILER has a high-specificity viewport contract and only its readout scrolls", () => {

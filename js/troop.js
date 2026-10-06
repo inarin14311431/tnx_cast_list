@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=4";
+import { requireAuth } from "./auth-state.js?v=5";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
 import { registerTroopSave } from "./troop-save.js";
 import { initializeTroopEditorUi, refreshTroopEditorUi } from "./troop-editor-ui.js";
@@ -7,6 +7,7 @@ import { initializeTroopLayout, refreshTroopAbilityPairs } from "./troop-layout-
 import { refreshTroopComboRules } from "./troop-combo-rule-v2.js";
 import { unpackTroopComboRule } from "./troop-combo-codec.js";
 import { initialGeneralSkillSuit } from "./general-skill-catalog.js?v=2";
+import { escapeHtml, escapeAttribute as escapeAttr } from "./dom-escape.js?v=2";
 
 const params = new URLSearchParams(location.search);
 const publicId = params.get("id")?.trim() || "";
@@ -262,9 +263,8 @@ async function renderLinkedCharacter() {
   else node.textContent = "非公開キャスト";
 }
 
-
 async function deleteTroop(){if(!troop||!confirm(`「${troop.name}」を削除します。`))return;const result=await supabase.from("troops").delete().eq("id",troop.id).eq("owner_id",user.id);if(result.error)return setStatus(result.error.message,true);location.href="./troops.html";}
 async function shareTroop(){if(troop.visibility!=="public")return alert("共有URLでRLに確認してもらうには、公開状態を「公開」にしてください。");const url=new URL("./troop.html",location.href);url.searchParams.set("id",troop.public_id);try{await navigator.clipboard.writeText(url.href);alert("共有URLをコピーしました。");}catch{prompt("共有URL",url.href);}}
 function rowValue(row,f){return String(row.querySelector(`[data-field="${f}"]`)?.value||"").trim();} function rowInt(row,f){return Math.max(0,Number.parseInt(rowValue(row,f)||"0",10)||0);} function value(selector){return String(document.querySelector(selector)?.value??"").trim();} function intValue(selector){return Math.max(0,Number.parseInt(value(selector)||"0",10)||0);} function setValue(selector,v){const n=document.querySelector(selector);if(n)n.value=v??"";}
 function setStatus(message,error=false){status.textContent=message;status.dataset.state=error?"error":"working";} function showError(message){errorBox.hidden=false;errorBox.textContent=message;view.hidden=true;editor.hidden=true;}
-function escapeHtml(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));} function escapeAttr(v){return escapeHtml(v);}
+

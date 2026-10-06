@@ -18,6 +18,11 @@ test("handout context section only builds the ROLE-only framework and no longer 
   assert.match(js, /CAST INVOLVEMENT/);
   assert.match(js, /ENTRY VECTOR \/\/ 参加経緯/);
   assert.match(js, /createContextCell\("ROLE", role \|\| "UNREGISTERED", "is-role"\)/);
+  // The ENTRY/CONNECTION/PS field parser (and the setting/connection/ps dataset writes it fed) moved
+  // to js/act-showcase-writing-patterns.js's analyzeHandout()/normalizeHandoutContext(), which re-parses
+  // the same handout text with a more capable parser and overwrites these cells and dataset values on
+  // the very next animation frame. Keeping a second, weaker parser here would only produce content that
+  // is immediately discarded, so story-flow.js must not reintroduce it.
   assert.doesNotMatch(js, /parseHandout/);
   assert.doesNotMatch(js, /dataset\.storySetting\s*=/);
   assert.doesNotMatch(js, /dataset\.storyConnection\s*=/);

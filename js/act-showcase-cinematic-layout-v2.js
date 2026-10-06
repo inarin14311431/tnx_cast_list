@@ -12,7 +12,6 @@
   const enhance = root => {
     const scope = root instanceof Element ? root : intro;
     if (!scope) return;
-    normalizeNodeLabel(scope);
     enhanceTitleScreen(scope);
     attachTrailerFollow(scope);
     polishAssignedPresentation(scope);
@@ -63,15 +62,6 @@
     const readout = intro?.querySelector(".neotokyo-sequence__screen--trailer .neotokyo-sequence__readout");
     if (readout) scheduleTrailerFrame(readout);
   }, { passive: true });
-
-  function normalizeNodeLabel(scope) {
-    const nodes = scope.matches?.(".neotokyo-sequence__system span")
-      ? [scope]
-      : [...(scope.querySelectorAll?.(".neotokyo-sequence__system span") || [])];
-    for (const node of nodes) {
-      if (/NEOTOKYO/i.test(node.textContent || "")) node.textContent = "NODE // TOKYO N◎VA";
-    }
-  }
 
   function enhanceTitleScreen(scope) {
     const screens = scope.matches?.(".neotokyo-sequence__screen--title")

@@ -1,12 +1,13 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { compactSource } from "./helpers/compact-source.mjs";
 
 const sheetHtml = fs.readFileSync(new URL('../sheet.html', import.meta.url), 'utf8');
 const mobileSheetHtml = fs.readFileSync(new URL('../sheet-mobile.html', import.meta.url), 'utf8');
 const sheetJs = fs.readFileSync(new URL('../js/sheet.js', import.meta.url), 'utf8');
 const castJs = fs.readFileSync(new URL('../js/cast.js', import.meta.url), 'utf8');
-const mobileCastJs = fs.readFileSync(new URL('../js/cast-mobile.js', import.meta.url), 'utf8');
+const mobileCastJs = compactSource(fs.readFileSync(new URL('../js/cast-mobile.js', import.meta.url), 'utf8'));
 const mobileProfileJs = fs.readFileSync(new URL('../js/sheet-mobile-profile.js', import.meta.url), 'utf8');
 const sheetImportJs = fs.readFileSync(new URL('../js/sheet-import.js', import.meta.url), 'utf8');
 const mobileProfileCss = fs.readFileSync(new URL('../css-next/pages/sheet-mobile-profile.css', import.meta.url), 'utf8');

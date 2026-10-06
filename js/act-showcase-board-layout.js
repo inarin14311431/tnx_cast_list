@@ -16,23 +16,13 @@
     return element;
   };
 
-  const readCreditRows = panel => {
-    const values = new Map();
-    panel?.querySelectorAll(".poster-v2-credit-row").forEach(row => {
-      const label = text(row.querySelector("span")?.textContent).toUpperCase();
-      const value = text(row.querySelector("strong")?.textContent);
-      if (label) values.set(label, value);
-    });
-    return values;
-  };
-
   const createMetaCell = (label, className) => {
     const cell = node("div", `poster-v2-act-meta__cell ${className}`);
     cell.append(node("span", "", label), node("strong", "", "—"));
     return cell;
   };
 
-  const ensureActMeta = (frame, credits) => {
+  const ensureActMeta = frame => {
     let bar = frame.querySelector(":scope > .poster-v2-act-meta");
     if (!bar) {
       bar = node("section", "poster-v2-act-meta");
@@ -53,11 +43,10 @@
       frame.prepend(bar);
     }
 
-    const rows = readCreditRows(credits);
     const actTitle = text(document.querySelector("#opening-act-name")?.textContent) || "ACT SHOWCASE";
     const openingRuler = text(document.querySelector("#opening-ruler")?.textContent).replace(/^RULER\s*\/\/\s*/i, "");
-    const ruler = rows.get("RULER") || openingRuler || "—";
-    const styles = rows.get("KEY STYLE") || "—";
+    const ruler = openingRuler || "—";
+    const styles = "—";
 
     setTextIfChanged(bar.querySelector(".poster-v2-act-meta__title"), actTitle);
     setTextIfChanged(bar.querySelector(".poster-v2-act-meta__cell.is-ruler strong"), ruler);
@@ -67,10 +56,8 @@
   const polishBoard = () => {
     story?.querySelectorAll(".poster-v2-frame").forEach(frame => {
       frame.querySelectorAll(".poster-v2-grid").forEach(grid => {
-        const credits = grid.querySelector(".poster-v2-panel--credits");
-        if (!credits && grid.classList.contains("poster-v2-grid--showcase3")) return;
-        ensureActMeta(frame, credits);
-        if (credits) credits.remove();
+        if (grid.classList.contains("poster-v2-grid--showcase3")) return;
+        ensureActMeta(frame);
         grid.classList.remove("poster-v2-grid--4");
         grid.classList.add("poster-v2-grid--showcase3");
       });

@@ -1,18 +1,22 @@
 # 現在地 / Current State
 
-最終更新: 2026-10-02
+最終更新: 2026-10-06
 
 AIや新規担当者が「何が完了済みで、何が途中か」を誤認しないためのスナップショット。時点情報
 なので、作業再開時はGitHub上のmain/PR/branchを再確認すること。
 
 ## 1. Runtime同期基準点
 
-- 検証repo main: `8665c24`(PR #479 マージ点, 2026-10-02)
-- 本番repo main: 検証PR #479までのruntime同期PRのmerge commit(同期元: 検証 `8665c24`)。同期前の
-  本番mainは `cb37908`。merge後のSHAは本番repoの同期PRを参照。
-- runtime同期済み範囲: 検証PR #479まで(キャスト閲覧のアウトフィット表のタブレット幅対応を含む)。
-  `20260930_character_share_links.sql`は稼働中DB定義の記録でありrepoへのcommitのみ、実DBへの適用は
-  しない。共有Supabase/DBの変更は含まれない。
+- 検証repo main: `f82ceb8`(PR #495 マージ点, 2026-10-06)。画面比較の基準ブランチ
+  `visual-regression-baseline` は `c107162`(PR #494 マージ点)
+- 本番repo main: 検証PR #495までのruntime同期PRのmerge commit(同期元: 検証 `f82ceb8`)。同期前の
+  本番mainは `4f25b9f`。merge後のSHAは本番repoの同期PRを参照。
+- runtime同期済み範囲: 検証PR #495まで。直前の同期(#479まで)以降の #481〜#495(エスケープ関数の
+  一本化、詰め込みJSの整形、アクト紹介の死んだCSS/JSの削除・テーマCSSの統合、visual captionと
+  アクセス画面・NODEラベルを本体が最初から最終形で作る変更、引用符正規化の一本化、読み込み画面・
+  進捗ラベルの文言統一)を含む。#483・#485 は資料のみ、#486・#491・#492・#494 は検証repoの画面比較の
+  基準ブランチのみで、本番へ同期するruntimeはない。共有Supabase/DBの変更は含まれない
+  (`20260930_character_share_links.sql`は稼働中DB定義の記録でありrepoへのcommitのみ、実DBへの適用はしない)。
 
 **runtime/applicationの同期基準**であり、設計資料やREADMEだけのcommitで各repoのmain SHAは
 その後進む。固定値を最新mainと解釈しないこと。テスト・CI構成の同期は別で、意図的に同期しない

@@ -1,11 +1,8 @@
 /* Writing-pattern pass: preserve author formatting while adapting the cinematic layout. */
-body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo{width:min(1540px,calc(100vw - 72px))}
-body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title{max-width:none;width:100%;font-size:clamp(5.6rem,8.6vw,10.2rem);line-height:.84;letter-spacing:-.035em;white-space:nowrap;text-wrap:nowrap}
-body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="medium"]{font-size:clamp(4.7rem,7.25vw,8.5rem);letter-spacing:-.04em}
-body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="long"]{font-size:clamp(3.75rem,5.9vw,6.8rem);letter-spacing:-.05em}
-body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="xlong"]{font-size:clamp(3rem,4.7vw,5.45rem);letter-spacing:-.06em}
-body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__ghost{font-size:clamp(6.8rem,12vw,13.5rem);opacity:.5}
-body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__rule{margin-top:8px}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="medium"]{letter-spacing:-.04em}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="long"]{letter-spacing:-.05em}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="xlong"]{letter-spacing:-.06em}
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__ghost{font-size:clamp(6.8rem,12vw,13.5rem)}
 
 /* Trailer patterns observed in public N◎VA scenarios: verse, prose, compact copy, and hybrids. */
 body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer .neotokyo-sequence__readout{white-space:pre-wrap}
@@ -24,14 +21,13 @@ body#act-showcase-page .neotokyo-sequence__handout-panel[data-handout-pattern="m
 body#act-showcase-page .neotokyo-sequence__handout-panel[data-handout-pattern="prose"] .neotokyo-story__context-kicker:after{content:" // NARRATIVE";color:#b178a5}
 
 @media(max-width:1100px){
-  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo{width:calc(100vw - 40px)}
   body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title{font-size:clamp(4.6rem,8.2vw,7.2rem)}
   body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="medium"]{font-size:clamp(4rem,7vw,6.25rem)}
   body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="long"]{font-size:clamp(3.2rem,5.6vw,5rem)}
   body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="xlong"]{font-size:clamp(2.6rem,4.5vw,4rem)}
 }
 @media(max-width:760px){
-  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title{font-size:clamp(1.9rem,9.3vw,3.35rem);white-space:normal;text-wrap:balance}
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title{white-space:normal;text-wrap:balance}
   body#act-showcase-page .neotokyo-story__context-cell.is-hook{grid-column:1/-1}
   body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer[data-trailer-pattern] .neotokyo-sequence__readout{padding:12px 14px;font-size:.72rem;line-height:1.62}
 }

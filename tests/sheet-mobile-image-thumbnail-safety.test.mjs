@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { compactSource } from "./helpers/compact-source.mjs";
 import { readFile } from "node:fs/promises";
 
-const source = await readFile(new URL("../js/sheet-mobile-image.js", import.meta.url), "utf8");
+const source = compactSource(await readFile(new URL("../js/sheet-mobile-image.js", import.meta.url), "utf8"));
 
 test("mobile image replacement generates and stores a thumbnail beside the full-size image", () => {
   assert.match(source, /async function createThumbnail\(file/);

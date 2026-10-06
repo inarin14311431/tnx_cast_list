@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=4";
+import { requireAuth } from "./auth-state.js?v=5";
 import { SITE_BASE_PATH } from "./config.js?v=2";
 import { buildMobileNewCharacterSkillPayloads } from "./sheet-mobile-new-character-state.js?v=1";
 

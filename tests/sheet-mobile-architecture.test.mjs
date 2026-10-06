@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { compactSource } from "./helpers/compact-source.mjs";
 import { readFile } from "node:fs/promises";
 
 const html = await readFile(new URL("../sheet-mobile.html", import.meta.url), "utf8");
@@ -7,14 +8,14 @@ const app = await readFile(new URL("../js/sheet-mobile-app.js", import.meta.url)
 const runtime = await readFile(new URL("../js/sheet-mobile-runtime.js", import.meta.url), "utf8");
 const coordinator = await readFile(new URL("../js/sheet-mobile-save-coordinator.js", import.meta.url), "utf8");
 const profile = await readFile(new URL("../js/sheet-mobile.js", import.meta.url), "utf8");
-const style = await readFile(new URL("../js/sheet-mobile-style.js", import.meta.url), "utf8");
-const ability = await readFile(new URL("../js/sheet-mobile-ability.js", import.meta.url), "utf8");
+const style = compactSource(await readFile(new URL("../js/sheet-mobile-style.js", import.meta.url), "utf8"));
+const ability = compactSource(await readFile(new URL("../js/sheet-mobile-ability.js", import.meta.url), "utf8"));
 const outfit = await readFile(new URL("../js/sheet-mobile-outfit.js", import.meta.url), "utf8");
-const combos = await readFile(new URL("../js/sheet-mobile-combos.js", import.meta.url), "utf8");
-const snapshots = await readFile(new URL("../js/sheet-mobile-snapshots.js", import.meta.url), "utf8");
+const combos = compactSource(await readFile(new URL("../js/sheet-mobile-combos.js", import.meta.url), "utf8"));
+const snapshots = compactSource(await readFile(new URL("../js/sheet-mobile-snapshots.js", import.meta.url), "utf8"));
 const snapshotService = await readFile(new URL("../js/sheet-snapshot-service.js", import.meta.url), "utf8");
-const image = await readFile(new URL("../js/sheet-mobile-image.js", import.meta.url), "utf8");
-const exp = await readFile(new URL("../js/sheet-mobile-header-exp.js", import.meta.url), "utf8");
+const image = compactSource(await readFile(new URL("../js/sheet-mobile-image.js", import.meta.url), "utf8"));
+const exp = compactSource(await readFile(new URL("../js/sheet-mobile-header-exp.js", import.meta.url), "utf8"));
 const uiCss = await readFile(new URL("../css-next/pages/sheet-mobile-ui.css", import.meta.url), "utf8");
 const skillsCss = await readFile(new URL("../css-next/pages/sheet-mobile-skills.css", import.meta.url), "utf8");
 const outfitCss = await readFile(new URL("../css-next/pages/sheet-mobile-outfit.css", import.meta.url), "utf8");

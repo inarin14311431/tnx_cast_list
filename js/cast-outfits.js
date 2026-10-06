@@ -1,4 +1,3 @@
-import { escapeHtml, escapeAttribute as escapeHtmlAttribute } from "./dom-escape.js";
 import { getOutfits } from "./cast-data-store.js?v=2";
 import {
   OUTFIT_CATEGORIES,
@@ -6,6 +5,7 @@ import {
   OUTFIT_FIELD_LABELS,
   OUTFIT_SCHEMAS
 } from "./cast-view-definitions.js?v=3";
+import { escapeHtml, escapeAttributeMultiline as escapeAttribute } from "./dom-escape.js?v=2";
 
 const container = document.querySelector("#outfit-container");
 const content = document.querySelector("#cast-content");
@@ -137,6 +137,3 @@ function displayValue(value) {
   return value === null || value === undefined || String(value).trim() === "" ? "—" : String(value);
 }
 
-function escapeAttribute(value) {
-  return escapeHtmlAttribute(value).replace(/\r?\n/g, "&#10;");
-}

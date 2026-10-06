@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { compactSource } from "./helpers/compact-source.mjs";
 import { readFile } from "node:fs/promises";
 import {
   CREATION_ALLOWANCE,
@@ -60,7 +61,7 @@ test("stepped experience cost follows ability and control thresholds", () => {
 
 test("desktop and mobile calculators share exact initial experience rules", async () => {
   const desktop = await readFile(new URL("../js/experience.js", import.meta.url), "utf8");
-  const mobile = await readFile(new URL("../js/sheet-mobile-header-exp.js", import.meta.url), "utf8");
+  const mobile = compactSource(await readFile(new URL("../js/sheet-mobile-header-exp.js", import.meta.url), "utf8"));
   assert.match(desktop, /general-skill-catalog\.js/);
   assert.match(desktop, /sheet-experience-rules\.js\?v=6/);
   assert.match(desktop, /paidFixedInitialGeneralLevel/);

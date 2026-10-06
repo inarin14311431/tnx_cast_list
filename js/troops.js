@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=4";
+import { requireAuth } from "./auth-state.js?v=5";
+import { escapeHtml } from "./dom-escape.js?v=2";
 
 const list = document.querySelector("#troop-list");
 const status = document.querySelector("#troop-list-status");
@@ -43,4 +44,4 @@ function render(){
 function readSavedListState(){try{return JSON.parse(sessionStorage.getItem(TROOP_LIST_STATE_KEY)||"{}")||{};}catch{return {};}}
 function saveListState(character,visibility){try{sessionStorage.setItem(TROOP_LIST_STATE_KEY,JSON.stringify({character,visibility}));}catch{}}
 function syncListStateToUrl(character,visibility){const url=new URL(location.href);if(character)url.searchParams.set("character",character);else url.searchParams.delete("character");if(visibility)url.searchParams.set("visibility",visibility);else url.searchParams.delete("visibility");history.replaceState(history.state,"",`${url.pathname}${url.search}${url.hash}`);}
-function escapeHtml(value){return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+

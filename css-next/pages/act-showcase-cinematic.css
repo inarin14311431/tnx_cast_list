@@ -4,7 +4,7 @@ body.showcase-neotokyo .neotokyo-sequence__shell:before{top:0}body.showcase-neot
 body.showcase-neotokyo .neotokyo-sequence__stage:before{position:absolute;inset:0;z-index:0;content:"";pointer-events:none;background:radial-gradient(ellipse at center,transparent 44%,rgba(0,0,0,.62) 100%),linear-gradient(90deg,rgba(0,0,0,.22),transparent 18%,transparent 82%,rgba(0,0,0,.22));}
 body.showcase-neotokyo .neotokyo-sequence__screen{z-index:1}
 
-/* 01 // SYSTEM ACCESS — cinematic database aperture */
+/* 01 // ACT FILE ACCESS — cinematic database aperture */
 body.showcase-neotokyo .neotokyo-sequence__screen--opening.is-cinematic-access{display:grid;align-content:center;justify-items:center;min-height:100%;text-align:center;overflow:hidden}
 body.showcase-neotokyo .neotokyo-sequence__screen--opening.is-cinematic-access:before{position:absolute;top:50%;left:50%;width:min(54vw,620px);aspect-ratio:1;content:"";pointer-events:none;border:1px solid rgba(85,226,255,.16);border-radius:50%;transform:translate(-50%,-50%);background:radial-gradient(circle,rgba(77,227,255,.045) 0 1px,transparent 2px),repeating-radial-gradient(circle,transparent 0 58px,rgba(83,226,255,.055) 59px 60px);box-shadow:0 0 90px rgba(27,193,230,.06),inset 0 0 80px rgba(0,0,0,.7);animation:cinematic-aperture 2.8s cubic-bezier(.2,.7,.2,1) both}
 body.showcase-neotokyo .neotokyo-sequence__screen--opening.is-cinematic-access:after{position:absolute;top:0;left:50%;width:1px;height:100%;content:"";pointer-events:none;background:linear-gradient(transparent,rgba(103,230,255,.6) 48%,rgba(103,230,255,.95) 50%,rgba(103,230,255,.6) 52%,transparent);box-shadow:0 0 24px rgba(81,226,255,.7);animation:cinematic-access-scan 1.8s ease-in-out both}

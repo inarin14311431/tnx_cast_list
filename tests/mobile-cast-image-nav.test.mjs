@@ -1,10 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { compactSource } from "./helpers/compact-source.mjs";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const ux = await read("js/sheet-mobile-ux.js");
-const image = await read("js/sheet-mobile-image.js");
+const image = compactSource(await read("js/sheet-mobile-image.js"));
 
 test("cast image remains section 09 and is present in mobile navigation", () => {
   assert.match(image, /<h2>09 キャスト画像<\/h2>/);

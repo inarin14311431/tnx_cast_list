@@ -49,7 +49,6 @@ body.showcase-poster-v2-ready .poster-v2-grid--showcase3 .poster-v2-panel--profi
 body.showcase-poster-v2-ready .poster-v2-grid--showcase3 .poster-v2-panel--profile .poster-v2-name.showcase-fit-cast-name[data-fit="medium"]{font-size:clamp(1.78rem,2.25vw,2.55rem)}
 body.showcase-poster-v2-ready .poster-v2-grid--showcase3 .poster-v2-panel--profile .poster-v2-name.showcase-fit-cast-name[data-fit="long"]{font-size:clamp(1.48rem,1.9vw,2.1rem)}
 body.showcase-poster-v2-ready .poster-v2-grid--showcase3 .poster-v2-panel--profile .poster-v2-name.showcase-fit-cast-name[data-fit="xlong"]{font-size:clamp(1.2rem,1.55vw,1.72rem);letter-spacing:-.035em}
-body.showcase-poster-v2-ready .poster-v2-panel--credits .poster-v2-panel__head:after{content:"● LIVE // LINK SECURE"}
 
 @keyframes poster-meta-scan{from{background-position:120% 0}to{background-position:-120% 0}}
 
@@ -73,7 +72,6 @@ body.showcase-neotokyo-finale-active .neotokyo-finale__access-button small{color
   body.showcase-poster-v2-ready .poster-v2-act-meta{grid-template-columns:minmax(280px,1.5fr) minmax(120px,.55fr) minmax(180px,.85fr)}
   body.showcase-poster-v2-ready .poster-v2-act-meta__status{display:none}
   body.showcase-poster-v2-ready .poster-v2-grid--showcase3{grid-template-columns:minmax(260px,.78fr) minmax(330px,1.1fr) minmax(330px,1.12fr)}
-  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--linked.is-splitting .neotokyo-sequence__linked-layout{grid-template-columns:minmax(300px,.68fr) 44px minmax(0,1.32fr);gap:8px}
   body.showcase-neotokyo-finale-active .neotokyo-sequence__footer{grid-template-columns:minmax(110px,1fr) auto minmax(330px,390px);gap:9px}
 }
 @media(max-width:760px){

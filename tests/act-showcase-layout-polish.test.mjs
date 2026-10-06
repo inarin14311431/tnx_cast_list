@@ -18,11 +18,9 @@ test("final layout polish loads after the previous cinematic readability layer",
 
 test("PUBLIC DATA is condensed above the board and the cast grid becomes three columns", () => {
   assert.match(board, /poster-v2-act-meta/);
-  assert.match(board, /rows\.get\("RULER"\)/);
-  assert.match(board, /rows\.get\("KEY STYLE"\)/);
-  assert.match(board, /credits\.remove\(\)/);
+  assert.match(board, /openingRuler \|\| "—"/);
+  assert.doesNotMatch(board, /rows\.get\(|readCreditRows|credits\.remove\(\)/);
   assert.match(board, /poster-v2-grid--showcase3/);
-  assert.doesNotMatch(board, /rows\.get\("CAST"\)/);
   assert.match(css, /poster-v2-grid--showcase3\{grid-template-columns:/);
 });
 

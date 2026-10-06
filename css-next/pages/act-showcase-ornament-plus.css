@@ -63,16 +63,6 @@ body.showcase-poster-v2-ready .poster-v2-section-title{position:relative;padding
 body.showcase-poster-v2-ready .poster-v2-section-title:before{position:absolute;left:0;top:.28em;width:7px;height:1.15em;content:"";border:1px solid #ff7acf;border-right:0;box-shadow:0 0 8px #ff7acf44}
 body.showcase-poster-v2-ready .poster-v2-handout-copy{position:relative;z-index:1;padding:14px 15px 16px;border-left:1px solid #af8dff55;border-bottom:1px solid #66eaff22;background:linear-gradient(120deg,#7250a010,transparent 60%);font-size:.8rem;line-height:2.08}
 body.showcase-poster-v2-ready .poster-v2-handout-copy:before{display:block;margin-bottom:10px;content:"PRE-ACT HANDOUT // AUTHORIZED READ";color:#9cceef99;font:700 .48rem/1 Orbitron,sans-serif;letter-spacing:.11em}
-body.showcase-poster-v2-ready .poster-v2-panel--credits{background:linear-gradient(155deg,#24162bd9,#070b17f3 48%,#102539dd)}
-body.showcase-poster-v2-ready .poster-v2-panel--credits .poster-v2-panel__head:before{background:#ff7bcf;box-shadow:0 0 12px #ff69c8}
-body.showcase-poster-v2-ready .poster-v2-credit-table{counter-reset:creditrow}
-body.showcase-poster-v2-ready .poster-v2-credit-row{position:relative;grid-template-columns:95px 1fr;padding:10px 7px 12px 20px;background:linear-gradient(90deg,#6ddfff08,transparent);counter-increment:creditrow}
-body.showcase-poster-v2-ready .poster-v2-credit-row:before{position:absolute;left:0;top:11px;content:"0" counter(creditrow);color:#7feaff77;font:700 .46rem/1 Orbitron,sans-serif}
-body.showcase-poster-v2-ready .poster-v2-credit-row span{color:#8deaff}
-body.showcase-poster-v2-ready .poster-v2-credit-row strong{font-size:.84rem}
-body.showcase-poster-v2-ready .poster-v2-credit-kicker{position:relative;padding:17px 12px 3px 20px;border-top-color:#ff79c944;background:linear-gradient(90deg,#ff77c90d,transparent)}
-body.showcase-poster-v2-ready .poster-v2-credit-kicker:before{position:absolute;left:2px;top:20px;content:"◆";color:#ff7dce;font-size:.45rem;text-shadow:0 0 8px #ff7dce}
-body.showcase-poster-v2-ready .poster-v2-credit-note{padding:10px 12px;border:1px dashed #78dcff28;background:#07152380;font-family:"Share Tech Mono","Noto Sans JP",monospace}
 body.showcase-poster-v2-ready .poster-v2-roster{position:relative;margin-top:18px;padding-top:35px;box-shadow:inset 0 1px #8cecff20,0 12px 30px #0003}
 body.showcase-poster-v2-ready .poster-v2-roster:before{position:absolute;left:16px;right:16px;top:11px;content:"CAST ASSIGNMENT CHANNEL // SELECT ACTIVE DOSSIER";color:#7fe6fda8;font:700 .49rem/1 Orbitron,sans-serif;letter-spacing:.12em}
 body.showcase-poster-v2-ready .poster-v2-roster:after{position:absolute;right:16px;top:11px;content:"LINK: STABLE";color:#ff7bcf99;font:700 .46rem/1 "Share Tech Mono",monospace;letter-spacing:.1em}

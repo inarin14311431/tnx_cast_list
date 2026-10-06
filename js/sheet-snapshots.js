@@ -9,6 +9,7 @@ import {
   restoreSnapshot,
   deleteSnapshot
 } from "./sheet-snapshot-service.js?v=1";
+import { escapeHtml } from "./dom-escape.js?v=2";
 
 let characterId = null;
 let publicId = new URLSearchParams(location.search).get("id") || "";
@@ -184,10 +185,6 @@ function setMessage(text, state = "") {
   if (!message) return;
   message.textContent = text;
   message.dataset.state = state;
-}
-
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
 globalThis.TNXSheetSnapshots = Object.freeze({

@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=4";
+import { requireAuth } from "./auth-state.js?v=5";
 
 const user = await requireAuth();
 const message = document.querySelector("#backup-message");

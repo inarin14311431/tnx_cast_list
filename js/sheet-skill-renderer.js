@@ -1,4 +1,4 @@
-import { escapeHtml as esc } from "./dom-escape.js?v=1";
+import { escapeHtml as esc } from "./dom-escape.js?v=2";
 import { initialGeneralSkillSuit } from "./general-skill-catalog.js?v=2";
 
 const SUITS = ["reason", "passion", "life", "mundane"];

@@ -1,7 +1,8 @@
-import { renderShowcase, getStyles, getStyleNames, formatHandle, formatFullName, obfuscatePublicId, escapeHtml, escapeAttribute } from "./showcase-output-html.js?v=1";
-import { normalizeShowcaseTheme } from "./showcase-output-css.js?v=1";
+import { renderShowcase, getStyles, getStyleNames, formatHandle, formatFullName, obfuscatePublicId } from "./showcase-output-html.js?v=3";
+import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=2";
+import { normalizeShowcaseTheme } from "./showcase-output-css.js?v=2";
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=4";
+import { requireAuth } from "./auth-state.js?v=5";
 import { getImageObjectPosition } from "./image-focus.js?v=4";
 
 const MAX_CASTS = 6;

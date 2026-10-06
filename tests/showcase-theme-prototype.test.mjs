@@ -15,8 +15,9 @@ const cinematicBootstrap = read("js/act-showcase-bootstrap.js");
 const standardHtml = read("act-showcase-standard.html");
 const cinematicPage = read("js/act-showcase-page.js");
 const standardPage = read("js/act-showcase-standard.js");
-const dedicatedCss = read("css-next/pages/act-showcase-dedicated-themes.css");
 const surfaceCss = read("css-next/pages/act-showcase-theme-surface-system.css");
+// The dedicated theme tokens were merged into the head of the surface-system stylesheet.
+const dedicatedCss = surfaceCss;
 const phaseCss = read("css-next/pages/act-showcase-theme-phase-contract.css");
 const legibilityCss = read("css-next/pages/act-showcase-theme-legibility.css");
 const sceneCss = read("css-next/pages/act-showcase-theme-scene-contract.css");
@@ -50,7 +51,7 @@ assert.match(generatorLoader, /showcase-dedicated-output\.js\?v=/, "generator mu
 assert.match(generatedOutput, /dedicated-standard-v4/);
 assert.match(generatedOutput, /act-showcase-standard\.css\?v=/);
 assert.match(generatedOutput, /act-showcase-standard-hotfix\.css\?v=/);
-assert.match(generatedOutput, /act-showcase-dedicated-themes\.css\?v=/);
+assert.doesNotMatch(generatedOutput, /act-showcase-dedicated-themes/);
 assert.match(generatedOutput, /act-showcase-theme-surface-system\.css\?v=/);
 assert.match(generatedOutput, /act-showcase-theme-legibility\.css\?v=/);
 assert.match(generatedOutput, /body\.id = "act-showcase-standard-page"/);
@@ -62,16 +63,16 @@ assert.doesNotMatch(cinematicHtml, /act-showcase-theme-runtime\.js/, "cinematic 
 assert.match(cinematicBootstrap, /^await import\("\.\/act-showcase-theme-runtime\.js\?v=/, "cinematic bootstrap must initialize dedicated runtime first");
 assert.match(cinematicHtml, /act-showcase-entry\.css\?v=/);
 assert.match(standardHtml, /act-showcase-theme-runtime\.js\?v=/);
-assert.match(standardHtml, /act-showcase-dedicated-themes\.css\?v=/);
+assert.doesNotMatch(standardHtml, /act-showcase-dedicated-themes/);
 assert.match(standardHtml, /act-showcase-theme-surface-system\.css\?v=/);
 assert.match(standardHtml, /act-showcase-theme-legibility\.css\?v=/);
 assert.doesNotMatch(standardHtml, /act-showcase-theme(?:-coverage)?\.css/);
-assert.match(entryCss, /act-showcase-dedicated-themes\.css\?v=/);
+assert.doesNotMatch(entryCss, /act-showcase-dedicated-themes/);
 assert.match(entryCss, /act-showcase-theme-surface-system\.css\?v=/);
 assert.match(entryCss, /act-showcase-theme-phase-contract\.css\?v=/);
 assert.match(entryCss, /act-showcase-theme-legibility\.css\?v=/);
 assert.match(entryCss, /act-showcase-theme-scene-contract\.css\?v=/);
-assert.ok(entryCss.indexOf("act-showcase-dedicated-themes.css") < entryCss.indexOf("act-showcase-theme-surface-system.css"));
+assert.ok(surfaceCss.indexOf("ACT SHOWCASE dedicated themes.") < surfaceCss.indexOf("ACT SHOWCASE surface system."));
 assert.ok(entryCss.indexOf("act-showcase-theme-surface-system.css") < entryCss.indexOf("act-showcase-theme-phase-contract.css"));
 assert.ok(entryCss.indexOf("act-showcase-theme-phase-contract.css") < entryCss.indexOf("act-showcase-theme-legibility.css"));
 assert.ok(entryCss.indexOf("act-showcase-theme-legibility.css") < entryCss.indexOf("act-showcase-theme-scene-contract.css"));
@@ -81,7 +82,7 @@ assert.match(standardPage, /TNX_SHOWCASE_THEME\?\.applySaved\(data\?\.theme\)/);
 
 assert.match(dedicatedCss, /STANDARD \+ generated standalone HTML/);
 assert.match(dedicatedCss, /CINEMATIC \/ deluxe/);
-assert.match(dedicatedCss, /SYSTEM ACCESS \/ title \/ trailer readout/);
+assert.match(dedicatedCss, /ACT FILE ACCESS \/ title \/ trailer readout/);
 assert.match(dedicatedCss, /HANDOUT -> CAST ASSIGN/);
 assert.match(dedicatedCss, /Final ACT TRAILER stage/);
 assert.match(dedicatedCss, /#act-showcase-standard-page/);

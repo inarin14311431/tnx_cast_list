@@ -9,8 +9,8 @@ export function prepareNeoTokyoLoading(intro) {
   const title = intro.querySelector(".cinematic-intro__title");
   const sub = intro.querySelector(".cinematic-intro__sub");
   if (overline) overline.textContent = "N◎VA MUNICIPAL DATABASE // PUBLIC ACT FILE";
-  if (title) title.textContent = "SYSTEM ACCESS";
-  if (sub) sub.textContent = "公開アクトファイルへ接続中…";
+  if (title) title.textContent = "ACT FILE // ACCESS";
+  if (sub) sub.textContent = "CONNECTING TO PUBLIC ACT FILE…";
 }
 
 export async function runNeoTokyoIntro({ intro, model }) {
@@ -106,7 +106,7 @@ function createSequenceShell(state) {
   const system = node("div", "neotokyo-sequence__system");
   system.append(
     textNode("span", "", "CONNECTION // SECURE"),
-    textNode("span", "", "NODE // NEOTOKYO")
+    textNode("span", "", "NODE // TOKYO N◎VA")
   );
 
   const skip = textNode("button", "neotokyo-sequence__skip", "SKIP SEQUENCE");
@@ -144,11 +144,11 @@ function createSequenceShell(state) {
 }
 
 async function showOpening(state) {
-  setProgress(state, 5, "SYSTEM ACCESS");
+  setProgress(state, 5, "ACT FILE ACCESS");
   replaceStage(state, {
-    eyebrow: "01 // SYSTEM ACCESS",
-    title: "ACT FILE",
-    sub: "公開アクトファイルへ接続中…",
+    eyebrow: "01 // N◎VA MUNICIPAL DATABASE",
+    title: "ACT FILE // ACCESS",
+    sub: "ESTABLISHING PUBLIC SESSION",
     status: ["PUBLIC ACT FILE // DETECTED", "SHOWCASE DATA // VERIFIED", "TITLE & CREDITS // READY"]
   });
   await wait(state, 2900);

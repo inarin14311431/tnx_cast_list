@@ -1,7 +1,8 @@
-import { normalizeShowcaseTheme, createOutputCss } from "./showcase-output-css.js?v=1";
+import { normalizeShowcaseTheme, createOutputCss } from "./showcase-output-css.js?v=2";
 import { STYLE_COLORS } from "./style-colors.js";
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
 import { formatShowcaseHandle, formatShowcaseFullName } from "./showcase-display-format.js?v=1";
+import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=2";
 
 // Standalone output and selection UI share formatting, but not browser state.
 export function renderShowcase(data, baseUrl) {
@@ -104,6 +105,5 @@ export function formatHandle(handle) { return formatShowcaseHandle(handle); }
 export function formatFullName(character) { return formatShowcaseFullName(character.handle, character.character_name); }
 export function formatReading(character) { const handleKana = formatShowcaseHandle(character.handle_kana); const nameKana = String(character.character_kana ?? "").trim(); return [handleKana, nameKana].filter(Boolean).join(" "); }
 export function obfuscatePublicId(value) { const source = `TNX_CAST_ARCHIVE::${String(value ?? "")}`; let hash = 0x811c9dc5; for (let index = 0; index < source.length; index++) { hash ^= source.charCodeAt(index); hash = Math.imul(hash, 0x01000193); } return `TNX-${(hash >>> 0).toString(16).toUpperCase().padStart(8, "0")}`; }
-export function escapeHtml(value) { return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;"); }
-export function escapeAttribute(value) { return escapeHtml(value); }
+
 export function escapeCssUrl(value) { return String(value ?? "").replace(/[\\'\n\r)]/g, character => `\\${character}`); }

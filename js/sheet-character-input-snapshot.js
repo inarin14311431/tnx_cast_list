@@ -1,5 +1,5 @@
 import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=2";
-import "./character-sheet-url-import-sync.js?v=7";
+import "./character-sheet-url-import-sync.js?v=8";
 
 if (typeof document !== "undefined") {
   import("./character-share-editor.js?v=2");

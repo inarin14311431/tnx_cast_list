@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { compactSource } from "./helpers/compact-source.mjs";
 import {
   CREATION_ALLOWANCE,
   INITIAL_GENERAL_SKILL_COUNT,
@@ -38,7 +39,7 @@ test("Social and Connection can redistribute their shared seven-level allowance"
 
 test("desktop and mobile calculators use fixed-General and shared Social Connection rules", async () => {
   const desktop = await readFile(new URL("../js/experience.js", import.meta.url), "utf8");
-  const mobile = await readFile(new URL("../js/sheet-mobile-header-exp.js", import.meta.url), "utf8");
+  const mobile = compactSource(await readFile(new URL("../js/sheet-mobile-header-exp.js", import.meta.url), "utf8"));
   assert.match(desktop, /isInitialGeneralSkill/);
   assert.match(desktop, /paidFixedInitialGeneralLevel/);
   assert.match(desktop, /paidSocialConnectionInitialCost/);

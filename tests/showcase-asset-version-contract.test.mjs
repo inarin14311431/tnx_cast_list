@@ -43,13 +43,13 @@ test("cinematic CSS entry versions every import and preserves final theme owners
   assertUniquePaths(refs, "cinematic CSS entry");
 
   const names = refs.map(ref => ref.replace(/^\.\//, "").replace(/\?v=.*$/, ""));
-  const dedicated = names.indexOf("act-showcase-dedicated-themes.css");
+  assert.equal(names.indexOf("act-showcase-dedicated-themes.css"), -1, "dedicated tokens now live at the head of the surface-system stylesheet");
   const surface = names.indexOf("act-showcase-theme-surface-system.css");
   const phase = names.indexOf("act-showcase-theme-phase-contract.css");
   const legibility = names.indexOf("act-showcase-theme-legibility.css");
   const scene = names.indexOf("act-showcase-theme-scene-contract.css");
   const emphasis = names.indexOf("act-showcase-visual-emphasis.css");
-  assert.ok(dedicated >= 0 && surface > dedicated && phase > surface && legibility > phase && scene > legibility && emphasis > scene);
+  assert.ok(surface >= 0 && phase > surface && legibility > phase && scene > legibility && emphasis > scene);
   assert.equal(emphasis, names.length - 1, "visual emphasis must remain the final cinematic stylesheet");
 });
 
