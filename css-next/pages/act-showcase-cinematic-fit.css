@@ -72,3 +72,34 @@ body#act-showcase-page .poster-v2-visual .poster-v2-visual__caption .poster-v2-v
     object-fit:cover;
   }
 }
+
+/* ---------- ACT TITLE on a narrow screen ---------- */
+
+/* The title screen is a one-column grid. An auto column grows to the widest content (the long mono credit lines
+   below the title), becomes wider than the screen and pushes the whole title block to the right, so the title's
+   second line is cut at the screen edge. Pin the column to the screen, and size the title to its box (not to vw) so a
+   long English title wraps inside the frame; data-fit only picks the type size. */
+@media (max-width:760px) {
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title{
+    grid-template-columns:minmax(0,1fr);
+  }
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title{
+    width:100%;
+    max-width:100%;
+    overflow-wrap:anywhere;
+  }
+  /* the decorative rule under the title ("TITLE VERIFIED" between two lines) had a 120px + 180px minimum */
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo .neotokyo-title-logo__rule{
+    grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
+    gap:8px;
+  }
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="medium"]{
+    font-size:clamp(1.9rem,8.4vw,3rem);
+  }
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="long"]{
+    font-size:clamp(1.7rem,7.4vw,2.7rem);
+  }
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title .neotokyo-sequence__act-title--logo.showcase-fit-title[data-fit="xlong"]{
+    font-size:clamp(1.45rem,6.2vw,2.3rem);
+  }
+}

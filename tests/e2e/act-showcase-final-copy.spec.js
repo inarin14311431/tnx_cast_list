@@ -45,7 +45,7 @@ test("読み込み画面・アクセス画面の3行・進捗ラベル・NODEラ
   // The observer is installed before any page script runs, so it sees every text the page ever
   // puts into these elements, including a draft that is overwritten in a later microtask.
   await page.addInitScript(() => {
-    const seen = { eyebrow: new Set(), title: new Set(), sub: new Set(), node: new Set(), loadTitle: new Set(), loadSub: new Set(), progress: new Set() };
+    const seen = { eyebrow: new Set(), title: new Set(), sub: new Set(), node: new Set(), loadTitle: new Set(), loadSub: new Set(), progress: new Set(), loadOverline: new Set(), loadingArea: new Set() };
     window.__accessCopySeen = seen;
     const scan = () => {
       const opening = document.querySelector(".neotokyo-sequence__screen--opening");
@@ -58,9 +58,15 @@ test("読み込み画面・アクセス画面の3行・進捗ラベル・NODEラ
       read(document, ".neotokyo-sequence__system span", "node");
       read(document, ".cinematic-intro__title", "loadTitle");
       read(document, ".cinematic-intro__sub", "loadSub");
+      read(document, ".cinematic-intro__overline", "loadOverline");
+      // Everything the loading screen and the status line show, as one string: the pre-script HTML must not
+      // carry the old wording either.
+      seen.loadingArea.add(`${document.querySelector("#cinematic-intro")?.textContent || ""}|${document.querySelector("#act-showcase-status")?.textContent || ""}`.replace(/\s+/g, " ").trim());
       read(document, ".neotokyo-sequence__footer > span", "progress");
     };
     new MutationObserver(scan).observe(document, { subtree: true, childList: true, characterData: true });
+    // The parsed HTML before any module script runs (module scripts run after readyState "interactive").
+    document.addEventListener("readystatechange", scan);
   });
 
   // Hold the showcase RPC so the loading screen stays up until it has been observed.
@@ -88,6 +94,11 @@ test("読み込み画面・アクセス画面の3行・進捗ラベル・NODEラ
   expect(seen.loadTitle).not.toContain("SYSTEM ACCESS");
   expect(seen.loadSub).not.toContain("公開アクトファイルへ接続中…");
   expect(seen.loadSub).toContain("CONNECTING TO PUBLIC ACT FILE…");
+  // From the very first HTML: the loading screen's three lines and the status line are final from the start.
+  expect(seen.loadOverline).toEqual(["N◎VA MUNICIPAL DATABASE // PUBLIC ACT FILE"]);
+  expect(seen.loadTitle).toEqual(["ACT FILE // ACCESS"]);
+  expect(seen.loadSub.filter(text => !/^CONNECTING TO PUBLIC ACT FILE…/.test(text))).toEqual([]);
+  for (const area of seen.loadingArea) expect(area).not.toMatch(/ACT SHOWCASE|PUBLIC ARCHIVE ACCESS|読み込み中/);
   // The progress label starts at INITIALIZING and the first stage is ACT FILE ACCESS // 05%.
   expect(seen.progress).toContain("ACT FILE ACCESS // 05%");
   for (const text of Object.values(seen).flat()) expect(text).not.toMatch(/NEOTOKYO|SYSTEM ACCESS|公開アクトファイルへ接続中/i);
@@ -132,5 +143,52 @@ for (const [width, height] of [[1440, 1000], [1024, 768], [390, 844]]) {
       expect(Math.abs(loading[key].top - access[key].top), `${key} top`).toBeLessThanOrEqual(8);
     }
     await context.close();
+  });
+}
+
+// What the static HTML shows before any script runs is exactly what the script then shows: same words, same type,
+// same place. Scripts are blocked for the first page; the second runs them with the data request held.
+async function loadingBox(page) {
+  return page.evaluate(() => {
+    const read = selector => {
+      const element = document.querySelector(selector);
+      const rect = element.getBoundingClientRect();
+      const style = getComputedStyle(element);
+      return {
+        text: element.textContent.trim(),
+        font: `${style.fontFamily}|${style.fontWeight}|${style.fontSize}|${style.letterSpacing}|${style.lineHeight}`,
+        box: [rect.left, rect.top, rect.width, rect.height].map(value => Math.round(value * 10) / 10)
+      };
+    };
+    return { overline: read(".cinematic-intro__overline"), title: read(".cinematic-intro__title"), sub: read(".cinematic-intro__sub") };
+  });
+}
+
+for (const [width, height] of [[1440, 1000], [390, 844]]) {
+  test(`読み込み画面の文言・書体・位置は、スクリプトが動く前後で変わらない(${width}x${height})`, async ({ page, browser }) => {
+    test.setTimeout(30_000);
+    await page.setViewportSize({ width, height });
+    await page.route(/https:\/\/fonts\.(googleapis|gstatic)\.com\//, route => route.abort());
+    await page.route("**/*.js*", route => route.abort());
+    await page.goto("/act-showcase.html?id=e2e-final-copy", { waitUntil: "load" });
+    await expect(page.locator("#act-showcase-status")).toHaveText("");
+    const beforeScript = await loadingBox(page);
+    expect(beforeScript.overline.text).toBe("N◎VA MUNICIPAL DATABASE // PUBLIC ACT FILE");
+    expect(beforeScript.title.text).toBe("ACT FILE // ACCESS");
+    expect(beforeScript.sub.text).toBe("CONNECTING TO PUBLIC ACT FILE…");
+
+    const second = await browser.newPage({ viewport: { width, height } });
+    await installHeldActShowcaseRoutes(second);
+    await second.goto(`/act-showcase.html?id=${ACT_SLUG}`);
+    await expect(second.locator(".cinematic-intro__sub")).toHaveText(/^CONNECTING TO PUBLIC ACT FILE…/);
+    const afterScript = await loadingBox(second);
+    await second.close();
+    // The progress label may append to the sub line once the script runs; the first two lines and the sub's
+    // start must be identical in words, type and position.
+    expect(afterScript.overline).toEqual(beforeScript.overline);
+    expect(afterScript.title).toEqual(beforeScript.title);
+    expect(afterScript.sub.text.startsWith(beforeScript.sub.text)).toBe(true);
+    expect(afterScript.sub.font).toBe(beforeScript.sub.font);
+    expect(afterScript.sub.box.slice(0, 2)).toEqual(beforeScript.sub.box.slice(0, 2));
   });
 }

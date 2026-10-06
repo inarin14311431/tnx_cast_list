@@ -174,8 +174,9 @@ async function showTrailer(state, model) {
   const content = node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--trailer");
   const heading = model.trailerTitle || "ACT TRAILER";
   const trailer = model.trailer || SAMPLE_TRAILER_MESSAGE;
-  const copy = textNode("p", "neotokyo-sequence__readout", "");
+  const copy = textNode("p", "neotokyo-sequence__readout neotokyo-sequence__readout--split", "");
   if (!model.trailer) copy.classList.add("is-placeholder");
+  const readout = prepareSplitReadout(copy, trailer);
   content.append(
     textNode("p", "neotokyo-sequence__eyebrow", "03 // ACT TRAILER"),
     textNode("p", "neotokyo-sequence__micro", "PRE-ACT READOUT / PUBLIC BROADCAST"),
@@ -184,7 +185,7 @@ async function showTrailer(state, model) {
     textNode("p", "neotokyo-sequence__terminal", "READOUT CHANNEL // TEXT SYNTHESIS")
   );
   swapScreen(state, content);
-  await typeReadout(state, copy, trailer, 4200, 34);
+  await typeSplitReadout(state, readout, 4200, 34);
   if (state.finished) return;
   await waitForAdvance(state, "NEXT // HANDOUT 01");
 }
@@ -512,6 +513,46 @@ async function typeReadout(state, target, value, maxDuration, maxInterval = 24) 
     await wait(state, interval);
   }
   if (!state.finished) target.textContent = source;
+}
+
+// The ACT TRAILER readout lays out its whole text from the start, split into the part already read and the part
+// still to come (visibility:hidden, not display:none, so the line breaks are final from the first frame and a
+// character that is shown never moves). The frame around it is sized from the caret's line by
+// js/act-showcase-cinematic-layout-v2.js while data-typing is set. The unread part is aria-hidden, so a screen reader
+// hears the text once (the read part, which becomes the whole text when the reading ends).
+function prepareSplitReadout(target, value) {
+  const source = clean(value);
+  const read = node("span", "neotokyo-sequence__readout-read");
+  const unread = node("span", "neotokyo-sequence__readout-unread");
+  unread.setAttribute("aria-hidden", "true");
+  const readText = document.createTextNode("");
+  const unreadText = document.createTextNode(source);
+  read.append(readText);
+  unread.append(unreadText);
+  target.append(read, unread);
+  if (source) target.dataset.typing = "true";
+  return { target, readText, unreadText, characters: Array.from(source), source };
+}
+
+async function typeSplitReadout(state, readout, maxDuration, maxInterval = 24) {
+  const { target, readText, unreadText, characters, source } = readout;
+  if (!source) return;
+  const interval = Math.max(6, Math.min(maxInterval, Math.floor(maxDuration / Math.max(characters.length, 1))));
+  const chunkSize = characters.length > 360 ? 3 : characters.length > 180 ? 2 : 1;
+  let index = 0;
+  try {
+    while (index < characters.length && !state.finished) {
+      index = Math.min(characters.length, index + chunkSize);
+      readText.data = characters.slice(0, index).join("");
+      unreadText.data = characters.slice(index).join("");
+      await wait(state, interval);
+    }
+  } finally {
+    // reading ended (completed, skipped or the sequence finished): the whole text is "read" and the frame is released
+    readText.data = source;
+    unreadText.data = "";
+    delete target.dataset.typing;
+  }
 }
 
 function wait(state, milliseconds) {

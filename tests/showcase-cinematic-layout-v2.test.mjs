@@ -56,10 +56,9 @@ test("cinematic trailer grows its frame and lets the browser page own follow scr
   assert.match(cinematic, /syncTrailerScrollSurface/);
   assert.match(cinematic, /stage\.classList\.toggle\("is-trailer-scroll", active\)/);
   assert.match(cinematic, /document\.body\.classList\.toggle\("showcase-trailer-document-scroll", active\)/);
-  assert.match(cinematic, /readout\.getBoundingClientRect\(\)\.bottom \+ window\.scrollY/);
-  assert.match(cinematic, /window\.scrollTo\(\{ top: targetTop, left: 0, behavior: "auto" \}\)/);
-  assert.match(cinematic, /window\.scrollTo\(\{ top: targetTop, left: 0, behavior: "smooth" \}\)/);
-  assert.match(cinematic, /record\.type === "characterData"[\s\S]*scheduleTrailerFrame\(trailerReadout\)/);
+  assert.match(cinematic, /terminal\.getBoundingClientRect\(\)\.top \+ window\.scrollY \+ height/);
+  assert.match(cinematic, /window\.scrollTo\(\{ top: targetTop, left: 0, behavior: "instant" \}\)/);
+  assert.match(cinematic, /function startTrailerLoop\(readout\)/);
   assert.match(emphasisCss, /showcase-trailer-document-scroll[\s\S]*\.cinematic-intro\.neotokyo-sequence\{[\s\S]*position:relative[\s\S]*overflow:visible/);
   assert.match(emphasisCss, /showcase-trailer-document-scroll[\s\S]*stage\.is-trailer-scroll\{[\s\S]*overflow:visible/);
   assert.match(emphasisCss, /showcase-trailer-document-scroll[\s\S]*screen--trailer\{[\s\S]*max-height:none[\s\S]*overflow:visible/);
@@ -88,58 +87,36 @@ test("finished poster page stays out of the scrollable flow for the whole neotok
   assert.match(emphasisCss, /:root\[data-showcase-theme\] body#act-showcase-page\.showcase-neotokyo-intro-active #act-showcase-root\{\s*display:none;\s*\}/);
 });
 
-test("trailer scroll-follow throttles smooth scrollTo calls so each has time to settle", () => {
-  // Measured live: window.scrollTo({behavior:"smooth"}) was called as little as ~70ms apart while
-  // the typewriter grew the readout, restarting the animation before it ever settled and producing
-  // visible jank. scrollTrailerReadoutIntoView() throttles actual smooth calls to once per
-  // TRAILER_SCROLL_THROTTLE_MS; a call that arrives sooner schedules a trailing re-check instead of
-  // firing immediately. Extracted from the real source (not hand-copied) so this tracks the shipped
-  // throttle/skip decision, not a duplicate of it.
-  assert.match(cinematic, /const TRAILER_SCROLL_THROTTLE_MS = 200/);
-  const start = cinematic.indexOf("function scrollTrailerReadoutIntoView");
-  assert.notEqual(start, -1, "scrollTrailerReadoutIntoView not found");
-  const end = cinematic.indexOf("\n  function polishAssignedPresentation", start);
+test("trailer scroll-follow: one instant scroll per frame to the frame's interpolated bottom, never upward", () => {
+  // The scroll is computed from the same interpolated frame height as the frame itself (no second, throttled smooth
+  // scroll). Extracted from the real source and run, not hand-copied.
+  const start = cinematic.indexOf("function followFrameBottom");
+  assert.notEqual(start, -1, "followFrameBottom not found");
+  const end = cinematic.indexOf("\n  // Reading ended", start);
   const source = cinematic.slice(start, end);
-
   const calls = [];
-  let now = 0;
-  let pendingTimeout = null;
-  const factory = new Function(
-    "trailerScrollThrottle",
-    "TRAILER_SCROLL_THROTTLE_MS",
-    "window",
-    "performance",
-    "scheduleTrailerFrame",
-    `${source}\nreturn scrollTrailerReadoutIntoView;`
-  );
-  const trailerScrollThrottle = new WeakMap();
-  const fakeWindow = {
-    scrollTo: value => calls.push({ t: now, ...value }),
-    setTimeout: (fn, ms) => { pendingTimeout = { fn, fireAt: now + ms }; return 1; },
-    clearTimeout: () => { pendingTimeout = null; }
-  };
-  const fn = factory(trailerScrollThrottle, 200, fakeWindow, { now: () => now }, () => calls.push({ t: now, rescheduled: true }));
-  const readout = {};
+  const fakeWindow = { innerHeight: 1000, scrollY: 0, scrollTo: value => { calls.push(value); fakeWindow.scrollY = value.top; } };
+  const follow = new Function("window", `${source}\nreturn followFrameBottom;`)(fakeWindow);
+  let frameTopInViewport = 300;
+  const terminal = { getBoundingClientRect: () => ({ top: frameTopInViewport - fakeWindow.scrollY }) };
 
-  fn(readout, 100, false);
-  assert.equal(calls.length, 1, "first call should scroll immediately");
-  assert.equal(calls[0].behavior, "smooth");
+  follow(terminal, 400);
+  assert.equal(calls.length, 0, "a frame that ends inside the viewport (minus its padding) does not scroll");
 
-  now = 70;
-  fn(readout, 140, false);
-  assert.equal(calls.length, 1, "a call within the throttle window must not scroll again yet");
-  assert.ok(pendingTimeout, "a trailing re-check must be scheduled instead");
+  follow(terminal, 800);
+  assert.equal(calls.length, 1);
+  assert.deepEqual(calls[0], { top: 240, left: 0, behavior: "instant" });
 
-  now = pendingTimeout.fireAt;
-  pendingTimeout.fn();
-  assert.equal(calls.length, 2, "the trailing re-check should eventually fire");
-  assert.equal(calls[1].rescheduled, true);
+  follow(terminal, 800);
+  assert.equal(calls.length, 1, "the same bottom again does not scroll again");
 
-  now = 500;
-  fn(readout, 999, true);
-  assert.equal(calls.length, 3, "prefers-reduced-motion jumps are never throttled");
-  assert.equal(calls[2].behavior, "auto");
-  assert.equal(calls[2].top, 999);
+  follow(terminal, 830);
+  assert.equal(calls.length, 2);
+  assert.equal(calls[1].top, 270);
+  assert.equal(calls[1].behavior, "instant", "never the page's smooth scroll-behavior, which would restart on every frame");
+
+  follow(terminal, 500);
+  assert.equal(calls.length, 2, "a frame that gets shorter never scrolls back up");
 });
 
 test("assigned cast removes suit marks only from the participation slot and keeps three full style cards", () => {

@@ -139,7 +139,7 @@
 | 14 | final-trailer | 103 | ○ | 本体の後 |
 | 15 | display-normalizer → showcase-display-format | 51 | ○ | スタンダードと共用 |
 
-bootstrap から到達するのは21ファイル(visual-caption-code を削除し、共通の純粋関数 `act-showcase-visual-caption.js` を追加)。`act-showcase*.js` + `showcase*.js` は49ファイル、うち MutationObserver 使用は20(豪華版12 + ジェネレーター8)。
+bootstrap から到達するのは22ファイル(visual-caption-code を削除し、共通の純粋関数 `act-showcase-visual-caption.js` を追加。その後 ACT TRAILER の枠の補間の純粋関数 `act-showcase-trailer-settle.js` を追加。cinematic-layout-v2 が import する)。`act-showcase*.js` + `showcase*.js` は50ファイル、うち MutationObserver 使用は20(豪華版12 + ジェネレーター8)。
 
 ### 3.2 MutationObserver 20ファイル(何を監視し何を書き換えるか)
 
@@ -153,7 +153,7 @@ bootstrap から到達するのは21ファイル(visual-caption-code を削除�
 | board-layout | `#showcase-story` と intro | act-metaバー、`polishAccess` マーカー。credits パネルの取得・削除経路は削除済み(手順4) |
 | story-flow | intro(class 属性) | link-bridge、ROLEセル、assigned-route、trailer outro、サマリーのスタイルを `replaceChildren`、entry-vectors |
 | writing-patterns | intro(class)+ readout(characterData) | ハンドアウト解析、context cells を `replaceChildren`、assigned-route の文言 |
-| cinematic-layout-v2 | intro | タイトル副題要素(`#opening-subtitle` から)、trailer追従スクロール(rAF + ResizeObserver) |
+| cinematic-layout-v2 | intro(childList のみ。**characterData は監視しない**) | タイトル副題要素(`#opening-subtitle` から)。ACT TRAILER の枠の高さ・追従スクロール(読み上げ中は rAF ループ1本。`data-typing` の間だけ) |
 | handout-live-frame | intro(+ readout に ResizeObserver) | handout読み上げ中のstage高さ/スクロール追従 |
 | scenario-writer | `document.body` childList/subtree | 開始/タイトル/サマリーに SCENARIO WRITER 行を追加 |
 | supporting-cast | `document.body` childList/subtree | ゲストを取得し、role修正、サマリーのスタイルを `replaceChildren`、poster の role chip 強調 |
@@ -183,6 +183,8 @@ bootstrap から到達するのは21ファイル(visual-caption-code を削除�
 | `NODE // TOKYO N◎VA` ラベル | act-showcase-neotokyo(最終文言で生成) | - | **解消済み(手順5b)**。cinematic-layout-v2 `normalizeNodeLabel` を削除 |
 | 読み込み画面・進捗ラベルの文言 | act-showcase-neotokyo(`prepareNeoTokyoLoading` / `showOpening`) | - | **文言を統一(手順5c-A)**。旧 `SYSTEM ACCESS` と日本語sub を `ACT FILE // ACCESS` / `CONNECTING TO PUBLIC ACT FILE…` / 進捗 `ACT FILE ACCESS // 05%` に変更(表示が変わる意図した変更)。E2E `act-showcase-final-copy` が旧文言の不在を検査 |
 | 読み込み画面とアクセス画面の見出し・小見出し・サブの書体 | 読み込み画面 `.cinematic-intro__*`(act-showcase.css)→ アクセス画面 `.is-cinematic-access .neotokyo-sequence__*`(act-showcase-cinematic.css) | - | **指定を一致(手順5c後の修正B)**。書体・太さ・字間・サイズ・位置(アクセス画面は下に boot log と seal が積まれるぶん上にあるので 7.6rem 上げる)を揃え、切り替わる瞬間に文字の形が変わらないようにした。E2E `act-showcase-final-copy` が3画面幅で一致を検査。フォントは Google Fonts を `display=block` にして、代替書体で出てから Orbitron に差し替わらないようにした | 中央の横線(`.cinematic-intro:before`)はサブ行に背景色(`--showcase-bg`)を持たせて背後で切り、サブの打ち消し線に見えないようにした(追加修正)。
+| `act-showcase.html` の初期表示の文言(読み込み画面の3行・状態行) | HTML(スクリプトが出す最終文言と同じ。`act-showcase-initial-copy.test.mjs` が一致を検査) | act-showcase-neotokyo `prepareNeoTokyoLoading`(同じ文言を再設定するだけ) | **解消済み(初期文言の修正)**。旧 `ACT SHOWCASE` / `PUBLIC ARCHIVE ACCESS` / `アクト紹介を読み込み中…` は HTML から削除。状態行は読み込み画面と重複するので空にした(エラー時の表示先として残す)。E2E `act-showcase-final-copy` が初期HTMLの時点から旧文言が一度も出ないことを検査 |
+| ACT TRAILER の読み上げ本文 | act-showcase-neotokyo(最初から全文を、読み上げ済み `.neotokyo-sequence__readout-read` と未読み上げ `...-unread`(`visibility:hidden`、`aria-hidden`)の2つの span に分けて置く) | cinematic-layout-v2(枠の高さとスクロール) | **解消済み(トレーラーのガタつき)**。従来は textContent を読み上げ済みの部分だけに置き換えていたため、枠が行ごとに階段状に伸び、折り返しも途中で変わり、ResizeObserver の追従スクロールと重なって揺れた。ハンドアウト側は別の仕組み(下記)で、今回は未変更 |
 | 代替画像(scan-failed.webp)の文字 | 各画面の `img`(neotokyo.js / page.js) | cinematic-fit.css | **枠の幅から画像の大きさを決める(修正D1)**。800x800の画像の文字は幅の約45%なので、枠幅の190%で中央に置けば文字が必ず枠内に収まる(切れるのは文字のない余白)。割当・サマリー・最終ボードに適用。E2E `act-showcase-clipping` |
 | サマリーのキャスト名 / 識別コード行 | neotokyo.js / page.js | cinematic-fit.css | **折り返す(修正D2・D3)**。以前は `white-space:nowrap; text-overflow:ellipsis` で「…」になっていた(識別コードの右端切れも同じ。意図的なフェードではない) |
 | 割当画面の右上の空の枠 | theme-surface-system `.neotokyo-sequence__cast-detail:before` | - | **削除(修正D4)**。名前用プレートが、名前が下に移った後も上部に残っていた(中身なし)。全テーマで出ていた |
@@ -200,9 +202,10 @@ bootstrap から到達するのは21ファイル(visual-caption-code を削除�
 |---|---|---|
 | タイトル画面の最初の可視フレームで装飾・子要素順が確定(meta < ghost < title < subtitle < rule < ruler) | finale-enhancer が自前 observer 内で**同期**に `dataset.fit` とロゴ構造を設定。rAF に寄せると1フレーム遅れる | `tests/e2e/act-showcase-title-render-order.spec.js`、第11節の失敗記録 |
 | 公開背景が最初のフレームから出る | top-background-only / followup-v1 CSS と page の順序 | `act-showcase-neotokyo-stability.spec.js` 2本目 |
-| ACT TRAILER の入力追従スクロール | cinematic-layout-v2 `attachTrailerFollow` + handout-live-frame + CSS 所有権(cinematic-v2 / handout-live-frame) | 同 3本目、`act-showcase-trailer-frame-smoothing` `-trailer-caret` |
+| ACT TRAILER の枠の伸びと追従スクロール | cinematic-layout-v2 `startTrailerLoop` / `updateTrailerFrame`(枠の高さ=キャレット行の下端を `settleHeight` で補間。1フレームの上限 maxStep は枠の遅れが「1行+下余白」以内のときだけ働き、超えた分はそのフレームで詰める=読み上げ行が枠の下に隠れない。スクロールは同じ補間後の値から1本)+ act-showcase-trailer-settle(補間の純粋関数)+ CSS 所有権(cinematic-v2 / visual-emphasis のキャレット) | 同 3本目、`act-showcase-trailer-readout.spec.js`(毎フレームの枠の高さ・既読文字の位置・キャレット行の可視性と「キャレット行が枠の下端から1行を超えて遅れない」(PC 1440 / スマホ 390 の長文)・reduced-motion)、`act-showcase-trailer-frame-smoothing`(補間を実行して検査。16/33/64/120ms の各フレーム間隔で毎秒25行の目標を追わせ遅れ≤1行、通常速度は1フレーム半行以下)、`-trailer-caret` |
 | title → trailer → assignment → ACT READY の進行 | summary-advance-guard、story-flow/writing-patterns が class 変化で再実行 | 同 1本目 |
 | 最終ボード上部の ACT TRAILER(キャスト枠の外) | final-trailer の挿入位置と board-layout | `act-showcase-final-trailer.spec.js` |
+| ハンドアウトの読み上げ(handout-live-frame) | `readout` の高さを `scrollHeight`(読み上げ済みの文字量)から決め、CSS の height トランジション(.16s)で動かし、別のスクロール領域 `stage` を追従 | 今回は変更なし | トレーラーとは仕組みが別。測定(PC 1440 / スマホ 390、1フレーム約80msの環境): 1フレームの枠の変化は最大 1行ぶん(PC 29.6px / 行 28.9px、スマホ 20.1px / 行 21.9px)、日本語の文字位置は動かない(0フレーム)。トランジションは実フレームレートでは滑らかにする側で、同じ階段状の問題かは実機のフレームレートでの確認が必要(未確認) |
 | reduced-motion | 物理アニメ抑制と物語表示の両立 | `act-showcase-reduced-motion.spec.js`、`act-showcase-reduced-motion-sequence.test.mjs` |
 | observer の再実行抑制(タイプライターの churn を無視) | `hasStructuralElementMutation` / `hasLinkedScreenStateMutation` と observe の引数 | `act-showcase-observer-stability.test.mjs`(observe 呼び出しを**文字列で固定**) |
 | 登録順 | 1〜10 は本体より前、12〜15 は後。同一 microtask 内の callback 順は登録順 | 順序依存の具体的な失敗例は未確認 |
@@ -227,7 +230,7 @@ bootstrap から到達するのは21ファイル(visual-caption-code を削除�
 ### 4.2 E2E(`tests/e2e/test-suites.json` 登録)
 
 - 豪華版のみ4本: `act-showcase-neotokyo-stability`(進行・公開背景・trailer追従)/ `-title-render-order` / `-reduced-motion` / `-final-trailer`。いずれもテーマを切り替えない(4本とも `theme` 参照0)。viewport は既定のみ。
-- 表示の修正(polish)の検査: `act-showcase-contrast`(全場面×4テーマ+スタンダード版+読み込み画面の文字コントラスト。文字を透明にして撮った画素と実際の文字色で測る。`::before/::after` の生成文字は CDP で矩形を取る。対象外=装飾: 記号だけの生成文字、巨大な透かし文字 `HO`、サマリーの N◎VA スタンプ)/ `act-showcase-clipping`(代替画像の文字・サマリーの名前・識別コード・空の枠)/ `act-showcase-key-style`(最終ボードの KEY STYLE: 3人・担当なし・6人×3幅)/ `showcase-background-preset-legacy`(偽セッション+モックで、旧プリセットURLのアクトを編集画面で開く)。共通のフィクスチャは `tests/e2e/fixtures/act-showcase-data.js`(visual-regression-baseline の `act-showcase-fixtures.js` と同内容)。
+- 表示の修正(polish)の検査: `act-showcase-contrast`(全場面×4テーマ+スタンダード版+読み込み画面の文字コントラスト。文字を透明にして撮った画素と実際の文字色で測る。`::before/::after` の生成文字は CDP で矩形を取る。対象外=装飾: 記号だけの生成文字、巨大な透かし文字 `HO`、サマリーの N◎VA スタンプ)/ `act-showcase-clipping`(代替画像の文字・サマリーの名前・識別コード・空の枠)/ `act-showcase-key-style`(最終ボードの KEY STYLE: 3人・担当なし・6人×3幅)/ `act-showcase-trailer-readout`(ACT TRAILER の読み上げ中を毎フレーム記録: 枠の高さの変化は半行以内・既読の文字は動かない・長い本文でキャレット行が画面内・reduced-motion は行単位・終了後に枠を解放。実測の最大変化: PC 17.9px(1行 39.7px)、スマホ 14.4px(1行 31.9px)。変更前は 39.7px / 31.9px)/ `showcase-background-preset-legacy`(偽セッション+モックで、旧プリセットURLのアクトを編集画面で開く)。共通のフィクスチャは `tests/e2e/fixtures/act-showcase-data.js`(visual-regression-baseline の `act-showcase-fixtures.js` と同内容)。
 - 実行時間(polish で判明、対策済み): 上の polish の検査(特に `act-showcase-contrast` の豪華版×4テーマと `act-showcase-key-style`)は1本が長く、`ci-public` に入れたままだと `Public and smoke E2E` が約11分になり、従来の `timeout-minutes: 8` を超えてキャンセルされた。アクト紹介の検査は専用グループ `ci-act-showcase`(`Act showcase E2E`、実測 約9分52秒、`timeout-minutes: 20`)へ移し、関係するPRと手動実行のときだけ動かす(判定は `scripts/e2e-changed-groups.mjs`、パスは `tests/e2e/test-suites.json` の `triggerPaths`)。`Public and smoke E2E` は実測 約58秒に戻り、`timeout-minutes: 5`。
 - 文言・正規化の「書き換え前の表示が一度も出ない」検査(MutationObserver を初期スクリプトで仕込み、全表示を記録): `act-showcase-final-copy`(読み込み画面・アクセス画面3行・進捗ラベル・NODE ラベル。手順5b/5c)と `act-showcase-name-quotes`(重複引用符の名前。豪華版+スタンダード版+ゲスト。手順5c。スタンダード版のE2Eはこれが初)。
 - スタンダード版のE2E: なし。ダウンロード出力HTMLの実描画テスト: なし(`showcase-output-css.test.mjs` は旧出力のハッシュ一致のみ)。
