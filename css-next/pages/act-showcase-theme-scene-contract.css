@@ -39,6 +39,9 @@
   --showcase-scene-border-2:rgba(143,49,91,.34);
   --showcase-scene-shadow:0 18px 44px rgba(23,23,23,.12);
   --showcase-scene-glow:none;
+  /* Label accents sit on grey-white plates: darker than the brand colours so they reach 4.5:1. */
+  --showcase-scene-accent-2:var(--showcase-readable-accent-2);
+  --showcase-scene-accent-3:var(--showcase-readable-accent);
 }
 :root[data-showcase-theme="vlad"]{
   --showcase-scene-bg:#070203;

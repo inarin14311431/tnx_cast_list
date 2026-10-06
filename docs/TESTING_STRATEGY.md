@@ -106,7 +106,7 @@ DOM実ブラウザの挙動を文字列testだけで代用しない。一方、p
 
 | 項目 | 検証repo | 本番repo |
 |---|---|---|
-| `e2e:ci-public` / `e2e:ci-editor` / `e2e:ci-mobile` | npm scriptsとして導入済み | 未導入 |
+| `e2e:ci-public` / `e2e:ci-act-showcase` / `e2e:ci-editor` / `e2e:ci-mobile` | npm scriptsとして導入済み | 未導入 |
 | `e2e:manual-ui` / `e2e:live-write` | npm scriptsとして導入済み | 未導入 |
 | `audit:e2e` | `verify` / Regression checksに組込み済み | script・監査とも未導入 |
 | suite runner | `scripts/run-e2e-suite.mjs` がmanifestを読む | runner未導入、workflowがspecを直接列挙 |
@@ -125,6 +125,15 @@ DOM実ブラウザの挙動を文字列testだけで代用しない。一方、p
 - smoke test
 - 意図的な実DB書込みなし
 - 通常PR CI対象
+
+### `ci-act-showcase`
+
+- ACT SHOWCASE の公開ページ(豪華版・スタンダード版)と、生成画面の背景プリセットの旧URL互換
+- 文字コントラスト、表示切れ、KEY STYLE、文言・引用符の「書き換え前の表示が一度も出ない」検査を含む(1本が長い)
+- 意図的な実DB書込みなし
+- **関係するPRのときだけ**実行する。`tests/e2e/test-suites.json` の `triggerPaths`(ACT SHOWCASE の html / js / css / assets、その spec・fixture、テスト基盤、`playwright.yml`)に一致するファイルを変えたPRと、手動実行(`workflow_dispatch`)で動く。関係しないPRでは `Act showcase E2E` が skipped(必須チェックでは成功扱い)
+- 判定はジョブ単位(`scripts/e2e-changed-groups.mjs`)。ワークフロー全体を `on.pull_request.paths` で絞ると、他の必須ジョブが未完了のままマージが止まるため使わない
+- `triggerPaths` がページの読み込むファイルを漏れなく覆うことは `tests/e2e-act-showcase-trigger.test.mjs` が検査する(ページから辿れるファイルが `triggerPaths` に無いと失敗)
 
 ### `ci-editor`
 
@@ -234,7 +243,7 @@ DB変更では `npm run verify` だけでは不十分。
 
 ## 12. 変更種別ごとの最低テスト
 
-表中の `ci-public` / `ci-editor` / `ci-mobile` は検証repoの分類を指す。本番の確認では第6節の環境差を踏まえ、現行workflowの対象specと書込みの有無を確認する。
+表中の `ci-public` / `ci-act-showcase` / `ci-editor` / `ci-mobile` は検証repoの分類を指す。本番の確認では第6節の環境差を踏まえ、現行workflowの対象specと書込みの有無を確認する。
 
 | 変更 | 最低限 |
 |---|---|
@@ -243,6 +252,7 @@ DB変更では `npm run verify` だけでは不十分。
 | Mobile editor JS | Node/static audit + `ci-mobile` + `verify` |
 | PC/Mobile共通core | Node同値/contract test + `ci-editor` + `ci-mobile` + `verify` |
 | Public viewer | `ci-public` + `audit:cast` + `verify` |
+| ACT SHOWCASE(公開ページ・生成画面の背景プリセット) | `ci-act-showcase` + `verify` |
 | CSS/layout | `audit:css` + relevant E2E + Visual + `verify` |
 | Theme | `audit:themes` + Visual + `verify` |
 | Accessibility | Quality + keyboard/focus確認 + `verify` |

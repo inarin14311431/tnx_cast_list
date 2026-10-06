@@ -1,5 +1,5 @@
 /* ACT SHOWCASE page entry. Import order is explicit here so presentation ownership is visible in one place. */
-@import "./act-showcase.css?v=20260906c";
+@import "./act-showcase.css?v=20261006b";
 @import "./act-showcase-poster-v2.css?v=20261005a";
 @import "./act-showcase-cast-selector.css?v=20260907a";
 @import "./act-showcase-neotokyo.css?v=20260907c";
@@ -10,7 +10,7 @@
 @import "./act-showcase-ornament-plus.css?v=20261005a";
 @import "./act-showcase-finale.css?v=20260907b";
 @import "./act-showcase-cinematic-readability.css?v=20260908b";
-@import "./act-showcase-layout-polish.css?v=20261005a";
+@import "./act-showcase-layout-polish.css?v=20261006b";
 @import "./act-showcase-story-flow.css?v=20260908b";
 @import "./act-showcase-writing-patterns.css?v=20260908b";
 @import "./act-showcase-supporting-cast.css?v=20260908a";
@@ -18,13 +18,13 @@
 @import "./act-showcase-visual-trailer-fix.css?v=20260908b";
 @import "./act-showcase-title-cyberpunk.css?v=20260908a";
 @import "./act-showcase-cinematic-v2.css?v=6";
-@import "./act-showcase-cinematic-fit.css?v=1";
+@import "./act-showcase-cinematic-fit.css?v=3";
 @import "./act-showcase-top-background-only.css?v=1";
 @import "./act-showcase-followup-v1.css?v=1";
 @import "./act-showcase-final-trailer.css?v=5";
 @import "./act-showcase-handout-live-frame.css?v=1";
-@import "./act-showcase-theme-surface-system.css?v=4";
+@import "./act-showcase-theme-surface-system.css?v=5";
 @import "./act-showcase-theme-phase-contract.css?v=2";
-@import "./act-showcase-theme-legibility.css?v=1";
-@import "./act-showcase-theme-scene-contract.css?v=1";
+@import "./act-showcase-theme-legibility.css?v=4";
+@import "./act-showcase-theme-scene-contract.css?v=2";
 @import "./act-showcase-visual-emphasis.css?v=4";

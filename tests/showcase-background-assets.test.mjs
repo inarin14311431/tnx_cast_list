@@ -8,16 +8,18 @@ const embeddedAvifFiles = new Set([
   "nova-central-ring.svg",
   "kisarazu-lake-harbor.svg",
   "sunrise-megacity.svg",
-  "neon-market.svg",
   "industrial-port.svg",
-  "executive-lounge.svg",
-  "incident-blockade.svg"
+  "executive-lounge.svg"
 ]);
 const directAvifFiles = new Set([
+  "green-area.avif",
+  "cyberspace.avif",
   "orbital-habitat.avif",
   "prison-block.avif",
   "slum-district.avif"
 ]);
+// Retired presets: the files stay so URLs saved in published acts keep showing the image.
+const retiredAssetFiles = ["neon-market.svg", "incident-blockade.svg"];
 const legacyAssetFile = "neotokyo-bay.svg";
 
 function assertPassiveSvg(source, fileName) {
@@ -96,4 +98,29 @@ test("legacy 木更津湖 preset identifiers remain readable without being emitt
   assert.match(presetModule, /rawAssetUrl\("neotokyo-bay\.svg"\)/);
   const currentPresetBlock = presetModule.slice(presetModule.indexOf("SHOWCASE_BACKGROUND_PRESETS"), presetModule.indexOf("LEGACY_PRESET_KEY_ALIASES"));
   assert.doesNotMatch(currentPresetBlock, /key:\s*"neotokyo-bay"/);
+});
+
+test("retired presets neon-market / incident-blockade keep their files, so URLs saved in published acts still display", async () => {
+  for (const fileName of retiredAssetFiles) {
+    assert.ok(!fileNames.includes(fileName), `${fileName} must no longer be a preset`);
+    const source = await readFile(new URL(`../assets/showcase/backgrounds/${fileName}`, import.meta.url), "utf8");
+    assertSelfContainedAvifSvg(source, fileName);
+  }
+});
+
+test("a saved URL of a retired preset is a custom background in the editor, not silently mapped to a new preset", async () => {
+  const { SHOWCASE_BACKGROUND_PRESETS, findShowcaseBackgroundPreset, findShowcaseBackgroundPresetByUrl } = await import("../js/showcase-background-presets.js");
+  const base = new URL("../assets/showcase/backgrounds/", import.meta.url);
+  for (const fileName of retiredAssetFiles) {
+    // Published acts store the URL, with whatever ?v= was current when they were published.
+    assert.equal(findShowcaseBackgroundPresetByUrl(new URL(`${fileName}?v=20260910-user-images-v4-attached-situations`, base).href), null, fileName);
+    assert.equal(findShowcaseBackgroundPresetByUrl(new URL(fileName, base).href), null, fileName);
+  }
+  assert.equal(findShowcaseBackgroundPreset("neon-market"), null);
+  assert.equal(findShowcaseBackgroundPreset("incident-blockade"), null);
+  const byKey = Object.fromEntries(SHOWCASE_BACKGROUND_PRESETS.map((preset, index) => [preset.key, index]));
+  assert.equal(byKey["green-area"], 3, "green-area takes the 4th position");
+  assert.equal(byKey["cyberspace"], 6, "cyberspace takes the 7th position");
+  assert.equal(findShowcaseBackgroundPresetByUrl(SHOWCASE_BACKGROUND_PRESETS[3].url)?.key, "green-area");
+  assert.equal(findShowcaseBackgroundPresetByUrl(SHOWCASE_BACKGROUND_PRESETS[6].url)?.key, "cyberspace");
 });
