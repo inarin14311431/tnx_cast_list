@@ -1,3 +1,4 @@
+import { actShowcaseCssEntry } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -7,7 +8,7 @@ const read = path => readFile(new URL(path, root), "utf8");
 const [cinematicHtml, bootstrap, entryCss, standardHtml, generatorHtml, generatorLoader] = await Promise.all([
   read("act-showcase.html"),
   read("js/act-showcase-bootstrap.js"),
-  read("css-next/pages/act-showcase-entry.css"),
+  actShowcaseCssEntry(),
   read("act-showcase-standard.html"),
   read("showcase-generator.html"),
   read("js/showcase-generator-loader.js")
@@ -20,10 +21,14 @@ function assertUniquePaths(refs, label) {
   assert.equal(new Set(paths).size, paths.length, `${label} must not load the same asset twice`);
 }
 
-test("cinematic HTML exposes one versioned CSS entry and one versioned bootstrap", () => {
+test("cinematic HTML exposes the six versioned bundled stylesheets and one versioned bootstrap", () => {
   const css = [...cinematicHtml.matchAll(new RegExp(`href="(\\.\\/css-next\\/[^\"]+\\.css\\?v=${VERSION})"`, "g"))].map(match => match[1]);
   const scripts = [...cinematicHtml.matchAll(new RegExp(`src="(\\.\\/js\\/[^\"]+\\.js\\?v=${VERSION})"`, "g"))].map(match => match[1]);
-  assert.deepEqual(css.map(ref => ref.replace(/\?v=.*$/, "")), ["./css-next/pages/act-showcase-entry.css"]);
+  assert.deepEqual(css.map(ref => ref.replace(/\?v=.*$/, "")), [
+    "./css-next/pages/act-showcase-core.css", "./css-next/pages/act-showcase-scenes.css",
+    "./css-next/pages/act-showcase-theme-surface-system.css", "./css-next/pages/act-showcase-theme-phase-contract.css",
+    "./css-next/pages/act-showcase-theme-legibility.css", "./css-next/pages/act-showcase-theme-scenes.css"
+  ]);
   assert.deepEqual(scripts.map(ref => ref.replace(/\?v=.*$/, "")), ["./js/act-showcase-bootstrap.js"]);
 });
 

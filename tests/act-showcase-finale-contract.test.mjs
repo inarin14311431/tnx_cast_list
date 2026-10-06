@@ -1,11 +1,12 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const entry = readFileSync(new URL("../css-next/pages/act-showcase-entry.css", import.meta.url), "utf8");
+const entry = actShowcaseCssEntry();
 const bootstrap = readFileSync(new URL("../js/act-showcase-bootstrap.js", import.meta.url), "utf8");
 const enhancer = readFileSync(new URL("../js/act-showcase-finale-enhancer.js", import.meta.url), "utf8");
-const css = readFileSync(new URL("../css-next/pages/act-showcase-finale.css", import.meta.url), "utf8");
+const css = actShowcaseCss("act-showcase-finale");
 
 test("act showcase loads the finale enhancement after existing NeoTokyo layers", () => {
   assert.match(entry, /act-showcase-finale\.css\?v=[^"')\s]+/);

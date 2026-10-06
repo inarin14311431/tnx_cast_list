@@ -1,3 +1,4 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 
@@ -20,8 +21,8 @@ const surfaceCss = read("css-next/pages/act-showcase-theme-surface-system.css");
 const dedicatedCss = surfaceCss;
 const phaseCss = read("css-next/pages/act-showcase-theme-phase-contract.css");
 const legibilityCss = read("css-next/pages/act-showcase-theme-legibility.css");
-const sceneCss = read("css-next/pages/act-showcase-theme-scene-contract.css");
-const entryCss = read("css-next/pages/act-showcase-entry.css");
+const sceneCss = actShowcaseCss("act-showcase-theme-scene-contract");
+const entryCss = actShowcaseCssEntry();
 
 const themes = ["nova", "intron", "vlad", "lutetia"];
 for (const theme of themes) {
@@ -61,7 +62,7 @@ assert.match(generatedOutput, /hero__scroll-cue/);
 
 assert.doesNotMatch(cinematicHtml, /act-showcase-theme-runtime\.js/, "cinematic HTML must keep one-bootstrap architecture");
 assert.match(cinematicBootstrap, /^await import\("\.\/act-showcase-theme-runtime\.js\?v=/, "cinematic bootstrap must initialize dedicated runtime first");
-assert.match(cinematicHtml, /act-showcase-entry\.css\?v=/);
+assert.match(cinematicHtml, /act-showcase-core\.css\?v=/);
 assert.match(standardHtml, /act-showcase-theme-runtime\.js\?v=/);
 assert.doesNotMatch(standardHtml, /act-showcase-dedicated-themes/);
 assert.match(standardHtml, /act-showcase-theme-surface-system\.css\?v=/);

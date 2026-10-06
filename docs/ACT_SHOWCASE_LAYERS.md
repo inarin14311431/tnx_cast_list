@@ -5,7 +5,15 @@
 
 ## 0. 要点
 
-- 豪華版 `act-showcase.html` = CSS 29本(`act-showcase-entry.css` の `@import`、レイヤー指定なし。調査時は30本、dedicated-themes を theme-surface-system に統合して1本減)+ JS 21本(bootstrap から `await import` 連鎖)。
+- 豪華版 `act-showcase.html` = CSS 6ファイル(下記の順に `<link rel="stylesheet">` で直接読む。`@import` なし、レイヤー指定なし)。元は29本を `act-showcase-entry.css` が `@import` していたが、カスケード順を変えずに隣り合うファイルだけを連結して6本にした。以下の章で `act-showcase-xxx.css` と書いているファイルは、現在は下記バンドルの中に `/* ==== from: 元ファイル名 ==== */` 境界コメント付きで入っている(宣言の削除・並べ替え・セレクタの書き換えはまだしていない)+ JS 21本(bootstrap から `await import` 連鎖)。
+- 豪華版のCSS読み込み順(`act-showcase.html`):
+  1. `act-showcase-core.css` = 元の1〜12番目(`act-showcase.css` 〜 `act-showcase-layout-polish.css`)
+  2. `act-showcase-scenes.css` = 元の13〜24番目(`act-showcase-story-flow.css` 〜 `act-showcase-handout-live-frame.css`)
+  3. `act-showcase-theme-surface-system.css`(スタンダード版・ダウンロード出力と共有)
+  4. `act-showcase-theme-phase-contract.css`
+  5. `act-showcase-theme-legibility.css`(スタンダード版・ダウンロード出力と共有)
+  6. `act-showcase-theme-scenes.css` = 元の28〜29番目(`act-showcase-theme-scene-contract.css`、`act-showcase-visual-emphasis.css`)
+  順序は `scripts/audit-act-showcase-architecture.mjs` が元29ファイルの順まで検査する。契約テストは `tests/helpers/act-showcase-css.mjs` で、バンドルから元ファイル単位の本文と順序を取り出して読む。
 - スタンダード版 `act-showcase-standard.html` = CSS 5本 + JS 7本。同じ5本のCSSは `js/showcase-dedicated-output.js` がダウンロード用HTMLにも埋め込む。
 - 同一(@コンテキスト+セレクタ+プロパティ)の重複: **204キー / 234件の追加定義**(厳密)。接頭辞(`body…`・`.cinematic-intro.neotokyo-sequence`)を除いて数えると **335キー / 389件**(緩い)。
 - そのうち「後段が同一キーを再定義していて確実に死んでいる宣言」は調査時 **237個 ≒ 11.4KB**(全体348KBの3%)。**#487 で187キー(165宣言、11,162B)を削除済み**。残り50キー: スタンダード版で生きている theme-legibility 30、`!important`・同一ファイル内再定義 3、セレクタ群の一部のみ上書き17(うち8キーは統合後の theme-surface-system 内)。削減の大半は死んだ宣言ではなく、セレクタ違いの上書きの整理になる。
@@ -50,7 +58,7 @@
 
 - 単独成立(4指標すべて0): cast-selector / neotokyo-linked / ornament-plus / cinematic-fit / final-trailer / handout-live-frame。ただしセレクタが違う要素への干渉(特異度戦)は測っていない = **未確認**。
 - `!important` は30ファイルに0件。優先度は `body#act-showcase-page` 等のセレクタ接頭辞で取っている。
-- `docs/CSS_ARCHITECTURE.md` は「entry が named cascade layer で import」と定めるが、`act-showcase-entry.css` は `layer()` を使っていない(`audit:css` が通っている理由は未確認)。
+- `docs/CSS_ARCHITECTURE.md` は「entry が named cascade layer で import」と定めるが、豪華版のCSS(旧 `act-showcase-entry.css`、現在は6ファイルの直接 `<link`)は `layer()` を使っていない(`audit:css` が通っている理由は未確認)。
 
 ### 1.1 重複定義(ファイルの組ごと、上位)
 

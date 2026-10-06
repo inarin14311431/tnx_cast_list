@@ -1,11 +1,12 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const entry = readFileSync(new URL("../css-next/pages/act-showcase-entry.css", import.meta.url), "utf8");
+const entry = actShowcaseCssEntry();
 const bootstrap = readFileSync(new URL("../js/act-showcase-bootstrap.js", import.meta.url), "utf8");
 const js = readFileSync(new URL("../js/act-showcase-story-flow.js", import.meta.url), "utf8");
-const css = readFileSync(new URL("../css-next/pages/act-showcase-story-flow.css", import.meta.url), "utf8");
+const css = actShowcaseCss("act-showcase-story-flow");
 
 test("story flow enhancement loads after layout polish and before the module renderer", () => {
   assert.match(entry, /act-showcase-story-flow\.css\?v=[^\"']+/);

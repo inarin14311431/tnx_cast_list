@@ -1,3 +1,4 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -41,7 +42,7 @@ test("title and summary screens no longer duplicate the subtitle already shown o
   const [neotokyo, enhancer, hierarchyCss] = await Promise.all([
     read("js/act-showcase-neotokyo.js"),
     read("js/act-showcase-cinematic-enhancer.js"),
-    read("css-next/pages/act-showcase-neotokyo-hierarchy.css")
+    actShowcaseCss("act-showcase-neotokyo-hierarchy")
   ]);
   // js/act-showcase-neotokyo.js's showActTitle()/showSummary() used to read model.heroSubTitle via
   // getActOverview() and build a .neotokyo-sequence__act-overview / .neotokyo-sequence__overview-intro
@@ -61,7 +62,7 @@ test("title and summary screens no longer duplicate the subtitle already shown o
 test("NeoTokyo handout remains visible and shifts left while ASSIGN opens on the right", async () => {
   const [source, css] = await Promise.all([
     read("js/act-showcase-neotokyo.js"),
-    read("css-next/pages/act-showcase-neotokyo-linked.css")
+    actShowcaseCss("act-showcase-neotokyo-linked")
   ]);
   const body = source.slice(source.indexOf("async function showHandoutAndAssign"), source.indexOf("function createAssignedCast"));
   assert.match(body, /neotokyo-sequence__screen--linked/);
@@ -77,7 +78,7 @@ test("NeoTokyo handout remains visible and shifts left while ASSIGN opens on the
 test("participation role is an explicit ASSIGN slot, not a fallback handout title", async () => {
   const [source, css] = await Promise.all([
     read("js/act-showcase-neotokyo.js"),
-    read("css-next/pages/act-showcase-neotokyo-hierarchy.css")
+    actShowcaseCss("act-showcase-neotokyo-hierarchy")
   ]);
   const handoutBody = source.slice(source.indexOf("async function showHandoutAndAssign"), source.indexOf("function createAssignedCast"));
   assert.match(handoutBody, /const handoutTitle = clean\(handout\.title\) \|\| `PC\$\{pcNumber\} HANDOUT`/);
@@ -99,7 +100,7 @@ test("NeoTokyo assignment preserves search, match and assigned sequence", async 
 test("NeoTokyo loader stays hidden after phase 6 exits", async () => {
   const [html, css, page] = await Promise.all([
     read("act-showcase.html"),
-    read("css-next/pages/act-showcase-neotokyo-hierarchy.css"),
+    actShowcaseCss("act-showcase-neotokyo-hierarchy"),
     read("js/act-showcase-page.js")
   ]);
   assert.match(html, /id="act-showcase-status" class="showcase-loading"/);
@@ -119,7 +120,7 @@ test("NeoTokyo intro supports current trailer data and safe missing-data fallbac
 
 test("NeoTokyo assets are reachable through the CSS entry and page imports", async () => {
   const [entry, page] = await Promise.all([
-    read("css-next/pages/act-showcase-entry.css"),
+    actShowcaseCssEntry(),
     read("js/act-showcase-page.js")
   ]);
   assert.match(entry, /act-showcase-neotokyo\.css/);
@@ -135,7 +136,7 @@ test("NeoTokyo cast images keep protocol validation", async () => {
 });
 
 test("assigned cast remains visible when reduced motion disables its animation", async () => {
-  const css = await read("css-next/pages/act-showcase-neotokyo.css");
+  const css = await actShowcaseCss("act-showcase-neotokyo");
   const rule = css.match(/\.neotokyo-sequence__cast\{([^}]+)\}/)[1];
   assert.match(rule, /opacity:1;/);
   assert.match(rule, /transform:none;/);

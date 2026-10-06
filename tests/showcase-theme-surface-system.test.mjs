@@ -1,3 +1,4 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -8,9 +9,9 @@ const [surface, phase, legibility, scene, emphasis, entry, standardHtml, output,
   read("css-next/pages/act-showcase-theme-surface-system.css"),
   read("css-next/pages/act-showcase-theme-phase-contract.css"),
   read("css-next/pages/act-showcase-theme-legibility.css"),
-  read("css-next/pages/act-showcase-theme-scene-contract.css"),
-  read("css-next/pages/act-showcase-visual-emphasis.css"),
-  read("css-next/pages/act-showcase-entry.css"),
+  actShowcaseCss("act-showcase-theme-scene-contract"),
+  actShowcaseCss("act-showcase-visual-emphasis"),
+  actShowcaseCssEntry(),
   read("act-showcase-standard.html"),
   read("js/showcase-dedicated-output.js"),
   read("js/showcase-generator-loader.js"),

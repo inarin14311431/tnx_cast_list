@@ -1,3 +1,4 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -11,10 +12,10 @@ const dynamicPublish = read("js/showcase-dynamic-publish-v3.js");
 const showcaseScenario = read("js/act-showcase-scenario-writer.js");
 const standardScenario = read("js/act-showcase-standard-scenario-writer.js");
 const standardHtml = read("act-showcase-standard.html");
-const entryCss = read("css-next/pages/act-showcase-entry.css");
-const hierarchyCss = read("css-next/pages/act-showcase-neotokyo-hierarchy.css");
-const emphasisCss = read("css-next/pages/act-showcase-visual-emphasis.css");
-const sceneCss = read("css-next/pages/act-showcase-theme-scene-contract.css");
+const entryCss = actShowcaseCssEntry();
+const hierarchyCss = actShowcaseCss("act-showcase-neotokyo-hierarchy");
+const emphasisCss = actShowcaseCss("act-showcase-visual-emphasis");
+const sceneCss = actShowcaseCss("act-showcase-theme-scene-contract");
 
 test("ACT TRAILER is sized by the one layout owner (no separate live-frame module)", () => {
   assert.doesNotMatch(bootstrap, /act-showcase-trailer-live-frame\.js/);

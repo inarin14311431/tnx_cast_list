@@ -1,3 +1,4 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -7,7 +8,7 @@ const read = path => readFile(new URL(path, root), "utf8");
 
 test("showcase loads the writing-pattern layer after story-flow through explicit entries", async () => {
   const [entry, bootstrap] = await Promise.all([
-    read("css-next/pages/act-showcase-entry.css"),
+    actShowcaseCssEntry(),
     read("js/act-showcase-bootstrap.js")
   ]);
   const storyCss = entry.indexOf("act-showcase-story-flow.css");
@@ -53,7 +54,7 @@ test("writing-patterns owns the final handout context content, replacing whateve
 test("trailer patterns preserve author line breaks and adapt typography", async () => {
   const [js, css] = await Promise.all([
     read("js/act-showcase-writing-patterns.js"),
-    read("css-next/pages/act-showcase-writing-patterns.css")
+    actShowcaseCss("act-showcase-writing-patterns")
   ]);
   assert.match(js, /dataset\.trailerPattern/);
   for (const pattern of ["verse", "prose", "compact", "hybrid"]) {
@@ -66,8 +67,8 @@ test("trailer patterns preserve author line breaks and adapt typography", async 
 test("writing pattern title rules remain responsive without important declarations", async () => {
   // The base and data-fit title sizes in this file were fully shadowed by act-showcase-cinematic-v2.css
   // (same selector, same property, loaded later) and were removed; the effective sizes live there.
-  const css = await read("css-next/pages/act-showcase-writing-patterns.css");
-  const effective = await read("css-next/pages/act-showcase-cinematic-v2.css");
+  const css = await actShowcaseCss("act-showcase-writing-patterns");
+  const effective = await actShowcaseCss("act-showcase-cinematic-v2");
   assert.match(effective, /font-size:clamp\(2\.7rem,5vw,6\.2rem\)/);
   assert.match(effective, /data-fit=\"medium\"/);
   assert.match(effective, /data-fit=\"long\"/);

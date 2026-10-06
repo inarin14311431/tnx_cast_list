@@ -1,3 +1,4 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -45,7 +46,7 @@ test("showcase publish normalizes nested handle quotation marks without changing
 test("cinematic enhancer loads before the canonical page module through bootstrap", async () => {
   const [bootstrap, entry] = await Promise.all([
     read("js/act-showcase-bootstrap.js"),
-    read("css-next/pages/act-showcase-entry.css")
+    actShowcaseCssEntry()
   ]);
   const enhancerIndex = bootstrap.indexOf("act-showcase-cinematic-enhancer.js");
   const pageIndex = bootstrap.indexOf("act-showcase-page.js");
@@ -65,7 +66,7 @@ test("legacy trailer payload fallback stays in the canonical model without a sec
 test("act title uses cinematic reveal while multiline fitting is owned by cinematic-v2", async () => {
   const [enhancer, css] = await Promise.all([
     read("js/act-showcase-cinematic-enhancer.js"),
-    read("css-next/pages/act-showcase-cinematic-v2.css")
+    actShowcaseCss("act-showcase-cinematic-v2")
   ]);
   assert.match(enhancer, /is-cinematic-title/);
   assert.doesNotMatch(enhancer, /whiteSpace = "nowrap"|fitSingleLineTitle/);
@@ -77,7 +78,7 @@ test("ACT FILE ACCESS uses a dedicated cinematic access treatment", async () => 
     read("js/act-showcase-cinematic-enhancer.js"),
     read("js/act-showcase-neotokyo.js"),
     read("js/act-showcase-cinematic-layout-v2.js"),
-    read("css-next/pages/act-showcase-cinematic.css")
+    actShowcaseCss("act-showcase-cinematic")
   ]);
   // The builder emits the final access copy and NODE label itself; the enhancers no longer overwrite them.
   assert.match(builder, /eyebrow: "01 \/\/ N◎VA MUNICIPAL DATABASE"/);
@@ -99,7 +100,7 @@ test("ACT FILE ACCESS uses a dedicated cinematic access treatment", async () => 
 test("ACT TRAILER is presented as PC terminal input with a blinking cursor", async () => {
   const [enhancer, css] = await Promise.all([
     read("js/act-showcase-cinematic-enhancer.js"),
-    read("css-next/pages/act-showcase-cinematic.css")
+    actShowcaseCss("act-showcase-cinematic")
   ]);
   assert.match(enhancer, /ACT_TRAILER\.TXT/);
   assert.match(enhancer, /INPUT MODE \/\/ REC/);
@@ -109,14 +110,14 @@ test("ACT TRAILER is presented as PC terminal input with a blinking cursor", asy
 });
 
 test("cinematic override follows CSS audit rule and contains no important declarations", async () => {
-  const css = await read("css-next/pages/act-showcase-cinematic.css");
+  const css = await actShowcaseCss("act-showcase-cinematic");
   assert.doesNotMatch(css, /!important/);
 });
 
 test("finale access gate uses the destiny phrase with an intentional two-line title", async () => {
   const [polish, emphasis] = await Promise.all([
     read("js/act-showcase-cinematic-polish.js"),
-    read("css-next/pages/act-showcase-visual-emphasis.css")
+    actShowcaseCss("act-showcase-visual-emphasis")
   ]);
   assert.match(polish, /ACT ENTRY \/\/ AUTHORIZED/);
   assert.match(polish, /\["THUS OPENS", "THE GATE OF DESTINY"\]/);

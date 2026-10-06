@@ -1,3 +1,4 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -6,7 +7,7 @@ const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
 
 test("presentation tuning loads after supporting cast styling", async () => {
-  const entry = await read("css-next/pages/act-showcase-entry.css");
+  const entry = await actShowcaseCssEntry();
   const supporting = entry.indexOf("act-showcase-supporting-cast.css");
   const tuning = entry.indexOf("act-showcase-presentation-tuning.css");
   assert.ok(supporting >= 0 && tuning > supporting);
@@ -14,8 +15,8 @@ test("presentation tuning loads after supporting cast styling", async () => {
 
 test("multiline-safe title sizing is owned by cinematic-v2 rather than presentation tuning", async () => {
   const [tuning, cinematic] = await Promise.all([
-    read("css-next/pages/act-showcase-presentation-tuning.css"),
-    read("css-next/pages/act-showcase-cinematic-v2.css")
+    actShowcaseCss("act-showcase-presentation-tuning"),
+    actShowcaseCss("act-showcase-cinematic-v2")
   ]);
   assert.doesNotMatch(tuning, /white-space\s*:\s*nowrap/);
   assert.match(cinematic, /act-title--logo\.showcase-fit-title\{[\s\S]*white-space:normal/);
@@ -25,9 +26,9 @@ test("multiline-safe title sizing is owned by cinematic-v2 rather than presentat
 
 test("trailer stage owns adaptive scrolling and the readout remains overflow-visible", async () => {
   const [tuning, cinematic, writing] = await Promise.all([
-    read("css-next/pages/act-showcase-presentation-tuning.css"),
-    read("css-next/pages/act-showcase-cinematic-v2.css"),
-    read("css-next/pages/act-showcase-writing-patterns.css")
+    actShowcaseCss("act-showcase-presentation-tuning"),
+    actShowcaseCss("act-showcase-cinematic-v2"),
+    actShowcaseCss("act-showcase-writing-patterns")
   ]);
   assert.match(writing, /data-trailer-pattern=\"prose\"/);
   assert.match(writing, /white-space:pre-wrap/);
@@ -38,8 +39,8 @@ test("trailer stage owns adaptive scrolling and the readout remains overflow-vis
 
 test("the selected handout style is highlighted while duplicate matches stay secondary", async () => {
   const [cinematic, supporting] = await Promise.all([
-    read("css-next/pages/act-showcase-cinematic-v2.css"),
-    read("css-next/pages/act-showcase-supporting-cast.css")
+    actShowcaseCss("act-showcase-cinematic-v2"),
+    actShowcaseCss("act-showcase-supporting-cast")
   ]);
   assert.match(cinematic, /styles span\.is-role-primary\{[\s\S]*border-color:#77ffd1/);
   assert.match(cinematic, /transform:translateY\(-1px\)/);
@@ -47,7 +48,7 @@ test("the selected handout style is highlighted while duplicate matches stay sec
 });
 
 test("guest files use a left and right two-column layout on desktop", async () => {
-  const css = await read("css-next/pages/act-showcase-presentation-tuning.css");
+  const css = await actShowcaseCss("act-showcase-presentation-tuning");
   assert.match(css, /poster-supporting-cast__grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(css, /neotokyo-supporting-cast__rail\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(css, /@media\(max-width:900px\)/);

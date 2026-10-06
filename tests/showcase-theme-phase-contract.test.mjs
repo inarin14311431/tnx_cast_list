@@ -1,3 +1,4 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -5,11 +6,11 @@ import { readFile } from "node:fs/promises";
 const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
 const [entry, phase, legibility, scene, emphasis] = await Promise.all([
-  read("css-next/pages/act-showcase-entry.css"),
+  actShowcaseCssEntry(),
   read("css-next/pages/act-showcase-theme-phase-contract.css"),
   read("css-next/pages/act-showcase-theme-legibility.css"),
-  read("css-next/pages/act-showcase-theme-scene-contract.css"),
-  read("css-next/pages/act-showcase-visual-emphasis.css")
+  actShowcaseCss("act-showcase-theme-scene-contract"),
+  actShowcaseCss("act-showcase-visual-emphasis")
 ]);
 
 test("phase contract is followed by legibility, scene completion, and final visual emphasis", () => {
@@ -60,7 +61,8 @@ test("assigned casts and guest casts share the same theme token family", () => {
 
 test("legibility layer changes contrast only and keeps phase layout ownership intact", () => {
   assert.match(legibility, /final legibility layer/i);
-  assert.match(legibility, /neotokyo-sequence__screen--title/);
+  // the ACT TITLE screen surface is owned by the scene contract; the superseded legibility copy was removed
+  assert.match(scene, /neotokyo-sequence__screen--title/);
   assert.match(legibility, /neotokyo-sequence__ruler-credit/);
   assert.doesNotMatch(legibility, /stage\.is-trailer-scroll[\s\S]*overflow/);
   assert.doesNotMatch(legibility, /screen--trailer[\s\S]*height:min\(92svh,760px\)/);

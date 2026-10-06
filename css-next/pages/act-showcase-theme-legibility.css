@@ -219,7 +219,6 @@
 /* ---------- Deluxe cinematic shell ---------- */
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence,
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__shell{
-  color:var(--showcase-readable-text);
   background:var(--showcase-readable-page);
 }
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__header,
@@ -241,16 +240,6 @@
 }
 
 /* ---------- ACT TITLE / credits ---------- */
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo{
-  color:var(--showcase-readable-text);
-  border-color:var(--showcase-readable-border);
-  background:
-    linear-gradient(135deg,rgba(var(--showcase-primary-rgb),.07),transparent 34%),
-    linear-gradient(315deg,rgba(var(--showcase-secondary-rgb),.08),transparent 40%),
-    var(--showcase-readable-surface-strong);
-  box-shadow:var(--showcase-readable-shadow),inset 0 0 0 1px rgba(var(--showcase-primary-rgb),.06);
-}
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__title-logo,
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo{
   color:var(--showcase-readable-text);
@@ -273,12 +262,8 @@
 }
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-credit{
   border-color:var(--showcase-readable-border-secondary);
-  background:linear-gradient(90deg,rgba(var(--showcase-secondary-rgb),.14),var(--showcase-readable-surface-strong));
-  box-shadow:inset 0 0 0 1px rgba(var(--showcase-primary-rgb),.06),0 12px 30px rgba(var(--showcase-bg-rgb),.12);
 }
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-label{color:var(--showcase-secondary);text-shadow:none}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-name{color:var(--showcase-readable-text);text-shadow:none}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-role{color:var(--showcase-readable-muted);text-shadow:none}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-role{text-shadow:none}
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-overview{
   color:var(--showcase-readable-text);
   border-color:var(--showcase-readable-border);

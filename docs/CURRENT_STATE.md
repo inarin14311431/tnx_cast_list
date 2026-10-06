@@ -7,16 +7,15 @@ AIや新規担当者が「何が完了済みで、何が途中か」を誤認し
 
 ## 1. Runtime同期基準点
 
-- 検証repo main: `15b667b`(PR #505 マージ点, 2026-10-06)。runtime の最後の変更は #505(`287f8a6`)。画面比較の
+- 検証repo main: `03f64ad`(PR #507 マージ点, 2026-10-06)。runtime の最後の変更は #507(`8b39a48`)。画面比較の
   基準ブランチ `visual-regression-baseline` は検証repoで管理し、本番側では更新しない
-- 本番repo main: 検証PR #505までのruntime同期PRのmerge commit(同期元: 検証 `15b667b`)。同期前の
-  本番mainは `c845785`。merge後のSHAは本番repoの同期PRを参照。
-- runtime同期済み範囲: 検証PR #505まで。直前の同期(#499まで)以降の #503(アクト紹介の初期HTMLの文言を
-  読み込み画面に合わせる、ACT TRAILER 読み上げ中の枠が階段状に伸びる問題の修正と追従スクロール、スマホ幅で
-  長い英字タイトルがタイトル枠からはみ出す問題の修正)と、#505(ACT TRAILER の型=文字サイズ・行間・余白を
-  読み上げ前に確定し、終了時に全文が組み直されないようにする)を含む。共有Supabase/DBの変更は含まれない。
-- 対応するテスト(単体・`tests/e2e/act-showcase-trailer-readout.spec.js`・`test-suites.json` の
-  `ci-act-showcase` への登録)も、前回までと同じ範囲で同期した。本番専用(`dashboard/`、
+- 本番repo main: 検証PR #507までのruntime同期PRのmerge commit(同期元: 検証 `03f64ad`)。同期前の
+  本番mainは `9bec292`。merge後のSHAは本番repoの同期PRを参照。
+- runtime同期済み範囲: 検証PR #507まで。直前の同期(#505まで)以降の #506(アクト紹介(デラックス版)のCSS 29本を
+  カスケード順を変えずに6ファイルへ集約)と、#507(集約後に後ろの宣言で上書きされ効いていない宣言15件の削除)を含む。
+  見た目は変えない。共有Supabase/DBの変更は含まれない。
+- 対応するテスト(`tests/act-showcase-*`、`tests/helpers/act-showcase-css.mjs`、関連する `tests/showcase-*`)と
+  監査script(`audit-act-showcase-architecture`、`audit-css-rebuild`)も同期した。本番専用(`dashboard/`、
   `.github/workflows/pr-dashboard.yml` ほか)は触っていない。
 
 **runtime/applicationの同期基準**であり、設計資料やREADMEだけのcommitで各repoのmain SHAは

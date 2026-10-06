@@ -1,3 +1,4 @@
+import { actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
@@ -22,7 +23,7 @@ test("retired reduced-motion browser API bridge is absent from the cinematic rou
 test("NeoTokyo keeps the cinematic sequence under reduced motion while CSS suppresses physical animation", async () => {
   const [sequence, css] = await Promise.all([
     read("js/act-showcase-neotokyo.js"),
-    read("css-next/pages/act-showcase-neotokyo.css")
+    actShowcaseCss("act-showcase-neotokyo")
   ]);
   assert.match(sequence, /prefers-reduced-motion: reduce/);
   assert.match(

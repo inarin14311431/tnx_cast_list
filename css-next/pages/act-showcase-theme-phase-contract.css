@@ -70,7 +70,6 @@
 
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked,
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked.is-found{
-  border-color:rgba(var(--showcase-primary-rgb),.48);
   background:
     radial-gradient(circle at 50% 48%,rgba(var(--showcase-tertiary-rgb),.10),transparent 34%),
     linear-gradient(135deg,rgba(var(--showcase-primary-rgb),.055),rgba(var(--showcase-surface-rgb),.96));
