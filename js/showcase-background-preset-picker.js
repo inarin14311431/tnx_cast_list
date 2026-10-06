@@ -2,6 +2,7 @@ import {
   SHOWCASE_BACKGROUND_PRESETS,
   findShowcaseBackgroundPresetByUrl
 } from "./showcase-background-presets.js?v=7";
+import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=2";
 
 const grid = document.querySelector("#background-preset-grid");
 const keyField = document.querySelector("#background-preset");
@@ -80,10 +81,3 @@ function updateSelection(activeKey) {
   }
 }
 
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[character]));
-}
-
-function escapeAttribute(value) {
-  return String(value ?? "").replace(/[&<>'"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[character]));
-}

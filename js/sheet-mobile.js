@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { SITE_BASE_PATH } from "./config.js?v=2";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=1";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
 import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=2";
 
 const PROFILE_FIELDS = [

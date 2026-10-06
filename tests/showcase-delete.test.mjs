@@ -30,7 +30,7 @@ test("ACT SHOWCASE deletion is owner-scoped and preserves ACT history", () => {
 });
 
 test("editor exposes an explicit confirmed delete action and keeps local form contents", () => {
-  assert.match(loader, /showcase-delete\.js\?v=1/);
+  assert.match(loader, /showcase-delete\.js\?v=2/);
   assert.match(client, /id = "delete-owned-showcase"/);
   assert.match(client, /window\.confirm/);
   assert.match(client, /supabase\.rpc\("delete_owned_act_showcase", \{ p_slug: slug \}\)/);

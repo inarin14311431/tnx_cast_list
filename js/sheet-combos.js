@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=4";
+import { requireAuth } from "./auth-state.js?v=5";
+import { escapeHtml, escapeAttributeWithBacktick as escapeAttribute } from "./dom-escape.js?v=2";
 
 const openButton = document.querySelector("#sheet-combo-open");
 const dialog = document.querySelector("#sheet-combo-dialog");
@@ -670,16 +671,3 @@ function integer(input) {
   return Number.isInteger(parsed) ? parsed : null;
 }
 
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  })[char]);
-}
-
-function escapeAttribute(value) {
-  return escapeHtml(value).replace(/`/g, "&#96;");
-}

@@ -30,7 +30,7 @@ test("linked troop shortcut has its own icon and EXP is aggregated into cast bre
 });
 
 test("troop page uses one canonical guarded save controller", () => {
-  assert.match(troopHtml, /troop\.js\?v=6/);
+  assert.match(troopHtml, /troop\.js\?v=7/);
   assert.doesNotMatch(troopHtml, /troop-save-v2\.js/);
   assert.match(troopSave, /export function registerTroopSave/);
   assert.match(troopSave, /dataset\.troopSaveHandler === "canonical"/);

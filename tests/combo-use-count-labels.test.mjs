@@ -1,11 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { compactSource } from "./helpers/compact-source.mjs";
 import { readFile } from "node:fs/promises";
 
 const sheet = await readFile(new URL("../sheet.html", import.meta.url), "utf8");
 const cast = await readFile(new URL("../js/cast.js", import.meta.url), "utf8");
 const rules = await readFile(new URL("../js/cast-combo-rules.js", import.meta.url), "utf8");
-const castMobile = await readFile(new URL("../js/cast-mobile.js", import.meta.url), "utf8");
+const castMobile = compactSource(await readFile(new URL("../js/cast-mobile.js", import.meta.url), "utf8"));
 const castHtml = await readFile(new URL("../cast.html", import.meta.url), "utf8");
 
 test("combo usage labels are generic instead of act-specific", () => {
@@ -29,6 +30,6 @@ test("usage limit storage contract remains unchanged", () => {
 });
 
 test("cast usage label changes have cache-buster updates", () => {
-  assert.match(castHtml, /\.\/js\/cast\.js\?v=102/);
-  assert.match(castHtml, /\.\/js\/cast-mobile\.js\?v=7/);
+  assert.match(castHtml, /\.\/js\/cast\.js\?v=103/);
+  assert.match(castHtml, /\.\/js\/cast-mobile\.js\?v=9/);
 });

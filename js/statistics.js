@@ -1,4 +1,5 @@
 import { supabase } from "./supabase-client.js";
+import { escapeHtml } from "./dom-escape.js?v=2";
 
 const statusNode = document.querySelector("#statistics-status");
 const generatedAtNode = document.querySelector("#statistics-generated-at");
@@ -395,5 +396,5 @@ function renderEmpty(root) { root.innerHTML = '<p class="statistics-empty">é›†è¨
 function clean(value) { return String(value ?? "").trim(); }
 function numberOrZero(value) { const number = Number(value); return Number.isFinite(number) ? number : 0; }
 function localeCompareJa(a, b) { return String(a).localeCompare(String(b), "ja", { sensitivity: "base", numeric: true }); }
-function escapeHtml(value) { return String(value ?? "").replace(/[&<>"']/g, char => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[char])); }
+
 function formatDateTime(date) { return new Intl.DateTimeFormat("ja-JP", { year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit" }).format(date); }

@@ -11,3 +11,11 @@ export function escapeHtml(value) {
 export function escapeAttribute(value) {
   return escapeHtml(value);
 }
+
+export function escapeAttributeWithBacktick(value) {
+  return escapeHtml(value).replace(/`/g, "&#96;");
+}
+
+export function escapeAttributeMultiline(value) {
+  return escapeAttribute(value).replace(/\r?\n/g, "&#10;");
+}

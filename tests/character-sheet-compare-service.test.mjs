@@ -25,6 +25,42 @@ test("normalizeCharacterSheetPayload unwraps JSON data without changing field se
   assert.equal(normalized.outfits[0].concealA, "0");
 });
 
+test("legacy warehouse sheets with numeric style codes and no outline compare as matching styles", () => {
+  const archive = {
+    character: {
+      style_1: "カブト", style_1_mark: "", style_1_attribute: "",
+      style_2: "カリスマ", style_2_mark: "", style_2_attribute: "",
+      style_3: "ヒルコ", style_3_mark: "", style_3_attribute: ""
+    }
+  };
+  const warehouse = { styles: { style1: "4", style2: "5", style3: "-1" } };
+  const differences = compareCharacterSheetPayload(archive, warehouse);
+  assert.deepEqual(differences.filter(item => item.category === "styles"), []);
+});
+
+test("normalizeCharacterSheetPayload prefers outline over numeric style codes when both are present", () => {
+  const archive = {
+    character: {
+      style_1: "カブキ", style_1_mark: "", style_1_attribute: "",
+      style_2: "カブキ", style_2_mark: "", style_2_attribute: "",
+      style_3: "カブキ", style_3_mark: "", style_3_attribute: ""
+    }
+  };
+  const warehouse = {
+    outline: "STYLE:カブキ=カブキ=カブキ",
+    styles: { style1: "999", style2: "999", style3: "999" }
+  };
+  const differences = compareCharacterSheetPayload(archive, warehouse);
+  assert.deepEqual(differences.filter(item => item.category === "styles"), []);
+});
+
+test("normalizeCharacterSheetPayload does not complete the outline when a style code is unknown", () => {
+  const payload = { styles: { style1: "4", style2: "999", style3: "-1" } };
+  const normalized = normalizeCharacterSheetPayload(payload);
+  assert.equal(normalized.outline, undefined);
+  assert.deepEqual(normalized.styles, payload.styles);
+});
+
 test("normalizeCharacterSheetPayload rejects non-object warehouse data", () => {
   assert.throws(
     () => normalizeCharacterSheetPayload("not-json"),

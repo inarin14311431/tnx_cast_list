@@ -59,5 +59,5 @@ test("mobile new flow is wired to the shared PC initialization and save projecti
   assert.match(entry, /buildMobileNewCharacterSkillPayloads\(data\.id\)/);
   assert.match(entry, /\.select\("id,public_id"\)/);
   assert.match(entry, /character_skills/);
-  assert.match(html, /sheet-mobile-new\.js\?v=2/);
+  assert.match(html, /sheet-mobile-new\.js\?v=3/);
 });

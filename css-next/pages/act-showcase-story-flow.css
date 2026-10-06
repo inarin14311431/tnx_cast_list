@@ -76,7 +76,7 @@
 .neotokyo-story__ignition{margin-top:2px;color:#fff;font:900 .54rem/1.2 Orbitron,"Noto Sans JP",sans-serif;letter-spacing:.08em;text-align:center;text-shadow:0 0 16px rgba(104,255,216,.2)}
 .cinematic-intro.neotokyo-sequence .neotokyo-sequence__summary-cast-styles{display:flex;flex-wrap:wrap;gap:4px}
 .cinematic-intro.neotokyo-sequence .neotokyo-sequence__summary-cast-styles span{padding:3px 5px;border:1px solid rgba(100,159,198,.16);background:rgba(17,25,51,.45);color:#758fa5}
-.cinematic-intro.neotokyo-sequence .neotokyo-sequence__summary-cast-styles span.is-role-primary{border-color:#72ffd0;background:rgba(42,105,87,.45);color:#96ffdc;box-shadow:0 0 12px rgba(102,255,213,.12)}
+.cinematic-intro.neotokyo-sequence .neotokyo-sequence__summary-cast-styles span.is-role-primary{border-color:#72ffd0}
 
 body.showcase-poster-v2-ready .poster-v2-meta[data-gender-id-split="1"]{grid-template-columns:minmax(90px,.44fr) minmax(0,1fr)}
 body.showcase-poster-v2-ready .poster-v2-meta[data-gender-id-split="1"] dt,body.showcase-poster-v2-ready .poster-v2-meta[data-gender-id-split="1"] dd{min-height:32px}

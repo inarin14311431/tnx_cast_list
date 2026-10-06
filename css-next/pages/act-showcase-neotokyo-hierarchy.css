@@ -10,7 +10,7 @@
 .neotokyo-sequence__ruler-role{grid-column:1;grid-row:3;margin-top:3px;color:#9f7296;font:700 .52rem/1.2 "Share Tech Mono",monospace;letter-spacing:.14em}
 .neotokyo-sequence__ruler-credit[data-scenario-writer-credit="title"]{margin-top:10px}
 
-.neotokyo-sequence__trailer-definition{display:inline-flex;gap:10px;align-items:center;margin:0 0 12px;padding:6px 9px;border:1px solid rgba(255,121,211,.22);background:rgba(255,70,180,.05);color:#c98cb8;font:700 .52rem/1.2 "Share Tech Mono",monospace;letter-spacing:.11em}
+.neotokyo-sequence__trailer-definition{gap:10px;align-items:center;margin:0 0 12px;padding:6px 9px;border:1px solid rgba(255,121,211,.22);background:rgba(255,70,180,.05);color:#c98cb8;font:700 .52rem/1.2 "Share Tech Mono",monospace;letter-spacing:.11em}
 .neotokyo-sequence__trailer-definition strong{color:#ff8ed9;font-family:Orbitron,sans-serif}
 
 .neotokyo-sequence__role-slot{display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 12px;align-items:center;margin:0 0 15px;padding:10px 12px;border:1px solid rgba(255,121,211,.42);background:linear-gradient(90deg,rgba(255,55,176,.16),rgba(24,18,54,.4));box-shadow:0 0 24px rgba(255,67,183,.07)}

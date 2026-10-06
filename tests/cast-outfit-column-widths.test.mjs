@@ -31,7 +31,7 @@ test("cast page loads the refreshed outfit definitions and layout assets", () =>
   assert.match(outfits, /cast-view-definitions\.js\?v=3/);
   assert.match(entry, /cast-outfit-column-widths\.css\?v=3/);
   assert.match(castHtml, /cast-entry\.css\?v=23/);
-  assert.match(castHtml, /cast-outfits\.js\?v=9/);
+  assert.match(castHtml, /cast-outfits\.js\?v=10/);
 });
 
 test("items without a description get no tablet description row, and name/slot cells wrap on tablet", () => {

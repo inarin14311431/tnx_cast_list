@@ -1,4 +1,4 @@
-import { escapeHtml } from "./dom-escape.js";
+import { escapeHtml } from "./dom-escape.js?v=2";
 import { supabase } from "./supabase-client.js";
 import { getCharacter } from "./cast-data-store.js?v=2";
 

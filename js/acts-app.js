@@ -1,6 +1,7 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=4";
+import { requireAuth } from "./auth-state.js?v=5";
 import { withRequestTimeout } from "./async-timeout.js?v=1";
+import { escapeHtml, escapeAttribute as escapeAttr } from "./dom-escape.js?v=2";
 
 const el = {
   status: document.querySelector("#history-status"),
@@ -587,5 +588,4 @@ function setText(node, value) { if (node) node.textContent = String(value); }
 function elementTarget(target) { return target instanceof Element ? target : target?.parentElement ?? null; }
 function clean(value) { return String(value ?? "").replace(/\s+/g, " ").trim(); }
 function compareJa(a,b) { return String(a).localeCompare(String(b), "ja", { sensitivity:"base", numeric:true }); }
-function escapeHtml(value) { return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"})[c]); }
-function escapeAttr(value) { return escapeHtml(value); }
+

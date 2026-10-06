@@ -1,4 +1,4 @@
-import { escapeHtml } from "./dom-escape.js";
+import { escapeHtml } from "./dom-escape.js?v=2";
 import { getCharacter } from "./cast-data-store.js?v=2";
 import { getImageFocusX, getImageFocusY, getImageZoom } from "./image-focus.js?v=4";
 import { stripOuterQuotes } from "./cast-hero-view.js?v=1";

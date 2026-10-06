@@ -19,7 +19,7 @@ test("dense ornament layer stays PC-focused and covers all major poster regions"
   assert.match(css, /\.poster-v2-panel--visual/);
   assert.match(css, /\.poster-v2-panel--profile/);
   assert.match(css, /\.poster-v2-panel--handout/);
-  assert.match(css, /\.poster-v2-panel--credits/);
+  assert.doesNotMatch(css, /\.poster-v2-panel--credits|\.poster-v2-credit-/);
   assert.match(css, /\.poster-v2-roster/);
 });
 

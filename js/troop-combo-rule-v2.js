@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { packTroopComboRule, unpackTroopComboRule } from "./troop-combo-codec.js";
+import { escapeHtml } from "./dom-escape.js?v=2";
 
 const comboForm = document.querySelector("#troop-combo-form");
 const comboDialog = document.querySelector("#troop-combo-dialog");
@@ -164,4 +165,4 @@ function abilityText(value) {
   return keys.length ? keys.map(key=>labels[key]||key).join(" / ") : "能力未指定";
 }
 function normalizeSkillName(value) { return String(value||"").normalize("NFKC").replace(/[@†※]/g,"").replace(/\s+/g,"").trim().toLowerCase(); }
-function escapeHtml(value) { return String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
+

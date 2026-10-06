@@ -1,5 +1,6 @@
 import { SITE_BASE_PATH } from "./config.js?v=2";
 import { supabase } from "./supabase-client.js";
+import { escapeHtml } from "./dom-escape.js?v=2";
 
 let pendingSessionRequest = null;
 
@@ -101,11 +102,3 @@ function withTimeout(promise, timeoutMs, message) {
   return Promise.race([promise, timeout]).finally(() => window.clearTimeout(timeoutId));
 }
 
-function escapeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
-}

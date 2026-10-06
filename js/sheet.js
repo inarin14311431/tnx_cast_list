@@ -1,6 +1,6 @@
 import { applyStylePresentation, applyAbilityFinals } from "./sheet-presentation-dom.js?v=4";
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=4";
+import { requireAuth } from "./auth-state.js?v=5";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
 import { SITE_BASE_PATH } from "./config.js?v=2";
 import { createSheetSaveCoordinator } from "./sheet-save-coordinator.js?v=2";
@@ -16,8 +16,8 @@ import {
 import { formatSheetPersistenceError } from "./sheet-error-message.js?v=1";
 import { initSheetRowInteractions } from "./sheet-row-interactions.js?v=1";
 import { initSheetEditorInteractions } from "./sheet-editor-interactions.js?v=1";
-import { renderSkillEditorSections } from "./sheet-skill-renderer.js?v=1";
-import { renderOutfitEditor } from "./sheet-outfit-renderer.js?v=1";
+import { renderSkillEditorSections } from "./sheet-skill-renderer.js?v=2";
+import { renderOutfitEditor } from "./sheet-outfit-renderer.js?v=2";
 import {
   createBlankSkill,
   createBlankOutfit,
@@ -29,7 +29,7 @@ import {
   appendGeneralBlankSlots,
   orderGeneralRows
 } from "./sheet-general-skill-state.js?v=1";
-import { renderStyleCards, renderAbilityCards } from "./sheet-character-renderer.js?v=3";
+import { renderStyleCards, renderAbilityCards } from "./sheet-character-renderer.js?v=4";
 import { calculateStyleBaselines } from "./sheet-style-baseline.js?v=1";
 import { buildStylePresentation } from "./sheet-style-presentation.js?v=1";
 import { calculateAbilityFinals } from "./sheet-ability-calculation.js?v=1";
@@ -39,7 +39,7 @@ import { countGeneralSkillColumns, chooseGeneralSkillColumn } from "./sheet-gene
 import { resolveSkillInputState } from "./sheet-skill-level-suit-state.js?v=1";
 import { buildStyleSaveRows } from "./sheet-style-save-projection.js?v=1";
 import { buildAbilitySaveSnapshot, buildCsSaveSnapshot } from "./sheet-ability-save-projection.js?v=1";
-import { collectCharacterInputSnapshot, applyCharacterInputSnapshot } from "./sheet-character-input-snapshot.js?v=8";
+import { collectCharacterInputSnapshot, applyCharacterInputSnapshot } from "./sheet-character-input-snapshot.js?v=9";
 import { collectAbilityInputSnapshot, applyAbilityInputSnapshot } from "./sheet-ability-input-snapshot.js?v=1";
 import { collectStyleInputSnapshot, applyStyleInputSnapshot } from "./sheet-style-input-snapshot.js?v=1";
 import { initSheetStyleInteractions } from "./sheet-style-interactions.js?v=1";

@@ -58,7 +58,11 @@ test("dynamic publishing stores scenarioWriterName in the public showcase JSON",
 test("cinematic and standard public pages render SCENARIO WRITER at the same visual level as RULER", () => {
   assert.match(bootstrap, /act-showcase-scenario-writer\.js\?v=/);
   assert.match(showcaseScenario, /className = "opening-ruler opening-scenario-writer"/);
-  assert.match(showcaseScenario, /className = "poster-v2-credit-row"/);
+  assert.match(showcaseScenario, /function syncOpeningCredit\(\)/);
+  assert.match(showcaseScenario, /function syncTitleCredit\(\)/);
+  assert.match(showcaseScenario, /function syncSummaryCredit\(\)/);
+  // The poster credit table is never rendered, so there is no poster credit row to sync.
+  assert.doesNotMatch(showcaseScenario, /syncPosterCredit|poster-v2-credit-table|poster-v2-credit-row/);
   assert.match(showcaseScenario, /ruler\.cloneNode\(true\)/);
   assert.match(showcaseScenario, /SCENARIO WRITER/);
   assert.match(standardHtml, /act-showcase-standard-scenario-writer\.js\?v=/);
@@ -77,7 +81,7 @@ test("RULER and SCENARIO WRITER title labels use the same compact horizontal cre
 test("showcase entry keeps the final theme layers wired without pinning cache revisions here", () => {
   assert.match(entryCss, /act-showcase-neotokyo-hierarchy\.css\?v=/);
   assert.match(entryCss, /act-showcase-handout-live-frame\.css\?v=/);
-  assert.match(entryCss, /act-showcase-dedicated-themes\.css\?v=/);
+  assert.doesNotMatch(entryCss, /act-showcase-dedicated-themes/, "dedicated tokens now live at the head of the surface-system stylesheet");
   assert.match(entryCss, /act-showcase-theme-surface-system\.css\?v=/);
   assert.match(entryCss, /act-showcase-theme-phase-contract\.css\?v=/);
   assert.match(entryCss, /act-showcase-theme-legibility\.css\?v=/);

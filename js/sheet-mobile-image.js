@@ -1,31 +1,377 @@
 import { supabase } from "./supabase-client.js";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=1";
-import { getImageFocusX,getImageFocusY,getImageZoom,setImageFocusX,setImageFocusY,setImageZoom } from "./image-focus.js?v=4";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
+import {
+  getImageFocusX,
+  getImageFocusY,
+  getImageZoom,
+  setImageFocusX,
+  setImageFocusY,
+  setImageZoom
+} from "./image-focus.js?v=4";
 
-const $=s=>document.querySelector(s);
-const BUCKET="character-images",PLACEHOLDER="./assets/placeholders/scan-failed.webp";
-const MAX_SOURCE=20*1024*1024,MAX_OUTPUT=1024*1024,MAX_EDGE=1920;
-let user=null,character=null,selectedFile=null,optimizedFile=null,objectUrl="",busy=false;
+const $ = s => document.querySelector(s);
+const BUCKET = "character-images",
+  PLACEHOLDER = "./assets/placeholders/scan-failed.webp";
+const MAX_SOURCE = 20 * 1024 * 1024,
+  MAX_OUTPUT = 1024 * 1024,
+  MAX_EDGE = 1920;
+let user = null,
+  character = null,
+  selectedFile = null,
+  optimizedFile = null,
+  objectUrl = "",
+  busy = false;
 
-function injectSection(){if($("#mobile-image-section"))return;const snapshot=$("#mobile-snapshots-section"),combo=$("#mobile-combos-section"),outfit=$("#mobile-outfits-section"),anchor=snapshot||combo||outfit;if(!anchor)return;const section=document.createElement("section");section.id="mobile-image-section";section.className="mobile-sheet-section mobile-sheet-section--image";section.innerHTML=`<header><h2>09 キャスト画像</h2></header><div class="mobile-sheet-section__body"><button id="mobile-image-open" class="mobile-image-display" type="button" aria-haspopup="dialog"><img id="mobile-image-main" src="${PLACEHOLDER}" alt="キャスト画像"><span>タップして画像を編集</span></button></div>`;anchor.after(section);}
-function injectDialog(){if($("#mobile-image-dialog"))return;const d=document.createElement("dialog");d.id="mobile-image-dialog";d.className="mobile-editor-dialog mobile-image-dialog";d.innerHTML=`<form method="dialog"><header class="mobile-editor-dialog__header mobile-editor-dialog__header--close-only"><button id="mobile-image-close" type="button">閉じる</button><strong>キャスト画像編集</strong></header><div class="mobile-editor-dialog__body"><div class="mobile-image-editor"><div class="mobile-image-preview"><img id="mobile-image-preview" src="${PLACEHOLDER}" alt="画像プレビュー"></div><label class="mobile-image-file">画像ファイルを選択<input id="mobile-image-file" type="file" accept="image/jpeg,image/png,image/webp"></label><button id="mobile-image-upload" type="button">画像を登録</button><section class="mobile-image-focus"><label><span>左右 <output id="mobile-image-x-value"></output></span><input id="mobile-image-x" type="range" min="0" max="100" step="5"></label><label><span>上下 <output id="mobile-image-y-value"></output></span><input id="mobile-image-y" type="range" min="0" max="100" step="5"></label><label><span>拡大率 <output id="mobile-image-zoom-value"></output></span><input id="mobile-image-zoom" type="range" min="100" max="200" step="5"></label><button id="mobile-image-focus-save" type="button">表示位置を保存</button></section><button id="mobile-image-clear" class="mobile-danger-action" type="button">画像を解除</button><p id="mobile-image-message" aria-live="polite"></p></div></div></form>`;document.body.append(d);}
-function currentUrl(){return character?.image_url||"";}
-function applyImage(img,url,x=getImageFocusX(url),y=getImageFocusY(url),zoom=getImageZoom(url)){if(!img)return;img.src=url||PLACEHOLDER;img.style.objectPosition=`${x}% ${y}%`;img.style.setProperty("--tnx-image-scale",String(zoom/100));img.style.setProperty("--tnx-image-origin",`${x}% ${y}%`);}
-function syncView(){const url=currentUrl();applyImage($("#mobile-image-main"),url);applyImage($("#mobile-image-preview"),url);const x=getImageFocusX(url),y=getImageFocusY(url),z=getImageZoom(url);$("#mobile-image-x").value=x;$("#mobile-image-y").value=y;$("#mobile-image-zoom").value=z;syncOutputs();syncDisabled();}
-function syncOutputs(){const x=Number($("#mobile-image-x")?.value||50),y=Number($("#mobile-image-y")?.value||0),z=Number($("#mobile-image-zoom")?.value||100);$("#mobile-image-x-value").textContent=`${x}%`;$("#mobile-image-y-value").textContent=`${y}%`;$("#mobile-image-zoom-value").textContent=`${z}%`;const src=objectUrl||currentUrl();applyImage($("#mobile-image-preview"),src,x,y,z);}
-function syncDisabled(){const has=Boolean(currentUrl()||optimizedFile);for(const id of ["#mobile-image-x","#mobile-image-y","#mobile-image-zoom","#mobile-image-focus-save"])if($(id))$(id).disabled=busy||!has;if($("#mobile-image-upload"))$("#mobile-image-upload").disabled=busy||!optimizedFile;if($("#mobile-image-file"))$("#mobile-image-file").disabled=busy;if($("#mobile-image-clear"))$("#mobile-image-clear").disabled=busy||(!currentUrl()&&!optimizedFile);}
-function message(text,state=""){const p=$("#mobile-image-message");if(p){p.textContent=text;p.dataset.state=state;}}
-function open(){syncView();message("");$("#mobile-image-dialog")?.showModal();}
-function close(){releaseObjectUrl();selectedFile=null;optimizedFile=null;$("#mobile-image-file").value="";syncView();$("#mobile-image-dialog")?.close();}
-function releaseObjectUrl(){if(objectUrl){URL.revokeObjectURL(objectUrl);objectUrl="";}}
-async function selectFile(){releaseObjectUrl();selectedFile=$("#mobile-image-file")?.files?.[0]||null;optimizedFile=null;if(!selectedFile){syncView();return;}if(!["image/jpeg","image/png","image/webp"].includes(selectedFile.type)){message("JPEG・PNG・WEBP形式のみ登録できます。","error");return;}if(selectedFile.size>MAX_SOURCE){message("画像は20MB以下にしてください。","error");return;}busy=true;syncDisabled();message("画像を最適化しています…");try{optimizedFile=await optimize(selectedFile);objectUrl=URL.createObjectURL(optimizedFile);applyImage($("#mobile-image-preview"),objectUrl,50,0,100);$("#mobile-image-x").value=50;$("#mobile-image-y").value=0;$("#mobile-image-zoom").value=100;syncOutputs();message("登録準備ができました。","saved");}catch(error){console.error(error);message(error.message||"画像処理に失敗しました。","error");}finally{busy=false;syncDisabled();}}
-async function optimize(file){const bitmap=await createImageBitmap(file);try{const scale=Math.min(1,MAX_EDGE/Math.max(bitmap.width,bitmap.height));const width=Math.max(1,Math.round(bitmap.width*scale)),height=Math.max(1,Math.round(bitmap.height*scale));const canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;const ctx=canvas.getContext("2d");ctx.drawImage(bitmap,0,0,width,height);for(const quality of [.86,.78,.7,.62,.54]){const blob=await new Promise((resolve,reject)=>canvas.toBlob(v=>v?resolve(v):reject(new Error("画像変換に失敗しました。")),"image/webp",quality));if(blob.size<=MAX_OUTPUT)return new File([blob],`${Date.now()}.webp`,{type:"image/webp"});}throw new Error("画像を1MB以下に圧縮できませんでした。");}finally{bitmap.close();}}
-async function createThumbnail(file,{maxEdge=420,targetSize=40*1024}={}){const bitmap=await createImageBitmap(file);try{const scale=Math.min(1,maxEdge/Math.max(bitmap.width,bitmap.height));let width=Math.max(1,Math.round(bitmap.width*scale)),height=Math.max(1,Math.round(bitmap.height*scale));let smallest=null,target=null;for(let pass=0;pass<6;pass+=1){const canvas=document.createElement("canvas");canvas.width=width;canvas.height=height;const ctx=canvas.getContext("2d");if(!ctx)throw new Error("サムネイル用Canvasを作成できませんでした。");ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality="high";ctx.drawImage(bitmap,0,0,width,height);for(const quality of [.82,.74,.66,.58,.5,.42]){const blob=await new Promise((resolve,reject)=>canvas.toBlob(value=>value?resolve(value):reject(new Error("サムネイル変換に失敗しました。")),"image/webp",quality));const candidate={blob,width,height};if(!smallest||blob.size<smallest.blob.size)smallest=candidate;if(blob.size<=targetSize){target=candidate;break;}}if(target)break;const longEdge=Math.max(width,height);if(longEdge<=120)break;const scalePass=Math.max(120/longEdge,.86);width=Math.max(1,Math.round(width*scalePass));height=Math.max(1,Math.round(height*scalePass));}const selected=target||smallest;if(!selected||selected.blob.size>200*1024)throw new Error("サムネイルを十分に圧縮できませんでした。");return new File([selected.blob],[`${Date.now()}-thumb.webp`],{type:"image/webp"});}finally{bitmap.close();}}function decoratedUrl(base){return setImageZoom(setImageFocusY(setImageFocusX(base,$("#mobile-image-x").value),$("#mobile-image-y").value),$("#mobile-image-zoom").value);}
-async function upload(){if(!optimizedFile||!character||!user)return;busy=true;syncDisabled();message("画像を登録しています…");let path="",thumbnailPath="";try{const timestamp=Date.now();path=`${user.id}/${character.public_id}/${timestamp}.webp`;const up=await supabase.storage.from(BUCKET).upload(path,optimizedFile,{cacheControl:"86400",contentType:"image/webp",upsert:false});if(up.error)throw up.error;message("サムネイル画像を生成しています…");const thumbnailFile=await createThumbnail(optimizedFile);thumbnailPath=`${user.id}/${character.public_id}/${timestamp}-thumb.webp`;const thumbnailUp=await supabase.storage.from(BUCKET).upload(thumbnailPath,thumbnailFile,{cacheControl:"86400",contentType:"image/webp",upsert:false});if(thumbnailUp.error)throw thumbnailUp.error;const publicUrl=supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;const publicThumbnailUrl=supabase.storage.from(BUCKET).getPublicUrl(thumbnailPath).data.publicUrl;if(!publicUrl||!publicThumbnailUrl)throw new Error("画像の公開URLを取得できませんでした。");const next=decoratedUrl(publicUrl);const previous=character.image_url,previousThumbnail=character.image_thumbnail_url||"";const result=await supabase.from("characters").update({image_url:next,image_thumbnail_url:publicThumbnailUrl}).eq("id",character.id).eq("owner_id",user.id);if(result.error)throw result.error;character.image_url=next;character.image_thumbnail_url=publicThumbnailUrl;await removeOwned(previous);await removeOwned(previousThumbnail);releaseObjectUrl();selectedFile=null;optimizedFile=null;$("#mobile-image-file").value="";syncView();message("画像とサムネイルを登録しました。","saved");}catch(error){console.error(error);if(thumbnailPath)await supabase.storage.from(BUCKET).remove([thumbnailPath]);if(path)await supabase.storage.from(BUCKET).remove([path]);message(error.message||"画像登録に失敗しました。","error");}finally{busy=false;syncDisabled();}}
-async function saveFocus(){if(!currentUrl())return;busy=true;syncDisabled();try{const next=decoratedUrl(currentUrl());const result=await supabase.from("characters").update({image_url:next}).eq("id",character.id).eq("owner_id",user.id);if(result.error)throw result.error;character.image_url=next;syncView();message("表示位置を保存しました。","saved");}catch(error){console.error(error);message("表示位置の保存に失敗しました。","error");}finally{busy=false;syncDisabled();}}
-function storagePath(url){const marker=`/storage/v1/object/public/${BUCKET}/`,i=String(url||"").indexOf(marker);if(i<0)return"";const encoded=String(url).slice(i+marker.length).split(/[?#]/)[0];try{return decodeURIComponent(encoded);}catch{return encoded;}}
-async function removeOwned(url){const path=storagePath(url);if(path&&path.startsWith(`${user.id}/`))await supabase.storage.from(BUCKET).remove([path]);}
-async function clearImage(){if(!character||(!currentUrl()&&!optimizedFile))return;if(!confirm("キャスト画像を解除しますか？"))return;busy=true;syncDisabled();try{const previous=currentUrl(),previousThumbnail=character.image_thumbnail_url||"";const result=await supabase.from("characters").update({image_url:"",image_thumbnail_url:null}).eq("id",character.id).eq("owner_id",user.id);if(result.error)throw result.error;character.image_url="";character.image_thumbnail_url=null;await removeOwned(previous);await removeOwned(previousThumbnail);releaseObjectUrl();selectedFile=null;optimizedFile=null;$("#mobile-image-file").value="";syncView();message("キャスト画像を解除しました。","saved");}catch(error){console.error(error);message("画像の解除に失敗しました。","error");}finally{busy=false;syncDisabled();}}
-function bind(){$("#mobile-image-open")?.addEventListener("click",open);$("#mobile-image-close")?.addEventListener("click",close);$("#mobile-image-dialog")?.addEventListener("cancel",e=>{e.preventDefault();close();});$("#mobile-image-file")?.addEventListener("change",selectFile);$("#mobile-image-upload")?.addEventListener("click",upload);$("#mobile-image-focus-save")?.addEventListener("click",saveFocus);$("#mobile-image-clear")?.addEventListener("click",clearImage);for(const id of ["#mobile-image-x","#mobile-image-y","#mobile-image-zoom"])$(id)?.addEventListener("input",syncOutputs);}
-async function init(){injectSection();injectDialog();bind();try{const context=await getMobileEditorContext();user=context.user;character=context.character;if(!user||!character)return;syncView();}catch(error){console.error(error);}}
-if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",init,{once:true});else init();
+function injectSection() {
+  if ($("#mobile-image-section")) return;
+  const snapshot = $("#mobile-snapshots-section"),
+    combo = $("#mobile-combos-section"),
+    outfit = $("#mobile-outfits-section"),
+    anchor = snapshot || combo || outfit;
+  if (!anchor) return;
+  const section = document.createElement("section");
+  section.id = "mobile-image-section";
+  section.className = "mobile-sheet-section mobile-sheet-section--image";
+  section.innerHTML = `<header><h2>09 キャスト画像</h2></header><div class="mobile-sheet-section__body"><button id="mobile-image-open" class="mobile-image-display" type="button" aria-haspopup="dialog"><img id="mobile-image-main" src="${PLACEHOLDER}" alt="キャスト画像"><span>タップして画像を編集</span></button></div>`;
+  anchor.after(section);
+}
+function injectDialog() {
+  if ($("#mobile-image-dialog")) return;
+  const d = document.createElement("dialog");
+  d.id = "mobile-image-dialog";
+  d.className = "mobile-editor-dialog mobile-image-dialog";
+  d.innerHTML = `<form method="dialog"><header class="mobile-editor-dialog__header mobile-editor-dialog__header--close-only"><button id="mobile-image-close" type="button">閉じる</button><strong>キャスト画像編集</strong></header><div class="mobile-editor-dialog__body"><div class="mobile-image-editor"><div class="mobile-image-preview"><img id="mobile-image-preview" src="${PLACEHOLDER}" alt="画像プレビュー"></div><label class="mobile-image-file">画像ファイルを選択<input id="mobile-image-file" type="file" accept="image/jpeg,image/png,image/webp"></label><button id="mobile-image-upload" type="button">画像を登録</button><section class="mobile-image-focus"><label><span>左右 <output id="mobile-image-x-value"></output></span><input id="mobile-image-x" type="range" min="0" max="100" step="5"></label><label><span>上下 <output id="mobile-image-y-value"></output></span><input id="mobile-image-y" type="range" min="0" max="100" step="5"></label><label><span>拡大率 <output id="mobile-image-zoom-value"></output></span><input id="mobile-image-zoom" type="range" min="100" max="200" step="5"></label><button id="mobile-image-focus-save" type="button">表示位置を保存</button></section><button id="mobile-image-clear" class="mobile-danger-action" type="button">画像を解除</button><p id="mobile-image-message" aria-live="polite"></p></div></div></form>`;
+  document.body.append(d);
+}
+function currentUrl() {
+  return character?.image_url || "";
+}
+function applyImage(img, url, x = getImageFocusX(url), y = getImageFocusY(url), zoom = getImageZoom(url)) {
+  if (!img) return;
+  img.src = url || PLACEHOLDER;
+  img.style.objectPosition = `${x}% ${y}%`;
+  img.style.setProperty("--tnx-image-scale", String(zoom / 100));
+  img.style.setProperty("--tnx-image-origin", `${x}% ${y}%`);
+}
+function syncView() {
+  const url = currentUrl();
+  applyImage($("#mobile-image-main"), url);
+  applyImage($("#mobile-image-preview"), url);
+  const x = getImageFocusX(url),
+    y = getImageFocusY(url),
+    z = getImageZoom(url);
+  $("#mobile-image-x").value = x;
+  $("#mobile-image-y").value = y;
+  $("#mobile-image-zoom").value = z;
+  syncOutputs();
+  syncDisabled();
+}
+function syncOutputs() {
+  const x = Number($("#mobile-image-x")?.value || 50),
+    y = Number($("#mobile-image-y")?.value || 0),
+    z = Number($("#mobile-image-zoom")?.value || 100);
+  $("#mobile-image-x-value").textContent = `${x}%`;
+  $("#mobile-image-y-value").textContent = `${y}%`;
+  $("#mobile-image-zoom-value").textContent = `${z}%`;
+  const src = objectUrl || currentUrl();
+  applyImage($("#mobile-image-preview"), src, x, y, z);
+}
+function syncDisabled() {
+  const has = Boolean(currentUrl() || optimizedFile);
+  for (const id of ["#mobile-image-x", "#mobile-image-y", "#mobile-image-zoom", "#mobile-image-focus-save"])
+    if ($(id)) $(id).disabled = busy || !has;
+  if ($("#mobile-image-upload")) $("#mobile-image-upload").disabled = busy || !optimizedFile;
+  if ($("#mobile-image-file")) $("#mobile-image-file").disabled = busy;
+  if ($("#mobile-image-clear")) $("#mobile-image-clear").disabled = busy || (!currentUrl() && !optimizedFile);
+}
+function message(text, state = "") {
+  const p = $("#mobile-image-message");
+  if (p) {
+    p.textContent = text;
+    p.dataset.state = state;
+  }
+}
+function open() {
+  syncView();
+  message("");
+  $("#mobile-image-dialog")?.showModal();
+}
+function close() {
+  releaseObjectUrl();
+  selectedFile = null;
+  optimizedFile = null;
+  $("#mobile-image-file").value = "";
+  syncView();
+  $("#mobile-image-dialog")?.close();
+}
+function releaseObjectUrl() {
+  if (objectUrl) {
+    URL.revokeObjectURL(objectUrl);
+    objectUrl = "";
+  }
+}
+async function selectFile() {
+  releaseObjectUrl();
+  selectedFile = $("#mobile-image-file")?.files?.[0] || null;
+  optimizedFile = null;
+  if (!selectedFile) {
+    syncView();
+    return;
+  }
+  if (!["image/jpeg", "image/png", "image/webp"].includes(selectedFile.type)) {
+    message("JPEG・PNG・WEBP形式のみ登録できます。", "error");
+    return;
+  }
+  if (selectedFile.size > MAX_SOURCE) {
+    message("画像は20MB以下にしてください。", "error");
+    return;
+  }
+  busy = true;
+  syncDisabled();
+  message("画像を最適化しています…");
+  try {
+    optimizedFile = await optimize(selectedFile);
+    objectUrl = URL.createObjectURL(optimizedFile);
+    applyImage($("#mobile-image-preview"), objectUrl, 50, 0, 100);
+    $("#mobile-image-x").value = 50;
+    $("#mobile-image-y").value = 0;
+    $("#mobile-image-zoom").value = 100;
+    syncOutputs();
+    message("登録準備ができました。", "saved");
+  } catch (error) {
+    console.error(error);
+    message(error.message || "画像処理に失敗しました。", "error");
+  } finally {
+    busy = false;
+    syncDisabled();
+  }
+}
+async function optimize(file) {
+  const bitmap = await createImageBitmap(file);
+  try {
+    const scale = Math.min(1, MAX_EDGE / Math.max(bitmap.width, bitmap.height));
+    const width = Math.max(1, Math.round(bitmap.width * scale)),
+      height = Math.max(1, Math.round(bitmap.height * scale));
+    const canvas = document.createElement("canvas");
+    canvas.width = width;
+    canvas.height = height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(bitmap, 0, 0, width, height);
+    for (const quality of [0.86, 0.78, 0.7, 0.62, 0.54]) {
+      const blob = await new Promise((resolve, reject) =>
+        canvas.toBlob(v => (v ? resolve(v) : reject(new Error("画像変換に失敗しました。"))), "image/webp", quality)
+      );
+      if (blob.size <= MAX_OUTPUT) return new File([blob], `${Date.now()}.webp`, { type: "image/webp" });
+    }
+    throw new Error("画像を1MB以下に圧縮できませんでした。");
+  } finally {
+    bitmap.close();
+  }
+}
+async function createThumbnail(file, { maxEdge = 420, targetSize = 40 * 1024 } = {}) {
+  const bitmap = await createImageBitmap(file);
+  try {
+    const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
+    let width = Math.max(1, Math.round(bitmap.width * scale)),
+      height = Math.max(1, Math.round(bitmap.height * scale));
+    let smallest = null,
+      target = null;
+    for (let pass = 0; pass < 6; pass += 1) {
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) throw new Error("サムネイル用Canvasを作成できませんでした。");
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = "high";
+      ctx.drawImage(bitmap, 0, 0, width, height);
+      for (const quality of [0.82, 0.74, 0.66, 0.58, 0.5, 0.42]) {
+        const blob = await new Promise((resolve, reject) =>
+          canvas.toBlob(
+            value => (value ? resolve(value) : reject(new Error("サムネイル変換に失敗しました。"))),
+            "image/webp",
+            quality
+          )
+        );
+        const candidate = { blob, width, height };
+        if (!smallest || blob.size < smallest.blob.size) smallest = candidate;
+        if (blob.size <= targetSize) {
+          target = candidate;
+          break;
+        }
+      }
+      if (target) break;
+      const longEdge = Math.max(width, height);
+      if (longEdge <= 120) break;
+      const scalePass = Math.max(120 / longEdge, 0.86);
+      width = Math.max(1, Math.round(width * scalePass));
+      height = Math.max(1, Math.round(height * scalePass));
+    }
+    const selected = target || smallest;
+    if (!selected || selected.blob.size > 200 * 1024) throw new Error("サムネイルを十分に圧縮できませんでした。");
+    return new File([selected.blob], [`${Date.now()}-thumb.webp`], { type: "image/webp" });
+  } finally {
+    bitmap.close();
+  }
+}
+function decoratedUrl(base) {
+  return setImageZoom(
+    setImageFocusY(setImageFocusX(base, $("#mobile-image-x").value), $("#mobile-image-y").value),
+    $("#mobile-image-zoom").value
+  );
+}
+async function upload() {
+  if (!optimizedFile || !character || !user) return;
+  busy = true;
+  syncDisabled();
+  message("画像を登録しています…");
+  let path = "",
+    thumbnailPath = "";
+  try {
+    const timestamp = Date.now();
+    path = `${user.id}/${character.public_id}/${timestamp}.webp`;
+    const up = await supabase.storage
+      .from(BUCKET)
+      .upload(path, optimizedFile, { cacheControl: "86400", contentType: "image/webp", upsert: false });
+    if (up.error) throw up.error;
+    message("サムネイル画像を生成しています…");
+    const thumbnailFile = await createThumbnail(optimizedFile);
+    thumbnailPath = `${user.id}/${character.public_id}/${timestamp}-thumb.webp`;
+    const thumbnailUp = await supabase.storage
+      .from(BUCKET)
+      .upload(thumbnailPath, thumbnailFile, { cacheControl: "86400", contentType: "image/webp", upsert: false });
+    if (thumbnailUp.error) throw thumbnailUp.error;
+    const publicUrl = supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+    const publicThumbnailUrl = supabase.storage.from(BUCKET).getPublicUrl(thumbnailPath).data.publicUrl;
+    if (!publicUrl || !publicThumbnailUrl) throw new Error("画像の公開URLを取得できませんでした。");
+    const next = decoratedUrl(publicUrl);
+    const previous = character.image_url,
+      previousThumbnail = character.image_thumbnail_url || "";
+    const result = await supabase
+      .from("characters")
+      .update({ image_url: next, image_thumbnail_url: publicThumbnailUrl })
+      .eq("id", character.id)
+      .eq("owner_id", user.id);
+    if (result.error) throw result.error;
+    character.image_url = next;
+    character.image_thumbnail_url = publicThumbnailUrl;
+    await removeOwned(previous);
+    await removeOwned(previousThumbnail);
+    releaseObjectUrl();
+    selectedFile = null;
+    optimizedFile = null;
+    $("#mobile-image-file").value = "";
+    syncView();
+    message("画像とサムネイルを登録しました。", "saved");
+  } catch (error) {
+    console.error(error);
+    if (thumbnailPath) await supabase.storage.from(BUCKET).remove([thumbnailPath]);
+    if (path) await supabase.storage.from(BUCKET).remove([path]);
+    message(error.message || "画像登録に失敗しました。", "error");
+  } finally {
+    busy = false;
+    syncDisabled();
+  }
+}
+async function saveFocus() {
+  if (!currentUrl()) return;
+  busy = true;
+  syncDisabled();
+  try {
+    const next = decoratedUrl(currentUrl());
+    const result = await supabase
+      .from("characters")
+      .update({ image_url: next })
+      .eq("id", character.id)
+      .eq("owner_id", user.id);
+    if (result.error) throw result.error;
+    character.image_url = next;
+    syncView();
+    message("表示位置を保存しました。", "saved");
+  } catch (error) {
+    console.error(error);
+    message("表示位置の保存に失敗しました。", "error");
+  } finally {
+    busy = false;
+    syncDisabled();
+  }
+}
+function storagePath(url) {
+  const marker = `/storage/v1/object/public/${BUCKET}/`,
+    i = String(url || "").indexOf(marker);
+  if (i < 0) return "";
+  const encoded = String(url)
+    .slice(i + marker.length)
+    .split(/[?#]/)[0];
+  try {
+    return decodeURIComponent(encoded);
+  } catch {
+    return encoded;
+  }
+}
+async function removeOwned(url) {
+  const path = storagePath(url);
+  if (path && path.startsWith(`${user.id}/`)) await supabase.storage.from(BUCKET).remove([path]);
+}
+async function clearImage() {
+  if (!character || (!currentUrl() && !optimizedFile)) return;
+  if (!confirm("キャスト画像を解除しますか？")) return;
+  busy = true;
+  syncDisabled();
+  try {
+    const previous = currentUrl(),
+      previousThumbnail = character.image_thumbnail_url || "";
+    const result = await supabase
+      .from("characters")
+      .update({ image_url: "", image_thumbnail_url: null })
+      .eq("id", character.id)
+      .eq("owner_id", user.id);
+    if (result.error) throw result.error;
+    character.image_url = "";
+    character.image_thumbnail_url = null;
+    await removeOwned(previous);
+    await removeOwned(previousThumbnail);
+    releaseObjectUrl();
+    selectedFile = null;
+    optimizedFile = null;
+    $("#mobile-image-file").value = "";
+    syncView();
+    message("キャスト画像を解除しました。", "saved");
+  } catch (error) {
+    console.error(error);
+    message("画像の解除に失敗しました。", "error");
+  } finally {
+    busy = false;
+    syncDisabled();
+  }
+}
+function bind() {
+  $("#mobile-image-open")?.addEventListener("click", open);
+  $("#mobile-image-close")?.addEventListener("click", close);
+  $("#mobile-image-dialog")?.addEventListener("cancel", e => {
+    e.preventDefault();
+    close();
+  });
+  $("#mobile-image-file")?.addEventListener("change", selectFile);
+  $("#mobile-image-upload")?.addEventListener("click", upload);
+  $("#mobile-image-focus-save")?.addEventListener("click", saveFocus);
+  $("#mobile-image-clear")?.addEventListener("click", clearImage);
+  for (const id of ["#mobile-image-x", "#mobile-image-y", "#mobile-image-zoom"])
+    $(id)?.addEventListener("input", syncOutputs);
+}
+async function init() {
+  injectSection();
+  injectDialog();
+  bind();
+  try {
+    const context = await getMobileEditorContext();
+    user = context.user;
+    character = context.character;
+    if (!user || !character) return;
+    syncView();
+  } catch (error) {
+    console.error(error);
+  }
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init, { once: true });
+else init();

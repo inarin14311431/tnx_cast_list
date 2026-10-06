@@ -1,3 +1,4 @@
+import { escapeHtml } from "./dom-escape.js?v=2";
 const FALLBACK_MESSAGE = "データベースへの接続に失敗しました。しばらくしてからもう一度お試しください。";
 
 /**
@@ -47,6 +48,3 @@ export function renderErrorState(container, { message, onRetry } = {}) {
   container.querySelector("[data-error-state-retry]")?.addEventListener("click", () => { onRetry?.(); });
 }
 
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
-}

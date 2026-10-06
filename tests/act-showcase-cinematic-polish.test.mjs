@@ -17,7 +17,7 @@ test("current dynamic publisher stores trailer and not legacy intro", async () =
     read("js/showcase-generator-loader.js"),
     read("js/showcase-dynamic-publish-v3.js")
   ]);
-  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=4/);
+  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=5/);
   assert.match(publisher, /version: 2/);
   assert.match(publisher, /trailer: trailerBody \? \{ title: "アクトトレーラー", body: trailerBody \} : null/);
   assert.doesNotMatch(publisher, /\n\s*intro:/);
@@ -72,12 +72,25 @@ test("act title uses cinematic reveal while multiline fitting is owned by cinema
   assert.match(css, /act-title--logo\.showcase-fit-title\{[\s\S]*white-space:normal/);
 });
 
-test("SYSTEM ACCESS uses a dedicated cinematic access treatment", async () => {
-  const [enhancer, css] = await Promise.all([
+test("ACT FILE ACCESS uses a dedicated cinematic access treatment", async () => {
+  const [enhancer, builder, layout, css] = await Promise.all([
     read("js/act-showcase-cinematic-enhancer.js"),
+    read("js/act-showcase-neotokyo.js"),
+    read("js/act-showcase-cinematic-layout-v2.js"),
     read("css-next/pages/act-showcase-cinematic.css")
   ]);
-  assert.match(enhancer, /ACT FILE \/\/ ACCESS/);
+  // The builder emits the final access copy and NODE label itself; the enhancers no longer overwrite them.
+  assert.match(builder, /eyebrow: "01 \/\/ N◎VA MUNICIPAL DATABASE"/);
+  assert.match(builder, /title: "ACT FILE \/\/ ACCESS"/);
+  assert.match(builder, /sub: "ESTABLISHING PUBLIC SESSION"/);
+  assert.match(builder, /textNode\("span", "", "NODE \/\/ TOKYO N◎VA"\)/);
+  assert.match(builder, /title\.textContent = "ACT FILE \/\/ ACCESS"/);
+  assert.match(builder, /sub\.textContent = "CONNECTING TO PUBLIC ACT FILE…"/);
+  assert.match(builder, /setProgress\(state, 5, "ACT FILE ACCESS"\)/);
+  assert.doesNotMatch(builder, /SYSTEM ACCESS|公開アクトファイルへ接続中|NODE \/\/ NEOTOKYO/);
+  assert.doesNotMatch(enhancer, /ACT FILE \/\/ ACCESS|ESTABLISHING PUBLIC SESSION|opening-title|opening-sub/);
+  assert.doesNotMatch(layout, /normalizeNodeLabel|NEOTOKYO/);
+  assert.match(enhancer, /is-cinematic-access/);
   assert.match(enhancer, /PUBLIC ACCESS \/\/ AUTHORIZED/);
   assert.match(css, /cinematic-aperture/);
   assert.match(css, /cinematic-access-scan/);

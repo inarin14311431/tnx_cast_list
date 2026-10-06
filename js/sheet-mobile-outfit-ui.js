@@ -8,10 +8,7 @@ import {
   parseDefense,
   normalizeNumber
 } from "./sheet-mobile-outfit-model.js?v=10";
-
-const esc = value => String(value ?? "").replace(/[&<>"']/g, char => ({
-  "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
-}[char]));
+import { escapeHtml as esc } from "./dom-escape.js?v=2";
 
 export function ensureOutfitToolbar() {
   const body = document.querySelector("#mobile-outfits-section .mobile-sheet-section__body");

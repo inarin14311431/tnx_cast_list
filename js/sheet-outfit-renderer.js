@@ -1,4 +1,4 @@
-import { escapeHtml as esc } from "./dom-escape.js?v=1";
+import { escapeHtml as esc } from "./dom-escape.js?v=2";
 const OUTFIT_LABELS = Object.freeze({
   weapon: "武器",
   armor: "防具",

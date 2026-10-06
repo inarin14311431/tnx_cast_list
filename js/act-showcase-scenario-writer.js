@@ -42,7 +42,6 @@ function hasStructuralElementMutation(records) {
 function syncCredits() {
   if (!scenarioWriterName) return;
   syncOpeningCredit();
-  syncPosterCredit();
   syncTitleCredit();
   syncSummaryCredit();
 }
@@ -58,24 +57,6 @@ function syncOpeningCredit() {
   credit.textContent = `SCENARIO WRITER // ${scenarioWriterName}`;
   credit.hidden = false;
   ruler.after(credit);
-}
-
-function syncPosterCredit() {
-  const table = document.querySelector(".poster-v2-credit-table");
-  if (!table || table.querySelector('[data-scenario-writer-credit="poster"]')) return;
-  const rows = [...table.querySelectorAll(".poster-v2-credit-row")];
-  const ruler = rows.find(row => text(row.querySelector("span")?.textContent).toUpperCase() === "RULER");
-  if (!ruler) return;
-
-  const row = document.createElement("div");
-  row.className = "poster-v2-credit-row";
-  row.dataset.scenarioWriterCredit = "poster";
-  const label = document.createElement("span");
-  label.textContent = "SCENARIO WRITER";
-  const value = document.createElement("strong");
-  value.textContent = scenarioWriterName;
-  row.append(label, value);
-  ruler.after(row);
 }
 
 function syncTitleCredit() {

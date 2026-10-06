@@ -5,10 +5,11 @@ import { readFileSync } from "node:fs";
 const entry = readFileSync(new URL("../css-next/pages/act-showcase-entry.css", import.meta.url), "utf8");
 const bootstrap = readFileSync(new URL("../js/act-showcase-bootstrap.js", import.meta.url), "utf8");
 const polish = readFileSync(new URL("../js/act-showcase-cinematic-polish.js", import.meta.url), "utf8");
+const enhancer = readFileSync(new URL("../js/act-showcase-finale-enhancer.js", import.meta.url), "utf8");
 const css = readFileSync(new URL("../css-next/pages/act-showcase-cinematic-readability.css", import.meta.url), "utf8");
 
 test("cinematic readability and polish keep their explicit entry order", () => {
-  assert.match(entry, /act-showcase-cinematic-readability\.css\?v=20260908a/);
+  assert.match(entry, /act-showcase-cinematic-readability\.css\?v=20260908b/);
   assert.match(bootstrap, /act-showcase-cinematic-polish\.js\?v=20260910b/);
   assert.ok(entry.indexOf("act-showcase-finale.css") < entry.indexOf("act-showcase-cinematic-readability.css"));
   assert.ok(bootstrap.indexOf("act-showcase-cinematic-polish.js") < bootstrap.indexOf("act-showcase-page.js"));
@@ -32,6 +33,18 @@ test("act titles and cast names use length-aware fitting on desktop", () => {
   assert.match(css, /#opening-act-name\.showcase-fit-title/);
   assert.match(css, /poster-v2-name\.showcase-fit-cast-name/);
   assert.match(css, /data-name-fit="xlong"/);
+});
+
+test("cinematic-polish's typography loop leaves the NeoTokyo act title to finale-enhancer's synchronous fit", () => {
+  // js/act-showcase-finale-enhancer.js's decorateTitle() sets .neotokyo-sequence__act-title's dataset.fit
+  // synchronously inside its own MutationObserver callback, so the classification is already final on the
+  // very first frame the title becomes visible (see tests/e2e/act-showcase-title-render-order.spec.js).
+  // cinematic-polish.js's own typography pass is requestAnimationFrame-debounced and would settle one
+  // frame later, briefly leaving dataset.fit unset on that first visible frame, so it must not also target
+  // this element (classify()/fit()'s "title" classification thresholds themselves stay shared/duplicated
+  // between the two files intentionally: see docs/archive/CURRENT_STATE_20260925.md).
+  assert.doesNotMatch(polish, /intro\.querySelectorAll\("\.neotokyo-sequence__act-title"\)/);
+  assert.match(enhancer, /title\.dataset\.fit = classifyTitleFit\(titleText\)/);
 });
 
 test("final ACT READY screen exposes the prominent destiny gate control", () => {

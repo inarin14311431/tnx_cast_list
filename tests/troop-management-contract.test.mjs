@@ -41,7 +41,7 @@ test("troop abilities use four compact two-digit pairs followed by CS", () => {
   const js = read("js/troop.js");
   const layout = read("js/troop-layout-refine.js");
   const css = read("css-next/pages/troop-screen.css");
-  assert.match(html, /troop\.js\?v=6/);
+  assert.match(html, /troop\.js\?v=7/);
   assert.match(js, /refreshTroopAbilityPairs\("#troop-ability-preview", "#troop-level"\)/);
   assert.match(js, /refreshTroopAbilityPairs\("#troop-abilities-view", "#troop-level-view"\)/);
   assert.doesNotMatch(layout, /installStylesheet|troop-density-v3\.css/);
@@ -216,7 +216,7 @@ test("cast troop modal uses editor section colors and compact CS pairs", () => {
   const css = read("css-next/pages/cast-troop-modal.css");
   assert.match(castHtml, /cast-entry\.css(?:\?v=\d+)?/);
   assert.match(castEntry, /cast-troop-modal\.css\?v=5[^\n]*layer\(cast-troop-modal\)/);
-  assert.match(castHtml, /cast-troops-link\.js\?v=8/);
+  assert.match(castHtml, /cast-troops-link\.js\?v=9/);
   assert.match(castHtml, /troop-combo-copy\.js\?v=2/);
   assert.match(cast, /cast-troop-block--abilities/);
   assert.match(cast, /cast-troop-block--combos/);

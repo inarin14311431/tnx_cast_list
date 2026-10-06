@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=4";
+import { requireAuth } from "./auth-state.js?v=5";
+import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=2";
 
 const MAX_CASTS = 6;
 const RESTORE_PARAM = "edit";
@@ -359,10 +360,3 @@ function setRestoreStatus(message, state = "") {
   restoreStatus.className = `generator-status${state ? ` is-${state}` : ""}`;
 }
 
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[character]));
-}
-
-function escapeAttribute(value) {
-  return String(value ?? "").replace(/[&<>'\"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '\"': "&quot;" }[character]));
-}

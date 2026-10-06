@@ -1,11 +1,12 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { compactSource } from "./helpers/compact-source.mjs";
 import { readFile } from "node:fs/promises";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
 const castViewMode = await read("js/cast-view-mode.js");
-const mobileExp = await read("js/sheet-mobile-header-exp.js");
+const mobileExp = compactSource(await read("js/sheet-mobile-header-exp.js"));
 const troopCombo = await read("js/troop-combo-copy.js");
 
 test("cast mobile readiness uses the mobile render event", () => {

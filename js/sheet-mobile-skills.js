@@ -1,11 +1,12 @@
 import { supabase } from "./supabase-client.js";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=1";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
 import { moveAdjacentRow } from "./sheet-row-collection-state.js?v=2";
 import { GENERAL_MOBILE_ORDER, MUTABLE_GENERAL_PREFIXES } from "./general-skill-catalog.js?v=2";
 import { normalizeStyleSkillRow } from "./sheet-mobile-style-normalizer.js?v=1";
+import { escapeHtml as esc } from "./dom-escape.js?v=2";
 
 const $ = selector => document.querySelector(selector);
-const esc = value => String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+
 const num = value => Number(value || 0);
 const uid = prefix => `${prefix}-${crypto.randomUUID()}`;
 const SUITS = [["reason","♠","♤"],["passion","♣","♧"],["life","♥","♡"],["mundane","♦","♢"]];

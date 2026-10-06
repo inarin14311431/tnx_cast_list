@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { STYLE_COLORS } from "./style-colors.js";
+import { escapeHtml as esc, escapeAttribute as escAttr } from "./dom-escape.js?v=2";
 
 const MAX_GUESTS = 12;
 const IMAGE_BUCKET = "character-images";
@@ -306,7 +307,5 @@ function downloadPreviewHtml(source) {
 
 function normalizeSlug(value) { return String(value || "").normalize("NFKC").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 64); }
 function setStatus(message, state = "") { if (!status) return; status.textContent = message; status.className = `generator-status${state ? ` is-${state}` : ""}`; }
-function esc(value) { return String(value ?? "").replace(/[&<>]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[char])); }
-function escAttr(value) { return String(value ?? "").replace(/[&<>'"]/g, char => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[char])); }
 
 window.__SHOWCASE_GUEST_RUNTIME__ = Object.freeze({ serializeGuests, loadForCurrentSlug });

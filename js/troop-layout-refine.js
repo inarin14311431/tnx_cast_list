@@ -1,4 +1,5 @@
 import { GENERAL_MASTER_ROWS, initialGeneralSkillSuit, STARRED_GENERAL_NAMES } from "./general-skill-catalog.js?v=2";
+import { escapeHtml, escapeAttribute as escapeAttr } from "./dom-escape.js?v=2";
 
 const ABILITIES = ["reason", "passion", "life", "mundane"];
 const SUITS = {
@@ -198,5 +199,4 @@ function canonicalGeneralName(name) {
 function checked(row, key) { return Boolean(row.querySelector(`[data-suit="${key}"]`)?.checked); }
 function rowValue(row, field) { return String(row.querySelector(`[data-field="${field}"]`)?.value || "").trim(); }
 function rowInt(row, field) { return Math.max(0, Number.parseInt(rowValue(row, field) || "0", 10) || 0); }
-function escapeHtml(value) { return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])); }
-function escapeAttr(value) { return escapeHtml(value); }
+

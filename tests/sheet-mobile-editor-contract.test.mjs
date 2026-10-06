@@ -1,13 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { compactSource } from "./helpers/compact-source.mjs";
 import { readFile } from "node:fs/promises";
 
 const html = await readFile(new URL("../sheet-mobile.html", import.meta.url), "utf8");
 const profileUi = await readFile(new URL("../js/sheet-mobile-profile.js", import.meta.url), "utf8");
-const style = await readFile(new URL("../js/sheet-mobile-style.js", import.meta.url), "utf8");
+const style = compactSource(await readFile(new URL("../js/sheet-mobile-style.js", import.meta.url), "utf8"));
 const outfit = await readFile(new URL("../js/sheet-mobile-outfit.js", import.meta.url), "utf8");
 const outfitUi = await readFile(new URL("../js/sheet-mobile-outfit-ui.js", import.meta.url), "utf8");
-const combos = await readFile(new URL("../js/sheet-mobile-combos.js", import.meta.url), "utf8");
+const combos = compactSource(await readFile(new URL("../js/sheet-mobile-combos.js", import.meta.url), "utf8"));
 const ui = await readFile(new URL("../js/sheet-mobile-ui.js", import.meta.url), "utf8");
 
 test("mobile editor keeps required sections and footer controls", () => {

@@ -1,8 +1,9 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { compactSource } from "./helpers/compact-source.mjs";
 
-const source = await readFile(new URL("../js/sheet-mobile-combos.js", import.meta.url), "utf8");
+const source = compactSource(await readFile(new URL("../js/sheet-mobile-combos.js", import.meta.url), "utf8"));
 
 test("mobile combos use shared editor context instead of independent auth lookup", () => {
   assert.match(source, /getMobileEditorContext/);

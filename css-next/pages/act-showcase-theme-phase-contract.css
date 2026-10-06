@@ -3,46 +3,13 @@
    specificity so theme ownership wins through normal cascade and animation-safe overrides. */
 
 /* ---------- Shared cinematic phase surfaces ---------- */
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence{
-  color:var(--showcase-text);
-  background:var(--showcase-bg);
-}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__shell{
-  color:var(--showcase-text);
-  background:
-    radial-gradient(circle at 18% 14%,rgba(var(--showcase-primary-rgb),.10),transparent 32%),
-    radial-gradient(circle at 86% 72%,rgba(var(--showcase-secondary-rgb),.08),transparent 34%),
-    var(--showcase-bg);
-}
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen{
   color:var(--showcase-text);
 }
 
 /* ---------- ACT TITLE / credit lockup ---------- */
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo{
-  border-color:rgba(var(--showcase-primary-rgb),.28);
-  background:
-    linear-gradient(135deg,rgba(var(--showcase-primary-rgb),.07),transparent 34%),
-    linear-gradient(315deg,rgba(var(--showcase-secondary-rgb),.07),transparent 36%),
-    rgba(var(--showcase-surface-rgb),.92);
-  box-shadow:0 28px 84px rgba(var(--showcase-bg-rgb),.30),inset 0 0 0 1px rgba(var(--showcase-primary-rgb),.05);
-}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__title-logo,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo{
-  color:var(--showcase-text);
-  background:linear-gradient(90deg,rgba(var(--showcase-primary-rgb),.055),rgba(var(--showcase-surface-rgb),.84) 35%,rgba(var(--showcase-secondary-rgb),.055));
-  border-color:rgba(var(--showcase-primary-rgb),.25);
-  text-shadow:3px 0 rgba(var(--showcase-primary-rgb),.20),-3px 0 rgba(var(--showcase-secondary-rgb),.16),0 12px 54px rgba(var(--showcase-bg-rgb),.30);
-}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta{
-  border-color:rgba(var(--showcase-primary-rgb),.22);
-  background:linear-gradient(90deg,rgba(var(--showcase-primary-rgb),.08),transparent 50%,rgba(var(--showcase-secondary-rgb),.06));
-  color:var(--showcase-muted);
-}
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta span:nth-child(2){color:var(--showcase-muted)}
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta .is-live{color:var(--showcase-tertiary)}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__rule{color:var(--showcase-muted)}
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__rule i{background:linear-gradient(90deg,var(--showcase-primary),rgba(var(--showcase-primary-rgb),.05));box-shadow:0 0 9px rgba(var(--showcase-primary-rgb),.18)}
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__rule i:last-child{background:linear-gradient(90deg,rgba(var(--showcase-secondary-rgb),.06),var(--showcase-secondary))}
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__rule span{color:var(--showcase-tertiary)}
@@ -52,9 +19,6 @@
   background:linear-gradient(90deg,rgba(var(--showcase-secondary-rgb),.09),rgba(var(--showcase-surface-rgb),.76));
   box-shadow:inset 0 0 0 1px rgba(var(--showcase-primary-rgb),.05);
 }
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-label{color:var(--showcase-secondary);text-shadow:none}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-name{color:var(--showcase-text);text-shadow:none}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-role{color:var(--showcase-muted)}
 
 /* ---------- ACT TRAILER: frame owns clipping, text owns scrolling ---------- */
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage.is-trailer-scroll{
@@ -82,9 +46,6 @@
   display:flex;
   flex-direction:column;
   box-sizing:border-box;
-  border-color:rgba(var(--showcase-primary-rgb),.34);
-  background:rgba(var(--showcase-surface-rgb),.94);
-  box-shadow:0 22px 64px rgba(var(--showcase-bg-rgb),.26),inset 0 0 0 1px rgba(var(--showcase-primary-rgb),.04);
 }
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__terminal-bar{
   flex:0 0 auto;
@@ -100,28 +61,12 @@
   overscroll-behavior:contain;
   scrollbar-gutter:stable;
   box-sizing:border-box;
-  color:var(--showcase-text);
-  background:rgba(var(--showcase-surface-rgb),.82);
-  border-color:rgba(var(--showcase-primary-rgb),.18);
 }
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout.is-terminal-readout:after{background:var(--showcase-primary);box-shadow:0 0 14px rgba(var(--showcase-primary-rgb),.26)}
 
 /* ---------- HANDOUT -> CAST ASSIGN / MATCH FOUND ---------- */
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__handout-panel,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__assign-panel,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked{
-  border-color:rgba(var(--showcase-primary-rgb),.30);
-  color:var(--showcase-text);
-  background:linear-gradient(145deg,rgba(var(--showcase-primary-rgb),.055),rgba(var(--showcase-surface-rgb),.94) 34%,rgba(var(--showcase-secondary-rgb),.045));
-  box-shadow:0 22px 68px rgba(var(--showcase-bg-rgb),.25),inset 0 0 0 1px rgba(var(--showcase-primary-rgb),.04);
-}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__assign-frame{border-color:rgba(var(--showcase-primary-rgb),.48);background:rgba(var(--showcase-surface-rgb),.88)}
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__assign-word{color:var(--showcase-primary);text-shadow:0 0 24px rgba(var(--showcase-primary-rgb),.18)}
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__assign-sub,
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__link-status{color:var(--showcase-muted)}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__link-bridge span,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__link-line{background:linear-gradient(90deg,var(--showcase-primary),var(--showcase-secondary))}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__link-pulse{border-color:var(--showcase-tertiary);box-shadow:0 0 18px rgba(var(--showcase-tertiary-rgb),.24)}
 
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked,
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__search--linked.is-found{
@@ -221,7 +166,7 @@
   box-shadow:0 16px 38px rgba(23,23,23,.08),inset 0 0 0 1px rgba(255,255,255,.46);
 }
 :root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-head{background:linear-gradient(100deg,rgba(47,143,183,.055),rgba(255,255,255,.98) 58%,rgba(143,49,91,.055));border-color:rgba(23,23,23,.20)}
-:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-credit{background:linear-gradient(90deg,rgba(143,49,91,.07),rgba(255,255,255,.88));border-color:rgba(143,49,91,.34)}
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-credit{border-color:rgba(143,49,91,.34)}
 :root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-name,
 :root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo,
 :root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-ready,

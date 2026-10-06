@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { withRequestTimeout } from "./async-timeout.js?v=1";
+import { escapeAttribute } from "./dom-escape.js?v=2";
 
 const preview = document.querySelector("#showcase-preview");
 const status = document.querySelector("#generator-status");
@@ -247,6 +248,3 @@ function normalizeSlug(value) {
   return String(value || "").normalize("NFKC").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 64);
 }
 
-function escapeAttribute(value) {
-  return String(value ?? "").replace(/[&<>'"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" }[character]));
-}

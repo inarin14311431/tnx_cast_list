@@ -59,6 +59,29 @@ test("selected cast handout follows the selected cast", async () => {
   assert.match(source, /createHandoutPanel\(\[cast\]\)/);
 });
 
+test("poster builds its final PUBLIC DATA bar and showcase3 grid directly, without a throwaway credits panel", async () => {
+  const [source, boardLayout] = await Promise.all([
+    read("js/act-showcase-page.js"),
+    read("js/act-showcase-board-layout.js")
+  ]);
+  // js/act-showcase-board-layout.js's polishBoard()/ensureActMeta() used to scrape RULER/KEY STYLE
+  // off a poster-v2-panel--credits panel a frame after this file built it, then delete that panel.
+  // This file now builds the final .poster-v2-act-meta bar and poster-v2-grid--showcase3 layout
+  // synchronously from `model`, so that throwaway panel and its DOM round-trip no longer exist.
+  assert.doesNotMatch(source, /function createCreditsPanel|createCreditsPanel\(model\)|poster-v2-credit-table/);
+  assert.match(source, /function createActMetaBar\(model\)/);
+  assert.match(source, /frame\.append\(createActMetaBar\(model\)\)/);
+  assert.match(source, /createActMetaCell\("RULER", model\.rulerName \|\| "—", "is-ruler"\)/);
+  assert.match(source, /createActMetaCell\("KEY STYLE", styles\.slice\(0, 3\)\.join\(" × "\) \|\| "—", "is-style"\)/);
+  assert.match(source, /el\("div", "poster-v2-grid poster-v2-grid--showcase3"\)/);
+  assert.doesNotMatch(source, /poster-v2-grid--4/);
+  // No poster-v2-panel--credits panel is ever created, so board-layout.js no longer reads or
+  // removes one; only the showcase3 normalization of other grids remains.
+  assert.doesNotMatch(boardLayout, /poster-v2-panel--credits|poster-v2-credit-row|readCreditRows|credits\.remove/);
+  assert.match(boardLayout, /ensureActMeta = frame =>/);
+  assert.match(boardLayout, /poster-v2-grid--showcase3/);
+});
+
 test("NeoTokyo final summary only exits through the explicit footer action", async () => {
   const source = await read("js/act-showcase-summary-advance-guard.js");
   assert.match(source, /neotokyo-sequence__screen--summary/);

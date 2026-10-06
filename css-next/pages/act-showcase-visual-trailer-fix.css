@@ -17,16 +17,11 @@ body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__st
 }
 
 body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer .neotokyo-sequence__readout{
-  flex:0 0 auto;
   height:auto;
-  min-height:0;
-  max-height:none;
-  overflow:visible;
 }
 
 body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__code{
   display:block;
-  margin-top:8px;
   color:#ff87d1;
   font:800 clamp(.5rem,.72vw,.68rem)/1.25 "Share Tech Mono",monospace;
   letter-spacing:.13em;

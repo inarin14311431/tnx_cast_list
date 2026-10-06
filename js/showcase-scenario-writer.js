@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=4";
+import { requireAuth } from "./auth-state.js?v=5";
+import { escapeHtml } from "./dom-escape.js?v=2";
 
 const field = mountScenarioWriterField();
 const preview = document.querySelector("#showcase-preview");
@@ -140,12 +141,3 @@ function normalizeSlug(value) {
     .slice(0, 64);
 }
 
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>"']/g, character => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    '"': "&quot;",
-    "'": "&#39;"
-  }[character]));
-}

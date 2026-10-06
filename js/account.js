@@ -1,8 +1,9 @@
 import { SITE_BASE_PATH } from "./config.js?v=2";
 import { supabase } from "./supabase-client.js";
-import { requireAuth, signOut } from "./auth-state.js?v=4";
+import { requireAuth, signOut } from "./auth-state.js?v=5";
 import { getStyleColor } from "./style-colors.js";
 import { withRequestTimeout } from "./async-timeout.js?v=1";
+import { escapeHtml } from "./dom-escape.js?v=2";
 import "./archive-id-code.js?v=1";
 const VISIBILITY_LABELS = {
   public: "公開 / PUBLIC",
@@ -361,6 +362,3 @@ function localeCompareJa(a, b) {
   return String(a ?? "").localeCompare(String(b ?? ""), "ja", { sensitivity: "base", numeric: true });
 }
 
-function escapeHtml(value) {
-  return String(value ?? "").replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
-}

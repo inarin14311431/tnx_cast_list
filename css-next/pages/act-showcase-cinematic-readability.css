@@ -29,7 +29,6 @@ body.showcase-neotokyo-title-paused .neotokyo-title-logo__rule i{box-shadow:0 0 
 .neotokyo-sequence__summary-cast-body h3.showcase-fit-cast-name[data-fit="xlong"]{font-size:clamp(.56rem,.78vw,.72rem);letter-spacing:-.035em}
 
 .neotokyo-sequence__footer{position:relative}
-body.showcase-neotokyo-finale-active .neotokyo-sequence__footer{grid-template-columns:minmax(160px,1fr) auto auto minmax(290px,360px);gap:16px;padding-top:11px}
 body.showcase-neotokyo-finale-active .neotokyo-sequence__footer>.neotokyo-sequence__advance{display:none}
 .neotokyo-finale__access-button{position:relative;display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;gap:4px 14px;align-items:center;min-width:290px;min-height:58px;padding:9px 18px 10px 22px;overflow:hidden;border:1px solid rgba(118,238,255,.62);border-left:3px solid #75f0ff;border-radius:0;background:linear-gradient(112deg,rgba(11,57,80,.96),rgba(16,21,51,.98) 55%,rgba(69,17,62,.94));clip-path:polygon(0 0,calc(100% - 18px) 0,100% 18px,100% 100%,18px 100%,0 calc(100% - 18px));color:#fff;text-align:left;cursor:pointer;appearance:none;box-shadow:0 0 0 1px rgba(255,255,255,.025),0 0 28px rgba(69,218,255,.11),inset 0 0 30px rgba(255,77,191,.035);transition:.2s ease transform,.2s ease border-color,.2s ease box-shadow}
 .neotokyo-finale__access-button:before{position:absolute;inset:0;content:"";background:linear-gradient(90deg,transparent 0 42%,rgba(119,240,255,.11) 49%,transparent 56%);transform:translateX(-120%);pointer-events:none;animation:neotokyo-access-scan 2.4s ease-in-out infinite}
@@ -50,7 +49,6 @@ body.showcase-neotokyo-finale-active .neotokyo-sequence__footer>.neotokyo-sequen
   body.showcase-poster-v2-ready .poster-v2-name.showcase-fit-cast-name{white-space:normal;text-wrap:balance}
   .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo.showcase-fit-title{font-size:clamp(1.6rem,8vw,3rem);white-space:normal;text-wrap:balance}
   .neotokyo-sequence__cast-detail h3.showcase-fit-cast-name{font-size:clamp(.85rem,4vw,1.2rem)}
-  body.showcase-neotokyo-finale-active .neotokyo-sequence__footer{grid-template-columns:1fr auto;gap:7px}
   .neotokyo-finale__access-button{grid-column:1/-1;grid-row:1;min-width:0;width:100%;min-height:44px}
 }
 @media(max-height:760px) and (min-width:761px){
