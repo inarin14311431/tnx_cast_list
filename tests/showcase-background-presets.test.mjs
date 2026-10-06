@@ -1,3 +1,4 @@
+import { actShowcaseCssEntry } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -7,7 +8,7 @@ const entryCss = readFileSync(new URL("../css-next/pages/showcase-entry.css", im
 const presets = readFileSync(new URL("../js/showcase-background-presets.js", import.meta.url), "utf8");
 const picker = readFileSync(new URL("../js/showcase-background-preset-picker.js", import.meta.url), "utf8");
 const page = readFileSync(new URL("../js/act-showcase-page.js", import.meta.url), "utf8");
-const showcaseEntry = readFileSync(new URL("../css-next/pages/act-showcase-entry.css", import.meta.url), "utf8");
+const showcaseEntry = actShowcaseCssEntry();
 const css = readFileSync(new URL("../css-next/pages/showcase-background-presets.css", import.meta.url), "utf8");
 
 test("generator exposes the canonical background preset picker wiring", () => {

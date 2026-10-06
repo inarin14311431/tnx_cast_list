@@ -1,13 +1,14 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const entry = readFileSync(new URL("../css-next/pages/act-showcase-entry.css", import.meta.url), "utf8");
+const entry = actShowcaseCssEntry();
 const bootstrap = readFileSync(new URL("../js/act-showcase-bootstrap.js", import.meta.url), "utf8");
 const generatorHtml = readFileSync(new URL("../showcase-generator.html", import.meta.url), "utf8");
 const board = readFileSync(new URL("../js/act-showcase-board-layout.js", import.meta.url), "utf8");
 const trailer = readFileSync(new URL("../js/showcase-trailer-multiline.js", import.meta.url), "utf8");
-const css = readFileSync(new URL("../css-next/pages/act-showcase-layout-polish.css", import.meta.url), "utf8");
+const css = actShowcaseCss("act-showcase-layout-polish");
 
 test("final layout polish loads after the previous cinematic readability layer", () => {
   assert.match(entry, /act-showcase-layout-polish\.css\?v=[^\"']+/);

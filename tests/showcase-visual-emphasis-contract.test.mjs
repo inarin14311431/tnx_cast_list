@@ -1,3 +1,4 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -5,8 +6,8 @@ import { readFile } from "node:fs/promises";
 const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
 const [emphasisCss, entryCss, cinematicHtml] = await Promise.all([
-  read("css-next/pages/act-showcase-visual-emphasis.css"),
-  read("css-next/pages/act-showcase-entry.css"),
+  actShowcaseCss("act-showcase-visual-emphasis"),
+  actShowcaseCssEntry(),
   read("act-showcase.html")
 ]);
 
@@ -33,5 +34,5 @@ test("visual emphasis is versioned as the final cinematic presentation layer", (
   const emphasis = entryCss.search(/act-showcase-visual-emphasis\.css\?v=[A-Za-z0-9._-]+/);
   assert.ok(legibility >= 0 && scene > legibility && emphasis > scene);
   assert.match(entryCss.trim().split("\n").at(-1), /act-showcase-visual-emphasis\.css\?v=[A-Za-z0-9._-]+/);
-  assert.match(cinematicHtml, /act-showcase-entry\.css\?v=[A-Za-z0-9._-]+/);
+  assert.match(cinematicHtml, /act-showcase-theme-scenes\.css\?v=[A-Za-z0-9._-]+/);
 });

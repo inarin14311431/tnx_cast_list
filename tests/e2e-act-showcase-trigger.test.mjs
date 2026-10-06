@@ -22,7 +22,7 @@ test("ci-act-showcase: runs for ACT SHOWCASE files and not for unrelated ones", 
   for (const file of [
     "act-showcase.html", "act-showcase-standard.html", "showcase-generator.html",
     "js/act-showcase-page.js", "js/showcase-background-presets.js", "js/public-showcase-service.js", "js/image-focus.js",
-    "css-next/pages/act-showcase-entry.css", "css-next/pages/showcase-generator.css",
+    "css-next/pages/act-showcase-core.css", "css-next/pages/showcase-generator.css",
     "assets/showcase/backgrounds/cyberspace.avif", "assets/placeholders/scan-failed.webp",
     "tests/e2e/act-showcase-contrast.spec.js", "tests/e2e/fixtures/act-showcase-data.js", "tests/e2e/test-suites.json",
     ".github/workflows/playwright.yml", "playwright.config.js", "scripts/e2e-changed-groups.mjs"
@@ -74,7 +74,7 @@ async function reachableFrom(entries) {
 
 test("ci-act-showcase triggerPaths cover every local file the ACT SHOWCASE pages load", async () => {
   const files = await reachableFrom(PAGES);
-  assert.ok(files.length > 40, `expected the dependency walk to find the page assets, found ${files.length}`);
+  assert.ok(files.length > 30, `expected the dependency walk to find the page assets, found ${files.length}`);
   const uncovered = files.filter(file => !matchesAny(group.triggerPaths, file));
   assert.deepEqual(uncovered, [], `files loaded by the ACT SHOWCASE pages but not in triggerPaths:\n${uncovered.join("\n")}`);
 });

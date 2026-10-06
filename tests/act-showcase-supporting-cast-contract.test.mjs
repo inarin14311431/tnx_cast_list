@@ -1,3 +1,4 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -30,7 +31,7 @@ test("guest database API only exposes guests for public showcases", async () => 
 
 test("public showcase loads supporting cast after canonical story layers through entries", async () => {
   const [entry, bootstrap] = await Promise.all([
-    read("css-next/pages/act-showcase-entry.css"),
+    actShowcaseCssEntry(),
     read("js/act-showcase-bootstrap.js")
   ]);
   const writingCss = entry.indexOf("act-showcase-writing-patterns.css");
@@ -44,7 +45,7 @@ test("public showcase loads supporting cast after canonical story layers through
 test("supporting cast shares public data access and preserves duplicate style distinction", async () => {
   const [js, css] = await Promise.all([
     read("js/act-showcase-supporting-cast.js"),
-    read("css-next/pages/act-showcase-supporting-cast.css")
+    actShowcaseCss("act-showcase-supporting-cast")
   ]);
   assert.match(js, /public-showcase-service\.js/);
   assert.match(js, /loadPublicShowcaseGuests/);

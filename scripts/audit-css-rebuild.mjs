@@ -98,13 +98,18 @@ for (const file of cssFiles) {
   const source = await readFile(file, "utf8");
   if (/!important\b/i.test(source)) violations.push(`${relative(file)}: !important is forbidden`);
 
-  const selectorOwners = new Map();
-  for (const { selector, context } of collectContextualSelectors(source)) {
-    const key = `${context}\u0000${selector}`;
-    if (selectorOwners.has(key)) {
-      const suffix = context ? ` in ${context}` : " at top level";
-      violations.push(`${relative(file)}: duplicate selector ${selector}${suffix}`);
-    } else selectorOwners.set(key, true);
+  // Bundled stylesheets (act-showcase-core/scenes/theme-scenes) keep each former file behind a
+  // "from:" boundary comment. Duplicates stay forbidden inside every original source; rules that
+  // repeat across sources are the cascade the bundling deliberately preserved unchanged.
+  for (const part of source.split(/\/\* ==== from: \S+ ==== \*\/\n/)) {
+    const selectorOwners = new Map();
+    for (const { selector, context } of collectContextualSelectors(part)) {
+      const key = `${context}\u0000${selector}`;
+      if (selectorOwners.has(key)) {
+        const suffix = context ? ` in ${context}` : " at top level";
+        violations.push(`${relative(file)}: duplicate selector ${selector}${suffix}`);
+      } else selectorOwners.set(key, true);
+    }
   }
 
   const contentKey = source.trim();

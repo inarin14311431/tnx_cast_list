@@ -17,16 +17,74 @@ const supporting = await read("js/act-showcase-supporting-cast.js");
 const service = await read("js/public-showcase-service.js");
 const layout = await read("js/act-showcase-cinematic-layout-v2.js");
 const polish = await read("js/act-showcase-cinematic-polish.js");
-const presentation = await read("css-next/pages/act-showcase-presentation-tuning.css");
-const cinematicCss = await read("css-next/pages/act-showcase-cinematic-v2.css");
-const entryCss = await read("css-next/pages/act-showcase-entry.css");
+
+// The page loads six bundled stylesheets in this order. core and scenes concatenate the former
+// per-file sources in cascade order, each behind a "from:" boundary comment.
+const expectedStyles = [
+  "act-showcase-core.css",
+  "act-showcase-scenes.css",
+  "act-showcase-theme-surface-system.css",
+  "act-showcase-theme-phase-contract.css",
+  "act-showcase-theme-legibility.css",
+  "act-showcase-theme-scenes.css"
+];
+const expectedSources = [
+  "act-showcase.css",
+  "act-showcase-poster-v2.css",
+  "act-showcase-cast-selector.css",
+  "act-showcase-neotokyo.css",
+  "act-showcase-neotokyo-linked.css",
+  "act-showcase-neotokyo-hierarchy.css",
+  "act-showcase-cinematic.css",
+  "act-showcase-ornament.css",
+  "act-showcase-ornament-plus.css",
+  "act-showcase-finale.css",
+  "act-showcase-cinematic-readability.css",
+  "act-showcase-layout-polish.css",
+  "act-showcase-story-flow.css",
+  "act-showcase-writing-patterns.css",
+  "act-showcase-supporting-cast.css",
+  "act-showcase-presentation-tuning.css",
+  "act-showcase-visual-trailer-fix.css",
+  "act-showcase-title-cyberpunk.css",
+  "act-showcase-cinematic-v2.css",
+  "act-showcase-cinematic-fit.css",
+  "act-showcase-top-background-only.css",
+  "act-showcase-followup-v1.css",
+  "act-showcase-final-trailer.css",
+  "act-showcase-handout-live-frame.css",
+  "act-showcase-theme-surface-system.css",
+  "act-showcase-theme-phase-contract.css",
+  "act-showcase-theme-legibility.css",
+  "act-showcase-theme-scene-contract.css",
+  "act-showcase-visual-emphasis.css"
+];
+const bundleText = await Promise.all(expectedStyles.map(name => read("css-next/pages/" + name)));
+const bundleSources = expectedStyles.flatMap((bundle, index) => {
+  const text = bundleText[index];
+  const marks = [...text.matchAll(/\/\* ==== from: (\S+) ==== \*\/\n/g)];
+  if (!marks.length) return [{ bundle, file: bundle, text }];
+  return marks.map((mark, at) => ({ bundle, file: mark[1], text: text.slice(mark.index + mark[0].length, marks[at + 1]?.index ?? text.length) }));
+});
+const sourceText = file => bundleSources.find(source => source.file === file)?.text ?? "";
+const presentation = sourceText("act-showcase-presentation-tuning.css");
+const cinematicCss = sourceText("act-showcase-cinematic-v2.css");
 
 const localStyles = [...html.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["']/gi)]
   .map(match => match[1])
   .filter(href => href.startsWith("./css-next/"));
-if (localStyles.length !== 1 || !/^\.\/css-next\/pages\/act-showcase-entry\.css(?:\?|$)/.test(localStyles[0] || "")) {
-  failures.push(`act-showcase.html must expose one local CSS entry, found: ${localStyles.join(", ") || "none"}`);
+const linkedStyles = localStyles.map(href => href.replace(/^\.\/css-next\/pages\//, "").split(/[?#]/, 1)[0]);
+if (linkedStyles.join("|") !== expectedStyles.join("|")) {
+  failures.push(`act-showcase.html must link the bundled stylesheets in order (${expectedStyles.join(", ")}), found: ${linkedStyles.join(", ") || "none"}`);
 }
+if (/@import/.test(html) || localStyles.some(href => !/\?v=[A-Za-z0-9._-]+$/.test(href))) {
+  failures.push("act-showcase.html stylesheets must be direct, versioned <link> tags (no @import)");
+}
+bundleText.forEach((text, index) => {
+  if (/@import|@charset/.test(text.replace(/\/\*[\s\S]*?\*\//g, ""))) {
+    failures.push(`${expectedStyles[index]} must not contain @import or @charset`);
+  }
+});
 
 const localScripts = [...html.matchAll(/<script\b([^>]*)\bsrc=["']([^"']+)["'][^>]*>/gi)]
   .filter(match => match[2].startsWith("./js/"));
@@ -37,11 +95,13 @@ if (localScripts.length === 1 && !/type=["']module["']/i.test(localScripts[0][1]
   failures.push("act-showcase bootstrap must be loaded as type=module");
 }
 
-const cssImports = [...entryCss.matchAll(/@import\s+["']([^"']+)["']/g)].map(match => match[1].split(/[?#]/, 1)[0]);
-if (!cssImports.length) failures.push("act-showcase-entry.css must own the page stylesheet import order");
-if (new Set(cssImports).size !== cssImports.length) failures.push("act-showcase-entry.css contains duplicate imports");
-if (!cssImports.some(value => value.endsWith("act-showcase-cinematic-v2.css"))) {
-  failures.push("act-showcase-entry.css must include the cinematic-v2 owner stylesheet");
+const cssImports = bundleSources.map(source => source.file);
+if (new Set(cssImports).size !== cssImports.length) failures.push("act-showcase stylesheet bundles contain duplicate sources");
+if (!cssImports.includes("act-showcase-cinematic-v2.css")) {
+  failures.push("act-showcase stylesheet bundles must include the cinematic-v2 owner source");
+}
+if (cssImports.join("|") !== expectedSources.join("|")) {
+  failures.push("act-showcase stylesheet sources must keep the cascade order: " + expectedSources.join(" > "));
 }
 
 const requiredBootstrapModules = [
@@ -116,4 +176,4 @@ if (failures.length) {
   process.exit(1);
 }
 
-console.log(`ACT showcase architecture audit passed: 1 CSS entry, 1 module bootstrap, ${cssImports.length} ordered CSS modules, centralized public data access, no retired browser API patches, and explicit title/trailer ownership.`);
+console.log(`ACT showcase architecture audit passed: ${expectedStyles.length} ordered CSS bundles (${cssImports.length} sources), 1 module bootstrap, centralized public data access, no retired browser API patches, and explicit title/trailer ownership.`);

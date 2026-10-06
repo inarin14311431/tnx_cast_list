@@ -1,3 +1,4 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -5,8 +6,8 @@ import { readFile } from "node:fs/promises";
 const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
 const [entryCss, emphasisCss] = await Promise.all([
-  read("css-next/pages/act-showcase-entry.css"),
-  read("css-next/pages/act-showcase-visual-emphasis.css")
+  actShowcaseCssEntry(),
+  actShowcaseCss("act-showcase-visual-emphasis")
 ]);
 
 test("ACT TRAILER uses one thin caret instead of a combined block glyph", () => {

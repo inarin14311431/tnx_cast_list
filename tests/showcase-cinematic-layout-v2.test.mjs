@@ -1,19 +1,20 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const html = await readFile(new URL("../act-showcase.html", import.meta.url), "utf8");
 const bootstrap = await readFile(new URL("../js/act-showcase-bootstrap.js", import.meta.url), "utf8");
-const entryCss = await readFile(new URL("../css-next/pages/act-showcase-entry.css", import.meta.url), "utf8");
+const entryCss = actShowcaseCssEntry();
 const loader = await readFile(new URL("../js/showcase-generator-loader.js", import.meta.url), "utf8");
 const subtitle = await readFile(new URL("../js/showcase-act-subtitle.js", import.meta.url), "utf8");
 const page = await readFile(new URL("../js/act-showcase-page.js", import.meta.url), "utf8");
 const cinematic = await readFile(new URL("../js/act-showcase-cinematic-layout-v2.js", import.meta.url), "utf8");
 const neotokyo = await readFile(new URL("../js/act-showcase-neotokyo.js", import.meta.url), "utf8");
-const css = await readFile(new URL("../css-next/pages/act-showcase-cinematic-v2.css", import.meta.url), "utf8");
-const neotokyoCss = await readFile(new URL("../css-next/pages/act-showcase-neotokyo.css", import.meta.url), "utf8");
-const presentation = await readFile(new URL("../css-next/pages/act-showcase-presentation-tuning.css", import.meta.url), "utf8");
-const emphasisCss = await readFile(new URL("../css-next/pages/act-showcase-visual-emphasis.css", import.meta.url), "utf8");
+const css = actShowcaseCss("act-showcase-cinematic-v2");
+const neotokyoCss = actShowcaseCss("act-showcase-neotokyo");
+const presentation = actShowcaseCss("act-showcase-presentation-tuning");
+const emphasisCss = actShowcaseCss("act-showcase-visual-emphasis");
 
 test("generator separates ACT title and subtitle before dynamic publishing", () => {
   const subtitleImport = loader.search(/import\("\.\/showcase-act-subtitle\.js\?v=\d+"\)/);
@@ -162,11 +163,12 @@ test("finished cinematic sequence does not schedule an automatic page scroll", (
   assert.doesNotMatch(cinematic, /setTimeout\([^\n]*2000/);
 });
 
-test("cinematic presentation is wired through one CSS entry and one module bootstrap", () => {
+test("cinematic presentation is wired through six bundled stylesheets and one module bootstrap", () => {
   const localCss = [...html.matchAll(/href="(\.\/css-next\/[^"]+)"/g)].map(match => match[1]);
   const localScripts = [...html.matchAll(/src="(\.\/js\/[^"]+)"/g)].map(match => match[1]);
-  assert.equal(localCss.length, 1);
-  assert.match(localCss[0], /^\.\/css-next\/pages\/act-showcase-entry\.css\?v=[A-Za-z0-9._-]+$/);
+  assert.equal(localCss.length, 6);
+  assert.match(localCss[0], /^\.\/css-next\/pages\/act-showcase-core\.css\?v=[A-Za-z0-9._-]+$/);
+  assert.match(localCss[5], /^\.\/css-next\/pages\/act-showcase-theme-scenes\.css\?v=[A-Za-z0-9._-]+$/);
   assert.equal(localScripts.length, 1);
   assert.match(localScripts[0], /^\.\/js\/act-showcase-bootstrap\.js\?v=[A-Za-z0-9._-]+$/);
   assert.match(entryCss, /act-showcase-cinematic-v2\.css\?v=[A-Za-z0-9._-]+/);

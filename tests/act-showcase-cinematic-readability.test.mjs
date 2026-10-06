@@ -1,15 +1,16 @@
+import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 
-const entry = readFileSync(new URL("../css-next/pages/act-showcase-entry.css", import.meta.url), "utf8");
+const entry = actShowcaseCssEntry();
 const bootstrap = readFileSync(new URL("../js/act-showcase-bootstrap.js", import.meta.url), "utf8");
 const polish = readFileSync(new URL("../js/act-showcase-cinematic-polish.js", import.meta.url), "utf8");
 const enhancer = readFileSync(new URL("../js/act-showcase-finale-enhancer.js", import.meta.url), "utf8");
-const css = readFileSync(new URL("../css-next/pages/act-showcase-cinematic-readability.css", import.meta.url), "utf8");
+const css = actShowcaseCss("act-showcase-cinematic-readability");
 
 test("cinematic readability and polish keep their explicit entry order", () => {
-  assert.match(entry, /act-showcase-cinematic-readability\.css\?v=20260908b/);
+  assert.match(entry, /act-showcase-cinematic-readability\.css\?v=[A-Za-z0-9._-]+/);
   assert.match(bootstrap, /act-showcase-cinematic-polish\.js\?v=20260910b/);
   assert.ok(entry.indexOf("act-showcase-finale.css") < entry.indexOf("act-showcase-cinematic-readability.css"));
   assert.ok(bootstrap.indexOf("act-showcase-cinematic-polish.js") < bootstrap.indexOf("act-showcase-page.js"));

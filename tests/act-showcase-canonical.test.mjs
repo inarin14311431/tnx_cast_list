@@ -1,16 +1,22 @@
+import { actShowcaseCssEntry } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("act showcase exposes one CSS entry and one module bootstrap", async () => {
+test("act showcase links the six bundled stylesheets in order and one module bootstrap", async () => {
   const [html, entry, bootstrap] = await Promise.all([
     read("act-showcase.html"),
-    read("css-next/pages/act-showcase-entry.css"),
+    actShowcaseCssEntry(),
     read("js/act-showcase-bootstrap.js")
   ]);
-  assert.match(html, /css-next\/pages\/act-showcase-entry\.css\?v=/);
+  assert.deepEqual(
+    [...html.matchAll(/<link rel="stylesheet" href="\.\/css-next\/pages\/([^"?]+)\?v=/g)].map(match => match[1]),
+    ["act-showcase-core.css", "act-showcase-scenes.css", "act-showcase-theme-surface-system.css",
+      "act-showcase-theme-phase-contract.css", "act-showcase-theme-legibility.css", "act-showcase-theme-scenes.css"]
+  );
+  assert.doesNotMatch(html, /@import|act-showcase-entry\.css/);
   assert.match(html, /js\/act-showcase-bootstrap\.js\?v=/);
   assert.match(entry, /act-showcase-cast-selector\.css/);
   assert.match(bootstrap, /act-showcase-summary-advance-guard\.js/);

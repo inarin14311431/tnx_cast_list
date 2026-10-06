@@ -1,3 +1,4 @@
+import { actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -141,7 +142,7 @@ test("ACT TRAILER readout lays the whole text out from the start and never chang
   assert.match(sequence, /readText\.data = characters\.slice\(0, index\)\.join\(""\)/);
   assert.match(sequence, /unreadText\.data = characters\.slice\(index\)\.join\(""\)/);
   assert.match(sequence, /delete target\.dataset\.typing/);
-  const emphasis = await read("css-next/pages/act-showcase-visual-emphasis.css");
+  const emphasis = await actShowcaseCss("act-showcase-visual-emphasis");
   // the unread part keeps its place in the layout (visibility, never display:none)
   assert.match(emphasis, /\.neotokyo-sequence__readout-unread\{\s*visibility:hidden;/);
   assert.doesNotMatch(emphasis, /readout-unread\{[^}]*display:none/);
@@ -150,7 +151,7 @@ test("ACT TRAILER readout lays the whole text out from the start and never chang
 });
 
 test("ACT TRAILER visual layer releases all nested height and overflow caps while page scrolling is active", async () => {
-  const emphasis = await read("css-next/pages/act-showcase-visual-emphasis.css");
+  const emphasis = await actShowcaseCss("act-showcase-visual-emphasis");
   assert.match(emphasis, /showcase-trailer-document-scroll[\s\S]*\.cinematic-intro\.neotokyo-sequence\{[\s\S]*position:relative[\s\S]*height:auto[\s\S]*overflow:visible/);
   assert.match(emphasis, /showcase-trailer-document-scroll[\s\S]*\.neotokyo-sequence__shell\{[\s\S]*height:auto[\s\S]*overflow:visible/);
   assert.match(emphasis, /showcase-trailer-document-scroll[\s\S]*\.neotokyo-sequence__stage\.is-trailer-scroll\{[\s\S]*overflow:visible/);
