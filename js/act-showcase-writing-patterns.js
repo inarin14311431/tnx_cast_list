@@ -167,14 +167,17 @@
   const armTrailerPattern = screen => {
     const readout = screen.querySelector(".neotokyo-sequence__readout");
     if (!readout || trailerObservers.has(readout)) return;
-    let timer = 0;
+    // The whole text is in the readout from the start (js/act-showcase-neotokyo.js splits it into read / unread
+    // spans), so the pattern is decided once, right away, before the first painted frame. Typing only moves text
+    // between the two spans, which leaves textContent unchanged, so later mutations do nothing unless the text changed.
+    let appliedText = null;
     const apply = () => {
-      window.clearTimeout(timer);
-      timer = window.setTimeout(() => {
-        const analysis = analyzeTrailer(readout.textContent);
-        screen.dataset.trailerPattern = analysis.pattern;
-        screen.style.setProperty("--trailer-lines", String(Math.max(1, analysis.lineCount)));
-      }, 160);
+      const text = readout.textContent;
+      if (text === appliedText) return;
+      appliedText = text;
+      const analysis = analyzeTrailer(text);
+      screen.dataset.trailerPattern = analysis.pattern;
+      screen.style.setProperty("--trailer-lines", String(Math.max(1, analysis.lineCount)));
     };
     const observer = new MutationObserver(apply);
     observer.observe(readout, { childList: true, subtree: true, characterData: true });
@@ -204,6 +207,8 @@
     && record.target.matches(".neotokyo-sequence__screen--linked");
   const observer = new MutationObserver(records => {
     if (!records.some(record => hasStructuralElementMutation(record) || hasLinkedScreenStateMutation(record))) return;
+    // a trailer screen gets its pattern in this microtask, before the entrance animation and the first frame
+    intro.querySelectorAll(".neotokyo-sequence__screen--trailer").forEach(armTrailerPattern);
     sync();
   });
   // Trailer typing has its own debounced observer above. The global observer only needs structural

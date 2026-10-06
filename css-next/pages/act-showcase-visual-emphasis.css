@@ -117,14 +117,20 @@
   scrollbar-gutter:auto;
 }
 
-/* ACT TRAILER caret: collapse the legacy block size and block glyph into one thin cursor. */
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout.is-terminal-readout:after{
+/* ACT TRAILER caret: collapse the legacy block size and block glyph into one thin cursor.
+   The readout is split into the part already read and the part still to come (js/act-showcase-neotokyo.js), so the
+   cursor belongs to the end of the read part. It is out of the text flow (absolute, at its static position): it takes
+   no inline room, so it can never change where a line breaks. */
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout.is-terminal-readout.neotokyo-sequence__readout--split:after{
+  content:none;
+}
+
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout.is-terminal-readout .neotokyo-sequence__readout-read:after{
   content:"";
-  display:inline-block;
+  position:absolute;
   width:2px;
   height:1.05em;
   margin-left:.22em;
-  vertical-align:-.14em;
   border:0;
   border-radius:1px;
   background:var(--showcase-primary);
@@ -134,6 +140,11 @@
   text-shadow:none;
   box-shadow:0 0 8px rgba(var(--showcase-primary-rgb),.42);
   animation:cinematic-cursor .82s steps(1,end) infinite;
+}
+
+/* The part still to come stays in the layout (so line breaks are final) but is not shown. */
+.neotokyo-sequence__readout-unread{
+  visibility:hidden;
 }
 
 /* Finale access gate: keep the traditional opening phrase as a deliberate two-line title. */

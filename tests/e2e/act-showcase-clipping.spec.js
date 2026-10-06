@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { ACT_SLUG, ACT_THEMES, installActShowcaseRoutes } from "./fixtures/act-showcase-data.js";
+import { ACT_SLUG, ACT_THEMES, installActShowcaseRoutes, showcaseData } from "./fixtures/act-showcase-data.js";
 
 // Content that used to be cut off or empty, in every theme (the fixture's 2nd cast has no image, so the
 // "SCAN FAILED" placeholder is used):
@@ -91,4 +91,45 @@ for (const theme of ACT_THEMES) {
     expect(code.inside).toBe(true);
     expect(code.text).toMatch(/^VISUAL TRACE \/\/ NX-[0-9A-F]{4}-[0-9A-F]{4} \/\/ NODE:PUBLIC$/);
   });
+}
+
+// A long English act title must stay inside the title frame and the screen on a phone (390 and 444 px wide).
+// The title screen's grid column used to grow to its widest credit line and push the title block to the right,
+// so the second line ("AFTERIMAGE") was cut at the screen edge.
+const LONG_TITLES = ["NEON AFTERIMAGE", "NEON AFTERIMAGE OVERDRIVE", "AFTERIMAGEOVERDRIVE"];
+for (const width of [390, 444]) {
+  for (const actName of LONG_TITLES) {
+    test(`スマホ幅 ${width}px: 長い英字タイトル「${actName}」がタイトル枠と画面幅からはみ出さない`, async ({ page }) => {
+      test.setTimeout(60_000);
+      await page.setViewportSize({ width, height: 844 });
+      await installActShowcaseRoutes(page, { ...showcaseData, actName });
+      await page.goto(`/act-showcase.html?id=${ACT_SLUG}&theme=nova`);
+      const title = page.locator(".neotokyo-sequence__act-title--logo");
+      await expect(title).toBeVisible({ timeout: 30_000 });
+      await page.waitForTimeout(3500);
+      const fit = await title.evaluate(element => {
+        const range = document.createRange();
+        range.selectNodeContents(element);
+        let left = Infinity;
+        let right = -Infinity;
+        for (const rect of range.getClientRects()) { left = Math.min(left, rect.left); right = Math.max(right, rect.right); }
+        const box = element.getBoundingClientRect();
+        const screen = element.closest(".neotokyo-sequence__screen").getBoundingClientRect();
+        return { left, right, boxLeft: box.left, boxRight: box.right, screenLeft: screen.left, screenRight: screen.right, viewport: innerWidth, fitAttribute: element.dataset.fit };
+      });
+      expect(fit.fitAttribute, "the title keeps its data-fit classification").toBeTruthy();
+      // the glyphs are inside the title frame, the frame is inside the screen, and the screen inside the viewport
+      expect(fit.left, JSON.stringify(fit)).toBeGreaterThanOrEqual(fit.boxLeft - 0.5);
+      expect(fit.right, JSON.stringify(fit)).toBeLessThanOrEqual(fit.boxRight + 0.5);
+      expect(fit.boxLeft, JSON.stringify(fit)).toBeGreaterThanOrEqual(fit.screenLeft - 0.5);
+      expect(fit.boxRight, JSON.stringify(fit)).toBeLessThanOrEqual(fit.screenRight + 0.5);
+      expect(fit.screenRight, JSON.stringify(fit)).toBeLessThanOrEqual(fit.viewport + 0.5);
+      // the credit lines below the title are not pushed out either
+      const ruler = await page.locator(".neotokyo-sequence__screen--title").evaluate(screen => {
+        const limit = screen.getBoundingClientRect().right + 0.5;
+        return [...screen.querySelectorAll("*")].filter(node => node.getBoundingClientRect().width && node.getBoundingClientRect().right > limit).map(node => node.className.toString().slice(0, 50));
+      });
+      expect(ruler, "nothing in the title screen sticks out of it").toEqual([]);
+    });
+  }
 }
