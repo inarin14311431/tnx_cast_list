@@ -46,6 +46,8 @@
     const actTitle = text(document.querySelector("#opening-act-name")?.textContent) || "ACT SHOWCASE";
     const openingRuler = text(document.querySelector("#opening-ruler")?.textContent).replace(/^RULER\s*\/\/\s*/i, "");
     const ruler = openingRuler || "—";
+    // Safety net only: act-showcase-page.js builds the bar first (KEY STYLE = each cast's assigned style, see
+    // buildKeyStyle in act-showcase-visual-caption.js). This path has no cast data, so it cannot produce that value.
     const styles = "—";
 
     setTextIfChanged(bar.querySelector(".poster-v2-act-meta__title"), actTitle);

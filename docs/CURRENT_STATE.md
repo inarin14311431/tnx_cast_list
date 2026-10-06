@@ -7,16 +7,18 @@ AIや新規担当者が「何が完了済みで、何が途中か」を誤認し
 
 ## 1. Runtime同期基準点
 
-- 検証repo main: `f82ceb8`(PR #495 マージ点, 2026-10-06)。画面比較の基準ブランチ
-  `visual-regression-baseline` は `c107162`(PR #494 マージ点)
-- 本番repo main: 検証PR #495までのruntime同期PRのmerge commit(同期元: 検証 `f82ceb8`)。同期前の
-  本番mainは `4f25b9f`。merge後のSHAは本番repoの同期PRを参照。
-- runtime同期済み範囲: 検証PR #495まで。直前の同期(#479まで)以降の #481〜#495(エスケープ関数の
-  一本化、詰め込みJSの整形、アクト紹介の死んだCSS/JSの削除・テーマCSSの統合、visual captionと
-  アクセス画面・NODEラベルを本体が最初から最終形で作る変更、引用符正規化の一本化、読み込み画面・
-  進捗ラベルの文言統一)を含む。#483・#485 は資料のみ、#486・#491・#492・#494 は検証repoの画面比較の
-  基準ブランチのみで、本番へ同期するruntimeはない。共有Supabase/DBの変更は含まれない
-  (`20260930_character_share_links.sql`は稼働中DB定義の記録でありrepoへのcommitのみ、実DBへの適用はしない)。
+- 検証repo main: `9fe5deb`(PR #499 マージ点, 2026-10-06)。runtime の最後の変更は #497(`84802e3`)。画面比較の
+  基準ブランチ `visual-regression-baseline` は `b62e529`(PR #498 マージ点)
+- 本番repo main: 検証PR #497(+ #499のCI構成)までのruntime同期PRのmerge commit(同期元: 検証 `9fe5deb`)。
+  同期前の本番mainは `e25a244`。merge後のSHAは本番repoの同期PRを参照。
+- runtime同期済み範囲: 検証PR #499まで。直前の同期(#495まで)以降の #497(アクト紹介の表示修正:
+  全テーマの文字コントラスト、読み込み画面の書体と横線、背景プリセットの差し替え=green-area / cyberspace、
+  代替画像・サマリーの名前・識別コード・空の枠の切れ、最終ボードの KEY STYLE を各キャストの担当スタイルに)
+  と、#499(アクト紹介のE2Eを関係するPRのときだけ実行する `ci-act-showcase`)を含む。#496 は資料のみ、
+  #498 は検証repoの画面比較の基準ブランチのみで、本番へ同期するruntimeはない。共有Supabase/DBの変更は含まれない。
+- 本番のCIは検証と同じE2E(`e2e:ci-public` が `tests/e2e/test-suites.json` を読む)を実行しているので、#499 の
+  CI構成(`playwright.yml` のジョブ分割、`ci-act-showcase` グループ、`scripts/e2e-changed-groups.mjs`)も同期した。
+  本番専用(`dashboard/`、`.github/workflows/pr-dashboard.yml` ほか)は触っていない。
 
 **runtime/applicationの同期基準**であり、設計資料やREADMEだけのcommitで各repoのmain SHAは
 その後進む。固定値を最新mainと解釈しないこと。テスト・CI構成の同期は別で、意図的に同期しない

@@ -75,5 +75,44 @@ test("page and supporting-cast share the same role/style rules", async () => {
   ]);
   assert.match(supporting, /import \{ normalizeStyleKey, roleForCast \} from "\.\/act-showcase-visual-caption\.js/);
   assert.doesNotMatch(supporting, /function roleForCast|function normalizeStyle\(/);
-  assert.match(page, /import \{ buildVisualCaption \} from "\.\/act-showcase-visual-caption\.js/);
+  assert.match(page, /import \{ buildKeyStyle, buildVisualCaption \} from "\.\/act-showcase-visual-caption\.js/);
+  assert.match(page, /buildKeyStyle\(model\.casts\)/);
+});
+
+import { buildKeyStyle } from "../js/act-showcase-visual-caption.js";
+
+const castWith = (role, labels) => ({ participationRole: role, styles: labels.map(label => ({ label })) });
+
+test("KEY STYLE: every cast has an assigned style (marks and spaces removed, cast order)", () => {
+  const casts = [
+    castWith("カブキ", ["カブキ◎", "カゼ●", "ニューロ"]),
+    castWith("カブト", ["カブト ◎", "クグツ"]),
+    castWith("トーキー", ["バサラ", "トーキー●"])
+  ];
+  assert.equal(buildKeyStyle(casts), "カブキ × カブト × トーキー");
+});
+
+test("KEY STYLE: a cast without an assigned style (unset or unmatched) is skipped", () => {
+  const casts = [castWith("カブキ", ["カブキ"]), castWith("", ["カゲ"]), castWith("存在しない", ["カゲ"]), castWith("イヌ", ["イヌ"])];
+  assert.equal(buildKeyStyle(casts), "カブキ × イヌ");
+});
+
+test("KEY STYLE: the same style assigned to several casts is not merged", () => {
+  const casts = [castWith("イヌ", ["イヌ"]), castWith("イヌ", ["イヌ"]), castWith("フェイト", ["フェイト"])];
+  assert.equal(buildKeyStyle(casts), "イヌ × イヌ × フェイト");
+});
+
+test("KEY STYLE: the handout-role style counts as the assignment when no explicit role is set", () => {
+  const cast = { styles: [{ label: "カゲ" }, { label: "カリスマ◎", handoutRole: true }] };
+  assert.equal(buildKeyStyle([cast]), "カリスマ");
+});
+
+test("KEY STYLE: no assignment at all gives a dash", () => {
+  assert.equal(buildKeyStyle([castWith("", ["カゲ"]), castWith("", ["カブキ"])]), "—");
+  assert.equal(buildKeyStyle([]), "—");
+});
+
+test("KEY STYLE: six casts, no upper limit", () => {
+  const names = ["カブキ", "カブト", "トーキー", "イヌ", "フェイト", "カゲ"];
+  assert.equal(buildKeyStyle(names.map(name => castWith(name, [name]))), names.join(" × "));
 });

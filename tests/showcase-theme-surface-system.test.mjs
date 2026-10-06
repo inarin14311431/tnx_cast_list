@@ -75,7 +75,9 @@ test("ACT TRAILER has a high-specificity viewport contract and only its readout 
 });
 
 test("assigned cast name keeps its dedicated contrast surface and Dossier removes glow", () => {
-  assert.match(surface, /cast--linked[\s\S]*cast-detail:before[\s\S]*background:var\(--showcase-name-surface\)/);
+  // The empty name plate behind .neotokyo-sequence__cast-detail (an empty box at the top of the assign panel) is gone.
+  assert.doesNotMatch(surface, /cast-detail:before/);
+  assert.match(surface, /--showcase-name-surface/);
   assert.match(surface, /cast-detail h3[\s\S]*color:var\(--showcase-text\)/);
   assert.match(surface, /data-showcase-theme="intron"[\s\S]*cast-detail h3[\s\S]*color:#171717[\s\S]*text-shadow:none/);
   assert.match(legibility, /cast-tagline[\s\S]*color:var\(--showcase-readable-text\)/);

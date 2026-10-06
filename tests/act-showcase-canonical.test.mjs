@@ -72,7 +72,7 @@ test("poster builds its final PUBLIC DATA bar and showcase3 grid directly, witho
   assert.match(source, /function createActMetaBar\(model\)/);
   assert.match(source, /frame\.append\(createActMetaBar\(model\)\)/);
   assert.match(source, /createActMetaCell\("RULER", model\.rulerName \|\| "—", "is-ruler"\)/);
-  assert.match(source, /createActMetaCell\("KEY STYLE", styles\.slice\(0, 3\)\.join\(" × "\) \|\| "—", "is-style"\)/);
+  assert.match(source, /createActMetaCell\("KEY STYLE", buildKeyStyle\(model\.casts\), "is-style"\)/);
   assert.match(source, /el\("div", "poster-v2-grid poster-v2-grid--showcase3"\)/);
   assert.doesNotMatch(source, /poster-v2-grid--4/);
   // No poster-v2-panel--credits panel is ever created, so board-layout.js no longer reads or

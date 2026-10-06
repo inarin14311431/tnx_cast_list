@@ -22,3 +22,53 @@ body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ca
     font-size:clamp(.7rem,2.45vw,.8rem);
   }
 }
+
+/* ---------- Content that used to be clipped ---------- */
+
+/* Summary: a cast name wraps (to the lines it needs) instead of being cut with "…". */
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__summary-cast-body h3{
+  overflow:visible;
+  text-overflow:clip;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+
+/* Final board: the visual identification code ("VISUAL TRACE // NX-xxxx-xxxx // NODE:PUBLIC") wraps inside the caption
+   plate instead of being cut at the right edge. */
+body#act-showcase-page .poster-v2-visual .poster-v2-visual__caption .poster-v2-visual__code{
+  overflow:visible;
+  text-overflow:clip;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+
+/* The "SCAN FAILED" placeholder is 800x800 with its text in the middle. Cropped to a tall, narrow frame by
+   object-fit:cover the text is cut ("CAN FAILE"). Here the image is sized from the frame's WIDTH (the text spans
+   about 45% of the image, so 190% of the width leaves the text a small margin inside the frame) and centred: the empty grid margins
+   are what gets cropped, so the words stay readable in any frame proportion. */
+@supports (container-type:inline-size){
+  body#act-showcase-page .neotokyo-sequence__cast-image,
+  body#act-showcase-page .neotokyo-sequence__summary-cast-image,
+  body#act-showcase-page .poster-v2-visual{
+    position:relative;
+    container-type:inline-size;
+  }
+  /* Where the placeholder does not reach the frame's top / bottom, show the placeholder's own dark ground (not the theme's page colour). */
+  body#act-showcase-page .neotokyo-sequence__cast-image:has(> img[src*="scan-failed.webp"]),
+  body#act-showcase-page .neotokyo-sequence__summary-cast-image:has(> img[src*="scan-failed.webp"]),
+  body#act-showcase-page .poster-v2-visual:has(> img[src*="scan-failed.webp"]){
+    background:#030a10;
+  }
+  body#act-showcase-page .neotokyo-sequence__cast-image img[src*="scan-failed.webp"],
+  body#act-showcase-page .neotokyo-sequence__summary-cast-image img[src*="scan-failed.webp"],
+  body#act-showcase-page .poster-v2-visual > img[src*="scan-failed.webp"]{
+    position:absolute;
+    left:50%;
+    top:50%;
+    width:190cqw;
+    height:190cqw;
+    max-width:none;
+    transform:translate(-50%,-50%);
+    object-fit:cover;
+  }
+}

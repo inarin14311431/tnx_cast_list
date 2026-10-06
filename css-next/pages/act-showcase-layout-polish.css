@@ -39,7 +39,7 @@ body.showcase-poster-v2-ready .poster-v2-act-meta__identity small{color:#69879c;
 body.showcase-poster-v2-ready .poster-v2-act-meta__cell{position:relative;z-index:1;display:grid;align-content:center;gap:7px;padding:12px 15px;border-left:1px solid rgba(116,214,255,.15);min-width:0}
 body.showcase-poster-v2-ready .poster-v2-act-meta__cell.is-style{border-left-color:rgba(255,92,194,.18)}
 body.showcase-poster-v2-ready .poster-v2-act-meta__cell strong{min-width:0;color:#edf8ff;font:900 clamp(.72rem,1.05vw,.95rem)/1.35 "Noto Sans JP",sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-body.showcase-poster-v2-ready .poster-v2-act-meta__cell.is-style strong{color:#ffb0df}
+body.showcase-poster-v2-ready .poster-v2-act-meta__cell.is-style strong{color:#ffb0df;white-space:normal;overflow:visible;text-overflow:clip;word-break:keep-all;overflow-wrap:break-word}/* up to six assigned styles: wrap at the " × " separators (never inside a style name) instead of clipping */
 body.showcase-poster-v2-ready .poster-v2-act-meta__status{position:relative;z-index:1;display:grid;grid-template-columns:8px auto;grid-template-rows:auto auto;align-content:center;gap:4px 8px;padding:12px 18px;border-left:1px solid rgba(255,92,194,.2);min-width:150px}
 body.showcase-poster-v2-ready .poster-v2-act-meta__status i{grid-row:1/3;align-self:center;width:7px;height:7px;border-radius:50%;background:#78ffd0;box-shadow:0 0 14px rgba(87,255,201,.65)}
 body.showcase-poster-v2-ready .poster-v2-act-meta__status strong{color:#78ffd0;font:900 .58rem/1 Orbitron,sans-serif;letter-spacing:.14em}

@@ -11,6 +11,12 @@
   --showcase-readable-border:rgba(var(--showcase-primary-rgb),.38);
   --showcase-readable-border-secondary:rgba(var(--showcase-secondary-rgb),.52);
   --showcase-readable-shadow:0 22px 64px rgba(var(--showcase-bg-rgb),.34);
+  --showcase-readable-accent:var(--showcase-tertiary);
+  --showcase-readable-accent-2:var(--showcase-secondary);
+  --showcase-on-dark-text:#f4fdff;
+  --showcase-on-dark-muted:#c4d6dc;
+  --showcase-on-dark-accent:#9fe8ff;
+  --showcase-on-dark-accent-2:#ffb3e6;
 }
 :root[data-showcase-theme="nova"]{
   --showcase-readable-text:#f4fdff;
@@ -28,6 +34,12 @@
   --showcase-readable-border:rgba(23,23,23,.30);
   --showcase-readable-border-secondary:rgba(143,49,91,.48);
   --showcase-readable-shadow:0 22px 54px rgba(23,23,23,.14);
+  --showcase-readable-accent:#285440;
+  --showcase-readable-accent-2:#7a2650;
+  --showcase-on-dark-text:#f5f7f9;
+  --showcase-on-dark-muted:#d5dde5;
+  --showcase-on-dark-accent:#bfeaf8;
+  --showcase-on-dark-accent-2:#ffc2e8;
 }
 :root[data-showcase-theme="vlad"]{
   --showcase-readable-text:#fff4f5;
@@ -35,6 +47,8 @@
   --showcase-readable-surface:rgba(26,8,12,.95);
   --showcase-readable-surface-strong:rgba(12,3,5,.985);
   --showcase-readable-page:#070203;
+  --showcase-on-dark-accent:#ff9fae;
+  --showcase-on-dark-accent-2:#ffc2cc;
 }
 :root[data-showcase-theme="lutetia"]{
   --showcase-readable-text:#f3f8ff;
@@ -42,7 +56,14 @@
   --showcase-readable-surface:rgba(12,25,48,.95);
   --showcase-readable-surface-strong:rgba(6,13,28,.985);
   --showcase-readable-page:#050b18;
+  --showcase-on-dark-accent:#9fc7ff;
+  --showcase-on-dark-accent-2:#c8b8ff;
 }
+
+/* Text tokens for the places the legacy cinematic / poster CSS hard-coded a dark-palette colour (white, cyan,
+   pale blue). --showcase-readable-accent / -accent-2 are the label accents on the theme's own surface;
+   --showcase-on-dark-* are for the dark slate plates (roster cards, visual caption, footer) that every theme keeps.
+   They are declared in the per-theme token blocks above. */
 
 /* ---------- STANDARD + generated HTML ---------- */
 :root[data-showcase-theme] body#act-showcase-standard-page{
@@ -325,6 +346,156 @@
   color:#171717;
   background:linear-gradient(90deg,rgba(143,49,91,.10),rgba(255,255,255,.96));
 }
+
+/* ---------- Contrast repairs (WCAG AA, checked by tests/e2e/act-showcase-contrast.spec.js) ----------
+   Legacy rules wrote one dark-palette colour per element. These re-point them at the theme tokens above.
+   Dark themes only get the places that were below 4.5:1; intron (light) gets the whole set. */
+
+/* All themes: de-emphasised (unassigned) style chips keep the theme's muted text instead of a 38% opacity fade. */
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__styles.has-assigned-style span:not(.is-role-primary),
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__summary-cast-styles.has-assigned-style span:not(.is-role-primary){
+  opacity:1;
+  color:var(--showcase-readable-muted);
+}
+/* All themes: small labels on the always-dark plates. */
+:root[data-showcase-theme] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-act-meta__identity small,
+:root[data-showcase-theme] body#act-showcase-page footer.footer .scene-shell{
+  color:var(--showcase-on-dark-muted);
+}
+:root[data-showcase-theme] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-trailer-stage__overline small{
+  color:var(--showcase-readable-muted);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__summary-ruler span{
+  color:var(--showcase-readable-muted);
+}
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__linked-layout .neotokyo-sequence__link-bridge span{
+  color:var(--showcase-on-dark-accent);
+}
+:root[data-showcase-theme] body#act-showcase-page.showcase-poster-v2-ready .opening-content .opening-ruler,
+:root[data-showcase-theme] body#act-showcase-page.showcase-poster-v2-ready .opening-content .opening-scroll span{
+  color:var(--showcase-readable-text);
+}
+
+/* All themes: small captions written as generated content (legacy translucent cyan / pink on the plates). */
+:root[data-showcase-theme] body#act-showcase-page footer.footer::before{color:var(--showcase-on-dark-muted)}
+:root[data-showcase-theme] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-topbar::before,
+:root[data-showcase-theme] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-roster::before,
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__context-kicker::after{
+  color:var(--showcase-readable-muted);
+}
+:root[data-showcase-theme] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-roster::after{
+  color:var(--showcase-readable-accent-2);
+}
+
+/* Loading screen: the sub line uses the theme's label accent (it hands over to the ACCESS screen's sub line). */
+:root[data-showcase-theme] body.showcase-neotokyo .cinematic-intro__sub{color:var(--showcase-readable-accent)}
+
+/* intron: cinematic sequence */
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__advance{
+  border-color:var(--showcase-primary);
+  background:var(--showcase-primary);
+  color:var(--showcase-surface);
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__footer > span,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__footer small,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__system span{
+  color:var(--showcase-readable-text);
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-finale__access-button small{
+  color:var(--showcase-on-dark-muted);
+}
+/* Plates that the dark themes draw as translucent navy become white plates in intron (a navy tint over a
+   light page is a mid-grey that neither dark nor light text can read). */
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__bootlog,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen .neotokyo-title-logo__meta,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen .neotokyo-title-logo__rule span{
+  background:linear-gradient(90deg,rgba(var(--showcase-surface-rgb),.94),rgba(var(--showcase-surface-rgb),.62));
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__role-slot{
+  background:linear-gradient(90deg,rgba(var(--showcase-secondary-rgb),.14),rgba(var(--showcase-surface-rgb),.94));
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__bootlog span{
+  color:var(--showcase-readable-muted);
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__bootlog span:last-child{
+  color:var(--showcase-readable-accent);
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__link-status,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta span,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__handout-caption,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__overview-meta dt,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__overview-copy,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__role-slot > span{
+  color:var(--showcase-readable-muted);
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta .is-live,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__rule span,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__context-kicker{
+  color:var(--showcase-readable-accent);
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__overview-label,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__role-slot small{
+  color:var(--showcase-readable-accent-2);
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__role-slot strong,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__summary-ruler strong,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__overview-meta dd{
+  color:var(--showcase-readable-text);
+}
+
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__linked-layout .neotokyo-sequence__link-bridge span{
+  color:var(--showcase-readable-text);
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-topbar{
+  background:linear-gradient(90deg,rgba(var(--showcase-surface-rgb),.9),rgba(var(--showcase-surface-rgb),0));
+}
+/* vlad: the brand red on the portrait-tinted panel header and the reading pill */
+:root[data-showcase-theme="vlad"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-panel--visual .poster-v2-panel__head span,
+:root[data-showcase-theme="vlad"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-reading{
+  color:var(--showcase-on-dark-accent);
+}
+
+/* intron: standard page style chips (cyan on the white cards) */
+:root[data-showcase-theme="intron"] body#act-showcase-standard-page .cast-card__styles .style{color:var(--showcase-readable-text)}
+:root[data-showcase-theme="intron"] body#act-showcase-standard-page .cast-card__styles .style.style--handout-role{color:var(--showcase-readable-accent-2)}
+
+/* intron: generated captions on the white plates */
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-ornament__seal::after,
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready h1.showcase-fit-title::before,
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-handout-copy::before {
+  color:var(--showcase-readable-muted);
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .opening-content::after,
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .opening-content .opening-scroll::before{
+  color:var(--showcase-readable-accent-2);
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .poster-v2-tags .is-role-primary::before,
+:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__styles span.is-role-primary::before{
+  color:var(--showcase-readable-accent);
+}
+
+/* intron: hero line under the board */
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .opening-content .opening-subtitle{color:var(--showcase-readable-accent-2)}
+
+/* intron: final board */
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-roster__title,
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-brand__sub{
+  color:var(--showcase-readable-muted);
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-roster__item{background:rgba(var(--showcase-primary-rgb),.92)}
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-roster__item.is-active{background:rgba(var(--showcase-surface-rgb),.97)}
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-roster__item strong{color:var(--showcase-on-dark-text)}
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-roster__item small{color:var(--showcase-on-dark-muted)}
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-roster__item span{color:var(--showcase-on-dark-accent)}
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-roster__item.is-active > strong{color:var(--showcase-readable-text)}
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-roster__item.is-active small{color:var(--showcase-readable-muted)}
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-roster__item.is-active > span{color:var(--showcase-readable-accent-2)}
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-visual__caption{
+  background:linear-gradient(90deg,rgba(8,14,22,.92),rgba(8,14,22,.8));
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__meta{color:var(--showcase-on-dark-text)}
+:root[data-showcase-theme="intron"] body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__code{color:var(--showcase-on-dark-accent-2)}
+:root[data-showcase-theme="intron"] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-reading{color:var(--showcase-on-dark-text)}
 
 @media(max-width:760px){
   :root[data-showcase-theme] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-aside{padding:10px 12px}

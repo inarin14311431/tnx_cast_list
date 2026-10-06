@@ -1,7 +1,7 @@
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
 import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=6";
 import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=1";
-import { buildVisualCaption } from "./act-showcase-visual-caption.js?v=1";
+import { buildKeyStyle, buildVisualCaption } from "./act-showcase-visual-caption.js?v=2";
 import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=1";
 
 const POSTER_SAMPLE_BACKGROUND = "./assets/showcase/act-showcase-moon-city-v2.svg";
@@ -228,16 +228,13 @@ function createActMetaBar(model) {
     textEl("small", "", "N◎VA MUNICIPAL DATABASE // PUBLIC ARCHIVE")
   );
 
-  const styles = [...new Set(model.casts.flatMap(item =>
-    Array.isArray(item?.styles) ? item.styles.map(style => text(style?.label)).filter(Boolean) : []
-  ))];
   const status = el("div", "poster-v2-act-meta__status");
   status.append(el("i", ""), textEl("span", "", "PUBLIC LINK"), textEl("strong", "", "VERIFIED"));
 
   bar.append(
     identity,
     createActMetaCell("RULER", model.rulerName || "—", "is-ruler"),
-    createActMetaCell("KEY STYLE", styles.slice(0, 3).join(" × ") || "—", "is-style"),
+    createActMetaCell("KEY STYLE", buildKeyStyle(model.casts), "is-style"),
     status
   );
   return bar;

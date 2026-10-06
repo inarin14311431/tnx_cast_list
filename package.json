@@ -34,6 +34,7 @@
     "verify": "node scripts/verify.mjs",
     "e2e": "playwright test",
     "e2e:ci-public": "node scripts/run-e2e-suite.mjs ci-public",
+    "e2e:ci-act-showcase": "node scripts/run-e2e-suite.mjs ci-act-showcase",
     "e2e:ci-editor": "node scripts/run-e2e-suite.mjs ci-editor",
     "e2e:ci-mobile": "node scripts/run-e2e-suite.mjs ci-mobile",
     "e2e:live-write": "node scripts/run-e2e-suite.mjs live-write",

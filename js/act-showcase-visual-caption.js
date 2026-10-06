@@ -71,3 +71,13 @@ export function buildVisualCaption(cast, publicName) {
     code: buildVisualCode(publicName)
   };
 }
+
+// The final board's KEY STYLE: each cast's assigned style (same role/style matching as the caption and the
+// assigned chip), in cast order, joined by " × ". Casts without an assigned style are skipped; the same style
+// assigned to several casts is listed once per cast. The ◎ ● marks and surrounding spaces are dropped.
+export function buildKeyStyle(casts) {
+  const names = (Array.isArray(casts) ? casts : [])
+    .map(cast => findAssignedStyle(styleLabelsForCast(cast), roleForCast(cast)).replace(/[◎●]/g, "").trim())
+    .filter(Boolean);
+  return names.length ? names.join(" × ") : "—";
+}

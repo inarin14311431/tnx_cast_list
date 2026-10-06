@@ -9,10 +9,10 @@ const expectedPresets = [
   ["nova-central-ring", "トーキョーN◎VA", "nova-central-ring.svg"],
   ["kisarazu-lake-harbor", "木更津湖港湾", "kisarazu-lake-harbor.svg"],
   ["sunrise-megacity", "夜明けのメガシティ", "sunrise-megacity.svg"],
-  ["neon-market", "イエローエリア", "neon-market.svg"],
+  ["green-area", "グリーンエリア", "green-area.avif"],
   ["industrial-port", "工業港湾地区", "industrial-port.svg"],
   ["executive-lounge", "ホワイトエリア", "executive-lounge.svg"],
-  ["incident-blockade", "封鎖区域", "incident-blockade.svg"],
+  ["cyberspace", "電脳空間", "cyberspace.avif"],
   ["orbital-habitat", "軌道", "orbital-habitat.avif"],
   ["prison-block", "牢獄", "prison-block.avif"],
   ["slum-district", "スラム街", "slum-district.avif"]
@@ -53,4 +53,13 @@ test("generator loads a versioned preset picker and no longer labels presets as 
   assert.match(html, /ACT VISUAL \/ PRESET LIBRARY/);
   assert.ok(!html.includes("ACT VISUAL / SUPABASE STORAGE"));
   assert.match(picker, /showcase-background-presets\.js\?v=\d+/);
+});
+
+test("green-area and cyberspace carry the specified descriptions", async () => {
+  const source = await read("js/showcase-background-presets.js");
+  assert.ok(source.includes('description: "緑化されたテラスと歩行者デッキが続く、治安の安定したグリーンエリアの街路"'));
+  assert.ok(source.includes('description: "データの柱と光の回線が格子状に広がる、ウェブ内部の電脳空間"'));
+  for (const retired of ["イエローエリア", "封鎖区域", "neon-market.svg", "incident-blockade.svg"]) {
+    assert.ok(!source.slice(source.indexOf("SHOWCASE_BACKGROUND_PRESETS"), source.indexOf("LEGACY_PRESET_KEY_ALIASES")).includes(retired), `${retired} must not remain in the preset list`);
+  }
 });

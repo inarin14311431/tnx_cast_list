@@ -2,7 +2,7 @@ export const SHOWCASE_BACKGROUND_BUCKET = "act-showcase-backgrounds";
 export const SHOWCASE_BACKGROUND_PUBLIC_BASE = "https://koprmbkoftuuffslhsvt.supabase.co/storage/v1/object/public/act-showcase-backgrounds";
 
 const SHOWCASE_BACKGROUND_ASSET_BASE = new URL("../assets/showcase/backgrounds/", import.meta.url);
-const SHOWCASE_BACKGROUND_ASSET_VERSION = "20260910-user-images-v4-attached-situations";
+const SHOWCASE_BACKGROUND_ASSET_VERSION = "20261006-green-area-cyberspace";
 const rawAssetUrl = filename => new URL(filename, SHOWCASE_BACKGROUND_ASSET_BASE).href;
 const assetUrl = filename => {
   const url = new URL(filename, SHOWCASE_BACKGROUND_ASSET_BASE);
@@ -23,6 +23,9 @@ const normalizeAssetUrl = value => {
   }
 };
 
+// Retired presets (the neon-market and incident-blockade SVGs): the files stay in assets/ because published acts store
+// the image URL, not the key. An act that still points at one opens in the editor as a custom background; they
+// are deliberately not aliased to a new preset.
 export const SHOWCASE_BACKGROUND_PRESETS = Object.freeze([
   Object.freeze({
     key: "nova-central-ring",
@@ -43,10 +46,10 @@ export const SHOWCASE_BACKGROUND_PRESETS = Object.freeze([
     url: assetUrl("sunrise-megacity.svg")
   }),
   Object.freeze({
-    key: "neon-market",
-    name: "イエローエリア",
-    description: "ネオンと露店、雑多な都市設備が密集するイエローエリアの街路",
-    url: assetUrl("neon-market.svg")
+    key: "green-area",
+    name: "グリーンエリア",
+    description: "緑化されたテラスと歩行者デッキが続く、治安の安定したグリーンエリアの街路",
+    url: assetUrl("green-area.avif")
   }),
   Object.freeze({
     key: "industrial-port",
@@ -61,10 +64,10 @@ export const SHOWCASE_BACKGROUND_PRESETS = Object.freeze([
     url: assetUrl("executive-lounge.svg")
   }),
   Object.freeze({
-    key: "incident-blockade",
-    name: "封鎖区域",
-    description: "規制ラインと蒸気が漂う事件直後の封鎖都市街路",
-    url: assetUrl("incident-blockade.svg")
+    key: "cyberspace",
+    name: "電脳空間",
+    description: "データの柱と光の回線が格子状に広がる、ウェブ内部の電脳空間",
+    url: assetUrl("cyberspace.avif")
   }),
   Object.freeze({
     key: "orbital-habitat",

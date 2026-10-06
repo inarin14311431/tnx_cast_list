@@ -109,8 +109,8 @@
 | theme-surface-system 前半(旧 dedicated-themes、22.6KB) | `data-showcase-theme` ごとのパレット変数(`--showcase-primary-rgb` 等)と基本面。定義源は本ファイルのみ | ○ | ○ |
 | theme-surface-system 後半(36.0KB) | 面(surface)の色・境界・影。変数 `--showcase-surface-*` と各部品への適用 | ○ | ○ |
 | theme-phase-contract (24.8KB) | 旧cinematicセレクタと同じ特異度で、title/trailer/handout/assign/summary/finale をテーマ化 | - | ○ |
-| theme-legibility (20.3KB) | 可読面の保証(`--showcase-readable-*`)。テーマの個性は変えない | ○ | ○ |
-| theme-scene-contract (20.0KB) | 旧シーン部品が旧cyan/pinkパレットを使わないように反映(`--showcase-scene-*`) | - | ○ |
+| theme-legibility | 可読面の保証(`--showcase-readable-*`)。テーマの個性は変えない。**コントラスト修復(WCAG AA)もここ**: テキスト用トークン `--showcase-readable-accent` / `-accent-2`(そのテーマの面の上のラベル色)と `--showcase-on-dark-text` / `-muted` / `-accent` / `-accent-2`(どのテーマでも暗いままの板: ロースターのカード・visual caption・フッター用)を定義し、旧い暗いパレット前提の固定色をこの変数に付け替える。dark テーマは4.5:1未満だった箇所だけ、intron(明るい)は全体。検査は E2E `act-showcase-contrast` | ○ | ○ |
+| theme-scene-contract (20.0KB) | 旧シーン部品が旧cyan/pinkパレットを使わないように反映(`--showcase-scene-*`)。intron は `--showcase-scene-accent-2` / `-3` を readable-accent 系の濃色にして、灰白のプレート上のラベルが4.5:1に届くようにしている | - | ○ |
 
 - 上書き関係: 前半(dedicated)→ 後半(surface)は統合済み(1ファイル、ルール併合後も有効宣言は不変)/ phase → legibility(52) → scene(30)、phase → scene(38)。順序は legibility が phase の後、scene が legibility の後(コメントの「Loaded last」「final」が3ファイルとも主張していて矛盾)。
 - 差: スタンダード版は phase-contract / scene-contract(計44.8KB)と visual-emphasis を読まない。テーマIDは nova / intron / vlad / lutetia(保存IDは互換のため旧名、`act-showcase-theme-runtime.js` が `<html data-showcase-theme>` を設定、スタンダード版では classic script、豪華版では bootstrap が `import`)。
@@ -182,7 +182,11 @@ bootstrap から到達するのは21ファイル(visual-caption-code を削除�
 | アクセス画面の見出し3行 | act-showcase-neotokyo(最終文言で生成) | - | **解消済み(手順5b)**。cinematic-enhancer `enhanceAccess` の文言上書きを削除(is-cinematic-access と access-seal は残す)。E2E `act-showcase-final-copy` が書き換え前文言の不在を検査 |
 | `NODE // TOKYO N◎VA` ラベル | act-showcase-neotokyo(最終文言で生成) | - | **解消済み(手順5b)**。cinematic-layout-v2 `normalizeNodeLabel` を削除 |
 | 読み込み画面・進捗ラベルの文言 | act-showcase-neotokyo(`prepareNeoTokyoLoading` / `showOpening`) | - | **文言を統一(手順5c-A)**。旧 `SYSTEM ACCESS` と日本語sub を `ACT FILE // ACCESS` / `CONNECTING TO PUBLIC ACT FILE…` / 進捗 `ACT FILE ACCESS // 05%` に変更(表示が変わる意図した変更)。E2E `act-showcase-final-copy` が旧文言の不在を検査 |
-| poster の visual caption | act-showcase-page(最終形で生成。文言規則は act-showcase-visual-caption.js) | - | **解消済み(手順5a)**。担当スタイル・所属・公開名から1回で組み立て、以後だれも書き換えない。supporting-cast とは role/style の判定関数を共有。`visual-caption-code` は削除 |
+| 読み込み画面とアクセス画面の見出し・小見出し・サブの書体 | 読み込み画面 `.cinematic-intro__*`(act-showcase.css)→ アクセス画面 `.is-cinematic-access .neotokyo-sequence__*`(act-showcase-cinematic.css) | - | **指定を一致(手順5c後の修正B)**。書体・太さ・字間・サイズ・位置(アクセス画面は下に boot log と seal が積まれるぶん上にあるので 7.6rem 上げる)を揃え、切り替わる瞬間に文字の形が変わらないようにした。E2E `act-showcase-final-copy` が3画面幅で一致を検査。フォントは Google Fonts を `display=block` にして、代替書体で出てから Orbitron に差し替わらないようにした | 中央の横線(`.cinematic-intro:before`)はサブ行に背景色(`--showcase-bg`)を持たせて背後で切り、サブの打ち消し線に見えないようにした(追加修正)。
+| 代替画像(scan-failed.webp)の文字 | 各画面の `img`(neotokyo.js / page.js) | cinematic-fit.css | **枠の幅から画像の大きさを決める(修正D1)**。800x800の画像の文字は幅の約45%なので、枠幅の190%で中央に置けば文字が必ず枠内に収まる(切れるのは文字のない余白)。割当・サマリー・最終ボードに適用。E2E `act-showcase-clipping` |
+| サマリーのキャスト名 / 識別コード行 | neotokyo.js / page.js | cinematic-fit.css | **折り返す(修正D2・D3)**。以前は `white-space:nowrap; text-overflow:ellipsis` で「…」になっていた(識別コードの右端切れも同じ。意図的なフェードではない) |
+| 割当画面の右上の空の枠 | theme-surface-system `.neotokyo-sequence__cast-detail:before` | - | **削除(修正D4)**。名前用プレートが、名前が下に移った後も上部に残っていた(中身なし)。全テーマで出ていた |
+| poster の visual caption | act-showcase-page(最終形で生成。文言規則は act-showcase-visual-caption.js) | - | **解消済み(手順5a)**。担当スタイル・所属・公開名から1回で組み立て、以後だれも書き換えない。supporting-cast とは role/style の判定関数を共有。`visual-caption-code` は削除 | 最終ボード上部の KEY STYLE は `buildKeyStyle(casts)`(同ファイル)で各キャストの担当スタイルをPC順に ` × ` でつなぐ(◎● なし、担当なしのキャストは飛ばし、全員なしは `—`、同じ担当はまとめない、件数上限なし。6人で長いスタイル名でも、セル内で折り返して枠からはみ出さない=`act-showcase-key-style` E2E)。`act-showcase-board-layout.js` の `ensureActMeta` の `—` は本体が先に作るための安全網で、この値は出せない。
 | サマリーの style 行 | act-showcase-neotokyo | story-flow `replaceChildren` → supporting-cast `replaceChildren`(2段) | 現存 |
 | handout の context cells | story-flow(ROLEセル) | writing-patterns `replaceChildren` | 現存(story-flow は枠だけ作る設計に整理済み) |
 | ROLE スロット/チップ | act-showcase-neotokyo / page | supporting-cast `repairNeoTokyoRoles` / `emphasizePosterRoles` | 現存 |
@@ -214,6 +218,8 @@ bootstrap から到達するのは21ファイル(visual-caption-code を削除�
   - 豪華版 `act-showcase.html` desktop: 4テーマ × opening / title / trailer / handout(PC1)/ assign(PC1)/ summary / 最終ボード(28枚)。場面の進行は NEXT ボタンのラベルで待つ。
   - 豪華版 desktop の**読み込み画面**(手順5c、4テーマ、4枚): データ取得 RPC を保留して固定(`installHeldActShowcaseRoutes`)。opening 4枚は手順5c-A で進捗ラベルが `ACT FILE ACCESS // 05%` になったため基準を更新(差分は進捗ラベル行 y=960〜977 のみ、それ以外は0px)。
   - 豪華版 mobile: nova のみ、同6場面(6枚)。
+- **表示の修正(polish)での基準更新**: intron の可読性(A)・読み込み画面の書体(B)・サマリー/最終ボード/代替画像の切れ(D)で、見た目が変わった28枚だけを基準更新(変更領域は基準更新PRの本文に1枚ずつ記載)。背景プリセット差し替え(C)は `showcase-generator.html` の撮影範囲にプリセット一覧が入らないため、generator の基準画像は更新なし。
+- **スタンダード版の既知の揺れ(polish の確認で判明)**: スタンダード版 desktop の厳密比較が、約1%の頻度で同じ場所(ゲストのナビ項目 `.cast-nav` の「G01 …」、x=771〜924 / y=731〜761、4774px、実際の画像が暗い)だけ差分になる。`main` でも同じ領域・同じ画素数で再現する(120回中1回)ので、フォント読込みや polish の変更とは無関係。原因の見立ては、ゲストが `act-showcase-standard-guests.js` で別の取得の後に追加され、視覚テストが「キャスト3件」までしか待たないこと(未確認の仮説)。対処案は、視覚テスト側でゲストのナビ項目の出現を待つ(未実施)。
 - **マスクなし(手順5a で解除)**: 最終ボードの `.poster-v2-visual` を含めて比較する。キャプションは page.js が最終形で生成するため決定的(マスク解除前に3回連続撮影で差分0を確認し、最終ボード5枚の基準画像だけ更新した)。
 - **未カバーで残る**: ダウンロード出力HTML(`showcases/*.html`、`showcase-dedicated-output.js` の生成物)、豪華版 mobile の3テーマ(intron / vlad / lutetia)、finale の単独場面(opening は desktop 4テーマをカバー済み。mobile は未)、PC2 以降の handout / assign、trailer の追従スクロール中の状態、reduced-motion 無効時の見た目。`showcase-generator.html` は撮っているが、プレビュー iframe 内の描画内容は対象外(未確認)。
 - 既存の基準画像54枚は 2026-10-05 時点で main と一致。ただし `cast-spectrum-neon-visual-desktop.png` だけは約20%ずれていて、CI が比較対象外にしている。
@@ -221,6 +227,8 @@ bootstrap から到達するのは21ファイル(visual-caption-code を削除�
 ### 4.2 E2E(`tests/e2e/test-suites.json` 登録)
 
 - 豪華版のみ4本: `act-showcase-neotokyo-stability`(進行・公開背景・trailer追従)/ `-title-render-order` / `-reduced-motion` / `-final-trailer`。いずれもテーマを切り替えない(4本とも `theme` 参照0)。viewport は既定のみ。
+- 表示の修正(polish)の検査: `act-showcase-contrast`(全場面×4テーマ+スタンダード版+読み込み画面の文字コントラスト。文字を透明にして撮った画素と実際の文字色で測る。`::before/::after` の生成文字は CDP で矩形を取る。対象外=装飾: 記号だけの生成文字、巨大な透かし文字 `HO`、サマリーの N◎VA スタンプ)/ `act-showcase-clipping`(代替画像の文字・サマリーの名前・識別コード・空の枠)/ `act-showcase-key-style`(最終ボードの KEY STYLE: 3人・担当なし・6人×3幅)/ `showcase-background-preset-legacy`(偽セッション+モックで、旧プリセットURLのアクトを編集画面で開く)。共通のフィクスチャは `tests/e2e/fixtures/act-showcase-data.js`(visual-regression-baseline の `act-showcase-fixtures.js` と同内容)。
+- 実行時間(polish で判明、対策済み): 上の polish の検査(特に `act-showcase-contrast` の豪華版×4テーマと `act-showcase-key-style`)は1本が長く、`ci-public` に入れたままだと `Public and smoke E2E` が約11分になり、従来の `timeout-minutes: 8` を超えてキャンセルされた。アクト紹介の検査は専用グループ `ci-act-showcase`(`Act showcase E2E`、実測 約9分52秒、`timeout-minutes: 20`)へ移し、関係するPRと手動実行のときだけ動かす(判定は `scripts/e2e-changed-groups.mjs`、パスは `tests/e2e/test-suites.json` の `triggerPaths`)。`Public and smoke E2E` は実測 約58秒に戻り、`timeout-minutes: 5`。
 - 文言・正規化の「書き換え前の表示が一度も出ない」検査(MutationObserver を初期スクリプトで仕込み、全表示を記録): `act-showcase-final-copy`(読み込み画面・アクセス画面3行・進捗ラベル・NODE ラベル。手順5b/5c)と `act-showcase-name-quotes`(重複引用符の名前。豪華版+スタンダード版+ゲスト。手順5c。スタンダード版のE2Eはこれが初)。
 - スタンダード版のE2E: なし。ダウンロード出力HTMLの実描画テスト: なし(`showcase-output-css.test.mjs` は旧出力のハッシュ一致のみ)。
 

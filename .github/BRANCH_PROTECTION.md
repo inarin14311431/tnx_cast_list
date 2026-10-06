@@ -16,6 +16,7 @@ Require these checks before `main` can be updated:
 - `Regression checks / verify`
 - `Security audit / Security audit`
 - `Playwright E2E / Public and smoke E2E`
+- `Playwright E2E / Act showcase E2E`(ACT SHOWCASE に関係するPRでだけ実行。関係しないPRでは skipped になり、必須チェックでは成功扱い。ワークフロー全体を `paths` で絞ると他のチェックが未完了になるため、絞りはジョブ単位)
 - `Playwright E2E / Authenticated editor E2E`
 - `Playwright E2E / Mobile E2E`
 - `Quality gates / Verification contract parity`

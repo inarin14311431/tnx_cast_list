@@ -1,5 +1,5 @@
 import { loadPublicShowcase, loadPublicShowcaseGuests, normalizeShowcaseSlug } from "./public-showcase-service.js?v=1";
-import { normalizeStyleKey, roleForCast } from "./act-showcase-visual-caption.js?v=1";
+import { normalizeStyleKey, roleForCast } from "./act-showcase-visual-caption.js?v=2";
 import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=1";
 
 const params = new URLSearchParams(location.search);

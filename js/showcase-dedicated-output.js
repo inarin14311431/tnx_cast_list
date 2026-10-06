@@ -5,8 +5,8 @@ const OUTPUT_MARKER = "dedicated-standard-v4";
 const STYLE_PATHS = [
   "../css-next/pages/act-showcase-standard.css?v=3",
   "../css-next/pages/act-showcase-standard-hotfix.css?v=2",
-  "../css-next/pages/act-showcase-theme-surface-system.css?v=3",
-  "../css-next/pages/act-showcase-theme-legibility.css?v=1"
+  "../css-next/pages/act-showcase-theme-surface-system.css?v=5",
+  "../css-next/pages/act-showcase-theme-legibility.css?v=4"
 ];
 let cssPromise = null;
 let rewriting = false;

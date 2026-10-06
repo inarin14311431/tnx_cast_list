@@ -11,13 +11,46 @@
         "tests/e2e/troop-view.spec.js",
         "tests/e2e/editor-help.spec.js",
         "tests/e2e/direct-transfer.spec.js",
-        "tests/e2e/character-sheet-url-import-live.spec.js",
+        "tests/e2e/character-sheet-url-import-live.spec.js"
+      ]
+    },
+    "ci-act-showcase": {
+      "project": "chromium",
+      "purpose": "ACT SHOWCASE (public pages and generator preset picker) coverage; runs only for pull requests that touch triggerPaths, and always on manual dispatch",
+      "triggerPaths": [
+        "act-showcase*.html",
+        "showcase-generator.html",
+        "showcases/**",
+        "js/act-showcase*.js",
+        "js/showcase*.js",
+        "js/public-showcase-service.js",
+        "js/image-focus.js",
+        "css-next/pages/act-showcase*.css",
+        "css-next/pages/showcase*.css",
+        "assets/showcase/**",
+        "assets/placeholders/**",
+        "tests/e2e/act-showcase*.spec.js",
+        "tests/e2e/showcase*.spec.js",
+        "tests/e2e/fixtures/**",
+        "tests/e2e/test-suites.json",
+        "tests/e2e/server.mjs",
+        "scripts/run-e2e-suite.mjs",
+        "scripts/e2e-changed-groups.mjs",
+        "package.json",
+        ".github/workflows/playwright.yml",
+        "playwright.config.js"
+      ],
+      "tests": [
         "tests/e2e/act-showcase-neotokyo-stability.spec.js",
         "tests/e2e/act-showcase-title-render-order.spec.js",
         "tests/e2e/act-showcase-reduced-motion.spec.js",
         "tests/e2e/act-showcase-final-trailer.spec.js",
         "tests/e2e/act-showcase-final-copy.spec.js",
-        "tests/e2e/act-showcase-name-quotes.spec.js"
+        "tests/e2e/act-showcase-name-quotes.spec.js",
+        "tests/e2e/act-showcase-contrast.spec.js",
+        "tests/e2e/act-showcase-clipping.spec.js",
+        "tests/e2e/act-showcase-key-style.spec.js",
+        "tests/e2e/showcase-background-preset-legacy.spec.js"
       ]
     },
     "ci-editor": {
