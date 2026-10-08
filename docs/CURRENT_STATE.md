@@ -9,7 +9,7 @@ AIや新規担当者が「何が完了済みで、何が途中か」を誤認し
 
 - 検証repo main: `993ad96`(PR #522 マージ点, 2026-10-08)。画面比較の
   基準ブランチ `visual-regression-baseline` は検証repoで管理し、本番側では更新しない
-- 本番repo main: 検証PR #507までのruntime同期PRのmerge commit(同期元: 検証 `993ad96`)。同期前の
+- 本番repo main: 検証PR #522までのruntime同期PRのmerge commit(同期元: 検証 `993ad96`)。同期前の
   本番mainは `3507416`。merge後のSHAは本番repoの同期PRを参照。
 - runtime同期済み範囲: 検証PR #522まで。直前の同期(#507まで)以降の #508〜#522
   (アクト紹介(デラックス版)の演出・キャスト選択画面ほか)を含む。共有Supabase/DBの変更は含まれない。
