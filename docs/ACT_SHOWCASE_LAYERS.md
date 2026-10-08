@@ -218,6 +218,13 @@ bootstrap から到達するのは22ファイル(visual-caption-code を削除�
 | observer の再実行抑制(タイプライターの churn を無視) | `hasStructuralElementMutation` / `hasLinkedScreenStateMutation` と observe の引数 | `act-showcase-observer-stability.test.mjs`(observe 呼び出しを**文字列で固定**) |
 | 登録順 | 1〜10 は本体より前、12〜15 は後。同一 microtask 内の callback 順は登録順 | 順序依存の具体的な失敗例は未確認 |
 
+### 3.5 最終ボードのキャスト領域(キャラクターセレクト型)
+
+- DOM は page.js が最終形で生成する: `.poster-v2-frame--select` の中に act-meta → `.poster-v2-roster`(顔サムネ+名前+スタイルのカード。1人なら生成しない) → `.poster-v2-grid--select`。
+- パネル3枚(visual / profile / handout)の順序と `--poster-v2-panel-*` のスクロール連動は不変。visual がヒーロー、profile は同じセルへサブグリッドで重ねて名前ブロック(`.poster-v2-identity`)だけをポートレート下部に置き、スタイル/データ(`.poster-v2-details`)は右列に置く。supporting-cast / cinematic-polish が見る `.poster-v2-name` `.poster-v2-tags` は `.poster-v2-panel--profile` の中のまま。
+- CSS は act-showcase-core.css 末尾の「poster-v2 キャストセレクト型レイアウト」ブロックに集約し、既存の枠・見出し・テーマ上書きは `:root[data-showcase-theme] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-frame--select` 接頭辞の特異度で上書きする。旧ルール(panel__head・角飾り・旧 roster)は未削除で、整理は別PR。
+- 画面比較(§4.1)の最終ボード基準画像はこの変更で意図的に変わる。基準ブランチ `visual-regression-baseline` の更新が別途必要。
+
 ## 4. 守りになっているテスト
 
 ### 4.1 画面比較(`scripts/run-visual-regression.mjs`)
@@ -239,6 +246,7 @@ bootstrap から到達するのは22ファイル(visual-caption-code を削除�
 
 - 豪華版のみ4本: `act-showcase-neotokyo-stability`(進行・公開背景・trailer追従)/ `-title-render-order` / `-reduced-motion` / `-final-trailer`。いずれもテーマを切り替えない(4本とも `theme` 参照0)。viewport は既定のみ。
 - 表示の修正(polish)の検査: `act-showcase-contrast`(全場面×4テーマ+スタンダード版+読み込み画面の文字コントラスト。文字を透明にして撮った画素と実際の文字色で測る。`::before/::after` の生成文字は CDP で矩形を取る。対象外=装飾: 記号だけの生成文字、巨大な透かし文字 `HO`、サマリーの N◎VA スタンプ)/ `act-showcase-clipping`(代替画像の文字・サマリーの名前・識別コード・空の枠)/ `act-showcase-key-style`(最終ボードの KEY STYLE: 3人・担当なし・6人×3幅)/ `act-showcase-trailer-readout`(ACT TRAILER の読み上げ中を毎フレーム記録: 枠の高さの変化は半行以内・既読の文字は動かない・長い本文でキャレット行が画面内・reduced-motion は行単位・終了後に枠を解放。実測の最大変化: PC 17.9px(1行 39.7px)、スマホ 14.4px(1行 31.9px)。変更前は 39.7px / 31.9px)/ `showcase-background-preset-legacy`(偽セッション+モックで、旧プリセットURLのアクトを編集画面で開く)。共通のフィクスチャは `tests/e2e/fixtures/act-showcase-data.js`(visual-regression-baseline の `act-showcase-fixtures.js` と同内容)。
+- スマホ幅(360/390/430)の検査: `act-showcase-mobile-overflow`(1200x1600の大きな画像・14文字の題・長い名前/URLで、導入の各画面と最終ボードが `html,body` のクリップなしで画面幅に収まること、割り当てパネルが潰れないこと、題が枠に収まること、ゲスト画像が描画されること)。スマホ幅の修正は `act-showcase-scenes.css` 末尾の `@media(max-width:760px)` ブロック(handout→assign の積み上げだけは同じ `is-splitting` 規則と並べて同ファイル中ほどの 760px ブロック)に置く。デスクトップ幅の見た目は変えない。
 - 実行時間(polish で判明、対策済み): 上の polish の検査(特に `act-showcase-contrast` の豪華版×4テーマと `act-showcase-key-style`)は1本が長く、`ci-public` に入れたままだと `Public and smoke E2E` が約11分になり、従来の `timeout-minutes: 8` を超えてキャンセルされた。アクト紹介の検査は専用グループ `ci-act-showcase`(`Act showcase E2E`、実測 約9分52秒、`timeout-minutes: 20`)へ移し、関係するPRと手動実行のときだけ動かす(判定は `scripts/e2e-changed-groups.mjs`、パスは `tests/e2e/test-suites.json` の `triggerPaths`)。`Public and smoke E2E` は実測 約58秒に戻り、`timeout-minutes: 5`。
 - 文言・正規化の「書き換え前の表示が一度も出ない」検査(MutationObserver を初期スクリプトで仕込み、全表示を記録): `act-showcase-final-copy`(読み込み画面・アクセス画面3行・進捗ラベル・NODE ラベル。手順5b/5c)と `act-showcase-name-quotes`(重複引用符の名前。豪華版+スタンダード版+ゲスト。手順5c。スタンダード版のE2Eはこれが初)。
 - スタンダード版のE2E: なし。ダウンロード出力HTMLの実描画テスト: なし(`showcase-output-css.test.mjs` は旧出力のハッシュ一致のみ)。

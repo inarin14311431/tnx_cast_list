@@ -176,24 +176,25 @@ function renderPoster(model) {
   const board = el("section", "poster-v2-board");
   board.id = "poster-showcase-board-v2";
   board.setAttribute("aria-label", "アクト紹介ショーケース");
-  const frame = el("div", "poster-v2-frame");
+  const frame = el("div", "poster-v2-frame poster-v2-frame--select");
   frame.append(createActMetaBar(model));
   let activeCastIndex = 0;
   let grid = createCastGrid(model.casts[activeCastIndex]);
-  frame.append(grid);
 
+  // Character-select layout: the roster sits above the cast grid. A single cast has nothing to select.
   let roster = null;
   if (model.casts.length > 1) {
     roster = createRoster(model.casts, index => {
       if (index === activeCastIndex || !model.casts[index]) return;
       activeCastIndex = index;
-      const nextGrid = createCastGrid(model.casts[activeCastIndex]);
+      const nextGrid = createCastGrid(model.casts[activeCastIndex], { switching: true });
       grid.replaceWith(nextGrid);
       grid = nextGrid;
       setActiveRosterItem(roster, activeCastIndex);
     });
     frame.append(roster);
   }
+  frame.append(grid);
 
   board.append(frame);
   story.append(board);
@@ -246,25 +247,26 @@ function createActMetaCell(label, value, className) {
   return cell;
 }
 
-function createCastGrid(cast) {
+// Panel order (visual, profile, handout) is what initializeMotion() and js/act-showcase-board-layout.js rely on.
+// The visual panel is the hero card; the profile panel overlays its lower-left corner with the identity block.
+function createCastGrid(cast, { switching = false } = {}) {
   const visual = createVisualPanel(cast);
   const profile = createProfilePanel(cast);
   const handout = createHandoutPanel([cast]);
   const grid = el("div", "poster-v2-grid poster-v2-grid--showcase3");
+  grid.classList.add("poster-v2-grid--select");
+  if (!handout) grid.classList.add("poster-v2-grid--no-handout");
+  if (switching) grid.classList.add("is-cast-switch");
   grid.append(visual, profile);
   if (handout) grid.append(handout);
   return grid;
 }
 
-function createVisualPanel(cast) {
-  const name = text(cast?.fullName) || "CAST";
-  const visual = createPanel("01 / CAST", "CAST VISUAL", "poster-v2-panel--visual");
-  const visualImage = el("div", "poster-v2-visual");
+function createCastImage(cast, { alt, loading }) {
   const image = document.createElement("img");
-  const source = safeImageUrl(cast?.imageUrl) || "./assets/placeholders/scan-failed.webp";
-  image.src = source;
-  image.alt = text(cast?.imageAlt) || name;
-  image.loading = "eager";
+  image.src = safeImageUrl(cast?.imageUrl) || "./assets/placeholders/scan-failed.webp";
+  image.alt = alt;
+  image.loading = loading;
   image.decoding = "async";
   image.style.objectPosition = getImageObjectPosition(cast?.imageUrl);
   image.style.setProperty("--tnx-image-scale", String(getImageScale(cast?.imageUrl)));
@@ -272,7 +274,14 @@ function createVisualPanel(cast) {
   image.addEventListener("error", () => {
     if (!image.src.endsWith("scan-failed.webp")) image.src = "./assets/placeholders/scan-failed.webp";
   });
-  visualImage.append(image);
+  return image;
+}
+
+function createVisualPanel(cast) {
+  const name = text(cast?.fullName) || "CAST";
+  const visual = createPanel("", "", "poster-v2-panel--visual");
+  const visualImage = el("div", "poster-v2-visual");
+  visualImage.append(createCastImage(cast, { alt: text(cast?.imageAlt) || name, loading: "eager" }));
 
   // The caption is built in its final form here (assigned style, affiliation, identity code), so
   // nothing rewrites it afterwards. Rules live in act-showcase-visual-caption.js.
@@ -291,21 +300,25 @@ function createVisualPanel(cast) {
 }
 
 function createProfilePanel(cast) {
-  const profile = createPanel("CAST PROFILE", "PUBLIC DOSSIER", "poster-v2-panel--profile");
+  const profile = createPanel("", "", "poster-v2-panel--profile");
   const body = profile.querySelector(".poster-v2-panel__body");
   const name = text(cast?.fullName) || "CAST";
   const reading = text(cast?.reading);
   const tagline = text(cast?.tagline);
 
-  if (reading) body.append(textEl("p", "poster-v2-reading", reading));
-  body.append(textEl("h2", "poster-v2-name", name));
-  if (tagline) body.append(textEl("p", "poster-v2-tagline", tagline));
+  // identity (reading / name / tagline) is laid over the hero portrait; details (styles / data / link) sit beside it.
+  const identity = el("div", "poster-v2-identity");
+  if (reading) identity.append(textEl("p", "poster-v2-reading", reading));
+  identity.append(textEl("h2", "poster-v2-name", name));
+  if (tagline) identity.append(textEl("p", "poster-v2-tagline", tagline));
+  const details = el("div", "poster-v2-details");
+  body.append(identity, details);
 
   const styles = Array.isArray(cast?.styles) ? cast.styles.map(item => text(item?.label)).filter(Boolean) : [];
   if (styles.length) {
     const tags = el("div", "poster-v2-tags");
     styles.forEach(value => tags.append(textEl("span", "", value)));
-    body.append(tags);
+    details.append(tags);
   }
 
   const metaItems = Array.isArray(cast?.meta) ? cast.meta.slice(0, 6) : [];
@@ -317,7 +330,7 @@ function createProfilePanel(cast) {
         textEl("dd", "", text(item?.value) || "—")
       );
     }
-    body.append(meta);
+    details.append(meta);
   }
 
   const href = !cast?.link?.disabled ? safeLinkUrl(cast?.link?.href) : "";
@@ -326,7 +339,7 @@ function createProfilePanel(cast) {
     anchor.href = href;
     anchor.target = "_blank";
     anchor.rel = "noopener";
-    body.append(anchor);
+    details.append(anchor);
   }
   return profile;
 }
@@ -340,9 +353,10 @@ function createHandoutPanel(casts) {
   });
   if (!cast) return null;
 
-  const panel = createPanel("02 / HANDOUT", "PLAYER INFORMATION", "poster-v2-panel--handout");
+  const panel = createPanel("", "", "poster-v2-panel--handout");
   const body = panel.querySelector(".poster-v2-panel__body");
   body.append(
+    textEl("p", "poster-v2-handout-eyebrow", "PLAYER INFORMATION"),
     textEl("h3", "poster-v2-section-title", text(cast.handout?.title) || "HANDOUT"),
     textEl("p", "poster-v2-handout-copy", text(cast.handout?.body))
   );
@@ -351,9 +365,12 @@ function createHandoutPanel(casts) {
 
 function createRoster(casts, onSelect) {
   const roster = el("div", "poster-v2-roster");
-  roster.append(textEl("div", "poster-v2-roster__title", "CAST FILES // SELECT CAST"));
+  roster.setAttribute("role", "group");
+  roster.setAttribute("aria-label", "キャスト選択");
   const list = el("div", "poster-v2-roster__list");
+  const items = [];
   casts.forEach((cast, index) => {
+    const name = text(cast?.fullName) || `CAST ${index + 1}`;
     const styles = Array.isArray(cast?.styles)
       ? cast.styles.map(item => text(item?.label)).filter(Boolean).join(" / ")
       : "";
@@ -362,19 +379,31 @@ function createRoster(casts, onSelect) {
     item.setAttribute("role", "button");
     item.setAttribute("tabindex", "0");
     item.setAttribute("aria-pressed", index === 0 ? "true" : "false");
-    item.setAttribute("aria-label", `PC${index + 1} ${text(cast?.fullName) || `CAST ${index + 1}`} を表示`);
+    item.setAttribute("aria-label", `PC${index + 1} ${name} を表示`);
     if (index === 0) item.classList.add("is-active");
-    item.append(
-      textEl("span", "", String(index + 1).padStart(2, "0")),
-      textEl("strong", "", text(cast?.fullName) || `CAST ${index + 1}`),
-      textEl("small", "", styles || "PUBLIC CAST")
-    );
+
+    // The face thumbnail reuses the hero portrait focus/zoom; the name is carried by the aria-label of the item.
+    const thumb = el("div", "poster-v2-roster__thumb");
+    thumb.append(createCastImage(cast, { alt: "", loading: "lazy" }), textEl("span", "poster-v2-roster__index", String(index + 1).padStart(2, "0")));
+    const label = el("div", "poster-v2-roster__text");
+    label.append(textEl("strong", "", name), textEl("small", "", styles || "PUBLIC CAST"));
+    item.append(thumb, label);
+
     item.addEventListener("click", () => onSelect(index));
     item.addEventListener("keydown", event => {
-      if (event.key !== "Enter" && event.key !== " ") return;
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        onSelect(index);
+        return;
+      }
+      const step = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : event.key === "ArrowLeft" || event.key === "ArrowUp" ? -1 : 0;
+      if (!step) return;
       event.preventDefault();
-      onSelect(index);
+      const next = items[(index + step + items.length) % items.length];
+      next.focus();
+      onSelect(Number(next.dataset.castIndex));
     });
+    items.push(item);
     list.append(item);
   });
   roster.append(list);
@@ -391,9 +420,12 @@ function setActiveRosterItem(roster, activeIndex) {
 
 function createPanel(slot, title, extraClass) {
   const panel = el("article", `poster-v2-panel ${extraClass}`);
-  const head = el("header", "poster-v2-panel__head");
-  head.append(textEl("span", "", slot), textEl("strong", "", title));
-  panel.append(head, el("div", "poster-v2-panel__body"));
+  if (slot || title) {
+    const head = el("header", "poster-v2-panel__head");
+    head.append(textEl("span", "", slot), textEl("strong", "", title));
+    panel.append(head);
+  }
+  panel.append(el("div", "poster-v2-panel__body"));
   return panel;
 }
 

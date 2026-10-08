@@ -479,8 +479,23 @@ function replaceStage(state, { eyebrow, title, sub, status = [] }) {
 function swapScreen(state, content) {
   state.stage.classList.remove("is-awaiting-advance");
   if (state.advanceButton) state.advanceButton.hidden = true;
+  const hadScreen = Boolean(state.stage.querySelector(":scope > .neotokyo-sequence__screen"));
   state.stage.replaceChildren(content);
+  if (hadScreen) playSwapNoise(state);
   requestAnimationFrame(() => content.classList.add("is-visible"));
+}
+
+// Short scanline/flash overlay (stage:after) on screen-to-screen swaps only. Re-triggered by toggling the class with a forced reflow.
+function playSwapNoise(state) {
+  if (state.finished || state.skipRequested) return;
+  if (document.body.classList.contains("showcase-neotokyo-reduced")) return;
+  const stage = state.stage;
+  stage.classList.remove("is-screen-swap");
+  void stage.offsetWidth;
+  stage.classList.add("is-screen-swap");
+  stage.addEventListener("animationend", event => {
+    if (event.target === stage && event.animationName === "neotokyo-screen-swap-noise") stage.classList.remove("is-screen-swap");
+  }, { once: true });
 }
 
 function setProgress(state, value, label) {

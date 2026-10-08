@@ -99,6 +99,8 @@
       cards.forEach((card, index) => {
         card.classList.add("neotokyo-finale__cast-card");
         card.dataset.pc = `PC${index + 1}`;
+        const nameRow = card.querySelector(".neotokyo-sequence__summary-cast-body h3");
+        if (nameRow) nameRow.dataset.pc = `PC${index + 1}`;
         const badge = node("span", "neotokyo-finale__assigned-badge", "ASSIGNED");
         badge.setAttribute("aria-hidden", "true");
         card.append(badge);

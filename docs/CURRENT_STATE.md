@@ -7,13 +7,12 @@ AIや新規担当者が「何が完了済みで、何が途中か」を誤認し
 
 ## 1. Runtime同期基準点
 
-- 検証repo main: `03f64ad`(PR #507 マージ点, 2026-10-06)。runtime の最後の変更は #507(`8b39a48`)。画面比較の
+- 検証repo main: `993ad96`(PR #522 マージ点, 2026-10-08)。画面比較の
   基準ブランチ `visual-regression-baseline` は検証repoで管理し、本番側では更新しない
-- 本番repo main: 検証PR #507までのruntime同期PRのmerge commit(同期元: 検証 `03f64ad`)。同期前の
-  本番mainは `9bec292`。merge後のSHAは本番repoの同期PRを参照。
-- runtime同期済み範囲: 検証PR #507まで。直前の同期(#505まで)以降の #506(アクト紹介(デラックス版)のCSS 29本を
-  カスケード順を変えずに6ファイルへ集約)と、#507(集約後に後ろの宣言で上書きされ効いていない宣言15件の削除)を含む。
-  見た目は変えない。共有Supabase/DBの変更は含まれない。
+- 本番repo main: 検証PR #522までのruntime同期PRのmerge commit(同期元: 検証 `993ad96`)。同期前の
+  本番mainは `3507416`。merge後のSHAは本番repoの同期PRを参照。
+- runtime同期済み範囲: 検証PR #522まで。直前の同期(#507まで)以降の #508〜#522
+  (アクト紹介(デラックス版)の演出・キャスト選択画面ほか)を含む。共有Supabase/DBの変更は含まれない。
 - 対応するテスト(`tests/act-showcase-*`、`tests/helpers/act-showcase-css.mjs`、関連する `tests/showcase-*`)と
   監査script(`audit-act-showcase-architecture`、`audit-css-rebuild`)も同期した。本番専用(`dashboard/`、
   `.github/workflows/pr-dashboard.yml` ほか)は触っていない。
