@@ -14,7 +14,7 @@ const finalTrailer = read("js/act-showcase-final-trailer.js");
 const page = read("js/act-showcase-page.js");
 
 test("HANDOUT readout grows with typed content and delegates viewport overflow to the stage", () => {
-  assert.match(bootstrap, /act-showcase-handout-live-frame\.js\?v=2/);
+  assert.match(bootstrap, /act-showcase-handout-live-frame\.js\?v=3/);
   assert.ok(bootstrap.indexOf("act-showcase-trailer-live-frame.js") < bootstrap.indexOf("act-showcase-handout-live-frame.js"));
   assert.ok(bootstrap.indexOf("act-showcase-handout-live-frame.js") < bootstrap.indexOf("act-showcase-page.js"));
   assert.match(handoutFrame, /readout\.scrollHeight/);
@@ -33,8 +33,21 @@ test("HANDOUT follows actual box growth with the stage without restarting the sa
   assert.match(handoutFrame, /stage\.scrollHeight - stage\.clientHeight \+ remainingGrowth/);
   assert.match(handoutFrame, /const previousTarget = handoutScrollTargets\.get\(stage\)/);
   assert.match(handoutFrame, /Math\.abs\(targetTop - previousTarget\) <= 1/);
-  assert.match(handoutFrame, /stage\.scrollTo\(\{/);
-  assert.match(handoutFrame, /behavior: prefersReducedMotion\(\) \? "auto" : "smooth"/);
+  // The follow is interpolated in requestAnimationFrame (scrollTop); it must not lean on scroll-behavior / smooth scrollTo.
+  assert.match(handoutFrame, /startFollow\(stage, readout, targetTop\)/);
+  assert.match(handoutFrame, /requestAnimationFrame\(stepFollow\)/);
+  assert.match(handoutFrame, /stage\.scrollTop = job\.from \+ \(job\.to - job\.from\) \* eased/);
+  assert.doesNotMatch(handoutFrame, /scrollTo\(|behavior: ?"smooth"|scroll-behavior/);
+  assert.match(handoutFrame, /if \(prefersReducedMotion\(\)\) \{\s*stage\.scrollTop = targetTop;/);
+  assert.match(handoutFrame, /showcase-neotokyo-reduced/);
+});
+
+test("HANDOUT auto-follow stops for the handout the reader scrolls by hand", () => {
+  for (const type of ["touchstart", "wheel", "pointerdown"]) assert.match(handoutFrame, new RegExp(`"${type}"`));
+  assert.match(handoutFrame, /manualReadouts\.add\(activeReadout\)/);
+  assert.match(handoutFrame, /if \(manualReadouts\.has\(readout\)\) return;/);
+  assert.match(handoutFrame, /neotokyo-sequence__advance, \.neotokyo-sequence__skip/);
+  assert.match(handoutFrame, /intro\.getAttribute\("aria-hidden"\) === "true"/);
 });
 
 test("HANDOUT typewriter mutations update only the active readout instead of rescanning the whole surface", () => {

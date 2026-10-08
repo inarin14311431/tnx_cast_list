@@ -97,7 +97,10 @@ body.showcase-poster-v2-ready .poster-v2-meta[data-gender-id-split="1"] dt,body.
   .cinematic-intro.neotokyo-sequence .neotokyo-story__trailer-outro strong,.cinematic-intro.neotokyo-sequence .neotokyo-story__trailer-outro small{text-align:left}
   .neotokyo-story__handout-context{padding:7px 8px}
   .neotokyo-story__context-cells{grid-template-columns:1fr 1fr}
-  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--linked.is-splitting .neotokyo-sequence__linked-layout{grid-template-rows:minmax(0,.86fr) 24px minmax(0,1.14fr)}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--linked.is-splitting .neotokyo-sequence__linked-layout{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 24px auto;flex:0 0 auto;min-height:auto}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--linked.is-splitting{overflow-y:auto;overscroll-behavior:contain}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--linked.is-splitting .neotokyo-sequence__handout-panel{overflow:visible}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--linked.is-splitting .neotokyo-sequence__handout-panel .neotokyo-sequence__readout{max-height:none;overflow:visible;overflow-wrap:anywhere}
   .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked{grid-template-columns:30% minmax(0,1fr)}
   .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__cast-detail{padding:8px 9px}
   .neotokyo-story__assigned-route{margin:7px 0 5px;padding:7px 8px}
@@ -109,6 +112,16 @@ body.showcase-poster-v2-ready .poster-v2-meta[data-gender-id-split="1"] dt,body.
   .neotokyo-story__entry-vector{grid-template-columns:28px minmax(0,1fr);gap:5px}
   .neotokyo-story__entry-vector b{grid-column:2}
 }
+@media(max-width:760px){
+  /* Scroll cue: a fade and a down arrow pinned to the bottom of the handout -> assignment screen while more is below
+     (act-showcase-scroll-cue.js sets data-scroll-cue; it goes away at the end of the scroll). */
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--linked.is-splitting[data-scroll-cue]:after{content:"\25BC";position:sticky;bottom:0;z-index:4;flex:0 0 48px;height:48px;margin-top:-48px;display:grid;place-items:end center;padding-bottom:8px;box-sizing:border-box;color:var(--showcase-primary,#75f0ff);font:700 12px/1 "Share Tech Mono",monospace;background:linear-gradient(to top,rgba(var(--showcase-bg-rgb,2,5,11),.94),rgba(var(--showcase-bg-rgb,2,5,11),0));pointer-events:auto;cursor:pointer;animation:act-showcase-scroll-cue 1.6s ease-in-out infinite}
+}
+@keyframes act-showcase-scroll-cue{0%,100%{opacity:.65;transform:translateY(0)}50%{opacity:1;transform:translateY(3px)}}
+@media(prefers-reduced-motion:reduce){
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--linked.is-splitting[data-scroll-cue]:after{animation:none}
+}
+body.showcase-neotokyo-reduced .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--linked.is-splitting[data-scroll-cue]:after{animation:none}
 @media(max-height:760px) and (min-width:761px){
   .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer .neotokyo-sequence__section-title{font-size:3.5rem}
   .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer .neotokyo-sequence__readout{padding:14px 20px;font-size:.84rem;line-height:1.45}
@@ -1139,4 +1152,43 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:last-child{tran
 }
 @media(prefers-reduced-motion:reduce){
   .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage.is-handout-scroll .neotokyo-sequence__handout-panel .neotokyo-sequence__readout{transition:none}
+}
+
+/* ---------- Phone layout (<=760px) ----------
+   Real artwork and long names/URLs show what the 1px-wide E2E portraits hide: min-content widths push grids and
+   flex rows past the screen, and iOS Safari then widens the layout viewport instead of clipping. Everything below
+   only applies at phone width; desktop layout is untouched. */
+@media(max-width:760px){
+  @supports(overflow:clip){html,body{overflow-x:clip}}
+  @supports(height:100dvh){.cinematic-intro.neotokyo-sequence{height:100dvh}}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__shell{padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+
+  /* Handout -> assignment rules (stacked layout, screen scroll) live with the is-splitting layout rule above. */
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__linked-head{flex-wrap:wrap;row-gap:4px}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__linked-head .neotokyo-sequence__eyebrow{flex:1 1 100%;font-size:clamp(.5rem,2.5vw,.62rem);letter-spacing:.06em}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__cast-detail h3{font-size:clamp(1.1rem,5.6vw,1.5rem);line-height:1.2;white-space:normal;overflow-wrap:anywhere}
+  body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cast--linked .neotokyo-sequence__styles{grid-template-columns:repeat(auto-fit,minmax(88px,1fr))}
+
+  /* ACT READY roster: the bay caption and the roster caption share one row on desktop. */
+  .neotokyo-finale__cast-bay:before{position:static;display:block;margin:0 0 6px}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--finale .neotokyo-sequence__summary-cast-body{min-width:0}
+
+  /* Final page: opening title wraps inside the screen; board columns may shrink below their content. */
+  body.showcase-poster-v2-ready #opening-act-name.showcase-fit-title{max-width:100%;white-space:normal;text-wrap:balance;overflow-wrap:anywhere}
+  body.showcase-poster-v2-ready #opening-act-name.showcase-fit-title[data-fit]{font-size:clamp(1.7rem,9vw,2.6rem)}
+  body.showcase-poster-v2-ready .poster-v2-grid--showcase3,body.showcase-poster-v2-ready .poster-v2-grid--select{grid-template-columns:minmax(0,1fr)}
+  body.showcase-poster-v2-ready .poster-v2-grid--showcase3>*,body.showcase-poster-v2-ready .poster-v2-panel__body,body.showcase-poster-v2-ready .poster-v2-identity,body.showcase-poster-v2-ready .poster-v2-details{min-width:0}
+  body.showcase-poster-v2-ready .poster-v2-name,body.showcase-poster-v2-ready .poster-v2-tagline,body.showcase-poster-v2-ready .poster-v2-handout-eyebrow,body.showcase-poster-v2-ready .poster-v2-section-title,body.showcase-poster-v2-ready .poster-v2-handout-copy,body.showcase-poster-v2-ready .poster-v2-meta dd{min-width:0;overflow-wrap:anywhere}
+  .poster-supporting-cast{overflow-x:clip}
+  .poster-supporting-card{grid-template-columns:minmax(88px,30%) minmax(0,1fr)}
+  .poster-supporting-card__visual{min-height:120px}
+  .poster-supporting-card__visual img{position:absolute;inset:0}
+  .poster-supporting-card__body{min-width:0;overflow-wrap:anywhere}
+
+  /* Opening: the credit chips and the tagline block share one flow instead of the tagline floating over the chips. The
+     real display fonts (Orbitron / Share Tech Mono) run wider than the test fallbacks, so chips may wrap and nothing
+     here relies on a fixed width. */
+  body.showcase-poster-v2-ready .scene-opening .opening-ruler{max-width:calc(100% - 8px);white-space:normal;overflow-wrap:anywhere}
+  body.showcase-poster-v2-ready .poster-v2-aside{position:relative;top:auto;right:auto;bottom:auto;justify-self:end;align-self:start;margin:12px 18px 28px 18px;max-width:calc(100% - 36px)}
+  body.showcase-poster-v2-ready .poster-v2-aside strong,body.showcase-poster-v2-ready .poster-v2-aside span,body.showcase-poster-v2-ready .poster-v2-aside small{font-size:max(10px,.57rem)}
 }

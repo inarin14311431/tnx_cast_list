@@ -9,8 +9,11 @@
   const lastHeights = new WeakMap();
   const handoutScrollTargets = new WeakMap();
   const pendingReadouts = new Set();
+  const manualReadouts = new WeakSet();
   let activeReadout = null;
   let activeStage = null;
+  let followJob = null;
+  let followFrame = 0;
   let syncScheduled = false;
   let readoutFrameScheduled = false;
 
@@ -52,6 +55,10 @@
     attributeFilter: ["class"]
   });
   window.addEventListener("resize", scheduleSync, { passive: true });
+  // A hand on the screen ends the auto-follow for this handout (the reader is looking around on their own).
+  for (const type of ["touchstart", "wheel", "pointerdown"]) {
+    intro.addEventListener(type, noteManualScroll, { capture: true, passive: true });
+  }
   scheduleSync();
 
   function scheduleSync() {
@@ -86,6 +93,7 @@
       if (stage?.classList.contains("is-handout-scroll")) stage.classList.remove("is-handout-scroll");
       if (activeStage) handoutScrollTargets.delete(activeStage);
       if (activeReadout) releaseReadout(activeReadout);
+      cancelFollow();
       activeReadout = null;
       activeStage = null;
       return;
@@ -144,6 +152,7 @@
 
   function followHandout(stage, readout, targetHeight) {
     if (!stage?.isConnected || readout !== activeReadout || stage !== activeStage) return;
+    if (manualReadouts.has(readout)) return;
 
     const remainingGrowth = Math.max(0, targetHeight - readout.clientHeight);
     const targetTop = Math.max(
@@ -159,14 +168,65 @@
     if (Number.isFinite(previousTarget) && Math.abs(targetTop - previousTarget) <= 1) return;
 
     handoutScrollTargets.set(stage, targetTop);
-    stage.scrollTo({
-      top: targetTop,
-      left: 0,
-      behavior: prefersReducedMotion() ? "auto" : "smooth"
-    });
+    startFollow(stage, readout, targetTop);
+  }
+
+  // Interpolated in requestAnimationFrame on scrollTop; the browser's own smooth scrolling is not used because iOS
+  // Safari does not treat it the same way everywhere. A new target restarts from wherever the stage is now, so chasing a growing
+  // readout stays continuous.
+  function startFollow(stage, readout, targetTop) {
+    cancelFollow();
+    const from = stage.scrollTop;
+    if (prefersReducedMotion()) {
+      stage.scrollTop = targetTop;
+      return;
+    }
+    const distance = Math.abs(targetTop - from);
+    followJob = {
+      stage,
+      readout,
+      from,
+      to: targetTop,
+      start: performance.now(),
+      duration: Math.min(520, 180 + distance * 0.9)
+    };
+    followFrame = requestAnimationFrame(stepFollow);
+  }
+
+  function stepFollow(now) {
+    followFrame = 0;
+    const job = followJob;
+    if (!job) return;
+    const { stage, readout } = job;
+    if (!stage.isConnected || readout !== activeReadout || stage !== activeStage || manualReadouts.has(readout)
+      || intro.getAttribute("aria-hidden") === "true" || prefersReducedMotion()) {
+      followJob = null;
+      return;
+    }
+    const progress = Math.min(1, (now - job.start) / job.duration);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    stage.scrollTop = job.from + (job.to - job.from) * eased;
+    if (progress < 1) followFrame = requestAnimationFrame(stepFollow);
+    else followJob = null;
+  }
+
+  function cancelFollow() {
+    followJob = null;
+    if (followFrame) cancelAnimationFrame(followFrame);
+    followFrame = 0;
+  }
+
+  function noteManualScroll(event) {
+    if (!activeReadout || !activeStage) return;
+    const target = event.target instanceof Element ? event.target : null;
+    if (!target || target.closest(".neotokyo-sequence__advance, .neotokyo-sequence__skip")) return;
+    if (!activeStage.contains(target)) return;
+    manualReadouts.add(activeReadout);
+    cancelFollow();
   }
 
   function releaseReadout(readout) {
+    if (followJob?.readout === readout) cancelFollow();
     pendingReadouts.delete(readout);
     lastHeights.delete(readout);
     const resizeObserver = readoutObservers.get(readout);
@@ -188,6 +248,7 @@
   }
 
   function prefersReducedMotion() {
-    return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true;
+    return window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches === true
+      || document.body.classList.contains("showcase-neotokyo-reduced");
   }
 })();

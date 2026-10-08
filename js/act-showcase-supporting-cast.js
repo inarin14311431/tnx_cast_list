@@ -205,7 +205,7 @@ function createPosterGuestCard(guest, index) {
   const image = document.createElement("img");
   image.src = guest.imageUrl || "./assets/placeholders/scan-failed.webp";
   image.alt = guest.displayName;
-  image.loading = "lazy";
+  image.loading = "eager";
   visual.append(image, textNode("span", `GUEST ${String(index + 1).padStart(2, "0")}`));
   const body = document.createElement("div");
   body.className = "poster-supporting-card__body";
