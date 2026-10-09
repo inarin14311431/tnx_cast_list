@@ -7,7 +7,10 @@ body[data-page="cast.html"] .cast-header__actions { display: grid; grid-template
 .cast-header__export-label { color: var(--color-muted); font: 700 .58rem/1 var(--font-data); letter-spacing: .12em; }
 .cast-header__export-label small { margin-left: 5px; color: color-mix(in srgb, var(--color-muted) 72%, transparent); font-size: .5rem; }
 .cast-header__export-actions { display: flex; min-width: 0; align-items: stretch; gap: 5px; }
-.cast-header__export-actions :is(.cocofolia-copy-button, .udonarium-export-button, .transfer-tsv-copy-button, .transfer-bookmarklet-copy-button) { min-width: 118px; min-height: 38px; padding: 7px 10px; border-color: color-mix(in srgb, var(--export-accent) 58%, var(--color-border)); background: linear-gradient(135deg, color-mix(in srgb, var(--export-accent) 10%, transparent), color-mix(in srgb, var(--color-surface) 88%, transparent)); font-size: .7rem; }
+.cast-header__export-actions :is(.cocofolia-copy-button, .udonarium-export-button, .transfer-tsv-copy-button, .transfer-bookmarklet-copy-button) { min-width: 118px; min-height: 38px; padding: 7px 10px; border-color: color-mix(in srgb, var(--color-accent) 65%, var(--color-border)); background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 13%, transparent), color-mix(in srgb, var(--color-surface) 88%, transparent)); font-size: .7rem; }
+/* Border and fill follow the theme like the other header buttons; the per-button --export-accent only colours the 3px bar on the left edge (buttons.css ::before), its glow, the hover border and the copy/export state border. */
+.cast-header__export-actions :is(.cocofolia-copy-button, .udonarium-export-button, .transfer-tsv-copy-button, .transfer-bookmarklet-copy-button)::before { box-shadow: none; }
+.cast-header__export-actions :is(.cocofolia-copy-button, .udonarium-export-button, .transfer-tsv-copy-button, .transfer-bookmarklet-copy-button):is([data-copy-state="copying"], [data-copy-state="success"], [data-copy-state="error"], [data-export-state="building"], [data-export-state="success"], [data-export-state="error"]) { border-color: var(--export-accent); }
 .cast-header__actions .cast-edit-link { display: grid; min-width: 150px; gap: 2px; padding: 9px 14px; border: 1px solid var(--color-border); color: var(--color-accent); background: var(--color-accent-soft); text-decoration: none; white-space: nowrap; }
 .cast-header__actions .cast-edit-link small { color: var(--color-muted); font: .62rem/1.1 var(--font-data); letter-spacing: .08em; }
 .cast-header__actions .cast-quick-sheet-link { display: grid; min-width: 142px; min-height: 43px; gap: 2px; padding: 7px 14px; border: 1px solid color-mix(in srgb, var(--color-accent) 68%, var(--color-border)); color: var(--color-accent); background: linear-gradient(135deg, color-mix(in srgb, var(--color-accent) 12%, var(--color-surface)), var(--color-surface)); text-align: left; white-space: nowrap; }
@@ -80,13 +83,13 @@ body[data-page="cast.html"] .cast-header__actions { display: grid; grid-template
 .cast-style-slot.is-standard .cast-style-slot__role { color: color-mix(in srgb, var(--color-muted) 82%, var(--color-text)); }
 .cast-style-slot__index { flex: 0 0 auto; color: color-mix(in srgb, var(--style-local) 70%, var(--color-text)); font: 700 .74rem/1 var(--font-data); letter-spacing: .08em; }
 .cast-style-slot__name { flex: 0 1 auto; min-width: 0; overflow: hidden; color: var(--color-text); font-size: clamp(1rem, 2.7cqi, 1.625rem); font-weight: 900; line-height: 1.15; letter-spacing: .03em; text-overflow: ellipsis; white-space: nowrap; }
-.cast-style-slot__mark { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 3px; margin-left: -4px; color: var(--color-text); }
+.cast-style-slot__mark { display: inline-flex; flex: 0 0 auto; align-items: center; gap: 3px; margin-left: -8px; color: var(--color-text); }
 .cast-style-slot .style-mark-glyph { position: relative; display: block; box-sizing: border-box; width: 17px; min-width: 17px; height: 17px; min-height: 17px; flex: 0 0 17px; }
 .cast-style-slot .style-mark-glyph::before,
 .cast-style-slot .style-mark-glyph--persona::after { position: absolute; box-sizing: border-box; border-radius: 50%; content: ""; }
 .cast-style-slot .style-mark-glyph::before { inset: 0; }
-.cast-style-slot .style-mark-glyph--persona::before { border: 2px solid currentColor; }
-.cast-style-slot .style-mark-glyph--persona::after { top: 50%; left: 50%; width: 7px; height: 7px; border: 2px solid currentColor; transform: translate(-50%, -50%); }
+.cast-style-slot .style-mark-glyph--persona::before { border: 3px solid currentColor; }
+.cast-style-slot .style-mark-glyph--persona::after { top: 50%; left: 50%; width: 8px; height: 8px; border: 3px solid currentColor; transform: translate(-50%, -50%); }
 .cast-style-slot .style-mark-glyph--key::before { background: currentColor; }
 
 /* Divine work n follows style n: same width ratio and role color, different card shape. */
@@ -132,13 +135,17 @@ body[data-page="cast.html"] .cast-header__actions { display: grid; grid-template
 
 .cast-tabs { position: sticky; top: var(--cast-sticky-header-offset); z-index: 40; display: flex; min-width: 0; margin-top: 18px; overflow: hidden; border: 1px solid var(--color-border); background: color-mix(in srgb, var(--color-bg) 92%, transparent); backdrop-filter: blur(12px); }
 .cast-tab-list { display: flex; min-width: 0; flex: 1 1 auto; gap: 8px; overflow-x: auto; }
-.cast-tab { position: relative; flex: 1 0 auto; min-width: max-content; padding: 9px 16px; overflow: hidden; border: 0; border-right: 1px solid var(--color-border); color: var(--color-accent); background: linear-gradient(180deg, color-mix(in srgb, var(--color-surface-alt) 88%, var(--color-accent) 12%), var(--color-surface)); font-weight: 700; }
+.cast-tab { position: relative; flex: 1 0 auto; min-width: max-content; padding: 9px 16px; overflow: hidden; border: 0; border-right: 1px solid var(--color-border); color: color-mix(in srgb, var(--color-accent) 60%, var(--color-muted)); background: linear-gradient(180deg, color-mix(in srgb, var(--color-surface-alt) 88%, var(--color-accent) 12%), var(--color-surface)); font-weight: 700; }
 .cast-tab::before { position: absolute; top: 0; left: -100%; width: 100%; height: 1px; content: ""; background: var(--color-accent); transition: left var(--transition-fast); }
-.cast-tab.is-active { color: var(--color-bg); background: var(--color-accent); box-shadow: var(--shadow-glow); }
+/* The selected tab keeps the dark ground: lit text, a 3px accent underline and a faint inner glow (no solid fill). */
+.cast-tab.is-active { color: var(--color-accent-strong); box-shadow: inset 0 -3px 0 var(--color-accent), inset 0 -16px 18px -14px color-mix(in srgb, var(--color-accent) 55%, transparent); }
 .cast-tab.is-active::before, .cast-tab:hover::before { left: 0; }
 .cast-tab small { display: block; color: var(--color-muted); font-size: .66rem; letter-spacing: .12em; }
-.cast-tab.is-active small { color: inherit; }
-.cast-combo-jump { flex: 0 0 auto; min-width: 106px; padding: 8px 14px; border: 0; border-left: 1px solid var(--color-border); border-radius: 0; color: var(--color-accent-strong); background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 12%, var(--color-surface-alt)), var(--color-surface)); font-weight: 800; }
+.cast-tab.is-active small { color: color-mix(in srgb, var(--color-accent) 70%, var(--color-muted)); }
+/* The combo button jumps to a panel; it is not a tab. A gap with its own divider separates it from the tab row and a CSS arrow marks it as a jump. */
+.cast-combo-jump { position: relative; flex: 0 0 auto; min-width: 106px; margin-left: 12px; padding: 8px 14px; border: 0; border-left: 1px solid var(--color-border); border-radius: 0; color: var(--color-accent-strong); background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 12%, var(--color-surface-alt)), var(--color-surface)); font-weight: 800; }
+.cast-combo-jump::before { position: absolute; top: 18%; bottom: 18%; left: -7px; width: 2px; content: ""; background: var(--color-border); }
+.cast-combo-jump > span::after { display: inline-block; width: .42em; height: .42em; margin-left: .5em; border: solid currentColor; border-width: 0 2px 2px 0; content: ""; transform: translateY(-.14em) rotate(45deg); }
 .cast-combo-jump small { display: block; margin-top: 2px; color: var(--color-muted); font-size: .6rem; letter-spacing: .12em; }
 .combo-data-panel { scroll-margin-top: calc(var(--cast-sticky-header-offset) + 66px); }
 .cast-tab-panel { display: none; padding-top: 14px; }
@@ -153,9 +160,9 @@ body[data-page="cast.html"] .cast-header__actions { display: grid; grid-template
 .data-panel__header h2::before, .cast-outfit-title h2::before { content: "[ "; color: var(--color-accent-strong); }
 .data-panel__header h2::after, .cast-outfit-title h2::after { content: " ]"; color: var(--color-accent-strong); }
 .data-panel__header small { color: var(--color-muted); font-size: .66rem; }
-.data-panel > .data-panel__header { cursor: pointer; user-select: none; }
-.data-panel > .data-panel__header::after { position: absolute; top: 50%; right: 18px; content: "⌄"; color: var(--color-accent); font-size: 1.35rem; line-height: 1; transform: translateY(-50%) rotate(180deg); transition: transform var(--transition-fast), color var(--transition-fast); }
-.data-panel.is-collapsed > .data-panel__header::after { color: var(--color-muted); transform: translateY(-50%) rotate(-90deg); }
+.data-panel > .data-panel__header { --chevron-color: var(--color-accent); cursor: pointer; user-select: none; }
+/* The fold chevron itself is components/disclosure-chevron.css; only its colour is set here. */
+.data-panel.is-collapsed > .data-panel__header { --chevron-color: var(--color-muted); }
 .data-panel.is-collapsed > :not(.data-panel__header) { display: none; }
 .data-panel > .data-panel__header:focus-visible { outline: 2px solid var(--color-accent-strong); outline-offset: -3px; }
 .data-panel > :not(header) { padding: 14px; }

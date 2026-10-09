@@ -24,10 +24,10 @@ body[data-page="sheet.html"] .sheet-header > div:nth-child(2) h1 small { margin-
 .sheet-section--style-skills { --sheet-section-accent: var(--color-section-style-skills); }
 .sheet-section--outfits { --sheet-section-accent: var(--color-section-outfits); }
 .sheet-section--combos { --sheet-section-accent: var(--color-accent); }
-.section-toggle { display: flex; position: relative; width: 100%; min-height: 50px; align-items: baseline; gap: .55rem; padding: 13px 48px 13px 17px; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--sheet-section-accent) 34%, var(--color-border-muted)); color: var(--sheet-section-accent); background: linear-gradient(90deg, color-mix(in srgb, var(--sheet-section-accent) 16%, transparent), color-mix(in srgb, var(--sheet-section-accent) 3.5%, transparent) 48%, transparent 78%); box-shadow: inset 3px 0 0 color-mix(in srgb, var(--sheet-section-accent) 66%, transparent); cursor: pointer; text-align: left; font-size: 1rem; font-weight: 800; line-height: 1.2; letter-spacing: .025em; }
+.section-toggle { --chevron-color: var(--color-muted); display: flex; position: relative; width: 100%; min-height: 50px; align-items: baseline; gap: .55rem; padding: 13px 48px 13px 17px; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--sheet-section-accent) 34%, var(--color-border-muted)); color: var(--sheet-section-accent); background: linear-gradient(90deg, color-mix(in srgb, var(--sheet-section-accent) 16%, transparent), color-mix(in srgb, var(--sheet-section-accent) 3.5%, transparent) 48%, transparent 78%); box-shadow: inset 3px 0 0 color-mix(in srgb, var(--sheet-section-accent) 66%, transparent); cursor: pointer; text-align: left; font-size: 1rem; font-weight: 800; line-height: 1.2; letter-spacing: .025em; }
 .section-toggle small { color: var(--color-muted); font: 600 .68rem/1.1 var(--font-data); letter-spacing: .12em; opacity: .72; }
-.section-toggle::after { content: "⌄"; position: absolute; top: 50%; right: 18px; color: var(--color-muted); font-size: 1.35rem; transform: translateY(-50%) rotate(-90deg); transition: transform var(--transition-fast), color var(--transition-fast); }
-.sheet-section.is-open > .section-toggle::after { color: var(--sheet-section-accent); transform: translateY(-50%) rotate(180deg); }
+/* The fold chevron itself is components/disclosure-chevron.css; only its colour is set here. */
+.sheet-section.is-open > .section-toggle { --chevron-color: var(--sheet-section-accent); }
 .sheet-section:not(.is-open) > .section-body { display: none; }
 .section-body { min-width: 0; padding: 16px; }
 .toolbar { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }

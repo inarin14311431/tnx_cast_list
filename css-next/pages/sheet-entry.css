@@ -9,8 +9,9 @@
 @import url("../components/sheet-url-import.css?v=1") layer(sheet-components);
 @import url("../components/character-sheet-compare.css?v=3") layer(sheet-components);
 @import url("../components/character-share.css?v=2") layer(sheet-components);
+@import url("../components/disclosure-chevron.css?v=1") layer(sheet-components);
 
-@import url("../editor/editor.css?v=30") layer(sheet-editor);
+@import url("../editor/editor.css?v=32") layer(sheet-editor);
 @import url("../editor/divine-layout.css?v=1") layer(sheet-editor);
 @import url("../editor/sidebar-actions.css?v=2") layer(sheet-editor);
 @import url("../editor/skills.css?v=5") layer(sheet-editor);
