@@ -13,6 +13,12 @@
     margin-left: 0;
   }
 
+  /* The ARCHIVE ID column never shrinks; export buttons give up width instead. */
+  body[data-page="cast.html"] .cast-header__export-actions > * {
+    flex: 0 1 118px;
+    min-width: 0;
+  }
+
   body[data-page="cast.html"] .cast-header__primary-actions {
     align-items: stretch;
     gap: 6px;

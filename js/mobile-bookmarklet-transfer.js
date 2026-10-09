@@ -34,7 +34,7 @@ async function initialize() {
   if (castLabel) castLabel.textContent = `CAST ID ${publicId}`;
   if (backLink) backLink.href = `./cast.html?id=${encodeURIComponent(publicId)}`;
 
-  await import("./transfer-tsv-export.js?v=8");
+  await import("./transfer-tsv-export.js?v=9");
 
   const transferButton = document.querySelector("#transfer-tsv-copy-button");
   const originalBookmarkletButton = document.querySelector("#transfer-bookmarklet-copy-button");
