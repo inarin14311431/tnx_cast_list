@@ -524,3 +524,36 @@ body#act-showcase-page.showcase-neotokyo-finale-active .neotokyo-finale__access-
 :root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__handout-panel .neotokyo-sequence__readout{
   text-shadow:none;
 }
+
+/* ==== from: act-showcase-assign-cards-theme.css ==== */
+/* ASSIGN scene style cards (structure: act-showcase-scenes.css): every colour comes from the active ACT theme. */
+:root[data-showcase-theme] body#act-showcase-page .neotokyo-style-card__back,
+:root[data-showcase-theme] body#act-showcase-page .neotokyo-style-card__front{
+  border-color:var(--showcase-scene-border);
+  border-radius:var(--showcase-radius);
+}
+:root[data-showcase-theme] body#act-showcase-page .neotokyo-style-card__back{
+  background:
+    linear-gradient(45deg,transparent 46%,rgba(var(--showcase-primary-rgb),.30) 47% 53%,transparent 54%) 50% 50%/22px 22px,
+    linear-gradient(-45deg,transparent 46%,rgba(var(--showcase-secondary-rgb),.26) 47% 53%,transparent 54%) 50% 50%/22px 22px,
+    linear-gradient(145deg,var(--showcase-scene-surface-strong),var(--showcase-scene-surface));
+}
+:root[data-showcase-theme] body#act-showcase-page .neotokyo-style-card__back:before{
+  border-color:rgba(var(--showcase-primary-rgb),.72);
+  background:var(--showcase-scene-surface-strong);
+}
+:root[data-showcase-theme] body#act-showcase-page .neotokyo-style-card__back:after{
+  border-color:rgba(var(--showcase-secondary-rgb),.82);
+  background:radial-gradient(circle,rgba(var(--showcase-secondary-rgb),.55) 0 28%,transparent 32%);
+}
+:root[data-showcase-theme] body#act-showcase-page .neotokyo-style-card__front{
+  background:linear-gradient(145deg,rgba(var(--showcase-primary-rgb),.08),var(--showcase-scene-surface-strong));
+  color:var(--showcase-scene-text);
+}
+:root[data-showcase-theme] body#act-showcase-page .neotokyo-style-card.is-role .neotokyo-style-card__front{
+  border-color:var(--showcase-scene-accent-3);
+  box-shadow:0 0 0 1px rgba(var(--showcase-tertiary-rgb),.22),0 0 22px rgba(var(--showcase-tertiary-rgb),.26);
+}
+:root[data-showcase-theme="intron"] body#act-showcase-page .neotokyo-style-card__mark.is-lit{
+  text-shadow:none;
+}

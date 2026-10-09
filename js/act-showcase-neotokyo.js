@@ -1,3 +1,4 @@
+import { parseStyleLabel } from "./act-showcase-style-label.js?v=1";
 const SAMPLE_TRAILER_MESSAGE = "公開用アクトトレーラーは未登録です。\n公開データにトレーラーを登録すると、ここで読み上げ表示されます。";
 const FALLBACK_IMAGE = "./assets/placeholders/scan-failed.webp";
 const SHOW_ACT_TITLE_SCREEN = true;
@@ -30,6 +31,7 @@ export async function runNeoTokyoIntro({ intro, model }) {
     if (state.finished) return;
     state.finished = true;
     state.skipRequested = true;
+    revealAllStyleCards(intro);
     state.resolveWaiters();
     state.resolveAdvance();
     document.body.classList.remove("showcase-neotokyo-intro-active");
@@ -287,7 +289,13 @@ async function showHandoutAndAssign(state, cast, index, total) {
     ? `PC${pcNumber} // ${participationRole} // CAST ASSIGNED`
     : `PC${pcNumber} // CAST ASSIGNED`;
   setProgress(state, progressBase + 10, `CAST ASSIGNED // PC${pcNumber}`);
-  await wait(state, 700);
+  // The three style cards turn face-up one at a time; the hold is the whole reveal plus a short rest (FLIP_SETTLE_MS),
+  // not a fixed number. The status text above is set at once, as before: changing it later could re-wrap the header
+  // and move the scroll. Only the "CAST ASSIGNED" badge in the card waits for the last turn. Reduced motion has no
+  // face-down cards (and no reveal), so it keeps the plain hold.
+  const flipMs = startStyleCardFlip(state, castCard);
+  await wait(state, flipMs ? flipMs + FLIP_SETTLE_MS : STYLE_HOLD_MS);
+  revealAllStyleCards(castCard);
   if (state.finished) return;
 
   const nextLabel = pcNumber < total
@@ -341,14 +349,116 @@ function createRoleSlot(participationRole) {
   return slot;
 }
 
+// Timing of the style-card reveal (ms): one card's turn and the start-to-start gap. This table is the only place the
+// numbers live: they reach the CSS as --flip-turn / --flip-gap on the card row (the turns are CSS transitions whose delay
+// is --flip-index x --flip-gap), and the timers below use the same two values. ?flip=fast|normal|slow picks a row
+// (anything else is normal); nothing is shown on the page.
+const FLIP_PRESETS = {
+  fast: { turn: 320, gap: 100 },
+  normal: { turn: 600, gap: 300 },
+  slow: { turn: 900, gap: 450 }
+};
+const STYLE_MARK_UNITS = 0.9; // width of one mark beside the name, in name characters
+const FLIP_SETTLE_MS = 300; // rest after the last card has turned
+const STYLE_HOLD_MS = 700; // the hold when nothing turns (reduced motion, no cards)
+
+export function resolveFlipTiming(search) {
+  const key = new URLSearchParams(search || "").get("flip");
+  return Object.prototype.hasOwnProperty.call(FLIP_PRESETS, key) ? FLIP_PRESETS[key] : FLIP_PRESETS.normal;
+}
+const flipTiming = () => resolveFlipTiming(typeof location === "object" ? location.search : "");
+
+// Cards are div/b/i on purpose: the legacy chip rules and role markers target `.neotokyo-sequence__styles span`.
 function createStyleRow(cast, participationRole) {
-  const row = node("div", "neotokyo-sequence__styles");
-  for (const style of getStyleLabels(cast)) {
-    const chip = textNode("span", "", style);
-    if (participationRole && roleMatchesStyle(participationRole, style)) chip.classList.add("is-role");
-    row.append(chip);
+  const row = node("div", "neotokyo-sequence__styles neotokyo-sequence__style-cards");
+  const role = participationRole || handoutRoleLabel(cast);
+  const faceUp = cardsStayFaceUp();
+  const { turn, gap } = flipTiming();
+  row.style.setProperty("--flip-turn", `${turn}ms`);
+  row.style.setProperty("--flip-gap", `${gap}ms`);
+  let primaryFound = false;
+  for (const label of getStyleLabels(cast)) {
+    const style = parseStyleLabel(label);
+    const card = node("div", "neotokyo-style-card");
+    // Only assigned marks are drawn, on the same line as the name; the font size is fixed from the whole label's width
+    // (name characters + a mark counts as 0.9 character at the name's size) so the label always fits the face.
+    const litMarks = [["persona", "◎", style.persona], ["key", "●", style.key]].filter(([, , lit]) => lit);
+    const labelUnits = Math.max(3, Array.from(style.name).length) + litMarks.length * STYLE_MARK_UNITS;
+    card.style.setProperty("--style-label-units", String(labelUnits));
+    if (role && roleMatchesStyle(role, label)) {
+      card.classList.add("is-role");
+      card.classList.add(primaryFound ? "is-role-duplicate" : "is-role-primary");
+      primaryFound = true;
+    }
+    card.style.setProperty("--flip-index", String(row.childElementCount));
+    if (faceUp) card.classList.add("is-flipped");
+
+    const back = node("div", "neotokyo-style-card__back");
+    back.setAttribute("aria-hidden", "true");
+    const front = node("div", "neotokyo-style-card__front");
+    front.append(textNode("b", "neotokyo-style-card__name", style.name));
+    if (litMarks.length) {
+      const marks = node("i", "neotokyo-style-card__marks");
+      for (const [kind, glyph] of litMarks) marks.append(createStyleMark(kind, glyph));
+      front.append(marks);
+    }
+    const inner = node("div", "neotokyo-style-card__inner");
+    inner.append(back, front);
+    card.append(inner);
+    row.append(card);
   }
+  if (!faceUp && row.childElementCount) row.classList.add("is-face-down");
   return row;
+}
+
+// An assigned mark is real text; styles without one draw nothing.
+function createStyleMark(kind, glyph) {
+  const mark = node("i", `neotokyo-style-card__mark neotokyo-style-card__mark--${kind} is-lit`);
+  mark.textContent = glyph;
+  return mark;
+}
+
+function handoutRoleLabel(cast) {
+  const style = Array.isArray(cast?.styles) ? cast.styles.find(item => item?.handoutRole || item?.handout_role) : null;
+  return clean(style?.label);
+}
+
+// Reduced motion (media query or the body flag set at the start of the sequence): cards are face-up from the start.
+function cardsStayFaceUp() {
+  return prefersReducedMotion() || document.body.classList.contains("showcase-neotokyo-reduced");
+}
+
+// Turns the cards over left to right without waiting: the CSS delays stagger the turns and a timer lifts
+// the "CAST ASSIGNED" badge after the last one. Returns the length of the reveal in ms, or 0 when there is nothing to
+// animate (no cards, reduced motion).
+// A skip or the end of the sequence calls revealAllStyleCards, which also cancels the timer's effect.
+function startStyleCardFlip(state, castCard) {
+  const row = castCard.querySelector(".neotokyo-sequence__style-cards.is-face-down");
+  const cards = row ? [...row.querySelectorAll(".neotokyo-style-card")] : [];
+  if (!cards.length || state.finished) return 0;
+  castCard.classList.add("is-styles-pending");
+  void row.offsetWidth; // commit the face-down state so the first turn is a transition, not a jump
+  for (const card of cards) card.classList.add("is-flipped");
+  const done = () => {
+    if (state.finished) return;
+    castCard.classList.remove("is-styles-pending");
+  };
+  const { turn, gap } = flipTiming();
+  const total = (cards.length - 1) * gap + turn;
+  window.setTimeout(done, total);
+  return total;
+}
+
+// Final state: every card face-up at once (no transition) and "CAST ASSIGNED" shown. Safe to call at any time and more than once.
+function revealAllStyleCards(root) {
+  if (!root) return;
+  for (const row of root.querySelectorAll(".neotokyo-sequence__style-cards")) {
+    row.classList.add("is-revealed");
+    row.classList.remove("is-face-down");
+  }
+  for (const card of root.querySelectorAll(".neotokyo-style-card")) card.classList.add("is-flipped");
+  root.classList.remove("is-styles-pending");
+  for (const cast of root.querySelectorAll(".is-styles-pending")) cast.classList.remove("is-styles-pending");
 }
 
 async function showSummary(state, model) {

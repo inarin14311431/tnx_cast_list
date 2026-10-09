@@ -37,8 +37,20 @@ export function actShowcaseCss(name) {
   return source.text;
 }
 
+/* Sources appended after the final visual-emphasis layer. They style only their own namespace (checked in
+ * tests/act-showcase-assign-cards-css.test.mjs), so "visual emphasis is the final layer" still holds for every
+ * pre-existing rule; actShowcaseCssEntry() lists the pre-existing sources only. */
+export const TRAILING_SOURCES = ["act-showcase-assign-cards-theme.css"];
+
+export function actShowcaseTrailingSources() {
+  return actShowcaseSources().filter(item => TRAILING_SOURCES.includes(item.file));
+}
+
 /* An import list in cascade order (versions are those of the bundle link that loads each source);
  * tests compare indexOf() positions of the source names. */
 export function actShowcaseCssEntry() {
-  return actShowcaseSources().map(item => `@import "./${item.file}?v=${item.version}";`).join("\n");
+  return actShowcaseSources()
+    .filter(item => !TRAILING_SOURCES.includes(item.file))
+    .map(item => `@import "./${item.file}?v=${item.version}";`)
+    .join("\n");
 }

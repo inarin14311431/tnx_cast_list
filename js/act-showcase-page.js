@@ -1,5 +1,5 @@
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
-import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=7";
+import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=11";
 import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=1";
 import { buildKeyStyle, buildVisualCaption } from "./act-showcase-visual-caption.js?v=2";
 import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=1";

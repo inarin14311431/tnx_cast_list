@@ -53,11 +53,13 @@ const expectedSources = [
   "act-showcase-followup-v1.css",
   "act-showcase-final-trailer.css",
   "act-showcase-handout-live-frame.css",
+  "act-showcase-assign-cards.css",
   "act-showcase-theme-surface-system.css",
   "act-showcase-theme-phase-contract.css",
   "act-showcase-theme-legibility.css",
   "act-showcase-theme-scene-contract.css",
-  "act-showcase-visual-emphasis.css"
+  "act-showcase-visual-emphasis.css",
+  "act-showcase-assign-cards-theme.css"
 ];
 const bundleText = await Promise.all(expectedStyles.map(name => read("css-next/pages/" + name)));
 const bundleSources = expectedStyles.flatMap((bundle, index) => {
