@@ -23,5 +23,5 @@ test("bookmarklet transfer keeps BM navigation and desktop export order behavior
   assert.match(source, /location\.href = `\.\/mobile-transfer\.html\?id=/);
   assert.match(source, /"transfer-bookmarklet-copy-button"/);
   assert.match(source, /normalizeDesktopExportOrder\(\)/);
-  assert.match(source, /import\("\.\/transfer-tsv-export\.js\?v=1"\)/);
+  assert.match(source, /import\("\.\/transfer-tsv-export\.js\?v=9"\)/);
 });

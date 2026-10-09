@@ -23,16 +23,24 @@
   const rain=document.createElement('div');
   rain.className='cast-data-rain';
   rain.setAttribute('aria-hidden','true');
-  const chars='01 N◎VA CAST ACCESS DATA LINK TRACE AUTH ';
-  for(let index=0;index<16;index++){
+  const rainWords=['N◎VA','CAST','TRACE','AUTH','LINK','ACCESS','ﾆｭｰﾛ','ｲﾝﾄﾛﾝ','ｱｳﾄﾛﾝ','ﾄﾛﾝ','ｳｪﾌﾞ','ﾌﾘｯﾌﾟﾌﾛｯﾌﾟ'];
+  const rainDepths=[{size:9,opacity:.55,slow:1.35},{size:11,opacity:.8,slow:1},{size:11,opacity:.8,slow:1},{size:13,opacity:1,slow:1}];
+  const rainColumns=Math.max(24,Math.min(56,Math.round(innerWidth/28)));
+  const randomInt=(min,max)=>min+Math.floor(Math.random()*(max-min+1));
+  for(let index=0;index<rainColumns;index++){
     const line=document.createElement('span');
-    line.style.left=`${index*6.4+(index%3)*1.2}%`;
-    line.style.animationDuration=`${10+(index%6)*2.2}s`;
-    line.style.animationDelay=`-${(index*1.7)%12}s`;
-    line.textContent=Array.from({length:34},(_,row)=>{
-      const start=(index*7+row*5)%chars.length;
-      return chars.slice(start,start+8).padEnd(8,'0');
-    }).join('\n');
+    const depth=rainDepths[index%rainDepths.length];
+    const glyphs=Array.from({length:randomInt(16,38)},()=>Math.random()<.5?'0':'1');
+    if(index%4===1){
+      const word=Array.from(rainWords[randomInt(0,rainWords.length-1)]);
+      glyphs.splice(randomInt(0,glyphs.length),0,...word);
+    }
+    line.style.left=`${((index+.15+Math.random()*.7)/rainColumns)*100}%`;
+    line.style.fontSize=`${depth.size}px`;
+    line.style.opacity=String(depth.opacity);
+    line.style.animationDuration=`${(7+Math.random()*10)*depth.slow}s`;
+    line.style.animationDelay=`-${Math.random()*17}s`;
+    line.textContent=glyphs.join('\n');
     rain.append(line);
   }
   document.body.prepend(rain);

@@ -24,7 +24,7 @@ test("production transfer router keeps desktop and mobile on bookmarklet flow", 
   assert.match(router, /ACTIVE_MODE = "bookmarklet"/);
   assert.match(router, /removeInactivePostTriggers/);
   assert.match(router, /mobile-transfer\.html\?id=/);
-  assert.match(router, /transfer-tsv-export\.js\?v=1/);
+  assert.match(router, /transfer-tsv-export\.js\?v=9/);
   assert.doesNotMatch(router, /direct-transfer-button-post\.js/);
 });
 

@@ -1,7 +1,7 @@
 import "./help-ui.js?v=11";
 import "./combo-multi-suit.js?v=1";
 import "./sheet-save-state.js?v=2";
-import "./direct-transfer-button.js?v=6";
+import "./direct-transfer-button.js?v=7";
 import "./sheet-import-specialized-cleanup.js?v=1";
 
 /* Sheet editor helper features.

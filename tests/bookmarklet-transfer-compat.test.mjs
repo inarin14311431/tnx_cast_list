@@ -10,11 +10,11 @@ test("production cast transfer route keeps bookmarklet mode active", async () =>
   const bookmarklet = await read("js/tnx-transfer-bookmarklet.js");
 
   assert.match(router, /ACTIVE_MODE = "bookmarklet"/);
-  assert.match(router, /import\("\.\/transfer-tsv-export\.js\?v=1"\)/);
+  assert.match(router, /import\("\.\/transfer-tsv-export\.js\?v=9"\)/);
   assert.doesNotMatch(router, /direct-transfer-button-post\.js/);
   assert.match(exporter, /TNX_CAST_TRANSFER_TSV/);
   assert.match(exporter, /転記TSV/);
-  assert.match(exporter, /転記ブックマークレット/);
+  assert.match(exporter, /転記BM/);
   assert.match(exporter, /tnx-transfer-bookmarklet\.js\?v=2/);
   assert.match(bookmarklet, /TNX_CAST_TRANSFER_TSV/);
 });
