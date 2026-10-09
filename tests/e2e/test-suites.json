@@ -51,6 +51,7 @@
         "tests/e2e/act-showcase-clipping.spec.js",
         "tests/e2e/act-showcase-key-style.spec.js",
         "tests/e2e/act-showcase-trailer-readout.spec.js",
+        "tests/e2e/act-showcase-assign-cards.spec.js",
         "tests/e2e/showcase-background-preset-legacy.spec.js"
       ]
     },

@@ -22,7 +22,11 @@ test('HANDOUT to ASSIGN linkage keeps split, search, found and cast reveal visib
   assert.match(sequence, /await wait\(state, 780\);/);
   assert.match(sequence, /await wait\(state, 850\);/);
   assert.match(sequence, /await wait\(state, 560\);/);
-  assert.match(sequence, /await wait\(state, 700\);/);
+  // the cast reveal holds for the whole card turn plus a rest (computed, never shorter than the former fixed 700ms)
+  assert.match(sequence, /const STYLE_HOLD_MS = 700;/);
+  assert.match(sequence, /await wait\(state, flipMs \? flipMs \+ FLIP_SETTLE_MS : STYLE_HOLD_MS\);/);
+  assert.match(sequence, /const FLIP_SETTLE_MS = 300;/);
+  assert.match(sequence, /normal: \{ turn: 600, gap: 300 \}/);
 });
 
 test('ACT cinematic modules remain cache-busted through the explicit bootstrap', () => {

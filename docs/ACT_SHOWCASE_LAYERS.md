@@ -199,7 +199,7 @@ bootstrap から到達するのは22ファイル(visual-caption-code を削除�
 | poster の visual caption | act-showcase-page(最終形で生成。文言規則は act-showcase-visual-caption.js) | - | **解消済み(手順5a)**。担当スタイル・所属・公開名から1回で組み立て、以後だれも書き換えない。supporting-cast とは role/style の判定関数を共有。`visual-caption-code` は削除 | 最終ボード上部の KEY STYLE は `buildKeyStyle(casts)`(同ファイル)で各キャストの担当スタイルをPC順に ` × ` でつなぐ(◎● なし、担当なしのキャストは飛ばし、全員なしは `—`、同じ担当はまとめない、件数上限なし。6人で長いスタイル名でも、セル内で折り返して枠からはみ出さない=`act-showcase-key-style` E2E)。`act-showcase-board-layout.js` の `ensureActMeta` の `—` は本体が先に作るための安全網で、この値は出せない。
 | サマリーの style 行 | act-showcase-neotokyo | story-flow `replaceChildren` → supporting-cast `replaceChildren`(2段) | 現存 |
 | handout の context cells | story-flow(ROLEセル) | writing-patterns `replaceChildren` | 現存(story-flow は枠だけ作る設計に整理済み) |
-| ROLE スロット/チップ | act-showcase-neotokyo / page | supporting-cast `repairNeoTokyoRoles` / `emphasizePosterRoles` | 現存 |
+| ROLE スロット/チップ | act-showcase-neotokyo / page | supporting-cast `repairNeoTokyoRoles` / `emphasizePosterRoles` | 現存(配役の場面のスタイルは下記3.5のカードになり、`.neotokyo-sequence__styles span` を探す `markRoleChips` / story-flow `emphasizeRoleStyle` は対象を見つけない。ロール強調はカード側で `createStyleRow` が付ける) |
 | キャスト名の引用符 | showcase-display-format `normalizeShowcaseDisplayQuotes`(規則はここに1つだけ) | - | **解消済み(手順5c)**。名前はデータを読む時点で正規化し、DOMは正規化済みの値から作る: 豪華版 `createShowcaseModel`(cast の `fullName`/`reading`)、スタンダード版 `act-showcase-standard.js`(同)、ゲストは行を読む時点で `displayName`(豪華版 `supporting-cast`、スタンダード版 `standard-guests`)。cinematic-enhancer `normalizeVisibleQuotes`/`normalizeDuplicateHandleQuotes` と display-normalizer の名前側を削除。3つの旧関数は前後空白の trim 以外は同一の結果で、その差はどの経路でも既に trim 済みの値しか来ないため表示に影響しなかった。スタンダード版のナビ/alt は以前は重複引用符のまま出ていたが、いまは正規化済み。単体テスト `showcase-name-normalization`、E2E `act-showcase-name-quotes` |
 | credits パネルの削除 | - | board-layout `credits.remove()` | **削除済み(手順4)**。生成経路なし(page.js の `createCastGrid` は常に `poster-v2-grid--showcase3`。`createCreditsPanel` は cd8ca299 で除去) |
 | poster クレジット行 | - | scenario-writer `syncPosterCredit` | **削除済み(手順4)**。`.poster-v2-credit-table` を生成する経路なし。最終ボードへの SCENARIO WRITER 表示の復活は未実施 |
@@ -224,6 +224,16 @@ bootstrap から到達するのは22ファイル(visual-caption-code を削除�
 - パネル3枚(visual / profile / handout)の順序と `--poster-v2-panel-*` のスクロール連動は不変。visual がヒーロー、profile は同じセルへサブグリッドで重ねて名前ブロック(`.poster-v2-identity`)だけをポートレート下部に置き、スタイル/データ(`.poster-v2-details`)は右列に置く。supporting-cast / cinematic-polish が見る `.poster-v2-name` `.poster-v2-tags` は `.poster-v2-panel--profile` の中のまま。
 - CSS は act-showcase-core.css 末尾の「poster-v2 キャストセレクト型レイアウト」ブロックに集約し、既存の枠・見出し・テーマ上書きは `:root[data-showcase-theme] body#act-showcase-page.showcase-poster-v2-ready .poster-v2-frame--select` 接頭辞の特異度で上書きする。旧ルール(panel__head・角飾り・旧 roster)は未削除で、整理は別PR。
 - 画面比較(§4.1)の最終ボード基準画像はこの変更で意図的に変わる。基準ブランチ `visual-regression-baseline` の更新が別途必要。
+
+### 3.6 配役の場面のスタイルカード(裏向きから1枚ずつめくる)
+
+- 置き場所: JS は `js/act-showcase-neotokyo.js` の `createStyleRow` / `flipStyleCards` / `revealAllStyleCards`、ラベルの分解は `js/act-showcase-style-label.js` の `parseStyleLabel`(「カブキ◎●」→名前・◎(ペルソナ)・●(キー))。CSS は `act-showcase-scenes.css` 末尾(`from: act-showcase-assign-cards.css`、構造と既定色)と `act-showcase-theme-scenes.css` 末尾(`from: act-showcase-assign-cards-theme.css`、テーマ色)。
+- DOM: `.neotokyo-sequence__styles.neotokyo-sequence__style-cards` の中に `.neotokyo-style-card`(3枚。重なっても枚数分)。各カードは `__inner` > `__back`(裏面。幾何学模様だけ、`aria-hidden`)と `__front`(表面。`__name` と `__marks`)。**カードは div/b/i で作る**。既存の `.neotokyo-sequence__styles span` 系CSS・ロールマーカーが子孫の span に当たらないようにするため。
+- 読み上げ: 表面は名前と「付いている印」の文字だけ(ラベル文字列と同じ並び)。付いていない印は何も書かない図形で `aria-hidden`。ロール枠に一致するカードは `is-role`(最初の1枚は `is-role-primary`、重複は `is-role-duplicate`)で枠線を強調する。
+- 動き: `is-assigned` の後、120ms待ち→左から140ms間隔で `.is-flipped`(1枚320ms)→3枚目が終わってから `CAST ASSIGNED`(`.is-styles-pending` を外す)→300ms保持。旧 `wait(700)` からの増加は約0.3〜0.4秒。印は `.is-flipped` から320ms後に点灯(CSS transition-delay)。裏向きの間は表面が `visibility:hidden`(めくりの中間で切り替わる)。SKIP・シーケンス終了は `finish()` が同期で `revealAllStyleCards`。`prefers-reduced-motion` では最初から `is-flipped`(めくらない・待ち時間は従来の700ms)。
+- スマホ幅: 配役パネルを1列に戻す規則は `act-showcase-scenes.css` の `is-splitting` ブロック(`max-width:760px`)にあり、assign-cards 側では持たない。
+- 長い名前: 行に `container-type:inline-size` を付け、名前のフォントを `28cqi / 文字数` で縮める(下限 .44rem)。8文字(ブラックハウンド)は390pxで約7pxまで縮む。
+- テスト: `tests/act-showcase-style-label.test.mjs`(分解)、`tests/e2e/act-showcase-assign-cards.spec.js`(順序・所要時間・SKIP・reduced-motion・4画面幅のはみ出し・名前の1行)。
 
 ## 4. 守りになっているテスト
 
