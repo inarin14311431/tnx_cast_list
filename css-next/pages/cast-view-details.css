@@ -48,8 +48,9 @@ body[data-page="cast.html"] .cast-outfit-table .cast-outfit-col--concealment_pen
   text-align:center;
 }
 
-/* Header export/edit interactions. The export buttons only light their border on hover (no fill). */
-body[data-page="cast.html"] .cast-header__export-actions :is(.cocofolia-copy-button,.udonarium-export-button,.transfer-tsv-copy-button,.transfer-bookmarklet-copy-button):is(:hover,:focus-visible){border-color:var(--export-accent);box-shadow:0 0 14px color-mix(in srgb,var(--export-accent) 58%,transparent)}
+/* Header export/edit interactions. The export buttons only light their border on hover: the label colour and the background are restated
+   from the resting state so the shared hover fill in components/buttons.css (dark label on --export-accent) never applies here. */
+body[data-page="cast.html"] .cast-header__export-actions :is(.cocofolia-copy-button,.udonarium-export-button,.transfer-tsv-copy-button,.transfer-bookmarklet-copy-button):is(:hover,:focus-visible){border-color:var(--export-accent);color:var(--export-text);background:var(--export-bg);box-shadow:0 0 14px color-mix(in srgb,var(--export-accent) 58%,transparent)}
 body[data-page="cast.html"] .cast-header__export-actions :is(.cocofolia-copy-button,.udonarium-export-button,.transfer-tsv-copy-button,.transfer-bookmarklet-copy-button):is(:hover,:focus-visible) small{color:var(--color-muted)}
 body[data-page="cast.html"] .cast-header__actions .cast-edit-link:is(:hover,:focus-visible){border-color:var(--color-accent);color:var(--color-bg);background:var(--color-accent);box-shadow:var(--shadow-glow)}
 body[data-page="cast.html"] .cast-header__actions .cast-edit-link:is(:hover,:focus-visible) small{color:inherit}

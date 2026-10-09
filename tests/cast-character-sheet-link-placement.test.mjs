@@ -28,6 +28,6 @@ test("no layer re-pins the link inside the identity grid", () => {
 });
 
 test("cast viewer cache generations include the placement update", () => {
-  assert.match(entry, /cast-view-details\.css\?v=8/);
-  assert.match(castHtml, /cast-entry\.css\?v=28/);
+  assert.match(entry, /cast-view-details\.css\?v=9/);
+  assert.match(castHtml, /cast-entry\.css\?v=29/);
 });
