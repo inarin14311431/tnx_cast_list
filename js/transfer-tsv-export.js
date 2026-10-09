@@ -24,7 +24,7 @@ function createButton(id, className, main, sub) {
 function ensureButtons() {
   let transfer = document.querySelector("#transfer-tsv-copy-button");
   let bookmarklet = document.querySelector("#transfer-bookmarklet-copy-button");
-  if (!transfer) transfer = createButton("transfer-tsv-copy-button", "transfer-tsv-copy-button", "転記TSV", "COPY TRANSFER DATA");
+  if (!transfer) transfer = createButton("transfer-tsv-copy-button", "transfer-tsv-copy-button", "転記TSV", "CAST DATA COPY");
   if (!bookmarklet) bookmarklet = createButton("transfer-bookmarklet-copy-button", "transfer-bookmarklet-copy-button", "転記BM", "COPY BOOKMARKLET");
 
   const editorPanel = document.querySelector(".exp-panel");
@@ -410,7 +410,7 @@ function setState(button, state, message = "", bookmarklet = false) {
   const labels = bookmarklet ? {
     idle: ["転記BM", "COPY BOOKMARKLET"], copying: ["生成中…", "BUILDING TOOL"], success: ["BMコピー済み", "ADD TO BOOKMARKS"], error: ["コピー失敗", "COPY ERROR"]
   } : {
-    idle: ["転記TSV", "COPY TRANSFER DATA"], copying: ["生成中…", "BUILDING TSV"], success: ["TSVコピー済み", "RUN BOOKMARKLET"], error: ["コピー失敗", "COPY ERROR"]
+    idle: ["転記TSV", "CAST DATA COPY"], copying: ["生成中…", "BUILDING TSV"], success: ["TSVコピー済み", "RUN BOOKMARKLET"], error: ["コピー失敗", "COPY ERROR"]
   };
   const [main, sub] = labels[state] || labels.idle;
   button.innerHTML = `<span>${main}</span><small>${sub}</small>`;

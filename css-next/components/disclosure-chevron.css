@@ -1,0 +1,22 @@
+/* Fold indicator drawn with CSS (two 2px borders on a rotated box); no glyph, image or icon font.
+   Shared by the public cast panels (.data-panel__header) and the editor sections (.section-toggle).
+   Open = pointing down, folded = pointing right. Colour comes from --chevron-color, set per screen:
+   cast.css (accent / muted when folded) and editor.css (muted / section accent when open). */
+:is(.data-panel > .data-panel__header, .section-toggle)::after {
+  position: absolute;
+  top: 50%;
+  right: 20px;
+  box-sizing: border-box;
+  width: .5rem;
+  height: .5rem;
+  border: solid currentColor;
+  border-width: 0 2px 2px 0;
+  color: var(--chevron-color, var(--color-muted));
+  content: "";
+  pointer-events: none;
+  transform: translateY(calc(-50% - 2px)) rotate(45deg);
+  transition: transform var(--transition-fast), color var(--transition-fast);
+}
+:is(.data-panel.is-collapsed > .data-panel__header, .sheet-section:not(.is-open) > .section-toggle)::after {
+  transform: translate(-2px, -50%) rotate(-45deg);
+}
