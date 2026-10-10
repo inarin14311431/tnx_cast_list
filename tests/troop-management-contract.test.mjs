@@ -25,8 +25,8 @@ test("troop rules use one style, derived stats, max members and EXP", () => {
   const cssEntry = read("css-next/pages/troop-entry.css");
   assert.match(html, /CSはトループレベルと同値/);
   assert.match(html, /ARは1/);
-  assert.match(html, /troop-entry\.css\?v=1/);
-  assert.match(cssEntry, /troop-screen\.css\?v=2[^\n]*layer\(troop-screen\)/);
+  assert.match(html, /troop-entry\.css\?v=2/);
+  assert.match(cssEntry, /troop-screen\.css\?v=3[^\n]*layer\(troop-screen\)/);
   assert.doesNotMatch(html, /troop-(?:compact-density-v2|density-v3|visual-accent-v5|layout-v6)\.css/);
   assert.match(html, /id="troop-style"/);
   assert.doesNotMatch(html, /id="troop-style-2"/);
@@ -133,8 +133,8 @@ test("troop styles use explicit cascade layers without important overrides", () 
     "troops-registry.css"
   ].map(file => read(`css-next/pages/${file}`));
 
-  assert.match(html, /troop-entry\.css\?v=1/);
-  assert.match(registryHtml, /troops-entry\.css\?v=1/);
+  assert.match(html, /troop-entry\.css\?v=2/);
+  assert.match(registryHtml, /troops-entry\.css\?v=2/);
   assert.match(detailEntry, /@layer app, troop-base, troop-layout, troop-dialog, troop-combo, troop-screen/);
   assert.match(detailEntry, /troop-base\.css\?v=1[^\n]*layer\(troop-base\)/);
   assert.match(registryEntry, /@layer app, troop-base, troop-registry/);

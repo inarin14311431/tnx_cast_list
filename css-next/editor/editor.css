@@ -1,12 +1,7 @@
 /* Cast-sheet editor. Rebuilt from the verified screen specification. */
-body[data-page="sheet.html"] .sheet-header { position: relative; box-sizing: border-box; width: 100%; max-width: none; padding: 54px 20px 16px; gap: 16px; overflow: hidden; border-bottom-color: color-mix(in srgb, var(--color-accent) 58%, transparent); background: radial-gradient(ellipse at 50% 110%, color-mix(in srgb, var(--color-accent) 15%, transparent), transparent 42%), linear-gradient(180deg, color-mix(in srgb, var(--color-surface) 97%, transparent), color-mix(in srgb, var(--color-bg) 91%, transparent)); }
-body[data-page="sheet.html"] .sheet-header::after { position: absolute; right: 0; bottom: 0; left: 0; height: 1px; content: ""; background: linear-gradient(90deg, transparent 5%, var(--color-accent) 22%, color-mix(in srgb, var(--color-accent) 26%, transparent) 50%, var(--color-accent) 78%, transparent 95%); box-shadow: 0 0 14px color-mix(in srgb, var(--color-accent) 45%, transparent); pointer-events: none; }
+/* The editor header spans the full width like the editor layout; everything else is the shared .page-header type. */
+body[data-page="sheet.html"] .sheet-header { width: 100%; max-width: none; padding-inline: 20px; }
 body[data-page="sheet.html"] .sheet-header #save-status { display: none; }
-body[data-page="sheet.html"] .sheet-header > div:nth-child(2) { position: relative; z-index: 1; }
-body[data-page="sheet.html"] .sheet-header > div:nth-child(2) p { color: color-mix(in srgb, var(--color-accent) 72%, var(--color-muted)); font-size: .72rem; font-weight: 800; letter-spacing: .2em; }
-body[data-page="sheet.html"] .sheet-header > div:nth-child(2) h1 { margin-top: 7px; color: var(--color-text); font-size: clamp(1.8rem, 2.6vw, 2.55rem); font-weight: 900; line-height: 1.04; letter-spacing: .08em; text-shadow: 0 0 22px color-mix(in srgb, var(--color-accent) 32%, transparent); }
-body[data-page="sheet.html"] .sheet-header > div:nth-child(2) h1::before { margin-right: .34em; content: "//"; color: var(--color-accent); font-family: var(--font-data); font-size: .66em; letter-spacing: -.08em; text-shadow: var(--shadow-glow); }
-body[data-page="sheet.html"] .sheet-header > div:nth-child(2) h1 small { margin-top: 7px; color: var(--color-accent); font-size: .6rem; font-weight: 700; letter-spacing: .22em; opacity: .78; }
 .sheet-layout {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);

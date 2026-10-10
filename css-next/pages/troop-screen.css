@@ -5,10 +5,6 @@
 /* Compact troop view/editor density pass */
 body[data-page="troop.html"]{font-size:13px}
 body[data-page="troop.html"] .troop-layout{width:min(1040px,calc(100% - 24px));gap:10px;margin:12px auto 32px}
-body[data-page="troop.html"] .app-header{padding-top:10px;padding-bottom:10px}
-body[data-page="troop.html"] .app-header>p{margin:0 0 2px;font-size:9px;letter-spacing:.16em;color:var(--color-muted)}
-body[data-page="troop.html"] .app-header h1{margin:0;font-size:20px;line-height:1.15}
-body[data-page="troop.html"] .app-header h1 small{font-size:8px;color:var(--color-muted)}
 body[data-page="troop.html"] .troop-sheet,body[data-page="troop.html"] .troop-editor{border-color:color-mix(in srgb,var(--color-accent) 28%,var(--color-border));background:color-mix(in srgb,var(--color-surface) 96%,var(--color-accent) 4%);box-shadow:0 6px 18px rgb(0 0 0/9%)}
 body[data-page="troop.html"] .troop-sheet__header{padding:11px 13px;border-bottom-color:color-mix(in srgb,var(--color-accent) 26%,var(--color-border-muted));background:linear-gradient(90deg,color-mix(in srgb,var(--color-accent) 9%,transparent),transparent 58%)}
 body[data-page="troop.html"] .troop-sheet__header h2{font-size:24px;line-height:1.1}
@@ -64,8 +60,6 @@ body[data-page="troop.html"] .troop-section>header button{min-height:30px;paddin
 @media(max-width:760px){
   body[data-page="troop.html"]{font-size:12px}
   body[data-page="troop.html"] .troop-layout{width:100%;padding:6px 7px 18px;margin:0}
-  body[data-page="troop.html"] .app-header{padding:7px 9px}
-  body[data-page="troop.html"] .app-header h1{font-size:15px}
   body[data-page="troop.html"] .troop-sheet__header{padding:8px 9px}
   body[data-page="troop.html"] .troop-sheet__header h2{font-size:18px}
   body[data-page="troop.html"] .troop-vitals{padding:6px;gap:4px}

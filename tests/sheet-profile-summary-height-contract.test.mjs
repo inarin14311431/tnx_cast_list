@@ -16,5 +16,5 @@ test("profile summary field displays two full text lines", async () => {
     editorCss,
     /\.profile-summary-field textarea\s*\{[^}]*min-height:\s*72px;[^}]*height:\s*72px;[^}]*line-height:\s*1\.5;/
   );
-  assert.match(entryCss, /editor\/editor\.css\?v=32/);
+  assert.match(entryCss, /editor\/editor\.css\?v=33/);
 });

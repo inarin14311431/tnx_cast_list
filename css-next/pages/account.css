@@ -1,9 +1,5 @@
 body[data-page="account.html"] .auth-header,
 body[data-page="account.html"] .account-layout { width: min(960px, calc(100% - 32px)); }
-body[data-page="account.html"] .auth-header { display: block; box-sizing: border-box; padding: 36px 28px 20px; border-bottom: 1px solid var(--color-border-muted); background: transparent; box-shadow: none; }
-body[data-page="account.html"] .auth-header > p { margin: 28px 0 4px; color: var(--color-accent); font: 700 .92rem/1.35 var(--font-data); letter-spacing: .14em; }
-body[data-page="account.html"] .auth-header > h1 { margin: 0; font-size: clamp(2rem, 7vw, 4rem); }
-body[data-page="account.html"] .auth-header > h1 small { margin-top: 5px; text-align: left; }
 body[data-page="account.html"] .account-layout { display: grid; gap: 16px; margin-inline: auto; padding: 24px 0 80px; }
 .account-layout > .account-panel { padding: 18px; border: 1px solid var(--color-border-muted); background: var(--color-surface); }
 .account-panel__label { margin: 0; color: var(--color-muted); font: .74rem/1.4 var(--font-data); }
@@ -97,7 +93,6 @@ body[data-page="backup.html"] #import-file { width: 100%; padding: 12px; border:
 }
 @media (max-width: 767px) {
   html body[data-page="account.html"] .auth-header, body[data-page="account.html"] .account-layout { width: min(100% - 20px, 960px); }
-  html body[data-page="account.html"] .auth-header { padding: 28px 14px 18px; }
   body[data-page="account.html"] .account-data > div { grid-template-columns: 1fr; gap: 4px; }
   body[data-page="account.html"] .account-actions { grid-template-columns: 1fr; }
   html body[data-page="account.html"] .account-cast-controls { grid-template-columns: 1fr; }

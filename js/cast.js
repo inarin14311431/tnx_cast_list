@@ -546,7 +546,7 @@ function renderDivineWorks(character) {
 
   if (!divineWorks.length) {
     container.innerHTML =
-      `<p class="empty-data">NO DATA</p>`;
+      `<p class="empty-data">神業は登録されていません。<small>NO DIVINE WORK DATA</small></p>`;
     return;
   }
 
@@ -555,7 +555,7 @@ function renderDivineWorks(character) {
       <article class="cast-divine-slot ${item.state}${item.state === "is-standard" ? "" : " is-featured"}" data-divine-code="${item.code}">
         <span class="cast-divine-slot__code">${item.code}</span>
         <span class="cast-divine-slot__yomi"${item.yomi ? "" : ' aria-hidden="true"'}>${escapeHtml(item.yomi)}</span>
-        <strong class="cast-divine-slot__name">${escapeHtml(item.name || "UNREGISTERED")}</strong>
+        <strong class="cast-divine-slot__name${item.name ? "" : " is-empty"}">${escapeHtml(item.name || "未登録")}</strong>
       </article>
     `)
     .join("");
@@ -602,7 +602,7 @@ function renderSkills(skills) {
 
   if (!skills.length) {
     container.innerHTML =
-      `<p class="empty-data">NO SKILL DATA</p>`;
+      `<p class="empty-data">技能は登録されていません。<small>NO SKILL DATA</small></p>`;
     return;
   }
 
@@ -685,7 +685,7 @@ function renderOutfits(outfits) {
 
   if (!outfits.length) {
     container.innerHTML =
-      `<p class="empty-data">NO OUTFIT DATA</p>`;
+      `<p class="empty-data">アウトフィット未登録 <small>NO OUTFIT DATA</small></p>`;
     return;
   }
 
@@ -744,7 +744,7 @@ function renderCombos(combos, character) {
 
   if (!combos.length) {
     container.innerHTML =
-      `<p class="empty-data">NO COMBO DATA</p>`;
+      `<p class="empty-data">コンボは登録されていません。<small>NO COMBO DATA</small></p>`;
     return;
   }
 

@@ -1,4 +1,4 @@
 /* Canonical stylesheet entry for lightweight redirect screens. */
 @layer app;
 
-@import url("../index.css?v=64") layer(app);
+@import url("../index.css?v=65") layer(app);

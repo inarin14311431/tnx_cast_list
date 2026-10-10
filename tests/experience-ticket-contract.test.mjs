@@ -22,6 +22,6 @@ test("experience point value is slightly smaller and has enough line height to a
 
 test("experience ticket cache versions are refreshed through the canonical acts entry", () => {
   assert.match(entry, /experience-ticket\.css\?v=5/);
-  assert.match(html, /acts-entry\.css\?v=18/);
+  assert.match(html, /acts-entry\.css\?v=19/);
   assert.match(html, /experience-ticket\.js\?v=7/);
 });

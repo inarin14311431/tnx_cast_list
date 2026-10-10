@@ -102,6 +102,8 @@ body[data-page="cast.html"] .cast-header__actions { display: grid; grid-template
 .cast-divine-slot__code { position: absolute; top: 6px; right: 8px; color: color-mix(in srgb, var(--divine-local) 76%, var(--color-text)); font: 700 .56rem/1 var(--font-data); letter-spacing: .1em; }
 .cast-divine-slot__yomi { min-height: 1.2em; overflow: hidden; color: color-mix(in srgb, var(--divine-local) 45%, var(--color-text)); font: 700 .66rem/1.2 var(--font-data); letter-spacing: .16em; text-overflow: ellipsis; white-space: nowrap; }
 .cast-divine-slot__name { min-width: 0; overflow: hidden; color: var(--color-text); font-size: clamp(1rem, 2.7cqi, 1.625rem); font-weight: 900; line-height: 1.15; letter-spacing: .02em; text-overflow: ellipsis; white-space: nowrap; }
+/* An unregistered divine work reads quieter than a registered name. */
+.cast-divine-slot__name.is-empty { color: var(--color-muted); font-weight: 700; }
 
 /* Identity facts: one row, unequal columns, vertical rules; 2 x 2 in narrow identity columns. */
 .identity-grid { display: grid; grid-template-columns: 1fr 1.7fr .8fr 1fr; margin: 18px 10px 0; border-block: 1px solid color-mix(in srgb, var(--color-border) 62%, transparent); }
