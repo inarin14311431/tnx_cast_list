@@ -1,7 +1,7 @@
-/* Cast-sheet global help. */
+/* Cast-sheet global help. Fixed at the vertical centre of the shared page header (.page-header, about 115px tall). */
 .sheet-global-help {
   position: fixed;
-  top: 76px;
+  top: 43px;
   right: 18px;
   z-index: 140;
   display: grid;

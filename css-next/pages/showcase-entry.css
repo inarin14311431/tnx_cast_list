@@ -1,8 +1,8 @@
 /* Canonical stylesheet entry for the act showcase generator. */
 @layer app, showcase-page, showcase-theme;
 
-@import url("../index.css?v=64") layer(app);
-@import url("./showcase.css?v=2") layer(showcase-page);
+@import url("../index.css?v=65") layer(app);
+@import url("./showcase.css?v=3") layer(showcase-page);
 @import url("./showcase-background-presets.css?v=1") layer(showcase-page);
 @import url("./showcase-cast-pagination.css?v=1") layer(showcase-page);
 @import url("./showcase-guests.css?v=1") layer(showcase-page);

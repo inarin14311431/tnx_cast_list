@@ -26,9 +26,6 @@ body[data-page="troop.html"] .troop-editor-row{transition:border-color .15s ease
 @media(max-width:760px){
   .troop-combo-abilities,.troop-editor-row--outfit{grid-template-columns:1fr}.troop-editor-row--outfit [data-remove]{grid-column:auto}
   body[data-page="troop.html"] .background-grid,body[data-page="troop.html"] .scanlines{display:none}
-  body[data-page="troop.html"] .auth-header{padding:10px 12px}
-  body[data-page="troop.html"] .auth-header p{display:none}
-  body[data-page="troop.html"] .auth-header h1{font-size:16px;margin:4px 0 0}
   body[data-page="troop.html"] .troop-layout{width:100%;padding:10px 10px 24px}
   body[data-page="troop.html"] .troop-sheet{display:grid;gap:8px}
   body[data-page="troop.html"] .troop-sheet::before,body[data-page="troop.html"] .troop-editor::before{display:none}

@@ -30,7 +30,7 @@ test("tron CS modifier stays compact and description receives remaining width", 
 test("cast page loads the refreshed outfit definitions and layout assets", () => {
   assert.match(outfits, /cast-view-definitions\.js\?v=3/);
   assert.match(entry, /cast-outfit-column-widths\.css\?v=3/);
-  assert.match(castHtml, /cast-entry\.css\?v=29/);
+  assert.match(castHtml, /cast-entry\.css\?v=31/);
   assert.match(castHtml, /cast-outfits\.js\?v=10/);
 });
 

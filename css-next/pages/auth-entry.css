@@ -1,5 +1,5 @@
 /* Canonical stylesheet entry for authentication screens. */
 @layer app, auth-page;
 
-@import url("../index.css?v=64") layer(app);
-@import url("./auth.css?v=2") layer(auth-page);
+@import url("../index.css?v=65") layer(app);
+@import url("./auth.css?v=3") layer(auth-page);

@@ -27,7 +27,7 @@ test("troop and act management layout is consolidated into the account action la
 });
 
 test("account entry keeps one canonical action layer after the base stylesheet", () => {
-  assert.match(entry, /account\.css\?v=12/);
+  assert.match(entry, /account\.css\?v=13/);
   assert.match(entry, /account-actions\.css\?v=1/);
   assert.doesNotMatch(entry, /account-action-hierarchy\.css|account-troops/);
 });

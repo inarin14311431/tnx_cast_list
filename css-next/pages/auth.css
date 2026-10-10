@@ -1,7 +1,3 @@
-body > .auth-header { padding-top: 30px; }
-.auth-header > p { margin-top: 30px; color: var(--color-accent); font-family: var(--font-data); font-size: .7rem; letter-spacing: .2em; }
-.auth-header h1 { display: flex; align-items: baseline; gap: 14px; margin-top: 8px; font-size: clamp(2rem, 5vw, 4.2rem); }
-.auth-header h1 small { color: var(--color-accent); font-size: .66rem; }
 .auth-layout { display: grid; place-items: start center; padding: 42px 0 80px; }
 .auth-layout > .auth-terminal { position: relative; overflow: hidden; width: min(620px, 100%); box-shadow: var(--shadow-glow); }
 .auth-tabs { display: grid; grid-template-columns: 1fr 1fr; border-bottom: 1px solid var(--color-border-muted); }
@@ -28,9 +24,4 @@ body > .auth-header { padding-top: 30px; }
 @media (max-width: 767px) {
   body[data-page="login.html"] .auth-panel,
   body[data-page="password-reset.html"] .auth-panel { padding: 24px 18px; }
-}
-
-@media (min-width: 768px) and (max-width: 1024px) {
-  body[data-page="login.html"] .auth-header { grid-template-columns: 1fr; align-items: start; }
-  body[data-page="login.html"] .auth-header > :where(p, h1) { justify-self: start; text-align: left; }
 }
