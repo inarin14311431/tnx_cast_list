@@ -7,7 +7,7 @@ import {
   parseConcealment,
   parseDefense,
   normalizeNumber
-} from "./sheet-mobile-outfit-model.js?v=10";
+} from "./sheet-mobile-outfit-model.js?v=11";
 import { escapeHtml as esc } from "./dom-escape.js?v=2";
 
 export function ensureOutfitToolbar() {
