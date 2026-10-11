@@ -1,3 +1,5 @@
+import { isInitialGeneralSkill } from "./general-skill-catalog.js?v=2";
+
 // Initial skill package:
 // - 13 fixed General skills each have their first level for free (130 XP total).
 // - Social and Connection share a flexible 7-level free pool (35 XP total).
@@ -46,4 +48,26 @@ export function paidFixedInitialGeneralLevel(level, freeLevel = 0) {
 export function paidSocialConnectionInitialCost({ social = 0, connection = 0 } = {}) {
   const rawTotal = Math.max(0, numericValue(social)) + Math.max(0, numericValue(connection));
   return Math.max(0, rawTotal - INITIAL_SOCIAL_CONNECTION_SKILL_COST);
+}
+
+// Cost of General / Social / Connection skills, shared by the PC and mobile editors.
+// Each row carries the raw stored skill name (never a display label such as "★射撃"),
+// its category, level, free level and kind ("general" or "proper").
+export function generalSkillExperienceCost(rows = []) {
+  let general = 0;
+  let social = 0;
+  let connection = 0;
+  for (const row of rows) {
+    const name = String(row?.name ?? "").trim();
+    if (!name) continue;
+    const level = Math.max(0, numericValue(row.level));
+    const freeLevel = row.freeLevel;
+    const paidLevel = paidSkillLevel(level, freeLevel);
+    if (row.category === "social") social += paidLevel * 5;
+    else if (row.category === "connection") connection += paidLevel * 5;
+    else if (isInitialGeneralSkill(name)) general += paidFixedInitialGeneralLevel(level, freeLevel) * 10;
+    else general += paidLevel * (row.kind === "proper" ? 5 : 10);
+  }
+  const socialConnection = paidSocialConnectionInitialCost({ social, connection });
+  return { general, socialConnection, rawSocial: social, rawConnection: connection, total: general + socialConnection };
 }

@@ -106,6 +106,11 @@ MobileはPCと同じDOMを再利用するのではなく、Mobile UI adapterと�
 
 - `sheet-mobile-new-character-state.js` → `sheet-new-character-state.js` を利用
 - `sheet-mobile-new-character-state.js` → `sheet-save-payload.js` を利用
+- 一般技能・社会・コネの経験点: `experience.js`(PC)と `sheet-mobile-header-exp.js` が
+  `sheet-experience-rules.js` の `generalSkillExperienceCost()` を利用。名前は表示用の「★」付き
+  ラベルではなく保存名を渡す(Mobileは行の `data-general-name`)
+- CS(基礎値・最終値・保存する `cs_base`): `sheet-sidebar-actions.js`(PC)と
+  `sheet-mobile-ability.js` が `sheet-ability-calculation.js` の `calculateCombatSpeed()` を利用
 
 つまり「画面は別、ルールは共有」が基本形である。
 

@@ -40,12 +40,12 @@ test("Social and Connection can redistribute their shared seven-level allowance"
 test("desktop and mobile calculators use fixed-General and shared Social Connection rules", async () => {
   const desktop = await readFile(new URL("../js/experience.js", import.meta.url), "utf8");
   const mobile = compactSource(await readFile(new URL("../js/sheet-mobile-header-exp.js", import.meta.url), "utf8"));
-  assert.match(desktop, /isInitialGeneralSkill/);
-  assert.match(desktop, /paidFixedInitialGeneralLevel/);
-  assert.match(desktop, /paidSocialConnectionInitialCost/);
-  assert.match(mobile, /isInitialGeneralSkill/);
-  assert.match(mobile, /paidFixedInitialGeneralLevel/);
-  assert.match(mobile, /paidSocialConnectionInitialCost/);
-  assert.match(desktop, /sheet-experience-rules\.js\?v=6/);
-  assert.match(mobile, /sheet-experience-rules\.js\?v=6/);
+  const rules = await readFile(new URL("../js/sheet-experience-rules.js", import.meta.url), "utf8");
+  assert.match(rules, /isInitialGeneralSkill\(name\)/);
+  assert.match(rules, /paidFixedInitialGeneralLevel/);
+  assert.match(rules, /paidSocialConnectionInitialCost/);
+  assert.match(desktop, /generalSkillExperienceCost/);
+  assert.match(mobile, /generalSkillExperienceCost/);
+  assert.match(desktop, /sheet-experience-rules\.js\?v=7/);
+  assert.match(mobile, /sheet-experience-rules\.js\?v=7/);
 });

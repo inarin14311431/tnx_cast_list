@@ -1,6 +1,7 @@
 import { supabase } from "./supabase-client.js";
 import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
+import { calculateCombatSpeed } from "./sheet-ability-calculation.js?v=2";
 const ABILITIES = [
   ["reason", "理性", "REASON"],
   ["passion", "感情", "PASSION"],
@@ -19,6 +20,7 @@ let user = null,
   character = null,
   activeAbility = null,
   abilityDirty = false,
+  csNeedsPersist = false,
   repairingSummary = false;
 function styleRecord(name, attribute = "") {
   if (name === "ウツワ") return UTSUWA_ATTRIBUTES.find(item => item.name === attribute) || null;
@@ -77,6 +79,37 @@ function normalizeAbilityState() {
       num(character[`${key}_control_manual`]);
   }
 }
+function abilityTotal(key) {
+  return num(character[`${key}_base`]) + num(character[`${key}_gear`]) + num(character[`${key}_manual`]);
+}
+function csModifier() {
+  return num(character.cs_gear) + num(character.cs_manual);
+}
+function combatSpeed(modifier = csModifier()) {
+  return calculateCombatSpeed({
+    reason: abilityTotal("reason"),
+    passion: abilityTotal("passion"),
+    life: abilityTotal("life"),
+    modifier
+  });
+}
+// Same rule as the PC editor: CS is always derived from reason/passion/life and the CS
+// modifier, and the saved fields mean the same thing (cs_base + cs_gear === cs, cs_manual 0).
+// Returns whether the stored CS differed from the derived one.
+function applyCombatSpeed() {
+  if (!character) return false;
+  const cs = combatSpeed(),
+    changed =
+      num(character.cs_base) !== cs.storedBase ||
+      num(character.cs_gear) !== cs.modifier ||
+      num(character.cs_manual) !== 0 ||
+      num(character.cs) !== cs.final;
+  character.cs_base = cs.storedBase;
+  character.cs_gear = cs.modifier;
+  character.cs_manual = 0;
+  character.cs = cs.final;
+  return changed;
+}
 function renderSummary() {
   const root = $("#mobile-ability-summary");
   if (!root || !character) return;
@@ -92,7 +125,7 @@ function renderSummary() {
       ([key]) =>
         `<button type="button" class="mobile-ability-matrix__value" data-mobile-ability="${key}">${displayBreakdown(styleBaseline(key, true), character[`${key}_control_growth`], num(character[`${key}_control_gear`]) + num(character[`${key}_control_manual`]))}</button>`
     ).join("");
-  root.innerHTML = `<div class="mobile-ability-matrix"><span class="mobile-ability-matrix__corner"></span>${header}<strong class="mobile-ability-matrix__rowlabel">能力値</strong>${abilityRow}<strong class="mobile-ability-matrix__rowlabel">制御値</strong>${controlRow}</div><button type="button" class="mobile-cs-cell" data-mobile-cs="1"><span>CS <small>COMBAT SPEED</small></span><strong>${displayBreakdown(character.cs_base ?? character.cs ?? 0, 0, num(character.cs_gear) + num(character.cs_manual))}</strong></button>`;
+  root.innerHTML = `<div class="mobile-ability-matrix"><span class="mobile-ability-matrix__corner"></span>${header}<strong class="mobile-ability-matrix__rowlabel">能力値</strong>${abilityRow}<strong class="mobile-ability-matrix__rowlabel">制御値</strong>${controlRow}</div><button type="button" class="mobile-cs-cell" data-mobile-cs="1"><span>CS <small>COMBAT SPEED</small></span><strong>${displayBreakdown(combatSpeed().base, 0, csModifier())}</strong></button>`;
 }
 function observeSummaryOwner() {
   const root = $("#mobile-ability-summary");
@@ -163,6 +196,7 @@ function commitAbility() {
   character[`${key}_control_gear`] = controlMod;
   character[`${key}_control_manual`] = 0;
   character[`${key}_control`] = character[`${key}_control_base`] + controlMod;
+  applyCombatSpeed();
   if (before !== JSON.stringify([abilityGrowth, abilityMod, controlGrowth, controlMod])) markAbilityDirty();
   renderSummary();
 }
@@ -173,29 +207,26 @@ function closeAbility() {
 }
 function openCsDialog() {
   if (!character) return;
-  $('[data-mobile-cs-input="base"]').value = String(num(character.cs_base ?? character.cs));
-  $('[data-mobile-cs-input="mod"]').value = String(num(character.cs_gear) + num(character.cs_manual));
+  const cs = combatSpeed();
+  $('[data-mobile-cs-input="base"]').value = String(cs.base);
+  $('[data-mobile-cs-input="mod"]').value = String(cs.modifier);
   refreshCsPreview();
   $("#mobile-cs-dialog")?.showModal();
 }
 function refreshCsPreview() {
-  const base = num($('[data-mobile-cs-input="base"]')?.value),
-    mod = num($('[data-mobile-cs-input="mod"]')?.value);
-  $("#mobile-cs-final").textContent = String(base + mod);
+  if (!character) return;
+  const cs = combatSpeed($('[data-mobile-cs-input="mod"]')?.value);
+  $('[data-mobile-cs-input="base"]').value = String(cs.base);
+  $("#mobile-cs-final").textContent = String(cs.final);
 }
 function commitCs() {
   if (!character) return;
-  const base = num($('[data-mobile-cs-input="base"]')?.value),
-    mod = num($('[data-mobile-cs-input="mod"]')?.value),
-    before = JSON.stringify([
-      num(character.cs_base ?? character.cs),
-      num(character.cs_gear) + num(character.cs_manual)
-    ]);
-  character.cs_base = base;
+  const before = csModifier(),
+    mod = combatSpeed($('[data-mobile-cs-input="mod"]')?.value).modifier;
   character.cs_gear = mod;
   character.cs_manual = 0;
-  character.cs = base + mod;
-  if (before !== JSON.stringify([base, mod])) markAbilityDirty();
+  applyCombatSpeed();
+  if (before !== mod) markAbilityDirty();
   renderSummary();
 }
 function closeCs() {
@@ -243,15 +274,19 @@ function collectAbilityPayload() {
   }
   return payload;
 }
+function collectCsPayload() {
+  return { cs_base: num(character.cs_base), cs_gear: num(character.cs_gear), cs_manual: 0, cs: num(character.cs) };
+}
 async function flushAbility() {
-  if (!abilityDirty || !character) return;
+  if ((!abilityDirty && !csNeedsPersist) || !character) return;
   const { error } = await supabase
     .from("characters")
-    .update(collectAbilityPayload())
+    .update(abilityDirty ? collectAbilityPayload() : collectCsPayload())
     .eq("id", character.id)
     .eq("owner_id", user.id);
   if (error) throw error;
   abilityDirty = false;
+  csNeedsPersist = false;
 }
 function bind() {
   $("#mobile-ability-summary")?.addEventListener("click", event => {
@@ -275,17 +310,18 @@ function bind() {
     event.preventDefault();
     closeCs();
   });
-  ["base", "mod"].forEach(name => $(`[data-mobile-cs-input="${name}"]`)?.addEventListener("input", refreshCsPreview));
+  $('[data-mobile-cs-input="mod"]')?.addEventListener("input", refreshCsPreview);
   window.addEventListener("tnx:mobile-style-patch", event => {
     if (!character || !event.detail) return;
     Object.assign(character, event.detail);
     normalizeAbilityState();
+    applyCombatSpeed();
     markAbilityDirty();
     renderSummary();
     if ($("#mobile-ability-dialog")?.open && activeAbility) openAbilityDialog(activeAbility, true);
   });
   document.addEventListener("tnx:mobile-before-save", event => {
-    if (abilityDirty) event.detail.add(flushAbility());
+    if (abilityDirty || csNeedsPersist) event.detail.add(flushAbility());
   });
   window.addEventListener("beforeunload", event => {
     if (!abilityDirty) return;
@@ -301,6 +337,9 @@ async function init() {
   character = context.character;
   if (!user || !character) return;
   normalizeAbilityState();
+  // Like PC, opening shows the derived CS without marking the editor dirty; a stored CS
+  // that disagrees is corrected the next time the user saves.
+  csNeedsPersist = applyCombatSpeed();
   renderSummary();
   observeSummaryOwner();
 }

@@ -62,14 +62,16 @@ test("stepped experience cost follows ability and control thresholds", () => {
 test("desktop and mobile calculators share exact initial experience rules", async () => {
   const desktop = await readFile(new URL("../js/experience.js", import.meta.url), "utf8");
   const mobile = compactSource(await readFile(new URL("../js/sheet-mobile-header-exp.js", import.meta.url), "utf8"));
-  assert.match(desktop, /general-skill-catalog\.js/);
-  assert.match(desktop, /sheet-experience-rules\.js\?v=6/);
-  assert.match(desktop, /paidFixedInitialGeneralLevel/);
-  assert.match(desktop, /paidSocialConnectionInitialCost\(\{social,connection\}\)/);
-  assert.match(mobile, /general-skill-catalog\.js/);
-  assert.match(mobile, /sheet-experience-rules\.js\?v=6/);
-  assert.match(mobile, /paidFixedInitialGeneralLevel/);
-  assert.match(mobile, /paidSocialConnectionInitialCost\(\{social,connection\}\)/);
+  const rules = await readFile(new URL("../js/sheet-experience-rules.js", import.meta.url), "utf8");
+  // General / Social / Connection costs live in one shared function that both editors call.
+  assert.match(rules, /general-skill-catalog\.js/);
+  assert.match(rules, /export function generalSkillExperienceCost\(/);
+  assert.match(rules, /paidFixedInitialGeneralLevel\(level, freeLevel\)/);
+  assert.match(rules, /paidSocialConnectionInitialCost\(\{ social, connection \}\)/);
+  assert.match(desktop, /sheet-experience-rules\.js\?v=7/);
+  assert.match(desktop, /generalSkillExperienceCost\(generalRows\)/);
+  assert.match(mobile, /sheet-experience-rules\.js\?v=7/);
+  assert.match(mobile, /generalSkillExperienceCost\(rows\)/);
   assert.match(mobile, /current:character\[`\$\{key\}_base`\]/);
   assert.match(mobile, /current:character\[`\$\{key\}_control_base`\]/);
   assert.match(mobile, /select\("id,skill_kind,free_level"\)/);

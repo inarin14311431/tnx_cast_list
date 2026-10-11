@@ -1,4 +1,5 @@
 import { initialGeneralSkillSuit } from "./general-skill-catalog.js?v=2";
+import { mobileGeneralRowName } from "./sheet-mobile-general-display.js?v=20261011-1";
 
 const SUITS = ["reason", "passion", "life", "mundane"];
 
@@ -31,7 +32,7 @@ function applyDialogRule(name) {
 document.addEventListener("click", event => {
   const row = event.target.closest?.("[data-general-id]");
   if (!row) return;
-  const name = row.querySelector(".mobile-general-display-name")?.textContent?.trim() || "";
+  const name = mobileGeneralRowName(row);
   queueMicrotask(() => applyDialogRule(name));
 });
 

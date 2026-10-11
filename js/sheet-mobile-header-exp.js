@@ -1,15 +1,14 @@
 import { supabase } from "./supabase-client.js";
 import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
-import { isInitialGeneralSkill } from "./general-skill-catalog.js?v=2";
+import { mobileGeneralRowName } from "./sheet-mobile-general-display.js?v=20261011-1";
 import {
   CREATION_ALLOWANCE,
-  paidFixedInitialGeneralLevel,
-  paidSocialConnectionInitialCost,
+  generalSkillExperienceCost,
   paidSkillLevel,
   resolveCanonicalCurrent,
   steppedExperienceCost
-} from "./sheet-experience-rules.js?v=6";
+} from "./sheet-experience-rules.js?v=7";
 const ABILITIES = ["reason", "passion", "life", "mundane"];
 const STYLE_COST = { none: 0, normal: 10, secret: 20, ultimate: 50, direction: 2 };
 const KIND_FROM_LABEL = { なし: "none", 特技: "normal", 秘技: "secret", 奥義: "ultimate", 演出: "direction" };
@@ -20,6 +19,7 @@ const $ = selector => document.querySelector(selector),
   };
 let character = null,
   skillMeta = new Map(),
+  skillMetaLoaded = false,
   troopExperience = 0,
   hasLinkedTroops = false;
 function inject() {
@@ -56,26 +56,20 @@ function levelFromText(value) {
   return match ? num(match[0]) : 0;
 }
 function generalSkillCost() {
-  let general = 0,
-    social = 0,
-    connection = 0;
+  const rows = [];
   document.querySelectorAll("#mobile-general-skills [data-general-id]").forEach(row => {
-    const name = row.querySelector(".mobile-general-display-name")?.textContent?.trim() || "";
-    if (!name || name === "名称未入力") return;
+    const name = mobileGeneralRowName(row);
+    if (!name) return;
     const level = Math.max(0, levelFromText(row.querySelector("strong")?.textContent)),
       id = String(row.dataset.generalId || ""),
       category =
         row.closest("[data-skill-category]")?.dataset.skillCategory ||
         (/^社会[：:]/.test(name) ? "social" : /^コネ[：:]/.test(name) ? "connection" : "general"),
       meta = skillMeta.get(id) || {},
-      kind = inferGeneralKind(name, category, meta.kind),
-      paidLevel = paidSkillLevel(level, meta.freeLevel);
-    if (category === "social") social += paidLevel * 5;
-    else if (category === "connection") connection += paidLevel * 5;
-    else if (isInitialGeneralSkill(name)) general += paidFixedInitialGeneralLevel(level, meta.freeLevel) * 10;
-    else general += paidLevel * (kind === "proper" ? 5 : 10);
+      kind = inferGeneralKind(name, category, meta.kind);
+    rows.push({ name, category, level, freeLevel: meta.freeLevel, kind });
   });
-  return general + paidSocialConnectionInitialCost({ social, connection });
+  return generalSkillExperienceCost(rows).total;
 }
 function styleSkillCost() {
   let total = 0;
@@ -119,13 +113,23 @@ function calculateLocalTotal() {
   }
   return ability + control + generalSkillCost() + styleSkillCost() + outfitCost() - CREATION_ALLOWANCE;
 }
+// Skills, outfits and skill metadata load asynchronously. Until all of them are in,
+// a clean editor shows the stored value so a partial total never flashes; afterwards the
+// recalculated total is shown (as on PC), without marking the editor dirty.
+function editorContentReady() {
+  return (
+    skillMetaLoaded &&
+    Boolean($("#mobile-general-skills [data-skill-category]")) &&
+    Boolean($("#mobile-outfits")?.firstElementChild)
+  );
+}
 function calculate() {
   if (!character) return;
   const localTotal = calculateLocalTotal(),
     saveButton = $("#mobile-save"),
     clean = saveButton?.dataset.state !== "dirty",
     stored = Number(character.experience_points),
-    total = clean && Number.isFinite(stored) ? stored : localTotal,
+    total = clean && !editorContentReady() && Number.isFinite(stored) ? stored : localTotal,
     output = $("#mobile-exp-total"),
     text = displayTotal(total);
   if (output && output.textContent !== text) output.textContent = text;
@@ -137,13 +141,14 @@ async function refreshSkillMeta() {
     .from("character_skills")
     .select("id,skill_kind,free_level")
     .eq("character_id", character.id);
-  if (!result.error)
-    skillMeta = new Map(
-      (result.data || []).map(item => [
-        String(item.id),
-        { kind: item.skill_kind || "", freeLevel: Math.max(0, num(item.free_level)) }
-      ])
-    );
+  if (result.error) return;
+  skillMetaLoaded = true;
+  skillMeta = new Map(
+    (result.data || []).map(item => [
+      String(item.id),
+      { kind: item.skill_kind || "", freeLevel: Math.max(0, num(item.free_level)) }
+    ])
+  );
 }
 async function refreshTroopExperience() {
   if (!character) return;

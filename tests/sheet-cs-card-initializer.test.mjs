@@ -11,9 +11,16 @@ test("sheet CS card uses an explicit idempotent initializer", () => {
   assert.match(source, /initializeSheetCsCard\(\);/);
 });
 
-test("sheet CS card preserves its existing calculation and synchronization hooks", () => {
-  assert.match(source, /Math\.floor\(\(\s*abilityValue\('reason'\) \+\s*abilityValue\('passion'\) \+\s*abilityValue\('life'\)\s*\) \/ 2\)/);
-  assert.match(source, /Math\.max\(0, calculatedBase \+ modifier\)/);
+test("sheet CS card preserves its existing calculation and synchronization hooks", async () => {
+  // The formula lives in the shared, DOM-free helper; the PC card feeds it the same inputs as before.
+  const helper = await readFile(new URL("../js/sheet-ability-calculation.js", import.meta.url), "utf8");
+  assert.match(helper, /Math\.floor\(\(toInteger\(reason\) \+ toInteger\(passion\) \+ toInteger\(life\)\) \/ 2\)/);
+  assert.match(helper, /Math\.max\(0, base \+ normalizedModifier\)/);
+  assert.match(helper, /storedBase: final - normalizedModifier/);
+  assert.match(source, /import \{ calculateCombatSpeed \} from "\.\/sheet-ability-calculation\.js\?v=2";/);
+  assert.match(source, /calculateCombatSpeed\(\{\s*reason: abilityValue\('reason'\),\s*passion: abilityValue\('passion'\),\s*life: abilityValue\('life'\),\s*modifier: toInteger\(modifierInput\.value\)\s*\}\)/);
+  assert.match(source, /displayBase\.value = cs\.base;/);
+  assert.match(source, /storedBase\.value = cs\.storedBase;/);
   assert.match(source, /modifierInput\.addEventListener\('change'/);
   assert.match(source, /document\.addEventListener\('input'/);
   assert.match(source, /document\.addEventListener\('change'/);

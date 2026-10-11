@@ -5,6 +5,14 @@ export function mobileGeneralDisplayName(value) {
   return STARRED_GENERAL_NAMES.has(name) ? `★${name}` : name;
 }
 
+// Rule and cost code must use the stored skill name, never the "★" display label.
+export function mobileGeneralRowName(row) {
+  const stored = row?.dataset?.generalName;
+  if (stored !== undefined) return String(stored).trim();
+  const label = row?.querySelector?.(".mobile-general-display-name")?.textContent?.trim() || "";
+  return label === "名称未入力" ? "" : label.replace(/^★/, "");
+}
+
 function applyMobileGeneralDisplayMarks(root = document) {
   for (const group of root.querySelectorAll?.('[data-skill-category="general"]') ?? []) {
     for (const label of group.querySelectorAll('.mobile-general-display-name')) {

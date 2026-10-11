@@ -1,3 +1,5 @@
+import { calculateCombatSpeed } from "./sheet-ability-calculation.js?v=2";
+
 (() => {
   function initializeSheetSidebarActions() {
     const panel = document.querySelector('.exp-panel');
@@ -139,17 +141,16 @@
       const finalOutput = document.querySelector('#cs-final');
       if (!storedBase || !displayBase || !modifierInput || !finalOutput) return;
 
-      const calculatedBase = Math.floor((
-        abilityValue('reason') +
-        abilityValue('passion') +
-        abilityValue('life')
-      ) / 2);
-      const modifier = toInteger(modifierInput.value);
-      const finalValue = Math.max(0, calculatedBase + modifier);
+      const cs = calculateCombatSpeed({
+        reason: abilityValue('reason'),
+        passion: abilityValue('passion'),
+        life: abilityValue('life'),
+        modifier: toInteger(modifierInput.value)
+      });
 
-      displayBase.value = calculatedBase;
-      finalOutput.textContent = finalValue;
-      storedBase.value = finalValue - modifier;
+      displayBase.value = cs.base;
+      finalOutput.textContent = cs.final;
+      storedBase.value = cs.storedBase;
     };
 
     const patchCsCard = () => {
