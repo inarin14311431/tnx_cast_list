@@ -18,6 +18,7 @@ function proxyValue(row, field, fallback) {
 function withoutRetiredModifier(payload) {
   const current = { ...payload };
   delete current.mundane_modifier;
+  delete current.defense;
   return current;
 }
 
@@ -53,7 +54,6 @@ export function enrichOutfitPayload(items) {
       const category = item.category || "other";
       return withoutLegacyElectronicControl(withoutRetiredModifier({
         ...item,
-        defense: "",
         sort_order: Number.isFinite(Number(item.sort_order)) ? Number(item.sort_order) : index,
         ofc_details: normalizedDetailsWithLegacyFallback(item, category)
       }));
@@ -73,9 +73,7 @@ export function enrichOutfitPayload(items) {
       category,
       concealment: String(valueOf(row, "concealment") || ""),
       slot: proxyValue(row, "slot", item.slot || ""),
-      // Outfit defense is canonical only as structured S/P/I in ofc_details.
-      // The legacy combined base column is intentionally cleared for every category.
-      defense: "",
+      // Outfit defense is stored only in ofc_details.defense_s/p/i.
       control_modifier: controlModifier,
       cs_modifier: csModifier,
       sort_order: Number.isFinite(Number(item.sort_order)) ? Number(item.sort_order) : index,
