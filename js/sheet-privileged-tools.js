@@ -4,7 +4,7 @@ const editor = await waitForEditor();
 if (editor) {
   const anchors = installSearchAnchors();
   try {
-    await import("./sheet-master-search.js?v=7");
+    await import("./sheet-master-search.js?v=8");
     await Promise.all([
       import("./sheet-master-search-filters.js?v=3"),
       import("./sheet-master-search-enhancements.js?v=2"),
@@ -12,7 +12,7 @@ if (editor) {
       import("./outfit-ofc-master-apply.js?v=20260819-3"),
       import("./sheet-master-autofill.js?v=10")
     ]);
-    await import("./sheet-tsv-import.js?v=1");
+    await import("./sheet-tsv-import.js?v=2");
   } finally {
     anchors.forEach(anchor => anchor.remove());
   }

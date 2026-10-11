@@ -45,6 +45,12 @@ function isInternalNormalization(event) {
   return Boolean(event?.detail?.tnxInternalNormalization);
 }
 
+// Controls inside [data-sheet-transient] (snapshot labels, import/search dialogs)
+// are not part of the saved cast payload, so editing them must not mark the sheet dirty.
+function isTransientControl(target) {
+  return Boolean(target?.closest?.("[data-sheet-transient]"));
+}
+
 export function initSheetEditorInteractions({
   root = document,
   windowRef = window,
@@ -59,6 +65,7 @@ export function initSheetEditorInteractions({
 
     const handleEdit = event => {
       if (isLoading() || isInternalNormalization(event) || !event.target?.matches?.("input,select,textarea")) return;
+      if (isTransientControl(event.target)) return;
       onEdit(event);
     };
 

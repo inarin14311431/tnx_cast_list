@@ -15,7 +15,7 @@ import {
 } from "./sheet-load-normalization.js?v=2";
 import { formatSheetPersistenceError } from "./sheet-error-message.js?v=1";
 import { initSheetRowInteractions } from "./sheet-row-interactions.js?v=1";
-import { initSheetEditorInteractions } from "./sheet-editor-interactions.js?v=1";
+import { initSheetEditorInteractions } from "./sheet-editor-interactions.js?v=2";
 import { renderSkillEditorSections } from "./sheet-skill-renderer.js?v=2";
 import { renderOutfitEditor } from "./sheet-outfit-renderer.js?v=2";
 import {
