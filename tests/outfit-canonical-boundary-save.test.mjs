@@ -37,4 +37,6 @@ test("PC OFC save route uses shared canonical detail normalization", () => {
   assert.match(saveSource, /return normalizeImportedOutfitDetails\(category,/);
   assert.match(saveSource, /function withoutRetiredModifier/);
   assert.match(saveSource, /delete current\.mundane_modifier/);
+  assert.match(saveSource, /delete current\.defense/);
+  assert.doesNotMatch(saveSource, /defense:\s*""/);
 });
