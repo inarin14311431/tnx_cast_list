@@ -44,5 +44,5 @@ test("mobile ordering assets use direct cache versions without a runtime rewrite
   assert.doesNotMatch(app, /sheet-mobile-ordering-style-refresh/);
   assert.match(html, /sheet-mobile-entry\.css\?v=[0-9-]+/);
   assert.match(cssEntry, /sheet-mobile-skills\.css\?v=6[^\n]*layer\(mobile-skills\)/);
-  assert.match(cssEntry, /sheet-mobile-outfit\.css\?v=9[^\n]*layer\(mobile-outfit\)/);
+  assert.match(cssEntry, /sheet-mobile-outfit\.css\?v=10[^\n]*layer\(mobile-outfit\)/);
 });

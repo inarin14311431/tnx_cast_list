@@ -42,7 +42,7 @@ test("mobile outfit reads legacy combined defense but never saves it again", () 
   assert.equal(item._defI, "7");
 
   const record = collectOutfitRecord(item, { id: "character" });
-  assert.equal(record.defense, "");
+  assert.equal(Object.hasOwn(record, "defense"), false);
   assert.equal(record.ofc_details.defense_s, "12");
   assert.equal(record.ofc_details.defense_p, "9");
   assert.equal(record.ofc_details.defense_i, "7");
@@ -122,4 +122,17 @@ test("mobile editor no longer creates or saves retired mundane_modifier", () => 
   const record = collectOutfitRecord(item, { id: "character" });
   assert.equal(Object.hasOwn(record, "mundane_modifier"), false);
   assert.equal(Object.hasOwn(record.ofc_details, "mundane_modifier"), false);
+});
+
+test("mobile outfit payload excludes every retired database column for all categories", () => {
+  for (const category of ["weapon", "armor", "cyberware", "tron", "vehicle", "residence", "other"]) {
+    const item = cloneOutfit({ category, name: "COLUMN CONTRACT", defense: "S 1 / P 2 / I 3", mundane_modifier: 3, electronic_control: "16", ofc_details: {} });
+    const record = collectOutfitRecord(item, { id: "character" });
+    for (const key of ["defense", "mundane_modifier", "electronic_control"]) {
+      assert.equal(Object.hasOwn(record, key), false, category + " still emits retired " + key);
+    }
+    assert.equal(record.ofc_details.defense_s, "1");
+    assert.equal(record.ofc_details.defense_p, "2");
+    assert.equal(record.ofc_details.defense_i, "3");
+  }
 });

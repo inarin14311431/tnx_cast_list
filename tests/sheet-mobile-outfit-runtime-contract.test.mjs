@@ -61,7 +61,7 @@ test("mobile outfit persists split concealment and consumes legacy modifier alia
 
 test("mobile outfit reads old combined defense but never re-emits it", () => {
   assert.match(model, /parseLegacyDefense/);
-  assert.match(model, /defense:\s*""/);
+  assert.doesNotMatch(model, /defense:\s*""/);
   assert.doesNotMatch(model, /function composeDefense/);
   assert.match(model, /defense_s:/);
   assert.match(model, /defense_p:/);
@@ -74,4 +74,16 @@ test("mobile outfit does not generate retired mundane_modifier", () => {
   assert.doesNotMatch(blankBlock, /mundane_modifier/);
   assert.doesNotMatch(collectBlock, /mundane_modifier:/);
   assert.match(model, /delete draft\.mundane_modifier/);
+});
+
+test("mobile outfit delete button spans the whole 6-column form grid", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../css-next/pages/sheet-mobile-outfit.css", import.meta.url), "utf8");
+  assert.match(css, /\.mobile-outfit-editor__grid>\.mobile-danger-action\{grid-column:1\/-1/);
+});
+
+test("delete actions keep hidden state until a real record is eligible for deletion", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const css = await readFile(new URL("../css-next/pages/sheet-mobile-ui.css", import.meta.url), "utf8");
+  assert.match(css, /\.mobile-danger-action\[hidden\]\{display:none\}/);
 });

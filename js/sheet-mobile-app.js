@@ -1,6 +1,6 @@
 import "./sheet-mobile-runtime.js?v=2";
 import "./sheet-mobile-save-coordinator.js?v=20260818-1";
-import "./sheet-mobile-ui.js?v=20260821-5";
+import "./sheet-mobile-ui.js?v=20261011-1";
 import "./sheet-mobile.js?v=8";
 import "./sheet-mobile-navigation-context.js?v=1";
 import "./sheet-mobile-profile.js?v=20260903-2";
@@ -13,7 +13,7 @@ import "./sheet-mobile-skills.js?v=20261011-1";
 import "./sheet-mobile-initial-general-rules.js?v=20261011-1";
 import "./sheet-mobile-skill-kind-normalizer.js?v=20261011-2";
 import "./sheet-mobile-general-display.js?v=20261011-1";
-import "./sheet-mobile-outfit.js?v=20260821-4";
+import "./sheet-mobile-outfit.js?v=20261011-1";
 import "./sheet-mobile-combos.js?v=20260821-5";
 import "./sheet-mobile-snapshots.js?v=20260818-5";
 import "./sheet-mobile-image.js?v=20260818-5";

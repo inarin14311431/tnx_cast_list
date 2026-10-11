@@ -97,14 +97,15 @@ function promoteDeleteAction(source){
 }
 
 function promoteDeleteActions(root=document){
-  if(root?.matches?.(".mobile-editor-dialog .mobile-danger-action"))promoteDeleteAction(root);
-  root?.querySelectorAll?.(".mobile-editor-dialog .mobile-danger-action:not([data-mobile-delete-proxy='1'])").forEach(promoteDeleteAction);
+  if(root?.matches?.(".mobile-danger-action"))promoteDeleteAction(root);
+  root?.querySelectorAll?.(".mobile-danger-action:not([data-mobile-delete-proxy='1'])").forEach(promoteDeleteAction);
 }
 
 function observeDeleteActions(){
-  promoteDeleteActions();
-  const dialogs=[...document.querySelectorAll(".mobile-editor-dialog")];
-  if(!dialogs.length)return;
+  // Feature modules create their dialogs after this shared module initializes.
+  // Watch only direct body additions, then observe each dialog's own subtree.
+  const observed=new WeakSet();
+  const options={childList:true,subtree:true,attributes:true,attributeFilter:["hidden"]};
   const observer=new MutationObserver(mutations=>{
     for(const mutation of mutations){
       if(mutation.type==="attributes"){
@@ -112,11 +113,21 @@ function observeDeleteActions(){
         continue;
       }
       for(const node of mutation.addedNodes){
-        if(node.nodeType===Node.ELEMENT_NODE)promoteDeleteActions(node);
+        if(node.nodeType!==Node.ELEMENT_NODE)continue;
+        if(node.matches?.(".mobile-editor-dialog"))observeDialog(node);
+        node.querySelectorAll?.(".mobile-editor-dialog").forEach(observeDialog);
+        promoteDeleteActions(node);
       }
     }
   });
-  dialogs.forEach(dialog=>observer.observe(dialog,{childList:true,subtree:true,attributes:true,attributeFilter:["hidden"]}));
+  function observeDialog(dialog){
+    if(observed.has(dialog))return;
+    observed.add(dialog);
+    observer.observe(dialog,options);
+    promoteDeleteActions(dialog);
+  }
+  document.querySelectorAll(".mobile-editor-dialog").forEach(observeDialog);
+  observer.observe(document.body,{childList:true});
 }
 
 function init(){

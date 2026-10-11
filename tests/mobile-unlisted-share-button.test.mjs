@@ -49,8 +49,8 @@ test("mobile entry points bust caches for the compact share UI", async () => {
     read("js/sheet-mobile-app.js")
   ]);
 
-  assert.match(html, /sheet-mobile-entry\.css\?v=4/);
-  assert.match(html, /sheet-mobile-app\.js\?v=15/);
+  assert.match(html, /sheet-mobile-entry\.css\?v=5/);
+  assert.match(html, /sheet-mobile-app\.js\?v=16/);
   assert.match(entry, /sheet-mobile-ux\.css\?v=4/);
   assert.match(entry, /character-share\.css\?v=2/);
   assert.match(app, /character-share-editor\.js\?v=2/);

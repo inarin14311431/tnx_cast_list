@@ -35,6 +35,7 @@ test("armor detail collection reads canonical OFC S P I only", () => {
 
 test("current armor flow never reconstructs or saves combined defense", () => {
   assert.doesNotMatch(normalization, /parseLegacyDescription|composeDefense/);
-  assert.match(save, /defense: ""/);
+  assert.doesNotMatch(save, /defense: ""/);
+  assert.match(save, /delete current\.defense/);
   assert.doesNotMatch(save, /composeDefense|data-armor-defense|parseDefense/);
 });
