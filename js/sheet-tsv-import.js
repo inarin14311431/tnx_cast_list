@@ -98,6 +98,7 @@ function createOpenButton(id, label) {
 function createDialog() {
   const dialog = document.createElement("dialog");
   dialog.id = "tsv-dialog";
+  dialog.dataset.sheetTransient = "";
   dialog.innerHTML = `
     <form>
       <header class="tsv-import-guide__header">

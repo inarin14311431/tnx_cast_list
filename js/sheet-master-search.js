@@ -62,6 +62,7 @@ function createDialog() {
   const dialog = document.createElement("dialog");
   dialog.id = "master-search-dialog";
   dialog.className = "master-search-dialog";
+  dialog.dataset.sheetTransient = "";
   dialog.innerHTML = `
     <section class="master-search-shell">
       <header class="master-search-header">

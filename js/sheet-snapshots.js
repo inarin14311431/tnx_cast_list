@@ -25,6 +25,7 @@ function install() {
 
   panel = document.createElement("section");
   panel.className = "sheet-snapshot-panel";
+  panel.dataset.sheetTransient = "";
   panel.innerHTML = `
     <header><span>スナップショット</span><small>SNAPSHOTS</small></header>
     <p class="sheet-snapshot-panel__note">保存済み状態を最大${MAX_SNAPSHOTS}世代まで保持します。</p>
