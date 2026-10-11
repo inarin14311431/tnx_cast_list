@@ -1,13 +1,12 @@
+import { canonicalGeneralSkillName, generalSkillKindForName } from "./general-skill-catalog.js?v=2";
 import { supabase } from "./supabase-client.js";
 import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
 
-const PROPER_GENERAL_PREFIXES=["製作：","芸術：","操縦："];
 let character=null;
 let running=false;
 
 function expectedGeneralKind(name=""){
-  const text=String(name||"");
-  return PROPER_GENERAL_PREFIXES.some(prefix=>text.startsWith(prefix))?"proper":"general";
+  return generalSkillKindForName(name);
 }
 
 async function normalizeGeneralKinds(){
@@ -19,8 +18,13 @@ async function normalizeGeneralKinds(){
     let changed=false;
     for(const row of rows.data||[]){
       const expected=expectedGeneralKind(row.name);
-      if((row.skill_kind||"")===expected)continue;
-      const result=await supabase.from("character_skills").update({skill_kind:expected}).eq("id",row.id).eq("character_id",character.id);
+      const canonicalName=canonicalGeneralSkillName(row.name);
+      const patch={};
+      if((row.skill_kind||"")!==expected)patch.skill_kind=expected;
+      // Display markers are not part of the persisted skill identity.
+      if(expected==="proper" && row.name!==canonicalName)patch.name=canonicalName;
+      if(!Object.keys(patch).length)continue;
+      const result=await supabase.from("character_skills").update(patch).eq("id",row.id).eq("character_id",character.id);
       if(result.error)throw result.error;
       changed=true;
     }
