@@ -164,7 +164,6 @@ export function collectOutfitRecord(item, character) {
     experience_cost: normalizeNumber(item.experience_cost),
     concealment,
     attack: item.attack || "",
-    defense: "",
     range: item.range || "",
     slot: item.slot || "",
     description: item.description || "",
