@@ -16,8 +16,8 @@ test("mobile style skill experience reads the actual rendered kind label",()=>{
 });
 
 test("mobile general skills are normalized to the PC skill-kind rule",()=>{
-  assert.match(normalizer,/PROPER_GENERAL_PREFIXES=\["製作：","芸術：","操縦："\]/);
-  assert.match(normalizer,/return PROPER_GENERAL_PREFIXES\.some\(prefix=>text\.startsWith\(prefix\)\)\?"proper":"general"/);
+  assert.match(normalizer,/generalSkillKindForName\(name\)/);
+  assert.match(normalizer,/canonicalGeneralSkillName\(row\.name\)/);
   assert.match(normalizer,/tnx:mobile-skills-saved/);
   assert.match(normalizer,/tnx:mobile-skill-kind-normalized/);
 });
@@ -53,4 +53,16 @@ test("mobile app loads skill-kind normalization before experience calculation",(
   const expIndex=app.indexOf("sheet-mobile-header-exp.js");
   assert.ok(normalizeIndex>=0&&normalizeIndex<expIndex);
   assert.match(app,/sheet-mobile-header-exp\.js\?v=20261011-1/);
+});
+
+
+test("★-marked proper General skills use the same category and cost on desktop/mobile", async()=>{
+  const catalog=await import("../js/general-skill-catalog.js");
+  const rules=await import("../js/sheet-experience-rules.js");
+  for(const name of ["製作：トロン", "★製作：トロン", "★芸術：歌唱", "★操縦：航空機"]){
+    assert.equal(catalog.generalSkillKindForName(name),"proper");
+  }
+  assert.equal(catalog.generalSkillKindForName("★射撃"),"general");
+  assert.equal(catalog.canonicalGeneralSkillName("★製作：トロン"),"製作：トロン");
+  assert.equal(rules.generalSkillExperienceCost([{name:"製作：トロン",category:"general",level:2,kind:catalog.generalSkillKindForName("★製作：トロン")}]).total,10);
 });

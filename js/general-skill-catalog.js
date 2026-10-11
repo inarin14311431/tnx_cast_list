@@ -34,3 +34,13 @@ export function isInitialGeneralSkill(name) {
 export const STARRED_GENERAL_NAMES = new Set([
   "射撃", "心理", "自我", "回避", "操縦：", "白兵", "信用", "圧力"
 ]);
+
+// Strip presentation markers before classifying or storing General skill names.
+export function canonicalGeneralSkillName(name = "") {
+  return String(name ?? "").trim().replace(/^★\s*/, "").replace(/:/g, "：");
+}
+
+export function generalSkillKindForName(name = "") {
+  const canonical = canonicalGeneralSkillName(name);
+  return MUTABLE_GENERAL_PREFIXES.some(prefix => canonical.startsWith(prefix)) ? "proper" : "general";
+}
