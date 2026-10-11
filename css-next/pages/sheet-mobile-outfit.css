@@ -14,6 +14,8 @@ body[data-page="sheet-mobile.html"] #mobile-outfit-dialog .mobile-editor-dialog_
 body[data-page="sheet-mobile.html"] #mobile-outfit-dialog .mobile-editor-dialog__body{min-height:0;overflow-y:auto;overflow-x:hidden;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;touch-action:pan-y;padding-bottom:max(24px,env(safe-area-inset-bottom))}
 body[data-page="sheet-mobile.html"] .mobile-outfit-editor{display:grid;gap:10px}
 body[data-page="sheet-mobile.html"] .mobile-outfit-editor__grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px}
+/* Keep destructive actions full-width even before the shared dialog action is promoted. */
+body[data-page="sheet-mobile.html"] .mobile-outfit-editor__grid>.mobile-danger-action{grid-column:1/-1;min-width:0;white-space:normal}
 body[data-page="sheet-mobile.html"] .mobile-outfit-editor__grid>label{display:grid;grid-column:span 3;gap:5px;min-width:0;font-size:11px}
 body[data-page="sheet-mobile.html"] .mobile-outfit-editor__category,body[data-page="sheet-mobile.html"] .mobile-outfit-editor__name,body[data-page="sheet-mobile.html"] .mobile-outfit-editor__description,body[data-page="sheet-mobile.html"] .mobile-outfit-group{grid-column:1/-1}
 body[data-page="sheet-mobile.html"] .mobile-outfit-editor__category{padding:10px;border:1px solid color-mix(in srgb,var(--color-section-outfits) 55%,var(--color-border-muted));background:color-mix(in srgb,var(--color-section-outfits) 10%,var(--color-surface))}
