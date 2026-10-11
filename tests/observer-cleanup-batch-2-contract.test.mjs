@@ -15,6 +15,8 @@ test("showcase role persistence relies on wrapped completion results without sta
 
 test("mobile delete promotion observes only editor dialogs", () => {
   assert.match(mobileUi, /querySelectorAll\("\.mobile-editor-dialog"\)/);
-  assert.match(mobileUi, /dialogs\.forEach\(dialog=>observer\.observe\(dialog,/);
-  assert.doesNotMatch(mobileUi, /observer\.observe\(document\.body/);
+  assert.match(mobileUi, /document\.querySelectorAll\("\.mobile-editor-dialog"\)\.forEach\(observeDialog\)/);
+  assert.match(mobileUi, /observer\.observe\(dialog,options\)/);
+  assert.match(mobileUi, /observer\.observe\(document\.body,\{childList:true\}\)/);
+  assert.doesNotMatch(mobileUi, /observer\.observe\(document\.body,\{childList:true,subtree:true/);
 });
