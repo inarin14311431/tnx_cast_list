@@ -195,7 +195,7 @@ function renderGeneral() {
     if (category === "general") list = sortedGeneral(list);
     return `<section class="mobile-general-group" data-skill-category="${category}"><h3>${CATEGORY_LABELS[category]}</h3><div class="mobile-general-table"><div class="mobile-general-row mobile-general-row--head" aria-hidden="true"><span>名称</span><span>LV</span>${SUITS.map(([,mark])=>`<span>${mark}</span>`).join("")}</div>${list.map(item => {
       const pending = isNew(item) || dirtyIds.has(String(item.id));
-      return `<button type="button" class="mobile-general-row mobile-general-row--button${pending ? " is-pending" : ""}" data-general-id="${esc(item.id)}"><span class="mobile-general-display-name">${esc(item.name || "名称未入力")}</span><strong>${Math.max(minLevel(item), num(item.level))}</strong>${SUITS.map(([key,filled,outline])=>`<span class="mobile-general-display-suit${item[key] ? " is-selected" : ""}">${item[key] ? filled : outline}</span>`).join("")}</button>`;
+      return `<button type="button" class="mobile-general-row mobile-general-row--button${pending ? " is-pending" : ""}" data-general-id="${esc(item.id)}" data-general-name="${esc(item.name || "")}"><span class="mobile-general-display-name">${esc(item.name || "名称未入力")}</span><strong>${Math.max(minLevel(item), num(item.level))}</strong>${SUITS.map(([key,filled,outline])=>`<span class="mobile-general-display-suit${item[key] ? " is-selected" : ""}">${item[key] ? filled : outline}</span>`).join("")}</button>`;
     }).join("")}</div></section>`;
   }).join("");
 }
