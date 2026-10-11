@@ -73,3 +73,12 @@ test("canceling combo edits restores the pre-modal record and save indicator", (
   assert.match(combos, /restoreSaveUi\(saveUiSnapshot\)/);
   assert.match(combos, /dbPayload\(item\)/);
 });
+
+test("delete action promotion watches dialogs created after shared UI initialization", () => {
+  assert.match(ui, /const observed=new WeakSet\(\)/);
+  assert.match(ui, /node\.matches\?\.\("\.mobile-editor-dialog"\)/);
+  assert.match(ui, /observer\.observe\(document\.body,\{childList:true\}\)/);
+  assert.match(ui, /observer\.observe\(dialog,options\)/);
+  assert.match(ui, /promoteDeleteActions\(node\)/);
+  assert.match(ui, /attributeFilter:\["hidden"\]/);
+});
