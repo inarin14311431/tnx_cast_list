@@ -9,7 +9,8 @@ const mobileRuntime = await readFile(new URL("../js/sheet-mobile-outfit.js", imp
 test("PC OFC save no longer rebuilds combined outfit defense", () => {
   assert.doesNotMatch(pcSave, /function composeDefense/);
   assert.doesNotMatch(pcSave, /category === "vehicle" \? composeDefense/);
-  assert.match(pcSave, /defense:\s*""/);
+  assert.doesNotMatch(pcSave, /defense:\s*""/);
+  assert.match(pcSave, /delete current\.defense/);
   assert.match(pcSave, /defense_s:/);
   assert.match(pcSave, /defense_p:/);
   assert.match(pcSave, /defense_i:/);
@@ -17,7 +18,7 @@ test("PC OFC save no longer rebuilds combined outfit defense", () => {
 
 test("mobile outfit save no longer rebuilds combined outfit defense", () => {
   assert.doesNotMatch(mobileModel, /function composeDefense/);
-  assert.match(mobileModel, /defense:\s*""/);
+  assert.doesNotMatch(mobileModel, /defense:\s*""/);
   assert.match(mobileModel, /defense_s:/);
   assert.match(mobileModel, /defense_p:/);
   assert.match(mobileModel, /defense_i:/);
