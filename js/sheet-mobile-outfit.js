@@ -10,13 +10,13 @@ import {
   parseConcealment,
   parseDefense,
   normalizeNumber
-} from "./sheet-mobile-outfit-model.js?v=10";
+} from "./sheet-mobile-outfit-model.js?v=11";
 import {
   buildOutfitEditor,
   ensureOutfitDialog,
   ensureOutfitToolbar,
   renderOutfitCards
-} from "./sheet-mobile-outfit-ui.js?v=15";
+} from "./sheet-mobile-outfit-ui.js?v=16";
 
 const $ = selector => document.querySelector(selector);
 
