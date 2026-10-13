@@ -167,24 +167,12 @@
       if (paired) applyDescriptionState(paired, expanded);
     }
 
+    // The field is a div clamped to two lines by CSS; expanding only toggles the class, so it needs no measured height.
     function applyDescriptionState(field, expanded) {
       field.classList.toggle("is-expanded", expanded);
       field.closest("tr")?.classList.toggle("is-description-expanded", expanded);
-      field.scrollTop = 0;
-      field.scrollLeft = 0;
       field.setAttribute("aria-expanded", String(expanded));
       field.dataset.descriptionExpanded = expanded ? "1" : "0";
-
-      if (!expanded) {
-        field.style.removeProperty("height");
-        return;
-      }
-
-      field.style.setProperty("height", "auto", "important");
-      requestAnimationFrame(() => {
-        if (!field.isConnected || field.dataset.descriptionExpanded !== "1") return;
-        field.style.setProperty("height", `${Math.max(35, field.scrollHeight + 2)}px`, "important");
-      });
     }
 
     function setDescriptionFields(scope, selector, expanded) {
@@ -218,12 +206,6 @@
       updateButtons(scope, allExpanded);
     }
 
-    function isScrollbarInteraction(event, field) {
-      if (event.target !== field || field.scrollHeight <= field.clientHeight + 1) return false;
-      const scrollbarWidth = Math.max(12, field.offsetWidth - field.clientWidth);
-      return event.offsetX >= field.clientWidth - scrollbarWidth;
-    }
-
     document.addEventListener("click", event => {
       const button = event.target.closest(".style-description-toggle-all");
       if (button) {
@@ -253,7 +235,6 @@
       const cell = event.target.closest(".style-view-cell--description");
       const field = cell?.querySelector(`${STYLE_FIELD_SELECTOR}, ${OUTFIT_FIELD_SELECTOR}`);
       if (!field) return;
-      if (isScrollbarInteraction(event, field)) return;
 
       const { scope, selector } = descriptionScope(field);
       if (!scope) return;
@@ -282,16 +263,6 @@
         field.setAttribute("title", "クリックでこの解説だけ全文表示／折りたたみ");
       });
     }
-
-    // Expanded heights are measured for the visible copy; re-measure when the layout switches
-    // between the desktop cell and the tablet row.
-    function refitExpandedOutfitFields() {
-      document.querySelectorAll(`${OUTFIT_FIELD_SELECTOR}.is-expanded`).forEach(field => {
-        field.style.setProperty("height", "auto", "important");
-        field.style.setProperty("height", `${Math.max(35, field.scrollHeight + 2)}px`, "important");
-      });
-    }
-    window.matchMedia("(min-width: 768px) and (max-width: 1024px)").addEventListener("change", refitExpandedOutfitFields);
 
     const castContent = document.querySelector("#cast-content");
     const applyAfterCastRender = () => prepareDescriptionFields();

@@ -145,8 +145,7 @@ body[data-page="cast.html"] .cast-header__actions { display: grid; grid-template
 .cast-tab small { display: block; color: var(--color-muted); font-size: .66rem; letter-spacing: .12em; }
 .cast-tab.is-active small { color: color-mix(in srgb, var(--color-accent) 70%, var(--color-muted)); }
 /* The combo button jumps to a panel; it is not a tab. A gap with its own divider separates it from the tab row and a CSS arrow marks it as a jump. */
-.cast-combo-jump { position: relative; flex: 0 0 auto; min-width: 106px; margin-left: 12px; padding: 8px 14px; border: 0; border-left: 1px solid var(--color-border); border-radius: 0; color: var(--color-accent-strong); background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 12%, var(--color-surface-alt)), var(--color-surface)); font-weight: 800; }
-.cast-combo-jump::before { position: absolute; top: 18%; bottom: 18%; left: -7px; width: 2px; content: ""; background: var(--color-border); }
+.cast-combo-jump { position: relative; flex: 0 0 auto; min-width: 106px; margin-left: 12px; padding: 8px 14px; border: 0; border-radius: 0; color: var(--color-accent-strong); background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 12%, var(--color-surface-alt)), var(--color-surface)); font-weight: 800; }
 .cast-combo-jump > span::after { display: inline-block; width: .42em; height: .42em; margin-left: .5em; border: solid currentColor; border-width: 0 2px 2px 0; content: ""; transform: translateY(-.14em) rotate(45deg); }
 .cast-combo-jump small { display: block; margin-top: 2px; color: var(--color-muted); font-size: .6rem; letter-spacing: .12em; }
 .combo-data-panel { scroll-margin-top: calc(var(--cast-sticky-header-offset) + 66px); }
@@ -231,7 +230,8 @@ body[data-page="cast.html"] .ability-grid { display: grid; grid-template-columns
 .style-skill-panel__body { padding: 0; overflow-x: auto; }
 .style-skill-view-editorlike { overflow: hidden; }
 .style-skill-view-wrapper { overflow-x: auto; }
-.style-skill-view-table { width: 1328px; min-width: 1328px; max-width: 1328px; table-layout: fixed; border-collapse: collapse; }
+/* The other 15 columns total 988px; 解説 takes the rest of the frame (148px minimum) so the table fits without a horizontal scroll from 1200px up. */
+.style-skill-view-table { width: 100%; min-width: 1136px; table-layout: fixed; border-collapse: collapse; }
 .style-skill-view-table col.style-col-name { width: 144px; }
 .style-skill-view-table col.style-col-kind { width: 48px; }
 .style-skill-view-table col.style-col-level { width: 48px; }
@@ -243,7 +243,7 @@ body[data-page="cast.html"] .ability-grid { display: grid; grid-template-columns
 .style-skill-view-table col.style-col-range { width: 58px; }
 .style-skill-view-table col.style-col-difficulty { width: 64px; }
 .style-skill-view-table col.style-col-confrontation { width: 64px; }
-.style-skill-view-table col.style-col-description { width: 340px; }
+.style-skill-view-table col.style-col-description { width: auto; }
 .style-skill-view-table col.style-col-page { width: 64px; }
 .style-skill-view-table :is(th, td) { padding: 5px 4px; }
 .style-skill-view-table .style-suit-cell { text-align: center; }
@@ -254,9 +254,13 @@ body[data-page="cast.html"] .ability-grid { display: grid; grid-template-columns
 .style-field-scroll, .cast-detail-textarea, .cast-outfit-detail { box-sizing: border-box; width: 100%; min-width: 0; color: var(--color-text); background: var(--color-field); }
 .style-skill-view-table .style-field-scroll:not(:focus) { border-color: transparent; background: transparent; box-shadow: none; }
 .cast-detail-textarea { overflow-x: hidden; overflow-y: auto; resize: vertical; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
-.style-skill-view-table .style-description-expandable { display: block; box-sizing: border-box; width: 100%; min-width: 0; max-width: 100%; height: 35px; min-height: 35px; margin: 0; padding: 7px 8px; resize: none; overflow: hidden; border: 1px solid var(--color-border); border-radius: 4px; white-space: nowrap; overflow-wrap: normal; word-break: normal; cursor: text; }
-.style-skill-view-table .style-description-expandable.is-expanded { overflow-x: hidden; overflow-y: hidden; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; background: color-mix(in srgb, var(--color-field) 88%, var(--color-accent) 12%); outline: 1px solid color-mix(in srgb, var(--color-accent) 50%, transparent); }
-.style-skill-view-table tbody tr.is-description-expanded > :is(td, .style-view-cell--description) { height: auto; min-height: 0; vertical-align: top; }
+/* Public view description cells (style skills and every outfit table): two lines by default with "…" at the end of the second; 全表示 or a click shows the whole text.
+ * A div with the clamped text in an inner span: line-clamp does not apply to textareas, and padding on the clamped box would show a third line. */
+.style-skill-view-table .style-description-expandable, .cast-outfit-table .style-description-expandable { display: block; box-sizing: border-box; width: 100%; min-width: 0; max-width: 100%; height: auto; min-height: 35px; margin: 0; padding: 7px 8px; overflow: hidden; border: 1px solid var(--color-border); border-radius: 4px; line-height: 1.2; cursor: text; }
+.style-description-expandable > .style-description-text { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
+.style-skill-view-table .style-description-expandable.is-expanded, .cast-outfit-table .style-description-expandable.is-expanded { background: color-mix(in srgb, var(--color-field) 88%, var(--color-accent) 12%); outline: 1px solid color-mix(in srgb, var(--color-accent) 50%, transparent); }
+.style-description-expandable.is-expanded > .style-description-text { display: block; -webkit-line-clamp: unset; line-clamp: unset; }
+.style-skill-view-table tbody tr.is-description-expanded > :is(td, .style-view-cell--description) { height: auto; min-height: 0; }
 .style-description-heading { padding-inline: 8px; white-space: nowrap; }
 .style-description-heading > span { display: inline; color: var(--color-muted); font-size: 12px; font-weight: 700; line-height: 1; vertical-align: middle; }
 .style-description-toggle-all { display: inline-grid; width: auto; min-width: 58px; height: 26px; min-height: 26px; margin: 0 0 0 10px; padding: 0 10px; place-items: center; border: 1px solid var(--color-accent-strong); border-radius: 5px; color: var(--color-bg); background: var(--color-accent); box-shadow: var(--shadow-glow); font-size: 11px; font-weight: 800; line-height: 1; letter-spacing: .04em; vertical-align: middle; }
@@ -291,9 +295,7 @@ body[data-page="cast.html"] .ability-grid { display: grid; grid-template-columns
 .cast-outfit-table[data-outfit-category="residence"] .cast-outfit-col--slot { width: 52px; min-width: 52px; max-width: 52px; }
 .cast-outfit-table[data-outfit-category="residence"] .cast-outfit-col--description { width: 380px; min-width: 380px; max-width: 380px; }
 .cast-outfit-table tbody td.cast-outfit-col--description { height: 45px; min-height: 45px; padding: 4px; text-overflow: clip; }
-.cast-outfit-table tbody tr.is-description-expanded > td.cast-outfit-col--description { height: auto; min-height: 0; vertical-align: top; }
-.cast-outfit-table .style-description-expandable { display: block; box-sizing: border-box; width: 100%; min-width: 0; max-width: 100%; height: 35px; min-height: 35px; margin: 0; padding: 7px 8px; resize: none; overflow: hidden; border: 1px solid var(--color-border); border-radius: 4px; white-space: nowrap; overflow-wrap: normal; word-break: normal; cursor: text; }
-.cast-outfit-table .style-description-expandable.is-expanded { overflow-x: hidden; overflow-y: hidden; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; background: color-mix(in srgb, var(--color-field) 88%, var(--color-accent) 12%); outline: 1px solid color-mix(in srgb, var(--color-accent) 50%, transparent); }
+.cast-outfit-table tbody tr.is-description-expanded > td.cast-outfit-col--description { height: auto; min-height: 0; }
 .cast-outfit-detail { display: block; height: 35px; min-height: 35px; max-height: 35px; padding: 7px 8px; overflow-x: hidden; overflow-y: hidden; resize: none; white-space: pre-wrap; overflow-wrap: anywhere; word-break: break-word; }
 .cast-outfit-table tfoot :is(th, td) { height: 34px; border-top: 1px solid var(--color-border); border-bottom: 1px solid var(--color-border); background: var(--color-accent-soft); }
 .cast-outfit-table tfoot th { padding-right: 10px; color: var(--color-accent); text-align: right; letter-spacing: .05em; }

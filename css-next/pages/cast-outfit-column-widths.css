@@ -89,7 +89,7 @@
     border-top: 0;
     text-overflow: clip;
   }
-  body[data-page="cast.html"] .cast-outfit-table tbody .cast-outfit-description-row.is-description-expanded > td { height: auto; min-height: 0; vertical-align: top; }
+  body[data-page="cast.html"] .cast-outfit-table tbody .cast-outfit-description-row.is-description-expanded > td { height: auto; min-height: 0; }
 
   body[data-page="cast.html"] .cast-outfit-title { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
   body[data-page="cast.html"] .cast-outfit-title .cast-outfit-title__toggle { display: inline-grid; margin-left: 0; }
