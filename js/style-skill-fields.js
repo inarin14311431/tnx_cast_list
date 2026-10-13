@@ -18,8 +18,8 @@
     ["range","射程","input"],
     ["difficulty","目標値","input"],
     ["confrontation","対決","input"],
-    ["description","解説","textarea"],
-    ["page","参照P","input"]
+    ["page","参照P","input"],
+    ["description","解説","textarea"]
   ];
 
   function emptyData(){return Object.fromEntries(FIELDS.map(([key])=>[key,""]));}

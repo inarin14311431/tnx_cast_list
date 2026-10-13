@@ -59,7 +59,7 @@ export const OUTFIT_FIELD_LABELS = Object.freeze({
 });
 
 const COMMON = ["category", "name", "purchase_value", "experience_cost", "concealment", "concealment_penalty"];
-const TAIL = ["slot", "description", "page_number"];
+const TAIL = ["slot", "page_number", "description"];
 
 export const OUTFIT_SCHEMAS = Object.freeze({
   weapon: [...COMMON, "attack", "parry", "range", "speed", "electronic_control", ...TAIL],

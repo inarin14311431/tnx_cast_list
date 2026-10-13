@@ -91,3 +91,6 @@
   .style-col-resizer::after { left: 8px; }
   .style-col-resizer:is(:hover, :focus-visible, .is-dragging)::after { left: 7px; }
 }
+
+/* The last column's handle stays inside the table; sticking out past the right edge added a few px of horizontal scroll. */
+.style-skill-view-table th:last-child > .style-col-resizer { right: 0; }

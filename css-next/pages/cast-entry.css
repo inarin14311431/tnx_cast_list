@@ -8,7 +8,7 @@
 @import url("../components/cast-troops.css?v=1") layer(cast-components);
 @import url("../components/error-state.css?v=1") layer(cast-components);
 @import url("../components/disclosure-chevron.css?v=1") layer(cast-components);
-@import url("./cast.css?v=57") layer(cast-base);
+@import url("./cast.css?v=60") layer(cast-base);
 @import url("./cast-view-details.css?v=9") layer(cast-details);
 @import url("./cast-combos.css?v=2") layer(cast-combos);
 @import url("./cast-mobile-theme.css?v=1") layer(cast-mobile-theme);
@@ -25,6 +25,6 @@
 @import url("./cast-transfer.css?v=2") layer(cast-transfer);
 @import url("./cast-sns-card.css?v=1") layer(cast-transfer);
 @import url("./cast-troop-modal.css?v=5") layer(cast-troop-modal);
-@import url("./cast-desktop-layout.css?v=6") layer(cast-desktop);
-@import url("./cast-outfit-column-widths.css?v=3") layer(cast-desktop);
-@import url("./cast-style-skill-table.css?v=1") layer(cast-style-table);
+@import url("./cast-desktop-layout.css?v=7") layer(cast-desktop);
+@import url("./cast-outfit-column-widths.css?v=4") layer(cast-desktop);
+@import url("./cast-style-skill-table.css?v=2") layer(cast-style-table);

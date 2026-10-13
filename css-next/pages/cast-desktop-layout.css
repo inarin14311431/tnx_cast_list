@@ -17,6 +17,8 @@
   body[data-page="cast.html"] .cast-header__export-actions > * {
     flex: 0 1 118px;
     min-width: 0;
+    padding-inline: 6px;
+    overflow: hidden;
   }
 
   body[data-page="cast.html"] .cast-header__primary-actions {
@@ -108,6 +110,13 @@
   body[data-page="cast.html"] .cast-header__export-label {
     color: color-mix(in srgb, var(--color-muted) 82%, transparent);
     font-size: .54rem;
+  }
+
+  /* Labels that no longer fit (e.g. 1280px) are truncated instead of wrapping into ARCHIVE ID. */
+  body[data-page="cast.html"] .cast-header__export-actions > * > :is(span, small) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   /* 2. Identity column frame. Hero content (name, summary, styles, divine works, facts) is owned by cast.css. */

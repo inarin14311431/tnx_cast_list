@@ -53,8 +53,8 @@ body[data-page="sheet.html"] .skill-toolbar--two.has-style-divider { align-items
     minmax(0, .76fr)
     minmax(0, .76fr)
     minmax(0, .68fr)
-    minmax(0, 3fr)
     var(--style-page-column)
+    minmax(0, 3fr)
     var(--style-action-column);
   align-items: center;
   width: 100%;
