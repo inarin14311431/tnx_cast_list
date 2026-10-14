@@ -159,6 +159,9 @@ async function refreshTroopExperience() {
 }
 async function persistExperience() {
   if (!character) return;
+  // Skills, outfits and skill metadata load asynchronously; saving before they are in would store a partial total.
+  // Keep the stored value in that case (the display does the same, see calculate()).
+  if (!editorContentReady()) return;
   const total = calculateLocalTotal();
   const result = await supabase.from("characters").update({ experience_points: total }).eq("id", character.id);
   if (result.error) throw result.error;

@@ -11,6 +11,11 @@
 .auth-panel__lead { margin: 10px 0 24px; color: var(--color-muted); font-size: .8rem; }
 .auth-form { display: grid; gap: 18px; }
 .auth-form label { display: grid; gap: 7px; }
+/* 同意チェック行: legal-notices.css は app レイヤー、この規則は後ろの auth-page レイヤーなので、上の display: grid に負けて
+   チェックボックスが文章の上に中央寄せで出ていた。リンクのボタンも下の `.auth-form button`(高さ54px・上余白8px)に
+   負けて行が膨らむ。ここで両方を戻す(その他の寸法は legal-notices.css の規則に任せる)。 */
+.auth-form label.legal-consent { display: flex; align-items: flex-start; gap: 8px; }
+.auth-form .legal-consent__links > button { min-height: auto; margin: 0; }
 .auth-form label > span { color: var(--color-text); font-size: .78rem; font-weight: 800; }
 .auth-form label small { color: var(--color-muted); font-size: .54rem; }
 .auth-form button { min-height: 54px; margin-top: 8px; font-weight: 800; }

@@ -1,6 +1,7 @@
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
 import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
 import { escapeHtml as esc } from "./dom-escape.js?v=2";
+import { resolveStyleBaselineValue } from "./sheet-baseline-adjustment.js?v=1";
 const ABILITIES = ["reason", "passion", "life", "mundane"],
   MARKS = ["", "◎", "●", "◎●"];
 const $ = selector => document.querySelector(selector);
@@ -188,10 +189,13 @@ function adjustBaseline(key, oldBaseline, nextBaseline) {
     growthField = `${key}_growth`,
     gearField = `${key}_gear`,
     manualField = `${key}_manual`,
-    currentBase = num(character[baseField] ?? (key.endsWith("_control") ? character[key] : character[`${key}_value`])),
-    growth = Math.max(0, num(character[growthField] || currentBase - num(oldBaseline)));
-  character[growthField] = growth;
-  character[baseField] = num(nextBaseline) + growth;
+    currentBase = num(character[baseField] ?? (key.endsWith("_control") ? character[key] : character[`${key}_value`]));
+  // Same policy as the PC sheet (sheet.js adjustBaseline): a value still sitting on the old baseline (or 0)
+  // follows the new baseline; a raised value is kept as it is. Rebuilding it as "new baseline + growth"
+  // changed the ability and the experience points whenever a cast with growth switched style.
+  const nextCurrent = resolveStyleBaselineValue(currentBase, oldBaseline, nextBaseline);
+  character[growthField] = Math.max(0, nextCurrent - num(nextBaseline));
+  character[baseField] = nextCurrent;
   character[valueField] = character[baseField] + num(character[gearField]) + num(character[manualField]);
 }
 function applyEditor() {
