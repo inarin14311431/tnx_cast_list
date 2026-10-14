@@ -2,4 +2,4 @@
 @layer app, auth-page;
 
 @import url("../index.css?v=65") layer(app);
-@import url("./auth.css?v=3") layer(auth-page);
+@import url("./auth.css?v=4") layer(auth-page);
