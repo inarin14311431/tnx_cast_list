@@ -88,8 +88,11 @@ body[data-page="cast.html"] .cast-header__actions { display: grid; grid-template
 .cast-style-slot .style-mark-glyph::before,
 .cast-style-slot .style-mark-glyph--persona::after { position: absolute; box-sizing: border-box; border-radius: 50%; content: ""; }
 .cast-style-slot .style-mark-glyph::before { inset: 0; }
-.cast-style-slot .style-mark-glyph--persona::before { border: 3px solid currentColor; }
-.cast-style-slot .style-mark-glyph--persona::after { top: 50%; left: 50%; width: 8px; height: 8px; border: 3px solid currentColor; transform: translate(-50%, -50%); }
+/* ◎: two rings of the same 2px weight with a 2px gap (17px glyph: 17 - 2*2 = 13 inside, inset 4px = 9px inner ring).
+   The inner ring is placed with inset, not top/left + translate(-50%): 8.5px - 4px landed on half a pixel, so the ring
+   rendered off centre and, with a 3px border, left a 2px hole that read as a pupil. */
+.cast-style-slot .style-mark-glyph--persona::before { border: 2px solid currentColor; }
+.cast-style-slot .style-mark-glyph--persona::after { inset: 4px; border: 2px solid currentColor; }
 .cast-style-slot .style-mark-glyph--key::before { background: currentColor; }
 
 /* Divine work n follows style n: same width ratio and role color, different card shape. */
