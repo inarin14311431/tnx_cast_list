@@ -90,7 +90,7 @@ test("ability load application falls back to calculated baselines", () => {
 
 test("classic sheet delegates ability and CS DOM reads and writes to snapshot module", async () => {
   const source = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
-  assert.match(source, /sheet-ability-input-snapshot\.js\?v=1/);
+  assert.match(source, /sheet-ability-input-snapshot\.js\?v=2/);
   assert.match(source, /collectAbilityInputSnapshot/);
   assert.match(source, /applyAbilityInputSnapshot/);
   assert.doesNotMatch(source, /function currentAbilityValues\(/);
