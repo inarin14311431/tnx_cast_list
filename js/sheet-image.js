@@ -3,6 +3,7 @@ import { requireAuth } from "./auth-state.js?v=5";
 import { requestSheetSave, waitForSheetSaved } from "./sheet-save-state.js?v=2";
 import { getImageFocusX, getImageFocusY, getImageObjectPosition, getImageScale, getImageTransformOrigin, getImageZoom, setImageFocusX, setImageFocusY, setImageZoom } from "./image-focus.js?v=4";
 import { getPublicIdParam as getPublicId } from "./public-id-param.js?v=1";
+import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=1";
 
 const BUCKET_NAME="character-images";
 const MAX_SOURCE_FILE_SIZE=20*1024*1024;
@@ -63,8 +64,15 @@ async function initialize(){
   window.addEventListener("beforeunload",releasePreviewUrl);
 
   const publicId=getPublicId();
-  if(publicId)await loadCharacter(publicId);
+  if(publicId)await adoptInitialCharacter();
   else setMessage("画像はキャスト本体の初回保存後に登録されます。","");
+}
+
+async function adoptInitialCharacter(){
+  const bundle=await whenSheetCharacterLoaded();
+  if(!bundle)throw new Error("指定されたキャストを編集する権限がありません。");
+  // このmoduleは保存後にimage_url等を書き換えるため、sheet.jsと共有する行は浅いコピーで受ける。
+  return applyCharacter({...bundle.character});
 }
 
 async function loadCharacter(publicId){
@@ -73,6 +81,10 @@ async function loadCharacter(publicId){
   if(error)throw error;
   if(!data)throw new Error("指定されたキャストを編集する権限がありません。");
 
+  return applyCharacter(data);
+}
+
+function applyCharacter(data){
   character=data;
   setFocusControl(character.image_url);
   if(character.image_url){

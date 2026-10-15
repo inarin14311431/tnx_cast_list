@@ -39,8 +39,7 @@ test("classic editor keeps database transport ownership outside sheet.js", () =>
   assert.match(persistence, /p_skills:/);
   assert.match(persistence, /p_outfits:/);
   assert.match(loadPersistence, /\.from\("characters"\)/);
-  assert.match(loadPersistence, /\.from\("character_skills"\)/);
-  assert.match(loadPersistence, /\.from\("character_outfits"\)/);
+  assert.match(loadPersistence, /character_skills\(\*\), character_outfits\(\*\)/);
 });
 
 test("DB-shaped serialization and loaded-record normalization remain DOM-free", () => {

@@ -1,4 +1,3 @@
-import { supabase } from "./supabase-client.js";
 import { hasUnsavedSheetChanges, focusSheetSaveButton } from "./sheet-save-state.js?v=2";
 import {
   MAX_SNAPSHOTS,
@@ -10,6 +9,7 @@ import {
   deleteSnapshot
 } from "./sheet-snapshot-service.js?v=1";
 import { escapeHtml } from "./dom-escape.js?v=2";
+import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=1";
 
 let characterId = null;
 let publicId = new URLSearchParams(location.search).get("id") || "";
@@ -56,16 +56,12 @@ async function resolveCharacter() {
     renderEmpty("初回保存後に利用できます。");
     return;
   }
-  const { data, error } = await supabase
-    .from("characters")
-    .select("id")
-    .eq("public_id", publicId)
-    .maybeSingle();
-  if (error || !data) {
+  const bundle = await whenSheetCharacterLoaded();
+  if (!bundle) {
     renderEmpty("スナップショットを読み込めませんでした。");
     return;
   }
-  characterId = data.id;
+  characterId = bundle.character.id;
   enable();
   await refresh();
 }

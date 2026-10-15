@@ -10,6 +10,7 @@
 @import url("../components/character-sheet-compare.css?v=3") layer(sheet-components);
 @import url("../components/character-share.css?v=2") layer(sheet-components);
 @import url("../components/disclosure-chevron.css?v=1") layer(sheet-components);
+@import url("../components/sheet-load-overlay.css?v=1") layer(sheet-components);
 
 @import url("../editor/editor.css?v=33") layer(sheet-editor);
 @import url("../editor/divine-layout.css?v=1") layer(sheet-editor);

@@ -1,0 +1,66 @@
+/* PC editor archive-access loading screen. Markup lives in sheet.html; js/sheet-load-overlay.js only toggles it. */
+.sheet-load-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9000;
+  display: grid;
+  place-content: center;
+  gap: 14px;
+  padding: 24px;
+  color: var(--color-text, #e8fbff);
+  background: var(--color-bg, #02070d);
+}
+
+.sheet-load-overlay[hidden] { display: none; }
+
+.sheet-load-overlay__log {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: min(360px, 86vw);
+  font: 13px/1.9 var(--font-data, Consolas, monospace);
+  letter-spacing: .08em;
+  color: var(--color-accent, #00eaff);
+}
+
+.sheet-load-overlay__log li {
+  opacity: 0;
+  animation: sheet-load-overlay-line .01s steps(1, end) forwards;
+}
+
+.sheet-load-overlay__log li:nth-child(1) { animation-delay: .05s; }
+.sheet-load-overlay__log li:nth-child(2) { animation-delay: .45s; }
+.sheet-load-overlay__log li:nth-child(3) { animation-delay: .85s; }
+
+.sheet-load-overlay__log li:last-child::after {
+  content: "";
+  display: inline-block;
+  width: .6em;
+  height: 1.05em;
+  margin-left: .35em;
+  vertical-align: text-bottom;
+  background: currentcolor;
+  animation: sheet-load-overlay-cursor 1s steps(1, end) infinite;
+}
+
+.sheet-load-overlay__label {
+  margin: 0;
+  font-size: 12px;
+  letter-spacing: .12em;
+  color: var(--color-text-muted, color-mix(in srgb, var(--color-text, #e8fbff) 70%, transparent));
+}
+
+.sheet-load-overlay__label small {
+  margin-left: .6em;
+  font-size: 10px;
+  letter-spacing: .18em;
+  opacity: .75;
+}
+
+@keyframes sheet-load-overlay-line { to { opacity: 1; } }
+@keyframes sheet-load-overlay-cursor { 50% { opacity: 0; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .sheet-load-overlay__log li { opacity: 1; animation: none; }
+  .sheet-load-overlay__log li:last-child::after { animation: none; }
+}

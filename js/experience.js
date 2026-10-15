@@ -1,4 +1,5 @@
 import { supabase } from "./supabase-client.js";
+import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=1";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
 import { CREATION_ALLOWANCE, INITIAL_SKILL_COST, generalSkillExperienceCost, paidSkillLevel, steppedExperienceCost } from "./sheet-experience-rules.js?v=7";
 
@@ -14,7 +15,7 @@ import { CREATION_ALLOWANCE, INITIAL_SKILL_COST, generalSkillExperienceCost, pai
   let hasLinkedTroops=false;
   function num(value){const parsed=Number(value);return Number.isFinite(parsed)?parsed:0;}
   function displayTotal(total){return hasLinkedTroops?`${total}＋${troopExperience}`:String(total);}
-  async function loadTroopExperience(){const publicId=new URLSearchParams(location.search).get("id")?.trim()||"";if(!publicId)return;const characterResult=await supabase.from("characters").select("id").eq("public_id",publicId).maybeSingle();if(characterResult.error||!characterResult.data)return;const troopResult=await supabase.from("troops").select("experience_spent").eq("character_id",characterResult.data.id);if(troopResult.error)return;hasLinkedTroops=Boolean(troopResult.data?.length);troopExperience=(troopResult.data||[]).reduce((sum,item)=>sum+Math.max(0,num(item.experience_spent)),0);queue();}
+  async function loadTroopExperience(){const publicId=new URLSearchParams(location.search).get("id")?.trim()||"";if(!publicId)return;const bundle=await whenSheetCharacterLoaded();if(!bundle)return;const troopResult=await supabase.from("troops").select("experience_spent").eq("character_id",bundle.character.id);if(troopResult.error)return;hasLinkedTroops=Boolean(troopResult.data?.length);troopExperience=(troopResult.data||[]).reduce((sum,item)=>sum+Math.max(0,num(item.experience_spent)),0);queue();}
   function styleRecord(index){const name=$(`#style-${index}`)?.value||"";if(name==="ウツワ"){const attribute=$(`#style-${index}-attribute`)?.value||"";return UTSUWA_ATTRIBUTES.find(item=>item.name===attribute)||null;}return STYLE_DATA.find(item=>item.name===name)||null;}
   function baselines(){const result={};for(const key of ABILITIES){result[key]=0;result[`${key}-control`]=0;}for(let index=1;index<=3;index++){const record=styleRecord(index);if(!record)continue;for(const key of ABILITIES){result[key]+=num(record[key]?.[0]);result[`${key}-control`]+=num(record[key]?.[1]);}}return result;}
   function skillCategory(row,name=""){if(row.closest("#style-skills"))return "style";const category=row.closest("[data-skill-category]")?.dataset.skillCategory||"";if(category)return category;if(/^社会[：:]/.test(name))return "social";if(/^コネ[：:]/.test(name))return "connection";return "general";}
