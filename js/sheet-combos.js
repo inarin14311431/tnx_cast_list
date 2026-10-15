@@ -1,5 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=5";
+import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=1";
 import { escapeHtml, escapeAttributeWithBacktick as escapeAttribute } from "./dom-escape.js?v=2";
 
 const openButton = document.querySelector("#sheet-combo-open");
@@ -36,6 +37,7 @@ let currentUser = null;
 let character = null;
 let combos = [];
 let skillCatalog = [];
+let initialSkills = null;
 let saving = false;
 let managerReturnFocus = null;
 let editorReturnFocus = null;
@@ -55,7 +57,7 @@ async function initialize() {
     return;
   }
 
-  await loadCharacter(publicId);
+  await adoptInitialCharacter();
 
   if (character && location.hash === "#combos") {
     await openManager({ updateHash: false });
@@ -129,21 +131,16 @@ function setupEvents() {
   });
 }
 
-async function loadCharacter(publicId) {
-  const { data, error } = await supabase
-    .from("characters")
-    .select("id, public_id, character_name, owner_id")
-    .eq("public_id", publicId)
-    .eq("owner_id", currentUser.id)
-    .maybeSingle();
-
-  if (error || !data) {
-    if (error) console.error(error);
+async function adoptInitialCharacter() {
+  const bundle = await whenSheetCharacterLoaded();
+  if (!bundle) {
     setOpenAvailability(false, "コンボ編集を利用できません。");
     return;
   }
 
-  character = data;
+  const { id, public_id, character_name, owner_id } = bundle.character;
+  character = { id, public_id, character_name, owner_id };
+  initialSkills = bundle.skills;
   setOpenAvailability(true);
 }
 
@@ -318,12 +315,18 @@ function renderEntrySummary() {
 async function refreshSkillCatalog() {
   const fromDom = skillCatalogFromDom();
   if (fromDom.length) {
+    initialSkills = null;
     skillCatalog = fromDom;
     renderSkillSelectors();
     return;
   }
 
   if (!character) return;
+  if (initialSkills) {
+    skillCatalog = normalizeSkillCatalog(initialSkills);
+    renderSkillSelectors();
+    return;
+  }
   const { data, error } = await supabase
     .from("character_skills")
     .select("category, name, level, skill_kind, sort_order")

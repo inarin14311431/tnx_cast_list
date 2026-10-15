@@ -39,7 +39,7 @@ test('editor keeps the character load path and ownership filter', async () => {
   assert.match(load, /\.from\("characters"\)/);
   assert.match(load, /\.eq\("public_id", normalizedPublicId\)/);
   assert.match(load, /\.eq\("owner_id", normalizedOwnerId\)/);
-  assert.match(load, /Promise\.all\(\[/);
+  assert.match(load, /character_skills\(\*\), character_outfits\(\*\)/);
   assert.match(load, /character_skills/);
   assert.match(load, /character_outfits/);
 });

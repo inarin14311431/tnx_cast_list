@@ -5,7 +5,9 @@ import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
 import { SITE_BASE_PATH } from "./config.js?v=2";
 import { createSheetSaveCoordinator } from "./sheet-save-coordinator.js?v=2";
 import { persistSheetBundle } from "./sheet-save-persistence.js?v=1";
-import { loadSheetBundle } from "./sheet-load-persistence.js?v=1";
+import { loadSheetBundle } from "./sheet-load-persistence.js?v=3";
+import { dismissSheetLoadOverlay } from "./sheet-load-overlay.js?v=1";
+import { publishSheetCharacterLoaded, publishSheetCharacterLoadFailed } from "./sheet-loaded-character.js?v=1";
 import { buildCharacterSavePayload, buildSkillSavePayloads, buildOutfitSavePayloads } from "./sheet-save-payload.js?v=3";
 import {
   STYLE_SEPARATOR_MARKER,
@@ -39,7 +41,7 @@ import { countGeneralSkillColumns, chooseGeneralSkillColumn } from "./sheet-gene
 import { resolveSkillInputState } from "./sheet-skill-level-suit-state.js?v=1";
 import { buildStyleSaveRows } from "./sheet-style-save-projection.js?v=1";
 import { buildAbilitySaveSnapshot, buildCsSaveSnapshot } from "./sheet-ability-save-projection.js?v=1";
-import { collectCharacterInputSnapshot, applyCharacterInputSnapshot } from "./sheet-character-input-snapshot.js?v=9";
+import { collectCharacterInputSnapshot, applyCharacterInputSnapshot } from "./sheet-character-input-snapshot.js?v=11";
 import { collectAbilityInputSnapshot, applyAbilityInputSnapshot } from "./sheet-ability-input-snapshot.js?v=2";
 import { collectStyleInputSnapshot, applyStyleInputSnapshot } from "./sheet-style-input-snapshot.js?v=1";
 import { initSheetStyleInteractions } from "./sheet-style-interactions.js?v=1";
@@ -99,13 +101,20 @@ const saveCoordinator = createSheetSaveCoordinator({
 init();
 
 async function init() {
-  user = await requireAuth();
-  if (!user) return;
-  renderStyles();
-  renderAbilities();
-  bind();
-  const id = new URLSearchParams(location.search).get("id");
-  if (id) await loadCharacter(id); else createNew();
+  try {
+    user = await requireAuth();
+    if (!user) { publishSheetCharacterLoadFailed(); return; }
+    renderStyles();
+    renderAbilities();
+    bind();
+    const id = new URLSearchParams(location.search).get("id");
+    if (id) await loadCharacter(id); else createNew();
+  } catch (error) {
+    // loadCharacter / createNew handle their own errors; this covers failures before they are reached.
+    publishSheetCharacterLoadFailed();
+    dismissSheetLoadOverlay();
+    throw error;
+  }
 }
 
 function bind() {
@@ -285,6 +294,7 @@ function createNew() {
   renderSkills(); renderOutfits(); recalc();
   loading = false;
   saveCoordinator.markDirty();
+  dismissSheetLoadOverlay();
 }
 
 async function loadCharacter(publicId) {
@@ -292,6 +302,7 @@ async function loadCharacter(publicId) {
   saveCoordinator.markLoading("読込中…");
   try {
     const bundle = await loadSheetBundle({ publicId, ownerId: user.id });
+    publishSheetCharacterLoaded(bundle);
     character = bundle.character; fillCharacter(character);
     skills = bundle.skills.map(skill => normalizeLoadedSkill(skill, {
       styleKindFromLabel: label => window.TNXStyleSkillKinds?.fromLabel(label)
@@ -302,11 +313,12 @@ async function loadCharacter(publicId) {
     renderSkills(); renderOutfits(); recalc();
     saveCoordinator.markSaved();
   } catch (error) {
+    publishSheetCharacterLoadFailed();
     console.error(error); character = null; skills = []; outfits = [];
     renderSkills(); renderOutfits();
     const detail = formatSheetPersistenceError(error?.message, { operation: "load" });
     saveCoordinator.markLoadError(`${detail} 保存は行われません。`);
-  } finally { loading = false; }
+  } finally { loading = false; dismissSheetLoadOverlay(); }
 }
 
 function fillCharacter(data) {
