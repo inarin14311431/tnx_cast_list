@@ -57,6 +57,7 @@
     "migrations/20260912_preserve_unlisted_visibility.sql",
     "migrations/20260912_audit_priority_hardening.sql",
     "migrations/20260914_random_public_id.sql",
-    "migrations/20260930_character_share_links.sql"
+    "migrations/20260930_character_share_links.sql",
+    "migrations/20261016_characters_updated_at_ignore_thumbnail.sql"
   ]
 }
