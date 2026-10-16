@@ -1,6 +1,14 @@
 import { supabase } from "./supabase-client.js";
 import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
 import {
+  THUMBNAIL_MAX_LONG_EDGE,
+  THUMBNAIL_MIN_LONG_EDGE,
+  THUMBNAIL_TARGET_SIZE,
+  THUMBNAIL_MAX_OUTPUT_FILE_SIZE,
+  THUMBNAIL_QUALITY_STEPS,
+  THUMBNAIL_SHRINK_STEP
+} from "./image-thumbnail-config.js?v=1";
+import {
   getImageFocusX,
   getImageFocusY,
   getImageZoom,
@@ -168,7 +176,7 @@ async function optimize(file) {
     bitmap.close();
   }
 }
-async function createThumbnail(file, { maxEdge = 420, targetSize = 40 * 1024 } = {}) {
+async function createThumbnail(file, { maxEdge = THUMBNAIL_MAX_LONG_EDGE, targetSize = THUMBNAIL_TARGET_SIZE } = {}) {
   const bitmap = await createImageBitmap(file);
   try {
     const scale = Math.min(1, maxEdge / Math.max(bitmap.width, bitmap.height));
@@ -185,7 +193,7 @@ async function createThumbnail(file, { maxEdge = 420, targetSize = 40 * 1024 } =
       ctx.imageSmoothingEnabled = true;
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(bitmap, 0, 0, width, height);
-      for (const quality of [0.82, 0.74, 0.66, 0.58, 0.5, 0.42]) {
+      for (const quality of THUMBNAIL_QUALITY_STEPS) {
         const blob = await new Promise((resolve, reject) =>
           canvas.toBlob(
             value => (value ? resolve(value) : reject(new Error("サムネイル変換に失敗しました。"))),
@@ -202,13 +210,13 @@ async function createThumbnail(file, { maxEdge = 420, targetSize = 40 * 1024 } =
       }
       if (target) break;
       const longEdge = Math.max(width, height);
-      if (longEdge <= 120) break;
-      const scalePass = Math.max(120 / longEdge, 0.86);
+      if (longEdge <= THUMBNAIL_MIN_LONG_EDGE) break;
+      const scalePass = Math.max(THUMBNAIL_MIN_LONG_EDGE / longEdge, THUMBNAIL_SHRINK_STEP);
       width = Math.max(1, Math.round(width * scalePass));
       height = Math.max(1, Math.round(height * scalePass));
     }
     const selected = target || smallest;
-    if (!selected || selected.blob.size > 200 * 1024) throw new Error("サムネイルを十分に圧縮できませんでした。");
+    if (!selected || selected.blob.size > THUMBNAIL_MAX_OUTPUT_FILE_SIZE) throw new Error("サムネイルを十分に圧縮できませんでした。");
     return new File([selected.blob], [`${Date.now()}-thumb.webp`], { type: "image/webp" });
   } finally {
     bitmap.close();
