@@ -1,6 +1,10 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import {
+  THUMBNAIL_MAX_LONG_EDGE, THUMBNAIL_MIN_LONG_EDGE, THUMBNAIL_TARGET_SIZE,
+  THUMBNAIL_MAX_OUTPUT_FILE_SIZE, THUMBNAIL_QUALITY_STEPS, THUMBNAIL_SHRINK_STEP
+} from "../js/image-thumbnail-config.js";
 
 const source = await readFile(new URL("../js/sheet-image.js", import.meta.url), "utf8");
 
@@ -34,25 +38,26 @@ function loadCreateThumbnail() {
 
     const factory = new Function(
       "renderToCanvas", "canvasToBlob", "decodeImage", "safeFileBase",
-      "OUTPUT_TYPE", "THUMBNAIL_MIN_LONG_EDGE", "THUMBNAIL_MAX_OUTPUT_FILE_SIZE", "THUMBNAIL_QUALITY_STEPS",
+      "OUTPUT_TYPE", "THUMBNAIL_MAX_LONG_EDGE", "THUMBNAIL_TARGET_SIZE", "THUMBNAIL_MIN_LONG_EDGE", "THUMBNAIL_MAX_OUTPUT_FILE_SIZE", "THUMBNAIL_QUALITY_STEPS", "THUMBNAIL_SHRINK_STEP",
       `${body}\nreturn createThumbnail;`
     );
     return factory(
       renderToCanvas, canvasToBlob, decodeImage, safeFileBase,
-      "image/webp", 120, 200 * 1024, [.82, .74, .66, .58, .5, .42]
+      "image/webp", THUMBNAIL_MAX_LONG_EDGE, THUMBNAIL_TARGET_SIZE, THUMBNAIL_MIN_LONG_EDGE,
+      THUMBNAIL_MAX_OUTPUT_FILE_SIZE, THUMBNAIL_QUALITY_STEPS, THUMBNAIL_SHRINK_STEP
     );
   };
 }
 
 test("createThumbnail shrinks a large photo down to the maxLongEdge/targetSize bounds", async () => {
   const build = loadCreateThumbnail();
-  // Sized so 420x315 (the default maxLongEdge=420 scaled from a 4:3 original) never reaches
-  // 40KB even at the lowest quality step, forcing at least one dimension-shrink pass.
+  // Sized so 840x630 (the default maxLongEdge=840 scaled from a 4:3 original) never reaches
+  // 120KB even at the lowest quality step, forcing at least one dimension-shrink pass.
   const createThumbnail = build((width, height, quality) => Math.round(width * height * quality * 0.6));
 
   const result = await createThumbnail({ name: "cast.jpg" });
-  assert.ok(Math.max(result.width, result.height) <= 420, `long edge should be <=420, got ${Math.max(result.width, result.height)}`);
-  assert.ok(result.file.size <= 40 * 1024, `output should be <=40KB, got ${result.file.size}`);
+  assert.ok(Math.max(result.width, result.height) <= 840, `long edge should be <=840, got ${Math.max(result.width, result.height)}`);
+  assert.ok(result.file.size <= 120 * 1024, `output should be <=120KB, got ${result.file.size}`);
   assert.equal(result.file.type, "image/webp");
   assert.match(result.file.name, /-thumb\.webp$/);
 });
@@ -86,4 +91,16 @@ test("createThumbnail throws rather than upload an oversized thumbnail when it c
   const createThumbnail = build(() => 500 * 1024);
 
   await assert.rejects(() => createThumbnail({ name: "cast.jpg" }), /圧縮できません/);
+});
+
+test("createThumbnail defaults: 840px long edge / 120KB target come from the shared config", async () => {
+  assert.equal(THUMBNAIL_MAX_LONG_EDGE, 840);
+  assert.equal(THUMBNAIL_TARGET_SIZE, 120 * 1024);
+  assert.equal(THUMBNAIL_MAX_OUTPUT_FILE_SIZE, 200 * 1024);
+  const build = loadCreateThumbnail();
+  // Compresses well enough to stay at the full 840px edge: the long edge must be exactly 840.
+  const createThumbnail = build((width, height, quality) => Math.round(width * height * quality * 0.1));
+  const result = await createThumbnail({ name: "cast.jpg" });
+  assert.equal(Math.max(result.width, result.height), 840);
+  assert.ok(result.file.size <= 120 * 1024);
 });

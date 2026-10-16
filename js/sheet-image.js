@@ -3,6 +3,7 @@ import { requireAuth } from "./auth-state.js?v=5";
 import { requestSheetSave, waitForSheetSaved } from "./sheet-save-state.js?v=2";
 import { getImageFocusX, getImageFocusY, getImageObjectPosition, getImageScale, getImageTransformOrigin, getImageZoom, setImageFocusX, setImageFocusY, setImageZoom } from "./image-focus.js?v=4";
 import { getPublicIdParam as getPublicId } from "./public-id-param.js?v=1";
+import { THUMBNAIL_MAX_LONG_EDGE, THUMBNAIL_MIN_LONG_EDGE, THUMBNAIL_TARGET_SIZE, THUMBNAIL_MAX_OUTPUT_FILE_SIZE, THUMBNAIL_QUALITY_STEPS, THUMBNAIL_SHRINK_STEP } from "./image-thumbnail-config.js?v=1";
 import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=1";
 
 const BUCKET_NAME="character-images";
@@ -13,9 +14,6 @@ const MIN_LONG_EDGE=1100;
 const TARGET_FILE_SIZE=500*1024;
 const MAX_OUTPUT_FILE_SIZE=1024*1024;
 const OUTPUT_TYPE="image/webp";
-const THUMBNAIL_MIN_LONG_EDGE=120;
-const THUMBNAIL_MAX_OUTPUT_FILE_SIZE=200*1024;
-const THUMBNAIL_QUALITY_STEPS=[.82,.74,.66,.58,.5,.42];
 const PLACEHOLDER="./assets/placeholders/scan-failed.webp";
 
 const form=document.querySelector("#image-form");
@@ -241,7 +239,7 @@ async function optimizeImage(file){
   }
 }
 
-async function createThumbnail(file,{maxLongEdge=420,targetSize=40*1024}={}){
+async function createThumbnail(file,{maxLongEdge=THUMBNAIL_MAX_LONG_EDGE,targetSize=THUMBNAIL_TARGET_SIZE}={}){
   const drawable=await decodeImage(file);
   try{
     const originalWidth=drawable.width;
@@ -269,7 +267,7 @@ async function createThumbnail(file,{maxLongEdge=420,targetSize=40*1024}={}){
 
       const longEdge=Math.max(width,height);
       if(longEdge<=THUMBNAIL_MIN_LONG_EDGE)break;
-      const scale=Math.max(THUMBNAIL_MIN_LONG_EDGE/longEdge,.86);
+      const scale=Math.max(THUMBNAIL_MIN_LONG_EDGE/longEdge,THUMBNAIL_SHRINK_STEP);
       width=Math.max(1,Math.round(width*scale));
       height=Math.max(1,Math.round(height*scale));
     }
