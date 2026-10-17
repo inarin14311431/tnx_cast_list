@@ -1,8 +1,9 @@
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
-import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=11";
+import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=12";
 import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=1";
 import { buildKeyStyle, buildVisualCaption } from "./act-showcase-visual-caption.js?v=2";
 import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=1";
+import { castNumberFromSlot } from "./showcase-cast-number.js?v=1";
 
 const POSTER_SAMPLE_BACKGROUND = "./assets/showcase/act-showcase-moon-city-v2.svg";
 const HANDOUT_PLACEHOLDERS = new Set([
@@ -370,7 +371,8 @@ function createRoster(casts, onSelect) {
   const list = el("div", "poster-v2-roster__list");
   const items = [];
   casts.forEach((cast, index) => {
-    const name = text(cast?.fullName) || `CAST ${index + 1}`;
+    const castNumber = castNumberFromSlot(cast?.slot, index);
+    const name = text(cast?.fullName) || `CAST ${castNumber}`;
     const styles = Array.isArray(cast?.styles)
       ? cast.styles.map(item => text(item?.label)).filter(Boolean).join(" / ")
       : "";
@@ -379,12 +381,12 @@ function createRoster(casts, onSelect) {
     item.setAttribute("role", "button");
     item.setAttribute("tabindex", "0");
     item.setAttribute("aria-pressed", index === 0 ? "true" : "false");
-    item.setAttribute("aria-label", `PC${index + 1} ${name} を表示`);
+    item.setAttribute("aria-label", `PC${castNumber} ${name} を表示`);
     if (index === 0) item.classList.add("is-active");
 
     // The face thumbnail reuses the hero portrait focus/zoom; the name is carried by the aria-label of the item.
     const thumb = el("div", "poster-v2-roster__thumb");
-    thumb.append(createCastImage(cast, { alt: "", loading: "lazy" }), textEl("span", "poster-v2-roster__index", String(index + 1).padStart(2, "0")));
+    thumb.append(createCastImage(cast, { alt: "", loading: "lazy" }), textEl("span", "poster-v2-roster__index", String(castNumber).padStart(2, "0")));
     const label = el("div", "poster-v2-roster__text");
     label.append(textEl("strong", "", name), textEl("small", "", styles || "PUBLIC CAST"));
     item.append(thumb, label);

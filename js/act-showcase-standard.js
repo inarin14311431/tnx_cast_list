@@ -1,6 +1,7 @@
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
 import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=1";
 import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=1";
+import { castNumberFromSlot } from "./showcase-cast-number.js?v=1";
 
 const status = document.querySelector("#act-showcase-standard-status");
 const root = document.querySelector("#act-showcase-standard-root");
@@ -74,7 +75,7 @@ function createNavigationItem(item, index) {
   const anchor = document.createElement("a");
   anchor.href = `#cast-${index + 1}`;
   const number = document.createElement("span");
-  number.textContent = String(index + 1).padStart(2, "0");
+  number.textContent = String(castNumberFromSlot(item.slot, index)).padStart(2, "0");
   anchor.append(number, text(item.fullName) || `CAST ${index + 1}`);
   return anchor;
 }
