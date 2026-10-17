@@ -82,7 +82,7 @@ async function fetchCharacter(id) {
       player_name, profile, summary, image_url,
       style_1, style_1_mark, style_2, style_2_mark,
       style_3, style_3_mark, divine_1, divine_2, divine_3,
-      mundane_value
+      cs, mundane_value
     `)
     .eq("public_id", id)
     .maybeSingle();
@@ -108,6 +108,7 @@ function collectEditorCharacter() {
     profile: value("profile"),
     summary: value("summary"),
     image_url: preview?.currentSrc || preview?.src || PLACEHOLDER,
+    cs: numberText("cs-final"),
     mundane_value: numberText("mundane-final")
   };
 
@@ -231,6 +232,7 @@ function createUdonariumXml(character, imageIdentifier) {
   const styles = getStyles(character);
   const divineCounts = getDivineCounts(character);
   const rewardPoints = Math.max(0, Number(character.mundane_value || 0));
+  const combatSpeed = Number(character.cs) || 0;
   const castUrl = createCastUrl(character.public_id);
   const divineRows = divineCounts
     .map(({ label, count }) => `          <data name="${escapeXml(label)}" type="numberResource" currentValue="${count}">${count}</data>`)
@@ -262,6 +264,7 @@ ${divineRows}
       </data>
       <data name="アクトデータ">
         <data name="報酬点" type="numberResource" currentValue="${rewardPoints}">${rewardPoints}</data>
+        <data name="CS">${combatSpeed}</data>
         <data name="アクトコネ" type="note">（得たコネ）</data>
         <data name="メモ" type="note">（得たアドレスやアウトフィットなど）</data>
       </data>

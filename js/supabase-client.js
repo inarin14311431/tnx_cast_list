@@ -203,5 +203,5 @@ function loadModuleScript(src, id) {
 
 if (hasDocument && document.querySelector(".cast-content, .sheet-layout")) {
   loadModuleScript("./js/cocofolia-export.js?v=2", "tnx-cocofolia-export-module");
-  loadModuleScript("./js/udonarium-export.js?v=1", "tnx-udonarium-export-module");
+  loadModuleScript("./js/udonarium-export.js?v=2", "tnx-udonarium-export-module");
 }
