@@ -18,7 +18,7 @@ test("current dynamic publisher stores trailer and not legacy intro", async () =
     read("js/showcase-generator-loader.js"),
     read("js/showcase-dynamic-publish-v3.js")
   ]);
-  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=5/);
+  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=6/);
   assert.match(publisher, /version: 2/);
   assert.match(publisher, /trailer: trailerBody \? \{ title: "アクトトレーラー", body: trailerBody \} : null/);
   assert.doesNotMatch(publisher, /\n\s*intro:/);

@@ -89,6 +89,12 @@ body[data-page="showcase-generator.html"] .form-grid textarea { padding: 10px 11
 .selected-cast__manual-fields .manual-field--handout { grid-column: 1 / -1; }
 .selected-cast__manual-fields .manual-field--handout textarea { min-height: 178px; }
 .selected-cast__manual-id { color: #ff9ed0; letter-spacing: .08em; }
+.selected-cast__fields label small, .selected-cast__manual-fields label small { margin-left: 6px; color: #6c9aa4; font: 700 .55rem/1 var(--font-data); letter-spacing: .1em; }
+.selected-cast__cast-no input { max-width: 120px; }
+.selected-cast__manual-fields .manual-field--sheet-import { display: grid; grid-column: 1 / -1; grid-template-columns: minmax(0, 1fr) auto; gap: 6px 10px; align-items: end; padding: 10px; border: 1px dashed rgb(117 255 180 / 32%); background: rgb(117 255 180 / 4%); }
+.manual-field--sheet-import .manual-field__note { grid-column: 1 / -1; margin: 0; color: #79a99a; font: 700 .62rem/1.5 var(--font-data); }
+.manual-field--sheet-import .manual-field__note.is-success { color: #8dffc4; }
+.manual-field--sheet-import .manual-field__note.is-error { color: #ff9cb4; }
 .manual-cast-add { min-height: 36px; padding: 7px 12px; border-color: rgb(117 255 180 / 62%); color: #dffff0; background: linear-gradient(180deg, rgb(117 255 180 / 16%), rgb(117 255 180 / 5%)); font-weight: 900; white-space: nowrap; }
 .manual-cast-add small { margin-top: 2px; color: #79b998; font: 700 .54rem/1 var(--font-data); letter-spacing: .12em; }
 

@@ -1,6 +1,8 @@
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=5";
 import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=2";
+import { planShowcaseRestore } from "./showcase-restore-matching.js?v=1";
+import { castNumberFromSlot } from "./showcase-cast-number.js?v=1";
 
 const MAX_CASTS = 6;
 const RESTORE_PARAM = "edit";
@@ -157,15 +159,15 @@ function restoreBasicFields(data, showcase, slug) {
 }
 
 async function restoreCasts(casts, participants) {
-  const orderedParticipants = [...participants].sort((a, b) => numberOrMax(a.castOrder) - numberOrMax(b.castOrder));
   let fallbackCount = 0;
+  const plan = planShowcaseRestore(casts, participants);
 
-  for (let index = 0; index < casts.length; index += 1) {
-    const savedCast = casts[index] || {};
-    const participant = matchParticipant(savedCast, orderedParticipants, index);
+  for (let index = 0; index < plan.length; index += 1) {
+    const { cast: savedCast = {}, participant } = plan[index];
     let row = null;
 
-    if (participant?.characterId) {
+    // Only a participant whose card is not selected yet may be clicked: clicking a selected card removes it.
+    if (participant?.characterId && !findSelectedRow(participant.characterId)) {
       const card = findPublicCard(participant.characterId);
       if (card) {
         card.click();
@@ -177,11 +179,12 @@ async function restoreCasts(casts, participants) {
       const previousCount = selectedRowCount();
       elements.manualAddButton?.click();
       row = await waitFor(() => findRowByIndex(previousCount), 1200);
-      fallbackCount += 1;
+      if (participant) fallbackCount += 1;
       if (row) fillManualIdentity(row, savedCast);
     }
 
     if (!row) continue;
+    fillCastNumber(row, savedCast.slot, index);
     fillRoleAndHandout(row, savedCast, participant);
     await fillTagline(row, savedCast.tagline);
   }
@@ -189,13 +192,9 @@ async function restoreCasts(casts, participants) {
   return fallbackCount;
 }
 
-function matchParticipant(savedCast, participants, index) {
-  const serial = normalizeSerial(savedCast?.serial);
-  if (serial) {
-    const exact = participants.find(item => normalizeSerial(obfuscatePublicId(item.characterPublicId)) === serial);
-    if (exact) return exact;
-  }
-  return participants[index] || null;
+function fillCastNumber(row, slot, index) {
+  const number = castNumberFromSlot(slot, index);
+  setControl(row.querySelector('[data-field="cast-no"]'), number === index + 1 ? "" : String(number));
 }
 
 function findPublicCard(characterId) {
@@ -229,6 +228,11 @@ function fillManualIdentity(row, savedCast) {
   setControl(row.querySelector('[data-field="manual-name"]'), savedCast.fullName || "名称未登録");
   setControl(row.querySelector('[data-field="manual-styles"]'), (savedCast.styles || []).map(style => String(style?.label || "").trim()).filter(Boolean).join(" / "));
   setControl(row.querySelector('[data-field="manual-player"]'), getMetaValue(savedCast, "PLAYER"));
+  setControl(row.querySelector('[data-field="manual-affiliation"]'), getMetaValue(savedCast, "AFFILIATION"));
+  setControl(row.querySelector('[data-field="manual-age"]'), getMetaValue(savedCast, "AGE"));
+  const [gender = "", rank = ""] = getMetaValue(savedCast, "GENDER / RANK").split(" / ");
+  setControl(row.querySelector('[data-field="manual-gender"]'), gender);
+  setControl(row.querySelector('[data-field="manual-rank"]'), rank);
 }
 
 function fillRoleAndHandout(row, savedCast, participant) {
@@ -314,7 +318,8 @@ function nextFrame() {
 
 function getMetaValue(savedCast, label) {
   const row = (savedCast?.meta || []).find(item => String(item?.label || "").trim().toUpperCase() === label);
-  return String(row?.value || "").trim();
+  const value = String(row?.value || "").trim();
+  return value === "—" ? "" : value;
 }
 
 function stripOuterQuote(value) {
@@ -329,25 +334,6 @@ function stripOuterQuote(value) {
 
 function normalizeStyleLabel(value) {
   return String(value || "").normalize("NFKC").replace(/HANDOUT ROLE/gi, "").replace(/[◎●]/g, "").replace(/\s+/g, "").trim();
-}
-
-function normalizeSerial(value) {
-  return String(value || "").normalize("NFKC").trim().toUpperCase();
-}
-
-function numberOrMax(value) {
-  const number = Number(value);
-  return Number.isFinite(number) ? number : Number.MAX_SAFE_INTEGER;
-}
-
-function obfuscatePublicId(value) {
-  const source = `TNX_CAST_ARCHIVE::${String(value ?? "")}`;
-  let hash = 0x811c9dc5;
-  for (let index = 0; index < source.length; index += 1) {
-    hash ^= source.charCodeAt(index);
-    hash = Math.imul(hash, 0x01000193);
-  }
-  return `TNX-${(hash >>> 0).toString(16).toUpperCase().padStart(8, "0")}`;
 }
 
 function normalizeSlug(value) {

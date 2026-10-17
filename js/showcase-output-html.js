@@ -3,13 +3,14 @@ import { STYLE_COLORS } from "./style-colors.js";
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
 import { formatShowcaseHandle, formatShowcaseFullName } from "./showcase-display-format.js?v=1";
 import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=2";
+import { formatCastNumber } from "./showcase-cast-number.js?v=1";
 
 // Standalone output and selection UI share formatting, but not browser state.
 export function renderShowcase(data, baseUrl) {
   const backgroundStyle = data.background
     ? `background-image:linear-gradient(rgba(2,8,12,.58),rgba(2,8,12,.92)),url('${escapeCssUrl(data.background)}');`
     : "";
-  const navigation = data.casts.map((item, index) => `<a href="#cast-${index + 1}"><span>${String(index + 1).padStart(2, "0")}</span>${escapeHtml(item.character.character_name)}</a>`).join("");
+  const navigation = data.casts.map((item, index) => `<a href="#cast-${index + 1}"><span>${formatCastNumber(item.castNo, index)}</span>${escapeHtml(item.character.character_name)}</a>`).join("");
   const cards = data.casts.map((item, index) => createOutputCastCard(item, index, baseUrl)).join("\n");
   return `<!doctype html>
 <html lang="ja" data-showcase-theme="${escapeAttribute(normalizeShowcaseTheme(data.theme))}">
@@ -60,7 +61,7 @@ function createOutputCastCard(item, index, baseUrl) {
 <section class="cast-card" id="cast-${index + 1}">
   <div class="cast-card__image"><img src="${escapeAttribute(character.image_thumbnail_url || character.image_url || "./assets/placeholders/scan-failed.webp")}" alt="${escapeAttribute(character.character_name || "")}" style="object-position:${escapeAttribute(getImageObjectPosition(character.image_url))};--tnx-image-scale:${getImageScale(character.image_url)};--tnx-image-origin:${escapeAttribute(getImageTransformOrigin(character.image_url))}"></div>
   <div class="cast-card__body">
-    <p class="cast-card__slot">CAST ${String(index + 1).padStart(2, "0")}</p>
+    <p class="cast-card__slot">CAST ${formatCastNumber(item.castNo, index)}</p>
     ${reading ? `<p class="cast-card__reading">${escapeHtml(reading)}</p>` : ""}
     <h2 class="cast-card__name${nameClass}">${escapeHtml(fullName)}</h2>
     ${styles ? `<div class="cast-card__styles">${styles}</div>` : ""}

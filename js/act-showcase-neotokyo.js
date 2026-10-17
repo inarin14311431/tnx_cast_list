@@ -1,4 +1,5 @@
 import { parseStyleLabel } from "./act-showcase-style-label.js?v=1";
+import { castNumberFromSlot } from "./showcase-cast-number.js?v=1";
 const SAMPLE_TRAILER_MESSAGE = "公開用アクトトレーラーは未登録です。\n公開データにトレーラーを登録すると、ここで読み上げ表示されます。";
 const FALLBACK_IMAGE = "./assets/placeholders/scan-failed.webp";
 const SHOW_ACT_TITLE_SCREEN = true;
@@ -51,7 +52,7 @@ export async function runNeoTokyoIntro({ intro, model }) {
     if (state.finished) return;
 
     for (let index = 0; index < model.casts.length; index += 1) {
-      await showHandoutAndAssign(state, model.casts[index], index, model.casts.length);
+      await showHandoutAndAssign(state, model.casts[index], index, model.casts);
       if (state.finished) return;
     }
 
@@ -192,14 +193,15 @@ async function showTrailer(state, model) {
   await waitForAdvance(state, "NEXT // HANDOUT 01");
 }
 
-async function showHandoutAndAssign(state, cast, index, total) {
-  const pcNumber = index + 1;
+async function showHandoutAndAssign(state, cast, index, casts) {
+  const pcNumber = castNumberFromSlot(cast?.slot, index);
+  const nextCast = casts[index + 1];
   const pcLabel = String(pcNumber).padStart(2, "0");
   const handout = cast?.handout && typeof cast.handout === "object" ? cast.handout : {};
   const handoutTitle = clean(handout.title) || `PC${pcNumber} HANDOUT`;
   const handoutBody = clean(handout.body) || "公開用ハンドアウト本文は登録されていません。";
   const participationRole = getParticipationRole(cast);
-  const progressBase = 34 + Math.round((index / Math.max(total, 1)) * 50);
+  const progressBase = 34 + Math.round((index / Math.max(casts.length, 1)) * 50);
 
   setProgress(state, progressBase, `HANDOUT ${pcLabel}`);
 
@@ -298,8 +300,8 @@ async function showHandoutAndAssign(state, cast, index, total) {
   revealAllStyleCards(castCard);
   if (state.finished) return;
 
-  const nextLabel = pcNumber < total
-    ? `NEXT // HANDOUT ${String(pcNumber + 1).padStart(2, "0")}`
+  const nextLabel = nextCast
+    ? `NEXT // HANDOUT ${String(castNumberFromSlot(nextCast?.slot, index + 1)).padStart(2, "0")}`
     : "NEXT // ACT SUMMARY";
   await waitForAdvance(state, nextLabel);
 }

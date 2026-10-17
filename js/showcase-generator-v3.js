@@ -1,4 +1,6 @@
-import { renderShowcase, getStyles, getStyleNames, formatHandle, formatFullName, obfuscatePublicId } from "./showcase-output-html.js?v=3";
+import { renderShowcase, getStyles, getStyleNames, formatHandle, formatFullName, obfuscatePublicId } from "./showcase-output-html.js?v=4";
+import { normalizeCastNumber, formatCastNumber, resolveCastNumber, findDuplicateCastNumber, MAX_CAST_NUMBER } from "./showcase-cast-number.js?v=1";
+import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=1";
 import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=2";
 import { normalizeShowcaseTheme } from "./showcase-output-css.js?v=2";
 import { supabase } from "./supabase-client.js";
@@ -214,7 +216,7 @@ function createLibraryCard(character, source) {
         <span class="cast-pick-card__player">PL：${escapeHtml(character.player_name || "—")}</span>
         ${stateLabel}
       </span>
-      ${isSelected ? `<span class="cast-pick-card__order">CAST ${String(selectedIndex + 1).padStart(2, "0")}</span>` : ""}
+      ${isSelected ? `<span class="cast-pick-card__order">CAST ${formatCastNumber(selectedCasts[selectedIndex].castNo, selectedIndex)}</span>` : ""}
     </button>`;
 }
 
@@ -242,7 +244,7 @@ function toggleArchiveCast(source, characterId, library) {
       setGeneratorStatus("キャストは公開・非公開・手動追加を合わせて最大6名までです。", "error");
       return;
     }
-    selectedCasts.push({ source, manual: false, character, description: "", quote: "" });
+    selectedCasts.push({ source, manual: false, character, description: "", quote: "", castNo: "" });
   }
 
   invalidateGeneratedHtml();
@@ -276,7 +278,8 @@ function addManualCast() {
       citizen_rank: ""
     },
     quote: "",
-    description: ""
+    description: "",
+    castNo: ""
   });
 
   invalidateGeneratedHtml();
@@ -313,13 +316,14 @@ function createArchiveSelection(item, index) {
       data-character-id="${escapeAttribute(character.id)}" data-visibility="${isPrivate ? "private" : "public"}">
       <img src="${escapeAttribute(character.image_thumbnail_url || character.image_url || "./assets/placeholders/scan-failed.webp")}" alt="" style="object-position:${escapeAttribute(getImageObjectPosition(character.image_url))}">
       <div class="selected-cast__identity">
-        <p class="selected-cast__slot">CAST ${String(index + 1).padStart(2, "0")}${isPrivate ? " // PRIVATE" : ""}</p>
+        <p class="selected-cast__slot"><span data-cast-slot-label>CAST ${formatCastNumber(item.castNo, index)}</span>${isPrivate ? " // PRIVATE" : ""}</p>
         <h3>${escapeHtml(formatFullName(character))}</h3>
         <p>${escapeHtml(styles)}</p>
         <p>PL：${escapeHtml(character.player_name || "—")}</p>
         ${isPrivate ? `<p class="selected-cast__privacy">HTML生成可／GitHub Pages公開不可</p>` : ""}
       </div>
       <div class="selected-cast__fields">
+        ${createCastNumberField(item, index)}
         <label>参加枠（スタイル）<select data-field="quote" required>${createHandoutRoleOptions(character, item.quote)}</select></label>
         <label class="selected-cast__handout-field">ハンドアウト<textarea data-field="description" rows="7" placeholder="コネ：結城あや　推奨スート：スペード&#10;キミは……&#10;&#10;【ＰＳ：達成すべき目的】">${escapeHtml(item.description)}</textarea></label>
       </div>
@@ -333,20 +337,34 @@ function createManualSelection(item, index) {
     <article class="selected-cast selected-cast--manual" data-selected-index="${index}" data-manual="true">
       <img src="${escapeAttribute(character.image_url)}" alt="Scan Failed">
       <div class="selected-cast__identity">
-        <p class="selected-cast__slot">CAST ${String(index + 1).padStart(2, "0")} // MANUAL</p>
+        <p class="selected-cast__slot"><span data-cast-slot-label>CAST ${formatCastNumber(item.castNo, index)}</span> // MANUAL</p>
         <h3 class="selected-cast__manual-preview-name">${escapeHtml(character.character_name || "未入力キャスト")}</h3>
         <p class="selected-cast__manual-id">ARCHIVE ID：ScanFailed</p>
         <p>サイト未登録キャスト</p>
       </div>
       <div class="selected-cast__manual-fields">
+        <div class="manual-field--sheet-import">
+          <label>キャラクターシート倉庫URL <small>CHARACTER SHEET IMPORT</small><input type="url" data-field="manual-sheet-url" value="${escapeAttribute(item.sheetUrl || "")}" placeholder="https://character-sheets.appspot.com/tnx/edit.html?key=..."></label>
+          <button type="button" class="manual-cast-add" data-action="sheet-import">取込 <small>IMPORT</small></button>
+          <p class="manual-field__note" data-sheet-import-status>名前・スタイル・PL名・所属・年齢・性別・市民ランクを倉庫のデータで上書きします。</p>
+        </div>
+        ${createCastNumberField(item, index)}
         <label>名前<input type="text" data-field="manual-name" value="${escapeAttribute(character.character_name)}" placeholder="キャスト名" required></label>
         <label>スタイル<input type="text" data-field="manual-styles" value="${escapeAttribute(character.manual_styles)}" placeholder="例：カタナ◎ / カブト● / フェイト"></label>
         <label>PL名<input type="text" data-field="manual-player" value="${escapeAttribute(character.player_name)}" placeholder="プレイヤー名"></label>
+        <label>所属<input type="text" data-field="manual-affiliation" value="${escapeAttribute(character.affiliation)}"></label>
+        <label>年齢<input type="text" data-field="manual-age" value="${escapeAttribute(character.age)}"></label>
+        <label>性別<input type="text" data-field="manual-gender" value="${escapeAttribute(character.gender)}"></label>
+        <label>市民ランク<input type="text" data-field="manual-rank" value="${escapeAttribute(character.citizen_rank)}"></label>
         <label class="manual-field--role">参加枠（スタイル）<input type="text" data-field="quote" value="${escapeAttribute(item.quote)}" placeholder="例：トーキー、共通" required></label>
         <label class="manual-field--handout">ハンドアウト<textarea data-field="description" rows="7" placeholder="コネ、推奨スート、導入、ＰＳなどを入力">${escapeHtml(item.description)}</textarea></label>
       </div>
       ${createSelectionActions(index)}
     </article>`;
+}
+
+function createCastNumberField(item, index) {
+  return `<label class="selected-cast__cast-no">CAST No<input type="number" inputmode="numeric" min="1" max="${MAX_CAST_NUMBER}" step="1" data-field="cast-no" value="${escapeAttribute(normalizeCastNumber(item.castNo))}" placeholder="自動（${index + 1}）" title="空欄の場合は出演順の番号になります"></label>`;
 }
 
 function createHandoutRoleOptions(character, selectedValue) {
@@ -377,12 +395,64 @@ function handleSelectedCastClick(event) {
     [selectedCasts[index], selectedCasts[index + 1]] = [selectedCasts[index + 1], selectedCasts[index]];
   } else if (button.dataset.action === "remove") {
     selectedCasts.splice(index, 1);
+  } else if (button.dataset.action === "sheet-import" && selectedCasts[index].manual) {
+    void importManualCastFromSheet(selectedCasts[index], row, button);
+    return;
   } else {
     return;
   }
 
   invalidateGeneratedHtml();
   renderSelections();
+}
+
+const MANUAL_FIELD_KEYS = {
+  "manual-styles": "manual_styles",
+  "manual-player": "player_name",
+  "manual-affiliation": "affiliation",
+  "manual-age": "age",
+  "manual-gender": "gender",
+  "manual-rank": "citizen_rank"
+};
+
+async function importManualCastFromSheet(item, row, button) {
+  const status = row.querySelector("[data-sheet-import-status]");
+  const url = row.querySelector('[data-field="manual-sheet-url"]')?.value.trim() || "";
+  const setRowStatus = (message, state = "") => {
+    if (!status) return;
+    status.textContent = message;
+    status.className = `manual-field__note${state ? ` is-${state}` : ""}`;
+  };
+  button.disabled = true;
+  setRowStatus("キャラクターシート倉庫からデータを取得しています…");
+  try {
+    const { fetchManualCastFromSheet } = await import("./showcase-manual-sheet-import.js?v=1");
+    const fields = await fetchManualCastFromSheet(url);
+    if (!selectedCasts.includes(item)) return;
+    item.sheetUrl = url;
+    Object.assign(item.character, {
+      character_name: fields.name,
+      manual_styles: fields.styles,
+      player_name: fields.player,
+      affiliation: fields.affiliation,
+      age: fields.age,
+      gender: fields.gender,
+      citizen_rank: fields.rank
+    });
+    invalidateGeneratedHtml();
+    renderSelections();
+    const index = selectedCasts.indexOf(item);
+    const nextStatus = elements.selectedCasts?.querySelector(`[data-selected-index="${index}"] [data-sheet-import-status]`);
+    if (nextStatus) {
+      nextStatus.textContent = `「${fields.name}」を取り込みました。参加枠とハンドアウトを確認してください。`;
+      nextStatus.className = "manual-field__note is-success";
+    }
+  } catch (error) {
+    console.error(error);
+    setRowStatus(error?.message || "キャラクターシート倉庫から取り込めませんでした。", "error");
+  } finally {
+    button.disabled = false;
+  }
 }
 
 function handleSelectedCastInput(event) {
@@ -392,14 +462,25 @@ function handleSelectedCastInput(event) {
   const item = selectedCasts[Number(row.dataset.selectedIndex)];
   if (!item) return;
 
-  if (field.dataset.field === "quote") item.quote = field.value;
+  if (field.dataset.field === "cast-no") {
+    item.castNo = normalizeCastNumber(field.value);
+    const index = Number(row.dataset.selectedIndex);
+    const label = row.querySelector("[data-cast-slot-label]");
+    if (label) label.textContent = `CAST ${formatCastNumber(item.castNo, index)}`;
+    if (event.type === "change") {
+      renderPublicCharacters();
+      renderPrivateCharacters();
+    }
+  } else if (field.dataset.field === "manual-sheet-url") {
+    item.sheetUrl = field.value;
+    return;
+  } else if (field.dataset.field === "quote") item.quote = field.value;
   else if (field.dataset.field === "description") item.description = field.value;
   else if (item.manual && field.dataset.field === "manual-name") {
     item.character.character_name = field.value;
     const preview = row.querySelector(".selected-cast__manual-preview-name");
     if (preview) preview.textContent = field.value.trim() || "未入力キャスト";
-  } else if (item.manual && field.dataset.field === "manual-styles") item.character.manual_styles = field.value;
-  else if (item.manual && field.dataset.field === "manual-player") item.character.player_name = field.value;
+  } else if (item.manual && MANUAL_FIELD_KEYS[field.dataset.field]) item.character[MANUAL_FIELD_KEYS[field.dataset.field]] = field.value;
 
   invalidateGeneratedHtml();
 }
@@ -436,6 +517,8 @@ function validateSelectedCasts() {
   if (selectedCasts.length > MAX_CASTS) throw new Error("キャストは最大6名までです。");
   const incompleteManual = selectedCasts.find(item => item.manual && !item.character.character_name.trim());
   if (incompleteManual) throw new Error("手動追加キャストの名前を入力してください。");
+  const duplicateNumber = findDuplicateCastNumber(selectedCasts.map(item => item.castNo));
+  if (duplicateNumber) throw new Error(`CAST No ${String(duplicateNumber).padStart(2, "0")} が重複しています。番号を変更してください。`);
   const missingRole = selectedCasts.find(item => !String(item.quote ?? "").trim());
   if (missingRole) throw new Error("各キャストの参加枠（スタイル）を選択または入力してください。");
 }
@@ -472,6 +555,8 @@ async function registerHistoryOnly() {
       .filter(item => !item.manual && item.character.id)
       .map(item => item.character.id);
     if (!participantIds.length) throw new Error("履歴へ登録するには、公開または自分の非公開キャストを1名以上選択してください。");
+    const duplicateNumber = findDuplicateCastNumber(selectedCasts.map(item => item.castNo));
+    if (duplicateNumber) throw new Error(`CAST No ${String(duplicateNumber).padStart(2, "0")} が重複しています。番号を変更してください。`);
 
     const slug = normalizeSlug(elements.publishSlug?.value);
     if (!slug) throw new Error("アクト識別名を半角英数字とハイフンで入力してください。");
@@ -490,12 +575,18 @@ async function registerHistoryOnly() {
     });
     if (error) throw new Error(translateHistoryError(error));
     if (!actId) throw new Error("登録したアクト履歴を確認できませんでした。");
+    const castOrders = selectedCasts
+      .map((item, index) => ({ item, castOrder: resolveCastNumber(item.castNo, index) }))
+      .filter(({ item }) => !item.manual && item.character.id)
+      .map(({ item, castOrder }) => ({ characterId: item.character.id, castOrder }));
+    const castOrderSync = await syncActCastOrders(supabase, slug, castOrders);
 
     const privateCount = selectedCasts.filter(item => item.source === "private").length;
     const manualCount = selectedCasts.filter(item => item.manual).length;
     const privateNote = privateCount ? ` 非公開キャスト${privateCount}名を含みます。` : "";
     const manualNote = manualCount ? ` 手動追加キャスト${manualCount}名は履歴対象外です。` : "";
-    setGeneratorStatus(`GitHub Pagesへ公開せず、参加アクト履歴へ登録しました。${privateNote}${manualNote}`, "success");
+    const castOrderNote = castOrderSync.ok ? "" : " 履歴のCAST No.は更新できませんでした。";
+    setGeneratorStatus(`GitHub Pagesへ公開せず、参加アクト履歴へ登録しました。${privateNote}${manualNote}${castOrderNote}`, "success");
   } catch (error) {
     console.error(error);
     setGeneratorStatus(error?.message || "参加アクト履歴の登録に失敗しました。", "error");
@@ -610,7 +701,7 @@ function updatePrivateSelectionSummary() {
     <span class="private-selection-summary__label">出演枠に追加済み：</span>
     ${selectedPrivate.map(item => {
       const index = selectedCasts.indexOf(item);
-      return `<span class="private-selection-summary__item"><b>${String(index + 1).padStart(2, "0")}</b>${escapeHtml(item.character.character_name || "名称未登録")}</span>`;
+      return `<span class="private-selection-summary__item"><b>${formatCastNumber(item.castNo, index)}</b>${escapeHtml(item.character.character_name || "名称未登録")}</span>`;
     }).join("")}`;
 }
 

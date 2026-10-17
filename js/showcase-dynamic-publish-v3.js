@@ -1,6 +1,8 @@
 import { supabase } from "./supabase-client.js";
 import { withRequestTimeout } from "./async-timeout.js?v=1";
 import { escapeAttribute } from "./dom-escape.js?v=2";
+import { resolveCastNumber } from "./showcase-cast-number.js?v=1";
+import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=1";
 
 const preview = document.querySelector("#showcase-preview");
 const status = document.querySelector("#generator-status");
@@ -84,13 +86,14 @@ async function publishDynamicShowcase(button, mode) {
     }), "公開結果を確認できませんでした。通信状態を確認し、ページを再読み込みして公開状態と参加履歴を確認してください。");
     if (error) throw new Error(translateError(error));
     if (!actId) throw new Error("公開したアクト紹介を確認できませんでした。");
+    const castOrderSync = await syncActCastOrders(supabase, slug, collectPublicCastOrders());
 
     const publicPath = mode === "standard"
       ? `./act-showcase-standard.html?id=${encodeURIComponent(slug)}&theme=${encodeURIComponent(showcaseData.theme)}`
       : `./act-showcase.html?id=${encodeURIComponent(slug)}&theme=${encodeURIComponent(showcaseData.theme)}`;
     const publicUrl = new URL(publicPath, location.href).href;
     const modeLabel = mode === "standard" ? "従来版" : "豪華版";
-    setStatus(`${modeLabel}の公開処理が完了しました。参加アクト履歴にも反映しました。 <a href="${escapeAttribute(publicUrl)}" target="_blank" rel="noopener">${modeLabel}の公開ページを開く</a>`, "success", true);
+    setStatus(`${modeLabel}の公開処理が完了しました。参加アクト履歴にも反映しました。${castOrderSync.ok ? "" : "（履歴のCAST No.は更新できませんでした）"} <a href="${escapeAttribute(publicUrl)}" target="_blank" rel="noopener">${modeLabel}の公開ページを開く</a>`, "success", true);
   } catch (error) {
     console.error(error);
     setStatus(error?.message || "アクト紹介の公開に失敗しました。", "error");
@@ -98,6 +101,13 @@ async function publishDynamicShowcase(button, mode) {
     publishing = false;
     syncPublishButtons();
   }
+}
+
+function collectPublicCastOrders() {
+  return [...document.querySelectorAll('#selected-casts [data-character-id][data-visibility="public"]')].map(row => ({
+    characterId: row.dataset.characterId,
+    castOrder: resolveCastNumber(row.querySelector('[data-field="cast-no"]')?.value, Number(row.dataset.selectedIndex))
+  }));
 }
 
 async function extractShowcaseData(source) {
