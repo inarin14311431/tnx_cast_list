@@ -37,8 +37,8 @@ test('PC and mobile cast views render the three stored life path values directly
 
 test('mobile profile summary and editor never split life path name and acquired skill', () => {
   assert.doesNotMatch(mobileProfileJs, /取得技能なし|splitLifePath|joinLifePath/);
-  assert.match(mobileProfileJs, /const value=String\(source\(field\)\?\.value\|\|""\)\.trim\(\)/);
-  assert.match(mobileProfileJs, /mobile-lifepath-row"><b>\$\{bilingual\(label,en\)\}<\/b><span>\$\{esc\(value\|\|"—"\)\}<\/span>/);
+  assert.match(mobileProfileJs, /const value = String\(source\(field\)\?\.value \|\| ""\)\.trim\(\)/);
+  assert.match(mobileProfileJs, /mobile-lifepath-row"><b>\$\{bilingual\(label, en\)\}<\/b><span>\$\{escapeHtml\(value \|\| "—"\)\}<\/span>/);
   assert.match(mobileProfileJs, /<label class="mobile-lifepath-editor"[^>]*><span class="mobile-profile-field-label">/);
 });
 
