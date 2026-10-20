@@ -1,33 +1,190 @@
 import { supabase } from "./supabase-client.js";
 import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=1";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
-import { CREATION_ALLOWANCE, INITIAL_SKILL_COST, generalSkillExperienceCost, paidSkillLevel, steppedExperienceCost } from "./sheet-experience-rules.js?v=7";
+import {
+  CREATION_ALLOWANCE,
+  INITIAL_SKILL_COST,
+  generalSkillExperienceCost,
+  paidSkillLevel,
+  steppedExperienceCost
+} from "./sheet-experience-rules.js?v=7";
 
 /* Single authoritative experience-point calculator. */
-(function(){
-  const $=selector=>document.querySelector(selector);
-  const $$=selector=>[...document.querySelectorAll(selector)];
-  const ABILITIES=["reason","passion","life","mundane"];
-  const STYLE_COST=window.TNXStyleSkillKinds?.costs||{normal:10,secret:20,ultimate:50,direction:2};
-  let queued=false;
-  let writing=false;
-  let troopExperience=0;
-  let hasLinkedTroops=false;
-  function num(value){const parsed=Number(value);return Number.isFinite(parsed)?parsed:0;}
-  function displayTotal(total){return hasLinkedTroops?`${total}＋${troopExperience}`:String(total);}
-  async function loadTroopExperience(){const publicId=new URLSearchParams(location.search).get("id")?.trim()||"";if(!publicId)return;const bundle=await whenSheetCharacterLoaded();if(!bundle)return;const troopResult=await supabase.from("troops").select("experience_spent").eq("character_id",bundle.character.id);if(troopResult.error)return;hasLinkedTroops=Boolean(troopResult.data?.length);troopExperience=(troopResult.data||[]).reduce((sum,item)=>sum+Math.max(0,num(item.experience_spent)),0);queue();}
-  function styleRecord(index){const name=$(`#style-${index}`)?.value||"";if(name==="ウツワ"){const attribute=$(`#style-${index}-attribute`)?.value||"";return UTSUWA_ATTRIBUTES.find(item=>item.name===attribute)||null;}return STYLE_DATA.find(item=>item.name===name)||null;}
-  function baselines(){const result={};for(const key of ABILITIES){result[key]=0;result[`${key}-control`]=0;}for(let index=1;index<=3;index++){const record=styleRecord(index);if(!record)continue;for(const key of ABILITIES){result[key]+=num(record[key]?.[0]);result[`${key}-control`]+=num(record[key]?.[1]);}}return result;}
-  function skillCategory(row,name=""){if(row.closest("#style-skills"))return "style";const category=row.closest("[data-skill-category]")?.dataset.skillCategory||"";if(category)return category;if(/^社会[：:]/.test(name))return "social";if(/^コネ[：:]/.test(name))return "connection";return "general";}
-  function skillParts(){let style=0;const generalRows=[];const seen=new Set();const rows=$$("#general-skills tr[data-skill-key],#style-skills tr[data-skill-key]");for(const row of rows){const key=row.dataset.skillKey;if(key&&seen.has(key))continue;if(key)seen.add(key);const name=row.querySelector('[data-f="name"]')?.value?.trim()||"";if(!name)continue;const level=Math.max(0,num(row.querySelector('[data-f="level"]')?.value));if(level<=0)continue;const freeLevel=Math.max(0,num(row.querySelector('[data-f="free_level"]')?.value));const kind=row.querySelector('[data-f="skill_kind"]')?.value||"general";const category=skillCategory(row,name);if(category==="style")style+=paidSkillLevel(level,freeLevel)*(STYLE_COST[kind]??10);else generalRows.push({name,category,level,freeLevel,kind});}const cost=generalSkillExperienceCost(generalRows);return {general:cost.general,socialConnection:cost.socialConnection,style,rawSocial:cost.rawSocial,rawConnection:cost.rawConnection};}
-  function outfitCost(){let total=0;const seen=new Set();for(const control of $$('#outfit-list [data-o="experience_cost"]')){const row=control.closest('[data-outfit-key]');const key=row?.dataset.outfitKey||control;if(seen.has(key))continue;seen.add(key);total+=Math.max(0,num(control.value));}return total;}
-  function calculate(){queued=false;const base=baselines();let ability=0,control=0;for(const key of ABILITIES){ability+=steppedExperienceCost(base[key],num($(`#${key}-base`)?.value),10);control+=steppedExperienceCost(base[`${key}-control`],num($(`#${key}-control-base`)?.value),16);}const skills=skillParts();const paidGeneral=skills.general+skills.socialConnection;const parts={"能力値":ability,"制御値":control,"一般技能":paidGeneral,"スタイル技能":skills.style,"アウトフィット":outfitCost(),"初期作成経験点":-CREATION_ALLOWANCE};if(hasLinkedTroops)parts["トループ"]=troopExperience;const gross=ability+control+paidGeneral+skills.style+parts["アウトフィット"];const total=gross-CREATION_ALLOWANCE;writing=true;const output=$("#exp-total"),text=displayTotal(total);if(output&&output.textContent!==text){output.textContent=text;output.classList.remove("flash");void output.offsetWidth;output.classList.add("flash");}const breakdown=$("#exp-breakdown");const labels=["能力値","制御値","一般技能","スタイル技能","アウトフィット","初期作成経験点",...(hasLinkedTroops?["トループ"]:[])];const html=labels.map(label=>`<div><dt>${label}</dt><dd>${parts[label]||0}</dd></div>`).join("");if(breakdown&&breakdown.innerHTML!==html)breakdown.innerHTML=html;writing=false;return {total,parts,gross,paidGeneralSkillCost:skills.general,paidSocialConnectionSkillCost:skills.socialConnection,rawSocialSkillCost:skills.rawSocial,rawConnectionSkillCost:skills.rawConnection,initialSkillCost:INITIAL_SKILL_COST,creationAllowance:CREATION_ALLOWANCE,troopExperience};}
-  function queue(){if(writing||queued)return;queued=true;requestAnimationFrame(calculate);}
-  window.TNXExperience={calculate,queue};
-  document.addEventListener("input",queue,true);
-  document.addEventListener("change",queue,true);
-  const sheetRoot=document.querySelector(".sheet-layout");
-  if(sheetRoot)new MutationObserver(mutations=>{if(writing)return;if(mutations.every(item=>item.target.closest?.("#exp-total,#exp-breakdown")))return;queue();}).observe(sheetRoot,{childList:true,subtree:true});
+(function () {
+  const $ = selector => document.querySelector(selector);
+  const $$ = selector => [...document.querySelectorAll(selector)];
+  const ABILITIES = ["reason", "passion", "life", "mundane"];
+  const STYLE_COST = window.TNXStyleSkillKinds?.costs || { normal: 10, secret: 20, ultimate: 50, direction: 2 };
+  let queued = false;
+  let writing = false;
+  let troopExperience = 0;
+  let hasLinkedTroops = false;
+  function num(value) {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+  function displayTotal(total) {
+    return hasLinkedTroops ? `${total}＋${troopExperience}` : String(total);
+  }
+  async function loadTroopExperience() {
+    const publicId = new URLSearchParams(location.search).get("id")?.trim() || "";
+    if (!publicId) return;
+    const bundle = await whenSheetCharacterLoaded();
+    if (!bundle) return;
+    const troopResult = await supabase
+      .from("troops")
+      .select("experience_spent")
+      .eq("character_id", bundle.character.id);
+    if (troopResult.error) return;
+    hasLinkedTroops = Boolean(troopResult.data?.length);
+    troopExperience = (troopResult.data || []).reduce((sum, item) => sum + Math.max(0, num(item.experience_spent)), 0);
+    queue();
+  }
+  function styleRecord(index) {
+    const name = $(`#style-${index}`)?.value || "";
+    if (name === "ウツワ") {
+      const attribute = $(`#style-${index}-attribute`)?.value || "";
+      return UTSUWA_ATTRIBUTES.find(item => item.name === attribute) || null;
+    }
+    return STYLE_DATA.find(item => item.name === name) || null;
+  }
+  function baselines() {
+    const result = {};
+    for (const key of ABILITIES) {
+      result[key] = 0;
+      result[`${key}-control`] = 0;
+    }
+    for (let index = 1; index <= 3; index++) {
+      const record = styleRecord(index);
+      if (!record) continue;
+      for (const key of ABILITIES) {
+        result[key] += num(record[key]?.[0]);
+        result[`${key}-control`] += num(record[key]?.[1]);
+      }
+    }
+    return result;
+  }
+  function skillCategory(row, name = "") {
+    if (row.closest("#style-skills")) return "style";
+    const category = row.closest("[data-skill-category]")?.dataset.skillCategory || "";
+    if (category) return category;
+    if (/^社会[：:]/.test(name)) return "social";
+    if (/^コネ[：:]/.test(name)) return "connection";
+    return "general";
+  }
+  function skillParts() {
+    let style = 0;
+    const generalRows = [];
+    const seen = new Set();
+    const rows = $$("#general-skills tr[data-skill-key],#style-skills tr[data-skill-key]");
+    for (const row of rows) {
+      const key = row.dataset.skillKey;
+      if (key && seen.has(key)) continue;
+      if (key) seen.add(key);
+      const name = row.querySelector('[data-f="name"]')?.value?.trim() || "";
+      if (!name) continue;
+      const level = Math.max(0, num(row.querySelector('[data-f="level"]')?.value));
+      if (level <= 0) continue;
+      const freeLevel = Math.max(0, num(row.querySelector('[data-f="free_level"]')?.value));
+      const kind = row.querySelector('[data-f="skill_kind"]')?.value || "general";
+      const category = skillCategory(row, name);
+      if (category === "style") style += paidSkillLevel(level, freeLevel) * (STYLE_COST[kind] ?? 10);
+      else generalRows.push({ name, category, level, freeLevel, kind });
+    }
+    const cost = generalSkillExperienceCost(generalRows);
+    return {
+      general: cost.general,
+      socialConnection: cost.socialConnection,
+      style,
+      rawSocial: cost.rawSocial,
+      rawConnection: cost.rawConnection
+    };
+  }
+  function outfitCost() {
+    let total = 0;
+    const seen = new Set();
+    for (const control of $$('#outfit-list [data-o="experience_cost"]')) {
+      const row = control.closest("[data-outfit-key]");
+      const key = row?.dataset.outfitKey || control;
+      if (seen.has(key)) continue;
+      seen.add(key);
+      total += Math.max(0, num(control.value));
+    }
+    return total;
+  }
+  function calculate() {
+    queued = false;
+    const base = baselines();
+    let ability = 0,
+      control = 0;
+    for (const key of ABILITIES) {
+      ability += steppedExperienceCost(base[key], num($(`#${key}-base`)?.value), 10);
+      control += steppedExperienceCost(base[`${key}-control`], num($(`#${key}-control-base`)?.value), 16);
+    }
+    const skills = skillParts();
+    const paidGeneral = skills.general + skills.socialConnection;
+    const parts = {
+      能力値: ability,
+      制御値: control,
+      一般技能: paidGeneral,
+      スタイル技能: skills.style,
+      アウトフィット: outfitCost(),
+      初期作成経験点: -CREATION_ALLOWANCE
+    };
+    if (hasLinkedTroops) parts["トループ"] = troopExperience;
+    const gross = ability + control + paidGeneral + skills.style + parts["アウトフィット"];
+    const total = gross - CREATION_ALLOWANCE;
+    writing = true;
+    const output = $("#exp-total"),
+      text = displayTotal(total);
+    if (output && output.textContent !== text) {
+      output.textContent = text;
+      output.classList.remove("flash");
+      void output.offsetWidth;
+      output.classList.add("flash");
+    }
+    const breakdown = $("#exp-breakdown");
+    const labels = [
+      "能力値",
+      "制御値",
+      "一般技能",
+      "スタイル技能",
+      "アウトフィット",
+      "初期作成経験点",
+      ...(hasLinkedTroops ? ["トループ"] : [])
+    ];
+    const html = labels.map(label => `<div><dt>${label}</dt><dd>${parts[label] || 0}</dd></div>`).join("");
+    if (breakdown && breakdown.innerHTML !== html) breakdown.innerHTML = html;
+    writing = false;
+    return {
+      total,
+      parts,
+      gross,
+      paidGeneralSkillCost: skills.general,
+      paidSocialConnectionSkillCost: skills.socialConnection,
+      rawSocialSkillCost: skills.rawSocial,
+      rawConnectionSkillCost: skills.rawConnection,
+      initialSkillCost: INITIAL_SKILL_COST,
+      creationAllowance: CREATION_ALLOWANCE,
+      troopExperience
+    };
+  }
+  function queue() {
+    if (writing || queued) return;
+    queued = true;
+    requestAnimationFrame(calculate);
+  }
+  window.TNXExperience = { calculate, queue };
+  document.addEventListener("input", queue, true);
+  document.addEventListener("change", queue, true);
+  const sheetRoot = document.querySelector(".sheet-layout");
+  if (sheetRoot)
+    new MutationObserver(mutations => {
+      if (writing) return;
+      if (mutations.every(item => item.target.closest?.("#exp-total,#exp-breakdown"))) return;
+      queue();
+    }).observe(sheetRoot, { childList: true, subtree: true });
   void loadTroopExperience();
-  if(document.readyState==="loading")document.addEventListener("DOMContentLoaded",queue,{once:true});else queue();
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", queue, { once: true });
+  else queue();
 })();

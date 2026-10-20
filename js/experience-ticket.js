@@ -1,3 +1,5 @@
+import { escapeHtml } from "./dom-escape.js?v=2";
+
 const historyList = document.querySelector("#act-history-list");
 
 if (historyList) {
@@ -262,14 +264,4 @@ function closeTicket() {
 
 function clean(value) {
   return String(value || "").replace(/\s+/g, " ").trim();
-}
-
-function escapeHtml(value) {
-  return String(value ?? "").replace(/[&<>'\"]/g, char => ({
-    "&": "&amp;",
-    "<": "&lt;",
-    ">": "&gt;",
-    "'": "&#39;",
-    '\"': "&quot;"
-  })[char]);
 }
