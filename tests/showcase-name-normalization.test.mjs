@@ -1,7 +1,9 @@
 import assert from "node:assert/strict";
-import { readFile, readdir } from "node:fs/promises";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { normalizeShowcaseDisplayQuotes } from "../js/showcase-display-format.js";
+import { renderShowcase } from "../js/showcase-output-html.js";
+import { character, baseUrl } from "./fixtures/output-rendering.mjs";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -31,19 +33,38 @@ test("the single display-quote rule gives the pinned result for every input", ()
   }
 });
 
-test("names and readings of the public showcases on disk come out unchanged and stable", async () => {
-  const files = (await readdir(new URL("../showcases/", import.meta.url))).filter(name => name.endsWith(".html"));
+// This used to read the sample pages checked in under showcases/. Those files were generated output, so the same
+// check now runs on what the generator produces, for casts with realistic names: a plain handle, a handle wrapped
+// in doubled quotation marks (the case the rule exists for), no handle, and a manually entered cast.
+test("names and readings in the generated standalone showcase come out unchanged and stable", () => {
+  const cast = fields => ({ source: "public", character: { ...character, handle: "", handle_kana: "", character_kana: "", ...fields }, quote: "", description: "" });
+  const data = {
+    title: "テスト",
+    actName: "テスト",
+    rulerName: "RULER",
+    intro: "",
+    theme: "nova",
+    background: "",
+    casts: [
+      cast({ handle: "灯", handle_kana: "あかり", character_name: "名前", character_kana: "なまえ" }),
+      cast({ handle: "““ハンドル””", handle_kana: "““はんどる””", character_name: "名前", character_kana: "なまえ" }),
+      cast({ character_name: "ハンドルなし" }),
+      { manual: true, character: { character_name: "手動キャスト", manual_styles: "", image_url: "" }, quote: "", description: "" }
+    ]
+  };
   const values = [];
-  for (const file of files) {
-    const html = await read(`showcases/${file}`);
-    for (const match of html.matchAll(/class="cast-card__(?:name|reading)[^"]*">([^<]*)</g)) {
-      values.push(match[1].replaceAll("&quot;", '"').trim());
-    }
+  for (const match of renderShowcase(data, baseUrl).matchAll(/class="cast-card__(?:name|reading)[^"]*">([^<]*)</g)) {
+    values.push(match[1].replaceAll("&quot;", '"').trim());
   }
-  assert.ok(values.length >= 8, "expected the real names and readings to be found");
+  assert.deepEqual(values, [
+    "“あかり” なまえ", "“灯” 名前",
+    "“はんどる” なまえ", "“ハンドル” 名前",
+    "ハンドルなし",
+    "手動キャスト"
+  ]);
   for (const value of values) {
     const once = normalizeShowcaseDisplayQuotes(value);
-    assert.equal(once, value, `real name changed: ${value}`);
+    assert.equal(once, value, `generated name changed: ${value}`);
     assert.equal(normalizeShowcaseDisplayQuotes(once), once);
   }
 });
