@@ -4,7 +4,7 @@
   mobile-image, mobile-import, mobile-ux, mobile-share, mobile-shell;
 
 @import url("../index.css?v=65") layer(app);
-@import url("./sheet-mobile.css?v=5") layer(mobile-base);
+@import url("./sheet-mobile.css?v=6") layer(mobile-base);
 @import url("./sheet-mobile-theme.css?v=3") layer(mobile-theme);
 @import url("./sheet-mobile-ui.css?v=9") layer(mobile-ui);
 @import url("./sheet-mobile-profile.css?v=12") layer(mobile-profile);

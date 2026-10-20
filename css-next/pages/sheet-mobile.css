@@ -53,9 +53,9 @@ body[data-page="sheet-mobile.html"] textarea { min-height: 96px; resize: vertica
   background: var(--surface, rgba(6,18,28,.82));
   font-size: 13px;
 }
-.mobile-sheet-status[data-state="error"] { border-color: #e86c6c; }
-.mobile-sheet-status[data-state="dirty"] { border-color: #d9b65b; }
-.mobile-sheet-status[data-state="saved"] { border-color: #59c7a6; }
+.mobile-sheet-status[data-state="error"] { border-color: var(--color-danger); }
+.mobile-sheet-status[data-state="dirty"] { border-color: var(--color-warning); }
+.mobile-sheet-status[data-state="saved"] { border-color: var(--color-success); }
 
 .mobile-sheet-identity {
   margin-bottom: 12px;
