@@ -249,7 +249,7 @@ bootstrap から到達するのは22ファイル(visual-caption-code を削除�
 - **表示の修正(polish)での基準更新**: intron の可読性(A)・読み込み画面の書体(B)・サマリー/最終ボード/代替画像の切れ(D)で、見た目が変わった28枚だけを基準更新(変更領域は基準更新PRの本文に1枚ずつ記載)。背景プリセット差し替え(C)は `showcase-generator.html` の撮影範囲にプリセット一覧が入らないため、generator の基準画像は更新なし。
 - **スタンダード版の既知の揺れ(polish の確認で判明)**: スタンダード版 desktop の厳密比較が、約1%の頻度で同じ場所(ゲストのナビ項目 `.cast-nav` の「G01 …」、x=771〜924 / y=731〜761、4774px、実際の画像が暗い)だけ差分になる。`main` でも同じ領域・同じ画素数で再現する(120回中1回)ので、フォント読込みや polish の変更とは無関係。原因の見立ては、ゲストが `act-showcase-standard-guests.js` で別の取得の後に追加され、視覚テストが「キャスト3件」までしか待たないこと(未確認の仮説)。対処案は、視覚テスト側でゲストのナビ項目の出現を待つ(未実施)。
 - **マスクなし(手順5a で解除)**: 最終ボードの `.poster-v2-visual` を含めて比較する。キャプションは page.js が最終形で生成するため決定的(マスク解除前に3回連続撮影で差分0を確認し、最終ボード5枚の基準画像だけ更新した)。
-- **未カバーで残る**: ダウンロード出力HTML(`showcases/*.html`、`showcase-dedicated-output.js` の生成物)、豪華版 mobile の3テーマ(intron / vlad / lutetia)、finale の単独場面(opening は desktop 4テーマをカバー済み。mobile は未)、PC2 以降の handout / assign、trailer の追従スクロール中の状態、reduced-motion 無効時の見た目。`showcase-generator.html` は撮っているが、プレビュー iframe 内の描画内容は対象外(未確認)。
+- **未カバーで残る**: ダウンロード出力HTML(`showcase-dedicated-output.js` の生成物。リポジトリに置いていたサンプル `showcases/*.html` は削除済み)、豪華版 mobile の3テーマ(intron / vlad / lutetia)、finale の単独場面(opening は desktop 4テーマをカバー済み。mobile は未)、PC2 以降の handout / assign、trailer の追従スクロール中の状態、reduced-motion 無効時の見た目。`showcase-generator.html` は撮っているが、プレビュー iframe 内の描画内容は対象外(未確認)。
 - 既存の基準画像54枚は 2026-10-05 時点で main と一致。ただし `cast-spectrum-neon-visual-desktop.png` だけは約20%ずれていて、CI が比較対象外にしている。
 
 ### 4.2 E2E(`tests/e2e/test-suites.json` 登録)

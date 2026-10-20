@@ -20,7 +20,6 @@
       "triggerPaths": [
         "act-showcase*.html",
         "showcase-generator.html",
-        "showcases/**",
         "js/act-showcase*.js",
         "js/showcase*.js",
         "js/public-showcase-service.js",
