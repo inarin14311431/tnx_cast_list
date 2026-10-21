@@ -47,7 +47,8 @@ declare
 begin
   select string_agg(found.obj, ', ' order by found.obj) into remaining
   from (
-    select n.nspname || '.' || c.relname || ' (relkind ' || c.relkind || ')' as obj
+    -- relkind は "char" 型。text || "char" は演算子が一意に決まらず 42725 で失敗するため ::text に変換する。
+    select n.nspname || '.' || c.relname || ' (relkind ' || c.relkind::text || ')' as obj
       from pg_class c
       join pg_namespace n on n.oid = c.relnamespace
      where n.nspname in ('internal_archive', 'migration_backup_20260901')
