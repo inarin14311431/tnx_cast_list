@@ -9,7 +9,9 @@ const withStyles = labels => ({
 const LONG_NAMES = withStyles(["カゲムシャ◎●", "エグゼク●", "クロマク◎"]);
 const EIGHT_CHARS = withStyles(["ブラックハウンド◎", "ミストレス●", "トーキー◎●"]);
 
-// Opens the act and clicks ASSIGN // PC1. `record` installs a frame-by-frame log of when each card turned.
+// Opens the act and clicks ASSIGN // PC1. `record` installs a frame-by-frame log of when each card turned, plus the start
+// time the browser scheduled for each card's turn (read from its CSS transition, so a dropped frame cannot move it) and the
+// longest gap between two frames during the scene (the resolution of every frame-sampled time in the log).
 async function startAssign(page, { data = showcaseData, theme = "nova", record = false, flip = "" } = {}) {
   await installActShowcaseRoutes(page, data);
   await page.goto(`/act-showcase.html?id=${ACT_SLUG}&theme=${theme}${flip ? `&flip=${flip}` : ""}`);
@@ -24,9 +26,12 @@ async function startAssign(page, { data = showcaseData, theme = "nova", record =
   await expect(advance).toHaveText("ASSIGN // PC1");
   if (record) {
     await page.evaluate(() => {
-      const log = { assigned: null, turned: [], settled: [], rows: [], overflow: [], tops: [], done: null, advance: null, pendingHidden: null, faceDownVisibility: null };
+      const log = { assigned: null, turned: [], settled: [], scheduled: [], maxFrame: 0, rows: [], overflow: [], tops: [], done: null, advance: null, pendingHidden: null, faceDownVisibility: null };
+      let previousFrame = null;
       window.__assignLog = log;
       const tick = now => {
+        if (previousFrame !== null && log.advance === null) log.maxFrame = Math.max(log.maxFrame, now - previousFrame);
+        previousFrame = now;
         const sequence = document.querySelector(".neotokyo-sequence__screen--linked");
         const cards = [...document.querySelectorAll(".neotokyo-sequence__cast--linked .neotokyo-style-card")];
         const assigned = document.querySelector(".neotokyo-sequence__cast--linked .neotokyo-sequence__assigned");
@@ -40,6 +45,13 @@ async function startAssign(page, { data = showcaseData, theme = "nova", record =
           const matrix = new DOMMatrixReadOnly(getComputedStyle(card.querySelector(".neotokyo-style-card__inner")).transform);
           if (matrix.a >= 0 && log.turned[index] === undefined) log.turned[index] = now;
           if (matrix.a >= 0.999 && log.settled[index] === undefined) log.settled[index] = now;
+          if (log.scheduled[index] === undefined) {
+            const turn = card.querySelector(".neotokyo-style-card__inner").getAnimations().find(animation => animation.transitionProperty === "transform");
+            if (turn && turn.startTime !== null) {
+              const timing = turn.effect.getComputedTiming();
+              log.scheduled[index] = { start: turn.startTime + timing.delay, duration: timing.duration };
+            }
+          }
         });
         if (assigned && cards.length && log.turned.filter(Boolean).length === cards.length && log.done === null
           && getComputedStyle(assigned).visibility !== "hidden") log.done = now;
@@ -79,9 +91,19 @@ for (const { flip, name, turn, gap } of FLIPS) {
     const log = await page.evaluate(() => window.__assignLog);
 
     expect(log.turned.filter(Boolean)).toHaveLength(3);
-    expect(log.turned[0]).toBeLessThan(log.turned[1]);
-    expect(log.turned[1]).toBeLessThan(log.turned[2]);
-    const tolerance = Math.max(45, gap * 0.25); // frame quantisation of the edge-on detection
+    // The turns start in order, one gap apart, and each lasts the turn length. These are the times the browser scheduled
+    // (CSS transition start + delay), so they do not depend on how many frames the machine managed to draw.
+    expect(log.scheduled.filter(Boolean)).toHaveLength(3);
+    for (const [from, to] of [[0, 1], [1, 2]]) {
+      expect(log.scheduled[to].start - log.scheduled[from].start, `scheduled gap ${from}->${to}`).toBeCloseTo(gap, 0);
+    }
+    for (const [index, { duration }] of log.scheduled.entries()) expect(duration, `turn length of card ${index}`).toBeCloseTo(turn, 0);
+    // What was seen on screen: the first frame in which each card is past edge-on. A slow runner can draw one frame for two
+    // cards, so the order is "not reversed", and each time is only as precise as the longest frame in the scene.
+    expect(log.turned[0]).toBeLessThanOrEqual(log.turned[1]);
+    expect(log.turned[1]).toBeLessThanOrEqual(log.turned[2]);
+    const frame = log.maxFrame + 10;
+    const tolerance = Math.max(45, gap * 0.25, frame); // frame quantisation of the edge-on detection
     for (const [from, to] of [[0, 1], [1, 2]]) {
       expect(log.turned[to] - log.turned[from], `gap ${from}->${to}`).toBeGreaterThan(gap - tolerance);
       expect(log.turned[to] - log.turned[from], `gap ${from}->${to}`).toBeLessThan(gap + tolerance);
@@ -97,8 +119,8 @@ for (const { flip, name, turn, gap } of FLIPS) {
     const hold = 2 * gap + turn + 300;
     const duration = log.advance - log.assigned;
     testInfo.annotations.push({ type: "assign-scene-duration-ms", description: `${name}: ${Math.round(duration)} (hold ${hold})` });
-    expect(duration - hold).toBeLessThanOrEqual(250);
-    expect(duration - hold).toBeGreaterThanOrEqual(-60);
+    expect(duration - hold).toBeLessThanOrEqual(250 + frame); // both ends are frame-sampled
+    expect(duration - hold).toBeGreaterThanOrEqual(-60 - frame);
 
     const cards = page.locator(".neotokyo-sequence__cast--linked .neotokyo-style-card");
     await expect(cards).toHaveCount(3);
