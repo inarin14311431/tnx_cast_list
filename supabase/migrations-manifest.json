@@ -61,6 +61,7 @@
     "migrations/20261016_characters_updated_at_ignore_thumbnail.sql",
     "migrations/20261017_restore_snapshot_via_ofc_save.sql",
     "migrations/20261017_act_participant_cast_orders.sql",
-    "migrations/20261020_unlisted_bundle_troops_public_and_rls_initplan.sql"
+    "migrations/20261020_unlisted_bundle_troops_public_and_rls_initplan.sql",
+    "migrations/20261021_drop_migration_backup_schemas.sql"
   ]
 }
