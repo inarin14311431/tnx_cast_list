@@ -30,7 +30,7 @@ body[data-page="cast.html"] .cast-header__actions { display: grid; grid-template
 .cast-hero__image-frame { position: relative; z-index: 21; overflow: hidden; aspect-ratio: 3 / 4; border: 1px solid var(--color-accent); background-color: var(--color-bg); background-image: linear-gradient(var(--color-border-muted) 1px, transparent 1px), linear-gradient(90deg, var(--color-border-muted) 1px, transparent 1px); background-size: 44px 44px; box-shadow: 0 0 30px var(--color-accent-soft); }
 .cast-hero__image-frame img { position: relative; z-index: 2; width: 100%; height: 100%; object-fit: cover; object-position: center top; transform: scale(var(--tnx-image-scale, 1)); transform-origin: var(--tnx-image-origin, 50% 0%); }
 .cast-hero__image-scan { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(transparent 49%, color-mix(in srgb, var(--color-accent) 8%, transparent) 50%); background-size: 100% 5px; }
-.cast-hero__image-label { position: absolute; inset: auto 0 0; z-index: 3; padding: 9px 12px; color: var(--color-accent); background: rgb(0 0 0 / 72%); letter-spacing: .12em; }
+.cast-hero__image-label { position: absolute; inset: auto 0 0; z-index: 3; padding: 9px 12px; color: var(--color-accent); background: color-mix(in srgb, var(--color-bg) 72%, transparent); letter-spacing: .12em; }
 .cast-hero__image-label small { display: block; color: var(--color-muted); font-size: .62rem; }
 .cast-hero__identity { min-width: 0; padding: 0 12px 14px; border-left: 3px solid var(--color-accent); background: linear-gradient(135deg, var(--color-accent-soft), transparent 48%, color-mix(in srgb, var(--color-accent-strong) 5%, transparent)); container: cast-identity / inline-size; }
 
@@ -224,8 +224,8 @@ body[data-page="cast.html"] .ability-grid { display: grid; grid-template-columns
 #tab-session .panel-ability { border-color: var(--color-section-ability); box-shadow: inset 0 3px 0 color-mix(in srgb, var(--color-section-ability) 72%, transparent); }
 #tab-session .panel-skills { border-color: var(--color-section-skills); box-shadow: inset 0 3px 0 color-mix(in srgb, var(--color-section-skills) 72%, transparent); }
 #tab-session .panel-combos { border-color: #f7c76e; box-shadow: inset 0 3px 0 rgb(247 199 110 / 72%); }
-#tab-session .panel-ability > .data-panel__header { background: linear-gradient(90deg, rgb(46 167 199 / 22%), transparent); }
-#tab-session .panel-skills > .data-panel__header { background: linear-gradient(90deg, rgb(56 178 112 / 22%), transparent); }
+#tab-session .panel-ability > .data-panel__header { background: linear-gradient(90deg, color-mix(in srgb, var(--color-section-ability) 22%, transparent), transparent); }
+#tab-session .panel-skills > .data-panel__header { background: linear-gradient(90deg, color-mix(in srgb, var(--color-section-skills) 22%, transparent), transparent); }
 #tab-session .panel-combos > .data-panel__header { background: linear-gradient(90deg, rgb(209 142 44 / 22%), transparent); }
 #outfit-container .panel-outfits { border-color: var(--color-section-outfits); box-shadow: inset 0 3px 0 color-mix(in srgb, var(--color-section-outfits) 68%, transparent); }
 .panel-style-skills { margin-top: 16px; border-color: color-mix(in srgb, var(--color-section-style-skills) 58%, var(--color-border)); box-shadow: inset 0 3px 0 var(--color-section-style-skills); }
