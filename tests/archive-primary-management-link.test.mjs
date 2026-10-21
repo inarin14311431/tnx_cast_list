@@ -20,5 +20,5 @@ test("logout stays visually secondary to cast management", () => {
 });
 
 test("archive CSS cache key is advanced", () => {
-  assert.match(archiveEntry, /@import url\("\.\/archive\.css\?v=7"\) layer\(archive-page\);/);
+  assert.match(archiveEntry, /@import url\("\.\/archive\.css\?v=8"\) layer\(archive-page\);/);
 });

@@ -215,6 +215,7 @@ function visibilityLabel(value) {
 function createOwnedCastItem(character) {
   const id = encodeURIComponent(character.public_id);
   const displayId = window.TNXArchiveId.format(character.public_id);
+  const handle = window.TNXHandleFormat?.quoteHandle(character.handle) || "";
   const styles = [
     [character.style_1, character.style_1_mark],
     [character.style_2, character.style_2_mark],
@@ -226,7 +227,7 @@ function createOwnedCastItem(character) {
   return `
     <article class="owned-cast">
       <div class="owned-cast__identity">
-        <p class="owned-cast__handle">${escapeHtml(window.TNXHandleFormat?.quoteHandle(character.handle) || "ハンドル未登録")}</p>
+        <p class="owned-cast__handle"${handle ? "" : ' aria-hidden="true"'}>${escapeHtml(handle)}</p>
         <h3>${escapeHtml(character.character_name)}</h3>
         ${styles ? `<div class="owned-cast__styles" aria-label="スタイル">${styles}</div>` : ""}
       </div>

@@ -1,5 +1,5 @@
-import { createQuickSheetHtml, createQuickPageHeader, createQuickPageFooter } from "./cast-quick-sheet-html.js?v=3";
-import { displayValue } from "./cast-display-format.js?v=1";
+import { createQuickSheetHtml, createQuickPageHeader, createQuickPageFooter } from "./cast-quick-sheet-html.js?v=4";
+import { displayValue } from "./cast-display-format.js?v=2";
 import { buildDivineSlots, buildStyleSlots, stripOuterQuotes } from "./cast-hero-view.js?v=1";
 import { COMBO_ABILITY_LABELS, getComboActUseLimit, isSkillCounterCombo, getComboSkills, getComboValue } from "./cast-combo-rules.js?v=2";
 import { supabase } from "./supabase-client.js";

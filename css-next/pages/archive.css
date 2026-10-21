@@ -86,7 +86,7 @@ body[data-page="index.html"] .auth-navigation__logout:is(:hover, :focus-visible)
 :where(.cast-card__exp, .cast-card__handle, .cast-card__styles, .cast-card__player, .cast-card__affiliation, .cast-card__summary, .cast-card__serial) { margin: 0; }
 :where(.cast-card__exp, .cast-card__styles, .cast-card__player, .cast-card__serial) { font-family: var(--font-data); }
 .cast-card__exp { color: var(--color-muted); font-size: .72rem; }
-.cast-card__handle { margin-top: 10px; color: var(--color-accent); }
+.cast-card__handle { min-height: 1lh; margin-top: 10px; color: var(--color-accent); }
 .cast-card__name { margin: 4px 0 12px; }
 .cast-card__styles, .cast-card__player { color: var(--color-muted); }
 .cast-card__styles { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; min-height: 24px; }

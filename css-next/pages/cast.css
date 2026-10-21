@@ -399,7 +399,7 @@ body[data-page="cast.html"].is-quick-sheet-open > :is(.cast-header, .cast-conten
 .quick-sheet__page-header > b { color: var(--quick-accent); text-align: right; }
 .quick-sheet__identity { display: grid; grid-template-columns: 38mm minmax(0, 1fr); min-height: 52mm; gap: 8px; padding: 7px; border: 1px solid var(--quick-line); background: var(--quick-surface-alt); }
 .quick-sheet__identity-name { display: grid; min-width: 0; min-height: 24mm; align-content: center; padding: 3px 7px; border-left: 3px solid var(--quick-accent); }
-.quick-sheet__identity-name > span { overflow: hidden; color: var(--quick-accent); font-size: .77rem; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.quick-sheet__identity-name > span { min-height: 1lh; overflow: hidden; color: var(--quick-accent); font-size: .77rem; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
 .quick-sheet__identity-name h1 { overflow: hidden; font-size: 1.38rem; line-height: 1.1; text-overflow: ellipsis; white-space: nowrap; }
 .quick-sheet__identity-name small { overflow: hidden; color: var(--quick-muted); font-size: .58rem; text-overflow: ellipsis; white-space: nowrap; }
 .quick-sheet__style-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; align-content: center; }

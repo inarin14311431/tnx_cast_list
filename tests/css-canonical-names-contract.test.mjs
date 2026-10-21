@@ -13,7 +13,7 @@ test("page entries use canonical responsibility-based CSS names", () => {
   assert.match(troopEntry, /troop-layout\.css\?v=2/);
   assert.match(troopEntry, /troop-combo-rules\.css\?v=1/);
   assert.doesNotMatch(troopEntry, /troops-v4\.css|troop-combo-rule-v2\.css/);
-  assert.match(accountEntry, /account-actions\.css\?v=1/);
+  assert.match(accountEntry, /account-actions\.css\?v=2/);
   assert.doesNotMatch(accountEntry, /account-action-hierarchy\.css/);
   assert.match(sheetEntry, /style-separators\.css\?v=2/);
   assert.doesNotMatch(sheetEntry, /style-separator-fix\.css/);
