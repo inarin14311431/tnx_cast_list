@@ -170,7 +170,7 @@ async function uploadGuestImage(guest, file) {
     if (userError || !user) throw userError || new Error("ログイン情報を確認できません。");
     const ext = file.type === "image/png" ? "png" : file.type === "image/webp" ? "webp" : "jpg";
     const path = `${user.id}/act-guests/${crypto.randomUUID()}.${ext}`;
-    const { error } = await supabase.storage.from(IMAGE_BUCKET).upload(path, file, { cacheControl: "3600", upsert: false, contentType: file.type });
+    const { error } = await supabase.storage.from(IMAGE_BUCKET).upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type });
     if (error) throw error;
     const { data } = supabase.storage.from(IMAGE_BUCKET).getPublicUrl(path);
     const oldPath = guest.storagePath;

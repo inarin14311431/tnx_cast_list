@@ -407,7 +407,7 @@ async function uploadImage(event){
     uploadedPath=`${currentUser.id}/${target.public_id}/${timestamp}.${extension}`;
     const {error:uploadError}=await supabase.storage
       .from(BUCKET_NAME)
-      .upload(uploadedPath,uploadFile,{cacheControl:"86400",contentType:uploadFile.type,upsert:false});
+      .upload(uploadedPath,uploadFile,{cacheControl:"31536000",contentType:uploadFile.type,upsert:false});
     if(uploadError)throw uploadError;
 
     setMessage("サムネイル画像を生成しています…","loading");
@@ -416,7 +416,7 @@ async function uploadImage(event){
     uploadedThumbnailPath=`${currentUser.id}/${target.public_id}/${timestamp}-thumb.${thumbnailExtension}`;
     const {error:thumbnailUploadError}=await supabase.storage
       .from(BUCKET_NAME)
-      .upload(uploadedThumbnailPath,thumbnail.file,{cacheControl:"86400",contentType:thumbnail.file.type,upsert:false});
+      .upload(uploadedThumbnailPath,thumbnail.file,{cacheControl:"31536000",contentType:thumbnail.file.type,upsert:false});
     if(thumbnailUploadError)throw thumbnailUploadError;
 
     const {data:publicUrlData}=supabase.storage.from(BUCKET_NAME).getPublicUrl(uploadedPath);
