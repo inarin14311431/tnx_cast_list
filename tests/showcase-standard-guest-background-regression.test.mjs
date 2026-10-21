@@ -30,5 +30,5 @@ test("showcase cache busters point to the regression-fixed assets", () => {
   assert.match(dedicatedOutput, /act-showcase-standard-hotfix\.css\?v=2/);
   assert.match(standardHtml, /act-showcase-standard-hotfix\.css\?v=2/);
   assert.match(generatorLoader, /showcase-dedicated-output\.js\?v=6/);
-  assert.match(generatorHtml, /showcase-generator-loader\.js\?v=42/);
+  assert.match(generatorHtml, /showcase-generator-loader\.js\?v=43/);
 });

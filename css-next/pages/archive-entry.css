@@ -4,5 +4,5 @@
 @import url("../index.css?v=65") layer(app);
 @import url("../components/style-marks.css?v=1") layer(archive-components);
 @import url("../components/error-state.css?v=1") layer(archive-components);
-@import url("./archive.css?v=7") layer(archive-page);
+@import url("./archive.css?v=8") layer(archive-page);
 @import url("./archive-discovery.css?v=1") layer(archive-discovery);

@@ -40,7 +40,7 @@ body[data-page="showcase-generator.html"] .form-grid textarea { padding: 10px 11
 .cast-pick-card:disabled { opacity: .38; cursor: not-allowed; }
 .cast-pick-card img { display: block; width: 72px; height: 78px; object-fit: cover; object-position: 50% 0; border: 1px solid rgb(95 234 255 / 25%); background: #02080b; }
 .cast-pick-card__body { min-width: 0; }
-.cast-pick-card__handle { display: block; overflow: hidden; color: var(--showcase-cyan); font-size: .68rem; text-overflow: ellipsis; white-space: nowrap; }
+.cast-pick-card__handle { display: block; min-height: 1lh; overflow: hidden; color: var(--showcase-cyan); font-size: .68rem; text-overflow: ellipsis; white-space: nowrap; }
 .cast-pick-card h3 { margin: 3px 0 5px; overflow: hidden; color: #fff; font-size: 1rem; text-overflow: ellipsis; white-space: nowrap; }
 .cast-pick-card__styles, .cast-pick-card__player { display: block; overflow: hidden; color: #8db8c1; font: 700 .65rem/1.45 var(--font-data); text-overflow: ellipsis; white-space: nowrap; }
 .cast-pick-card__order { position: absolute; top: 5px; right: 6px; color: var(--showcase-green); font: 800 .62rem/1 var(--font-data); }

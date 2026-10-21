@@ -23,7 +23,7 @@ function stripOuterQuotes(value) {
 export function formatHandle(handle) {
   const text = stripOuterQuotes(handle);
   if (!text) {
-    return "NO HANDLE";
+    return "";
   }
 
   return `“${text}”`;

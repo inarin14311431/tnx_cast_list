@@ -5,6 +5,6 @@
 @import url("../components/style-marks.css?v=1") layer(account-components);
 @import url("./account.css?v=13") layer(account-base);
 @import url("./account-danger.css?v=1") layer(account-danger);
-@import url("./account-actions.css?v=1") layer(account-actions);
+@import url("./account-actions.css?v=2") layer(account-actions);
 @import url("./account-overview.css?v=1") layer(account-overview);
 @import url("./account-operator-metadata.css?v=1") layer(account-operator-metadata);

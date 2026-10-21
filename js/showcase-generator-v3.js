@@ -200,6 +200,7 @@ function createLibraryCard(character, source) {
   const isSelected = selectedIndex >= 0;
   const isDisabled = !isSelected && selectedCasts.length >= MAX_CASTS;
   const styles = getStyles(character).map(item => `${item.name}${item.mark}`).join(" / ");
+  const handle = formatHandle(character.handle);
   const privateLabel = source === "private" ? `<span class="private-history-card__visibility">非公開 / LOCAL OUTPUT</span>` : "";
   const stateLabel = source === "private"
     ? `<span class="private-history-card__state">${isSelected ? "出演枠に追加済み / SELECTED" : "出演枠へ追加 / ADD CAST"}</span>`
@@ -210,7 +211,7 @@ function createLibraryCard(character, source) {
       <img src="${escapeAttribute(character.image_thumbnail_url || character.image_url || "./assets/placeholders/scan-failed.webp")}" alt="" loading="lazy" style="object-position:${escapeAttribute(getImageObjectPosition(character.image_url))}">
       <span class="cast-pick-card__body">
         ${privateLabel}
-        <span class="cast-pick-card__handle">${escapeHtml(formatHandle(character.handle) || "NO HANDLE")}</span>
+        <span class="cast-pick-card__handle"${handle ? "" : ' aria-hidden="true"'}>${escapeHtml(handle)}</span>
         <h3>${escapeHtml(character.character_name || "名称未登録")}</h3>
         <span class="cast-pick-card__styles">${escapeHtml(styles)}</span>
         <span class="cast-pick-card__player">PL：${escapeHtml(character.player_name || "—")}</span>

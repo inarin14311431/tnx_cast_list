@@ -31,6 +31,7 @@ body[data-page="account.html"] .owned-cast__identity h3 {
   line-height: 1.15;
 }
 body[data-page="account.html"] .owned-cast__handle {
+  min-height: 1lh;
   margin: 0;
   font-size: .74rem;
   line-height: 1.2;

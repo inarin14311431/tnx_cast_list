@@ -1,5 +1,5 @@
 import { escapeHtml } from "./dom-escape.js?v=2";
-import { displayValue, formatHandle } from "./cast-display-format.js?v=1";
+import { displayValue, formatHandle } from "./cast-display-format.js?v=2";
 import { formatPurchasePair, formatConcealmentPair } from "./outfit-view-model.js?v=3";
 import { COMBO_ABILITY_LABELS, getComboActUseLimit, isSkillCounterCombo, getComboSkills, getComboValue } from "./cast-combo-rules.js?v=2";
 
@@ -84,6 +84,7 @@ export function createQuickSheetHtml({ character, skills, outfits, combos }, usa
   const weaponOutfits = outfits.filter(outfit => outfit.category === "weapon");
   const armorOutfits = outfits.filter(outfit => outfit.category === "armor");
   const otherOutfits = outfits.filter(outfit => !["weapon", "armor"].includes(outfit.category));
+  const handle = formatHandle(character.handle);
 
   return `
     <article class="quick-sheet__page quick-sheet__page--one">
@@ -94,7 +95,7 @@ export function createQuickSheetHtml({ character, skills, outfits, combos }, usa
         </div>
         <div class="quick-sheet__identity-main">
           <div class="quick-sheet__identity-name">
-            <span>${escapeHtml(formatHandle(character.handle))}</span>
+            <span${handle ? "" : ' aria-hidden="true"'}>${escapeHtml(handle)}</span>
             <h1>${escapeHtml(character.character_name || "NO NAME")}</h1>
             <small>${escapeHtml(character.character_kana || "")}</small>
           </div>
@@ -171,7 +172,7 @@ export function createQuickPageHeader(character, page) {
   return `
     <header class="quick-sheet__page-header">
       <div><strong>N◎VA ARCHIVE // QUICK SHEET</strong><span>${escapeHtml(character.public_id || "NO ID")}</span></div>
-      <p>${escapeHtml(formatHandle(character.handle))} ${escapeHtml(character.character_name || "NO NAME")}</p>
+      <p>${escapeHtml([formatHandle(character.handle), character.character_name || "NO NAME"].filter(Boolean).join(" "))}</p>
       <b>${page} / 3</b>
     </header>`;
 }
