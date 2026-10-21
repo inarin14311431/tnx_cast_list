@@ -240,14 +240,14 @@ async function upload() {
     path = `${user.id}/${character.public_id}/${timestamp}.webp`;
     const up = await supabase.storage
       .from(BUCKET)
-      .upload(path, optimizedFile, { cacheControl: "86400", contentType: "image/webp", upsert: false });
+      .upload(path, optimizedFile, { cacheControl: "31536000", contentType: "image/webp", upsert: false });
     if (up.error) throw up.error;
     message("サムネイル画像を生成しています…");
     const thumbnailFile = await createThumbnail(optimizedFile);
     thumbnailPath = `${user.id}/${character.public_id}/${timestamp}-thumb.webp`;
     const thumbnailUp = await supabase.storage
       .from(BUCKET)
-      .upload(thumbnailPath, thumbnailFile, { cacheControl: "86400", contentType: "image/webp", upsert: false });
+      .upload(thumbnailPath, thumbnailFile, { cacheControl: "31536000", contentType: "image/webp", upsert: false });
     if (thumbnailUp.error) throw thumbnailUp.error;
     const publicUrl = supabase.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
     const publicThumbnailUrl = supabase.storage.from(BUCKET).getPublicUrl(thumbnailPath).data.publicUrl;
