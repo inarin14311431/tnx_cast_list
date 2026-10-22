@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -25,8 +26,8 @@ test("troop rules use one style, derived stats, max members and EXP", () => {
   const cssEntry = read("css-next/pages/troop-entry.css");
   assert.match(html, /CSはトループレベルと同値/);
   assert.match(html, /ARは1/);
-  assert.match(html, /troop-entry\.css\?v=2/);
-  assert.match(cssEntry, /troop-screen\.css\?v=3[^\n]*layer\(troop-screen\)/);
+  assertVersionedMatch(html, /troop-entry\.css\?v=VERSION/);
+  assertVersionedMatch(cssEntry, /troop-screen\.css\?v=VERSION[^\n]*layer\(troop-screen\)/);
   assert.doesNotMatch(html, /troop-(?:compact-density-v2|density-v3|visual-accent-v5|layout-v6)\.css/);
   assert.match(html, /id="troop-style"/);
   assert.doesNotMatch(html, /id="troop-style-2"/);
@@ -41,7 +42,7 @@ test("troop abilities use four compact two-digit pairs followed by CS", () => {
   const js = read("js/troop.js");
   const layout = read("js/troop-layout-refine.js");
   const css = read("css-next/pages/troop-screen.css");
-  assert.match(html, /troop\.js\?v=7/);
+  assertVersionedMatch(html, /troop\.js\?v=VERSION/);
   assert.match(js, /refreshTroopAbilityPairs\("#troop-ability-preview", "#troop-level"\)/);
   assert.match(js, /refreshTroopAbilityPairs\("#troop-abilities-view", "#troop-level-view"\)/);
   assert.doesNotMatch(layout, /installStylesheet|troop-density-v3\.css/);
@@ -133,13 +134,13 @@ test("troop styles use explicit cascade layers without important overrides", () 
     "troops-registry.css"
   ].map(file => read(`css-next/pages/${file}`));
 
-  assert.match(html, /troop-entry\.css\?v=2/);
-  assert.match(registryHtml, /troops-entry\.css\?v=2/);
+  assertVersionedMatch(html, /troop-entry\.css\?v=VERSION/);
+  assertVersionedMatch(registryHtml, /troops-entry\.css\?v=VERSION/);
   assert.match(detailEntry, /@layer app, troop-base, troop-layout, troop-dialog, troop-combo, troop-screen/);
-  assert.match(detailEntry, /troop-base\.css\?v=1[^\n]*layer\(troop-base\)/);
+  assertVersionedMatch(detailEntry, /troop-base\.css\?v=VERSION[^\n]*layer\(troop-base\)/);
   assert.match(registryEntry, /@layer app, troop-base, troop-registry/);
-  assert.match(registryEntry, /troops-registry-base\.css\?v=1[^\n]*layer\(troop-base\)/);
-  assert.match(registryEntry, /troops-registry\.css\?v=1[^\n]*layer\(troop-registry\)/);
+  assertVersionedMatch(registryEntry, /troops-registry-base\.css\?v=VERSION[^\n]*layer\(troop-base\)/);
+  assertVersionedMatch(registryEntry, /troops-registry\.css\?v=VERSION[^\n]*layer\(troop-registry\)/);
   sources.forEach(source => assert.doesNotMatch(source, /!important/));
 });
 
@@ -184,7 +185,7 @@ test("troop read combos have one renderer and clipboard controls", () => {
   const js = read("js/troop.js");
   const comboRules = read("js/troop-combo-rule-v2.js");
   const copy = read("js/troop-combo-copy.js");
-  assert.match(html, /troop-combo-copy\.js\?v=2/);
+  assertVersionedMatch(html, /troop-combo-copy\.js\?v=VERSION/);
   assert.match(js, /function renderComboList/);
   assert.match(js, /class="troop-view-combo"/);
   assert.doesNotMatch(comboRules, /initializePublicComboView|renderPublicCombos/);
@@ -214,10 +215,10 @@ test("cast troop modal uses editor section colors and compact CS pairs", () => {
   const castHtml = read("cast.html");
   const castEntry = read("css-next/pages/cast-entry.css");
   const css = read("css-next/pages/cast-troop-modal.css");
-  assert.match(castHtml, /cast-entry\.css(?:\?v=\d+)?/);
-  assert.match(castEntry, /cast-troop-modal\.css\?v=5[^\n]*layer\(cast-troop-modal\)/);
-  assert.match(castHtml, /cast-troops-link\.js\?v=9/);
-  assert.match(castHtml, /troop-combo-copy\.js\?v=2/);
+  assertVersionedMatch(castHtml, /cast-entry\.css(?:\?v=VERSION)?/);
+  assertVersionedMatch(castEntry, /cast-troop-modal\.css\?v=VERSION[^\n]*layer\(cast-troop-modal\)/);
+  assertVersionedMatch(castHtml, /cast-troops-link\.js\?v=VERSION/);
+  assertVersionedMatch(castHtml, /troop-combo-copy\.js\?v=VERSION/);
   assert.match(cast, /cast-troop-block--abilities/);
   assert.match(cast, /cast-troop-block--combos/);
   assert.match(cast, /cast-troop-ability-pair--cs/);

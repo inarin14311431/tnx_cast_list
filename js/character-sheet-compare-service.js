@@ -1,14 +1,14 @@
-import { requestCharacterSheetSource } from "./character-sheet-source.js?v=1";
+import { requestCharacterSheetSource } from "./character-sheet-source.js?v=66e591d6";
 import {
   canonicalizeArchiveBundle,
   canonicalizeCharacterSheetJsonp,
   diffCanonicalBundles
-} from "./character-sheet-jsonp-canonical.js?v=2";
+} from "./character-sheet-jsonp-canonical.js?v=bf20e917";
 import {
   alignCanonicalBundlesForComparison,
   stripLegacyArchiveOutfitElectronicControl
-} from "./character-sheet-compare-matching.js?v=1";
-import { completeOutlineFromStyleCodes } from "./character-sheet-style-codes.js?v=1";
+} from "./character-sheet-compare-matching.js?v=03afa13e";
+import { completeOutlineFromStyleCodes } from "./character-sheet-style-codes.js?v=db63a03b";
 
 function parseJsonData(value) {
   if (typeof value !== "string") return value;

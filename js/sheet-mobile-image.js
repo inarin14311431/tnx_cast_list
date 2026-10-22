@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=7e020e46";
 import {
   THUMBNAIL_MAX_LONG_EDGE,
   THUMBNAIL_MIN_LONG_EDGE,
@@ -7,7 +7,7 @@ import {
   THUMBNAIL_MAX_OUTPUT_FILE_SIZE,
   THUMBNAIL_QUALITY_STEPS,
   THUMBNAIL_SHRINK_STEP
-} from "./image-thumbnail-config.js?v=1";
+} from "./image-thumbnail-config.js?v=f998c0e0";
 import {
   getImageFocusX,
   getImageFocusY,
@@ -15,7 +15,7 @@ import {
   setImageFocusX,
   setImageFocusY,
   setImageZoom
-} from "./image-focus.js?v=4";
+} from "./image-focus.js?v=d32e5230";
 
 const $ = s => document.querySelector(s);
 const BUCKET = "character-images",

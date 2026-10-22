@@ -2,6 +2,7 @@ import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -18,7 +19,7 @@ test("current dynamic publisher stores trailer and not legacy intro", async () =
     read("js/showcase-generator-loader.js"),
     read("js/showcase-dynamic-publish-v3.js")
   ]);
-  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=6/);
+  assertVersionedMatch(loader, /showcase-dynamic-publish-v3\.js\?v=VERSION/);
   assert.match(publisher, /version: 2/);
   assert.match(publisher, /trailer: trailerBody \? \{ title: "アクトトレーラー", body: trailerBody \} : null/);
   assert.doesNotMatch(publisher, /\n\s*intro:/);

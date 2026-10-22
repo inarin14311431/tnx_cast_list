@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const source = await readFile(new URL("../js/sheet-mobile-skills.js", import.meta.url), "utf8");
 
@@ -18,7 +19,7 @@ test("mobile skills keeps save coordinator contract", () => {
 test("mobile skills preserves core edit rules through the shared general catalog", () => {
   assert.match(source, /GENERAL_MOBILE_ORDER/);
   assert.match(source, /MUTABLE_GENERAL_PREFIXES/);
-  assert.match(source, /general-skill-catalog\.js\?v=\d+/);
+  assertVersionedMatch(source, /general-skill-catalog\.js\?v=VERSION/);
   assert.doesNotMatch(source, /PC_GENERAL_ORDER/);
   assert.match(source, /STYLE_SEPARATOR/);
   assert.match(source, /levelOptions\(current,\s*floor\s*=\s*0\)/);

@@ -1,9 +1,9 @@
 import { supabase } from "./supabase-client.js";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
-import { moveAdjacentRow } from "./sheet-row-collection-state.js?v=2";
-import { GENERAL_MOBILE_ORDER, MUTABLE_GENERAL_PREFIXES } from "./general-skill-catalog.js?v=2";
-import { normalizeStyleSkillRow } from "./sheet-mobile-style-normalizer.js?v=1";
-import { escapeHtml as esc } from "./dom-escape.js?v=2";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=7e020e46";
+import { moveAdjacentRow } from "./sheet-row-collection-state.js?v=d2cacff3";
+import { GENERAL_MOBILE_ORDER, MUTABLE_GENERAL_PREFIXES } from "./general-skill-catalog.js?v=4bae7101";
+import { normalizeStyleSkillRow } from "./sheet-mobile-style-normalizer.js?v=692d1f2e";
+import { escapeHtml as esc } from "./dom-escape.js?v=46402d5f";
 
 const $ = selector => document.querySelector(selector);
 

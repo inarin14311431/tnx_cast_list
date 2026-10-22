@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const desktopSnapshot = fs.readFileSync(new URL('../js/sheet-character-input-snapshot.js', import.meta.url), 'utf8');
 const mobileEditor = fs.readFileSync(new URL('../js/sheet-mobile.js', import.meta.url), 'utf8');
@@ -14,7 +15,7 @@ const manifest = JSON.parse(fs.readFileSync(new URL('../supabase/migrations-mani
 test('desktop and mobile editors preserve all three visibility states', () => {
   assert.match(desktopSnapshot, /new Set\(\["public", "unlisted", "private"\]\)/);
   assert.match(mobileEditor, /new Set\(\["public", "unlisted", "private"\]\)/);
-  assert.match(mobileApp, /character-share-editor\.js\?v=[0-9-]+/);
+  assertVersionedMatch(mobileApp, /character-share-editor\.js\?v=VERSION/);
 });
 
 test('unlisted editor exposes an owner-only share URL control', () => {

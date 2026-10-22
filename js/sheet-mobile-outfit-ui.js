@@ -7,8 +7,8 @@ import {
   parseConcealment,
   parseDefense,
   normalizeNumber
-} from "./sheet-mobile-outfit-model.js?v=11";
-import { escapeHtml as esc } from "./dom-escape.js?v=2";
+} from "./sheet-mobile-outfit-model.js?v=61a37eb6";
+import { escapeHtml as esc } from "./dom-escape.js?v=46402d5f";
 
 export function ensureOutfitToolbar() {
   const body = document.querySelector("#mobile-outfits-section .mobile-sheet-section__body");

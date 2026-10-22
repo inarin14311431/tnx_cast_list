@@ -1,11 +1,11 @@
-import { renderShowcase, getStyles, getStyleNames, formatHandle, formatFullName, obfuscatePublicId } from "./showcase-output-html.js?v=4";
-import { normalizeCastNumber, formatCastNumber, resolveCastNumber, findDuplicateCastNumber, MAX_CAST_NUMBER } from "./showcase-cast-number.js?v=1";
-import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=1";
-import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=2";
-import { normalizeShowcaseTheme } from "./showcase-output-css.js?v=2";
+import { renderShowcase, getStyles, getStyleNames, formatHandle, formatFullName, obfuscatePublicId } from "./showcase-output-html.js?v=cae9118b";
+import { normalizeCastNumber, formatCastNumber, resolveCastNumber, findDuplicateCastNumber, MAX_CAST_NUMBER } from "./showcase-cast-number.js?v=944a948e";
+import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=0e404b6b";
+import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
+import { normalizeShowcaseTheme } from "./showcase-output-css.js?v=7e5695e1";
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=5";
-import { getImageObjectPosition } from "./image-focus.js?v=4";
+import { requireAuth } from "./auth-state.js?v=a766246e";
+import { getImageObjectPosition } from "./image-focus.js?v=d32e5230";
 
 const MAX_CASTS = 6;
 const FUNCTION_NAME = "publish-showcase";
@@ -427,7 +427,7 @@ async function importManualCastFromSheet(item, row, button) {
   button.disabled = true;
   setRowStatus("キャラクターシート倉庫からデータを取得しています…");
   try {
-    const { fetchManualCastFromSheet } = await import("./showcase-manual-sheet-import.js?v=1");
+    const { fetchManualCastFromSheet } = await import("./showcase-manual-sheet-import.js?v=d305c6d8");
     const fields = await fetchManualCastFromSheet(url);
     if (!selectedCasts.includes(item)) return;
     item.sheetUrl = url;

@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const helper = fs.readFileSync("js/async-timeout.js", "utf8");
 const account = fs.readFileSync("js/account.js", "utf8");
@@ -17,7 +18,7 @@ test("one shared finite timeout boundary owns timer mechanics", () => {
 test("network-heavy operational modules use the shared timeout helper", () => {
   for (const source of [account, acts, showcase]) {
     assert.match(source, /withRequestTimeout/);
-    assert.match(source, /async-timeout\.js\?v=1/);
+    assertVersionedMatch(source, /async-timeout\.js\?v=VERSION/);
     assert.doesNotMatch(source, /function withRequestTimeout\(/);
   }
 });

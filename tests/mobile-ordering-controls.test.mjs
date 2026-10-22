@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFile(new URL(path, import.meta.url), "utf8");
 
@@ -29,8 +30,8 @@ test("mobile outfits reorder one flat list regardless of category", async () => 
 test("mobile skill and outfit ordering share the classic row movement primitive", async () => {
   const skills = await read("../js/sheet-mobile-skills.js");
   const outfits = await read("../js/sheet-mobile-outfit.js");
-  assert.match(skills, /import \{ moveAdjacentRow \} from "\.\/sheet-row-collection-state\.js\?v=2"/);
-  assert.match(outfits, /import \{ moveAdjacentRow \} from "\.\/sheet-row-collection-state\.js\?v=2"/);
+  assertVersionedMatch(skills, /import \{ moveAdjacentRow \} from "\.\/sheet-row-collection-state\.js\?v=VERSION"/);
+  assertVersionedMatch(outfits, /import \{ moveAdjacentRow \} from "\.\/sheet-row-collection-state\.js\?v=VERSION"/);
   assert.doesNotMatch(skills, /\[list\[index\], list\[target\]\]/);
   assert.doesNotMatch(outfits, /\[list\[index\], list\[target\]\]/);
 });
@@ -39,10 +40,10 @@ test("mobile ordering assets use direct cache versions without a runtime rewrite
   const app = await read("../js/sheet-mobile-app.js");
   const html = await read("../sheet-mobile.html");
   const cssEntry = await read("../css-next/pages/sheet-mobile-entry.css");
-  assert.match(app, /sheet-mobile-skills\.js\?v=[0-9-]+/);
-  assert.match(app, /sheet-mobile-outfit\.js\?v=[0-9-]+/);
+  assertVersionedMatch(app, /sheet-mobile-skills\.js\?v=VERSION/);
+  assertVersionedMatch(app, /sheet-mobile-outfit\.js\?v=VERSION/);
   assert.doesNotMatch(app, /sheet-mobile-ordering-style-refresh/);
-  assert.match(html, /sheet-mobile-entry\.css\?v=[0-9-]+/);
-  assert.match(cssEntry, /sheet-mobile-skills\.css\?v=6[^\n]*layer\(mobile-skills\)/);
-  assert.match(cssEntry, /sheet-mobile-outfit\.css\?v=10[^\n]*layer\(mobile-outfit\)/);
+  assertVersionedMatch(html, /sheet-mobile-entry\.css\?v=VERSION/);
+  assertVersionedMatch(cssEntry, /sheet-mobile-skills\.css\?v=VERSION[^\n]*layer\(mobile-skills\)/);
+  assertVersionedMatch(cssEntry, /sheet-mobile-outfit\.css\?v=VERSION[^\n]*layer\(mobile-outfit\)/);
 });

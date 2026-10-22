@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { getOutfitRows, outfitSignature, rowSignature } from "./outfit-ofc-utils.js";
-import { masterRowToOutfitDetails } from "./outfit-ofc-adapter.js?v=2";
+import { masterRowToOutfitDetails } from "./outfit-ofc-adapter.js?v=0fabe54f";
 
 const MASTER_TABLE = "ofc_master";
 

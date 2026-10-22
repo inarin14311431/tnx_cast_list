@@ -10,8 +10,8 @@
  * - This layer never rebuilds rows while the user is typing.
  */
 (async()=>{
-  await import("./general-initial-skill-rules.js?v=1");
-  const { GENERAL_MASTER_ROWS, MUTABLE_GENERAL_PREFIXES } = await import("./general-skill-catalog.js?v=2");
+  await import("./general-initial-skill-rules.js?v=f73cadbd");
+  const { GENERAL_MASTER_ROWS, MUTABLE_GENERAL_PREFIXES } = await import("./general-skill-catalog.js?v=4bae7101");
   const masterNames = GENERAL_MASTER_ROWS.map(([name]) => name);
   const LEFT_MASTER = masterNames.slice(0, 8);
   const RIGHT_MASTER = masterNames.slice(8);

@@ -4,6 +4,7 @@ import { readFile } from "node:fs/promises";
 import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const generatorSource = await readFile(path.join(root, "scripts/generate-modulepreload.mjs"), "utf8");
@@ -28,13 +29,13 @@ test("checked-in modulepreload links are up to date with the current import grap
 
 test("cast.html preloads the unified single-version cast-data-store.js used across its module graph", () => {
   const block = modulepreloadBlock(castHtml);
-  assert.match(block, /href="\.\/js\/cast-data-store\.js\?v=2"/);
+  assertVersionedMatch(block, /href="\.\/js\/cast-data-store\.js\?v=VERSION"/);
   assert.equal(block.match(/cast-data-store\.js/g)?.length, 1, "cast-data-store.js must appear exactly once");
 });
 
 test("sheet.html preloads statically reachable modules but not dynamic-import-only ones", () => {
   const block = modulepreloadBlock(sheetHtml);
-  assert.match(block, /href="\.\/js\/help-ui\.js\?v=11"/);
+  assertVersionedMatch(block, /href="\.\/js\/help-ui\.js\?v=VERSION"/);
   assert.doesNotMatch(block, /character-sheet-source\.js/);
 });
 

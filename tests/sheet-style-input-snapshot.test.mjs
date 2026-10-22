@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { collectStyleInputSnapshot, applyStyleInputSnapshot } from "../js/sheet-style-input-snapshot.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 function fakeRoot(initial = {}) {
   const controls = new Map(Object.entries(initial).map(([selector, value]) => [selector, { value }]));
@@ -43,7 +44,7 @@ test("style load application restores name mark and attribute", () => {
 
 test("classic sheet delegates style DOM collection and load application", async () => {
   const source = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
-  assert.match(source, /sheet-style-input-snapshot\.js\?v=1/);
+  assertVersionedMatch(source, /sheet-style-input-snapshot\.js\?v=VERSION/);
   assert.match(source, /collectStyleInputSnapshot/);
   assert.match(source, /applyStyleInputSnapshot/);
   assert.doesNotMatch(source, /data\[`style_\$\{i\}`\]/);

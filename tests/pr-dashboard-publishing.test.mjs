@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const workflow = await readFile(new URL("../.github/workflows/pr-dashboard.yml", import.meta.url), "utf8");
 const dashboard = await readFile(new URL("../dashboard/dashboard.js", import.meta.url), "utf8");
@@ -18,5 +19,5 @@ test("deployed dashboard reads the generated branch while local previews use the
   assert.match(dashboard, /location\.protocol === "file:"/);
   assert.match(dashboard, /localHosts\.has\(location\.hostname\)/);
   assert.match(dashboard, /if \(!res\.ok\) throw new Error/);
-  assert.match(html, /dashboard\.js\?v=2/);
+  assertVersionedMatch(html, /dashboard\.js\?v=VERSION/);
 });

@@ -1,4 +1,4 @@
-import { SITE_BASE_PATH } from "./config.js?v=2";
+import { SITE_BASE_PATH } from "./config.js?v=9cb58cc9";
 
 const $ = selector => document.querySelector(selector);
 const IMPORT_SUCCESS_PREFIX = "取込が完了し";

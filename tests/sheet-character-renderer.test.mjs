@@ -5,6 +5,7 @@ import {
   renderStyleCards,
   renderAbilityCards
 } from "../js/sheet-character-renderer.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 test("style renderer preserves three-card ids, marks, attributes and escaping", () => {
   const html = renderStyleCards({
@@ -50,7 +51,7 @@ test("character renderer stays DOM-free and sheet delegates only markup generati
   const applicationSource = await readFile(new URL("../js/sheet-character-application.js", import.meta.url), "utf8");
 
   assert.doesNotMatch(rendererSource, /document\.|window\.|supabase|localStorage|sessionStorage|addEventListener/);
-  assert.match(sheetSource, /sheet-character-renderer\.js\?v=4/);
+  assertVersionedMatch(sheetSource, /sheet-character-renderer\.js\?v=VERSION/);
   assert.match(sheetSource, /renderStyleCards\(/);
   assert.match(sheetSource, /renderAbilityCards\(ABILITIES\)/);
   assert.match(sheetSource, /applyCharacterToEditor\(/);

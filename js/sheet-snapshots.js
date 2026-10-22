@@ -1,4 +1,4 @@
-import { hasUnsavedSheetChanges, focusSheetSaveButton } from "./sheet-save-state.js?v=2";
+import { hasUnsavedSheetChanges, focusSheetSaveButton } from "./sheet-save-state.js?v=bf537791";
 import {
   MAX_SNAPSHOTS,
   formatDate,
@@ -7,9 +7,9 @@ import {
   createBundleSnapshot as createBundleSnapshotRpc,
   restoreSnapshot,
   deleteSnapshot
-} from "./sheet-snapshot-service.js?v=1";
-import { escapeHtml } from "./dom-escape.js?v=2";
-import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=1";
+} from "./sheet-snapshot-service.js?v=f0433ab5";
+import { escapeHtml } from "./dom-escape.js?v=46402d5f";
+import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=e3884194";
 
 let characterId = null;
 let publicId = new URLSearchParams(location.search).get("id") || "";

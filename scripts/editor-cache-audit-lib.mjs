@@ -22,48 +22,48 @@ function stripQueryAndHash(raw) {
   return String(raw || "").split("#")[0].split("?")[0];
 }
 
-function isExternal(raw) {
+export function isExternal(raw) {
   const value = String(raw || "").trim();
   return !value || /^(?:[a-z][a-z0-9+.-]*:|\/\/|#)/i.test(value);
 }
 
-function htmlReferences(source) {
-  return [
-    ...[...source.matchAll(/<script\b[^>]*\bsrc=["']([^"']+)["']/gi)].map(match => match[1]),
-    ...[...source.matchAll(/<link\b[^>]*\bhref=["']([^"']+)["']/gi)].map(match => match[1])
-  ];
-}
+/* Each pattern captures the referenced URL as group 1. Shared with content-version-lib.mjs, which
+ * rewrites the ?v= inside exactly these matches, so the audit and the generator see the same references. */
+const REFERENCE_PATTERNS = {
+  html: [
+    /<script\b[^>]*\bsrc=["']([^"']+)["']/gi,
+    /<link\b[^>]*\bhref=["']([^"']+)["']/gi
+  ],
+  javascript: [
+    /\bimport\s+(?:[^"'()]*?\s+from\s+)?["']([^"']+)["']/g,
+    /\bimport\s*\(\s*["']([^"']+)["']\s*\)/g,
+    /\bexport\s+(?:\*|\{[^}]*\})\s+from\s+["']([^"']+)["']/g
+  ],
+  css: [
+    /@import\s+(?:url\(\s*)?["']([^"']+)["']\s*\)?/gi
+  ]
+};
 
-function javascriptReferences(source) {
-  const values = [];
-  for (const match of source.matchAll(/\bimport\s+(?:[^"'()]*?\s+from\s+)?["']([^"']+)["']/g)) values.push(match[1]);
-  for (const match of source.matchAll(/\bimport\s*\(\s*["']([^"']+)["']\s*\)/g)) values.push(match[1]);
-  for (const match of source.matchAll(/\bexport\s+(?:\*|\{[^}]*\})\s+from\s+["']([^"']+)["']/g)) values.push(match[1]);
-  return values;
-}
-
-function cssReferences(source) {
-  const values = [];
-  for (const match of source.matchAll(/@import\s+(?:url\(\s*)?["']([^"']+)["']\s*\)?/gi)) values.push(match[1]);
-  return values;
-}
-
-function referencesFor(file, source) {
+export function referencePatternsFor(file) {
   const extension = path.extname(file).toLowerCase();
-  if (extension === ".html") return htmlReferences(source);
-  if (extension === ".js" || extension === ".mjs") return javascriptReferences(source);
-  if (extension === ".css") return cssReferences(source);
+  if (extension === ".html") return REFERENCE_PATTERNS.html;
+  if (extension === ".js" || extension === ".mjs") return REFERENCE_PATTERNS.javascript;
+  if (extension === ".css") return REFERENCE_PATTERNS.css;
   return [];
 }
 
-function resolveLocal(importer, raw) {
+function referencesFor(file, source) {
+  return referencePatternsFor(file).flatMap(pattern => [...source.matchAll(pattern)].map(match => match[1]));
+}
+
+export function resolveLocal(importer, raw, baseRoot = root) {
   if (isExternal(raw)) return null;
   const clean = stripQueryAndHash(raw);
   if (!clean) return null;
   const resolved = clean.startsWith("/")
-    ? path.resolve(root, clean.replace(/^\/+/, ""))
+    ? path.resolve(baseRoot, clean.replace(/^\/+/, ""))
     : path.resolve(path.dirname(importer), clean);
-  if (resolved !== root && !resolved.startsWith(root + path.sep)) return null;
+  if (resolved !== baseRoot && !resolved.startsWith(baseRoot + path.sep)) return null;
   return resolved;
 }
 

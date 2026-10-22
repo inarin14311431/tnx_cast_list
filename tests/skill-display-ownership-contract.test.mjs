@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const js = await readFile(new URL("../js/skill-display-enhancements.js", import.meta.url), "utf8");
 const castEntry = await readFile(new URL("../css-next/pages/cast-entry.css", import.meta.url), "utf8");
@@ -11,8 +12,8 @@ async function exists(url) {
 }
 
 test("skill display stylesheet uses the canonical ownership name", async () => {
-  assert.match(castEntry, /\.\.\/components\/skill-display\.css\?v=1/);
-  assert.match(sheetEntry, /\.\.\/components\/skill-display\.css\?v=1/);
+  assertVersionedMatch(castEntry, /\.\.\/components\/skill-display\.css\?v=VERSION/);
+  assertVersionedMatch(sheetEntry, /\.\.\/components\/skill-display\.css\?v=VERSION/);
   assert.doesNotMatch(castEntry + sheetEntry, /skill-display-enhancements\.css/);
   assert.equal(await exists(new URL("../css-next/components/skill-display.css", import.meta.url)), true);
   assert.equal(await exists(new URL("../css-next/components/skill-display-enhancements.css", import.meta.url)), false);

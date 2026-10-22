@@ -1,14 +1,14 @@
 import { supabase } from "./supabase-client.js";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=7e020e46";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
-import { mobileGeneralRowName } from "./sheet-mobile-general-display.js?v=20261011-1";
+import { mobileGeneralRowName } from "./sheet-mobile-general-display.js?v=e49ee5b7";
 import {
   CREATION_ALLOWANCE,
   generalSkillExperienceCost,
   paidSkillLevel,
   resolveCanonicalCurrent,
   steppedExperienceCost
-} from "./sheet-experience-rules.js?v=7";
+} from "./sheet-experience-rules.js?v=747449ad";
 const ABILITIES = ["reason", "passion", "life", "mundane"];
 const STYLE_COST = { none: 0, normal: 10, secret: 20, ultimate: 50, direction: 2 };
 const KIND_FROM_LABEL = { なし: "none", 特技: "normal", 秘技: "secret", 奥義: "ultimate", 演出: "direction" };

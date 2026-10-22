@@ -1,6 +1,6 @@
 /* Canonical stylesheet entry for backup and restore. */
 @layer app, auth-page, account-page;
 
-@import url("../index.css?v=65") layer(app);
-@import url("./auth.css?v=3") layer(auth-page);
-@import url("./account.css?v=13") layer(account-page);
+@import url("../index.css?v=2772165f") layer(app);
+@import url("./auth.css?v=52e3fbc8") layer(auth-page);
+@import url("./account.css?v=906875d1") layer(account-page);

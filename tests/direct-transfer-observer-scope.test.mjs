@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const source = await readFile(new URL("../js/direct-transfer-button.js", import.meta.url), "utf8");
 
@@ -23,5 +24,5 @@ test("bookmarklet transfer keeps BM navigation and desktop export order behavior
   assert.match(source, /location\.href = `\.\/mobile-transfer\.html\?id=/);
   assert.match(source, /"transfer-bookmarklet-copy-button"/);
   assert.match(source, /normalizeDesktopExportOrder\(\)/);
-  assert.match(source, /import\("\.\/transfer-tsv-export\.js\?v=10"\)/);
+  assertVersionedMatch(source, /import\("\.\/transfer-tsv-export\.js\?v=VERSION"\)/);
 });

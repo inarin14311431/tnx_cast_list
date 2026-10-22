@@ -1,7 +1,7 @@
-import { escapeHtml } from "./dom-escape.js?v=2";
+import { escapeHtml } from "./dom-escape.js?v=46402d5f";
 const esc = escapeHtml;
-import { getStyleSkills } from "./cast-data-store.js?v=2";
-import "./skill-display-enhancements.js?v=1";
+import { getStyleSkills } from "./cast-data-store.js?v=f786d39c";
+import "./skill-display-enhancements.js?v=3078ea71";
 
 const PREFIX = "@@TNX_STYLE_DETAIL_V1@@";
 const SEPARATOR_MARKER = "[[STYLE_SEPARATOR]]";

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile, access } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const entry = await readFile(new URL("../css-next/pages/account-entry.css", import.meta.url), "utf8");
 const base = await readFile(new URL("../css-next/pages/account.css", import.meta.url), "utf8");
@@ -27,7 +28,7 @@ test("troop and act management layout is consolidated into the account action la
 });
 
 test("account entry keeps one canonical action layer after the base stylesheet", () => {
-  assert.match(entry, /account\.css\?v=13/);
-  assert.match(entry, /account-actions\.css\?v=2/);
+  assertVersionedMatch(entry, /account\.css\?v=VERSION/);
+  assertVersionedMatch(entry, /account-actions\.css\?v=VERSION/);
   assert.doesNotMatch(entry, /account-action-hierarchy\.css|account-troops/);
 });

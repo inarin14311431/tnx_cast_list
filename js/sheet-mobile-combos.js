@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
-import { escapeHtml as esc } from "./dom-escape.js?v=2";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=7e020e46";
+import { escapeHtml as esc } from "./dom-escape.js?v=46402d5f";
 
 const $ = s => document.querySelector(s);
 

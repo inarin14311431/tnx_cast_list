@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -18,8 +19,8 @@ test("sheet editor honors stable parents and keeps them after save", async () =>
   const source = await read("js/sheet-navigation-context.js");
   const core = await read("js/sheet-navigation-core.js");
 
-  assert.match(loader, /import\("\.\/sheet-navigation-context\.js\?v=1"\)/);
-  assert.match(source, /from "\.\/sheet-navigation-core\.js\?v=1"/);
+  assertVersionedMatch(loader, /import\("\.\/sheet-navigation-context\.js\?v=VERSION"\)/);
+  assertVersionedMatch(source, /from "\.\/sheet-navigation-core\.js\?v=VERSION"/);
   assert.match(core, /"index\.html": \{ label: "キャスト一覧へ", enLabel: "RETURN TO ARCHIVE"/);
   assert.match(core, /"account\.html": \{ label: "アカウントへ", enLabel: "RETURN TO ACCOUNT"/);
   assert.doesNotMatch(core, /"cast\.html": \{ label: "キャスト閲覧へ"/);
@@ -53,11 +54,11 @@ test("PC and mobile editor switches preserve the stable parent", async () => {
   const mobile = await read("js/sheet-mobile-navigation-context.js");
   const core = await read("js/sheet-navigation-core.js");
 
-  assert.match(route, /import\("\.\/sheet-navigation-core\.js\?v=1"\)/);
+  assertVersionedMatch(route, /import\("\.\/sheet-navigation-core\.js\?v=VERSION"\)/);
   assert.match(route, /url\.searchParams\.set\("return", parentReturnHref\(core\)\)/);
   assert.doesNotMatch(route, /url\.searchParams\.set\("return", currentPageHref\(\)\)/);
-  assert.match(app, /sheet-mobile-navigation-context\.js\?v=1/);
-  assert.match(mobile, /from "\.\/sheet-navigation-core\.js\?v=1"/);
+  assertVersionedMatch(app, /sheet-mobile-navigation-context\.js\?v=VERSION/);
+  assertVersionedMatch(mobile, /from "\.\/sheet-navigation-core\.js\?v=VERSION"/);
   assert.match(mobile, /target\.searchParams\.set\("return", parentReturnHref\(\)\)/);
   assert.doesNotMatch(mobile, /target\.searchParams\.set\("return", currentMobileHref\(\)\)/);
   assert.match(mobile, /mobileView\) target\.searchParams\.set\("mobile", "1"\)/);

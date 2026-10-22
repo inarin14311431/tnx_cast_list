@@ -1,7 +1,7 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=5";
-import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=1";
-import { escapeHtml, escapeAttributeWithBacktick as escapeAttribute } from "./dom-escape.js?v=2";
+import { requireAuth } from "./auth-state.js?v=a766246e";
+import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=e3884194";
+import { escapeHtml, escapeAttributeWithBacktick as escapeAttribute } from "./dom-escape.js?v=46402d5f";
 
 const openButton = document.querySelector("#sheet-combo-open");
 const dialog = document.querySelector("#sheet-combo-dialog");

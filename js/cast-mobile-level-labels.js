@@ -155,7 +155,7 @@
     try {
       const [{ getCharacter }, { normalizeCharacterSheetUrl }] = await Promise.all([
         import("./cast-data-store.js"),
-        import("./character-sheet-url.js?v=2")
+        import("./character-sheet-url.js?v=9b3404e3")
       ]);
       const character = await getCharacter();
       if (!character) return;
@@ -219,6 +219,6 @@
   }
 })();
 
-import("./cast-troops-link.js?v=3").catch(error => {
+import("./cast-troops-link.js?v=389f181b").catch(error => {
   console.error("cast troop navigation failed to load", error);
 });

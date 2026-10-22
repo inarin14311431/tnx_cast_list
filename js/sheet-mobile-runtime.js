@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=5";
-import { getPublicIdParam } from "./public-id-param.js?v=1";
+import { requireAuth } from "./auth-state.js?v=a766246e";
+import { getPublicIdParam } from "./public-id-param.js?v=87346d72";
 
 let contextPromise = null;
 

@@ -1,6 +1,6 @@
-import { canonicalGeneralSkillName, generalSkillKindForName } from "./general-skill-catalog.js?v=2";
+import { canonicalGeneralSkillName, generalSkillKindForName } from "./general-skill-catalog.js?v=4bae7101";
 import { supabase } from "./supabase-client.js";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=7e020e46";
 
 let character=null;
 let running=false;

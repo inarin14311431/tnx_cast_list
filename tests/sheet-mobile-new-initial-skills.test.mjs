@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { GENERAL_MASTER_ROWS } from "../js/general-skill-catalog.js";
 import { buildMobileNewCharacterSkillPayloads } from "../js/sheet-mobile-new-character-state.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const SUITS = ["reason", "passion", "life", "mundane"];
 
@@ -59,5 +60,5 @@ test("mobile new flow is wired to the shared PC initialization and save projecti
   assert.match(entry, /buildMobileNewCharacterSkillPayloads\(data\.id\)/);
   assert.match(entry, /\.select\("id,public_id"\)/);
   assert.match(entry, /character_skills/);
-  assert.match(html, /sheet-mobile-new\.js\?v=3/);
+  assertVersionedMatch(html, /sheet-mobile-new\.js\?v=VERSION/);
 });

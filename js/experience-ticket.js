@@ -1,4 +1,4 @@
-import { escapeHtml } from "./dom-escape.js?v=2";
+import { escapeHtml } from "./dom-escape.js?v=46402d5f";
 
 const historyList = document.querySelector("#act-history-list");
 

@@ -1,13 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const sheetSource = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
 const loadSource = await readFile(new URL("../js/sheet-load-persistence.js", import.meta.url), "utf8");
 const normalizationSource = await readFile(new URL("../js/sheet-load-normalization.js", import.meta.url), "utf8");
 
 test("classic sheet delegates character bundle reads to the load persistence boundary", () => {
-  assert.match(sheetSource, /sheet-load-persistence\.js\?v=\d+/);
+  assertVersionedMatch(sheetSource, /sheet-load-persistence\.js\?v=VERSION/);
   assert.match(sheetSource, /loadSheetBundle\(\{ publicId, ownerId: user\.id \}\)/);
   assert.doesNotMatch(sheetSource, /supabase\.from\("characters"\)/);
   assert.doesNotMatch(sheetSource, /supabase\.from\("character_skills"\)/);
@@ -52,7 +53,7 @@ test("load persistence rejects missing identity and propagates the single read f
 });
 
 test("classic sheet routes loaded records through the DOM-free normalization boundary", () => {
-  assert.match(sheetSource, /sheet-load-normalization\.js\?v=\d+/);
+  assertVersionedMatch(sheetSource, /sheet-load-normalization\.js\?v=VERSION/);
   assert.match(sheetSource, /normalizeLoadedSkill\(/);
   assert.match(sheetSource, /bundle\.outfits\.map\(normalizeLoadedOutfit\)/);
   assert.match(normalizationSource, /export function normalizeLoadedSkill/);

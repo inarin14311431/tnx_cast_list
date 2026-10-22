@@ -3,7 +3,7 @@
  * Detail DOM creation/readiness is owned by style-skill-fields.js.
  */
 (() => {
-  import("./skill-display-enhancements.js?v=1");
+  import("./skill-display-enhancements.js?v=3078ea71");
   const PREFIX = "@@TNX_STYLE_DETAIL_V1@@";
   const STYLE_SKILLS_CHANGED_EVENT = "tnx:style-skills-changed";
   const INTERNAL_NORMALIZATION_EVENT = "tnxInternalNormalization";

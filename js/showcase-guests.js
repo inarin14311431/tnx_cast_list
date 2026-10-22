@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { STYLE_COLORS } from "./style-colors.js";
-import { escapeHtml as esc, escapeAttribute as escAttr } from "./dom-escape.js?v=2";
+import { escapeHtml as esc, escapeAttribute as escAttr } from "./dom-escape.js?v=46402d5f";
 
 const MAX_GUESTS = 12;
 const IMAGE_BUCKET = "character-images";

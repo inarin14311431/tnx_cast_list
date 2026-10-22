@@ -5,6 +5,7 @@ import {
   collectCharacterInputSnapshot,
   applyCharacterInputSnapshot
 } from "../js/sheet-character-input-snapshot.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 function fakeRoot(values = {}, texts = {}) {
   const controls = new Map(
@@ -119,7 +120,7 @@ test("non-public visibility restores as private", () => {
 
 test("classic sheet delegates profile DOM collection and application to snapshot module", async () => {
   const source = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
-  assert.match(source, /sheet-character-input-snapshot\.js\?v=11/);
+  assertVersionedMatch(source, /sheet-character-input-snapshot\.js\?v=VERSION/);
   assert.match(source, /collectCharacterInputSnapshot/);
   assert.match(source, /applyCharacterInputSnapshot/);
   const snapshotSource = await readFile(new URL("../js/sheet-character-input-snapshot.js", import.meta.url), "utf8");

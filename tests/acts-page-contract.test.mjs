@@ -1,12 +1,13 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
+import { maskCacheVersions } from "./helpers/cache-version.mjs";
 
 const html = fs.readFileSync("acts.html", "utf8");
 const app = fs.readFileSync("js/acts-app.js", "utf8");
 
 test("ACT page uses one state-driven controller", () => {
-  const controllerImports = html.match(/acts-app\.js\?v=[1-9]\d*/g) ?? [];
+  const controllerImports = maskCacheVersions(html).match(/acts-app\.js\?v=VERSION/g) ?? [];
   assert.equal(controllerImports.length, 1);
   assert.doesNotMatch(html, /acts-role\.js|acts-history-enhanced\.js|acts-detail-toggle-fix\.js|acts-ui-fixes\.js|acts-spending\.js/);
   assert.doesNotMatch(app, /MutationObserver/);

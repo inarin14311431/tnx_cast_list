@@ -1,8 +1,8 @@
-import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=2";
-import "./character-sheet-url-import-sync.js?v=10";
+import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=9b3404e3";
+import "./character-sheet-url-import-sync.js?v=b34696dd";
 
 if (typeof document !== "undefined") {
-  import("./character-share-editor.js?v=2");
+  import("./character-share-editor.js?v=5053c95a");
 }
 
 const BASE_FIELD_SELECTORS = {

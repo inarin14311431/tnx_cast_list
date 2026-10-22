@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { escapeHtml } from "./dom-escape.js?v=2";
+import { escapeHtml } from "./dom-escape.js?v=46402d5f";
 
 const PAGE_SIZE = 1000;
 const RESULT_PAGE_SIZE = 50;

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const css = await readFile(new URL("../css-next/components/character-sheet-compare.css", import.meta.url), "utf8");
 const entry = await readFile(new URL("../css-next/pages/sheet-entry.css", import.meta.url), "utf8");
@@ -16,5 +17,5 @@ test("comparison choices remain visible when differences are present", () => {
 });
 
 test("comparison stylesheet cache generation includes zero-diff rules", () => {
-  assert.match(entry, /character-sheet-compare\.css\?v=3/);
+  assertVersionedMatch(entry, /character-sheet-compare\.css\?v=VERSION/);
 });

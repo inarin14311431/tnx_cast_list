@@ -1,4 +1,4 @@
-import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=1";
+import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=d3800656";
 
 if (document.body?.id === "act-showcase-page") {
   const slug = normalizeShowcaseSlug(new URLSearchParams(location.search).get("id"));

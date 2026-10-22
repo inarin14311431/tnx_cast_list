@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const stateSource = await readFile(new URL("../js/sheet-save-state.js", import.meta.url), "utf8");
 const featureSource = await readFile(new URL("../js/sheet-features.js", import.meta.url), "utf8");
@@ -18,15 +19,14 @@ test("PC save presentation is driven by one explicit shared state store", () => 
   assert.doesNotMatch(stateSource, /new MutationObserver/);
   assert.doesNotMatch(stateSource, /classList\.contains\("error"\)/);
   assert.doesNotMatch(stateSource, /\/エラー\|失敗\//);
-  assert.match(featureSource, /import "\.\/sheet-save-state\.js\?v=2"/);
+  assertVersionedMatch(featureSource, /import "\.\/sheet-save-state\.js\?v=VERSION"/);
   assert.doesNotMatch(featureSource, /function initializeSaveButtonState/);
 });
 
 test("all PC save-state consumers share the current cache boundary", () => {
-  assert.match(snapshotSource, /sheet-save-state\.js\?v=2/);
-  assert.match(diagnosticsSource, /sheet-save-state\.js\?v=2/);
-  assert.match(imageSource, /sheet-save-state\.js\?v=2/);
-  assert.doesNotMatch(featureSource + snapshotSource + diagnosticsSource + imageSource, /sheet-save-state\.js\?v=1/);
+  assertVersionedMatch(snapshotSource, /sheet-save-state\.js\?v=VERSION/);
+  assertVersionedMatch(diagnosticsSource, /sheet-save-state\.js\?v=VERSION/);
+  assertVersionedMatch(imageSource, /sheet-save-state\.js\?v=VERSION/);
 });
 
 test("snapshot unsaved guard consumes shared save state instead of parsing save DOM", () => {

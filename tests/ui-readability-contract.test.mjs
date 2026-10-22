@@ -1,13 +1,14 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { maskCacheVersions } from "./helpers/cache-version.mjs";
 
 const castEntry = await readFile(new URL("../css-next/pages/cast-entry.css", import.meta.url), "utf8");
 const mobileReadability = await readFile(new URL("../css-next/pages/cast-mobile-readability.css", import.meta.url), "utf8");
 
 test("mobile cast readability layer is loaded after the base mobile stylesheet", () => {
-  const base = castEntry.search(/cast-mobile\.css(?:\?v=\d+)?/);
-  const readability = castEntry.search(/cast-mobile-readability\.css(?:\?v=\d+)?/);
+  const base = maskCacheVersions(castEntry).search(/cast-mobile\.css(?:\?v=VERSION)?/);
+  const readability = maskCacheVersions(castEntry).search(/cast-mobile-readability\.css(?:\?v=VERSION)?/);
   assert.ok(base >= 0);
   assert.ok(readability > base);
 });

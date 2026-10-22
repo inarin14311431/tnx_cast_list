@@ -1,5 +1,5 @@
 /* Always open the sheet editor at the top and keep its image guidance current. */
-void import("./sheet-navigation-context.js?v=1");
+void import("./sheet-navigation-context.js?v=e4c8e059");
 initializeSheetOpenAtTop();
 
 function initializeSheetOpenAtTop(){

@@ -1,4 +1,4 @@
-import { extractCharacterSheetKey } from "./character-sheet-url.js?v=2";
+import { extractCharacterSheetKey } from "./character-sheet-url.js?v=9b3404e3";
 
 async function invokeSource(body) {
   const { supabase } = await import("./supabase-client.js");

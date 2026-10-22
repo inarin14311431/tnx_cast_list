@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const icons = fs.readFileSync(new URL('../js/account-action-icons.js', import.meta.url), 'utf8');
 const html = fs.readFileSync(new URL('../account.html', import.meta.url), 'utf8');
@@ -16,8 +17,8 @@ test('owned cast actions expose accessible inline SVG icons', () => {
 });
 
 test('account page uses the consolidated cast-card assets', () => {
-  assert.match(html, /account-entry\.css(?:\?v=\d+)?/);
-  assert.match(entry, /account-actions\.css(?:\?v=\d+)?/);
+  assertVersionedMatch(html, /account-entry\.css(?:\?v=VERSION)?/);
+  assertVersionedMatch(entry, /account-actions\.css(?:\?v=VERSION)?/);
   assert.doesNotMatch(entry, /account-action-hierarchy\.css/);
   assert.doesNotMatch(html, /account-action-icons\.css/);
   assert.doesNotMatch(html, /account-mobile-compact\.css/);

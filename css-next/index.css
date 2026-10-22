@@ -3,18 +3,18 @@
  * Feature, editor and page styles belong to a page entry in pages/*-entry.css.
  * Theme definitions and effects live in themes/index.css and are linked last by HTML.
  */
-@import url("./tokens/core.css?v=2");
+@import url("./tokens/core.css?v=f789b70e");
 @import url("./foundation/reset.css");
-@import url("./foundation/base.css?v=2");
+@import url("./foundation/base.css?v=78ef0aee");
 @import url("./foundation/typography.css");
-@import url("./layout/app-shell.css?v=3");
-@import url("./layout/page.css?v=2");
-@import url("./components/buttons.css?v=5");
-@import url("./components/forms.css?v=2");
+@import url("./layout/app-shell.css?v=c11d363c");
+@import url("./layout/page.css?v=c1248421");
+@import url("./components/buttons.css?v=a27db37e");
+@import url("./components/forms.css?v=812612ec");
 @import url("./components/panel.css");
 @import url("./components/table.css");
 @import url("./components/row-actions.css");
-@import url("./components/dialog.css?v=2");
+@import url("./components/dialog.css?v=1cbc5644");
 @import url("./components/status.css");
-@import url("./components/global-theme-picker.css?v=2");
-@import url("./components/legal-notices.css?v=1");
+@import url("./components/global-theme-picker.css?v=28fb08af");
+@import url("./components/legal-notices.css?v=fa2b4077");

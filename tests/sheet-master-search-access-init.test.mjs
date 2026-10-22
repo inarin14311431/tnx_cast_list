@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const bootstrap = await readFile(new URL("../js/privileged-tools-bootstrap.js", import.meta.url), "utf8");
 const sheetTools = await readFile(new URL("../js/sheet-privileged-tools.js", import.meta.url), "utf8");
@@ -12,7 +13,7 @@ test("master search access is owned by the privileged bootstrap entry point", ()
   assert.match(bootstrap, /supabase\.rpc\("has_privileged_editor_tools"\)/);
   assert.match(bootstrap, /if \(error \|\| data !== true\) return;/);
   assert.match(bootstrap, /if \(page === "sheet\.html"\)/);
-  assert.match(bootstrap, /import\("\.\/sheet-privileged-tools\.js\?v=\d+"\)/);
+  assertVersionedMatch(bootstrap, /import\("\.\/sheet-privileged-tools\.js\?v=VERSION"\)/);
   assert.doesNotMatch(bootstrap, /can_use_master_search/);
 });
 

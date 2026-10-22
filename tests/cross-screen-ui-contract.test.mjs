@@ -1,21 +1,22 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
 test("screen entry styles load canonical functional modules", () => {
   const contracts = [
-    ["css-next/pages/sheet-mobile-entry.css", "sheet-mobile-shell.css?v=1", "mobile-shell"],
-    ["css-next/pages/showcase-entry.css", "showcase-theme.css?v=1", "showcase-theme"],
-    ["css-next/pages/troop-entry.css", "troop-editor-actions.css?v=1", "troop-actions"],
-    ["css-next/pages/archive-entry.css", "archive-discovery.css?v=1", "archive-discovery"],
-    ["css-next/pages/acts-entry.css", "acts-summary.css?v=1", "acts-summary"],
-    ["css-next/pages/troops-entry.css", "troops-registry-responsive.css?v=1", "troop-registry-responsive"],
+    ["css-next/pages/sheet-mobile-entry.css", "sheet-mobile-shell.css?v=VERSION", "mobile-shell"],
+    ["css-next/pages/showcase-entry.css", "showcase-theme.css?v=VERSION", "showcase-theme"],
+    ["css-next/pages/troop-entry.css", "troop-editor-actions.css?v=VERSION", "troop-actions"],
+    ["css-next/pages/archive-entry.css", "archive-discovery.css?v=VERSION", "archive-discovery"],
+    ["css-next/pages/acts-entry.css", "acts-summary.css?v=VERSION", "acts-summary"],
+    ["css-next/pages/troops-entry.css", "troops-registry-responsive.css?v=VERSION", "troop-registry-responsive"],
   ];
   for (const [path, moduleName, layerName] of contracts) {
     const entry = read(path);
-    assert.match(entry, new RegExp(moduleName.replace(/[.?]/g, "\\$&")));
+    assertVersionedMatch(entry, new RegExp(moduleName.replace(/[.?]/g, "\\$&")));
     assert.match(entry, new RegExp(layerName));
     assert.doesNotMatch(entry, /polish/);
   }

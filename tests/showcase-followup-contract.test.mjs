@@ -2,6 +2,7 @@ import { actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
@@ -24,7 +25,7 @@ test("cinematic route is defined by act-showcase.html and legacy showcaseMode is
   assert.match(bootstrap, /searchParams\.get\("showcaseMode"\)/);
   assert.match(bootstrap, /searchParams\.delete\("showcaseMode"\)/);
   assert.doesNotMatch(bootstrap, /bgSample/);
-  assert.match(generatorHtml, /showcase-generator-loader\.js\?v=\d+/);
+  assertVersionedMatch(generatorHtml, /showcase-generator-loader\.js\?v=VERSION/);
   assert.match(urlCanonicalizer, /url\.searchParams\.delete\("showcaseMode"\)/);
 });
 

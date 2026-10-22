@@ -1,14 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
 
 test("showcase generator loads the owned showcase restore module after optional editor helpers", async () => {
   const loader = await read("js/showcase-generator-loader.js");
-  assert.match(loader, /showcase-tagline\.js\?v=2/);
-  assert.match(loader, /await import\("\.\/showcase-edit-restore\.js\?v=4"\)/);
+  assertVersionedMatch(loader, /showcase-tagline\.js\?v=VERSION/);
+  assertVersionedMatch(loader, /await import\("\.\/showcase-edit-restore\.js\?v=VERSION"\)/);
 });
 
 test("owned showcase restore is owner-scoped and repopulates editable generator fields", async () => {

@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { SITE_BASE_PATH } from "./config.js?v=2";
+import { SITE_BASE_PATH } from "./config.js?v=9cb58cc9";
 
 const VISIBILITIES = new Set(["public", "unlisted", "private"]);
 const UNLISTED_LABEL = "限定公開 / UNLISTED";

@@ -1,4 +1,4 @@
-import { formatShowcaseTagline } from "./showcase-display-format.js?v=1";
+import { formatShowcaseTagline } from "./showcase-display-format.js?v=728d9084";
 
 const TAGLINE_SELECTORS = [
   ".cast-card__tagline",

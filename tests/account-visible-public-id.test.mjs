@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import vm from "node:vm";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const accountSource = await readFile(new URL("../js/account.js", import.meta.url), "utf8");
 const formatterSource = await readFile(new URL("../js/archive-id-code.js", import.meta.url), "utf8");
@@ -13,7 +14,7 @@ function loadFormatter() {
 }
 
 test("account uses the shared archive display formatter", () => {
-  assert.match(accountSource, /import\s+["']\.\/archive-id-code\.js\?v=1["']/);
+  assertVersionedMatch(accountSource, /import\s+["']\.\/archive-id-code\.js\?v=VERSION["']/);
   assert.match(accountSource, /const displayId = window\.TNXArchiveId\.format\(character\.public_id\)/);
   assert.match(accountSource, /const displayId = window\.TNXArchiveId\.format\(publicId\)/);
   assert.doesNotMatch(accountSource, /function\s+obfuscatePublicId\s*\(/);

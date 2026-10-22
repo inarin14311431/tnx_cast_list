@@ -1,5 +1,5 @@
-import { initialGeneralSkillSuit } from "./general-skill-catalog.js?v=2";
-import { mobileGeneralRowName } from "./sheet-mobile-general-display.js?v=20261011-1";
+import { initialGeneralSkillSuit } from "./general-skill-catalog.js?v=4bae7101";
+import { mobileGeneralRowName } from "./sheet-mobile-general-display.js?v=e49ee5b7";
 
 const SUITS = ["reason", "passion", "life", "mundane"];
 

@@ -1,5 +1,5 @@
-import { escapeHtml as esc } from "./dom-escape.js?v=2";
-import { initialGeneralSkillSuit } from "./general-skill-catalog.js?v=2";
+import { escapeHtml as esc } from "./dom-escape.js?v=46402d5f";
+import { initialGeneralSkillSuit } from "./general-skill-catalog.js?v=4bae7101";
 
 const SUITS = ["reason", "passion", "life", "mundane"];
 const MARKS = ["♠", "♣", "♥", "♦"];

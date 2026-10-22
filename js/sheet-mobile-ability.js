@@ -1,7 +1,7 @@
 import { supabase } from "./supabase-client.js";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=7e020e46";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
-import { calculateCombatSpeed } from "./sheet-ability-calculation.js?v=2";
+import { calculateCombatSpeed } from "./sheet-ability-calculation.js?v=6b9385e5";
 const ABILITIES = [
   ["reason", "理性", "REASON"],
   ["passion", "感情", "PASSION"],

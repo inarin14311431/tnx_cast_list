@@ -1,11 +1,11 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 
-import { diffCanonicalBundles } from "../js/character-sheet-jsonp-canonical.js?v=2";
+import { diffCanonicalBundles } from "../js/character-sheet-jsonp-canonical.js";
 import {
   alignCanonicalBundlesForComparison,
   stripLegacyArchiveOutfitElectronicControl
-} from "../js/character-sheet-compare-matching.js?v=1";
+} from "../js/character-sheet-compare-matching.js";
 
 function bundle(overrides = {}) {
   return {

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -84,6 +85,6 @@ test("desktop cast profile panels can collapse even when their content has a str
   const entryCss = await read("css-next/pages/cast-entry.css");
   const castHtml = await read("cast.html");
   assert.match(detailsCss, /body\[data-page="cast\.html"\] \.data-panel\.is-collapsed > :not\(\.data-panel__header\)\{\s*display:none;\s*\}/);
-  assert.match(entryCss, /cast-view-details\.css\?v=\d+/);
-  assert.match(castHtml, /cast-entry\.css\?v=\d+/);
+  assertVersionedMatch(entryCss, /cast-view-details\.css\?v=VERSION/);
+  assertVersionedMatch(castHtml, /cast-entry\.css\?v=VERSION/);
 });

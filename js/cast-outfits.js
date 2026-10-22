@@ -1,11 +1,11 @@
-import { getOutfits } from "./cast-data-store.js?v=2";
+import { getOutfits } from "./cast-data-store.js?v=f786d39c";
 import {
   OUTFIT_CATEGORIES,
   OUTFIT_CATEGORY_LABELS,
   OUTFIT_FIELD_LABELS,
   OUTFIT_SCHEMAS
-} from "./cast-view-definitions.js?v=4";
-import { escapeHtml, escapeAttributeMultiline as escapeAttribute } from "./dom-escape.js?v=2";
+} from "./cast-view-definitions.js?v=3e62085f";
+import { escapeHtml, escapeAttributeMultiline as escapeAttribute } from "./dom-escape.js?v=46402d5f";
 
 const container = document.querySelector("#outfit-container");
 const content = document.querySelector("#cast-content");

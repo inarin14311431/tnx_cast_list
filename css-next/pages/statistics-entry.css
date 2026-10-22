@@ -1,5 +1,5 @@
 /* Canonical stylesheet entry for statistics.html. */
 @layer app, statistics-page;
 
-@import url("../index.css?v=65") layer(app);
-@import url("./statistics.css?v=3") layer(statistics-page);
+@import url("../index.css?v=2772165f") layer(app);
+@import url("./statistics.css?v=7b7eff0b") layer(statistics-page);

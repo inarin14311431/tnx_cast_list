@@ -1,12 +1,12 @@
 import { supabase } from "./supabase-client.js";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
-import { normalizeOutfitListForView } from "./outfit-view-model.js?v=3";
-import { compareCharacterSheetSource } from "./character-sheet-compare-service.js?v=3";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=7e020e46";
+import { normalizeOutfitListForView } from "./outfit-view-model.js?v=84879281";
+import { compareCharacterSheetSource } from "./character-sheet-compare-service.js?v=d3ff58b4";
 import {
   groupCharacterSheetDifferences,
   summarizeCharacterSheetDifferences
-} from "./character-sheet-diff-display.js?v=3";
-import { escapeHtml } from "./dom-escape.js?v=2";
+} from "./character-sheet-diff-display.js?v=83ac89b4";
+import { escapeHtml } from "./dom-escape.js?v=46402d5f";
 
 const PROFILE_FIELDS = [
   "character_name", "character_kana", "handle", "handle_kana", "player_name", "affiliation", "citizen_rank", "birthplace", "character_sheet_url",

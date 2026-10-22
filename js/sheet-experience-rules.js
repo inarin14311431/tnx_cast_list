@@ -1,4 +1,4 @@
-import { isInitialGeneralSkill } from "./general-skill-catalog.js?v=2";
+import { isInitialGeneralSkill } from "./general-skill-catalog.js?v=4bae7101";
 
 // Initial skill package:
 // - 13 fixed General skills each have their first level for free (130 XP total).

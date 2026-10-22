@@ -1,6 +1,6 @@
-import { loadPublicShowcase, loadPublicShowcaseGuests, normalizeShowcaseSlug } from "./public-showcase-service.js?v=1";
-import { normalizeStyleKey, roleForCast } from "./act-showcase-visual-caption.js?v=2";
-import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=1";
+import { loadPublicShowcase, loadPublicShowcaseGuests, normalizeShowcaseSlug } from "./public-showcase-service.js?v=d3800656";
+import { normalizeStyleKey, roleForCast } from "./act-showcase-visual-caption.js?v=47f6e034";
+import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
 
 const params = new URLSearchParams(location.search);
 const slug = normalizeShowcaseSlug(params.get("id"));

@@ -1,20 +1,20 @@
 /* Canonical stylesheet entry for act history and the legacy combo redirect. */
 @layer app, auth-page, acts-page, experience-ticket, acts-summary;
 
-@import url("../index.css?v=65") layer(app);
-@import url("./auth.css?v=3") layer(auth-page);
+@import url("../index.css?v=2772165f") layer(app);
+@import url("./auth.css?v=52e3fbc8") layer(auth-page);
 
 /* Act-history ownership: base/history, expanded record, spending ledger, compatibility. */
-@import url("./acts.css?v=5") layer(acts-page);
-@import url("./acts-history-enhanced.css?v=1") layer(acts-page);
-@import url("./acts-clarity.css?v=1") layer(acts-page);
-@import url("./acts-record.css?v=1") layer(acts-page);
-@import url("./acts-spending.css?v=1") layer(acts-page);
-@import url("./acts-maintenance.css?v=5") layer(acts-page);
+@import url("./acts.css?v=3e9489c8") layer(acts-page);
+@import url("./acts-history-enhanced.css?v=a3056c03") layer(acts-page);
+@import url("./acts-clarity.css?v=7b90ac5c") layer(acts-page);
+@import url("./acts-record.css?v=572b89d8") layer(acts-page);
+@import url("./acts-spending.css?v=a7a5de4d") layer(acts-page);
+@import url("./acts-maintenance.css?v=008d1fed") layer(acts-page);
 
 /* Experience ticket is isolated from the act-history cascade. */
-@import url("./experience-ticket.css?v=5") layer(experience-ticket);
-@import url("./experience-ticket-layout.css?v=4") layer(experience-ticket);
+@import url("./experience-ticket.css?v=a9ef4ecb") layer(experience-ticket);
+@import url("./experience-ticket-layout.css?v=2f390089") layer(experience-ticket);
 
 /* Summary hierarchy is a first-class act-history module. */
-@import url("./acts-summary.css?v=1") layer(acts-summary);
+@import url("./acts-summary.css?v=cbd4a886") layer(acts-summary);

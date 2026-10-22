@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -13,7 +14,7 @@ test("style skill description resize grows the whole grid row", async () => {
   assert.match(renderer, /textarea data-f="description" data-style-field="description"/);
   assert.match(css, /tr\[data-skill-key\]:not\(\.style-skill-separator-row\)\s*\{[\s\S]*?align-items:\s*stretch;/);
   assert.match(css, /td:has\(> textarea\[data-style-field="description"\]\)\s*\{[\s\S]*?align-items:\s*stretch;[\s\S]*?overflow:\s*visible;/);
-  assert.match(entry, /style-skill-resize\.css\?v=1/);
+  assertVersionedMatch(entry, /style-skill-resize\.css\?v=VERSION/);
   assert.match(integrity, /new ResizeObserver\(\(\) => syncDescriptionRowHeight\(textarea\)\)/);
   assert.match(integrity, /row\.style\.minHeight = `\$\{Math\.max\(50, textareaHeight \+ 10\)\}px`/);
   assert.match(integrity, /root\.addEventListener\("pointerdown"/);

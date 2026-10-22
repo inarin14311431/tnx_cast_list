@@ -151,13 +151,21 @@ migration historyとdeployment ledgerを混同しない。
 
 ## 10. Cache busting / module version
 
-`?v=` はブラウザcache更新のための契約として扱う。
+`?v=` はブラウザcache更新のための契約として扱う。値は手で書かず、`npm run version:update` で生成する。
 
-- 変更していないmoduleを無意味に一括bumpしない。
-- import元/HTML entryのcache関係を確認する。
-- 同じshared moduleをPC/Mobileが読む場合、片側だけ古いversion指定を残さない。
-- version変更だけのnoiseを大規模に混ぜない。
-- `audit:cache` の契約を優先する。
+- JS・CSS・HTMLを変えたら `npm run version:update` を実行し、生成された `?v=` とmodulepreloadの差分もcommitに含める。
+  - `?v=` が付いているローカル参照(import / export from / `import()` / `<script src>` / `<link href>` / CSSの`@import`)を、
+    参照先ファイルの内容ハッシュ(sha256の先頭8文字)にする。参照先の `?v=` が変わると参照元の内容も変わるので、
+    依存の深い側から順に計算してHTMLまでさかのぼる。最後に `preload:update` を実行する。何度実行しても同じ結果になる。
+  - `?v=` の付いていない参照・外部URL・コードの中で組み立てるURL(`new URL(...)`、`element.href = ...`、文字列の配列など)は
+    対象外。後者は今までどおり手で番号を書く。
+  - `?v=` が付いた参照どうしで循環があると、何も書き換えずに止まって報告する。
+- 内容が変わったファイルとその参照元だけ番号が変わる。変更していないmoduleの番号は動かない。
+- 複数のPRが同じファイルを変えたら、あとからマージする側でmainを取り込んで `npm run version:update` をやり直す。
+- `audit:cache`(`npm run verify` に含む)が、`?v=` が内容ハッシュと一致しないファイルを検出して失敗する。
+  あわせて `config/editor-cache-policy.json` の契約(PC/Mobileの共有moduleが同じ版を読むこと)も検査する。
+- テストで `?v=` の具体的な値を固定しない。`tests/helpers/cache-version.mjs` で値を `VERSION` に置き換えてから比べ、
+  どのファイルをどの順で読むかだけを検査する。番号の正しさは `audit:cache` だけが見る。
 
 ## 11. Refactor
 

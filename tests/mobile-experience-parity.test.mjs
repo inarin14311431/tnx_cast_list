@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { compactSource } from "./helpers/compact-source.mjs";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const mobileExp=compactSource(await readFile(new URL("../js/sheet-mobile-header-exp.js",import.meta.url),"utf8"));
 const desktopExp=await readFile(new URL("../js/experience.js",import.meta.url),"utf8");
@@ -24,7 +25,7 @@ test("mobile general skills are normalized to the PC skill-kind rule",()=>{
 
 test("mobile experience gives one free level to each fixed General and a shared seven-level Social Connection pool",()=>{
   assert.match(mobileExp,/generalSkillExperienceCost\(rows\)\.total/);
-  assert.match(mobileExp,/sheet-experience-rules\.js\?v=7/);
+  assertVersionedMatch(mobileExp,/sheet-experience-rules\.js\?v=VERSION/);
   // Costs use the stored skill name, not the "★" display label.
   assert.match(mobileExp,/const name=mobileGeneralRowName\(row\)/);
   assert.doesNotMatch(mobileExp,/mobile-general-display-name/);
@@ -52,7 +53,7 @@ test("mobile app loads skill-kind normalization before experience calculation",(
   const normalizeIndex=app.indexOf("sheet-mobile-skill-kind-normalizer.js");
   const expIndex=app.indexOf("sheet-mobile-header-exp.js");
   assert.ok(normalizeIndex>=0&&normalizeIndex<expIndex);
-  assert.match(app,/sheet-mobile-header-exp\.js\?v=20261014-1/);
+  assertVersionedMatch(app,/sheet-mobile-header-exp\.js\?v=VERSION/);
 });
 
 

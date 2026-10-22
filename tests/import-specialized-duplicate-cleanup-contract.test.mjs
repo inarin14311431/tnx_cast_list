@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const cleanup = await readFile(new URL("../js/sheet-import-specialized-cleanup.js", import.meta.url), "utf8");
 const features = await readFile(new URL("../js/sheet-features.js", import.meta.url), "utf8");
@@ -14,5 +15,5 @@ test("specialized import cleanup removes only deletable duplicate base-prefix ro
 
 test("cleanup runs after legacy import and is loaded by the sheet feature bundle", () => {
   assert.match(cleanup, /tnx:legacy-import-base-finished/);
-  assert.match(features, /sheet-import-specialized-cleanup\.js\?v=1/);
+  assertVersionedMatch(features, /sheet-import-specialized-cleanup\.js\?v=VERSION/);
 });

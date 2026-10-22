@@ -1,13 +1,14 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
+import { assertVersionedMatch, maskCacheVersions } from "./helpers/cache-version.mjs";
 
 const app = fs.readFileSync("js/account.js", "utf8");
 const html = fs.readFileSync("account.html", "utf8");
 
 test("account data loading has a finite timeout boundary", () => {
   assert.match(app, /withRequestTimeout/);
-  assert.match(app, /async-timeout\.js\?v=1/);
+  assertVersionedMatch(app, /async-timeout\.js\?v=VERSION/);
   assert.match(app, /キャスト情報の取得がタイムアウトしました/);
 });
 
@@ -25,7 +26,6 @@ test("uncertain write completion is not automatically retried", () => {
 });
 
 test("account page keeps an explicit cache boundary for the account module", () => {
-  const matches = [...html.matchAll(/account\.js\?v=(\d+)/g)];
-  assert.equal(matches.length, 1, "account module must be loaded exactly once");
-  assert.ok(Number(matches[0][1]) >= 1, "account module must use a numeric cache version");
+  const matches = [...maskCacheVersions(html).matchAll(/account\.js\?v=VERSION/g)];
+  assert.equal(matches.length, 1, "account module must be loaded exactly once, with a cache version");
 });

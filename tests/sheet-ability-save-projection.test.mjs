@@ -5,6 +5,7 @@ import {
   buildAbilitySaveSnapshot,
   buildCsSaveSnapshot
 } from "../js/sheet-ability-save-projection.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const ABILITIES = [
   ["reason", "理性", "REASON"],
@@ -40,7 +41,7 @@ test("ability save projection stays DOM-free and classic sheet delegates save sh
   const helperSource = await readFile(new URL("../js/sheet-ability-save-projection.js", import.meta.url), "utf8");
   const sheetSource = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
   assert.doesNotMatch(helperSource, /document\.|window\.|querySelector|supabase|localStorage|sessionStorage/);
-  assert.match(sheetSource, /sheet-ability-save-projection\.js\?v=1/);
+  assertVersionedMatch(sheetSource, /sheet-ability-save-projection\.js\?v=VERSION/);
   assert.match(sheetSource, /buildAbilitySaveSnapshot/);
   assert.match(sheetSource, /buildCsSaveSnapshot/);
 });

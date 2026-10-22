@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=5";
-import { escapeHtml } from "./dom-escape.js?v=2";
+import { requireAuth } from "./auth-state.js?v=a766246e";
+import { escapeHtml } from "./dom-escape.js?v=46402d5f";
 
 const field = mountScenarioWriterField();
 const preview = document.querySelector("#showcase-preview");

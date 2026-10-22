@@ -1,5 +1,5 @@
 /* Canonical stylesheet entry for the compact mobile creation screen. */
 @layer app, mobile-new-page;
 
-@import url("../index.css?v=65") layer(app);
-@import url("./sheet-mobile-new.css?v=1") layer(mobile-new-page);
+@import url("../index.css?v=2772165f") layer(app);
+@import url("./sheet-mobile-new.css?v=cff1d8ae") layer(mobile-new-page);

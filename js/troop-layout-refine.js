@@ -1,5 +1,5 @@
-import { GENERAL_MASTER_ROWS, initialGeneralSkillSuit, STARRED_GENERAL_NAMES } from "./general-skill-catalog.js?v=2";
-import { escapeHtml, escapeAttribute as escapeAttr } from "./dom-escape.js?v=2";
+import { GENERAL_MASTER_ROWS, initialGeneralSkillSuit, STARRED_GENERAL_NAMES } from "./general-skill-catalog.js?v=4bae7101";
+import { escapeHtml, escapeAttribute as escapeAttr } from "./dom-escape.js?v=46402d5f";
 
 const ABILITIES = ["reason", "passion", "life", "mundane"];
 const SUITS = {

@@ -1,8 +1,8 @@
 import {
   SHOWCASE_BACKGROUND_PRESETS,
   findShowcaseBackgroundPresetByUrl
-} from "./showcase-background-presets.js?v=8";
-import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=2";
+} from "./showcase-background-presets.js?v=7068197c";
+import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
 
 const grid = document.querySelector("#background-preset-grid");
 const keyField = document.querySelector("#background-preset");

@@ -10,6 +10,7 @@
     "test:visual:production": "node scripts/run-visual-regression.mjs",
     "test:quality": "playwright test --config=playwright.quality.config.js",
     "check:js": "node scripts/check-js.mjs",
+    "version:update": "node scripts/update-content-versions.mjs",
     "preload:update": "node scripts/generate-modulepreload.mjs",
     "audit:modulepreload": "node scripts/generate-modulepreload.mjs --check",
     "audit:js-baseline": "node scripts/audit-js-baseline.mjs",

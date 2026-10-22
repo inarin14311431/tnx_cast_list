@@ -1,6 +1,6 @@
 /* Adds mobile-editor routes on the two screens that own those transitions. */
 (() => {
-  const corePromise = import("./sheet-navigation-core.js?v=1");
+  const corePromise = import("./sheet-navigation-core.js?v=913f6de1");
 
   function parentReturnHref(core) {
     const returnValue = core.readTrimmedSearchParam(location.search, "return");

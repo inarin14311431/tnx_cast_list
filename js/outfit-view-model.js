@@ -2,8 +2,8 @@ import {
   normalizeOutfitCategory,
   outfitSupportsControl,
   outfitSupportsCsModifier
-} from "./outfit-contract.js?v=3";
-import { splitLegacyConcealment } from "./outfit-legacy-compat.js?v=1";
+} from "./outfit-contract.js?v=aac249e7";
+import { splitLegacyConcealment } from "./outfit-legacy-compat.js?v=2b705d79";
 
 export { splitLegacyConcealment };
 

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { maskCacheVersions } from "./helpers/cache-version.mjs";
 
 const bootstrap = await readFile(new URL("../js/privileged-tools-bootstrap.js", import.meta.url), "utf8");
 const sheetTools = await readFile(new URL("../js/sheet-privileged-tools.js", import.meta.url), "utf8");
@@ -8,7 +9,7 @@ const sheetTools = await readFile(new URL("../js/sheet-privileged-tools.js", imp
 test("privileged tools authenticate and authorize before loading any editor tools", () => {
   const sessionIndex = bootstrap.indexOf("supabase.auth.getSession()");
   const rpcIndex = bootstrap.indexOf('supabase.rpc("has_privileged_editor_tools")');
-  const sheetImportIndex = bootstrap.search(/import\("\.\/sheet-privileged-tools\.js\?v=\d+"\)/);
+  const sheetImportIndex = maskCacheVersions(bootstrap).search(/import\("\.\/sheet-privileged-tools\.js\?v=VERSION"\)/);
 
   assert.ok(sessionIndex >= 0);
   assert.ok(rpcIndex > sessionIndex);

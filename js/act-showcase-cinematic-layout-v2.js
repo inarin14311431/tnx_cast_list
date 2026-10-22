@@ -1,4 +1,4 @@
-import { settleHeight } from "./act-showcase-trailer-settle.js?v=2";
+import { settleHeight } from "./act-showcase-trailer-settle.js?v=cecf5b92";
 
 (() => {
   if (document.body?.id !== "act-showcase-page") return;
