@@ -47,7 +47,7 @@
     "check:db:live": "node scripts/audit-live-db.mjs"
   },
   "devDependencies": {
-    "@fontsource/noto-sans-jp": "5.3.0",
+    "@fontsource/noto-sans-jp": "5.3.1",
     "@playwright/test": "1.62.1"
   }
 }
