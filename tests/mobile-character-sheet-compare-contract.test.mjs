@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const mobileSource = fs.readFileSync(new URL("../js/cast-mobile-level-labels.js", import.meta.url), "utf8");
 const serviceSource = fs.readFileSync(new URL("../js/character-sheet-compare-service.js", import.meta.url), "utf8");
@@ -47,7 +48,7 @@ test("source panel construction remains idempotent across viewer enhancement pas
 });
 
 test("warehouse comparison is owned by the mobile editor", () => {
-  assert.match(editorApp, /sheet-mobile-character-sheet-compare\.js\?v=4/);
+  assertVersionedMatch(editorApp, /sheet-mobile-character-sheet-compare\.js\?v=VERSION/);
   assert.match(editorCompare, /倉庫との差分を確認/);
   assert.match(editorCompare, /compareCharacterSheetSource/);
   assert.match(editorCompare, /data-mobile-profile-group=\"source\"/);

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const source = await readFile(new URL("../js/outfit-pc-field-policy.js", import.meta.url), "utf8");
 
@@ -13,7 +14,7 @@ test("PC outfit policy consumes the shared outfit contract", () => {
 
 test("PC outfit policy consumes shared legacy concealment parsing directly", () => {
   assert.match(source, /splitLegacyConcealment/);
-  assert.match(source, /from "\.\/outfit-legacy-compat\.js\?v=1"/);
+  assertVersionedMatch(source, /from "\.\/outfit-legacy-compat\.js\?v=VERSION"/);
   assert.doesNotMatch(source, /from "\.\/outfit-view-model/);
   assert.doesNotMatch(source, /function splitConcealment/);
 });

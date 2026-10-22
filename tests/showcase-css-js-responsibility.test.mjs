@@ -2,6 +2,7 @@ import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
@@ -23,7 +24,7 @@ test("cinematic JS classifies text but does not own font metrics", () => {
 });
 
 test("cinematic tagline sizing is owned by CSS data-fit states", () => {
-  assert.match(entry, /act-showcase-cinematic-fit\.css\?v=\d+/);
+  assertVersionedMatch(entry, /act-showcase-cinematic-fit\.css\?v=VERSION/);
   for (const fit of ["medium", "long", "xlong"]) {
     const selector = new RegExp(`\\.showcase-fit-tagline\\[data-fit=["']${fit}["']\\]\\s*\\{[\\s\\S]*?font-size`);
     assert.match(fitCss, selector);

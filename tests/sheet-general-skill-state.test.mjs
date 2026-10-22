@@ -7,6 +7,7 @@ import {
   appendGeneralBlankSlots,
   orderGeneralRows
 } from "../js/sheet-general-skill-state.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const SUITS = ["reason", "passion", "life", "mundane"];
 const MASTER = [
@@ -126,7 +127,7 @@ test("general skill state helper stays DOM-free and sheet delegates state rules 
   const sheetSource = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
 
   assert.doesNotMatch(helperSource, /document\.|window\.|supabase|localStorage|sessionStorage/);
-  assert.match(sheetSource, /sheet-general-skill-state\.js\?v=1/);
+  assertVersionedMatch(sheetSource, /sheet-general-skill-state\.js\?v=VERSION/);
   assert.match(sheetSource, /reconcileGeneralMasterRows\(skills/);
   assert.match(sheetSource, /appendGeneralBlankSlots\(skills/);
   assert.match(sheetSource, /orderGeneralRows\(skills, GENERAL_MASTER\)/);

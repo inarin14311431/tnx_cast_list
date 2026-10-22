@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const guestSchema = await readFile(new URL("../supabase/42_act_showcase_guests.sql", import.meta.url), "utf8");
 const sql = await readFile(new URL("../supabase/46_act_showcase_delete_public_url.sql", import.meta.url), "utf8");
@@ -30,7 +31,7 @@ test("ACT SHOWCASE deletion is owner-scoped and preserves ACT history", () => {
 });
 
 test("editor exposes an explicit confirmed delete action and keeps local form contents", () => {
-  assert.match(loader, /showcase-delete\.js\?v=2/);
+  assertVersionedMatch(loader, /showcase-delete\.js\?v=VERSION/);
   assert.match(client, /id = "delete-owned-showcase"/);
   assert.match(client, /window\.confirm/);
   assert.match(client, /supabase\.rpc\("delete_owned_act_showcase", \{ p_slug: slug \}\)/);

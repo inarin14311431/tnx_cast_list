@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { abilityLabel, abilityValues, createAbilitySummary } from "../js/ability-summary-view.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -46,8 +47,8 @@ test("the public cast view attaches the list to the general and style skill pane
   assert.match(script, /tnx:style-skills-rendered/);
   assert.match(script, /summary\.hidden = required > heading\.clientWidth/);
   assert.doesNotMatch(script, /addEventListener\("(?:click|mouseover|mouseenter)"/);
-  assert.match(read("cast.html"), /<script type="module" src="\.\/js\/cast-ability-summary\.js\?v=\d+"><\/script>/);
-  assert.match(read("css-next/pages/cast-entry.css"), /@import url\("\.\.\/components\/sheet-ability-summary\.css\?v=1"\)/);
+  assertVersionedMatch(read("cast.html"), /<script type="module" src="\.\/js\/cast-ability-summary\.js\?v=VERSION"><\/script>/);
+  assertVersionedMatch(read("css-next/pages/cast-entry.css"), /@import url\("\.\.\/components\/sheet-ability-summary\.css\?v=VERSION"\)/);
   assert.match(read("css-next/components/sheet-ability-summary.css"), /pointer-events: none/);
   assert.match(read("css-next/pages/cast-view-details.css"), /\.data-panel__header\.has-ability-summary\{[^}]*display:flex/);
 });

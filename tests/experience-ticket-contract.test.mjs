@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const ticket = await readFile(new URL("../js/experience-ticket.js", import.meta.url), "utf8");
 const acts = await readFile(new URL("../js/acts-app.js", import.meta.url), "utf8");
@@ -21,7 +22,7 @@ test("experience point value is slightly smaller and has enough line height to a
 });
 
 test("experience ticket cache versions are refreshed through the canonical acts entry", () => {
-  assert.match(entry, /experience-ticket\.css\?v=5/);
-  assert.match(html, /acts-entry\.css\?v=19/);
-  assert.match(html, /experience-ticket\.js\?v=8/);
+  assertVersionedMatch(entry, /experience-ticket\.css\?v=VERSION/);
+  assertVersionedMatch(html, /acts-entry\.css\?v=VERSION/);
+  assertVersionedMatch(html, /experience-ticket\.js\?v=VERSION/);
 });

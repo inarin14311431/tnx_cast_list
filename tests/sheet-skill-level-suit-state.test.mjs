@@ -8,6 +8,7 @@ import {
   resolveSkillLevelAfterSuitChange,
   resolveSkillInputState
 } from "../js/sheet-skill-level-suit-state.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 test("skill level normalization clamps negative and blank values", () => {
   assert.equal(normalizeSkillLevel(-2), 0);
@@ -59,13 +60,13 @@ test("helper remains DOM-free and both DOM layers use the unified state resolver
   const domSource = await readFile(new URL("../js/skill-level-suit-rules.js", import.meta.url), "utf8");
   const sheetSource = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
   assert.doesNotMatch(helperSource, /document\.|window\.|supabase|localStorage|sessionStorage|addEventListener/);
-  assert.match(domSource, /sheet-skill-level-suit-state\.js\?v=1/);
+  assertVersionedMatch(domSource, /sheet-skill-level-suit-state\.js\?v=VERSION/);
   assert.match(domSource, /resolveSkillInputState/);
   assert.match(domSource, /shouldSelectAllSuits/);
   assert.match(domSource, /action:\"level\"/);
   assert.match(domSource, /action:\"suit\"/);
   assert.match(domSource, /action:\"free_level\"/);
-  assert.match(sheetSource, /sheet-skill-level-suit-state\.js\?v=1/);
+  assertVersionedMatch(sheetSource, /sheet-skill-level-suit-state\.js\?v=VERSION/);
   assert.match(sheetSource, /resolveSkillInputState/);
   assert.doesNotMatch(sheetSource, /skill\.level\s*=\s*Math\.max\(Number\(skill\.level/);
   assert.doesNotMatch(sheetSource, /skill\.free_level\s*=\s*Math\.min\(Math\.max\(Number\(skill\.free_level/);

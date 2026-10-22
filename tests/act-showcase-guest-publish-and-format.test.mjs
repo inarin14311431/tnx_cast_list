@@ -7,6 +7,7 @@ import {
   formatShowcaseTagline,
   normalizeShowcaseDisplayQuotes
 } from "../js/showcase-display-format.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
@@ -62,7 +63,7 @@ test("generated showcase source is normalized before download or dynamic publish
     read("js/showcase-generator-loader.js"),
     read("js/showcase-output-normalizer.js")
   ]);
-  assert.match(loader, /showcase-output-normalizer\.js\?v=1/);
+  assertVersionedMatch(loader, /showcase-output-normalizer\.js\?v=VERSION/);
   assert.match(normalizer, /\.cast-card__name/);
   assert.match(normalizer, /\.cast-card__tagline/);
   assert.match(normalizer, /formatShowcaseTagline/);
@@ -74,7 +75,7 @@ test("standard showcase explicitly loads and renders public guests", async () =>
     read("act-showcase-standard.html"),
     read("js/act-showcase-standard-guests.js")
   ]);
-  assert.match(html, /act-showcase-standard-guests\.js\?v=\d+/);
+  assertVersionedMatch(html, /act-showcase-standard-guests\.js\?v=VERSION/);
   assert.match(guestJs, /loadPublicShowcaseGuests/);
   assert.match(guestJs, /standard-showcase-guests/);
   assert.match(guestJs, /formatShowcaseFullName/);
@@ -88,8 +89,8 @@ test("both public showcase modes load the display normalizer", async () => {
     read("js/act-showcase-bootstrap.js"),
     read("js/act-showcase-display-normalizer.js")
   ]);
-  assert.match(standardHtml, /act-showcase-display-normalizer\.js\?v=\d+/);
-  assert.match(cinematicBootstrap, /act-showcase-display-normalizer\.js\?v=\d+/);
+  assertVersionedMatch(standardHtml, /act-showcase-display-normalizer\.js\?v=VERSION/);
+  assertVersionedMatch(cinematicBootstrap, /act-showcase-display-normalizer\.js\?v=VERSION/);
   // Names are normalized when the data is read (see showcase-name-normalization.test.mjs); only taglines remain here.
   assert.doesNotMatch(normalizer, /NAME_SELECTORS|normalizeShowcaseDisplayQuotes|poster-supporting-card h3/);
   assert.match(normalizer, /poster-supporting-card blockquote/);

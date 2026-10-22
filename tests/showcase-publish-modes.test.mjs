@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
@@ -19,7 +20,7 @@ test("dynamic publisher emits current publication URLs without retired mode/samp
     read("js/showcase-generator-loader.js"),
     read("js/showcase-dynamic-publish-v3.js")
   ]);
-  assert.match(loader, /showcase-dynamic-publish-v3\.js\?v=6/);
+  assertVersionedMatch(loader, /showcase-dynamic-publish-v3\.js\?v=VERSION/);
   assert.doesNotMatch(loader, /showcase-dynamic-publish-v2\.js/);
   assert.match(publisher, /act-showcase-standard\.html\?id=/);
   assert.match(publisher, /act-showcase\.html\?id=/);
@@ -33,7 +34,7 @@ test("standard public view shares the public service and accepts the current tra
     read("js/act-showcase-standard.js"),
     read("js/public-showcase-service.js")
   ]);
-  assert.match(html, /act-showcase-standard\.js\?v=\d+/);
+  assertVersionedMatch(html, /act-showcase-standard\.js\?v=VERSION/);
   assert.match(source, /public-showcase-service\.js/);
   assert.match(source, /loadPublicShowcase\(slug\)/);
   assert.match(source, /data\.trailer\.body/);

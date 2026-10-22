@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const castCss = await readFile(new URL("../css-next/pages/cast.css", import.meta.url), "utf8");
 const details = await readFile(new URL("../css-next/pages/cast-view-details.css", import.meta.url), "utf8");
@@ -28,6 +29,6 @@ test("no layer re-pins the link inside the identity grid", () => {
 });
 
 test("cast viewer cache generations include the placement update", () => {
-  assert.match(entry, /cast-view-details\.css\?v=9/);
-  assert.match(castHtml, /cast-entry\.css\?v=38/);
+  assertVersionedMatch(entry, /cast-view-details\.css\?v=VERSION/);
+  assertVersionedMatch(castHtml, /cast-entry\.css\?v=VERSION/);
 });

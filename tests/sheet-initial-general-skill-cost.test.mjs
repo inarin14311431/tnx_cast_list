@@ -12,6 +12,7 @@ import {
   paidFixedInitialGeneralLevel,
   paidSocialConnectionInitialCost
 } from "../js/sheet-experience-rules.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 test("initial skill package is 13 fixed General levels plus shared 7 Social Connection levels", () => {
   assert.equal(INITIAL_GENERAL_SKILL_COUNT, 13);
@@ -46,6 +47,6 @@ test("desktop and mobile calculators use fixed-General and shared Social Connect
   assert.match(rules, /paidSocialConnectionInitialCost/);
   assert.match(desktop, /generalSkillExperienceCost/);
   assert.match(mobile, /generalSkillExperienceCost/);
-  assert.match(desktop, /sheet-experience-rules\.js\?v=7/);
-  assert.match(mobile, /sheet-experience-rules\.js\?v=7/);
+  assertVersionedMatch(desktop, /sheet-experience-rules\.js\?v=VERSION/);
+  assertVersionedMatch(mobile, /sheet-experience-rules\.js\?v=VERSION/);
 });

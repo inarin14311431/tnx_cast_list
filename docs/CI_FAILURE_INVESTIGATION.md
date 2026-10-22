@@ -101,16 +101,17 @@ node --test tests/bar.test.mjs
 assert.match(source, /module\.js\?v=1/);
 ```
 
-代わりに、モジュール名とバージョン形式のみを検査する。
+代わりに、`tests/helpers/cache-version.mjs` で `?v=` の値を `VERSION` に置き換えてから、モジュール名だけを検査する
+(`?v=` は `npm run version:update` が書く内容ハッシュで英字も含むので、`\d+` では一致しない)。
 
 ```js
-assert.match(source, /module\.js\?v=\d+/);
+assertVersionedMatch(source, /module\.js\?v=VERSION/);
 ```
 
-ロード順を確認する場合も、固定文字列の `indexOf` ではなく、バージョン非依存の正規表現で位置を取得する。
+ロード順を確認する場合も、固定文字列の `indexOf` ではなく、置き換え後の文字列で位置を取得する。
 
 ```js
-const importIndex = source.search(/import\("\.\/module\.js\?v=\d+"\)/);
+const importIndex = maskCacheVersions(source).search(/import\("\.\/module\.js\?v=VERSION"\)/);
 ```
 
 今回の障害では、正当なキャッシュ世代更新 `v=1 → v=2` を既存回帰テストが実装破壊として誤検知した。以後、構造テストは「何をロードするか」「どの順序でロードするか」「どの責務境界を守るか」を検査し、キャッシュ世代そのものは検査対象にしない。

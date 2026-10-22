@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const admin = await readFile(new URL("../js/master-data-admin.js", import.meta.url), "utf8");
 const deletion = await readFile(new URL("../js/master-user-delete.js", import.meta.url), "utf8");
@@ -25,6 +26,6 @@ test("master user lifecycle keeps server-side administrator protection and refre
   assert.match(deletion, /管理者アカウントはサーバー側で保護されます/);
   assert.doesNotMatch(deletion, /PRIMARY_ADMIN_USER_ID|PRIMARY_ADMIN_EMAIL/);
   assert.doesNotMatch(admin, /PRIMARY_ADMIN_USER_ID|PRIMARY_ADMIN_EMAIL/);
-  assert.match(bootstrap, /master-data-admin\.js\?v=4/);
-  assert.match(bootstrap, /master-user-delete\.js\?v=4/);
+  assertVersionedMatch(bootstrap, /master-data-admin\.js\?v=VERSION/);
+  assertVersionedMatch(bootstrap, /master-user-delete\.js\?v=VERSION/);
 });

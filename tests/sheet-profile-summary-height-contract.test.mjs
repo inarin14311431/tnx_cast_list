@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -16,5 +17,5 @@ test("profile summary field displays two full text lines", async () => {
     editorCss,
     /\.profile-summary-field textarea\s*\{[^}]*min-height:\s*72px;[^}]*height:\s*72px;[^}]*line-height:\s*1\.5;/
   );
-  assert.match(entryCss, /editor\/editor\.css\?v=34/);
+  assertVersionedMatch(entryCss, /editor\/editor\.css\?v=VERSION/);
 });

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const css = await read("css-next/pages/sheet-mobile-ux.css");
@@ -29,5 +30,5 @@ test("mobile nav normalization is idempotent and observes only the mobile editor
 test("active nav highlighting does not scroll the fully visible navigation", () => {
   const active = ux.match(/const activate=id=>\{[\s\S]*?\n  \};/)?.[0] || "";
   assert.doesNotMatch(active, /scrollIntoView/);
-  assert.match(app, /sheet-mobile-ux\.js\?v=4/);
+  assertVersionedMatch(app, /sheet-mobile-ux\.js\?v=VERSION/);
 });

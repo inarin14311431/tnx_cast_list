@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 const html = await read("account.html");
@@ -11,8 +12,8 @@ const mobileLinks = await read("js/account-mobile-editor-links.js");
 
 test("account entry uses canonical overview and metadata layers", () => {
   assert.match(entry, /account-actions, account-overview, account-operator-metadata;/);
-  assert.match(entry, /account-overview\.css\?v=1/);
-  assert.match(entry, /account-operator-metadata\.css\?v=1/);
+  assertVersionedMatch(entry, /account-overview\.css\?v=VERSION/);
+  assertVersionedMatch(entry, /account-operator-metadata\.css\?v=VERSION/);
   assert.doesNotMatch(entry, /polish/);
 });
 

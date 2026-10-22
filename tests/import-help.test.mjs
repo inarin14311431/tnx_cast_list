@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
@@ -15,7 +16,7 @@ test('data import uses direct character-sheets URL and global help', async () =>
 
   const helpUi = await read('js/help-ui.js');
   assert.match(helpUi, /sheet-global-help/);
-  assert.match(helpUi, /help-content\.js\?v=4/);
+  assertVersionedMatch(helpUi, /help-content\.js\?v=VERSION/);
   assert.doesNotMatch(helpUi, /sheet-import-help\.js/);
 
   const helpCss = await read('css-next/components/help.css');

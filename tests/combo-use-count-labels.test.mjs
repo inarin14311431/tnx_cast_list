@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { compactSource } from "./helpers/compact-source.mjs";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const sheet = await readFile(new URL("../sheet.html", import.meta.url), "utf8");
 const cast = await readFile(new URL("../js/cast.js", import.meta.url), "utf8");
@@ -30,6 +31,6 @@ test("usage limit storage contract remains unchanged", () => {
 });
 
 test("cast usage label changes have cache-buster updates", () => {
-  assert.match(castHtml, /\.\/js\/cast\.js\?v=106/);
-  assert.match(castHtml, /\.\/js\/cast-mobile\.js\?v=9/);
+  assertVersionedMatch(castHtml, /\.\/js\/cast\.js\?v=VERSION/);
+  assertVersionedMatch(castHtml, /\.\/js\/cast-mobile\.js\?v=VERSION/);
 });

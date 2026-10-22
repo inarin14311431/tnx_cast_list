@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), 'utf8');
 
@@ -22,7 +23,7 @@ test('snapshot restore reuses transactional character save', async () => {
 test('snapshot UI supports create restore and delete without image duplication', async () => {
   const source = await read('js/sheet-snapshots.js');
   const service = await read('js/sheet-snapshot-service.js');
-  assert.match(source, /from "\.\/sheet-snapshot-service\.js\?v=1"/);
+  assertVersionedMatch(source, /from "\.\/sheet-snapshot-service\.js\?v=VERSION"/);
   assert.match(service, /export const MAX_SNAPSHOTS = 10/);
   assert.match(service, /create_character_snapshot/);
   assert.match(service, /restore_character_snapshot/);

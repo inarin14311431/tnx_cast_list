@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { countGeneralSkillColumns, chooseGeneralSkillColumn } from "../js/sheet-general-column.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 test("general row counts follow the renderer split after 交渉", () => {
   const rows = ["医療", "射撃", "心理", "交渉", "芸術：", "運動", "回避"].map(name => ({ name }));
@@ -34,7 +35,7 @@ test("general column helper stays DOM-free and sheet delegates counting and deci
   const helperSource = await readFile(new URL("../js/sheet-general-column.js", import.meta.url), "utf8");
   const sheetSource = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
   assert.doesNotMatch(helperSource, /document\.|window\.|supabase|localStorage|sessionStorage|addEventListener/);
-  assert.match(sheetSource, /sheet-general-column\.js\?v=1/);
+  assertVersionedMatch(sheetSource, /sheet-general-column\.js\?v=VERSION/);
   assert.match(sheetSource, /countGeneralSkillColumns\(mergedGeneral\(\)\)/);
   assert.match(sheetSource, /chooseGeneralSkillColumn\(counts\)/);
   assert.doesNotMatch(sheetSource, /general-skill-column--first tbody tr/);

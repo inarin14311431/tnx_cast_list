@@ -6,6 +6,7 @@ import {
   resolveStyleRecord,
   calculateStyleBaselines
 } from "../js/sheet-style-baseline.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const ABILITIES = [
   ["reason"], ["passion"], ["life"], ["mundane"]
@@ -68,7 +69,7 @@ test("style baseline helper remains DOM-free and classic sheet delegates calcula
   const sheetSource = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
 
   assert.doesNotMatch(helperSource, /document\.|window\.|supabase|localStorage|sessionStorage|addEventListener/);
-  assert.match(sheetSource, /sheet-style-baseline\.js\?v=1/);
+  assertVersionedMatch(sheetSource, /sheet-style-baseline\.js\?v=VERSION/);
   assert.match(sheetSource, /calculateStyleBaselines\(/);
   assert.doesNotMatch(sheetSource, /function styleRecord\(/);
   assert.match(sheetSource, /function adjustBaseline\(/);

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
@@ -49,10 +50,10 @@ test("legacy preset key and asset URL resolve to the canonical 木更津湖港�
 test("generator loads a versioned preset picker and no longer labels presets as Supabase-only", async () => {
   const html = await read("showcase-generator.html");
   const picker = await read("js/showcase-background-preset-picker.js");
-  assert.match(html, /showcase-background-preset-picker\.js\?v=\d+/);
+  assertVersionedMatch(html, /showcase-background-preset-picker\.js\?v=VERSION/);
   assert.match(html, /ACT VISUAL \/ PRESET LIBRARY/);
   assert.ok(!html.includes("ACT VISUAL / SUPABASE STORAGE"));
-  assert.match(picker, /showcase-background-presets\.js\?v=\d+/);
+  assertVersionedMatch(picker, /showcase-background-presets\.js\?v=VERSION/);
 });
 
 test("green-area and cyberspace carry the specified descriptions", async () => {

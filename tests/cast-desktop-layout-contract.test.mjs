@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch, maskCacheVersions } from "./helpers/cache-version.mjs";
 
 const css = await readFile(new URL("../css-next/pages/cast-desktop-layout.css", import.meta.url), "utf8");
 const castCss = await readFile(new URL("../css-next/pages/cast.css", import.meta.url), "utf8");
@@ -10,7 +11,7 @@ const castUi = await readFile(new URL("../js/cast-ui.js", import.meta.url), "utf
 
 test("desktop cast layout is a canonical final cascade layer", () => {
   assert.match(entry, /cast-transfer, cast-troop-modal, cast-desktop, cast-style-table;/);
-  assert.match(entry, /cast-desktop-layout\.css\?v=7/);
+  assertVersionedMatch(entry, /cast-desktop-layout\.css\?v=VERSION/);
   assert.doesNotMatch(entry, /polish/);
   assert.match(css, /@media \(min-width: 1200px\)/);
   assert.doesNotMatch(css, /@media\s*\([^)]*max-width/i);
@@ -50,8 +51,8 @@ test("desktop cast layout remains theme-driven", () => {
   assert.match(css, /var\(--color-text\)/);
   assert.doesNotMatch(css, /#[0-9a-f]{3,8}\b/i);
   assert.doesNotMatch(css, /body\[data-page="account\.html"\]/);
-  const pageCssIndex = castHtml.indexOf('./css-next/pages/cast-entry.css?v=38');
-  const themeCssIndex = castHtml.indexOf('./css-next/themes/index.css?v=1');
+  const pageCssIndex = maskCacheVersions(castHtml).indexOf('./css-next/pages/cast-entry.css?v=VERSION');
+  const themeCssIndex = maskCacheVersions(castHtml).indexOf('./css-next/themes/index.css?v=VERSION');
   assert.ok(pageCssIndex >= 0 && themeCssIndex > pageCssIndex);
 });
 

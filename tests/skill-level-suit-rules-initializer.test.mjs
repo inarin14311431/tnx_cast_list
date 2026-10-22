@@ -2,6 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 import test from "node:test";
 import assert from "node:assert/strict";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const ROOT = process.cwd();
 const source = fs.readFileSync(path.join(ROOT, "js", "skill-level-suit-rules.js"), "utf8");
@@ -15,7 +16,7 @@ test("skill level suit rules has an explicit idempotent delegated initializer", 
 });
 
 test("skill level suit rules delegates level, suit and free-level decisions", () => {
-  assert.match(source, /sheet-skill-level-suit-state\.js\?v=1/);
+  assertVersionedMatch(source, /sheet-skill-level-suit-state\.js\?v=VERSION/);
   assert.match(source, /normalizeSkillLevel/);
   assert.match(source, /shouldSelectAllSuits/);
   assert.match(source, /resolveSkillInputState/);

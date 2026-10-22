@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import { canonicalizeArchiveBundle, canonicalizeCharacterSheetJsonp, diffCanonicalBundles } from "../js/character-sheet-jsonp-canonical.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const compare = fs.readFileSync(new URL("../js/sheet-character-sheet-compare.js", import.meta.url), "utf8");
 const snapshots = fs.readFileSync(new URL("../js/sheet-snapshots.js", import.meta.url), "utf8");
@@ -149,7 +150,7 @@ test("direct JSONP comparison still reports real semantic changes", () => {
   assert.ok(differences.some(item=>item.category==="abilities"&&item.path==="reason_base"&&item.archive===4&&item.warehouse===5));
 });
 test("PC warehouse comparison uses the same shared comparison service as the mobile editor", () => {
-  assert.match(compare, /import \{ compareCharacterSheetPayload, normalizeCharacterSheetPayload \} from "\.\/character-sheet-compare-service\.js\?v=3";/);
+  assertVersionedMatch(compare, /import \{ compareCharacterSheetPayload, normalizeCharacterSheetPayload \} from "\.\/character-sheet-compare-service\.js\?v=VERSION";/);
   assert.match(compare, /function compareArchiveToJsonp\(archiveBundle,externalPayload\)\{return compareCharacterSheetPayload\(archiveBundle,externalPayload\);\}/);
   assert.doesNotMatch(compare, /diffCanonicalBundles|canonicalizeCharacterSheetJsonp|canonicalizeArchiveBundle/);
   assert.match(compare, /function normalizePayload\(payload\)\{return normalizeCharacterSheetPayload\(payload\);\}/);

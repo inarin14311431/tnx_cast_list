@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const management = await readFile(new URL("../js/showcase-owned-list.js", import.meta.url), "utf8");
 const loader = await readFile(new URL("../js/showcase-generator-loader.js", import.meta.url), "utf8");
@@ -8,7 +9,7 @@ const restore = await readFile(new URL("../js/showcase-edit-restore.js", import.
 const deletion = await readFile(new URL("../js/showcase-delete.js", import.meta.url), "utf8");
 
 test("published showcase management stays selector based without duplicate published-item cards", () => {
-  assert.match(loader, /showcase-owned-list\.js\?v=2/);
+  assertVersionedMatch(loader, /showcase-owned-list\.js\?v=VERSION/);
   assert.match(management, /公開済みアクト紹介/);
   assert.match(management, /PUBLISHED SHOWCASE MANAGEMENT/);
   assert.match(management, /managementMode = "selector"/);

@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { buildStyleSaveRows } from "../js/sheet-style-save-projection.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const styleData = [
   { name: "カブキ", divine: "チャイ", divineYomi: "チャイ" },
@@ -46,7 +47,7 @@ test("style save projection remains DOM-free and sheet delegates save mapping", 
   const helperSource = await readFile(new URL("../js/sheet-style-save-projection.js", import.meta.url), "utf8");
   const sheetSource = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
   assert.doesNotMatch(helperSource, /document\.|window\.|supabase|localStorage|sessionStorage|addEventListener/);
-  assert.match(sheetSource, /sheet-style-save-projection\.js\?v=1/);
+  assertVersionedMatch(sheetSource, /sheet-style-save-projection\.js\?v=VERSION/);
   assert.match(sheetSource, /buildStyleSaveRows/);
   assert.doesNotMatch(sheetSource, /const styles = \[1, 2, 3\]\.map\(i => \{/);
 });

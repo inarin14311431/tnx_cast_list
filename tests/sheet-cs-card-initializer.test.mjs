@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const source = await readFile(new URL("../js/sheet-sidebar-actions.js", import.meta.url), "utf8");
 
@@ -17,7 +18,7 @@ test("sheet CS card preserves its existing calculation and synchronization hooks
   assert.match(helper, /Math\.floor\(\(toInteger\(reason\) \+ toInteger\(passion\) \+ toInteger\(life\)\) \/ 2\)/);
   assert.match(helper, /Math\.max\(0, base \+ normalizedModifier\)/);
   assert.match(helper, /storedBase: final - normalizedModifier/);
-  assert.match(source, /import \{ calculateCombatSpeed \} from "\.\/sheet-ability-calculation\.js\?v=2";/);
+  assertVersionedMatch(source, /import \{ calculateCombatSpeed \} from "\.\/sheet-ability-calculation\.js\?v=VERSION";/);
   assert.match(source, /calculateCombatSpeed\(\{\s*reason: abilityValue\('reason'\),\s*passion: abilityValue\('passion'\),\s*life: abilityValue\('life'\),\s*modifier: toInteger\(modifierInput\.value\)\s*\}\)/);
   assert.match(source, /displayBase\.value = cs\.base;/);
   assert.match(source, /storedBase\.value = cs\.storedBase;/);

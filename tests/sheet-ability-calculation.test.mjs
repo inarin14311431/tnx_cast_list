@@ -5,6 +5,7 @@ import {
   calculateFinalValue,
   calculateAbilityFinals
 } from "../js/sheet-ability-calculation.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const ABILITIES = [["reason"], ["passion"], ["life"], ["mundane"]];
 
@@ -51,7 +52,7 @@ test("ability calculation stays DOM-free and classic sheet delegates recalc math
   const sheetSource = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
 
   assert.doesNotMatch(helperSource, /document\.|window\.|supabase|localStorage|sessionStorage|addEventListener/);
-  assert.match(sheetSource, /sheet-ability-calculation\.js\?v=2/);
+  assertVersionedMatch(sheetSource, /sheet-ability-calculation\.js\?v=VERSION/);
   assert.match(sheetSource, /calculateAbilityFinals\(/);
   assert.doesNotMatch(sheetSource, /function final\(/);
   assert.match(sheetSource, /TNXExperience\?\.queue\?\.\(\)/);

@@ -2,6 +2,7 @@ import { actShowcaseCss } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 const bootstrap = read("js/act-showcase-bootstrap.js");
@@ -14,7 +15,7 @@ const finalTrailer = read("js/act-showcase-final-trailer.js");
 const page = read("js/act-showcase-page.js");
 
 test("HANDOUT readout grows with typed content and delegates viewport overflow to the stage", () => {
-  assert.match(bootstrap, /act-showcase-handout-live-frame\.js\?v=3/);
+  assertVersionedMatch(bootstrap, /act-showcase-handout-live-frame\.js\?v=VERSION/);
   assert.ok(bootstrap.indexOf("act-showcase-trailer-live-frame.js") < bootstrap.indexOf("act-showcase-handout-live-frame.js"));
   assert.ok(bootstrap.indexOf("act-showcase-handout-live-frame.js") < bootstrap.indexOf("act-showcase-page.js"));
   assert.match(handoutFrame, /readout\.scrollHeight/);
@@ -101,9 +102,8 @@ test("linked screen state changes remain observable after text churn is filtered
 });
 
 test("all cinematic showcase consumers share one public showcase service module URL", () => {
-  assert.match(page, /public-showcase-service\.js\?v=1/);
-  assert.match(scenarioWriter, /public-showcase-service\.js\?v=1/);
-  assert.match(supportingCast, /public-showcase-service\.js\?v=1/);
-  assert.match(finalTrailer, /public-showcase-service\.js\?v=1/);
-  assert.doesNotMatch(finalTrailer, /public-showcase-service\.js\?v=20260912a/);
+  assertVersionedMatch(page, /public-showcase-service\.js\?v=VERSION/);
+  assertVersionedMatch(scenarioWriter, /public-showcase-service\.js\?v=VERSION/);
+  assertVersionedMatch(supportingCast, /public-showcase-service\.js\?v=VERSION/);
+  assertVersionedMatch(finalTrailer, /public-showcase-service\.js\?v=VERSION/);
 });

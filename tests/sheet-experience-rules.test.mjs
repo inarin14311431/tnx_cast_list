@@ -15,6 +15,7 @@ import {
   resolveCanonicalCurrent,
   steppedExperienceCost
 } from "../js/sheet-experience-rules.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 test("paid skill level excludes imported free levels without going negative", () => {
   assert.equal(paidSkillLevel(1, 1), 0);
@@ -68,9 +69,9 @@ test("desktop and mobile calculators share exact initial experience rules", asyn
   assert.match(rules, /export function generalSkillExperienceCost\(/);
   assert.match(rules, /paidFixedInitialGeneralLevel\(level, freeLevel\)/);
   assert.match(rules, /paidSocialConnectionInitialCost\(\{ social, connection \}\)/);
-  assert.match(desktop, /sheet-experience-rules\.js\?v=7/);
+  assertVersionedMatch(desktop, /sheet-experience-rules\.js\?v=VERSION/);
   assert.match(desktop, /generalSkillExperienceCost\(generalRows\)/);
-  assert.match(mobile, /sheet-experience-rules\.js\?v=7/);
+  assertVersionedMatch(mobile, /sheet-experience-rules\.js\?v=VERSION/);
   assert.match(mobile, /generalSkillExperienceCost\(rows\)/);
   assert.match(mobile, /current:character\[`\$\{key\}_base`\]/);
   assert.match(mobile, /current:character\[`\$\{key\}_control_base`\]/);

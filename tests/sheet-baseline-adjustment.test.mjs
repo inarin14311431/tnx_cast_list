@@ -5,6 +5,7 @@ import {
   shouldApplyStyleBaseline,
   resolveStyleBaselineValue
 } from "../js/sheet-baseline-adjustment.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 test("baseline-derived values follow a changed style baseline", () => {
   assert.equal(shouldApplyStyleBaseline(3, 3), true);
@@ -32,7 +33,7 @@ test("baseline adjustment helper stays DOM-free and sheet delegates overwrite po
   const sheetSource = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
 
   assert.doesNotMatch(helperSource, /document\.|window\.|supabase|localStorage|sessionStorage|addEventListener/);
-  assert.match(sheetSource, /sheet-baseline-adjustment\.js\?v=1/);
+  assertVersionedMatch(sheetSource, /sheet-baseline-adjustment\.js\?v=VERSION/);
   assert.match(sheetSource, /resolveStyleBaselineValue\(/);
   assert.match(sheetSource, /function adjustBaseline\(/);
 });

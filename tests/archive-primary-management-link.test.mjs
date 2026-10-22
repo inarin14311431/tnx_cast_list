@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const archiveCss = await readFile(new URL("../css-next/pages/archive.css", import.meta.url), "utf8");
 const archiveEntry = await readFile(new URL("../css-next/pages/archive-entry.css", import.meta.url), "utf8");
@@ -20,5 +21,5 @@ test("logout stays visually secondary to cast management", () => {
 });
 
 test("archive CSS cache key is advanced", () => {
-  assert.match(archiveEntry, /@import url\("\.\/archive\.css\?v=8"\) layer\(archive-page\);/);
+  assertVersionedMatch(archiveEntry, /@import url\("\.\/archive\.css\?v=VERSION"\) layer\(archive-page\);/);
 });

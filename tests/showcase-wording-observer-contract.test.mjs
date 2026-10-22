@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import test from "node:test";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const html = fs.readFileSync("showcase-generator.html", "utf8");
 const source = fs.readFileSync("js/showcase-wording.js", "utf8");
@@ -18,5 +19,5 @@ test("showcase wording keeps idempotent title guide updates", () => {
 });
 
 test("showcase generator loads the wording module", () => {
-  assert.match(html, /showcase-wording\.js\?v=\d+/);
+  assertVersionedMatch(html, /showcase-wording\.js\?v=VERSION/);
 });

@@ -2,6 +2,7 @@ import { actShowcaseCssEntry } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const generatorHtml = readFileSync(new URL("../showcase-generator.html", import.meta.url), "utf8");
 const entryCss = readFileSync(new URL("../css-next/pages/showcase-entry.css", import.meta.url), "utf8");
@@ -13,13 +14,13 @@ const css = readFileSync(new URL("../css-next/pages/showcase-background-presets.
 
 test("generator exposes the canonical background preset picker wiring", () => {
   assert.match(generatorHtml, /id="background-preset-grid"/);
-  assert.match(generatorHtml, /showcase-background-preset-picker\.js\?v=\d+/);
-  assert.match(entryCss, /showcase-background-presets\.css\?v=\d+/);
+  assertVersionedMatch(generatorHtml, /showcase-background-preset-picker\.js\?v=VERSION/);
+  assertVersionedMatch(entryCss, /showcase-background-presets\.css\?v=VERSION/);
   assert.doesNotMatch(generatorHtml, /<link[^>]+showcase-background-presets\.css/);
   assert.match(presets, /export const SHOWCASE_BACKGROUND_PRESETS/);
   assert.match(presets, /new URL\("\.\.\/assets\/showcase\/backgrounds\/", import\.meta\.url\)/);
   assert.match(presets, /url\.searchParams\.set\("v", SHOWCASE_BACKGROUND_ASSET_VERSION\)/);
-  assert.match(picker, /showcase-background-presets\.js\?v=\d+/);
+  assertVersionedMatch(picker, /showcase-background-presets\.js\?v=VERSION/);
 });
 
 test("preset selection reuses the existing background URL publishing path", () => {
@@ -40,7 +41,7 @@ test("cinematic presentation applies published background from the canonical sho
   assert.match(page, /background: safeImageUrl\(data\.background\)/);
   assert.match(page, /applyBackground\(model\.background\)/);
   assert.match(page, /--showcase-background/);
-  assert.match(showcaseEntry, /act-showcase-top-background-only\.css\?v=\d+/);
+  assertVersionedMatch(showcaseEntry, /act-showcase-top-background-only\.css\?v=VERSION/);
   assert.doesNotMatch(page, /act-showcase-background-resolver/);
 });
 

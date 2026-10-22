@@ -2,6 +2,7 @@ import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const entry = actShowcaseCssEntry();
 const bootstrap = readFileSync(new URL("../js/act-showcase-bootstrap.js", import.meta.url), "utf8");
@@ -11,7 +12,7 @@ const css = actShowcaseCss("act-showcase-cinematic-readability");
 
 test("cinematic readability and polish keep their explicit entry order", () => {
   assert.match(entry, /act-showcase-cinematic-readability\.css\?v=[A-Za-z0-9._-]+/);
-  assert.match(bootstrap, /act-showcase-cinematic-polish\.js\?v=20260910b/);
+  assertVersionedMatch(bootstrap, /act-showcase-cinematic-polish\.js\?v=VERSION/);
   assert.ok(entry.indexOf("act-showcase-finale.css") < entry.indexOf("act-showcase-cinematic-readability.css"));
   assert.ok(bootstrap.indexOf("act-showcase-cinematic-polish.js") < bootstrap.indexOf("act-showcase-page.js"));
 });

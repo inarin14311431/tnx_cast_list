@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "node:fs";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => fs.readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -27,8 +28,8 @@ test("generated and standard guest cards share durable stylesheet coverage", () 
 });
 
 test("showcase cache busters point to the regression-fixed assets", () => {
-  assert.match(dedicatedOutput, /act-showcase-standard-hotfix\.css\?v=2/);
-  assert.match(standardHtml, /act-showcase-standard-hotfix\.css\?v=2/);
-  assert.match(generatorLoader, /showcase-dedicated-output\.js\?v=6/);
-  assert.match(generatorHtml, /showcase-generator-loader\.js\?v=44/);
+  assertVersionedMatch(dedicatedOutput, /act-showcase-standard-hotfix\.css\?v=VERSION/);
+  assertVersionedMatch(standardHtml, /act-showcase-standard-hotfix\.css\?v=VERSION/);
+  assertVersionedMatch(generatorLoader, /showcase-dedicated-output\.js\?v=VERSION/);
+  assertVersionedMatch(generatorHtml, /showcase-generator-loader\.js\?v=VERSION/);
 });

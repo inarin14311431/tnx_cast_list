@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
@@ -19,5 +20,5 @@ test("Neon Sign keeps native select popup rows readable", async () => {
   assert.match(nativeControls, /:root\[data-theme="spectrum-neon"\] select\s*\{[\s\S]*?color-scheme:\s*dark/);
   assert.match(nativeControls, /select option,[\s\S]*?select optgroup\s*\{[\s\S]*?background-color:\s*#080b19;[\s\S]*?color:\s*#f7f9ff;/);
   assert.match(nativeControls, /select option:disabled\s*\{[\s\S]*?color:\s*#b5c2dc;/);
-  assert.match(archiveHtml, /css-next\/themes\/index\.css\?v=2/);
+  assertVersionedMatch(archiveHtml, /css-next\/themes\/index\.css\?v=VERSION/);
 });

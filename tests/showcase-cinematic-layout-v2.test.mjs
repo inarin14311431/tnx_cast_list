@@ -2,6 +2,7 @@ import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { maskCacheVersions } from "./helpers/cache-version.mjs";
 
 const html = await readFile(new URL("../act-showcase.html", import.meta.url), "utf8");
 const bootstrap = await readFile(new URL("../js/act-showcase-bootstrap.js", import.meta.url), "utf8");
@@ -17,8 +18,8 @@ const presentation = actShowcaseCss("act-showcase-presentation-tuning");
 const emphasisCss = actShowcaseCss("act-showcase-visual-emphasis");
 
 test("generator separates ACT title and subtitle before dynamic publishing", () => {
-  const subtitleImport = loader.search(/import\("\.\/showcase-act-subtitle\.js\?v=\d+"\)/);
-  const publisherImport = loader.search(/import\("\.\/showcase-dynamic-publish-v3\.js\?v=\d+"\)/);
+  const subtitleImport = maskCacheVersions(loader).search(/import\("\.\/showcase-act-subtitle\.js\?v=VERSION"\)/);
+  const publisherImport = maskCacheVersions(loader).search(/import\("\.\/showcase-dynamic-publish-v3\.js\?v=VERSION"\)/);
   assert.ok(subtitleImport >= 0);
   assert.ok(publisherImport > subtitleImport);
   assert.match(subtitle, /subtitleInput\.id = "act-subtitle"/);

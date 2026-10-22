@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
@@ -13,8 +14,8 @@ test("showcase cast selectors expose 15-item load-more controls", async () => {
 
   assert.match(html, /id="public-cast-load-more"/);
   assert.match(html, /id="private-cast-load-more"/);
-  assert.match(html, /showcase-cast-pagination\.js\?v=\d+/);
-  assert.match(entryCss, /showcase-cast-pagination\.css\?v=\d+/);
+  assertVersionedMatch(html, /showcase-cast-pagination\.js\?v=VERSION/);
+  assertVersionedMatch(entryCss, /showcase-cast-pagination\.css\?v=VERSION/);
   assert.match(script, /const PAGE_SIZE = 15/);
   assert.match(script, /visibleCount \+= PAGE_SIZE/);
   assert.match(script, /index >= visibleCount/);

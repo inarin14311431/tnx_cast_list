@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const accountLinks = await readFile(new URL("../js/account-mobile-editor-links.js", import.meta.url), "utf8");
 const accountActionCss = await readFile(new URL("../css-next/pages/account-actions.css", import.meta.url), "utf8");
@@ -30,7 +31,7 @@ test("linked troop shortcut has its own icon and EXP is aggregated into cast bre
 });
 
 test("troop page uses one canonical guarded save controller", () => {
-  assert.match(troopHtml, /troop\.js\?v=7/);
+  assertVersionedMatch(troopHtml, /troop\.js\?v=VERSION/);
   assert.doesNotMatch(troopHtml, /troop-save-v2\.js/);
   assert.match(troopSave, /export function registerTroopSave/);
   assert.match(troopSave, /dataset\.troopSaveHandler === "canonical"/);

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
@@ -24,7 +25,7 @@ test("production transfer router keeps desktop and mobile on bookmarklet flow", 
   assert.match(router, /ACTIVE_MODE = "bookmarklet"/);
   assert.match(router, /removeInactivePostTriggers/);
   assert.match(router, /mobile-transfer\.html\?id=/);
-  assert.match(router, /transfer-tsv-export\.js\?v=10/);
+  assertVersionedMatch(router, /transfer-tsv-export\.js\?v=VERSION/);
   assert.doesNotMatch(router, /direct-transfer-button-post\.js/);
 });
 

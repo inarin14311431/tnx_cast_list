@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { buildNewCharacterSkills, appendStarterSocialConnectionRowsIfBothMissing } from "../js/sheet-new-character-state.js";
 import { createBlankSkill, createSkillRow } from "../js/sheet-row-factory.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const SUITS = ["reason", "passion", "life", "mundane"];
 const MASTER = [
@@ -62,7 +63,7 @@ test("new character state uses shared row and collection factories while remaini
   assert.match(helperSource, /createSkillRow\("general"/);
   assert.match(helperSource, /appendRows/);
   assert.doesNotMatch(helperSource, /\.push\(/);
-  assert.match(sheetSource, /sheet-new-character-state\.js\?v=2/);
+  assertVersionedMatch(sheetSource, /sheet-new-character-state\.js\?v=VERSION/);
   assert.match(sheetSource, /buildNewCharacterSkills\(/);
 });
 

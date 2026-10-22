@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const castHtml = await readFile(new URL("../cast.html", import.meta.url), "utf8");
 const levelLabels = await readFile(new URL("../js/cast-mobile-level-labels.js", import.meta.url), "utf8");
@@ -9,7 +10,7 @@ const handleRepair = await readFile(new URL("../js/tnx-transfer-handle-repair.js
 const exporter = await readFile(new URL("../js/transfer-tsv-export.js", import.meta.url), "utf8");
 
 test("mobile general/social/connection and style skill levels receive Lv labels", () => {
-  assert.match(castHtml, /cast-mobile-level-labels\.js(?:\?v=\d+)?/);
+  assertVersionedMatch(castHtml, /cast-mobile-level-labels\.js(?:\?v=VERSION)?/);
   assert.match(levelLabels, /\.mobile-skill-row > b/);
   assert.match(levelLabels, /\.mobile-style-row > b/);
   assert.match(levelLabels, /`Lv\$\{value\.replace/);

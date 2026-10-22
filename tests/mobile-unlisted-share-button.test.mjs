@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
@@ -49,9 +50,9 @@ test("mobile entry points bust caches for the compact share UI", async () => {
     read("js/sheet-mobile-app.js")
   ]);
 
-  assert.match(html, /sheet-mobile-entry\.css\?v=6/);
-  assert.match(html, /sheet-mobile-app\.js\?v=21/);
-  assert.match(entry, /sheet-mobile-ux\.css\?v=4/);
-  assert.match(entry, /character-share\.css\?v=2/);
-  assert.match(app, /character-share-editor\.js\?v=2/);
+  assertVersionedMatch(html, /sheet-mobile-entry\.css\?v=VERSION/);
+  assertVersionedMatch(html, /sheet-mobile-app\.js\?v=VERSION/);
+  assertVersionedMatch(entry, /sheet-mobile-ux\.css\?v=VERSION/);
+  assertVersionedMatch(entry, /character-share\.css\?v=VERSION/);
+  assertVersionedMatch(app, /character-share-editor\.js\?v=VERSION/);
 });

@@ -84,7 +84,8 @@ PC/Mobileのファイル名が似ているだけで統合しない。責務が�
 4. commit・push・PR作成
 5. 目視確認が必要な変更(見た目・タイミング絡み)は、実機/Playwrightで実際に確認してから報告する。
    「直したはず」で終わらせない。
-6. JSの版数(`?v=`)を上げたら`npm run preload:update`を実行する。
+6. JS・CSS・HTMLを変えたら`npm run version:update`を実行する(`?v=`を内容ハッシュに更新し、modulepreloadも再生成する。
+   番号を手で書かない)。実行し忘れると`npm run verify`(`audit:cache`)が落ちる。
 7. DB変更を含む場合は、live state確認・migration適用確認を追加する(実DB適用は明示的な確認を
    取ってから)。
 

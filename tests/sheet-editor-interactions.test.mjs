@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const source = await readFile(new URL("../js/sheet-editor-interactions.js", import.meta.url), "utf8");
 
@@ -23,7 +24,7 @@ test("sheet editor interactions is idempotent per root and window", () => {
 
 test("classic sheet delegates generic lifecycle binding", async () => {
   const sheetSource = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
-  assert.match(sheetSource, /sheet-editor-interactions\.js\?v=2/);
+  assertVersionedMatch(sheetSource, /sheet-editor-interactions\.js\?v=VERSION/);
   assert.match(sheetSource, /initSheetEditorInteractions\(/);
   assert.doesNotMatch(sheetSource, /document\.addEventListener\("input", onEdit\)/);
   assert.doesNotMatch(sheetSource, /window\.addEventListener\("beforeunload"/);

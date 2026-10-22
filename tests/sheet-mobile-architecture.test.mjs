@@ -2,6 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { compactSource } from "./helpers/compact-source.mjs";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const html = await readFile(new URL("../sheet-mobile.html", import.meta.url), "utf8");
 const app = await readFile(new URL("../js/sheet-mobile-app.js", import.meta.url), "utf8");
@@ -107,7 +108,7 @@ test("mobile general skill experience fallback matches PC proper-skill inference
 });
 
 test("snapshot feature keeps create, restore, delete and dirty-state safeguards", () => {
-  assert.match(snapshots, /from "\.\/sheet-snapshot-service\.js\?v=1"/);
+  assertVersionedMatch(snapshots, /from "\.\/sheet-snapshot-service\.js\?v=VERSION"/);
   assert.match(snapshots, /createSnapshot\(characterId,label\.value\.trim\(\)\)/);
   assert.match(snapshots, /restoreSnapshot\(id\)/);
   assert.match(snapshots, /deleteSnapshot\(id\)/);

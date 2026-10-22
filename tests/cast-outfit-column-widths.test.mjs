@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 const definitions = await readFile(new URL("../js/cast-view-definitions.js", import.meta.url), "utf8");
 const outfits = await readFile(new URL("../js/cast-outfits.js", import.meta.url), "utf8");
@@ -28,10 +29,10 @@ test("tron CS modifier stays compact and description receives remaining width", 
 });
 
 test("cast page loads the refreshed outfit definitions and layout assets", () => {
-  assert.match(outfits, /cast-view-definitions\.js\?v=4/);
-  assert.match(entry, /cast-outfit-column-widths\.css\?v=4/);
-  assert.match(castHtml, /cast-entry\.css\?v=38/);
-  assert.match(castHtml, /cast-outfits\.js\?v=12/);
+  assertVersionedMatch(outfits, /cast-view-definitions\.js\?v=VERSION/);
+  assertVersionedMatch(entry, /cast-outfit-column-widths\.css\?v=VERSION/);
+  assertVersionedMatch(castHtml, /cast-entry\.css\?v=VERSION/);
+  assertVersionedMatch(castHtml, /cast-outfits\.js\?v=VERSION/);
 });
 
 test("items without a description get no tablet description row, and name/slot cells wrap on tablet", () => {

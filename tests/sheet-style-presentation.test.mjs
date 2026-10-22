@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import { STYLE_DATA } from "../js/style-data.js";
 import { buildStylePresentation } from "../js/sheet-style-presentation.js";
+import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 
 test("style presentation resolves divine names and yomi from current style data", () => {
   const result = buildStylePresentation({
@@ -49,7 +50,7 @@ test("style presentation helper remains DOM-free and sheet delegates display cal
   const sheetSource = await readFile(new URL("../js/sheet.js", import.meta.url), "utf8");
 
   assert.doesNotMatch(helperSource, /document\.|window\.|supabase|localStorage|sessionStorage|addEventListener/);
-  assert.match(sheetSource, /sheet-style-presentation\.js\?v=1/);
+  assertVersionedMatch(sheetSource, /sheet-style-presentation\.js\?v=VERSION/);
   assert.match(sheetSource, /buildStylePresentation\(/);
   assert.match(sheetSource, /function updateDivines\(/);
   assert.match(sheetSource, /function adjustBaseline\(/);
