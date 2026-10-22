@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
 import { packTroopComboRule, unpackTroopComboRule } from "./troop-combo-codec.js";
-import { escapeHtml } from "./dom-escape.js?v=2";
+import { escapeHtml } from "./dom-escape.js?v=46402d5f";
 
 const comboForm = document.querySelector("#troop-combo-form");
 const comboDialog = document.querySelector("#troop-combo-dialog");

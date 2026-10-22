@@ -1,8 +1,8 @@
 import { supabase } from "./supabase-client.js";
-import { withRequestTimeout } from "./async-timeout.js?v=1";
-import { escapeAttribute } from "./dom-escape.js?v=2";
-import { resolveCastNumber } from "./showcase-cast-number.js?v=1";
-import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=1";
+import { withRequestTimeout } from "./async-timeout.js?v=526a0b5a";
+import { escapeAttribute } from "./dom-escape.js?v=46402d5f";
+import { resolveCastNumber } from "./showcase-cast-number.js?v=944a948e";
+import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=0e404b6b";
 
 const preview = document.querySelector("#showcase-preview");
 const status = document.querySelector("#generator-status");

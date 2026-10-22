@@ -1,4 +1,4 @@
-import { SITE_BASE_PATH } from "./config.js?v=2";
+import { SITE_BASE_PATH } from "./config.js?v=9cb58cc9";
 import { supabase } from "./supabase-client.js";
 
 const loginForm = document.querySelector("#login-form");

@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
-import { moveAdjacentRow } from "./sheet-row-collection-state.js?v=2";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=7e020e46";
+import { moveAdjacentRow } from "./sheet-row-collection-state.js?v=d2cacff3";
 import {
   LABELS,
   blankOutfit,
@@ -10,13 +10,13 @@ import {
   parseConcealment,
   parseDefense,
   normalizeNumber
-} from "./sheet-mobile-outfit-model.js?v=11";
+} from "./sheet-mobile-outfit-model.js?v=61a37eb6";
 import {
   buildOutfitEditor,
   ensureOutfitDialog,
   ensureOutfitToolbar,
   renderOutfitCards
-} from "./sheet-mobile-outfit-ui.js?v=16";
+} from "./sheet-mobile-outfit-ui.js?v=b61e7666";
 
 const $ = selector => document.querySelector(selector);
 

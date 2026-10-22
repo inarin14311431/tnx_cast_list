@@ -1,4 +1,4 @@
-import { getCombos } from "./cast-data-store.js?v=2";
+import { getCombos } from "./cast-data-store.js?v=f786d39c";
 
 const SUITS = {
   reason: "♠理性",

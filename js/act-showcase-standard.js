@@ -1,7 +1,7 @@
-import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
-import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=1";
-import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=1";
-import { castNumberFromSlot } from "./showcase-cast-number.js?v=1";
+import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=d32e5230";
+import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=d3800656";
+import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
+import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
 
 const status = document.querySelector("#act-showcase-standard-status");
 const root = document.querySelector("#act-showcase-standard-root");

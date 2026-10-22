@@ -1,31 +1,31 @@
 /* Canonical stylesheet entry for the PC cast editor. */
 @layer app, sheet-components, sheet-editor, sheet-enhancements;
 
-@import url("../index.css?v=65") layer(app);
+@import url("../index.css?v=2772165f") layer(app);
 
-@import url("../components/help.css?v=4") layer(sheet-components);
-@import url("../components/save-diagnostics.css?v=1") layer(sheet-components);
-@import url("../components/sheet-snapshots.css?v=1") layer(sheet-components);
-@import url("../components/sheet-url-import.css?v=1") layer(sheet-components);
-@import url("../components/character-sheet-compare.css?v=3") layer(sheet-components);
-@import url("../components/character-share.css?v=2") layer(sheet-components);
-@import url("../components/disclosure-chevron.css?v=1") layer(sheet-components);
-@import url("../components/sheet-load-overlay.css?v=1") layer(sheet-components);
+@import url("../components/help.css?v=3134c87c") layer(sheet-components);
+@import url("../components/save-diagnostics.css?v=fe2f28d1") layer(sheet-components);
+@import url("../components/sheet-snapshots.css?v=572e2da8") layer(sheet-components);
+@import url("../components/sheet-url-import.css?v=20652cd7") layer(sheet-components);
+@import url("../components/character-sheet-compare.css?v=1a382f41") layer(sheet-components);
+@import url("../components/character-share.css?v=7b825f0b") layer(sheet-components);
+@import url("../components/disclosure-chevron.css?v=90c5572a") layer(sheet-components);
+@import url("../components/sheet-load-overlay.css?v=66b06c6a") layer(sheet-components);
 
-@import url("../editor/editor.css?v=34") layer(sheet-editor);
-@import url("../editor/divine-layout.css?v=1") layer(sheet-editor);
-@import url("../editor/sidebar-actions.css?v=2") layer(sheet-editor);
-@import url("../editor/skills.css?v=5") layer(sheet-editor);
-@import url("../editor/style-skills.css?v=15") layer(sheet-editor);
-@import url("../editor/style-skill-resize.css?v=1") layer(sheet-editor);
-@import url("../editor/style-separators.css?v=2") layer(sheet-editor);
-@import url("../editor/outfits.css?v=17") layer(sheet-editor);
-@import url("../editor/import.css?v=8") layer(sheet-editor);
-@import url("../editor/button-hover.css?v=1") layer(sheet-editor);
-@import url("../editor/combos.css?v=1") layer(sheet-editor);
+@import url("../editor/editor.css?v=e8049746") layer(sheet-editor);
+@import url("../editor/divine-layout.css?v=4e33ef05") layer(sheet-editor);
+@import url("../editor/sidebar-actions.css?v=6d417a9e") layer(sheet-editor);
+@import url("../editor/skills.css?v=778377e7") layer(sheet-editor);
+@import url("../editor/style-skills.css?v=06480bb9") layer(sheet-editor);
+@import url("../editor/style-skill-resize.css?v=5cd15a4e") layer(sheet-editor);
+@import url("../editor/style-separators.css?v=f13b9ecb") layer(sheet-editor);
+@import url("../editor/outfits.css?v=e6254070") layer(sheet-editor);
+@import url("../editor/import.css?v=1a3ec7de") layer(sheet-editor);
+@import url("../editor/button-hover.css?v=fa5f34d2") layer(sheet-editor);
+@import url("../editor/combos.css?v=98dbbecc") layer(sheet-editor);
 
-@import url("../components/armor-totals.css?v=3") layer(sheet-enhancements);
-@import url("../components/sheet-import-help.css?v=3") layer(sheet-enhancements);
-@import url("../components/skill-display.css?v=1") layer(sheet-enhancements);
+@import url("../components/armor-totals.css?v=f8c0b007") layer(sheet-enhancements);
+@import url("../components/sheet-import-help.css?v=d1b50670") layer(sheet-enhancements);
+@import url("../components/skill-display.css?v=43c208f0") layer(sheet-enhancements);
 
-@import url("../components/sheet-ability-summary.css?v=1") layer(sheet-enhancements);
+@import url("../components/sheet-ability-summary.css?v=533926d7") layer(sheet-enhancements);

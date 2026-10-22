@@ -25,14 +25,14 @@ async function initializeShowcaseGenerator() {
   try {
     // Guest persistence must be registered before mode-specific publishing so
     // both standard and cinematic buttons save the same supporting-cast data.
-    await import("./showcase-generator-v3.js?v=15");
-    await import("./showcase-act-subtitle.js?v=1");
-    await import("./showcase-scenario-writer.js?v=2");
-    await import("./showcase-dedicated-output.js?v=6");
-    await import("./showcase-guests.js?v=3");
-    await import("./showcase-guest-publish-bridge.js?v=1");
-    await import("./showcase-dynamic-publish-v3.js?v=6");
-    await import("./showcase-publish-url-canonicalizer.js?v=1");
+    await import("./showcase-generator-v3.js?v=7397b1ba");
+    await import("./showcase-act-subtitle.js?v=8e9c2652");
+    await import("./showcase-scenario-writer.js?v=e4750a02");
+    await import("./showcase-dedicated-output.js?v=cdd8099e");
+    await import("./showcase-guests.js?v=f8351e3a");
+    await import("./showcase-guest-publish-bridge.js?v=809b92f6");
+    await import("./showcase-dynamic-publish-v3.js?v=d279b466");
+    await import("./showcase-publish-url-canonicalizer.js?v=d365d9fd");
     document.documentElement.dataset.showcaseGeneratorState = "ready";
   } catch (error) {
     console.error("Showcase generator core could not be initialized.", error);
@@ -55,10 +55,10 @@ async function initializeShowcaseGenerator() {
   }));
 
   try {
-    await import("./showcase-output-normalizer.js?v=1");
-    await import("./showcase-edit-restore.js?v=4");
-    await import("./showcase-delete.js?v=2");
-    await import("./showcase-owned-list.js?v=2");
+    await import("./showcase-output-normalizer.js?v=cea76d1b");
+    await import("./showcase-edit-restore.js?v=a1aa97e9");
+    await import("./showcase-delete.js?v=13064975");
+    await import("./showcase-owned-list.js?v=816b4c40");
   } catch (error) {
     reportOptionalModuleError("edit-management", error);
   }

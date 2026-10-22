@@ -1,55 +1,55 @@
-import { applyStylePresentation, applyAbilityFinals } from "./sheet-presentation-dom.js?v=4";
+import { applyStylePresentation, applyAbilityFinals } from "./sheet-presentation-dom.js?v=dd2a9d37";
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=5";
+import { requireAuth } from "./auth-state.js?v=a766246e";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
-import { SITE_BASE_PATH } from "./config.js?v=2";
-import { createSheetSaveCoordinator } from "./sheet-save-coordinator.js?v=2";
-import { persistSheetBundle } from "./sheet-save-persistence.js?v=1";
-import { loadSheetBundle } from "./sheet-load-persistence.js?v=3";
-import { dismissSheetLoadOverlay } from "./sheet-load-overlay.js?v=1";
-import { publishSheetCharacterLoaded, publishSheetCharacterLoadFailed } from "./sheet-loaded-character.js?v=1";
-import { buildCharacterSavePayload, buildSkillSavePayloads, buildOutfitSavePayloads } from "./sheet-save-payload.js?v=3";
+import { SITE_BASE_PATH } from "./config.js?v=9cb58cc9";
+import { createSheetSaveCoordinator } from "./sheet-save-coordinator.js?v=d196481a";
+import { persistSheetBundle } from "./sheet-save-persistence.js?v=b336ffda";
+import { loadSheetBundle } from "./sheet-load-persistence.js?v=dfe1a8b3";
+import { dismissSheetLoadOverlay } from "./sheet-load-overlay.js?v=3b2758d8";
+import { publishSheetCharacterLoaded, publishSheetCharacterLoadFailed } from "./sheet-loaded-character.js?v=e3884194";
+import { buildCharacterSavePayload, buildSkillSavePayloads, buildOutfitSavePayloads } from "./sheet-save-payload.js?v=4bbb2abe";
 import {
   STYLE_SEPARATOR_MARKER,
   isStyleSeparatorRecord as isStyleSeparator,
   normalizeLoadedSkill,
   normalizeLoadedOutfit
-} from "./sheet-load-normalization.js?v=2";
-import { formatSheetPersistenceError } from "./sheet-error-message.js?v=1";
-import { initSheetRowInteractions } from "./sheet-row-interactions.js?v=1";
-import { initSheetEditorInteractions } from "./sheet-editor-interactions.js?v=2";
-import { renderSkillEditorSections } from "./sheet-skill-renderer.js?v=2";
-import { renderOutfitEditor } from "./sheet-outfit-renderer.js?v=2";
+} from "./sheet-load-normalization.js?v=a11003e0";
+import { formatSheetPersistenceError } from "./sheet-error-message.js?v=0cf121ec";
+import { initSheetRowInteractions } from "./sheet-row-interactions.js?v=c9d3e90a";
+import { initSheetEditorInteractions } from "./sheet-editor-interactions.js?v=c2b3408c";
+import { renderSkillEditorSections } from "./sheet-skill-renderer.js?v=3900d60f";
+import { renderOutfitEditor } from "./sheet-outfit-renderer.js?v=250bb06e";
 import {
   createBlankSkill,
   createBlankOutfit,
   createGeneralBlankSlotRow,
   createStyleSeparatorRow
-} from "./sheet-row-factory.js?v=2";
+} from "./sheet-row-factory.js?v=5663e6ff";
 import {
   reconcileGeneralMasterRows,
   appendGeneralBlankSlots,
   orderGeneralRows
-} from "./sheet-general-skill-state.js?v=1";
-import { renderStyleCards, renderAbilityCards } from "./sheet-character-renderer.js?v=4";
-import { calculateStyleBaselines } from "./sheet-style-baseline.js?v=1";
-import { buildStylePresentation } from "./sheet-style-presentation.js?v=1";
-import { calculateAbilityFinals } from "./sheet-ability-calculation.js?v=2";
-import { resolveStyleBaselineValue } from "./sheet-baseline-adjustment.js?v=1";
-import { buildNewCharacterSkills, appendStarterSocialConnectionRowsIfBothMissing } from "./sheet-new-character-state.js?v=2";
-import { countGeneralSkillColumns, chooseGeneralSkillColumn } from "./sheet-general-column.js?v=1";
-import { resolveSkillInputState } from "./sheet-skill-level-suit-state.js?v=1";
-import { buildStyleSaveRows } from "./sheet-style-save-projection.js?v=1";
-import { buildAbilitySaveSnapshot, buildCsSaveSnapshot } from "./sheet-ability-save-projection.js?v=1";
-import { collectCharacterInputSnapshot, applyCharacterInputSnapshot } from "./sheet-character-input-snapshot.js?v=11";
-import { collectAbilityInputSnapshot, applyAbilityInputSnapshot } from "./sheet-ability-input-snapshot.js?v=2";
-import { collectStyleInputSnapshot, applyStyleInputSnapshot } from "./sheet-style-input-snapshot.js?v=1";
-import { initSheetStyleInteractions } from "./sheet-style-interactions.js?v=1";
-import { applyCharacterToEditor, applyStyleAttributeVisibility } from "./sheet-character-application.js?v=1";
-import { initSheetActionBindings } from "./sheet-action-bindings.js?v=1";
-import { appendRow, clearRows, moveRowWithinCategory, normalizeOutfitCategory, removeRowByKey } from "./sheet-row-collection-state.js?v=2";
-import { normalizeImportedOutfitDetails } from "./outfit-ofc-adapter.js?v=2";
-import { GENERAL_MASTER_ROWS as GENERAL_MASTER, GENERAL_BLANK_SLOT_COLUMNS } from "./general-skill-catalog.js?v=2";
+} from "./sheet-general-skill-state.js?v=dc0affd0";
+import { renderStyleCards, renderAbilityCards } from "./sheet-character-renderer.js?v=ebf8c9a8";
+import { calculateStyleBaselines } from "./sheet-style-baseline.js?v=3ea20d4f";
+import { buildStylePresentation } from "./sheet-style-presentation.js?v=c3fa8b27";
+import { calculateAbilityFinals } from "./sheet-ability-calculation.js?v=6b9385e5";
+import { resolveStyleBaselineValue } from "./sheet-baseline-adjustment.js?v=83b0971e";
+import { buildNewCharacterSkills, appendStarterSocialConnectionRowsIfBothMissing } from "./sheet-new-character-state.js?v=1f5165b0";
+import { countGeneralSkillColumns, chooseGeneralSkillColumn } from "./sheet-general-column.js?v=ba9a0007";
+import { resolveSkillInputState } from "./sheet-skill-level-suit-state.js?v=745b6aed";
+import { buildStyleSaveRows } from "./sheet-style-save-projection.js?v=cb92a5f9";
+import { buildAbilitySaveSnapshot, buildCsSaveSnapshot } from "./sheet-ability-save-projection.js?v=2da78f08";
+import { collectCharacterInputSnapshot, applyCharacterInputSnapshot } from "./sheet-character-input-snapshot.js?v=7489973c";
+import { collectAbilityInputSnapshot, applyAbilityInputSnapshot } from "./sheet-ability-input-snapshot.js?v=ec9569a3";
+import { collectStyleInputSnapshot, applyStyleInputSnapshot } from "./sheet-style-input-snapshot.js?v=b34e8fae";
+import { initSheetStyleInteractions } from "./sheet-style-interactions.js?v=6672e372";
+import { applyCharacterToEditor, applyStyleAttributeVisibility } from "./sheet-character-application.js?v=984d9881";
+import { initSheetActionBindings } from "./sheet-action-bindings.js?v=b12e30fe";
+import { appendRow, clearRows, moveRowWithinCategory, normalizeOutfitCategory, removeRowByKey } from "./sheet-row-collection-state.js?v=d2cacff3";
+import { normalizeImportedOutfitDetails } from "./outfit-ofc-adapter.js?v=0fabe54f";
+import { GENERAL_MASTER_ROWS as GENERAL_MASTER, GENERAL_BLANK_SLOT_COLUMNS } from "./general-skill-catalog.js?v=4bae7101";
 
 const $ = selector => document.querySelector(selector);
 const $$ = selector => [...document.querySelectorAll(selector)];

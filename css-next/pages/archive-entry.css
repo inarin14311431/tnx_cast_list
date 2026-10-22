@@ -1,8 +1,8 @@
 /* Canonical stylesheet entry for the archive and not-found screens. */
 @layer app, archive-components, archive-page, archive-discovery;
 
-@import url("../index.css?v=65") layer(app);
-@import url("../components/style-marks.css?v=1") layer(archive-components);
-@import url("../components/error-state.css?v=1") layer(archive-components);
-@import url("./archive.css?v=8") layer(archive-page);
-@import url("./archive-discovery.css?v=1") layer(archive-discovery);
+@import url("../index.css?v=2772165f") layer(app);
+@import url("../components/style-marks.css?v=882c903c") layer(archive-components);
+@import url("../components/error-state.css?v=281f430f") layer(archive-components);
+@import url("./archive.css?v=e7e049a5") layer(archive-page);
+@import url("./archive-discovery.css?v=b6f029a2") layer(archive-discovery);

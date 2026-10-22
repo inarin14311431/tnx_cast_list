@@ -1,13 +1,13 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=5";
+import { requireAuth } from "./auth-state.js?v=a766246e";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
 import { registerTroopSave } from "./troop-save.js";
 import { initializeTroopEditorUi, refreshTroopEditorUi } from "./troop-editor-ui.js";
 import { initializeTroopLayout, refreshTroopAbilityPairs } from "./troop-layout-refine.js";
 import { refreshTroopComboRules } from "./troop-combo-rule-v2.js";
 import { unpackTroopComboRule } from "./troop-combo-codec.js";
-import { initialGeneralSkillSuit } from "./general-skill-catalog.js?v=2";
-import { escapeHtml, escapeAttribute as escapeAttr } from "./dom-escape.js?v=2";
+import { initialGeneralSkillSuit } from "./general-skill-catalog.js?v=4bae7101";
+import { escapeHtml, escapeAttribute as escapeAttr } from "./dom-escape.js?v=46402d5f";
 
 const params = new URLSearchParams(location.search);
 const publicId = params.get("id")?.trim() || "";

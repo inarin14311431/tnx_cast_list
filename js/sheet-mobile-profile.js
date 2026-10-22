@@ -1,4 +1,4 @@
-import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=2";
+import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
 
 const GROUPS = {
   identity: {

@@ -1,4 +1,4 @@
-import { diffCanonicalBundles } from "./character-sheet-jsonp-canonical.js?v=2";
+import { diffCanonicalBundles } from "./character-sheet-jsonp-canonical.js?v=bf20e917";
 
 const MATCHED_CATEGORIES = ["general", "social", "connection", "styleSkills", "outfits"];
 const MAX_EXACT_ASSIGNMENT_SIZE = 14;

@@ -1,4 +1,4 @@
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=7e020e46";
 import {
   MAX_SNAPSHOTS,
   formatDate,
@@ -6,8 +6,8 @@ import {
   createSnapshot,
   restoreSnapshot,
   deleteSnapshot
-} from "./sheet-snapshot-service.js?v=1";
-import { escapeHtml as esc } from "./dom-escape.js?v=2";
+} from "./sheet-snapshot-service.js?v=f0433ab5";
+import { escapeHtml as esc } from "./dom-escape.js?v=46402d5f";
 const $ = selector => document.querySelector(selector);
 let characterId = null;
 function injectSection() {

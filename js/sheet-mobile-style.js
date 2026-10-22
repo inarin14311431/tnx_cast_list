@@ -1,7 +1,7 @@
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
-import { escapeHtml as esc } from "./dom-escape.js?v=2";
-import { resolveStyleBaselineValue } from "./sheet-baseline-adjustment.js?v=1";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=7e020e46";
+import { escapeHtml as esc } from "./dom-escape.js?v=46402d5f";
+import { resolveStyleBaselineValue } from "./sheet-baseline-adjustment.js?v=83b0971e";
 const ABILITIES = ["reason", "passion", "life", "mundane"],
   MARKS = ["", "◎", "●", "◎●"];
 const $ = selector => document.querySelector(selector);

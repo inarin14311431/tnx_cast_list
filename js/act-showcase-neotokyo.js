@@ -1,5 +1,5 @@
-import { parseStyleLabel } from "./act-showcase-style-label.js?v=1";
-import { castNumberFromSlot } from "./showcase-cast-number.js?v=1";
+import { parseStyleLabel } from "./act-showcase-style-label.js?v=8a1b88dd";
+import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
 const SAMPLE_TRAILER_MESSAGE = "公開用アクトトレーラーは未登録です。\n公開データにトレーラーを登録すると、ここで読み上げ表示されます。";
 const FALLBACK_IMAGE = "./assets/placeholders/scan-failed.webp";
 const SHOW_ACT_TITLE_SCREEN = true;

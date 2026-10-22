@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { escapeHtml } from "./dom-escape.js?v=2";
+import { escapeHtml } from "./dom-escape.js?v=46402d5f";
 
 const statusNode = document.querySelector("#statistics-status");
 const generatedAtNode = document.querySelector("#statistics-generated-at");

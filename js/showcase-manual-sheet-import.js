@@ -1,6 +1,6 @@
 // Fills an unregistered (manual) showcase cast from a キャラクターシート倉庫 URL.
 // Uses the same data-only proxy as the editor import; remote scripts are never executed.
-import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=2";
+import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=9b3404e3";
 
 export function isCharacterSheetUrl(value) {
   return Boolean(normalizeCharacterSheetUrl(value));
@@ -29,8 +29,8 @@ export function manualCastFieldsFromCanonical(canonical = {}) {
 export async function fetchManualCastFromSheet(url) {
   if (!isCharacterSheetUrl(url)) throw new Error("キャラクターシート倉庫のURL（https://character-sheets.appspot.com/tnx/...?key=...）を入力してください。");
   const [{ loadCharacterSheetPayload }, { canonicalizeCharacterSheetJsonp }] = await Promise.all([
-    import("./character-sheet-compare-service.js?v=3"),
-    import("./character-sheet-jsonp-canonical.js?v=2")
+    import("./character-sheet-compare-service.js?v=d3ff58b4"),
+    import("./character-sheet-jsonp-canonical.js?v=bf20e917")
   ]);
   const payload = await loadCharacterSheetPayload(url);
   const fields = manualCastFieldsFromCanonical(canonicalizeCharacterSheetJsonp(payload));

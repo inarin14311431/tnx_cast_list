@@ -1,5 +1,5 @@
-import { SHEET_HELP_ORDER, SHEET_HELP_TOPICS } from "./help-content.js?v=4";
-import { escapeHtml } from "./dom-escape.js?v=2";
+import { SHEET_HELP_ORDER, SHEET_HELP_TOPICS } from "./help-content.js?v=681ad918";
+import { escapeHtml } from "./dom-escape.js?v=46402d5f";
 
 const page = document.body?.dataset.page;
 if (page === "sheet.html") initializeSheetHelp();

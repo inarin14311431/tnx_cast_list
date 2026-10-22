@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { escapeHtml, escapeAttributeWithBacktick as escapeAttribute } from "./dom-escape.js?v=2";
+import { escapeHtml, escapeAttributeWithBacktick as escapeAttribute } from "./dom-escape.js?v=46402d5f";
 
 const PAGE_SIZE = 60;
 const OUTFIT_TARGETS = {

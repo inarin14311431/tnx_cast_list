@@ -1,4 +1,4 @@
-import { parseLegacyDefense } from "./outfit-legacy-compat.js?v=1";
+import { parseLegacyDefense } from "./outfit-legacy-compat.js?v=2b705d79";
 
 export const OUTFIT_ROOT_SELECTOR = "#outfit-list";
 

@@ -1,4 +1,4 @@
-import { registerSheetSaveRequester, setSheetSaveState } from "./sheet-save-state.js?v=2";
+import { registerSheetSaveRequester, setSheetSaveState } from "./sheet-save-state.js?v=bf537791";
 
 const SAVE_ERROR_EVENT = "tnx:sheet-save-error";
 

@@ -1,5 +1,5 @@
-import { getCharacter } from "./cast-data-store.js?v=2";
-import { abilityValues, createAbilitySummary } from "./ability-summary-view.js?v=1";
+import { getCharacter } from "./cast-data-store.js?v=f786d39c";
+import { abilityValues, createAbilitySummary } from "./ability-summary-view.js?v=4543ca83";
 
 /* Shows the final ability values in the headings of the skill panels (general skills, style skills) so the
  * skill tables can be read next to them. Display only: the list ignores the pointer (see the shared CSS), and it

@@ -1,7 +1,7 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=5";
-import { SITE_BASE_PATH } from "./config.js?v=2";
-import { buildMobileNewCharacterSkillPayloads } from "./sheet-mobile-new-character-state.js?v=1";
+import { requireAuth } from "./auth-state.js?v=a766246e";
+import { SITE_BASE_PATH } from "./config.js?v=9cb58cc9";
+import { buildMobileNewCharacterSkillPayloads } from "./sheet-mobile-new-character-state.js?v=9990ce77";
 
 const $ = selector => document.querySelector(selector);
 let user = null;

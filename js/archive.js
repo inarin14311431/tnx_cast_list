@@ -1,9 +1,9 @@
-import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=2";
+import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
 import { supabase } from "./supabase-client.js";
-import { renderAuthNavigation } from "./auth-state.js?v=5";
+import { renderAuthNavigation } from "./auth-state.js?v=a766246e";
 import { getStyleColor } from "./style-colors.js";
-import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
-import { toUserFacingErrorMessage, renderErrorState } from "./error-state.js?v=2";
+import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=d32e5230";
+import { toUserFacingErrorMessage, renderErrorState } from "./error-state.js?v=dc57c3d1";
 
 const FULL_CHARACTER_COLUMNS = `
   id, public_id, player_name, character_name, character_kana, handle,

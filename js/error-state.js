@@ -1,4 +1,4 @@
-import { escapeHtml } from "./dom-escape.js?v=2";
+import { escapeHtml } from "./dom-escape.js?v=46402d5f";
 const FALLBACK_MESSAGE = "データベースへの接続に失敗しました。しばらくしてからもう一度お試しください。";
 
 /**

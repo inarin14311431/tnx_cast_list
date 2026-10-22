@@ -5,10 +5,10 @@
  * page-specific styles. Theme additions and removals are registered here and
  * in js/theme-registry.js; HTML pages never link an individual theme file.
  */
-@import url("./presets.css?v=1");
-@import url("./statistics-bureau.css?v=1");
-@import url("./base-ui.css?v=1");
-@import url("./accessibility.css?v=1");
-@import url("./japanese-army.css?v=1");
-@import url("./spectrum-neon.css?v=1");
-@import url("./spectrum-neon-native-controls.css?v=1");
+@import url("./presets.css?v=0d67bde0");
+@import url("./statistics-bureau.css?v=35273567");
+@import url("./base-ui.css?v=d6b50313");
+@import url("./accessibility.css?v=a4ff7e7f");
+@import url("./japanese-army.css?v=c7f2dbd8");
+@import url("./spectrum-neon.css?v=fdfefdb8");
+@import url("./spectrum-neon-native-controls.css?v=fa479216");

@@ -1,8 +1,8 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=5";
-import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=2";
-import { planShowcaseRestore } from "./showcase-restore-matching.js?v=1";
-import { castNumberFromSlot } from "./showcase-cast-number.js?v=1";
+import { requireAuth } from "./auth-state.js?v=a766246e";
+import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
+import { planShowcaseRestore } from "./showcase-restore-matching.js?v=80d34654";
+import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
 
 const MAX_CASTS = 6;
 const RESTORE_PARAM = "edit";

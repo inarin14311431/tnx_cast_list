@@ -1,7 +1,7 @@
 import { supabase } from "./supabase-client.js";
-import { SITE_BASE_PATH } from "./config.js?v=2";
-import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=2";
-import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=2";
+import { SITE_BASE_PATH } from "./config.js?v=9cb58cc9";
+import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=7e020e46";
+import { normalizeCharacterSheetUrl } from "./character-sheet-url.js?v=9b3404e3";
 
 const PROFILE_FIELDS = [
   "character_name", "character_kana", "handle", "handle_kana", "player_name", "affiliation", "citizen_rank", "birthplace", "character_sheet_url",

@@ -1,5 +1,5 @@
 import { supabase } from "./supabase-client.js";
-import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=1";
+import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=e3884194";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
 import {
   CREATION_ALLOWANCE,
@@ -7,7 +7,7 @@ import {
   generalSkillExperienceCost,
   paidSkillLevel,
   steppedExperienceCost
-} from "./sheet-experience-rules.js?v=7";
+} from "./sheet-experience-rules.js?v=747449ad";
 
 /* Single authoritative experience-point calculator. */
 (function () {

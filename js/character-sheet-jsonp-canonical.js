@@ -1,4 +1,4 @@
-import { normalizeImportedOutfitDetails } from "./outfit-ofc-adapter.js?v=2";
+import { normalizeImportedOutfitDetails } from "./outfit-ofc-adapter.js?v=0fabe54f";
 
 const STYLE_DETAIL_MARKER = "@@TNX_STYLE_DETAIL_V1@@";
 const STYLE_SEPARATOR_MARKER = "[[STYLE_SEPARATOR]]";

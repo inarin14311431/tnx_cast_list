@@ -1,6 +1,6 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=5";
-import { withRequestTimeout } from "./async-timeout.js?v=1";
+import { requireAuth } from "./auth-state.js?v=a766246e";
+import { withRequestTimeout } from "./async-timeout.js?v=526a0b5a";
 
 const select = document.querySelector("#owned-showcase-select");
 const loadButton = document.querySelector("#load-owned-showcase");

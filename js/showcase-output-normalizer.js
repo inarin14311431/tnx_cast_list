@@ -1,4 +1,4 @@
-import { formatShowcaseTagline, normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=1";
+import { formatShowcaseTagline, normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
 
 const preview = document.querySelector("#showcase-preview");
 let normalizing = false;

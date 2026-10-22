@@ -1,4 +1,4 @@
-import { calculateCombatSpeed } from "./sheet-ability-calculation.js?v=2";
+import { calculateCombatSpeed } from "./sheet-ability-calculation.js?v=6b9385e5";
 
 (() => {
   function initializeSheetSidebarActions() {

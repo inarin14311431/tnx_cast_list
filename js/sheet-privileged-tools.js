@@ -4,15 +4,15 @@ const editor = await waitForEditor();
 if (editor) {
   const anchors = installSearchAnchors();
   try {
-    await import("./sheet-master-search.js?v=8");
+    await import("./sheet-master-search.js?v=4f7cef18");
     await Promise.all([
-      import("./sheet-master-search-filters.js?v=3"),
-      import("./sheet-master-search-enhancements.js?v=2"),
-      import("./outfit-ofc-save.js?v=20260904-1"),
-      import("./outfit-ofc-master-apply.js?v=20260819-3"),
-      import("./sheet-master-autofill.js?v=10")
+      import("./sheet-master-search-filters.js?v=92a6213f"),
+      import("./sheet-master-search-enhancements.js?v=c8b2fed1"),
+      import("./outfit-ofc-save.js?v=b16482f2"),
+      import("./outfit-ofc-master-apply.js?v=dad65b0d"),
+      import("./sheet-master-autofill.js?v=f503c5a4")
     ]);
-    await import("./sheet-tsv-import.js?v=2");
+    await import("./sheet-tsv-import.js?v=84876214");
   } finally {
     anchors.forEach(anchor => anchor.remove());
   }

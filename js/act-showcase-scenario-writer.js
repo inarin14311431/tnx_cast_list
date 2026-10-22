@@ -1,4 +1,4 @@
-import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=1";
+import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=d3800656";
 
 let scenarioWriterName = "";
 let observer = null;

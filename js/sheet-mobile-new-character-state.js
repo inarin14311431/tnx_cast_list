@@ -1,7 +1,7 @@
-import { GENERAL_MASTER_ROWS, GENERAL_BLANK_SLOT_COLUMNS } from "./general-skill-catalog.js?v=2";
-import { buildNewCharacterSkills } from "./sheet-new-character-state.js?v=1";
-import { createBlankSkill } from "./sheet-row-factory.js?v=2";
-import { buildSkillSavePayloads } from "./sheet-save-payload.js?v=3";
+import { GENERAL_MASTER_ROWS, GENERAL_BLANK_SLOT_COLUMNS } from "./general-skill-catalog.js?v=4bae7101";
+import { buildNewCharacterSkills } from "./sheet-new-character-state.js?v=1f5165b0";
+import { createBlankSkill } from "./sheet-row-factory.js?v=5663e6ff";
+import { buildSkillSavePayloads } from "./sheet-save-payload.js?v=4bbb2abe";
 
 const SUITS = ["reason", "passion", "life", "mundane"];
 const PROPER_MASTER_NAMES = new Set(

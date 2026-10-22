@@ -1,6 +1,6 @@
-import "./outfit-pc-field-policy.js?v=5";
-import { normalizeImportedOutfitDetails } from "./outfit-ofc-adapter.js?v=2";
-import { outfitSupportsControl, outfitSupportsCsModifier } from "./outfit-contract.js?v=3";
+import "./outfit-pc-field-policy.js?v=fe3c8c20";
+import { normalizeImportedOutfitDetails } from "./outfit-ofc-adapter.js?v=0fabe54f";
+import { outfitSupportsControl, outfitSupportsCsModifier } from "./outfit-contract.js?v=aac249e7";
 import {
   getOutfitRows,
   outfitSignature,

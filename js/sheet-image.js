@@ -1,10 +1,10 @@
 import { supabase } from "./supabase-client.js";
-import { requireAuth } from "./auth-state.js?v=5";
-import { requestSheetSave, waitForSheetSaved } from "./sheet-save-state.js?v=2";
-import { getImageFocusX, getImageFocusY, getImageObjectPosition, getImageScale, getImageTransformOrigin, getImageZoom, setImageFocusX, setImageFocusY, setImageZoom } from "./image-focus.js?v=4";
-import { getPublicIdParam as getPublicId } from "./public-id-param.js?v=1";
-import { THUMBNAIL_MAX_LONG_EDGE, THUMBNAIL_MIN_LONG_EDGE, THUMBNAIL_TARGET_SIZE, THUMBNAIL_MAX_OUTPUT_FILE_SIZE, THUMBNAIL_QUALITY_STEPS, THUMBNAIL_SHRINK_STEP } from "./image-thumbnail-config.js?v=1";
-import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=1";
+import { requireAuth } from "./auth-state.js?v=a766246e";
+import { requestSheetSave, waitForSheetSaved } from "./sheet-save-state.js?v=bf537791";
+import { getImageFocusX, getImageFocusY, getImageObjectPosition, getImageScale, getImageTransformOrigin, getImageZoom, setImageFocusX, setImageFocusY, setImageZoom } from "./image-focus.js?v=d32e5230";
+import { getPublicIdParam as getPublicId } from "./public-id-param.js?v=87346d72";
+import { THUMBNAIL_MAX_LONG_EDGE, THUMBNAIL_MIN_LONG_EDGE, THUMBNAIL_TARGET_SIZE, THUMBNAIL_MAX_OUTPUT_FILE_SIZE, THUMBNAIL_QUALITY_STEPS, THUMBNAIL_SHRINK_STEP } from "./image-thumbnail-config.js?v=f998c0e0";
+import { whenSheetCharacterLoaded } from "./sheet-loaded-character.js?v=e3884194";
 
 const BUCKET_NAME="character-images";
 const MAX_SOURCE_FILE_SIZE=20*1024*1024;

@@ -1,9 +1,9 @@
-import { normalizeShowcaseTheme, createOutputCss } from "./showcase-output-css.js?v=2";
+import { normalizeShowcaseTheme, createOutputCss } from "./showcase-output-css.js?v=7e5695e1";
 import { STYLE_COLORS } from "./style-colors.js";
-import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=4";
-import { formatShowcaseHandle, formatShowcaseFullName } from "./showcase-display-format.js?v=1";
-import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=2";
-import { formatCastNumber } from "./showcase-cast-number.js?v=1";
+import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=d32e5230";
+import { formatShowcaseHandle, formatShowcaseFullName } from "./showcase-display-format.js?v=728d9084";
+import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
+import { formatCastNumber } from "./showcase-cast-number.js?v=944a948e";
 
 // Standalone output and selection UI share formatting, but not browser state.
 export function renderShowcase(data, baseUrl) {

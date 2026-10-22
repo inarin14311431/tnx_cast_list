@@ -1,7 +1,7 @@
-import { escapeHtml } from "./dom-escape.js?v=2";
+import { escapeHtml } from "./dom-escape.js?v=46402d5f";
 const esc = escapeHtml;
-import { getCharacter, getSkills, getOutfits, getCombos } from "./cast-data-store.js?v=2";
-import { formatPurchasePair, formatConcealmentPair } from "./outfit-view-model.js?v=3";
+import { getCharacter, getSkills, getOutfits, getCombos } from "./cast-data-store.js?v=f786d39c";
+import { formatPurchasePair, formatConcealmentPair } from "./outfit-view-model.js?v=84879281";
 const params = new URLSearchParams(location.search);
 if (params.get("mobile") !== "1") {
   document.documentElement.classList.remove("mobile-cast-requested");

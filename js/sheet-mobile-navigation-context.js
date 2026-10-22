@@ -5,7 +5,7 @@ import {
   toLocalHref,
   parseReturnDestination,
   resolveParentReturnHref
-} from "./sheet-navigation-core.js?v=1";
+} from "./sheet-navigation-core.js?v=913f6de1";
 
 const initialReturnValue = readTrimmedSearchParam(location.search, "return");
 const returnDestination = parseReturnDestination(initialReturnValue, { origin: location.origin, baseHref: location.href });

@@ -1,4 +1,4 @@
-import { escapeHtml as esc } from "./dom-escape.js?v=2";
+import { escapeHtml as esc } from "./dom-escape.js?v=46402d5f";
 export function renderStyleCards({
   styleData = [],
   utsuwaAttributes = [],
