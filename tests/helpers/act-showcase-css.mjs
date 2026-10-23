@@ -54,3 +54,11 @@ export function actShowcaseCssEntry() {
     .map(item => `@import "./${item.file}?v=${item.version}";`)
     .join("\n");
 }
+
+/* The scene-frame scope that confines a pattern-A layer to its frame (docs/ACT_SHOWCASE_SCENES.md §6 #5a):
+ * `:where([data-scene="x"][data-scene-pattern="a"],[data-scene="x"][data-scene-pattern="a"] *)` after a subject.
+ * Tests that look a rule up by its selector text compare against the text without it; whether the scope is in place
+ * is checked by tests/act-showcase-scene-css-scope.test.mjs. */
+export function stripSceneScope(css) {
+  return String(css).replace(/:where\(\[data-scene="[\w-]+"\]\[data-scene-pattern="a"\],\[data-scene="[\w-]+"\]\[data-scene-pattern="a"\] \*\)/g, "");
+}
