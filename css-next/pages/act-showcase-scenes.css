@@ -794,11 +794,11 @@ body#act-showcase-page .poster-v2-visual .poster-v2-visual__caption .poster-v2-v
 /* ==== from: act-showcase-top-background-only.css ==== */
 /* Poster-v2 uses the ACT background only for the opening hero.
    The board and ambient layer intentionally keep their own dark UI treatment. */
-body.showcase-poster-v2-ready.has-showcase-background .ambient-stage::before {
+body.showcase-poster-v2-ready.has-showcase-background .ambient-stage:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::before {
   display: none;
 }
 
-body.showcase-poster-v2-ready .poster-v2-board::before {
+body.showcase-poster-v2-ready .poster-v2-board:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::before {
   background-image: linear-gradient(180deg, rgba(3, 8, 19, .12), rgba(3, 8, 19, .96) 68%);
   background-color: #030813;
 }
@@ -950,7 +950,7 @@ body#act-showcase-page .poster-supporting-card__summary{
 }
 
 /* ==== from: act-showcase-final-trailer.css ==== */
-body.showcase-poster-v2-ready .poster-v2-trailer-stage{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){
   position:relative;
   z-index:6;
   display:grid;
@@ -969,7 +969,7 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage{
   background-size:cover;
   background-repeat:no-repeat;
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage::after{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::after{
   position:absolute;
   inset:0;
   z-index:-1;
@@ -980,13 +980,13 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage::after{
   mask-image:linear-gradient(180deg,transparent,black 18%,black 84%,transparent);
   pointer-events:none;
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){
   position:relative;
   width:min(1120px,100%);
   text-align:center;
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::before,
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::after{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::before,
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::after{
   position:absolute;
   top:50%;
   width:42px;
@@ -995,9 +995,9 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::after{
   background:linear-gradient(90deg,transparent,#67d7ff);
   box-shadow:0 0 16px rgba(103,215,255,.45);
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::before{left:-74px}
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::after{right:-74px;transform:scaleX(-1)}
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::before{left:-74px}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::after{right:-74px;transform:scaleX(-1)}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){
   display:flex;
   align-items:center;
   justify-content:center;
@@ -1007,20 +1007,20 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline{
   font:700 .62rem/1.2 "Share Tech Mono",monospace;
   letter-spacing:.16em;
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline::before,
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline::after{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::before,
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::after{
   width:min(110px,12vw);
   height:1px;
   content:"";
   background:linear-gradient(90deg,transparent,rgba(117,223,255,.75));
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline::after{transform:scaleX(-1)}
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline small{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::after{transform:scaleX(-1)}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline small:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){
   color:#7189a8;
   font:700 .54rem/1.2 "Share Tech Mono",monospace;
   letter-spacing:.1em;
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){
   margin:0;
   color:#f5fbff;
   font:900 clamp(3.25rem,8vw,7.2rem)/.92 Orbitron,"Noto Sans JP",sans-serif;
@@ -1028,7 +1028,7 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading{
   text-indent:.105em;
   text-shadow:0 0 22px rgba(88,215,255,.26),0 0 54px rgba(255,79,199,.12),0 12px 40px rgba(0,0,0,.65);
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading::after{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::after{
   display:block;
   width:min(620px,72%);
   height:2px;
@@ -1037,40 +1037,40 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading::after{
   background:linear-gradient(90deg,transparent,#55d8ff 28%,#fff 50%,#ff67c9 72%,transparent);
   box-shadow:0 0 18px rgba(98,214,255,.34);
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__title{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__title:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){
   margin:24px 0 0;
   color:#ff8dda;
   font:700 clamp(.86rem,1.4vw,1.15rem)/1.4 Orbitron,"Noto Sans JP",sans-serif;
   letter-spacing:.12em;
   text-shadow:0 0 18px rgba(255,91,204,.28);
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){
   position:relative;
   width:min(920px,100%);
   margin:clamp(46px,6vw,72px) auto 0;
   padding:0 clamp(18px,4vw,58px);
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap::before,
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap::after{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::before,
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::after{
   position:absolute;
   top:-20px;
   width:64px;
   height:18px;
   content:"";
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap::before{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::before{
   left:0;
   border-top:1px solid #61d7ff;
   border-left:1px solid #61d7ff;
   box-shadow:-5px -5px 22px rgba(97,215,255,.14);
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap::after{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::after{
   right:0;
   border-top:1px solid #ff69c7;
   border-right:1px solid #ff69c7;
   box-shadow:5px -5px 22px rgba(255,105,199,.12);
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){
   margin:0;
   color:#d8e9f2;
   font:500 clamp(1rem,1.55vw,1.28rem)/2.2 "Noto Sans JP",sans-serif;
@@ -1079,7 +1079,7 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy{
   text-wrap:pretty;
   text-shadow:0 2px 18px rgba(0,0,0,.72);
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){
   display:grid;
   grid-template-columns:minmax(24px,1fr) auto minmax(24px,1fr);
   align-items:center;
@@ -1090,27 +1090,27 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer{
   font:700 .52rem/1 "Share Tech Mono",monospace;
   letter-spacing:.15em;
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i{
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){
   height:1px;
   background:linear-gradient(90deg,transparent,rgba(120,199,255,.32));
 }
-body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:last-child{transform:scaleX(-1)}
+body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:last-child:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){transform:scaleX(-1)}
 
 @media(max-width:760px){
-  body.showcase-poster-v2-ready .poster-v2-trailer-stage{
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){
     min-height:88svh;
     padding:42px 20px 104px;
   }
-  body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::before,
-  body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner::after{display:none}
-  body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline{gap:10px;font-size:.54rem;letter-spacing:.1em}
-  body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline small{display:none}
-  body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading{font-size:clamp(2.45rem,14vw,4.3rem);letter-spacing:.06em;text-indent:.06em}
-  body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading::after{margin-top:22px}
-  body.showcase-poster-v2-ready .poster-v2-trailer-stage__title{margin-top:20px;font-size:.78rem;letter-spacing:.08em}
-  body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap{margin-top:42px;padding-inline:18px}
-  body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy{font-size:.94rem;line-height:1.95;letter-spacing:.02em}
-  body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer{width:94%;gap:10px;margin-top:52px;font-size:.44rem;letter-spacing:.08em}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::before,
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__inner:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::after{display:none}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){gap:10px;font-size:.54rem;letter-spacing:.1em}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__overline small:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){display:none}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){font-size:clamp(2.45rem,14vw,4.3rem);letter-spacing:.06em;text-indent:.06em}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__heading:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *)::after{margin-top:22px}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__title:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){margin-top:20px;font-size:.78rem;letter-spacing:.08em}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy-wrap:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){margin-top:42px;padding-inline:18px}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__copy:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){font-size:.94rem;line-height:1.95;letter-spacing:.02em}
+  body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){width:94%;gap:10px;margin-top:52px;font-size:.44rem;letter-spacing:.08em}
 }
 
 /* ==== from: act-showcase-handout-live-frame.css ==== */

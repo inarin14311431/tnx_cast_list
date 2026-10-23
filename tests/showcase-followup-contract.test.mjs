@@ -1,4 +1,4 @@
-import { actShowcaseCss } from "./helpers/act-showcase-css.mjs";
+import { actShowcaseCss, stripSceneScope } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { access, readFile } from "node:fs/promises";
@@ -14,7 +14,7 @@ const [cinematicHtml, generatorHtml, bootstrap, urlCanonicalizer, followupCss, p
   read("js/act-showcase-bootstrap.js"),
   read("js/showcase-publish-url-canonicalizer.js"),
   actShowcaseCss("act-showcase-followup-v1"),
-  actShowcaseCss("act-showcase-poster-v2"),
+  stripSceneScope(actShowcaseCss("act-showcase-poster-v2")),
   read("js/act-showcase-supporting-cast.js")
 ]);
 

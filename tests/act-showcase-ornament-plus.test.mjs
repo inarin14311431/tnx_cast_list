@@ -1,4 +1,4 @@
-import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
+import { actShowcaseCssEntry, actShowcaseCss, stripSceneScope } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -13,7 +13,7 @@ test("act showcase loads the dense PC ornament layer after the base ornament", a
 });
 
 test("dense ornament layer stays PC-focused and covers all major poster regions", async () => {
-  const css = await actShowcaseCss("act-showcase-ornament-plus");
+  const css = stripSceneScope(await actShowcaseCss("act-showcase-ornament-plus"));
   assert.match(css, /@media \(min-width:1100px\)/);
   assert.match(css, /\.opening-content h1:after/);
   assert.match(css, /\.poster-ornament__seal:after/);

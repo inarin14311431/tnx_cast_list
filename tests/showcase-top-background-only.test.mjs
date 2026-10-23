@@ -1,4 +1,4 @@
-import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
+import { actShowcaseCssEntry, actShowcaseCss, stripSceneScope } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -9,8 +9,8 @@ const read = path => readFile(new URL(path, root), "utf8");
 
 test("poster-v2 keeps the published background on the opening hero only", async () => {
   const entry = await actShowcaseCssEntry();
-  const posterCss = await actShowcaseCss("act-showcase-poster-v2");
-  const overrideCss = await actShowcaseCss("act-showcase-top-background-only");
+  const posterCss = stripSceneScope(await actShowcaseCss("act-showcase-poster-v2"));
+  const overrideCss = stripSceneScope(await actShowcaseCss("act-showcase-top-background-only"));
 
   assertVersionedMatch(entry, /act-showcase-top-background-only\.css\?v=VERSION/);
   assert.match(posterCss, /\.scene-opening:before\{[^}]*var\(--showcase-background\)/);
