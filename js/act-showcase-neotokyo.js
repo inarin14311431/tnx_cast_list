@@ -166,7 +166,7 @@ function createSequenceShell(state) {
 
 async function showOpening(state, model, scene) {
   setProgress(state, scene.progress, "ACT FILE ACCESS");
-  replaceStage(state, {
+  replaceStage(state, scene, {
     eyebrow: `${scene.step} // N◎VA MUNICIPAL DATABASE`,
     title: "ACT FILE // ACCESS",
     sub: "ESTABLISHING PUBLIC SESSION",
@@ -177,7 +177,7 @@ async function showOpening(state, model, scene) {
 
 async function showActTitle(state, model, scene) {
   setProgress(state, scene.progress, "TITLE & CREDITS");
-  const content = node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--title");
+  const content = markScene(node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--title"), scene);
   content.append(
     textNode("p", "neotokyo-sequence__eyebrow", `${scene.step} // TITLE & CREDITS`),
     textNode("p", "neotokyo-sequence__micro", "ACT TITLE"),
@@ -192,7 +192,7 @@ async function showActTitle(state, model, scene) {
 
 async function showTrailer(state, model, scene) {
   setProgress(state, scene.progress, "ACT TRAILER");
-  const content = node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--trailer");
+  const content = markScene(node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--trailer"), scene);
   const heading = model.trailerTitle || "ACT TRAILER";
   const trailer = model.trailer || SAMPLE_TRAILER_MESSAGE;
   const copy = textNode("p", "neotokyo-sequence__readout neotokyo-sequence__readout--split", "");
@@ -223,7 +223,7 @@ async function showHandoutAndAssign(state, cast, index, casts, scene) {
 
   setProgress(state, progressBase, `HANDOUT ${pcLabel}`);
 
-  const sequence = node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--linked");
+  const sequence = markScene(node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--linked"), scene);
   const header = node("header", "neotokyo-sequence__linked-head");
   const phaseLabel = textNode("p", "neotokyo-sequence__eyebrow", `${scene.step} // HANDOUT ${pcLabel} // PC${pcNumber}`);
   const linkStatus = textNode("span", "neotokyo-sequence__link-status", "HANDOUT CHANNEL // ACTIVE");
@@ -483,7 +483,7 @@ function revealAllStyleCards(root) {
 
 async function showSummary(state, model, scene) {
   setProgress(state, scene.progress, "ACT READY");
-  const content = node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--summary");
+  const content = markScene(node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--summary"), scene);
   const heading = node("div", "neotokyo-sequence__summary-head");
   heading.append(
     textNode("p", "neotokyo-sequence__eyebrow", `${scene.step} // ASSIGNMENT COMPLETE`),
@@ -593,8 +593,8 @@ function roleMatchesStyle(role, style) {
   return Boolean(role && style && normalize(role) === normalize(style));
 }
 
-function replaceStage(state, { eyebrow, title, sub, status = [] }) {
-  const content = node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--opening");
+function replaceStage(state, scene, { eyebrow, title, sub, status = [] }) {
+  const content = markScene(node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--opening"), scene);
   content.append(
     textNode("p", "neotokyo-sequence__eyebrow", eyebrow),
     textNode("h2", "neotokyo-sequence__opening-title", title),
@@ -604,6 +604,14 @@ function replaceStage(state, { eyebrow, title, sub, status = [] }) {
   for (const line of status) log.append(textNode("span", "", `> ${line}`));
   content.append(log);
   swapScreen(state, content);
+}
+
+// Marks a screen with the scene frame it belongs to and the pattern drawing it (data-scene / data-scene-pattern). Set while
+// the element is still detached, so it arrives with its marks and no MutationObserver sees an attribute change.
+function markScene(element, scene) {
+  element.dataset.scene = scene.frame;
+  element.dataset.scenePattern = DEFAULT_SCENE_PATTERN;
+  return element;
 }
 
 function swapScreen(state, content) {
