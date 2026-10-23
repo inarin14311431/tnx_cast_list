@@ -40,9 +40,11 @@ test("NeoTokyo keeps the cinematic sequence under reduced motion while CSS suppr
 
 test("normal cinematic sequence still contains every narrative phase", async () => {
   const sequence = await read("js/act-showcase-neotokyo.js");
-  assert.match(sequence, /await showOpening\(state\)/);
-  assert.match(sequence, /await showActTitle\(state, model\)/);
-  assert.match(sequence, /await showTrailer\(state, model\)/);
-  assert.match(sequence, /await showHandoutAndAssign/);
-  assert.match(sequence, /await showSummary\(state, model\)/);
+  const { INTRO_SCENES } = await import("../js/act-showcase-neotokyo.js");
+  // every intro frame is in the table and played for reduced motion too (the loop has no reduced-motion branch)
+  assert.deepEqual(INTRO_SCENES.map(scene => scene.frame), ["loading", "title", "trailer", "handout-assign", "ready"]);
+  const loop = sequence.slice(sequence.indexOf("for (const scene of INTRO_SCENES)"), sequence.indexOf("} finally {"));
+  assert.match(loop, /await scene\.patterns\[DEFAULT_SCENE_PATTERN\]\(state, model, scene\)/);
+  assert.doesNotMatch(loop, /prefersReducedMotion|showcase-neotokyo-reduced/);
+  assert.match(sequence, /await showHandoutAndAssign\(state, model\.casts\[index\], index, model\.casts, scene\)/);
 });

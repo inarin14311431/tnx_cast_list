@@ -145,7 +145,9 @@ test("trailer screen no longer builds a third ACT TRAILER label duplicating the 
   // neither side of the build-then-delete pair exists anymore.
   assert.doesNotMatch(neotokyo, /neotokyo-sequence__trailer-definition/);
   assert.doesNotMatch(cinematic, /simplifyTrailer|neotokyo-sequence__trailer-definition|cinematic-trailer-band/);
-  assert.match(neotokyo, /textNode\("p", "neotokyo-sequence__eyebrow", "03 \/\/ ACT TRAILER"\)/);
+  // the eyebrow reads "03 // ACT TRAILER": the number comes from the trailer row of INTRO_SCENES
+  assert.match(neotokyo, /textNode\("p", "neotokyo-sequence__eyebrow", `\$\{scene\.step\} \/\/ ACT TRAILER`\)/);
+  assert.match(neotokyo, /\{ frame: "trailer", step: "03", progress: 30, patterns: Object\.freeze\(\{ a: showTrailer \}\) \}/);
   assert.match(neotokyo, /textNode\("p", "neotokyo-sequence__micro", "PRE-ACT READOUT \/ PUBLIC BROADCAST"\)/);
 });
 

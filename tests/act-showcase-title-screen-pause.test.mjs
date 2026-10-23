@@ -6,8 +6,10 @@ const source = await readFile(new URL("../js/act-showcase-neotokyo.js", import.m
 
 test("ACT title screen is restored and waits for an explicit click", () => {
   assert.match(source, /const SHOW_ACT_TITLE_SCREEN = true;/);
-  assert.match(source, /if \(SHOW_ACT_TITLE_SCREEN\) \{\s*await showActTitle\(state, model\);\s*if \(state\.finished\) return;\s*\}/s);
-  assert.match(source, /async function showActTitle\(state, model\)/);
+  // the title frame is skipped only when SHOW_ACT_TITLE_SCREEN is false, and it is played by showActTitle
+  assert.match(source, /for \(const scene of INTRO_SCENES\) \{\s*if \(scene\.frame === "title" && !SHOW_ACT_TITLE_SCREEN\) continue;/);
+  assert.match(source, /\{ frame: "title", step: "02", progress: 18, patterns: Object\.freeze\(\{ a: showActTitle \}\) \}/);
+  assert.match(source, /async function showActTitle\(state, model, scene\)/);
   assert.match(source, /await waitForAdvance\(state, "NEXT \/\/ ACT TRAILER"\);/);
   assert.match(source, /stage\.addEventListener\("click", event => \{/);
   assert.match(source, /if \(event\.target\.closest\("button"\)\) return;/);
