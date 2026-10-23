@@ -1197,27 +1197,27 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:last-child{tran
 /* ASSIGN scene: the three assigned styles are cards that turn face-up one by one (js/act-showcase-neotokyo.js
    adds .is-flipped). The cards are div/b/i so the legacy ".neotokyo-sequence__styles span" chip rules and the role
    markers never touch them. Back face = drawn geometry only (no artwork); theme colours: act-showcase-theme-scenes.css. */
-.neotokyo-sequence__style-cards{
+.neotokyo-sequence__style-cards:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   container-type:inline-size;
 }
-.neotokyo-style-card{
+.neotokyo-style-card:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   position:relative;
   min-width:0;
   height:clamp(62px,19cqi,82px);
   perspective:560px;
 }
-.neotokyo-style-card__inner{
+.neotokyo-style-card__inner:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   position:absolute;
   inset:0;
   transform:rotateY(180deg);
   transform-style:preserve-3d;
   transition:transform var(--flip-turn,600ms) cubic-bezier(.2,.8,.2,1) calc(var(--flip-index,0) * var(--flip-gap,300ms));
 }
-.neotokyo-style-card.is-flipped .neotokyo-style-card__inner{
+.neotokyo-style-card.is-flipped .neotokyo-style-card__inner:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   transform:rotateY(0deg);
 }
-.neotokyo-style-card__back,
-.neotokyo-style-card__front{
+.neotokyo-style-card__back:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *),
+.neotokyo-style-card__front:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   position:absolute;
   inset:0;
   box-sizing:border-box;
@@ -1227,15 +1227,15 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:last-child{tran
   backface-visibility:hidden;
   -webkit-backface-visibility:hidden;
 }
-.neotokyo-style-card__back{
+.neotokyo-style-card__back:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   transform:rotateY(180deg);
   background:
     linear-gradient(45deg,transparent 46%,rgba(102,219,255,.32) 47% 53%,transparent 54%) 50% 50%/22px 22px,
     linear-gradient(-45deg,transparent 46%,rgba(255,121,211,.26) 47% 53%,transparent 54%) 50% 50%/22px 22px,
     linear-gradient(145deg,rgba(18,35,67,.96),rgba(8,16,35,.98));
 }
-.neotokyo-style-card__back:before,
-.neotokyo-style-card__back:after{
+.neotokyo-style-card__back:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *):before,
+.neotokyo-style-card__back:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *):after{
   position:absolute;
   left:50%;
   top:50%;
@@ -1243,20 +1243,20 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:last-child{tran
   box-sizing:border-box;
   transform:translate(-50%,-50%) rotate(45deg);
 }
-.neotokyo-style-card__back:before{
+.neotokyo-style-card__back:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *):before{
   width:46%;
   aspect-ratio:1;
   max-height:70%;
   border:1px solid rgba(102,219,255,.7);
   background:rgba(8,16,35,.9);
 }
-.neotokyo-style-card__back:after{
+.neotokyo-style-card__back:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *):after{
   width:22%;
   aspect-ratio:1;
   border:1px solid rgba(255,121,211,.8);
   background:radial-gradient(circle,rgba(255,121,211,.55) 0 28%,transparent 32%);
 }
-.neotokyo-style-card__front{
+.neotokyo-style-card__front:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   --style-label-size:clamp(.44rem,calc(28cqi / var(--style-label-units,5)),1.15rem);
   display:flex;
   flex-direction:row;
@@ -1271,10 +1271,10 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:last-child{tran
   visibility:hidden;
   transition:visibility 0s linear calc(var(--flip-turn,600ms) * .14 + var(--flip-index,0) * var(--flip-gap,300ms));
 }
-.neotokyo-style-card.is-flipped .neotokyo-style-card__front{
+.neotokyo-style-card.is-flipped .neotokyo-style-card__front:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   visibility:visible;
 }
-.neotokyo-style-card__name{
+.neotokyo-style-card__name:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   display:block;
   max-width:100%;
   font:800 var(--style-label-size,1rem)/1.15 "Noto Sans JP",sans-serif;
@@ -1283,7 +1283,7 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:last-child{tran
   white-space:nowrap;
 }
 /* assigned marks sit beside the name, at 0.8 of the name's size (the name's size is fixed from the whole label) */
-.neotokyo-style-card__marks{
+.neotokyo-style-card__marks:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   display:inline-flex;
   flex:0 0 auto;
   align-items:center;
@@ -1292,7 +1292,7 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:last-child{tran
   font-style:normal;
   line-height:1;
 }
-.neotokyo-style-card__mark{
+.neotokyo-style-card__mark:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   display:inline-block;
   width:1.1em;
   height:1.1em;
@@ -1302,36 +1302,36 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:last-child{tran
   text-align:center;
 }
 /* lit mark: the real glyph, lights up once the card has finished turning */
-.neotokyo-style-card__mark.is-lit{
+.neotokyo-style-card__mark.is-lit:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   opacity:.28;
   transition:opacity 200ms ease,text-shadow 200ms ease;
 }
-.neotokyo-style-card.is-flipped .neotokyo-style-card__mark.is-lit{
+.neotokyo-style-card.is-flipped .neotokyo-style-card__mark.is-lit:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   opacity:1;
   text-shadow:0 0 10px currentColor;
   transition-delay:calc(var(--flip-turn,600ms) * .8 + var(--flip-index,0) * var(--flip-gap,300ms));
 }
-.neotokyo-style-card.is-role .neotokyo-style-card__front{
+.neotokyo-style-card.is-role .neotokyo-style-card__front:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   border-width:2px;
   border-color:#77ffd1;
   box-shadow:0 0 0 1px rgba(119,255,209,.16),0 0 22px rgba(94,255,210,.24);
 }
 /* "CAST ASSIGNED" waits for the third card */
-.neotokyo-sequence__cast--linked.is-styles-pending .neotokyo-sequence__assigned{
+.neotokyo-sequence__cast--linked.is-styles-pending .neotokyo-sequence__assigned:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){
   visibility:hidden;
 }
 /* SKIP / end of sequence (.is-revealed) and reduced motion: face-up at once, no turn. */
-.neotokyo-sequence__style-cards.is-revealed .neotokyo-style-card__inner,
-.neotokyo-sequence__style-cards.is-revealed .neotokyo-style-card__front,
-.neotokyo-sequence__style-cards.is-revealed .neotokyo-style-card__mark.is-lit,
-.neotokyo-sequence__style-cards.is-revealed .neotokyo-style-card.is-flipped .neotokyo-style-card__mark.is-lit,
-body.showcase-neotokyo-reduced .neotokyo-style-card__inner,
-body.showcase-neotokyo-reduced .neotokyo-style-card__front,
-body.showcase-neotokyo-reduced .neotokyo-style-card__mark.is-lit,
-body.showcase-neotokyo-reduced .neotokyo-style-card.is-flipped .neotokyo-style-card__mark.is-lit{transition:none}
+.neotokyo-sequence__style-cards.is-revealed .neotokyo-style-card__inner:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *),
+.neotokyo-sequence__style-cards.is-revealed .neotokyo-style-card__front:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *),
+.neotokyo-sequence__style-cards.is-revealed .neotokyo-style-card__mark.is-lit:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *),
+.neotokyo-sequence__style-cards.is-revealed .neotokyo-style-card.is-flipped .neotokyo-style-card__mark.is-lit:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *),
+body.showcase-neotokyo-reduced .neotokyo-style-card__inner:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *),
+body.showcase-neotokyo-reduced .neotokyo-style-card__front:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *),
+body.showcase-neotokyo-reduced .neotokyo-style-card__mark.is-lit:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *),
+body.showcase-neotokyo-reduced .neotokyo-style-card.is-flipped .neotokyo-style-card__mark.is-lit:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){transition:none}
 @media (prefers-reduced-motion:reduce){
-  .neotokyo-style-card__inner,
-  .neotokyo-style-card__front,
-  .neotokyo-style-card__mark.is-lit,
-  .neotokyo-style-card.is-flipped .neotokyo-style-card__mark.is-lit{transition:none}
+  .neotokyo-style-card__inner:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *),
+  .neotokyo-style-card__front:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *),
+  .neotokyo-style-card__mark.is-lit:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *),
+  .neotokyo-style-card.is-flipped .neotokyo-style-card__mark.is-lit:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){transition:none}
 }

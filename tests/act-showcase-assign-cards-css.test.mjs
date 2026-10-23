@@ -6,8 +6,19 @@ import { TRAILING_SOURCES, actShowcaseCss, actShowcaseSources, actShowcaseTraili
 // The assign-cards sections: structure in act-showcase-scenes.css (end of the file) and theme colours in
 // act-showcase-theme-scenes.css (after visual-emphasis). The latter may follow the "final" visual-emphasis layer
 // only because it styles nothing but its own card classes.
+// split on top-level commas only: the selectors carry :where(..., ...) (docs/ACT_SHOWCASE_SCENES.md §6 #5a)
+const splitSelectorList = list => {
+  const parts = [];
+  let depth = 0, last = 0;
+  for (let index = 0; index < list.length; index += 1) {
+    if (list[index] === "(" || list[index] === "[") depth += 1;
+    else if (list[index] === ")" || list[index] === "]") depth -= 1;
+    else if (list[index] === "," && depth === 0) { parts.push(list.slice(last, index)); last = index + 1; }
+  }
+  return [...parts, list.slice(last)];
+};
 const selectorsOf = css => [...css.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/(?:^|})\s*([^{}@]+)\{/g)]
-  .flatMap(match => match[1].split(","))
+  .flatMap(match => splitSelectorList(match[1]))
   .map(selector => selector.trim())
   .filter(Boolean);
 
@@ -54,7 +65,7 @@ test("flip timing lives in one table; the CSS reads --flip-turn / --flip-gap wit
   assert.match(js, /--flip-gap/);
   assert.match(js, /flipMs \? flipMs \+ FLIP_SETTLE_MS : STYLE_HOLD_MS/);
   assert.doesNotMatch(js, /wait\(state, 700\)/);
-  const inner = css.match(/\.neotokyo-style-card__inner\{[^}]*\}/)[0];
+  const inner = css.match(/\.neotokyo-style-card__inner(?::where\([^{]*\))?\{[^}]*\}/)[0];
   assert.match(inner, /transition:transform var\(--flip-turn,600ms\) cubic-bezier\(\.2,\.8,\.2,1\) calc\(var\(--flip-index,0\) \* var\(--flip-gap,300ms\)\)/);
   assert.match(css, /transition:visibility 0s linear calc\(var\(--flip-turn,600ms\) \* \.14 \+ var\(--flip-index,0\) \* var\(--flip-gap,300ms\)\)/);
   assert.match(css, /transition-delay:calc\(var\(--flip-turn,600ms\) \* \.8 \+ var\(--flip-index,0\) \* var\(--flip-gap,300ms\)\)/);
