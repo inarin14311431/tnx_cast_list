@@ -21,12 +21,19 @@ test("cinematic route is owned by the page identity and centralized public servi
 
 test("ACT system access is automatic while title and later narrative phases wait for explicit advance", async () => {
   const source = await read("js/act-showcase-neotokyo.js");
-  const opening = source.indexOf("await showOpening(state)");
-  const title = source.indexOf("await showActTitle(state, model)");
-  const trailer = source.indexOf("await showTrailer(state, model)");
-  const handout = source.indexOf("await showHandoutAndAssign");
-  const summary = source.indexOf("await showSummary(state, model)");
-  assert.ok(opening >= 0 && opening < title && title < trailer && trailer < handout && handout < summary);
+  const { INTRO_SCENES } = await import("../js/act-showcase-neotokyo.js");
+  // the intro plays the scene frames in the order of the table, opening first and the summary last
+  assert.deepEqual(
+    INTRO_SCENES.map(scene => [scene.frame, scene.patterns.a.name]),
+    [
+      ["loading", "showOpening"],
+      ["title", "showActTitle"],
+      ["trailer", "showTrailer"],
+      ["handout-assign", "showHandoutsAndAssigns"],
+      ["ready", "showSummary"]
+    ]
+  );
+  assert.match(source, /for \(const scene of INTRO_SCENES\) \{[\s\S]*?await scene\.patterns\[DEFAULT_SCENE_PATTERN\]\(state, model, scene\);\s*if \(state\.finished\) return;/);
   const openingBody = source.slice(source.indexOf("async function showOpening"), source.indexOf("async function showActTitle"));
   const titleBody = source.slice(source.indexOf("async function showActTitle"), source.indexOf("async function showTrailer"));
   const trailerBody = source.slice(source.indexOf("async function showTrailer"), source.indexOf("async function showHandoutAndAssign"));

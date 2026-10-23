@@ -1,5 +1,6 @@
 import { parseStyleLabel } from "./act-showcase-style-label.js?v=8a1b88dd";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
+import { DEFAULT_SCENE_PATTERN } from "./act-showcase-scenes.js?v=97c1df3b";
 const SAMPLE_TRAILER_MESSAGE = "公開用アクトトレーラーは未登録です。\n公開データにトレーラーを登録すると、ここで読み上げ表示されます。";
 const FALLBACK_IMAGE = "./assets/placeholders/scan-failed.webp";
 const SHOW_ACT_TITLE_SCREEN = true;
@@ -42,23 +43,40 @@ export async function runNeoTokyoIntro({ intro, model }) {
   state.skipButton.addEventListener("click", finish, { once: true });
 
   try {
-    await showOpening(state);
-    if (state.finished) return;
-    if (SHOW_ACT_TITLE_SCREEN) {
-      await showActTitle(state, model);
+    for (const scene of INTRO_SCENES) {
+      if (scene.frame === "title" && !SHOW_ACT_TITLE_SCREEN) continue;
+      await scene.patterns[DEFAULT_SCENE_PATTERN](state, model, scene);
       if (state.finished) return;
     }
-    await showTrailer(state, model);
-    if (state.finished) return;
-
-    for (let index = 0; index < model.casts.length; index += 1) {
-      await showHandoutAndAssign(state, model.casts[index], index, model.casts);
-      if (state.finished) return;
-    }
-
-    await showSummary(state, model);
   } finally {
     finish();
+  }
+}
+
+// The scene frames the intro plays, in the order of SCENE_FRAMES (js/act-showcase-scenes.js), each with the function
+// that draws it for every pattern it has (only "a" so far). "finale" is the page itself, shown by act-showcase-page.js
+// once the intro ends, so it has no row here. step is the number in the eyebrow ("01 // ..."), progress the value of
+// the progress bar; handout-assign repeats for every PC and spreads its progress over span, from the value at the
+// start of a PC to +5 (searching) and +10 (assigned).
+export const INTRO_SCENES = Object.freeze([
+  Object.freeze({ frame: "loading", step: "01", progress: 5, patterns: Object.freeze({ a: showOpening }) }),
+  Object.freeze({ frame: "title", step: "02", progress: 18, patterns: Object.freeze({ a: showActTitle }) }),
+  Object.freeze({ frame: "trailer", step: "03", progress: 30, patterns: Object.freeze({ a: showTrailer }) }),
+  Object.freeze({
+    frame: "handout-assign",
+    step: "04",
+    assignStep: "05",
+    progress: 34,
+    span: 50,
+    patterns: Object.freeze({ a: showHandoutsAndAssigns })
+  }),
+  Object.freeze({ frame: "ready", step: "06", progress: 100, patterns: Object.freeze({ a: showSummary }) })
+]);
+
+async function showHandoutsAndAssigns(state, model, scene) {
+  for (let index = 0; index < model.casts.length; index += 1) {
+    await showHandoutAndAssign(state, model.casts[index], index, model.casts, scene);
+    if (state.finished) return;
   }
 }
 
@@ -146,10 +164,10 @@ function createSequenceShell(state) {
   return shell;
 }
 
-async function showOpening(state) {
-  setProgress(state, 5, "ACT FILE ACCESS");
+async function showOpening(state, model, scene) {
+  setProgress(state, scene.progress, "ACT FILE ACCESS");
   replaceStage(state, {
-    eyebrow: "01 // N◎VA MUNICIPAL DATABASE",
+    eyebrow: `${scene.step} // N◎VA MUNICIPAL DATABASE`,
     title: "ACT FILE // ACCESS",
     sub: "ESTABLISHING PUBLIC SESSION",
     status: ["PUBLIC ACT FILE // DETECTED", "SHOWCASE DATA // VERIFIED", "TITLE & CREDITS // READY"]
@@ -157,11 +175,11 @@ async function showOpening(state) {
   await wait(state, 2900);
 }
 
-async function showActTitle(state, model) {
-  setProgress(state, 18, "TITLE & CREDITS");
+async function showActTitle(state, model, scene) {
+  setProgress(state, scene.progress, "TITLE & CREDITS");
   const content = node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--title");
   content.append(
-    textNode("p", "neotokyo-sequence__eyebrow", "02 // TITLE & CREDITS"),
+    textNode("p", "neotokyo-sequence__eyebrow", `${scene.step} // TITLE & CREDITS`),
     textNode("p", "neotokyo-sequence__micro", "ACT TITLE"),
     textNode("h1", "neotokyo-sequence__act-title", model.actName || "ACT SHOWCASE"),
     createRulerCredit(model.rulerName)
@@ -172,8 +190,8 @@ async function showActTitle(state, model) {
   await waitForAdvance(state, "NEXT // ACT TRAILER");
 }
 
-async function showTrailer(state, model) {
-  setProgress(state, 30, "ACT TRAILER");
+async function showTrailer(state, model, scene) {
+  setProgress(state, scene.progress, "ACT TRAILER");
   const content = node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--trailer");
   const heading = model.trailerTitle || "ACT TRAILER";
   const trailer = model.trailer || SAMPLE_TRAILER_MESSAGE;
@@ -181,7 +199,7 @@ async function showTrailer(state, model) {
   if (!model.trailer) copy.classList.add("is-placeholder");
   const readout = prepareSplitReadout(copy, trailer);
   content.append(
-    textNode("p", "neotokyo-sequence__eyebrow", "03 // ACT TRAILER"),
+    textNode("p", "neotokyo-sequence__eyebrow", `${scene.step} // ACT TRAILER`),
     textNode("p", "neotokyo-sequence__micro", "PRE-ACT READOUT / PUBLIC BROADCAST"),
     textNode("h2", "neotokyo-sequence__section-title", heading),
     copy,
@@ -193,7 +211,7 @@ async function showTrailer(state, model) {
   await waitForAdvance(state, "NEXT // HANDOUT 01");
 }
 
-async function showHandoutAndAssign(state, cast, index, casts) {
+async function showHandoutAndAssign(state, cast, index, casts, scene) {
   const pcNumber = castNumberFromSlot(cast?.slot, index);
   const nextCast = casts[index + 1];
   const pcLabel = String(pcNumber).padStart(2, "0");
@@ -201,13 +219,13 @@ async function showHandoutAndAssign(state, cast, index, casts) {
   const handoutTitle = clean(handout.title) || `PC${pcNumber} HANDOUT`;
   const handoutBody = clean(handout.body) || "公開用ハンドアウト本文は登録されていません。";
   const participationRole = getParticipationRole(cast);
-  const progressBase = 34 + Math.round((index / Math.max(casts.length, 1)) * 50);
+  const progressBase = scene.progress + Math.round((index / Math.max(casts.length, 1)) * scene.span);
 
   setProgress(state, progressBase, `HANDOUT ${pcLabel}`);
 
   const sequence = node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--linked");
   const header = node("header", "neotokyo-sequence__linked-head");
-  const phaseLabel = textNode("p", "neotokyo-sequence__eyebrow", `04 // HANDOUT ${pcLabel} // PC${pcNumber}`);
+  const phaseLabel = textNode("p", "neotokyo-sequence__eyebrow", `${scene.step} // HANDOUT ${pcLabel} // PC${pcNumber}`);
   const linkStatus = textNode("span", "neotokyo-sequence__link-status", "HANDOUT CHANNEL // ACTIVE");
   header.append(phaseLabel, linkStatus);
 
@@ -231,7 +249,7 @@ async function showHandoutAndAssign(state, cast, index, casts) {
   assignPanel.setAttribute("aria-label", `PC${pcNumber} キャスト割り当て`);
   const assignFrame = node("div", "neotokyo-sequence__assign-frame");
   assignFrame.append(
-    textNode("p", "neotokyo-sequence__micro", `05 // ASSIGNMENT ${pcLabel}`),
+    textNode("p", "neotokyo-sequence__micro", `${scene.assignStep} // ASSIGNMENT ${pcLabel}`),
     textNode("h2", "neotokyo-sequence__assign-word", "ASSIGN"),
     textNode("p", "neotokyo-sequence__assign-sub", participationRole
       ? `ASSIGN SLOT // ${participationRole}`
@@ -254,7 +272,7 @@ async function showHandoutAndAssign(state, cast, index, casts) {
   if (state.finished) return;
 
   setProgress(state, progressBase + 5, `SEARCHING CAST // PC${pcNumber}`);
-  phaseLabel.textContent = `04 // HANDOUT ${pcLabel}  →  05 // ASSIGNMENT ${pcLabel}`;
+  phaseLabel.textContent = `${scene.step} // HANDOUT ${pcLabel}  →  ${scene.assignStep} // ASSIGNMENT ${pcLabel}`;
   linkStatus.textContent = "CROSS LINK // ESTABLISHING";
   sequence.classList.add("is-splitting");
   await wait(state, 780);
@@ -463,12 +481,12 @@ function revealAllStyleCards(root) {
   for (const cast of root.querySelectorAll(".is-styles-pending")) cast.classList.remove("is-styles-pending");
 }
 
-async function showSummary(state, model) {
-  setProgress(state, 100, "ACT READY");
+async function showSummary(state, model, scene) {
+  setProgress(state, scene.progress, "ACT READY");
   const content = node("section", "neotokyo-sequence__screen neotokyo-sequence__screen--summary");
   const heading = node("div", "neotokyo-sequence__summary-head");
   heading.append(
-    textNode("p", "neotokyo-sequence__eyebrow", "06 // ASSIGNMENT COMPLETE"),
+    textNode("p", "neotokyo-sequence__eyebrow", `${scene.step} // ASSIGNMENT COMPLETE`),
     textNode("strong", "neotokyo-sequence__act-ready", "ACT READY"),
     textNode("span", "neotokyo-sequence__summary-status", `ALL CASTS ASSIGNED // ${model.casts.length} CAST FILES LINKED`)
   );

@@ -1,9 +1,10 @@
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=d32e5230";
-import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=d688ea4c";
+import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=2bf72a18";
 import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=d3800656";
 import { buildKeyStyle, buildVisualCaption } from "./act-showcase-visual-caption.js?v=47f6e034";
 import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
+import { resolveSceneComposition } from "./act-showcase-scenes.js?v=97c1df3b";
 
 const POSTER_SAMPLE_BACKGROUND = "./assets/showcase/act-showcase-moon-city-v2.svg";
 const HANDOUT_PLACEHOLDERS = new Set([
@@ -98,6 +99,8 @@ function createShowcaseModel(data) {
     trailer,
     trailerTitle,
     background: safeImageUrl(data.background),
+    // the pattern of each scene frame (js/act-showcase-scenes.js). Not played yet: every frame still runs pattern a.
+    scenes: resolveSceneComposition(data),
     casts
   };
 }
