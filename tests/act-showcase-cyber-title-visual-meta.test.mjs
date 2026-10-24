@@ -1,4 +1,4 @@
-import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
+import { actShowcaseCssEntry, actShowcaseCss, stripSceneScope } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -18,7 +18,7 @@ test("act showcase loads the cyberpunk title layer and display helpers through i
 });
 
 test("cyberpunk title keeps the title as a logo rather than plain gothic text", async () => {
-  const css = await actShowcaseCss("act-showcase-title-cyberpunk");
+  const css = stripSceneScope(await actShowcaseCss("act-showcase-title-cyberpunk"));
   assert.ok(css.includes("Dela Gothic One"));
   assert.ok(css.includes(".neotokyo-sequence__act-title--logo.showcase-fit-title:before"));
   assert.ok(css.includes(".neotokyo-sequence__screen--title-logo:after"));
