@@ -13,7 +13,7 @@ const [cinematicHtml, generatorHtml, bootstrap, urlCanonicalizer, followupCss, p
   read("showcase-generator.html"),
   read("js/act-showcase-bootstrap.js"),
   read("js/showcase-publish-url-canonicalizer.js"),
-  actShowcaseCss("act-showcase-followup-v1"),
+  stripSceneScope(actShowcaseCss("act-showcase-followup-v1")),
   stripSceneScope(actShowcaseCss("act-showcase-poster-v2")),
   read("js/act-showcase-supporting-cast.js")
 ]);
