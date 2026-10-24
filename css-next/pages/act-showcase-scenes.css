@@ -243,7 +243,7 @@ body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__st
   scrollbar-gutter:stable;
 }
 
-body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage:has(> .neotokyo-sequence__screen--trailer.is-visible) > .neotokyo-sequence__screen--trailer{
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage:has(> .neotokyo-sequence__screen--trailer.is-visible) > .neotokyo-sequence__screen--trailer:where([data-scene="trailer"][data-scene-pattern="a"],[data-scene="trailer"][data-scene-pattern="a"] *){
   width:min(1120px,100%);
   height:auto;
   max-height:none;
@@ -251,11 +251,11 @@ body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__st
   padding-bottom:24px;
 }
 
-body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer .neotokyo-sequence__readout{
+body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer .neotokyo-sequence__readout:where([data-scene="trailer"][data-scene-pattern="a"],[data-scene="trailer"][data-scene-pattern="a"] *){
   height:auto;
 }
 
-body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__code{
+body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__code:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){
   display:block;
   color:#ff87d1;
   font:800 clamp(.5rem,.72vw,.68rem)/1.25 "Share Tech Mono",monospace;
@@ -271,7 +271,7 @@ body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__code{
   body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage:has(> .neotokyo-sequence__screen--trailer.is-visible){
     padding-block:12px 24px;
   }
-  body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__code{
+  body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__code:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){
     font-size:.48rem;
     letter-spacing:.08em;
   }
