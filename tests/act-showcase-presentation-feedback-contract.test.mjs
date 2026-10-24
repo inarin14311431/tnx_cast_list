@@ -1,4 +1,4 @@
-import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
+import { actShowcaseCssEntry, actShowcaseCss, stripSceneScope } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -48,7 +48,7 @@ test("the selected handout style is highlighted while duplicate matches stay sec
 });
 
 test("guest files use a left and right two-column layout on desktop", async () => {
-  const css = await actShowcaseCss("act-showcase-presentation-tuning");
+  const css = stripSceneScope(await actShowcaseCss("act-showcase-presentation-tuning"));
   assert.match(css, /poster-supporting-cast__grid\{grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(css, /neotokyo-supporting-cast__rail\{display:grid;grid-template-columns:repeat\(2,minmax\(0,1fr\)\)/);
   assert.match(css, /@media\(max-width:900px\)/);
