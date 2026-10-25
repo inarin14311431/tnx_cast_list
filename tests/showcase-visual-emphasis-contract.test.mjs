@@ -1,4 +1,4 @@
-import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
+import { actShowcaseCssEntry, actShowcaseCss, stripSceneScope } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -6,7 +6,7 @@ import { readFile } from "node:fs/promises";
 const root = new URL("../", import.meta.url);
 const read = path => readFile(new URL(path, root), "utf8");
 const [emphasisCss, entryCss, cinematicHtml] = await Promise.all([
-  actShowcaseCss("act-showcase-visual-emphasis"),
+  stripSceneScope(actShowcaseCss("act-showcase-visual-emphasis")),
   actShowcaseCssEntry(),
   read("act-showcase.html")
 ]);

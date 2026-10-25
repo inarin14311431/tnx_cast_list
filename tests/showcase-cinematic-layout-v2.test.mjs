@@ -1,4 +1,4 @@
-import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
+import { actShowcaseCssEntry, actShowcaseCss, stripSceneScope } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -15,7 +15,7 @@ const neotokyo = await readFile(new URL("../js/act-showcase-neotokyo.js", import
 const css = actShowcaseCss("act-showcase-cinematic-v2");
 const neotokyoCss = actShowcaseCss("act-showcase-neotokyo");
 const presentation = actShowcaseCss("act-showcase-presentation-tuning");
-const emphasisCss = actShowcaseCss("act-showcase-visual-emphasis");
+const emphasisCss = stripSceneScope(actShowcaseCss("act-showcase-visual-emphasis"));
 
 test("generator separates ACT title and subtitle before dynamic publishing", () => {
   const subtitleImport = maskCacheVersions(loader).search(/import\("\.\/showcase-act-subtitle\.js\?v=VERSION"\)/);
