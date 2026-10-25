@@ -1,4 +1,4 @@
-import { actShowcaseCss } from "./helpers/act-showcase-css.mjs";
+import { actShowcaseCss, stripSceneScope } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -7,7 +7,7 @@ import { assertVersionedMatch } from "./helpers/cache-version.mjs";
 const read = path => readFileSync(new URL(`../${path}`, import.meta.url), "utf8");
 const bootstrap = read("js/act-showcase-bootstrap.js");
 const handoutFrame = read("js/act-showcase-handout-live-frame.js");
-const handoutCss = actShowcaseCss("act-showcase-handout-live-frame");
+const handoutCss = stripSceneScope(actShowcaseCss("act-showcase-handout-live-frame"));
 const storyFlow = read("js/act-showcase-story-flow.js");
 const scenarioWriter = read("js/act-showcase-scenario-writer.js");
 const supportingCast = read("js/act-showcase-supporting-cast.js");
