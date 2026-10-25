@@ -1,4 +1,4 @@
-import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
+import { actShowcaseCssEntry, actShowcaseCss, stripSceneScope } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -14,7 +14,7 @@ const standardScenario = read("js/act-showcase-standard-scenario-writer.js");
 const standardHtml = read("act-showcase-standard.html");
 const entryCss = actShowcaseCssEntry();
 const hierarchyCss = actShowcaseCss("act-showcase-neotokyo-hierarchy");
-const emphasisCss = actShowcaseCss("act-showcase-visual-emphasis");
+const emphasisCss = stripSceneScope(actShowcaseCss("act-showcase-visual-emphasis"));
 const sceneCss = actShowcaseCss("act-showcase-theme-scene-contract");
 
 test("ACT TRAILER is sized by the one layout owner (no separate live-frame module)", () => {
