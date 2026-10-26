@@ -13,7 +13,7 @@ const showcaseScenario = read("js/act-showcase-scenario-writer.js");
 const standardScenario = read("js/act-showcase-standard-scenario-writer.js");
 const standardHtml = read("act-showcase-standard.html");
 const entryCss = actShowcaseCssEntry();
-const hierarchyCss = actShowcaseCss("act-showcase-neotokyo-hierarchy");
+const hierarchyCss = stripSceneScope(actShowcaseCss("act-showcase-neotokyo-hierarchy"));
 const emphasisCss = stripSceneScope(actShowcaseCss("act-showcase-visual-emphasis"));
 const sceneCss = actShowcaseCss("act-showcase-theme-scene-contract");
 
