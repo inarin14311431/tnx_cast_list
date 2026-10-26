@@ -143,7 +143,7 @@ test("NeoTokyo cast images keep protocol validation", async () => {
 });
 
 test("assigned cast remains visible when reduced motion disables its animation", async () => {
-  const css = await actShowcaseCss("act-showcase-neotokyo");
+  const css = stripSceneScope(await actShowcaseCss("act-showcase-neotokyo"));
   const rule = css.match(/\.neotokyo-sequence__cast\{([^}]+)\}/)[1];
   assert.match(rule, /opacity:1;/);
   assert.match(rule, /transform:none;/);
