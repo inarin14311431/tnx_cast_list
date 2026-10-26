@@ -70,7 +70,8 @@ const bundleSources = expectedStyles.flatMap((bundle, index) => {
 });
 const sourceText = file => bundleSources.find(source => source.file === file)?.text ?? "";
 const presentation = sourceText("act-showcase-presentation-tuning.css");
-const cinematicCss = sourceText("act-showcase-cinematic-v2.css");
+// the rules are looked up by selector text, so compare without the scene-frame scope (tests/act-showcase-scene-css-scope.test.mjs checks the scope)
+const cinematicCss = sourceText("act-showcase-cinematic-v2.css").replace(/:where\(\[data-scene="[\w-]+"\]\[data-scene-pattern="a"\],\[data-scene="[\w-]+"\]\[data-scene-pattern="a"\] \*\)/g, "");
 
 const localStyles = [...html.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*href=["']([^"']+)["']/gi)]
   .map(match => match[1])

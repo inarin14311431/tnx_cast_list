@@ -1,4 +1,4 @@
-import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
+import { actShowcaseCssEntry, actShowcaseCss, stripSceneScope } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -23,7 +23,7 @@ test("trailer frame grows to full text and stage owns overflow", async () => {
   assert.match(css, /overflow-y:auto/);
   // The readout's max-height/overflow in this file were fully shadowed by act-showcase-cinematic-v2.css
   // (same selector, loaded later) and were removed; the effective rule lives there.
-  const effective = await actShowcaseCss("act-showcase-cinematic-v2");
+  const effective = await stripSceneScope(actShowcaseCss("act-showcase-cinematic-v2"));
   assert.match(effective, /screen--trailer \.neotokyo-sequence__readout\{[\s\S]*max-height:none;[\s\S]*overflow:visible/);
   assert.doesNotMatch(css, /max-height:calc\(100svh/);
   assert.doesNotMatch(effective, /max-height:calc\(100svh/);

@@ -1,4 +1,4 @@
-import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
+import { actShowcaseCssEntry, actShowcaseCss, stripSceneScope } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -67,7 +67,7 @@ test("legacy trailer payload fallback stays in the canonical model without a sec
 test("act title uses cinematic reveal while multiline fitting is owned by cinematic-v2", async () => {
   const [enhancer, css] = await Promise.all([
     read("js/act-showcase-cinematic-enhancer.js"),
-    actShowcaseCss("act-showcase-cinematic-v2")
+    stripSceneScope(actShowcaseCss("act-showcase-cinematic-v2"))
   ]);
   assert.match(enhancer, /is-cinematic-title/);
   assert.doesNotMatch(enhancer, /whiteSpace = "nowrap"|fitSingleLineTitle/);
