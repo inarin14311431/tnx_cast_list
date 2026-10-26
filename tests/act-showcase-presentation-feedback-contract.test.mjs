@@ -38,10 +38,11 @@ test("trailer stage owns adaptive scrolling and the readout remains overflow-vis
 });
 
 test("the selected handout style is highlighted while duplicate matches stay secondary", async () => {
-  const [cinematic, supporting] = await Promise.all([
+  const [cinematic, supportingScoped] = await Promise.all([
     actShowcaseCss("act-showcase-cinematic-v2"),
     actShowcaseCss("act-showcase-supporting-cast")
   ]);
+  const supporting = stripSceneScope(supportingScoped);
   assert.match(cinematic, /styles span\.is-role-primary\{[\s\S]*border-color:#77ffd1/);
   assert.match(cinematic, /transform:translateY\(-1px\)/);
   assert.match(supporting, /is-assigned-style-duplicate\{opacity:\.45\}/);
