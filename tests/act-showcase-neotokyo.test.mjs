@@ -1,4 +1,4 @@
-import { actShowcaseCssEntry, actShowcaseCss } from "./helpers/act-showcase-css.mjs";
+import { actShowcaseCssEntry, actShowcaseCss, stripSceneScope } from "./helpers/act-showcase-css.mjs";
 import test from "node:test";
 import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
@@ -49,7 +49,7 @@ test("title and summary screens no longer duplicate the subtitle already shown o
   const [neotokyo, enhancer, hierarchyCss] = await Promise.all([
     read("js/act-showcase-neotokyo.js"),
     read("js/act-showcase-cinematic-enhancer.js"),
-    actShowcaseCss("act-showcase-neotokyo-hierarchy")
+    stripSceneScope(actShowcaseCss("act-showcase-neotokyo-hierarchy"))
   ]);
   // js/act-showcase-neotokyo.js's showActTitle()/showSummary() used to read model.heroSubTitle via
   // getActOverview() and build a .neotokyo-sequence__act-overview / .neotokyo-sequence__overview-intro
@@ -85,7 +85,7 @@ test("NeoTokyo handout remains visible and shifts left while ASSIGN opens on the
 test("participation role is an explicit ASSIGN slot, not a fallback handout title", async () => {
   const [source, css] = await Promise.all([
     read("js/act-showcase-neotokyo.js"),
-    actShowcaseCss("act-showcase-neotokyo-hierarchy")
+    stripSceneScope(actShowcaseCss("act-showcase-neotokyo-hierarchy"))
   ]);
   const handoutBody = source.slice(source.indexOf("async function showHandoutAndAssign"), source.indexOf("function createAssignedCast"));
   assert.match(handoutBody, /const handoutTitle = clean\(handout\.title\) \|\| `PC\$\{pcNumber\} HANDOUT`/);
@@ -107,7 +107,7 @@ test("NeoTokyo assignment preserves search, match and assigned sequence", async 
 test("NeoTokyo loader stays hidden after phase 6 exits", async () => {
   const [html, css, page] = await Promise.all([
     read("act-showcase.html"),
-    actShowcaseCss("act-showcase-neotokyo-hierarchy"),
+    stripSceneScope(actShowcaseCss("act-showcase-neotokyo-hierarchy")),
     read("js/act-showcase-page.js")
   ]);
   assert.match(html, /id="act-showcase-status" class="showcase-loading"/);
