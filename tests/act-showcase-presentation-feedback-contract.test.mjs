@@ -16,7 +16,7 @@ test("presentation tuning loads after supporting cast styling", async () => {
 test("multiline-safe title sizing is owned by cinematic-v2 rather than presentation tuning", async () => {
   const [tuning, cinematic] = await Promise.all([
     actShowcaseCss("act-showcase-presentation-tuning"),
-    actShowcaseCss("act-showcase-cinematic-v2")
+    stripSceneScope(actShowcaseCss("act-showcase-cinematic-v2"))
   ]);
   assert.doesNotMatch(tuning, /white-space\s*:\s*nowrap/);
   assert.match(cinematic, /act-title--logo\.showcase-fit-title\{[\s\S]*white-space:normal/);
@@ -27,7 +27,7 @@ test("multiline-safe title sizing is owned by cinematic-v2 rather than presentat
 test("trailer stage owns adaptive scrolling and the readout remains overflow-visible", async () => {
   const [tuning, cinematic, writing] = await Promise.all([
     actShowcaseCss("act-showcase-presentation-tuning"),
-    actShowcaseCss("act-showcase-cinematic-v2"),
+    stripSceneScope(actShowcaseCss("act-showcase-cinematic-v2")),
     actShowcaseCss("act-showcase-writing-patterns")
   ]);
   assert.match(writing, /data-trailer-pattern=\"prose\"/);
@@ -39,7 +39,7 @@ test("trailer stage owns adaptive scrolling and the readout remains overflow-vis
 
 test("the selected handout style is highlighted while duplicate matches stay secondary", async () => {
   const [cinematic, supportingScoped] = await Promise.all([
-    actShowcaseCss("act-showcase-cinematic-v2"),
+    stripSceneScope(actShowcaseCss("act-showcase-cinematic-v2")),
     actShowcaseCss("act-showcase-supporting-cast")
   ]);
   const supporting = stripSceneScope(supportingScoped);
