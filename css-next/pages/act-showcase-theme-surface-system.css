@@ -75,13 +75,11 @@
 :root[data-showcase-theme] .cinematic-intro__overline,:root[data-showcase-theme] .scene-eyebrow,:root[data-showcase-theme] .scene-heading__note,:root[data-showcase-theme] .opening-systemline{color:var(--showcase-muted)}
 :root[data-showcase-theme] .cinematic-intro__title,:root[data-showcase-theme] .scene-heading h2,:root[data-showcase-theme] .opening-content h1{color:var(--showcase-text)}
 :root[data-showcase-theme] .scene-opening{background:radial-gradient(circle at 50% 55%,rgba(var(--showcase-primary-rgb),.09),transparent 25%),linear-gradient(to bottom,transparent,rgba(var(--showcase-bg-rgb),.66))}
-:root[data-showcase-theme] .scene-trailer{background:linear-gradient(110deg,rgba(var(--showcase-primary-rgb),.06),transparent 35%,rgba(var(--showcase-secondary-rgb),.05))}
 :root[data-showcase-theme] .trailer-body{border-color:var(--showcase-primary);color:var(--showcase-text)}
 
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-frame,
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-panel{border-radius:var(--showcase-radius)}
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-brand__logo,
-:root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-nav__item.is-active,
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-sidecopy,
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-aside strong,
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-topnote{color:var(--showcase-text)}
@@ -148,7 +146,6 @@
 :root[data-showcase-theme="intron"] body.showcase-poster-v2-ready .poster-v2-panel{background:rgba(255,255,255,.82)}
 
 /* Crimson Noir uses its warm secondary as ceremonial accent. */
-:root[data-showcase-theme="vlad"] body.showcase-poster-v2-ready .poster-v2-nav__item.is-active,
 :root[data-showcase-theme="vlad"] body.showcase-poster-v2-ready .poster-v2-trailer-stage__title{color:var(--showcase-secondary)}
 :root[data-showcase-theme="vlad"] .neotokyo-sequence__link-line{background:linear-gradient(180deg,transparent,var(--showcase-primary) 15%,var(--showcase-secondary) 52%,var(--showcase-primary) 85%,transparent)}
 
@@ -445,19 +442,16 @@
 :root[data-showcase-theme] body.showcase-poster-v2-ready .opening-subtitle{color:var(--showcase-secondary);text-shadow:0 0 18px rgba(var(--showcase-secondary-rgb),.24)}
 :root[data-showcase-theme] body.showcase-poster-v2-ready .opening-ruler,
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-brand__sub,
-:root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-nav,
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-topnote small,
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-aside span,
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-aside small{color:var(--showcase-muted)}
 :root[data-showcase-theme] body.showcase-poster-v2-ready .opening-scroll,
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-brand__logo,
-:root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-nav__item.is-active,
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-topnote,
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-sidecopy,
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-aside{color:var(--showcase-text)}
 :root[data-showcase-theme] body.showcase-poster-v2-ready .opening-scroll i{background:linear-gradient(90deg,transparent,var(--showcase-primary))}
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-topbar{border-bottom-color:var(--showcase-border)}
-:root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-nav__item.is-active{text-shadow:0 0 16px var(--showcase-glow)}
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-board:before{
   background-image:linear-gradient(180deg,rgba(var(--showcase-bg-rgb),.18),rgba(var(--showcase-bg-rgb),.93) 68%),var(--showcase-background);
   background-position:center top,center top;

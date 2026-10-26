@@ -264,13 +264,6 @@
   border-color:var(--showcase-readable-border-secondary);
 }
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__ruler-role{text-shadow:none}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-overview{
-  color:var(--showcase-readable-text);
-  border-color:var(--showcase-readable-border);
-  background:var(--showcase-readable-surface);
-}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-overview-label{color:var(--showcase-secondary)}
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-overview-copy{color:var(--showcase-readable-text)}
 
 /* ---------- Trailer / handout / assigned cast ---------- */
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__trailer-terminal,

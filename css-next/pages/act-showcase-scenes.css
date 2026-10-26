@@ -4,7 +4,6 @@
 .cinematic-intro.neotokyo-sequence .neotokyo-story__title-note{margin:12px 0 0;color:#70f0dc;font:800 .52rem/1.2 "Share Tech Mono",monospace;letter-spacing:.18em;text-align:center;text-shadow:0 0 16px rgba(79,255,219,.22)}
 
 .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer{display:flex;flex-direction:column;justify-content:flex-start;height:100%;min-height:0;padding-top:4px}
-.cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer .neotokyo-sequence__trailer-definition{margin:6px 0 8px}
 .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer .neotokyo-sequence__micro{margin:0 0 7px}
 .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer .neotokyo-sequence__section-title{margin:0 0 12px;font-size:clamp(3.6rem,6.5vw,6.8rem);line-height:.9}
 .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer .neotokyo-sequence__readout{flex:1 1 auto;min-height:0;max-height:none;margin:0;padding:22px 34px 18px;white-space:pre-line;overflow:auto;font-size:clamp(.98rem,1.32vw,1.25rem);line-height:1.72}
@@ -421,14 +420,11 @@ body#act-showcase-page .poster-v2-visual__caption .poster-v2-visual__code:where(
 
 /* ==== from: act-showcase-cinematic-v2.css ==== */
 /* Final presentation overrides for the cinematic ACT showcase. */
-body.showcase-poster-v2-ready .poster-v2-nav{display:none}
 body.showcase-poster-v2-ready .poster-v2-topbar{grid-template-columns:auto 1fr;align-items:start}
 body.showcase-poster-v2-ready .poster-v2-topnote{grid-column:2;justify-self:end;font-size:clamp(.68rem,.72vw,.8rem)}
 
 /* Keep the opening as a true first viewport so the cast board never peeks in before the automatic transition. */
 body.showcase-poster-v2-ready #scene-opening{min-height:100svh}
-body.showcase-cast-entry-pending #poster-showcase-board-v2 .poster-v2-grid{visibility:hidden;opacity:0;transform:translateY(46px)}
-body.showcase-cast-entry-reveal #poster-showcase-board-v2 .poster-v2-grid{animation:showcase-cast-entry-reveal .78s cubic-bezier(.16,.82,.24,1) both}
 @keyframes showcase-cast-entry-reveal{
   0%{opacity:0;transform:translateY(46px) scale(.985);filter:blur(4px)}
   55%{filter:blur(0)}
@@ -545,8 +541,6 @@ body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__st
   overflow:visible;
   padding-bottom:clamp(80px,12vh,150px);
 }
-.neotokyo-sequence__trailer-definition,
-.cinematic-trailer-band{display:none}
 body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--trailer .neotokyo-sequence__readout{
   flex:0 0 auto;
   min-height:1.8em;
@@ -681,7 +675,6 @@ body.showcase-poster-v2-ready .poster-v2-handout-copy{font-size:clamp(.92rem,1vw
 
 @media (prefers-reduced-motion:reduce){
   body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__stage.is-trailer-scroll{scroll-behavior:auto}
-  body.showcase-cast-entry-reveal #poster-showcase-board-v2 .poster-v2-grid{animation:none}
 }
 
 /* ==== from: act-showcase-cinematic-fit.css ==== */
