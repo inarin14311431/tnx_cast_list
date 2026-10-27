@@ -435,11 +435,7 @@ body.showcase-poster-v2-ready .poster-v2-topnote:where([data-scene="finale"][dat
 
 /* Keep the opening as a true first viewport so the cast board never peeks in before the automatic transition. */
 body.showcase-poster-v2-ready #scene-opening:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){min-height:100svh}
-@keyframes showcase-cast-entry-reveal{
-  0%{opacity:0;transform:translateY(46px) scale(.985);filter:blur(4px)}
-  55%{filter:blur(0)}
-  100%{opacity:1;transform:none;filter:none}
-}
+
 
 /* Use the published image as a composition element instead of an over-zoomed crop. */
 body.showcase-poster-v2-ready.has-showcase-background .scene-opening:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *):before,
