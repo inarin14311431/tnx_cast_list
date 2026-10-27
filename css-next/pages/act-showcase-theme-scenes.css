@@ -96,9 +96,7 @@
   text-shadow:3px 0 rgba(var(--showcase-primary-rgb),.22),-3px 0 rgba(var(--showcase-secondary-rgb),.20),0 18px 48px rgba(var(--showcase-bg-rgb),.46);
 }
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__title-note,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__subtitle,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-subtitle,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo [data-act-subtitle]{
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-subtitle{
   color:var(--showcase-scene-accent-2);
   text-shadow:0 1px 0 rgba(var(--showcase-bg-rgb),.75),0 0 16px rgba(var(--showcase-secondary-rgb),.14);
 }
@@ -147,10 +145,7 @@
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-title-logo__meta>*:last-child{text-align:right}
 
 /* Caret: a single theme accent, with no legacy black cap. */
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout:after,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout-cursor,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cursor,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__caret{
+:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout:after{
   width:5px;
   min-width:5px;
   border:0;
@@ -159,14 +154,7 @@
   box-shadow:0 0 12px rgba(var(--showcase-primary-rgb),.44);
   filter:none;
 }
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout-cursor:before,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout-cursor:after,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cursor:before,
-:root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__cursor:after{
-  border:0;
-  background:var(--showcase-scene-accent);
-  box-shadow:none;
-}
+
 
 /* Trailer transition: frosted themed HUD instead of neutral grey. */
 :root[data-showcase-theme] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-story__trailer-outro{
