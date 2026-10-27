@@ -14,6 +14,7 @@ const ownedShowcase = {
     rulerName: "E2E RULER",
     trailer: { title: "ACT TRAILER", body: "保存済みトレーラー本文" },
     background: "https://example.invalid/background.webp",
+    scenes: { title: "B", ready: "c", finale: "a" },
     casts: [{
       serial: "PRIVATE",
       fullName: "復元用手動キャスト",
@@ -58,6 +59,8 @@ test("owned showcase can be restored into generator fields", async ({ page }) =>
   await expect(page.locator("#owned-showcase-restore")).toBeVisible({ timeout: 12_000 });
   await expect(page.locator("#page-title")).toHaveValue("RESTORE PAGE TITLE", { timeout: 12_000 });
   await expect(page.locator("#act-name")).toHaveValue("復元テストアクト");
+  // the stored composition goes into the hidden scene-selection field (normalised; frames left at a are dropped)
+  await expect(page.locator("#showcase-scenes")).toHaveValue('{"title":"b","ready":"c"}');
   await expect(page.locator("#ruler-name")).toHaveValue("E2E RULER");
   await expect(page.locator("#intro-text")).toHaveValue("保存済みトレーラー本文");
   await expect(page.locator("#background-url")).toHaveValue("https://example.invalid/background.webp");

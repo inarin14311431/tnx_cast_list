@@ -3,6 +3,7 @@ import { requireAuth } from "./auth-state.js?v=a766246e";
 import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
 import { planShowcaseRestore } from "./showcase-restore-matching.js?v=80d34654";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
+import { formatSceneSelectionField } from "./act-showcase-scenes.js?v=e8661b67";
 
 const MAX_CASTS = 6;
 const RESTORE_PARAM = "edit";
@@ -11,6 +12,7 @@ const elements = {
   pageTitle: document.querySelector("#page-title"),
   actName: document.querySelector("#act-name"),
   showcaseTheme: document.querySelector("#showcase-theme"),
+  showcaseScenes: document.querySelector("#showcase-scenes"),
   rulerName: document.querySelector("#ruler-name"),
   publishSlug: document.querySelector("#publish-slug"),
   introText: document.querySelector("#intro-text"),
@@ -144,6 +146,8 @@ function restoreBasicFields(data, showcase, slug) {
   setField(elements.actName, showcase.actName || data?.actName || slug);
   setField(elements.showcaseTheme, ["nova", "intron", "vlad", "lutetia"].includes(showcase.theme) ? showcase.theme : "nova");
   elements.showcaseTheme?.dispatchEvent(new Event("change", { bubbles: true }));
+  // Always written, also when empty, so the composition of a previously restored act does not leak into this one.
+  setField(elements.showcaseScenes, formatSceneSelectionField(showcase.scenes));
   setField(elements.rulerName, showcase.rulerName || data?.rulerName || "");
   setField(elements.introText, showcase.trailer?.body || showcase.intro || "");
 
