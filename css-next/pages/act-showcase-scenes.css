@@ -438,8 +438,7 @@ body.showcase-poster-v2-ready #scene-opening:where([data-scene="finale"][data-sc
 
 
 /* Use the published image as a composition element instead of an over-zoomed crop. */
-body.showcase-poster-v2-ready.has-showcase-background .scene-opening:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *):before,
-body.showcase-poster-v2-ready.showcase-published-background-restored .scene-opening:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *):before{
+body.showcase-poster-v2-ready.has-showcase-background .scene-opening:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *):before{
   inset:0;
   background-image:linear-gradient(90deg,rgba(2,7,18,.92) 0%,rgba(2,7,18,.70) 38%,rgba(2,7,18,.24) 72%,rgba(2,7,18,.46) 100%),var(--showcase-background);
   background-position:center,right center;
@@ -448,8 +447,7 @@ body.showcase-poster-v2-ready.showcase-published-background-restored .scene-open
   transform:none;
   filter:saturate(1.04) contrast(1.03);
 }
-body.showcase-poster-v2-ready.has-showcase-background .poster-v2-board:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *):before,
-body.showcase-poster-v2-ready.showcase-published-background-restored .poster-v2-board:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *):before{
+body.showcase-poster-v2-ready.has-showcase-background .poster-v2-board:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *):before{
   background-image:linear-gradient(180deg,rgba(3,8,19,.30),rgba(3,8,19,.88) 72%),var(--showcase-background);
   background-position:center top,center top;
   background-size:cover,contain;
@@ -649,8 +647,7 @@ body.showcase-poster-v2-ready .poster-v2-handout-copy:where([data-scene="finale"
 @media (max-width:760px){
   body.showcase-poster-v2-ready .poster-v2-topbar:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){grid-template-columns:1fr}
   body.showcase-poster-v2-ready .poster-v2-topnote:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *){grid-column:1;justify-self:start}
-  body.showcase-poster-v2-ready.has-showcase-background .scene-opening:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *):before,
-  body.showcase-poster-v2-ready.showcase-published-background-restored .scene-opening:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *):before{
+  body.showcase-poster-v2-ready.has-showcase-background .scene-opening:where([data-scene="finale"][data-scene-pattern="a"],[data-scene="finale"][data-scene-pattern="a"] *):before{
     background-image:linear-gradient(180deg,rgba(2,7,18,.38),rgba(2,7,18,.86) 72%),var(--showcase-background);
     background-position:center,center 12%;
     background-size:cover,contain;
