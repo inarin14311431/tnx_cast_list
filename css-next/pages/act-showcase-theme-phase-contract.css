@@ -132,26 +132,22 @@
 :root[data-showcase-theme] body#act-showcase-page.showcase-neotokyo-finale-active .neotokyo-sequence__advance:before{color:var(--showcase-tertiary)}
 
 /* Guest/supporting cards must live on the same surface family as assigned casts. */
-:root[data-showcase-theme] body#act-showcase-page .poster-supporting-cast,
-:root[data-showcase-theme] body#act-showcase-page .neotokyo-finale__supporting{
+:root[data-showcase-theme] body#act-showcase-page .poster-supporting-cast{
   border-color:rgba(var(--showcase-secondary-rgb),.25);
   background:linear-gradient(90deg,rgba(var(--showcase-secondary-rgb),.055),rgba(var(--showcase-surface-rgb),.94));
 }
-:root[data-showcase-theme] body#act-showcase-page .poster-supporting-card,
-:root[data-showcase-theme] body#act-showcase-page .neotokyo-finale__supporting-card{
+:root[data-showcase-theme] body#act-showcase-page .poster-supporting-card{
   border-color:rgba(var(--showcase-primary-rgb),.24);
   background:rgba(var(--showcase-surface-rgb),.96);
   color:var(--showcase-text);
 }
 :root[data-showcase-theme] body#act-showcase-page .poster-supporting-card__body,
-:root[data-showcase-theme] body#act-showcase-page .poster-supporting-card__name,
 :root[data-showcase-theme] body#act-showcase-page .poster-supporting-card strong{color:var(--showcase-text)}
 :root[data-showcase-theme] body#act-showcase-page .poster-supporting-card__summary{color:var(--showcase-muted)}
 
 /* ---------- Dossier / light theme: eliminate leftover dark islands ---------- */
 :root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title,
 :root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__screen--title-logo,
-:root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__title-logo,
 :root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__act-title--logo,
 :root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__trailer-terminal,
 :root[data-showcase-theme="intron"] body#act-showcase-page .cinematic-intro.neotokyo-sequence .neotokyo-sequence__readout.is-terminal-readout,

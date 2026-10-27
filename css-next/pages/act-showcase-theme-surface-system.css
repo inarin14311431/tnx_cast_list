@@ -72,10 +72,12 @@
 :root[data-showcase-theme] .cinematic-intro{background:var(--showcase-bg)}
 :root[data-showcase-theme] .cinematic-intro:before,:root[data-showcase-theme] .opening-horizon{background:linear-gradient(90deg,transparent,var(--showcase-primary),var(--showcase-text),var(--showcase-secondary),transparent);box-shadow:0 0 26px var(--showcase-glow)}
 :root[data-showcase-theme] .cinematic-intro__scan,:root[data-showcase-theme] .ambient-stage__scan{background:repeating-linear-gradient(to bottom,transparent 0 5px,rgba(var(--showcase-primary-rgb),.035) 5px 6px)}
-:root[data-showcase-theme] .cinematic-intro__overline,:root[data-showcase-theme] .scene-eyebrow,:root[data-showcase-theme] .scene-heading__note,:root[data-showcase-theme] .opening-systemline{color:var(--showcase-muted)}
-:root[data-showcase-theme] .cinematic-intro__title,:root[data-showcase-theme] .scene-heading h2,:root[data-showcase-theme] .opening-content h1{color:var(--showcase-text)}
+:root[data-showcase-theme] .cinematic-intro__overline,
+:root[data-showcase-theme] .opening-systemline{color:var(--showcase-muted)}
+:root[data-showcase-theme] .cinematic-intro__title,
+:root[data-showcase-theme] .opening-content h1{color:var(--showcase-text)}
 :root[data-showcase-theme] .scene-opening{background:radial-gradient(circle at 50% 55%,rgba(var(--showcase-primary-rgb),.09),transparent 25%),linear-gradient(to bottom,transparent,rgba(var(--showcase-bg-rgb),.66))}
-:root[data-showcase-theme] .trailer-body{border-color:var(--showcase-primary);color:var(--showcase-text)}
+
 
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-frame,
 :root[data-showcase-theme] body.showcase-poster-v2-ready .poster-v2-panel{border-radius:var(--showcase-radius)}
@@ -248,14 +250,13 @@
 :root[data-showcase-theme] .neotokyo-sequence__terminal{color:var(--showcase-muted)}
 :root[data-showcase-theme] .neotokyo-sequence__section-title,
 :root[data-showcase-theme] .neotokyo-sequence__act-title{color:var(--showcase-text)}
-:root[data-showcase-theme] .neotokyo-sequence__ruler{color:var(--showcase-secondary)}
+
 
 /* --------------------------------------------------------------------------
    ACT TRAILER: keep the terminal inside the cinematic frame at all desktop
    heights. The readout owns scrolling rather than the outer clipped stage.
    -------------------------------------------------------------------------- */
-:root[data-showcase-theme] .neotokyo-sequence__screen--trailer,
-:root[data-showcase-theme] .neotokyo-sequence__screen[data-screen="trailer"]{
+:root[data-showcase-theme] .neotokyo-sequence__screen--trailer{
   width:min(1120px,100%);
   max-width:100%;
   max-height:100%;
@@ -263,8 +264,7 @@
   box-sizing:border-box;
   overflow:hidden;
 }
-:root[data-showcase-theme] .neotokyo-sequence__screen--trailer .neotokyo-sequence__section-title,
-:root[data-showcase-theme] .neotokyo-sequence__screen[data-screen="trailer"] .neotokyo-sequence__section-title{
+:root[data-showcase-theme] .neotokyo-sequence__screen--trailer .neotokyo-sequence__section-title{
   max-width:100%;
   margin-bottom:clamp(12px,2svh,24px);
   font-size:clamp(2.8rem,7.2vw,7.4rem);
@@ -408,8 +408,7 @@
   border-color:var(--showcase-line-soft);
   background:linear-gradient(120deg,var(--showcase-surface-2),var(--showcase-surface-0));
 }
-:root[data-showcase-theme] .neotokyo-sequence__summary-cast-name{color:var(--showcase-text)}
-:root[data-showcase-theme] .neotokyo-sequence__summary-cast-reading,
+
 :root[data-showcase-theme] .neotokyo-sequence__summary-cast-tagline{color:var(--showcase-muted)}
 :root[data-showcase-theme] .neotokyo-sequence__summary-cast-styles span{border-color:var(--showcase-border);background:var(--showcase-accent-wash);color:var(--showcase-text)}
 
@@ -696,8 +695,7 @@
 }
 
 @media(max-height:760px) and (min-width:761px){
-  :root[data-showcase-theme] .neotokyo-sequence__screen--trailer .neotokyo-sequence__section-title,
-  :root[data-showcase-theme] .neotokyo-sequence__screen[data-screen="trailer"] .neotokyo-sequence__section-title{font-size:clamp(2.25rem,5.8vw,5.6rem)}
+  :root[data-showcase-theme] .neotokyo-sequence__screen--trailer .neotokyo-sequence__section-title{font-size:clamp(2.25rem,5.8vw,5.6rem)}
   :root[data-showcase-theme] body.showcase-neotokyo .neotokyo-sequence__trailer-terminal{max-height:52svh}
   :root[data-showcase-theme] body.showcase-neotokyo .neotokyo-sequence__readout.is-terminal-readout{max-height:42svh}
 }
