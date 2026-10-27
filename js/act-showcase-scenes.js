@@ -38,3 +38,40 @@ export function resolveSceneComposition(data, { patterns = SCENE_PATTERNS } = {}
 function isPlainObject(value) {
   return Boolean(value) && typeof value === "object" && !Array.isArray(value);
 }
+
+// ---- Saving and restoring the composition (the generator side). The page that reads it is resolveSceneComposition above.
+//
+// What is stored is the selection: { frame: pattern } for the frames that are NOT "a". All frames "a" is stored as no
+// `scenes` key at all, which is exactly what every showcase published before compositions looks like. A pattern the frame
+// cannot play yet is kept as it was written, so a showcase edited with an older script does not lose it; the reader
+// plays "a" for it until the pattern exists.
+const PATTERN_NAME = /^[a-z0-9-]{1,16}$/;
+
+export function normalizeSceneSelection(value) {
+  const selection = {};
+  if (!isPlainObject(value)) return selection;
+  for (const frame of SCENE_FRAMES) {
+    if (!Object.prototype.hasOwnProperty.call(value, frame)) continue;
+    const raw = value[frame];
+    const pattern = typeof raw === "string" ? raw.trim().toLowerCase() : "";
+    if (PATTERN_NAME.test(pattern) && pattern !== DEFAULT_SCENE_PATTERN) selection[frame] = pattern;
+  }
+  return selection;
+}
+
+// The generator keeps the selection in one hidden field (#showcase-scenes) as JSON; "" means every frame is "a".
+export function formatSceneSelectionField(selection) {
+  const normalized = normalizeSceneSelection(selection);
+  return Object.keys(normalized).length ? JSON.stringify(normalized) : "";
+}
+
+export function parseSceneSelectionField(text) {
+  const source = String(text ?? "").trim();
+  if (!source) return {};
+  try {
+    return normalizeSceneSelection(JSON.parse(source));
+  } catch {
+    return {};
+  }
+}
+

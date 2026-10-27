@@ -3,12 +3,14 @@ import { withRequestTimeout } from "./async-timeout.js?v=526a0b5a";
 import { escapeAttribute } from "./dom-escape.js?v=46402d5f";
 import { resolveCastNumber } from "./showcase-cast-number.js?v=944a948e";
 import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=0e404b6b";
+import { parseSceneSelectionField } from "./act-showcase-scenes.js?v=e8661b67";
 
 const preview = document.querySelector("#showcase-preview");
 const status = document.querySelector("#generator-status");
 const slugField = document.querySelector("#publish-slug");
 const actNameField = document.querySelector("#act-name");
 const showcaseThemeField = document.querySelector("#showcase-theme");
+const showcaseScenesField = document.querySelector("#showcase-scenes");
 const rulerField = document.querySelector("#ruler-name");
 const scenarioWriterField = document.querySelector("#scenario-writer-name");
 const legacyPublishButton = document.querySelector("#publish-button");
@@ -70,6 +72,10 @@ async function publishDynamicShowcase(button, mode) {
     const scenarioWriterName = String(scenarioWriterField?.value || showcaseData.scenarioWriterName || "").trim();
     showcaseData.scenarioWriterName = scenarioWriterName;
     showcaseData.theme = normalizeShowcaseTheme(showcaseThemeField?.value);
+    // The composition (which pattern each scene frame plays) is carried over from what was restored for editing, for both
+    // modes; with every frame "a" there is no scenes key, as for a showcase published before compositions existed.
+    const scenes = parseSceneSelectionField(showcaseScenesField?.value);
+    if (Object.keys(scenes).length) showcaseData.scenes = scenes;
 
     const payloadBytes = getJsonByteLength(showcaseData);
     if (payloadBytes > MAX_SHOWCASE_BYTES) {
