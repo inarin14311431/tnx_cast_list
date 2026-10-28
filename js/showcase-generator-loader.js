@@ -56,6 +56,7 @@ async function initializeShowcaseGenerator() {
 
   try {
     await import("./showcase-output-normalizer.js?v=cea76d1b");
+    await import("./showcase-scene-selector.js?v=3bc4f0b0");
     await import("./showcase-edit-restore.js?v=208661b4");
     await import("./showcase-delete.js?v=13064975");
     await import("./showcase-owned-list.js?v=816b4c40");
