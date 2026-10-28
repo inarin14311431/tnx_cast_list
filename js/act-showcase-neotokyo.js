@@ -1,5 +1,6 @@
 import { parseStyleLabel } from "./act-showcase-style-label.js?v=8a1b88dd";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
+import { keepCaretVisible } from "./act-showcase-caret.js";
 import { DEFAULT_SCENE_PATTERN } from "./act-showcase-scenes.js?v=e8661b67";
 const SAMPLE_TRAILER_MESSAGE = "公開用アクトトレーラーは未登録です。\n公開データにトレーラーを登録すると、ここで読み上げ表示されます。";
 const FALLBACK_IMAGE = "./assets/placeholders/scan-failed.webp";
@@ -687,7 +688,10 @@ function prepareSplitReadout(target, value) {
   return { target, readText, unreadText, characters: Array.from(source), source };
 }
 
-async function typeSplitReadout(state, readout, maxDuration, maxInterval = 24) {
+// onStep (optional) runs after every typed step and once more when the reading ends, with the text already updated: a
+// pattern whose text scrolls inside its own box passes () => keepCaretVisible(box, readout.readText). Pattern A passes
+// nothing: its frame follows the caret by itself (js/act-showcase-cinematic-layout-v2.js).
+async function typeSplitReadout(state, readout, maxDuration, maxInterval = 24, onStep = null) {
   const { target, readText, unreadText, characters, source } = readout;
   if (!source) return;
   const interval = Math.max(6, Math.min(maxInterval, Math.floor(maxDuration / Math.max(characters.length, 1))));
@@ -698,6 +702,7 @@ async function typeSplitReadout(state, readout, maxDuration, maxInterval = 24) {
       index = Math.min(characters.length, index + chunkSize);
       readText.data = characters.slice(0, index).join("");
       unreadText.data = characters.slice(index).join("");
+      onStep?.();
       await wait(state, interval);
     }
   } finally {
@@ -705,6 +710,7 @@ async function typeSplitReadout(state, readout, maxDuration, maxInterval = 24) {
     readText.data = source;
     unreadText.data = "";
     delete target.dataset.typing;
+    onStep?.();
   }
 }
 
