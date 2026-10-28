@@ -44,7 +44,7 @@ test("normal cinematic sequence still contains every narrative phase", async () 
   // every intro frame is in the table and played for reduced motion too (the loop has no reduced-motion branch)
   assert.deepEqual(INTRO_SCENES.map(scene => scene.frame), ["loading", "title", "trailer", "handout-assign", "ready"]);
   const loop = sequence.slice(sequence.indexOf("for (const scene of INTRO_SCENES)"), sequence.indexOf("} finally {"));
-  assert.match(loop, /await scene\.patterns\[DEFAULT_SCENE_PATTERN\]\(state, model, scene\)/);
+  assert.match(loop, /await playWithFallback\(\s*scene\.patterns,\s*model\.scenes\?\.\[scene\.frame\],\s*draw => draw\(state, model, scene\)/);
   assert.doesNotMatch(loop, /prefersReducedMotion|showcase-neotokyo-reduced/);
   assert.match(sequence, /await showHandoutAndAssign\(state, model\.casts\[index\], index, model\.casts, scene\)/);
 });

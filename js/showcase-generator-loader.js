@@ -31,7 +31,7 @@ async function initializeShowcaseGenerator() {
     await import("./showcase-dedicated-output.js?v=cdd8099e");
     await import("./showcase-guests.js?v=f8351e3a");
     await import("./showcase-guest-publish-bridge.js?v=809b92f6");
-    await import("./showcase-dynamic-publish-v3.js?v=4ef0ad55");
+    await import("./showcase-dynamic-publish-v3.js?v=86055f81");
     await import("./showcase-publish-url-canonicalizer.js?v=d365d9fd");
     document.documentElement.dataset.showcaseGeneratorState = "ready";
   } catch (error) {
@@ -56,8 +56,8 @@ async function initializeShowcaseGenerator() {
 
   try {
     await import("./showcase-output-normalizer.js?v=cea76d1b");
-    await import("./showcase-scene-selector.js?v=3bc4f0b0");
-    await import("./showcase-edit-restore.js?v=208661b4");
+    await import("./showcase-scene-selector.js?v=c0abed79");
+    await import("./showcase-edit-restore.js?v=377e972e");
     await import("./showcase-delete.js?v=13064975");
     await import("./showcase-owned-list.js?v=816b4c40");
   } catch (error) {

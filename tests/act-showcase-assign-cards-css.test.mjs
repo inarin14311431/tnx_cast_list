@@ -24,7 +24,7 @@ const selectorsOf = css => [...css.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/(?
 
 test("assign-cards sections sit at the end of their bundles", () => {
   const sources = actShowcaseSources().map(item => item.file);
-  assert.equal(sources.at(-1), "act-showcase-assign-cards-theme.css");
+  assert.equal(sources.at(-1), TRAILING_SOURCES.at(-1), "the pattern layer (pattern B, C) is the last source; the assign-cards theme section stays right after visual-emphasis");
   assert.equal(sources.indexOf("act-showcase-visual-emphasis.css") + 1, sources.indexOf("act-showcase-assign-cards-theme.css"));
   assert.equal(sources[sources.indexOf("act-showcase-handout-live-frame.css") + 1], "act-showcase-assign-cards.css");
   assert.deepEqual(actShowcaseTrailingSources().map(item => item.file), TRAILING_SOURCES);

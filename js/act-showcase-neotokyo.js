@@ -1,7 +1,8 @@
 import { parseStyleLabel } from "./act-showcase-style-label.js?v=8a1b88dd";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
 import { keepCaretVisible } from "./act-showcase-caret.js";
-import { DEFAULT_SCENE_PATTERN } from "./act-showcase-scenes.js?v=e8661b67";
+import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=3bf295e5";
+import { createTrailerScreenB } from "./act-showcase-trailer-b.js";
 const SAMPLE_TRAILER_MESSAGE = "公開用アクトトレーラーは未登録です。\n公開データにトレーラーを登録すると、ここで読み上げ表示されます。";
 const FALLBACK_IMAGE = "./assets/placeholders/scan-failed.webp";
 const SHOW_ACT_TITLE_SCREEN = true;
@@ -46,7 +47,12 @@ export async function runNeoTokyoIntro({ intro, model }) {
   try {
     for (const scene of INTRO_SCENES) {
       if (scene.frame === "title" && !SHOW_ACT_TITLE_SCREEN) continue;
-      await scene.patterns[DEFAULT_SCENE_PATTERN](state, model, scene);
+      await playWithFallback(
+        scene.patterns,
+        model.scenes?.[scene.frame],
+        draw => draw(state, model, scene),
+        (error, pattern) => console.warn(`ACT SHOWCASE: scene "${scene.frame}" pattern "${pattern}" failed, playing "${DEFAULT_SCENE_PATTERN}" instead`, error)
+      );
       if (state.finished) return;
     }
   } finally {
@@ -62,7 +68,7 @@ export async function runNeoTokyoIntro({ intro, model }) {
 export const INTRO_SCENES = Object.freeze([
   Object.freeze({ frame: "loading", step: "01", progress: 5, patterns: Object.freeze({ a: showOpening }) }),
   Object.freeze({ frame: "title", step: "02", progress: 18, patterns: Object.freeze({ a: showActTitle }) }),
-  Object.freeze({ frame: "trailer", step: "03", progress: 30, patterns: Object.freeze({ a: showTrailer }) }),
+  Object.freeze({ frame: "trailer", step: "03", progress: 30, patterns: Object.freeze({ a: showTrailer, b: showTrailerB }) }),
   Object.freeze({
     frame: "handout-assign",
     step: "04",
@@ -208,6 +214,21 @@ async function showTrailer(state, model, scene) {
   );
   swapScreen(state, content);
   await typeSplitReadout(state, readout, 4200, 34);
+  if (state.finished) return;
+  await waitForAdvance(state, "NEXT // HANDOUT 01");
+}
+
+// Pattern B: the text is set vertically in a box of its own (js/act-showcase-trailer-b.js). The screen is built before
+// anything else is touched, so a failure there leaves the page as it was and playWithFallback plays pattern A instead.
+async function showTrailerB(state, model, scene) {
+  const { screen, copy, body } = createTrailerScreenB({ step: scene.step, heading: model.trailerTitle || "ACT TRAILER" });
+  markScene(screen, scene, "b");
+  if (!model.trailer) copy.classList.add("is-placeholder");
+  const readout = prepareSplitReadout(copy, model.trailer || SAMPLE_TRAILER_MESSAGE);
+  setProgress(state, scene.progress, "ACT TRAILER");
+  swapScreen(state, screen);
+  // the text scrolls inside its own box, so the caret is followed there (js/act-showcase-caret.js)
+  await typeSplitReadout(state, readout, 4200, 34, () => keepCaretVisible(body, readout.readText));
   if (state.finished) return;
   await waitForAdvance(state, "NEXT // HANDOUT 01");
 }
@@ -609,9 +630,9 @@ function replaceStage(state, scene, { eyebrow, title, sub, status = [] }) {
 
 // Marks a screen with the scene frame it belongs to and the pattern drawing it (data-scene / data-scene-pattern). Set while
 // the element is still detached, so it arrives with its marks and no MutationObserver sees an attribute change.
-function markScene(element, scene) {
+function markScene(element, scene, pattern = DEFAULT_SCENE_PATTERN) {
   element.dataset.scene = scene.frame;
-  element.dataset.scenePattern = DEFAULT_SCENE_PATTERN;
+  element.dataset.scenePattern = pattern;
   return element;
 }
 

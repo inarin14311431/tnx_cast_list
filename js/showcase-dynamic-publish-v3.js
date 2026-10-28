@@ -3,7 +3,7 @@ import { withRequestTimeout } from "./async-timeout.js?v=526a0b5a";
 import { escapeAttribute } from "./dom-escape.js?v=46402d5f";
 import { resolveCastNumber } from "./showcase-cast-number.js?v=944a948e";
 import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=0e404b6b";
-import { parseSceneSelectionField } from "./act-showcase-scenes.js?v=e8661b67";
+import { parseSceneSelectionField } from "./act-showcase-scenes.js?v=3bf295e5";
 
 const preview = document.querySelector("#showcase-preview");
 const status = document.querySelector("#generator-status");

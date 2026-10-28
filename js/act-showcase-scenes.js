@@ -12,11 +12,35 @@ export const SCENE_FRAMES = Object.freeze(["loading", "title", "trailer", "hando
 
 export const DEFAULT_SCENE_PATTERN = "a";
 
-// The patterns each frame can actually play. Only "a" (the current presentation) exists so far; a frame gains "b" / "c"
-// here when its pattern is added, and until then a composition that names them plays "a".
+// The patterns each frame can actually play, in order; "a" (the presentation every showcase had before compositions) first.
+// A frame gains "b" / "c" here when its pattern is added, and until then a composition that names them plays "a".
+//   trailer  b = the vertical-text trailer (js/act-showcase-trailer-b.js, css-next/pages/act-showcase-patterns.css)
+const PLAYABLE_PATTERNS = {
+  loading: [DEFAULT_SCENE_PATTERN],
+  title: [DEFAULT_SCENE_PATTERN],
+  trailer: [DEFAULT_SCENE_PATTERN, "b"],
+  "handout-assign": [DEFAULT_SCENE_PATTERN],
+  ready: [DEFAULT_SCENE_PATTERN],
+  finale: [DEFAULT_SCENE_PATTERN]
+};
 export const SCENE_PATTERNS = Object.freeze(Object.fromEntries(
-  SCENE_FRAMES.map(frame => [frame, Object.freeze([DEFAULT_SCENE_PATTERN])])
+  SCENE_FRAMES.map(frame => [frame, Object.freeze([...PLAYABLE_PATTERNS[frame]])])
 ));
+
+// Plays one frame with the pattern the composition asks for, and falls back to "a" when that pattern cannot be played:
+// the frame has no such pattern, or drawing it throws (a pattern B/C that fails must not leave the visitor on a blank
+// screen). `patterns` maps a pattern name to what draws it, `run(draw)` calls it. The fallback runs only for a pattern
+// other than "a" that threw; "a" failing is the old behaviour and is not hidden. onFallback(error, pattern) reports it.
+export async function playWithFallback(patterns, wanted, run, onFallback) {
+  const requested = typeof wanted === "string" && Object.prototype.hasOwnProperty.call(patterns || {}, wanted) ? wanted : DEFAULT_SCENE_PATTERN;
+  try {
+    return await run(patterns[requested]);
+  } catch (error) {
+    if (requested === DEFAULT_SCENE_PATTERN || !patterns[DEFAULT_SCENE_PATTERN]) throw error;
+    onFallback?.(error, requested);
+    return run(patterns[DEFAULT_SCENE_PATTERN]);
+  }
+}
 
 // Reads the composition stored with a showcase (showcase_data.scenes, e.g. { "title": "b" }) and returns the pattern
 // of every frame, in SCENE_FRAMES order. Anything missing or not understood falls back to "a", frame by frame:
