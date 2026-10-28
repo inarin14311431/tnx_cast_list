@@ -147,7 +147,7 @@ test("trailer screen no longer builds a third ACT TRAILER label duplicating the 
   assert.doesNotMatch(cinematic, /simplifyTrailer|neotokyo-sequence__trailer-definition|cinematic-trailer-band/);
   // the eyebrow reads "03 // ACT TRAILER": the number comes from the trailer row of INTRO_SCENES
   assert.match(neotokyo, /textNode\("p", "neotokyo-sequence__eyebrow", `\$\{scene\.step\} \/\/ ACT TRAILER`\)/);
-  assert.match(neotokyo, /\{ frame: "trailer", step: "03", progress: 30, patterns: Object\.freeze\(\{ a: showTrailer \}\) \}/);
+  assert.match(neotokyo, /\{ frame: "trailer", step: "03", progress: 30, patterns: Object\.freeze\(\{ a: showTrailer, b: showTrailerB \}\) \}/);
   assert.match(neotokyo, /textNode\("p", "neotokyo-sequence__micro", "PRE-ACT READOUT \/ PUBLIC BROADCAST"\)/);
 });
 
@@ -166,12 +166,14 @@ test("finished cinematic sequence does not schedule an automatic page scroll", (
   assert.doesNotMatch(cinematic, /setTimeout\([^\n]*2000/);
 });
 
-test("cinematic presentation is wired through six bundled stylesheets and one module bootstrap", () => {
+test("cinematic presentation is wired through seven bundled stylesheets and one module bootstrap", () => {
   const localCss = [...html.matchAll(/href="(\.\/css-next\/[^"]+)"/g)].map(match => match[1]);
   const localScripts = [...html.matchAll(/src="(\.\/js\/[^"]+)"/g)].map(match => match[1]);
-  assert.equal(localCss.length, 6);
+  assert.equal(localCss.length, 7);
   assert.match(localCss[0], /^\.\/css-next\/pages\/act-showcase-core\.css\?v=[A-Za-z0-9._-]+$/);
   assert.match(localCss[5], /^\.\/css-next\/pages\/act-showcase-theme-scenes\.css\?v=[A-Za-z0-9._-]+$/);
+  // the pattern layer (pattern B, C) comes last; its rules are scoped to their own pattern
+  assert.match(localCss[6], /^\.\/css-next\/pages\/act-showcase-patterns\.css\?v=[A-Za-z0-9._-]+$/);
   assert.equal(localScripts.length, 1);
   assert.match(localScripts[0], /^\.\/js\/act-showcase-bootstrap\.js\?v=[A-Za-z0-9._-]+$/);
   assert.match(entryCss, /act-showcase-cinematic-v2\.css\?v=[A-Za-z0-9._-]+/);

@@ -3,7 +3,7 @@ import { requireAuth } from "./auth-state.js?v=a766246e";
 import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
 import { planShowcaseRestore } from "./showcase-restore-matching.js?v=80d34654";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
-import { formatSceneSelectionField } from "./act-showcase-scenes.js?v=e8661b67";
+import { formatSceneSelectionField } from "./act-showcase-scenes.js?v=3bf295e5";
 
 const MAX_CASTS = 6;
 const RESTORE_PARAM = "edit";

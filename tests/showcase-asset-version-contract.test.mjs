@@ -21,13 +21,14 @@ function assertUniquePaths(refs, label) {
   assert.equal(new Set(paths).size, paths.length, `${label} must not load the same asset twice`);
 }
 
-test("cinematic HTML exposes the six versioned bundled stylesheets and one versioned bootstrap", () => {
+test("cinematic HTML exposes the seven versioned bundled stylesheets and one versioned bootstrap", () => {
   const css = [...cinematicHtml.matchAll(new RegExp(`href="(\\.\\/css-next\\/[^\"]+\\.css\\?v=${VERSION})"`, "g"))].map(match => match[1]);
   const scripts = [...cinematicHtml.matchAll(new RegExp(`src="(\\.\\/js\\/[^\"]+\\.js\\?v=${VERSION})"`, "g"))].map(match => match[1]);
   assert.deepEqual(css.map(ref => ref.replace(/\?v=.*$/, "")), [
     "./css-next/pages/act-showcase-core.css", "./css-next/pages/act-showcase-scenes.css",
     "./css-next/pages/act-showcase-theme-surface-system.css", "./css-next/pages/act-showcase-theme-phase-contract.css",
-    "./css-next/pages/act-showcase-theme-legibility.css", "./css-next/pages/act-showcase-theme-scenes.css"
+    "./css-next/pages/act-showcase-theme-legibility.css", "./css-next/pages/act-showcase-theme-scenes.css",
+    "./css-next/pages/act-showcase-patterns.css"
   ]);
   assert.deepEqual(scripts.map(ref => ref.replace(/\?v=.*$/, "")), ["./js/act-showcase-bootstrap.js"]);
 });

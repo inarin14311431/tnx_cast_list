@@ -18,7 +18,7 @@ const service = await read("js/public-showcase-service.js");
 const layout = await read("js/act-showcase-cinematic-layout-v2.js");
 const polish = await read("js/act-showcase-cinematic-polish.js");
 
-// The page loads six bundled stylesheets in this order. core and scenes concatenate the former
+// The page loads seven bundled stylesheets in this order (the last one is the pattern layer). core and scenes concatenate the former
 // per-file sources in cascade order, each behind a "from:" boundary comment.
 const expectedStyles = [
   "act-showcase-core.css",
@@ -26,7 +26,9 @@ const expectedStyles = [
   "act-showcase-theme-surface-system.css",
   "act-showcase-theme-phase-contract.css",
   "act-showcase-theme-legibility.css",
-  "act-showcase-theme-scenes.css"
+  "act-showcase-theme-scenes.css",
+  // the pattern layer (scene patterns B and C), after every pattern A layer; its rules are scoped to their own pattern
+  "act-showcase-patterns.css"
 ];
 const expectedSources = [
   "act-showcase.css",
@@ -59,7 +61,8 @@ const expectedSources = [
   "act-showcase-theme-legibility.css",
   "act-showcase-theme-scene-contract.css",
   "act-showcase-visual-emphasis.css",
-  "act-showcase-assign-cards-theme.css"
+  "act-showcase-assign-cards-theme.css",
+  "act-showcase-pattern-trailer-b.css"
 ];
 const bundleText = await Promise.all(expectedStyles.map(name => read("css-next/pages/" + name)));
 const bundleSources = expectedStyles.flatMap((bundle, index) => {

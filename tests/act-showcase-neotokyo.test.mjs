@@ -33,7 +33,10 @@ test("ACT system access is automatic while title and later narrative phases wait
       ["ready", "showSummary"]
     ]
   );
-  assert.match(source, /for \(const scene of INTRO_SCENES\) \{[\s\S]*?await scene\.patterns\[DEFAULT_SCENE_PATTERN\]\(state, model, scene\);\s*if \(state\.finished\) return;/);
+  assert.match(source, /for \(const scene of INTRO_SCENES\) \{[\s\S]*?await playWithFallback\(\s*scene\.patterns,\s*model\.scenes\?\.\[scene\.frame\],\s*draw => draw\(state, model, scene\),[\s\S]*?\);\s*if \(state\.finished\) return;/);
+  // pattern B exists for the trailer only; every other frame still has just A
+  assert.deepEqual(INTRO_SCENES.map(scene => Object.keys(scene.patterns)), [["a"], ["a"], ["a", "b"], ["a"], ["a"]]);
+  assert.equal(INTRO_SCENES[2].patterns.b.name, "showTrailerB");
   const openingBody = source.slice(source.indexOf("async function showOpening"), source.indexOf("async function showActTitle"));
   const titleBody = source.slice(source.indexOf("async function showActTitle"), source.indexOf("async function showTrailer"));
   const trailerBody = source.slice(source.indexOf("async function showTrailer"), source.indexOf("async function showHandoutAndAssign"));

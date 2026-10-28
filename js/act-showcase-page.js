@@ -1,10 +1,10 @@
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=d32e5230";
-import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=7d0c53df";
+import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=4827f6e6";
 import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=d3800656";
 import { buildKeyStyle, buildVisualCaption } from "./act-showcase-visual-caption.js?v=47f6e034";
 import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
-import { resolveSceneComposition } from "./act-showcase-scenes.js?v=e8661b67";
+import { resolveSceneComposition } from "./act-showcase-scenes.js?v=3bf295e5";
 
 const POSTER_SAMPLE_BACKGROUND = "./assets/showcase/act-showcase-moon-city-v2.svg";
 const HANDOUT_PLACEHOLDERS = new Set([

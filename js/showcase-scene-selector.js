@@ -4,7 +4,7 @@ import {
   SCENE_PATTERNS,
   formatSceneSelectionField,
   parseSceneSelectionField
-} from "./act-showcase-scenes.js?v=e8661b67";
+} from "./act-showcase-scenes.js?v=3bf295e5";
 
 // The scene composition choice of the generator (docs/ACT_SHOWCASE_SCENES.md section 6 #6): one <select> per scene frame that
 // can play more than one pattern. The choice lives in the hidden field #showcase-scenes (JSON, see act-showcase-scenes.js);

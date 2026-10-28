@@ -5,7 +5,7 @@ import { readFile } from "node:fs/promises";
 
 const read = path => readFile(new URL(`../${path}`, import.meta.url), "utf8");
 
-test("act showcase links the six bundled stylesheets in order and one module bootstrap", async () => {
+test("act showcase links the seven bundled stylesheets in order and one module bootstrap", async () => {
   const [html, entry, bootstrap] = await Promise.all([
     read("act-showcase.html"),
     actShowcaseCssEntry(),
@@ -14,7 +14,8 @@ test("act showcase links the six bundled stylesheets in order and one module boo
   assert.deepEqual(
     [...html.matchAll(/<link rel="stylesheet" href="\.\/css-next\/pages\/([^"?]+)\?v=/g)].map(match => match[1]),
     ["act-showcase-core.css", "act-showcase-scenes.css", "act-showcase-theme-surface-system.css",
-      "act-showcase-theme-phase-contract.css", "act-showcase-theme-legibility.css", "act-showcase-theme-scenes.css"]
+      "act-showcase-theme-phase-contract.css", "act-showcase-theme-legibility.css", "act-showcase-theme-scenes.css",
+      "act-showcase-patterns.css"]
   );
   assert.doesNotMatch(html, /@import|act-showcase-entry\.css/);
   assert.match(html, /js\/act-showcase-bootstrap\.js\?v=/);

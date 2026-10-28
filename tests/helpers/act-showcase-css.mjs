@@ -40,7 +40,7 @@ export function actShowcaseCss(name) {
 /* Sources appended after the final visual-emphasis layer. They style only their own namespace (checked in
  * tests/act-showcase-assign-cards-css.test.mjs), so "visual emphasis is the final layer" still holds for every
  * pre-existing rule; actShowcaseCssEntry() lists the pre-existing sources only. */
-export const TRAILING_SOURCES = ["act-showcase-assign-cards-theme.css"];
+export const TRAILING_SOURCES = ["act-showcase-assign-cards-theme.css", "act-showcase-pattern-trailer-b.css"];
 
 export function actShowcaseTrailingSources() {
   return actShowcaseSources().filter(item => TRAILING_SOURCES.includes(item.file));
