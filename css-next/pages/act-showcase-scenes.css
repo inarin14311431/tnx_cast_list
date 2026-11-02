@@ -1185,7 +1185,7 @@ body.showcase-poster-v2-ready .poster-v2-trailer-stage__footer i:last-child:wher
 @media(max-width:760px){
   @supports(overflow:clip){html,body{overflow-x:clip}}
   @supports(height:100dvh){.cinematic-intro.neotokyo-sequence{height:100dvh}}
-  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__shell{padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+  .cinematic-intro.neotokyo-sequence .neotokyo-sequence__shell{--neotokyo-pad-bottom:calc(16px + env(safe-area-inset-bottom,0px));padding-bottom:var(--neotokyo-pad-bottom)}
 
   /* Handout -> assignment rules (stacked layout, screen scroll) live with the is-splitting layout rule above. */
   .cinematic-intro.neotokyo-sequence .neotokyo-sequence__linked-head:where([data-scene="handout-assign"][data-scene-pattern="a"],[data-scene="handout-assign"][data-scene-pattern="a"] *){flex-wrap:wrap;row-gap:4px}
