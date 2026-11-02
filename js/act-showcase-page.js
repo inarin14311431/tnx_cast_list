@@ -1,10 +1,10 @@
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=d32e5230";
-import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=4827f6e6";
+import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=911b33aa";
 import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=d3800656";
 import { buildKeyStyle, buildVisualCaption } from "./act-showcase-visual-caption.js?v=47f6e034";
 import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
-import { resolveSceneComposition } from "./act-showcase-scenes.js?v=3bf295e5";
+import { resolveSceneComposition } from "./act-showcase-scenes.js?v=72966bf1";
 
 const POSTER_SAMPLE_BACKGROUND = "./assets/showcase/act-showcase-moon-city-v2.svg";
 const HANDOUT_PLACEHOLDERS = new Set([
@@ -96,6 +96,8 @@ function createShowcaseModel(data) {
     heroSubTitle: text(data.heroSubTitle) || "CAST SHOWCASE",
     actName,
     rulerName: text(data.rulerName),
+    // drawn by pattern B of the title frame; pattern A gets it from js/act-showcase-scenario-writer.js
+    scenarioWriterName: text(data.scenarioWriterName),
     trailer,
     trailerTitle,
     background: safeImageUrl(data.background),

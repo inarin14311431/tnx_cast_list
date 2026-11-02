@@ -27,7 +27,9 @@ async function typeTrailerAndSample(page, body, { reducedMotion = false } = {}) 
     // were typed after the frame was drawn.
     const measure = () => {
       const readout = document.querySelector(".neotokyo-sequence__readout--split");
-      if (readout && readout.dataset.typing === "true") {
+      // Only what is painted: the screen is put in hidden and shown once its fonts are in (swapScreen with waitForFonts), and
+      // its animations and the typing start then.
+      if (readout && readout.dataset.typing === "true" && readout.closest(".neotokyo-sequence__screen")?.classList.contains("is-visible")) {
         const terminal = readout.closest(".neotokyo-sequence__trailer-terminal");
         const read = readout.querySelector(".neotokyo-sequence__readout-read");
         const text = read?.firstChild;
@@ -183,7 +185,9 @@ test("ACT TRAILER 読み上げ: prefers-reduced-motion では補間せず、行�
   test.setTimeout(90_000);
   await page.setViewportSize({ width: 1440, height: 1000 });
   const samples = await typeTrailerAndSample(page, SHORT_BODY, { reducedMotion: true });
-  const heights = [...new Set(samples.map(sample => Math.round(sample.height * 10) / 10))].sort((a, b) => a - b);
+  // Whole pixels: the frame's first height is set while the screen waits for its fonts and then settles by under one pixel, which is
+  // not a step between lines (the check below is about steps of a line, not of a sub-pixel).
+  const heights = [...new Set(samples.map(sample => Math.round(sample.height)))].sort((a, b) => a - b);
   await testInfo.attach("trailer-reduced-heights.json", { body: JSON.stringify(heights), contentType: "application/json" });
   const lineHeight = samples[0].lineHeight;
   // every height is a whole line more than the previous one: no in-between values

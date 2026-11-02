@@ -1,8 +1,9 @@
 import { parseStyleLabel } from "./act-showcase-style-label.js?v=8a1b88dd";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
 import { keepCaretVisible } from "./act-showcase-caret.js";
-import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=3bf295e5";
+import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=72966bf1";
 import { createTrailerScreenB } from "./act-showcase-trailer-b.js";
+import { createTitleScreenB } from "./act-showcase-title-b.js";
 const SAMPLE_TRAILER_MESSAGE = "公開用アクトトレーラーは未登録です。\n公開データにトレーラーを登録すると、ここで読み上げ表示されます。";
 const FALLBACK_IMAGE = "./assets/placeholders/scan-failed.webp";
 const SHOW_ACT_TITLE_SCREEN = true;
@@ -67,7 +68,7 @@ export async function runNeoTokyoIntro({ intro, model }) {
 // start of a PC to +5 (searching) and +10 (assigned).
 export const INTRO_SCENES = Object.freeze([
   Object.freeze({ frame: "loading", step: "01", progress: 5, patterns: Object.freeze({ a: showOpening }) }),
-  Object.freeze({ frame: "title", step: "02", progress: 18, patterns: Object.freeze({ a: showActTitle }) }),
+  Object.freeze({ frame: "title", step: "02", progress: 18, patterns: Object.freeze({ a: showActTitle, b: showActTitleB }) }),
   Object.freeze({ frame: "trailer", step: "03", progress: 30, patterns: Object.freeze({ a: showTrailer, b: showTrailerB }) }),
   Object.freeze({
     frame: "handout-assign",
@@ -193,7 +194,23 @@ async function showActTitle(state, model, scene) {
   );
 
   content.append(textNode("p", "neotokyo-sequence__terminal", "TITLE & CREDITS LOCKED // PREPARING ACT TRAILER"));
-  swapScreen(state, content);
+  await swapScreen(state, content, { waitForFonts: true });
+  await waitForAdvance(state, "NEXT // ACT TRAILER");
+}
+
+// Pattern B: one large title card with its credits (js/act-showcase-title-b.js). The screen is built before anything else is
+// touched, so a failure there leaves the page as it was and playWithFallback plays pattern A instead.
+async function showActTitleB(state, model, scene) {
+  const { screen } = createTitleScreenB({
+    step: scene.step,
+    title: model.actName,
+    subtitle: model.heroSubTitle,
+    rulerName: model.rulerName,
+    scenarioWriterName: model.scenarioWriterName
+  });
+  markScene(screen, scene, "b");
+  setProgress(state, scene.progress, "TITLE & CREDITS");
+  await swapScreen(state, screen, { waitForFonts: true });
   await waitForAdvance(state, "NEXT // ACT TRAILER");
 }
 
@@ -212,7 +229,7 @@ async function showTrailer(state, model, scene) {
     copy,
     textNode("p", "neotokyo-sequence__terminal", "READOUT CHANNEL // TEXT SYNTHESIS")
   );
-  swapScreen(state, content);
+  await swapScreen(state, content, { waitForFonts: true });
   await typeSplitReadout(state, readout, 4200, 34);
   if (state.finished) return;
   await waitForAdvance(state, "NEXT // HANDOUT 01");
@@ -226,7 +243,7 @@ async function showTrailerB(state, model, scene) {
   if (!model.trailer) copy.classList.add("is-placeholder");
   const readout = prepareSplitReadout(copy, model.trailer || SAMPLE_TRAILER_MESSAGE);
   setProgress(state, scene.progress, "ACT TRAILER");
-  swapScreen(state, screen);
+  await swapScreen(state, screen, { waitForFonts: true });
   // the text scrolls inside its own box, so the caret is followed there (js/act-showcase-caret.js)
   await typeSplitReadout(state, readout, 4200, 34, () => keepCaretVisible(body, readout.readText));
   if (state.finished) return;
@@ -281,7 +298,7 @@ async function showHandoutAndAssign(state, cast, index, casts, scene) {
 
   layout.append(handoutPanel, connector, assignPanel);
   sequence.append(header, layout);
-  swapScreen(state, sequence);
+  await swapScreen(state, sequence, { waitForFonts: true });
   await typeReadout(state, copy, handoutBody, 2400);
   if (state.finished) return;
 
@@ -541,7 +558,7 @@ async function showSummary(state, model, scene) {
   castArea.append(castGrid);
   grid.append(overview, castArea);
   content.append(heading, grid);
-  swapScreen(state, content);
+  await swapScreen(state, content, { waitForFonts: true });
   await waitForAdvance(state, "OPEN FULL SHOWCASE");
 }
 
@@ -636,13 +653,56 @@ function markScene(element, scene, pattern = DEFAULT_SCENE_PATTERN) {
   return element;
 }
 
-function swapScreen(state, content) {
+// waitForFonts: the screen draws text in web fonts, which load lazily and (display=block) keep their text invisible until they
+// arrive, while the screen's animations and typing already run: the visitor would see the title or the readout start from the
+// middle. So the screen is put in hidden, shown once the fonts it needs are in (at most FONT_WAIT_MS), and the caller's own
+// animation or typing starts only after the returned promise resolves. Without it the screen is shown on the next frame.
+const FONT_WAIT_MS = 2500;
+
+function swapScreen(state, content, { waitForFonts = false } = {}) {
   state.stage.classList.remove("is-awaiting-advance");
   if (state.advanceButton) state.advanceButton.hidden = true;
   const hadScreen = Boolean(state.stage.querySelector(":scope > .neotokyo-sequence__screen"));
   state.stage.replaceChildren(content);
+  if (!waitForFonts) {
+    if (hadScreen) playSwapNoise(state);
+    requestAnimationFrame(() => content.classList.add("is-visible"));
+    return Promise.resolve();
+  }
+  return revealWhenFontsAreIn(state, content, hadScreen);
+}
+
+async function revealWhenFontsAreIn(state, content, hadScreen) {
+  // Layout is what requests the faces a screen needs, and the layers that decorate a screen add their own text right after it
+  // is inserted: lay it out now, let two frames pass (the second one comes after the decorated screen was laid out), then wait.
+  void content.offsetWidth;
+  // Pattern A's animations start with the element, not with .is-visible: hold them while the screen waits and play them from the
+  // start once it is shown. Those begun by the layers that decorate the screen a frame later are held too.
+  const held = new Set();
+  const hold = () => {
+    for (const animation of content.getAnimations?.({ subtree: true }) ?? []) {
+      // only the CSS animations: the ones a layer drives from script (the trailer's height following) are not ours to restart
+      if (held.has(animation) || (typeof CSSAnimation !== "undefined" && !(animation instanceof CSSAnimation))) continue;
+      held.add(animation);
+      animation.pause();
+    }
+  };
+  hold();
+  await nextFrame();
+  hold();
+  await nextFrame();
+  hold();
+  if (document.fonts?.ready) await Promise.race([document.fonts.ready, wait(state, FONT_WAIT_MS)]);
   if (hadScreen) playSwapNoise(state);
-  requestAnimationFrame(() => content.classList.add("is-visible"));
+  content.classList.add("is-visible");
+  for (const animation of held) {
+    animation.currentTime = 0;
+    animation.play();
+  }
+}
+
+function nextFrame() {
+  return new Promise(resolve => requestAnimationFrame(() => resolve()));
 }
 
 // Short scanline/flash overlay (stage:after) on screen-to-screen swaps only. Re-triggered by toggling the class with a forced reflow.
