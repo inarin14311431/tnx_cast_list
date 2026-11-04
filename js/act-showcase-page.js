@@ -1,10 +1,11 @@
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=d32e5230";
-import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=911b33aa";
-import { loadPublicShowcase, normalizeShowcaseSlug } from "./public-showcase-service.js?v=d3800656";
+import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=8bd7bbb1";
+import { loadPublicShowcase, loadPublicShowcaseGuests, normalizeShowcaseSlug } from "./public-showcase-service.js?v=d3800656";
 import { buildKeyStyle, buildVisualCaption } from "./act-showcase-visual-caption.js?v=47f6e034";
 import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
-import { resolveSceneComposition } from "./act-showcase-scenes.js?v=72966bf1";
+import { resolveSceneComposition } from "./act-showcase-scenes.js?v=a5855761";
+import { normalizeReadyGuests } from "./act-showcase-ready-b.js";
 
 const POSTER_SAMPLE_BACKGROUND = "./assets/showcase/act-showcase-moon-city-v2.svg";
 const HANDOUT_PLACEHOLDERS = new Set([
@@ -32,6 +33,8 @@ async function initialize() {
     const data = await loadPublicShowcase(slug);
     globalThis.TNX_SHOWCASE_THEME?.applySaved(data?.theme);
     const model = createShowcaseModel(data);
+    // only ACT READY pattern B draws the guests itself (pattern A gets them from js/act-showcase-supporting-cast.js)
+    if (isNeoTokyo && model.scenes.ready === "b") model.guests = await loadReadyGuests(slug);
     renderOpening(model);
     applyBackground(model.background);
     const board = renderPoster(model);
@@ -61,6 +64,13 @@ async function initialize() {
     status.textContent = error?.message || "アクト紹介を読み込めませんでした。";
     status.classList.add("is-error");
   }
+}
+
+// The guests of the act, or none: a guest list that fails or is slow (2 s) is left out, it never holds the showcase back.
+async function loadReadyGuests(slug) {
+  const timeout = new Promise(resolve => setTimeout(() => resolve([]), 2000));
+  const guests = loadPublicShowcaseGuests(slug).then(normalizeReadyGuests, () => []);
+  return Promise.race([guests, timeout]);
 }
 
 function createShowcaseModel(data) {
@@ -103,6 +113,8 @@ function createShowcaseModel(data) {
     background: safeImageUrl(data.background),
     // the pattern of each scene frame (js/act-showcase-scenes.js). Not played yet: every frame still runs pattern a.
     scenes: resolveSceneComposition(data),
+    // display names of the guests; filled by initialize() when a frame plays a pattern that draws them
+    guests: [],
     casts
   };
 }

@@ -1,11 +1,12 @@
 import { parseStyleLabel } from "./act-showcase-style-label.js?v=8a1b88dd";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
 import { keepCaretVisible } from "./act-showcase-caret.js";
-import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=72966bf1";
+import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=a5855761";
 import { createTrailerScreenB } from "./act-showcase-trailer-b.js";
 import { createTitleScreenB } from "./act-showcase-title-b.js";
+import { createReadyScreenB } from "./act-showcase-ready-b.js";
 const SAMPLE_TRAILER_MESSAGE = "公開用アクトトレーラーは未登録です。\n公開データにトレーラーを登録すると、ここで読み上げ表示されます。";
-const FALLBACK_IMAGE = "./assets/placeholders/scan-failed.webp";
+export const FALLBACK_IMAGE = "./assets/placeholders/scan-failed.webp";
 const SHOW_ACT_TITLE_SCREEN = true;
 
 export function prepareNeoTokyoLoading(intro) {
@@ -78,7 +79,7 @@ export const INTRO_SCENES = Object.freeze([
     span: 50,
     patterns: Object.freeze({ a: showHandoutsAndAssigns })
   }),
-  Object.freeze({ frame: "ready", step: "06", progress: 100, patterns: Object.freeze({ a: showSummary }) })
+  Object.freeze({ frame: "ready", step: "06", progress: 100, patterns: Object.freeze({ a: showSummary, b: showReadyB }) })
 ]);
 
 async function showHandoutsAndAssigns(state, model, scene) {
@@ -149,6 +150,8 @@ function createSequenceShell(state) {
   state.stage = stage;
   stage.addEventListener("click", event => {
     if (event.target.closest("button")) return;
+    // a screen that is left only with the footer button (ACT READY pattern B) says so itself; its margins count as well
+    if (stage.querySelector("[data-advance-guard='button']")) return;
     state.requestAdvance();
   });
 
@@ -562,6 +565,16 @@ async function showSummary(state, model, scene) {
   await waitForAdvance(state, "OPEN FULL SHOWCASE");
 }
 
+// Pattern B: the casts as round portraits (js/act-showcase-ready-b.js). Built before anything else is touched, so a failure
+// there leaves the page as it was and playWithFallback plays pattern A instead.
+async function showReadyB(state, model, scene) {
+  const { screen } = createReadyScreenB({ step: scene.step, model, createImage: createCastImage });
+  markScene(screen, scene, "b");
+  setProgress(state, scene.progress, "ACT READY");
+  await swapScreen(state, screen, { waitForFonts: true });
+  await waitForAdvance(state, "OPEN FULL SHOWCASE");
+}
+
 function createSummaryRuler(rulerName) {
   const ruler = node("div", "neotokyo-sequence__summary-ruler");
   ruler.append(
@@ -599,7 +612,7 @@ function createRulerCredit(rulerName) {
   return ruler;
 }
 
-function createCastImage(cast, fallbackAlt) {
+export function createCastImage(cast, fallbackAlt) {
   const image = document.createElement("img");
   image.src = safeImageUrl(cast?.imageUrl || cast?.image_url) || FALLBACK_IMAGE;
   image.alt = clean(cast?.imageAlt || cast?.image_alt) || clean(cast?.fullName || cast?.full_name) || fallbackAlt;

@@ -21,7 +21,7 @@ const PLAYABLE_PATTERNS = {
   title: [DEFAULT_SCENE_PATTERN, "b"],
   trailer: [DEFAULT_SCENE_PATTERN, "b"],
   "handout-assign": [DEFAULT_SCENE_PATTERN],
-  ready: [DEFAULT_SCENE_PATTERN],
+  ready: [DEFAULT_SCENE_PATTERN, "b"],
   finale: [DEFAULT_SCENE_PATTERN]
 };
 export const SCENE_PATTERNS = Object.freeze(Object.fromEntries(
