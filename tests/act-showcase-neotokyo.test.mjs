@@ -34,10 +34,11 @@ test("ACT system access is automatic while title and later narrative phases wait
     ]
   );
   assert.match(source, /for \(const scene of INTRO_SCENES\) \{[\s\S]*?await playWithFallback\(\s*scene\.patterns,\s*model\.scenes\?\.\[scene\.frame\],\s*draw => draw\(state, model, scene\),[\s\S]*?\);\s*if \(state\.finished\) return;/);
-  // pattern B exists for the title and the trailer; every other frame still has just A
-  assert.deepEqual(INTRO_SCENES.map(scene => Object.keys(scene.patterns)), [["a"], ["a", "b"], ["a", "b"], ["a"], ["a"]]);
+  // pattern B exists for the title, the trailer and ACT READY; the other frames still have just A
+  assert.deepEqual(INTRO_SCENES.map(scene => Object.keys(scene.patterns)), [["a"], ["a", "b"], ["a", "b"], ["a"], ["a", "b"]]);
   assert.equal(INTRO_SCENES[1].patterns.b.name, "showActTitleB");
   assert.equal(INTRO_SCENES[2].patterns.b.name, "showTrailerB");
+  assert.equal(INTRO_SCENES[4].patterns.b.name, "showReadyB");
   const openingBody = source.slice(source.indexOf("async function showOpening"), source.indexOf("async function showActTitle"));
   const titleBody = source.slice(source.indexOf("async function showActTitle"), source.indexOf("async function showTrailer"));
   const trailerBody = source.slice(source.indexOf("async function showTrailer"), source.indexOf("async function showHandoutAndAssign"));
