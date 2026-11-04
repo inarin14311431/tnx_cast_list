@@ -1,10 +1,10 @@
 import { parseStyleLabel } from "./act-showcase-style-label.js?v=8a1b88dd";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
-import { keepCaretVisible } from "./act-showcase-caret.js";
+import { keepCaretVisible } from "./act-showcase-caret.js?v=84d1801d";
 import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=a5855761";
-import { createTrailerScreenB } from "./act-showcase-trailer-b.js";
-import { createTitleScreenB } from "./act-showcase-title-b.js";
-import { createReadyScreenB } from "./act-showcase-ready-b.js";
+import { createTrailerScreenB } from "./act-showcase-trailer-b.js?v=dc9ea1dc";
+import { createTitleScreenB } from "./act-showcase-title-b.js?v=6f05db48";
+import { createReadyScreenB } from "./act-showcase-ready-b.js?v=7d80dd55";
 const SAMPLE_TRAILER_MESSAGE = "公開用アクトトレーラーは未登録です。\n公開データにトレーラーを登録すると、ここで読み上げ表示されます。";
 export const FALLBACK_IMAGE = "./assets/placeholders/scan-failed.webp";
 const SHOW_ACT_TITLE_SCREEN = true;

@@ -60,8 +60,13 @@ assert.match(generatedOutput, /showcaseOutput = OUTPUT_MARKER/);
 assert.match(generatedOutput, /showcase-end wrap/);
 assert.match(generatedOutput, /hero__scroll-cue/);
 
-assert.doesNotMatch(cinematicHtml, /act-showcase-theme-runtime\.js/, "cinematic HTML must keep one-bootstrap architecture");
-assert.match(cinematicBootstrap, /^await import\("\.\/act-showcase-theme-runtime\.js\?v=/, "cinematic bootstrap must initialize dedicated runtime first");
+// One bootstrap: the HTML loads exactly one module script (the bootstrap), and no script tag loads the theme runtime itself. The
+// modulepreload hints (generated from the bootstrap's chain) and the early data script (a classic inline script) are not loads of it.
+assert.doesNotMatch(cinematicHtml, /<script[^>]*act-showcase-theme-runtime\.js/, "cinematic HTML must keep one-bootstrap architecture");
+assert.equal((cinematicHtml.match(/<script\b[^>]*type="module"/g) || []).length, 1, "cinematic HTML must keep one-bootstrap architecture");
+// The dedicated runtime is the first module the bootstrap loads (the early data requests before it need no theme).
+assert.match(cinematicBootstrap, /^\s*await import\("\.\/act-showcase-theme-runtime\.js\?v=/m, "cinematic bootstrap must initialize dedicated runtime first");
+assert.equal(cinematicBootstrap.search(/\n\s*await import\("\.\/act-showcase-theme-runtime\.js/), cinematicBootstrap.search(/\n\s*await import\(/), "cinematic bootstrap must initialize dedicated runtime first");
 assert.match(cinematicHtml, /act-showcase-core\.css\?v=/);
 assert.match(standardHtml, /act-showcase-theme-runtime\.js\?v=/);
 assert.doesNotMatch(standardHtml, /act-showcase-dedicated-themes/);
