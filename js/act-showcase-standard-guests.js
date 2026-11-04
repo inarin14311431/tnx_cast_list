@@ -1,4 +1,4 @@
-import { loadPublicShowcaseGuests, normalizeShowcaseSlug } from "./public-showcase-service.js?v=d3800656";
+import { loadPublicShowcaseGuests, normalizeShowcaseSlug } from "./public-showcase-service.js?v=5da4463c";
 import { formatShowcaseFullName, formatShowcaseTagline, normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
 
 const slug = normalizeShowcaseSlug(new URLSearchParams(location.search).get("id"));

@@ -6,6 +6,70 @@
   <title>ACT SHOWCASE</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- modulepreload:start -->
+  <link rel="modulepreload" href="./js/public-showcase-service.js?v=5da4463c">
+  <link rel="modulepreload" href="./js/act-showcase-load-error.js?v=5fbf444f">
+  <link rel="modulepreload" href="./js/act-showcase-theme-runtime.js?v=442d4e30">
+  <link rel="modulepreload" href="./js/act-showcase-cinematic-enhancer.js?v=1cd28c99">
+  <link rel="modulepreload" href="./js/act-showcase-summary-advance-guard.js?v=c8e75e0e">
+  <link rel="modulepreload" href="./js/act-showcase-finale-enhancer.js?v=a8439be7">
+  <link rel="modulepreload" href="./js/act-showcase-cinematic-polish.js?v=a8c449c6">
+  <link rel="modulepreload" href="./js/act-showcase-board-layout.js?v=1430eeec">
+  <link rel="modulepreload" href="./js/act-showcase-story-flow.js?v=91d027c5">
+  <link rel="modulepreload" href="./js/act-showcase-scroll-cue.js?v=85c66d25">
+  <link rel="modulepreload" href="./js/act-showcase-writing-patterns.js?v=155018b2">
+  <link rel="modulepreload" href="./js/act-showcase-cinematic-layout-v2.js?v=110b2f05">
+  <link rel="modulepreload" href="./js/act-showcase-trailer-settle.js?v=cecf5b92">
+  <link rel="modulepreload" href="./js/act-showcase-handout-live-frame.js?v=a6de4993">
+  <link rel="modulepreload" href="./js/act-showcase-page.js?v=8b2b8f5d">
+  <link rel="modulepreload" href="./js/image-focus.js?v=d32e5230">
+  <link rel="modulepreload" href="./js/act-showcase-neotokyo.js?v=1184b821">
+  <link rel="modulepreload" href="./js/act-showcase-style-label.js?v=8a1b88dd">
+  <link rel="modulepreload" href="./js/showcase-cast-number.js?v=944a948e">
+  <link rel="modulepreload" href="./js/act-showcase-caret.js?v=84d1801d">
+  <link rel="modulepreload" href="./js/act-showcase-scenes.js?v=a5855761">
+  <link rel="modulepreload" href="./js/act-showcase-trailer-b.js?v=dc9ea1dc">
+  <link rel="modulepreload" href="./js/act-showcase-title-b.js?v=6f05db48">
+  <link rel="modulepreload" href="./js/act-showcase-ready-b.js?v=7d80dd55">
+  <link rel="modulepreload" href="./js/showcase-display-format.js?v=728d9084">
+  <link rel="modulepreload" href="./js/act-showcase-visual-caption.js?v=47f6e034">
+  <link rel="modulepreload" href="./js/act-showcase-scenario-writer.js?v=14650d23">
+  <link rel="modulepreload" href="./js/act-showcase-supporting-cast.js?v=478738af">
+  <link rel="modulepreload" href="./js/act-showcase-final-trailer.js?v=970cf2ea">
+  <link rel="modulepreload" href="./js/act-showcase-display-normalizer.js?v=2388bd0e">
+  <!-- modulepreload:end -->
+  <script>
+  // Starts the two public data requests at once, before the style sheets below have arrived (a script waits for the style sheets above
+  // it, never for those below it; the module scripts wait for all of them). The requests are cached by js/public-showcase-service.js,
+  // which is taken from the modulepreload list above so that it is the very module the page loads (same URL, same cache). A failure is
+  // left to the page: the cache forgets it and the page asks again and reports the error. js/act-showcase-bootstrap.js does the same
+  // as a fallback.
+  (() => {
+    const id = new URLSearchParams(location.search).get("id");
+    const link = document.querySelector('link[rel="modulepreload"][href*="/public-showcase-service.js"]');
+    if (!id || !link) return;
+    import(link.href).then(service => {
+      const slug = service.normalizeShowcaseSlug(id);
+      if (slug) for (const load of [service.loadPublicShowcase, service.loadPublicShowcaseGuests]) load(slug).catch(() => {});
+    }).catch(() => {});
+    // Watchdog: if the sequence has not started after 6 s (a slow line, a module that does not come), the loading screen says so and
+    // offers a reload. The note is part of the loading screen: it goes away when the sequence replaces it. A failure that is known
+    // earlier (a module that did not load, data that failed or timed out) is shown at once by js/act-showcase-load-error.js.
+    setTimeout(() => {
+      const inner = document.querySelector("#cinematic-intro .cinematic-intro__inner");
+      if (!inner || document.body.classList.contains("showcase-neotokyo-intro-active")) return;
+      const note = document.createElement("p");
+      note.className = "cinematic-intro__slow";
+      note.style.cssText = "margin:1.4em 0 0;font:700 .72rem/1.8 'Share Tech Mono',monospace;letter-spacing:.12em;opacity:.85";
+      const reload = document.createElement("a");
+      reload.href = location.href;
+      reload.textContent = "再読み込み";
+      reload.style.color = "inherit";
+      note.append("読み込みに時間がかかっています。 ", reload);
+      inner.append(note);
+    }, 6000);
+  })();
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Sans+JP:wght@400;500;700;900&family=Orbitron:wght@500;700;900&family=Share+Tech+Mono&family=Zen+Kaku+Gothic+New:wght@700;900&display=block" rel="stylesheet">
   <link rel="stylesheet" href="./css-next/pages/act-showcase-core.css?v=f637309d">
   <link rel="stylesheet" href="./css-next/pages/act-showcase-scenes.css?v=8ad69d62">
@@ -14,8 +78,6 @@
   <link rel="stylesheet" href="./css-next/pages/act-showcase-theme-legibility.css?v=de21f22c">
   <link rel="stylesheet" href="./css-next/pages/act-showcase-theme-scenes.css?v=0c4e51eb">
   <link rel="stylesheet" href="./css-next/pages/act-showcase-patterns.css?v=1e146111">
-<!-- modulepreload:start -->
-<!-- modulepreload:end -->
 </head>
 <body id="act-showcase-page">
   <div id="cinematic-intro" class="cinematic-intro" aria-hidden="true">
@@ -63,6 +125,6 @@
     </footer>
   </div>
 
-  <script type="module" src="./js/act-showcase-bootstrap.js?v=2f5fb9fa"></script>
+  <script type="module" src="./js/act-showcase-bootstrap.js?v=095a0ec5"></script>
 </body>
 </html>

@@ -37,19 +37,34 @@ function cachedRequest(cache, key, factory) {
   return request;
 }
 
-async function callPublicRpc(name, body) {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
-    method: "POST",
-    headers: {
-      apikey: SUPABASE_PUBLISHABLE_KEY,
-      "Content-Type": "application/json",
-      Accept: "application/json"
-    },
-    body: JSON.stringify(body),
-    cache: "no-store"
-  });
+// A request that gets no answer is given up after this long, so the page can say so instead of staying on its loading screen.
+export const PUBLIC_RPC_TIMEOUT_MS = 15000;
+export const PUBLIC_RPC_TIMEOUT_MESSAGE = "公開データの取得に時間がかかりすぎました。通信状態を確認して、再読み込みしてください。";
 
-  const responseText = await response.text();
+async function callPublicRpc(name, body) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), PUBLIC_RPC_TIMEOUT_MS);
+  let response;
+  let responseText;
+  try {
+    response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/${name}`, {
+      method: "POST",
+      headers: {
+        apikey: SUPABASE_PUBLISHABLE_KEY,
+        "Content-Type": "application/json",
+        Accept: "application/json"
+      },
+      body: JSON.stringify(body),
+      cache: "no-store",
+      signal: controller.signal
+    });
+    responseText = await response.text();
+  } catch (error) {
+    if (controller.signal.aborted) throw new Error(PUBLIC_RPC_TIMEOUT_MESSAGE);
+    throw error;
+  } finally {
+    clearTimeout(timer);
+  }
   let payload = null;
   if (responseText) {
     try {

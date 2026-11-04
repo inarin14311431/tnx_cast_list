@@ -7,8 +7,8 @@
 // guests and the scenario-writer credit that pattern A gets from those observers are drawn here, from the model, as two small
 // rows under the casts. Styles live in css-next/pages/act-showcase-patterns.css, scoped to
 // [data-scene="ready"][data-scene-pattern="b"]. See docs/ACT_SHOWCASE_SCENES.md section 6 #7 (3rd pattern: ready).
-import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js";
-import { roleForCast } from "./act-showcase-visual-caption.js";
+import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
+import { roleForCast } from "./act-showcase-visual-caption.js?v=47f6e034";
 
 const clean = value => String(value ?? "").replace(/\s+/g, " ").trim();
 

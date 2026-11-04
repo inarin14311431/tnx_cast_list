@@ -34,6 +34,10 @@ test("act-showcase.html no longer ships the old loading wording", () => {
 // (the loading screen already says it is loading), like the standard page's.
 test("the deluxe status line starts empty and is still the error target", async () => {
   assert.match(html, /<div id="act-showcase-status" class="showcase-loading"><\/div>/);
+  // an error still goes to this status line: through showLoadError (js/act-showcase-load-error.js), which the page's catch block calls
   const page = await readFile(new URL("../js/act-showcase-page.js", import.meta.url), "utf8");
-  assert.match(page, /status\.classList\.add\("is-error"\)/);
+  assert.match(page, /showLoadError\(error\?\.message/);
+  const helper = await readFile(new URL("../js/act-showcase-load-error.js", import.meta.url), "utf8");
+  assert.match(helper, /querySelector\("#act-showcase-status"\)/);
+  assert.match(helper, /status\.classList\.add\("is-error"\)/);
 });

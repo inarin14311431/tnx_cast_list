@@ -30,6 +30,16 @@ function staticSpecifiers(source) {
   return values;
 }
 
+/* Opt-in exception to the rule above: a module entry whose first lines carry the marker comment
+ * `// modulepreload: eager` runs its `await import("...")` statements (at the top level or inside a try block) unconditionally at startup
+ * (js/act-showcase-bootstrap.js, 16 of them one after another). Those specifiers are listed as well, so the browser fetches the whole chain in parallel at once
+ * instead of one round trip per module. Evaluation order does not change: the dynamic imports still run one after the other. */
+const EAGER_MARKER = /^\s*\/\/\s*modulepreload:\s*eager\b/m;
+function eagerDynamicSpecifiers(source) {
+  if (!EAGER_MARKER.test(source.split("\n").slice(0, 5).join("\n"))) return [];
+  return [...source.matchAll(/^[ \t]*await\s+import\(\s*["']([^"']+)["']\s*\)\s*;?/gm)].map(match => match[1]);
+}
+
 async function resolveLocal(importerFile, raw) {
   const { clean, query } = cleanSpecifier(raw);
   if (!clean.startsWith(".")) return null;
@@ -76,7 +86,7 @@ async function crawlHtml(htmlFile, htmlPath, entries) {
     visited.add(resolvedFile);
 
     const source = await readFile(resolvedFile, "utf8");
-    for (const raw of staticSpecifiers(source)) {
+    for (const raw of [...staticSpecifiers(source), ...eagerDynamicSpecifiers(source)]) {
       const resolved = await resolveLocal(resolvedFile, raw);
       if (!resolved) continue;
       if (resolved.missing) {
