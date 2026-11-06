@@ -16,11 +16,12 @@ export const DEFAULT_SCENE_PATTERN = "a";
 // A frame gains "b" / "c" here when its pattern is added, and until then a composition that names them plays "a".
 //   title    b = the title card with a light-edge reveal (js/act-showcase-title-b.js, css-next/pages/act-showcase-patterns.css)
 //   trailer  b = the vertical-text trailer (js/act-showcase-trailer-b.js, css-next/pages/act-showcase-patterns.css)
+//   handout-assign  b = the portrait first: an empty round slot the assigned cast fills (js/act-showcase-assign-b.js, css-next/pages/act-showcase-patterns.css)
 const PLAYABLE_PATTERNS = {
   loading: [DEFAULT_SCENE_PATTERN],
   title: [DEFAULT_SCENE_PATTERN, "b"],
   trailer: [DEFAULT_SCENE_PATTERN, "b"],
-  "handout-assign": [DEFAULT_SCENE_PATTERN],
+  "handout-assign": [DEFAULT_SCENE_PATTERN, "b"],
   ready: [DEFAULT_SCENE_PATTERN, "b"],
   finale: [DEFAULT_SCENE_PATTERN]
 };

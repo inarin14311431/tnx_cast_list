@@ -3,12 +3,13 @@
 //
 // Everything here uses its own class names (neotokyo-ready-b__*), never the ones pattern A's layers look for
 // (.neotokyo-sequence__screen--summary, __summary-*, __act-ready, ...): those carry observers (finale lockup, FINAL BRIEFING
-// heading, guest rail, scenario-writer credit, the access button, the click guard) that would decorate this screen. So the
+// heading, guest rail, scenario-writer credit, the access button) that would decorate this screen. So the
 // guests and the scenario-writer credit that pattern A gets from those observers are drawn here, from the model, as two small
 // rows under the casts. Styles live in css-next/pages/act-showcase-patterns.css, scoped to
 // [data-scene="ready"][data-scene-pattern="b"]. See docs/ACT_SHOWCASE_SCENES.md section 6 #7 (3rd pattern: ready).
 import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
 import { roleForCast } from "./act-showcase-visual-caption.js?v=47f6e034";
+import { splitCastName } from "./act-showcase-handout-fields.js?v=991c7b8e";
 
 const clean = value => String(value ?? "").replace(/\s+/g, " ").trim();
 
@@ -52,9 +53,7 @@ function extra(label, names) {
 export function createReadyScreenB({ step, model, createImage }) {
   const casts = Array.isArray(model?.casts) ? model.casts : [];
   const screen = element("section", "neotokyo-sequence__screen neotokyo-ready-b");
-  // The stage turns a click on empty space into "next" (js/act-showcase-neotokyo.js); this screen is left only with its footer button.
-  screen.dataset.advanceGuard = "button";
-  screen.style.setProperty("--ready-count", String(casts.length));
+  // A click anywhere on the stage is "next" here as on the other screens (js/act-showcase-neotokyo.js), besides the footer button.
 
   const ruler = element("p", "neotokyo-ready-b__ruler");
   ruler.append(element("span", "neotokyo-ready-b__ruler-label", "RULER"), element("strong", "neotokyo-ready-b__ruler-name", clean(model?.rulerName) || "UNREGISTERED"));
@@ -64,7 +63,11 @@ export function createReadyScreenB({ step, model, createImage }) {
     const item = element("li", "neotokyo-ready-b__cast");
     const figure = element("figure", "neotokyo-ready-b__image");
     figure.append(createImage(cast, `PC${index + 1} CAST`));
-    const name = element("h3", "neotokyo-ready-b__name", clean(cast?.fullName) || `CAST ${index + 1}`);
+    // handle and name side by side; they wrap onto two lines only when the pair does not fit the cell
+    const name = element("h3", "neotokyo-ready-b__name");
+    const { handle, name: realName } = splitCastName(cast?.fullName);
+    if (handle) name.append(element("span", "neotokyo-ready-b__handle", handle));
+    if (realName || !handle) name.append(element("span", "neotokyo-ready-b__real", realName || `CAST ${index + 1}`));
     item.append(figure, element("p", "neotokyo-ready-b__slot", `PC${index + 1}`));
     const role = readyRole(cast);
     if (role) item.append(element("p", "neotokyo-ready-b__role", role));
