@@ -1,4 +1,6 @@
 import { spawnSync } from "node:child_process";
+import { fileURLToPath } from "node:url";
+import { VISUAL_RUNS, playwrightArgs } from "./visual-runs.mjs";
 
 // Tests substitute a fake runner script (invoked via node) so CI's real
 // desktop/mobile Playwright projects never have to actually run.
@@ -14,41 +16,28 @@ const prefixArgs = testRunner ? [testRunner] : [];
 // upload-artifact step can pick them up. Pass distinct destinations per project
 // on the command line (--output) and via the html reporter's env var override
 // (PLAYWRIGHT_HTML_REPORT) instead, so both projects' failure evidence survives.
-const runs = [
-  {
-    label: "visual-desktop",
-    outputDir: "test-results/visual-desktop",
-    reportDir: "playwright-report-visual-desktop",
-    args: [
-      "playwright",
-      "test",
-      "--config=playwright.visual.config.js",
-      "--project=visual-desktop",
-      "--output=test-results/visual-desktop",
-      "--grep-invert",
-      "キャスト閲覧 spectrum-neon"
-    ]
-  },
-  {
-    label: "visual-mobile",
-    outputDir: "test-results/visual-mobile",
-    reportDir: "playwright-report-visual-mobile",
-    args: [
-      "playwright",
-      "test",
-      "--config=playwright.visual.config.js",
-      "--project=visual-mobile",
-      "--output=test-results/visual-mobile"
-    ]
-  }
-];
+const runs = VISUAL_RUNS.map(run => ({ ...run, args: playwrightArgs(run) }));
+
+// VISUAL_PROJECT=visual-desktop: run only that project (the CI runs the two as separate jobs, in parallel).
+// VISUAL_COMPARE_LOG_DIR: also write, per project, the list of screenshots that were compared (scripts/visual-screenshot-reporter.mjs),
+// which scripts/summarize-visual-shards.mjs checks against the baseline images.
+const only = process.env.VISUAL_PROJECT;
+if (only && !runs.some(run => run.label === only)) {
+  console.error(`[run-visual-regression] VISUAL_PROJECT must be one of ${runs.map(run => run.label).join(", ")}, got "${only}"`);
+  process.exit(2);
+}
+const logDir = process.env.VISUAL_COMPARE_LOG_DIR;
+const reporterPath = fileURLToPath(new URL("./visual-screenshot-reporter.mjs", import.meta.url));
 
 let exitCode = 0;
 
 for (const run of runs) {
-  const result = spawnSync(executable, [...prefixArgs, ...run.args], {
+  if (only && run.label !== only) continue;
+  // --reporter replaces the config's reporters; the html one keeps its folder through PLAYWRIGHT_HTML_REPORT
+  const logArgs = logDir ? [`--reporter=line,html,${reporterPath}`] : [];
+  const result = spawnSync(executable, [...prefixArgs, ...run.args, ...logArgs], {
     stdio: "inherit",
-    env: { ...process.env, PLAYWRIGHT_HTML_REPORT: run.reportDir }
+    env: { ...process.env, PLAYWRIGHT_HTML_REPORT: run.reportDir, ...(logDir ? { VISUAL_COMPARE_LOG: `${logDir}/${run.label}.json` } : {}) }
   });
   if (result.error) {
     console.error(`[run-visual-regression] failed to start ${run.label}:`, result.error);

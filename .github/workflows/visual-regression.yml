@@ -5,13 +5,23 @@ on:
   workflow_dispatch:
 
 jobs:
-  compare:
-    name: Compare reference screenshots
+  # The compare takes about 14 minutes with both projects in one job, which is too close to a 15 minute limit (a timeout shows up as
+  # "cancelled", not as a failure), so each project runs as its own job, in parallel.
+  # The job named "Compare reference screenshots" (below) is the one the branch protection requires: it passes only when both projects
+  # passed AND scripts/summarize-visual-shards.mjs confirms that every listed test ran once and every baseline image (except the one the
+  # desktop run leaves out on purpose) was compared once.
+  compare-shard:
+    name: Compare screenshots (${{ matrix.project }})
     runs-on: ubuntu-latest
     container:
       image: mcr.microsoft.com/playwright:v1.62.1-noble
       options: --user 1001
-    timeout-minutes: 15
+    # 25: one project takes about 8 minutes; a timeout shows up as "cancelled", not as a failure
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [visual-desktop, visual-mobile]
     steps:
       - name: Checkout production
         uses: actions/checkout@v7
@@ -36,15 +46,66 @@ jobs:
         run: npm install
       - name: Compare screenshots
         run: npm run test:visual:production
+        env:
+          VISUAL_PROJECT: ${{ matrix.project }}
+          VISUAL_COMPARE_LOG_DIR: visual-compare-logs
       - name: Upload visual report and image diffs
         if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: visual-regression-report
+          name: visual-regression-report-${{ matrix.project }}
           path: |
-            playwright-report-visual-desktop/
-            playwright-report-visual-mobile/
-            test-results/visual-desktop/
-            test-results/visual-mobile/
+            playwright-report-${{ matrix.project }}/
+            test-results/${{ matrix.project }}/
           if-no-files-found: ignore
           retention-days: 14
+      - name: Upload the list of compared screenshots
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: visual-compare-log-${{ matrix.project }}
+          path: visual-compare-logs/${{ matrix.project }}.json
+          if-no-files-found: error
+          retention-days: 14
+
+  compare:
+    name: Compare reference screenshots
+    needs: compare-shard
+    # always(): this job decides the result of the projects, so it must run when one failed or was cancelled too
+    if: ${{ always() }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Did both projects pass?
+        env:
+          SHARDS: ${{ needs.compare-shard.result }}
+        run: |
+          if [ "$SHARDS" != "success" ]; then echo "The compare finished as '$SHARDS'."; exit 1; fi
+          echo "Both projects passed."
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Checkout approved visual reference
+        uses: actions/checkout@v7
+        with:
+          repository: inarin14311431/tnx-cast-archive-test
+          ref: visual-regression-baseline
+          path: .visual-reference
+      - name: Sync visual test contract
+        run: |
+          rm -rf tests/visual
+          cp -R .visual-reference/tests/visual tests/visual
+          cp .visual-reference/playwright.visual.config.js playwright.visual.config.js
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '22'
+      - name: Install dependencies
+        run: npm install
+      - name: Download the compare logs
+        uses: actions/download-artifact@v7
+        with:
+          pattern: visual-compare-log-*
+          path: visual-compare-logs
+          merge-multiple: true
+      - name: Every test ran and every baseline image was compared
+        run: node scripts/summarize-visual-shards.mjs visual-compare-logs
