@@ -72,6 +72,11 @@ function normalizeTrailerSubtitle(value) {
   return title;
 }
 
+// A finale pattern other than "a" (pattern B) draws its own trailer and has no #poster-showcase-board-v2: the page marks the root with its
+// pattern once it has drawn it. This decides from what the page did, not from the data, because a pattern B that fails is played as A,
+// and that page needs this trailer. Without it the observer below would stay on the whole document for good.
+const pagePlaysAnotherPattern = () => document.getElementById("act-showcase-root")?.getAttribute("data-scene-pattern") !== "a";
+
 function mountAtFinalBoardTop(section) {
   const mount = () => {
     const board = document.getElementById("poster-showcase-board-v2");
@@ -81,10 +86,10 @@ function mountAtFinalBoardTop(section) {
     board.insertBefore(section, frame);
     return true;
   };
-  if (mount()) return;
+  if (mount() || pagePlaysAnotherPattern()) return;
 
   const observer = new MutationObserver(() => {
-    if (!mount()) return;
+    if (!mount() && !pagePlaysAnotherPattern()) return;
     observer.disconnect();
   });
   observer.observe(document.documentElement, { childList: true, subtree: true });

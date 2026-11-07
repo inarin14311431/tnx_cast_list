@@ -65,7 +65,8 @@ const expectedSources = [
   "act-showcase-pattern-trailer-b.css",
   "act-showcase-pattern-title-b.css",
   "act-showcase-pattern-ready-b.css",
-  "act-showcase-pattern-assign-b.css"
+  "act-showcase-pattern-assign-b.css",
+  "act-showcase-pattern-finale-b.css"
 ];
 const bundleText = await Promise.all(expectedStyles.map(name => read("css-next/pages/" + name)));
 const bundleSources = expectedStyles.flatMap((bundle, index) => {

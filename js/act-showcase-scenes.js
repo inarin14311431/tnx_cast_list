@@ -17,13 +17,15 @@ export const DEFAULT_SCENE_PATTERN = "a";
 //   title    b = the title card with a light-edge reveal (js/act-showcase-title-b.js, css-next/pages/act-showcase-patterns.css)
 //   trailer  b = the vertical-text trailer (js/act-showcase-trailer-b.js, css-next/pages/act-showcase-patterns.css)
 //   handout-assign  b = the portrait first: an empty round slot the assigned cast fills (js/act-showcase-assign-b.js, css-next/pages/act-showcase-patterns.css)
+//   ready    b = the centred portraits (js/act-showcase-ready-b.js, css-next/pages/act-showcase-patterns.css)
+//   finale   b = the key visual: the casts side by side under the act name, then credits, trailer, cast cards, guests (js/act-showcase-finale-b.js, css-next/pages/act-showcase-patterns.css)
 const PLAYABLE_PATTERNS = {
   loading: [DEFAULT_SCENE_PATTERN],
   title: [DEFAULT_SCENE_PATTERN, "b"],
   trailer: [DEFAULT_SCENE_PATTERN, "b"],
   "handout-assign": [DEFAULT_SCENE_PATTERN, "b"],
   ready: [DEFAULT_SCENE_PATTERN, "b"],
-  finale: [DEFAULT_SCENE_PATTERN]
+  finale: [DEFAULT_SCENE_PATTERN, "b"]
 };
 export const SCENE_PATTERNS = Object.freeze(Object.fromEntries(
   SCENE_FRAMES.map(frame => [frame, Object.freeze([...PLAYABLE_PATTERNS[frame]])])
