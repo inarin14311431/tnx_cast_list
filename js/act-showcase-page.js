@@ -1,18 +1,16 @@
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=d32e5230";
-import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=9de942fc";
+import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=16035f8e";
 import { loadPublicShowcase, loadPublicShowcaseGuests, normalizeShowcaseSlug } from "./public-showcase-service.js?v=5da4463c";
 import { buildKeyStyle, buildVisualCaption } from "./act-showcase-visual-caption.js?v=47f6e034";
 import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
-import { resolveSceneComposition } from "./act-showcase-scenes.js?v=68d044a1";
+import { DEFAULT_SCENE_PATTERN, playWithFallback, resolveSceneComposition } from "./act-showcase-scenes.js?v=145f4954";
 import { normalizeReadyGuests } from "./act-showcase-ready-b.js?v=b0bf110a";
 import { showLoadError } from "./act-showcase-load-error.js?v=5fbf444f";
+import { createFinaleB } from "./act-showcase-finale-b.js?v=5a05338b";
+import { HANDOUT_PLACEHOLDERS } from "./act-showcase-finale-b-model.js?v=76278f9e";
 
 const POSTER_SAMPLE_BACKGROUND = "./assets/showcase/act-showcase-moon-city-v2.svg";
-const HANDOUT_PLACEHOLDERS = new Set([
-  "ハンドアウト詳細は未登録です。",
-  "公開用ハンドアウトは登録されていません。"
-]);
 
 const status = document.querySelector("#act-showcase-status");
 const root = document.querySelector("#act-showcase-root");
@@ -20,6 +18,14 @@ const story = document.querySelector("#showcase-story");
 const opening = document.querySelector("#scene-opening");
 const cinematicIntro = document.querySelector("#cinematic-intro");
 const pageStartedAt = performance.now();
+
+// The finale is the page itself (docs/ACT_SHOWCASE_SCENES.md section 6, "7 の5つ目"). Each pattern draws the hero and the board of
+// the model and returns the hero section and the board that initializeMotion() moves with the scroll (null when a pattern has none).
+// A pattern other than "a" has to leave the static page as it is until it has succeeded, so that a failure plays "a" on an untouched page.
+const FINALE_PATTERNS = {
+  [DEFAULT_SCENE_PATTERN]: renderFinaleA,
+  b: renderFinaleB
+};
 
 initialize();
 
@@ -34,11 +40,20 @@ async function initialize() {
     const data = await loadPublicShowcase(slug);
     globalThis.TNX_SHOWCASE_THEME?.applySaved(data?.theme);
     const model = createShowcaseModel(data);
-    // only ACT READY pattern B draws the guests itself (pattern A gets them from js/act-showcase-supporting-cast.js)
-    if (isNeoTokyo && model.scenes.ready === "b") model.guests = await loadReadyGuests(slug);
-    renderOpening(model);
-    applyBackground(model.background);
-    const board = renderPoster(model);
+    // the patterns that draw the guests themselves (ACT READY B, finale B); pattern A gets them from js/act-showcase-supporting-cast.js
+    const drawsGuests = model.scenes.ready === "b" || model.scenes.finale === "b";
+    if (isNeoTokyo && drawsGuests) {
+      const guestRows = await loadGuestRows(slug);
+      model.guests = normalizeReadyGuests(guestRows);
+      model.guestRows = guestRows;
+    }
+    // the finale: the hero and the cast board, drawn by the pattern the composition asks for (a failing pattern B plays A instead)
+    const finale = await playWithFallback(
+      FINALE_PATTERNS,
+      model.scenes.finale,
+      draw => draw(model),
+      (error, pattern) => console.warn(`ACT SHOWCASE: scene "finale" pattern "${pattern}" failed, playing "${DEFAULT_SCENE_PATTERN}" instead`, error)
+    );
 
     status.hidden = true;
     root.hidden = false;
@@ -58,18 +73,37 @@ async function initialize() {
     } else {
       finishIntro();
     }
-    initializeMotion(opening, board);
+    initializeMotion(finale.opening, finale.board);
   } catch (error) {
     console.error(error);
     showLoadError(error?.message || "アクト紹介を読み込めませんでした。");
   }
 }
 
-// The guests of the act, or none: a guest list that fails or is slow (2 s) is left out, it never holds the showcase back.
-async function loadReadyGuests(slug) {
+// The guests of the act (the rows as published), or none: a guest list that fails or is slow (2 s) is left out, it never holds
+// the showcase back.
+async function loadGuestRows(slug) {
   const timeout = new Promise(resolve => setTimeout(() => resolve([]), 2000));
-  const guests = loadPublicShowcaseGuests(slug).then(normalizeReadyGuests, () => []);
-  return Promise.race([guests, timeout]);
+  const rows = loadPublicShowcaseGuests(slug).then(result => (Array.isArray(result) ? result : []), () => []);
+  return Promise.race([rows, timeout]);
+}
+
+function renderFinaleA(model) {
+  renderOpening(model);
+  applyBackground(model.background);
+  return { opening, board: renderPoster(model) };
+}
+
+// Pattern B ("key visual") builds its whole page in a detached tree first; only when that has worked is the static hero replaced and the
+// root marked as pattern B. A failure before that leaves the page untouched, and playWithFallback then plays pattern A on it.
+// It has no hero section and no board for initializeMotion(): its motion is a short fade-in in css.
+function renderFinaleB(model) {
+  const view = createFinaleB({ model });
+  document.title = model.pageTitle;
+  applyBackground(model.background);
+  opening.replaceWith(view);
+  root.setAttribute("data-scene-pattern", "b");
+  return { opening: null, board: null };
 }
 
 function createShowcaseModel(data) {
@@ -112,8 +146,10 @@ function createShowcaseModel(data) {
     background: safeImageUrl(data.background),
     // the pattern of each scene frame (js/act-showcase-scenes.js). Not played yet: every frame still runs pattern a.
     scenes: resolveSceneComposition(data),
-    // display names of the guests; filled by initialize() when a frame plays a pattern that draws them
+    // display names of the guests (ACT READY B) and the guest rows as published (finale B); filled by initialize() when a frame
+    // plays a pattern that draws them
     guests: [],
+    guestRows: [],
     casts
   };
 }

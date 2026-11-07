@@ -1,7 +1,7 @@
 import { parseStyleLabel } from "./act-showcase-style-label.js?v=8a1b88dd";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
 import { keepCaretVisible } from "./act-showcase-caret.js?v=84d1801d";
-import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=68d044a1";
+import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=145f4954";
 import { createTrailerScreenB } from "./act-showcase-trailer-b.js?v=dc9ea1dc";
 import { createTitleScreenB } from "./act-showcase-title-b.js?v=6f05db48";
 import { createReadyScreenB } from "./act-showcase-ready-b.js?v=b0bf110a";
