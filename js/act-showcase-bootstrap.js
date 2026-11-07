@@ -23,7 +23,6 @@ try {
   }
 
   await import("./act-showcase-cinematic-enhancer.js?v=1cd28c99");
-  await import("./act-showcase-summary-advance-guard.js?v=c8e75e0e");
   await import("./act-showcase-finale-enhancer.js?v=a8439be7");
   await import("./act-showcase-cinematic-polish.js?v=a8c449c6");
   await import("./act-showcase-board-layout.js?v=1430eeec");
@@ -32,7 +31,7 @@ try {
   await import("./act-showcase-writing-patterns.js?v=155018b2");
   await import("./act-showcase-cinematic-layout-v2.js?v=110b2f05");
   await import("./act-showcase-handout-live-frame.js?v=a6de4993");
-  await import("./act-showcase-page.js?v=8b2b8f5d");
+  await import("./act-showcase-page.js?v=be1d1f33");
   await import("./act-showcase-scenario-writer.js?v=14650d23");
   await import("./act-showcase-supporting-cast.js?v=478738af");
   await import("./act-showcase-final-trailer.js?v=970cf2ea");

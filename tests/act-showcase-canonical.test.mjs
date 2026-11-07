@@ -20,7 +20,8 @@ test("act showcase links the seven bundled stylesheets in order and one module b
   assert.doesNotMatch(html, /@import|act-showcase-entry\.css/);
   assert.match(html, /js\/act-showcase-bootstrap\.js\?v=/);
   assert.match(entry, /act-showcase-cast-selector\.css/);
-  assert.match(bootstrap, /act-showcase-summary-advance-guard\.js/);
+  // ACT READY is left with a click anywhere, as the other screens: no guard that swallows the stage click
+  assert.doesNotMatch(bootstrap, /act-showcase-summary-advance-guard\.js/);
   assert.match(bootstrap, /act-showcase-page\.js/);
   assert.doesNotMatch(html, /js\/act-showcase-adaptive\.js/);
   assert.doesNotMatch(html, /js\/act-showcase-poster-bg\.js/);
@@ -87,14 +88,6 @@ test("poster builds its final PUBLIC DATA bar and showcase3 grid directly, witho
   assert.doesNotMatch(boardLayout, /poster-v2-panel--credits|poster-v2-credit-row|readCreditRows|credits\.remove/);
   assert.match(boardLayout, /ensureActMeta = frame =>/);
   assert.match(boardLayout, /poster-v2-grid--showcase3/);
-});
-
-test("NeoTokyo final summary only exits through the explicit footer action", async () => {
-  const source = await read("js/act-showcase-summary-advance-guard.js");
-  assert.match(source, /neotokyo-sequence__screen--summary/);
-  assert.match(source, /neotokyo-sequence__stage/);
-  assert.match(source, /stopPropagation\(\)/);
-  assert.match(source, /capture: true/);
 });
 
 test("canonical renderer preserves public slug and link safety", async () => {

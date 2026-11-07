@@ -1,10 +1,12 @@
 import { parseStyleLabel } from "./act-showcase-style-label.js?v=8a1b88dd";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
 import { keepCaretVisible } from "./act-showcase-caret.js?v=84d1801d";
-import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=a5855761";
+import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=68d044a1";
 import { createTrailerScreenB } from "./act-showcase-trailer-b.js?v=dc9ea1dc";
 import { createTitleScreenB } from "./act-showcase-title-b.js?v=6f05db48";
-import { createReadyScreenB } from "./act-showcase-ready-b.js?v=7d80dd55";
+import { createReadyScreenB } from "./act-showcase-ready-b.js?v=b0bf110a";
+import { createAssignScreenB } from "./act-showcase-assign-b.js?v=603b1dc4";
+import { roleForCast } from "./act-showcase-visual-caption.js?v=47f6e034";
 const SAMPLE_TRAILER_MESSAGE = "公開用アクトトレーラーは未登録です。\n公開データにトレーラーを登録すると、ここで読み上げ表示されます。";
 export const FALLBACK_IMAGE = "./assets/placeholders/scan-failed.webp";
 const SHOW_ACT_TITLE_SCREEN = true;
@@ -77,7 +79,7 @@ export const INTRO_SCENES = Object.freeze([
     assignStep: "05",
     progress: 34,
     span: 50,
-    patterns: Object.freeze({ a: showHandoutsAndAssigns })
+    patterns: Object.freeze({ a: showHandoutsAndAssigns, b: showHandoutAssignsB })
   }),
   Object.freeze({ frame: "ready", step: "06", progress: 100, patterns: Object.freeze({ a: showSummary, b: showReadyB }) })
 ]);
@@ -85,6 +87,15 @@ export const INTRO_SCENES = Object.freeze([
 async function showHandoutsAndAssigns(state, model, scene) {
   for (let index = 0; index < model.casts.length; index += 1) {
     await showHandoutAndAssign(state, model.casts[index], index, model.casts, scene);
+    if (state.finished) return;
+  }
+}
+
+// Pattern B: the same PC loop, each PC a screen of its own (js/act-showcase-assign-b.js). Built before anything else is touched, so
+// a failure there leaves the page as it was and playWithFallback plays pattern A instead.
+async function showHandoutAssignsB(state, model, scene) {
+  for (let index = 0; index < model.casts.length; index += 1) {
+    await showHandoutAssignB(state, model.casts[index], index, model.casts, scene);
     if (state.finished) return;
   }
 }
@@ -150,8 +161,6 @@ function createSequenceShell(state) {
   state.stage = stage;
   stage.addEventListener("click", event => {
     if (event.target.closest("button")) return;
-    // a screen that is left only with the footer button (ACT READY pattern B) says so itself; its margins count as well
-    if (stage.querySelector("[data-advance-guard='button']")) return;
     state.requestAdvance();
   });
 
@@ -366,6 +375,75 @@ async function showHandoutAndAssign(state, cast, index, casts, scene) {
   await waitForAdvance(state, nextLabel);
 }
 
+// The state of pattern B's screen is two attributes: data-phase (reading > read > searching > found > assigned) and data-flip
+// (idle > running > done: the style cards turning over). Every wait goes through wait(), so a skip ends them at once.
+async function showHandoutAssignB(state, cast, index, casts, scene) {
+  const pcNumber = castNumberFromSlot(cast?.slot, index);
+  const nextCast = casts[index + 1];
+  const pcLabel = String(pcNumber).padStart(2, "0");
+  const handout = cast?.handout && typeof cast.handout === "object" ? cast.handout : {};
+  const role = roleForCast(cast);
+  const progressBase = scene.progress + Math.round((index / Math.max(casts.length, 1)) * scene.span);
+  const faceUp = cardsStayFaceUp();
+  const { turn, gap } = flipTiming();
+  const { screen, copy, body, ringLabel, status, cards } = createAssignScreenB({
+    step: scene.step, assignStep: scene.assignStep, pcNumber, pcLabel, cast, handout, role,
+    styles: getStyleLabels(cast), timing: { turn, gap }, faceUp, createImage: createCastImage
+  });
+  markScene(screen, scene, "b");
+  const readout = prepareSplitReadout(copy, clean(handout.body) ? String(handout.body).trim() : "公開用ハンドアウト本文は登録されていません。");
+  setProgress(state, progressBase, `HANDOUT ${pcLabel}`);
+  await swapScreen(state, screen, { waitForFonts: true });
+  // the text scrolls inside its own box, so the caret is followed there (js/act-showcase-caret.js)
+  await typeSplitReadout(state, readout, 2400, 24, () => keepCaretVisible(body, readout.readText));
+  if (state.finished) return;
+
+  screen.dataset.phase = "read";
+  status.textContent = role ? `HANDOUT COMPLETE // ASSIGN SLOT ${role}` : "HANDOUT COMPLETE // AWAITING ASSIGN";
+  await waitForAdvance(state, `ASSIGN // PC${pcNumber}`);
+  if (state.finished) return;
+
+  setProgress(state, progressBase + 5, `SEARCHING CAST // PC${pcNumber}`);
+  screen.dataset.phase = "searching";
+  ringLabel.textContent = "SEARCHING";
+  status.textContent = "CAST ARCHIVE // SEARCHING";
+  await wait(state, B_SEARCH_MS);
+  if (state.finished) return;
+
+  screen.dataset.phase = "found";
+  ringLabel.textContent = "MATCH FOUND";
+  status.textContent = "MATCH FOUND // ROUTING CAST FILE";
+  await wait(state, B_FOUND_MS);
+  if (state.finished) return;
+
+  screen.dataset.phase = "assigned";
+  status.textContent = role ? `PC${pcNumber} // ${role} // CAST ASSIGNED` : `PC${pcNumber} // CAST ASSIGNED`;
+  setProgress(state, progressBase + 10, `CAST ASSIGNED // PC${pcNumber}`);
+  // on a short screen the name and the cards are below the fold (the layout keeps their room from the start): scroll the
+  // screen down to them, gently
+  if (screen.scrollHeight > screen.clientHeight + 1) screen.scrollTo({ top: screen.scrollHeight, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+  const turning = cards.querySelectorAll(".neotokyo-assign-b__card").length;
+  if (turning && !faceUp) {
+    // the face appears first (a short fade), then the cards turn one by one, left to right
+    await wait(state, B_FACE_REVEAL_MS);
+    if (state.finished) return;
+    screen.dataset.flip = "running";
+    void cards.offsetWidth; // commit the face-down state so the first turn is a transition, not a jump
+    for (const card of cards.querySelectorAll(".neotokyo-assign-b__card")) card.classList.add("is-flipped");
+    await wait(state, (turning - 1) * gap + turn + FLIP_SETTLE_MS);
+  } else {
+    await wait(state, STYLE_HOLD_MS);
+  }
+  if (state.finished) return;
+  cards.classList.remove("is-face-down");
+  screen.dataset.flip = "done";
+
+  const nextLabel = nextCast
+    ? `NEXT // HANDOUT ${String(castNumberFromSlot(nextCast?.slot, index + 1)).padStart(2, "0")}`
+    : "NEXT // ACT SUMMARY";
+  await waitForAdvance(state, nextLabel);
+}
+
 function createHandoutHeading(title) {
   const heading = node("h2", "neotokyo-sequence__section-title neotokyo-sequence__handout-title");
   const match = title.match(/^(.*?)用ハンドアウト$/u);
@@ -423,6 +501,11 @@ const FLIP_PRESETS = {
 const STYLE_MARK_UNITS = 0.9; // width of one mark beside the name, in name characters
 const FLIP_SETTLE_MS = 300; // rest after the last card has turned
 const STYLE_HOLD_MS = 700; // the hold when nothing turns (reduced motion, no cards)
+// Pattern B (js/act-showcase-assign-b.js): how long each state of the assignment lasts before the next one (ms). The face fades in
+// over the CSS 0.9 s; the cards start turning B_FACE_REVEAL_MS after the phase became "assigned".
+const B_SEARCH_MS = 1000;
+const B_FOUND_MS = 600;
+const B_FACE_REVEAL_MS = 700;
 
 export function resolveFlipTiming(search) {
   const key = new URLSearchParams(search || "").get("flip");
