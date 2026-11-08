@@ -14,13 +14,14 @@ export const DEFAULT_SCENE_PATTERN = "a";
 
 // The patterns each frame can actually play, in order; "a" (the presentation every showcase had before compositions) first.
 // A frame gains "b" / "c" here when its pattern is added, and until then a composition that names them plays "a".
+//   loading  b = the boot terminal: a terminal over the stage that types a boot log made of the act's data (js/act-showcase-loading-b.js, css-next/pages/act-showcase-patterns.css)
 //   title    b = the title card with a light-edge reveal (js/act-showcase-title-b.js, css-next/pages/act-showcase-patterns.css)
 //   trailer  b = the vertical-text trailer (js/act-showcase-trailer-b.js, css-next/pages/act-showcase-patterns.css)
 //   handout-assign  b = the portrait first: an empty round slot the assigned cast fills (js/act-showcase-assign-b.js, css-next/pages/act-showcase-patterns.css)
 //   ready    b = the centred portraits (js/act-showcase-ready-b.js, css-next/pages/act-showcase-patterns.css)
 //   finale   b = the key visual: the casts side by side under the act name, then credits, trailer, cast cards, guests (js/act-showcase-finale-b.js, css-next/pages/act-showcase-patterns.css)
 const PLAYABLE_PATTERNS = {
-  loading: [DEFAULT_SCENE_PATTERN],
+  loading: [DEFAULT_SCENE_PATTERN, "b"],
   title: [DEFAULT_SCENE_PATTERN, "b"],
   trailer: [DEFAULT_SCENE_PATTERN, "b"],
   "handout-assign": [DEFAULT_SCENE_PATTERN, "b"],

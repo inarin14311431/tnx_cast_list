@@ -34,8 +34,9 @@ test("ACT system access is automatic while title and later narrative phases wait
     ]
   );
   assert.match(source, /for \(const scene of INTRO_SCENES\) \{[\s\S]*?await playWithFallback\(\s*scene\.patterns,\s*model\.scenes\?\.\[scene\.frame\],\s*draw => draw\(state, model, scene\),[\s\S]*?\);\s*if \(state\.finished\) return;/);
-  // pattern B exists for the title, the trailer, the handout / assignment and ACT READY; the loading frame still has just A
-  assert.deepEqual(INTRO_SCENES.map(scene => Object.keys(scene.patterns)), [["a"], ["a", "b"], ["a", "b"], ["a", "b"], ["a", "b"]]);
+  // pattern B exists for every frame the intro plays: loading, title, trailer, handout / assignment and ACT READY
+  assert.deepEqual(INTRO_SCENES.map(scene => Object.keys(scene.patterns)), [["a", "b"], ["a", "b"], ["a", "b"], ["a", "b"], ["a", "b"]]);
+  assert.equal(INTRO_SCENES[0].patterns.b.name, "showOpeningB");
   assert.equal(INTRO_SCENES[3].patterns.b.name, "showHandoutAssignsB");
   assert.equal(INTRO_SCENES[1].patterns.b.name, "showActTitleB");
   assert.equal(INTRO_SCENES[2].patterns.b.name, "showTrailerB");
