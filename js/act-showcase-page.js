@@ -1,10 +1,10 @@
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=d32e5230";
-import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=16035f8e";
+import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=71118b45";
 import { loadPublicShowcase, loadPublicShowcaseGuests, normalizeShowcaseSlug } from "./public-showcase-service.js?v=5da4463c";
 import { buildKeyStyle, buildVisualCaption } from "./act-showcase-visual-caption.js?v=47f6e034";
 import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
-import { DEFAULT_SCENE_PATTERN, playWithFallback, resolveSceneComposition } from "./act-showcase-scenes.js?v=145f4954";
+import { DEFAULT_SCENE_PATTERN, playWithFallback, resolveSceneComposition } from "./act-showcase-scenes.js?v=2647c951";
 import { normalizeReadyGuests } from "./act-showcase-ready-b.js?v=b0bf110a";
 import { showLoadError } from "./act-showcase-load-error.js?v=5fbf444f";
 import { createFinaleB } from "./act-showcase-finale-b.js?v=5a05338b";
@@ -39,9 +39,9 @@ async function initialize() {
 
     const data = await loadPublicShowcase(slug);
     globalThis.TNX_SHOWCASE_THEME?.applySaved(data?.theme);
-    const model = createShowcaseModel(data);
-    // the patterns that draw the guests themselves (ACT READY B, finale B); pattern A gets them from js/act-showcase-supporting-cast.js
-    const drawsGuests = model.scenes.ready === "b" || model.scenes.finale === "b";
+    const model = createShowcaseModel(data, slug);
+    // the patterns that draw the guests themselves (the boot log of LOADING B, ACT READY B, finale B); pattern A gets them from js/act-showcase-supporting-cast.js
+    const drawsGuests = model.scenes.loading === "b" || model.scenes.ready === "b" || model.scenes.finale === "b";
     if (isNeoTokyo && drawsGuests) {
       const guestRows = await loadGuestRows(slug);
       model.guests = normalizeReadyGuests(guestRows);
@@ -106,7 +106,7 @@ function renderFinaleB(model) {
   return { opening: null, board: null };
 }
 
-function createShowcaseModel(data) {
+function createShowcaseModel(data, slug = "") {
   if (!data || typeof data !== "object" || Array.isArray(data)) {
     throw new Error("指定されたアクト紹介は公開されていません。公開画面から再度『アクト紹介を公開』してください。");
   }
@@ -133,7 +133,14 @@ function createShowcaseModel(data) {
     ? text(trailerSource.title)
     : text(data.trailerTitle);
 
+  // the code of the theme in use ("NEON GRID"); the theme was applied before the model is built
+  const themeRuntime = globalThis.TNX_SHOWCASE_THEME;
+  const themeCode = text(themeRuntime?.themes?.[themeRuntime.current?.()]?.code);
+
   return {
+    // the id of the act as the page was opened with (?id=); the boot log of LOADING B names it
+    slug,
+    themeCode,
     pageTitle,
     heroTitle,
     heroSubTitle: text(data.heroSubTitle) || "CAST SHOWCASE",

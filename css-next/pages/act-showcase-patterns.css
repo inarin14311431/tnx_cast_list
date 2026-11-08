@@ -386,3 +386,50 @@ body:not(.showcase-neotokyo-intro-active) .neotokyo-finale-b:where([data-scene="
 .neotokyo-finale-b__thumb:where([data-scene="finale"][data-scene-pattern="b"],[data-scene="finale"][data-scene-pattern="b"] *){border-color:CanvasText}
 .neotokyo-finale-b__trailer:where([data-scene="finale"][data-scene-pattern="b"],[data-scene="finale"][data-scene-pattern="b"] *),.neotokyo-finale-b__handout:where([data-scene="finale"][data-scene-pattern="b"],[data-scene="finale"][data-scene-pattern="b"] *),.neotokyo-finale-b__guest-summary:where([data-scene="finale"][data-scene-pattern="b"],[data-scene="finale"][data-scene-pattern="b"] *){border-color:CanvasText}
 }
+/* ==== from: act-showcase-pattern-loading-b.css ==== */
+/* LOADING, pattern B (boot terminal): docs/ACT_SHOWCASE_SCENES.md section 6 #7 (6th pattern: loading, the ACCESS screen once the data has arrived).
+   Own class names only (neotokyo-loading-b__*), every rule scoped to this pattern with :where(), colors from the
+   --showcase-* theme variables and color-mix() (no #hex / rgb()). Pattern A's layers never see this screen. The screen is laid over the
+   whole stage (the header and the footer of the sequence are shared by every pattern and stay); the log box is anchored to its bottom,
+   so the line being typed, and its caret, is always the last row and older lines are pushed up out of it. Lines break anywhere
+   (word-break: break-all), so a letter that is already shown never moves to the next row. */
+@keyframes neotokyo-loading-b-power-on{0%{opacity:0}18%{opacity:.7}30%{opacity:.15}48%{opacity:.9}62%{opacity:.4}100%{opacity:1}}
+@keyframes neotokyo-loading-b-caret{50%{opacity:0}}
+@keyframes neotokyo-loading-b-granted{0%{opacity:0}30%{opacity:.9}42%{opacity:.2}60%{opacity:1}78%{opacity:.5}100%{opacity:1}}
+.neotokyo-sequence__screen.neotokyo-loading-b:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){position:absolute;z-index:1;inset:0;display:grid;grid-template-rows:auto minmax(0,1fr);box-sizing:border-box;margin:0;overflow:hidden;opacity:0;border:1px solid color-mix(in srgb,var(--showcase-primary) 40%,transparent);background:color-mix(in srgb,var(--showcase-surface) 78%,var(--showcase-bg));color:var(--showcase-readable-text);font:400 clamp(.8rem,1.35vw,1rem)/1.75 "Share Tech Mono","Noto Sans JP",monospace;letter-spacing:.03em}
+.neotokyo-sequence__screen.neotokyo-loading-b.is-visible:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){opacity:1;animation:neotokyo-loading-b-power-on .32s linear both}
+.neotokyo-loading-b__bar:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){display:flex;justify-content:space-between;gap:12px;min-width:0;padding:8px clamp(12px,2vw,22px);border-bottom:1px solid color-mix(in srgb,var(--showcase-primary) 32%,transparent);background:color-mix(in srgb,var(--showcase-primary) 10%,var(--showcase-bg));font-size:.7rem;line-height:1.5;letter-spacing:.2em;color:var(--showcase-readable-muted)}
+.neotokyo-loading-b__bar-title:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){min-width:0;overflow-wrap:anywhere}
+.neotokyo-loading-b__bar-state:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){flex:none}
+.neotokyo-loading-b__log:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){display:flex;flex-direction:column;justify-content:flex-end;box-sizing:border-box;min-width:0;min-height:0;margin:0;padding:clamp(12px,2.4vw,28px) clamp(14px,3vw,40px);overflow:hidden}
+.neotokyo-loading-b__line:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){flex:none;min-width:0;margin:0;overflow-wrap:anywhere;word-break:break-all;color:var(--showcase-readable-text)}
+.neotokyo-loading-b__line:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *):before{content:">";margin-right:.8em;color:var(--showcase-primary)}
+.neotokyo-loading-b__line[data-typing]:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *):after{content:"";display:inline-block;width:.6em;height:1.05em;margin-left:.15em;vertical-align:-.15em;background:var(--showcase-primary);animation:neotokyo-loading-b-caret 1s steps(1,end) infinite}
+.neotokyo-loading-b__granted:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){flex:none;min-width:0;margin:clamp(10px,2vh,22px) 0 0;font:900 clamp(1.5rem,6vw,4.6rem)/1.1 Orbitron,"Share Tech Mono",monospace;letter-spacing:.14em;text-wrap:balance;overflow-wrap:anywhere;color:var(--showcase-primary);animation:neotokyo-loading-b-granted .5s linear both}
+@media(max-width:760px){
+.neotokyo-loading-b__log:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){padding:10px 12px}
+.neotokyo-loading-b__bar:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){padding:6px 12px;letter-spacing:.12em}
+.neotokyo-loading-b__granted:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){letter-spacing:.08em}
+}
+@media(max-width:520px){
+.neotokyo-loading-b__bar-state:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){display:none}
+}
+@media(max-height:520px){
+.neotokyo-loading-b__log:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){padding-block:6px}
+.neotokyo-loading-b__granted:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){margin-top:4px;font-size:clamp(1.3rem,5vh,2.4rem)}
+}
+@media(prefers-reduced-motion:reduce){
+.neotokyo-sequence__screen.neotokyo-loading-b.is-visible:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){animation:none}
+.neotokyo-loading-b__granted:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){animation:none}
+.neotokyo-loading-b__line[data-typing]:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *):after{animation:none}
+}
+@media(prefers-contrast:more){
+.neotokyo-loading-b__bar:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){color:var(--showcase-readable-text);border-bottom-width:2px}
+.neotokyo-sequence__screen.neotokyo-loading-b:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){border-width:2px}
+}
+@media(forced-colors:active){
+.neotokyo-sequence__screen.neotokyo-loading-b:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){border-color:CanvasText}
+.neotokyo-loading-b__bar:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *){border-color:CanvasText}
+.neotokyo-loading-b__line:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *):before{color:CanvasText}
+.neotokyo-loading-b__line[data-typing]:where([data-scene="loading"][data-scene-pattern="b"],[data-scene="loading"][data-scene-pattern="b"] *):after{background:CanvasText;forced-color-adjust:none}
+}

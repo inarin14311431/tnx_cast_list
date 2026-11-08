@@ -1,9 +1,10 @@
 import { parseStyleLabel } from "./act-showcase-style-label.js?v=8a1b88dd";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
 import { keepCaretVisible } from "./act-showcase-caret.js?v=84d1801d";
-import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=145f4954";
+import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=2647c951";
 import { createTrailerScreenB } from "./act-showcase-trailer-b.js?v=dc9ea1dc";
 import { createTitleScreenB } from "./act-showcase-title-b.js?v=6f05db48";
+import { createLoadingScreenB, bootLines } from "./act-showcase-loading-b.js?v=e2935443";
 import { createReadyScreenB } from "./act-showcase-ready-b.js?v=b0bf110a";
 import { createAssignScreenB } from "./act-showcase-assign-b.js?v=603b1dc4";
 import { roleForCast } from "./act-showcase-visual-caption.js?v=47f6e034";
@@ -70,7 +71,7 @@ export async function runNeoTokyoIntro({ intro, model }) {
 // the progress bar; handout-assign repeats for every PC and spreads its progress over span, from the value at the
 // start of a PC to +5 (searching) and +10 (assigned).
 export const INTRO_SCENES = Object.freeze([
-  Object.freeze({ frame: "loading", step: "01", progress: 5, patterns: Object.freeze({ a: showOpening }) }),
+  Object.freeze({ frame: "loading", step: "01", progress: 5, patterns: Object.freeze({ a: showOpening, b: showOpeningB }) }),
   Object.freeze({ frame: "title", step: "02", progress: 18, patterns: Object.freeze({ a: showActTitle, b: showActTitleB }) }),
   Object.freeze({ frame: "trailer", step: "03", progress: 30, patterns: Object.freeze({ a: showTrailer, b: showTrailerB }) }),
   Object.freeze({
@@ -193,6 +194,95 @@ async function showOpening(state, model, scene) {
     status: ["PUBLIC ACT FILE // DETECTED", "SHOWCASE DATA // VERIFIED", "TITLE & CREDITS // READY"]
   });
   await wait(state, 2900);
+}
+
+// ---- LOADING, pattern B (the boot terminal, js/act-showcase-loading-b.js). Timings in ms.
+// The typing of all the lines takes about LOADING_B_TYPE_MS however many there are (one PC or six), then ACCESS GRANTED is held for
+// LOADING_B_HOLD_MS: about 3.4 s from the first letter to the next screen, against 2.9 s for pattern A (docs/ACT_SHOWCASE_SCENES.md
+// section 6 #7, 6th pattern), which is at most 1 s longer. With reduced motion nothing is typed and the screen is held as long as A's.
+const LOADING_B_TYPE_MS = 2200;
+const LOADING_B_HOLD_MS = 1200;
+const LOADING_B_REDUCED_HOLD_MS = 2900;
+const LOADING_B_FONT_WAIT_MS = 1500;
+const LOADING_B_MIN_INTERVAL_MS = 6;
+const LOADING_B_MAX_INTERVAL_MS = 24;
+
+// How many characters one typing step adds, and the wait between steps, so that `total` characters take about `budget` ms: the
+// step is never shorter than the minimum interval, so a long log types several characters at a time. Pure.
+export function bootTypingPlan(total, budget = LOADING_B_TYPE_MS) {
+  const characters = Math.max(0, Math.floor(total) || 0);
+  if (!characters) return { chunk: 1, interval: LOADING_B_MIN_INTERVAL_MS };
+  const chunk = Math.max(1, Math.ceil((characters * LOADING_B_MIN_INTERVAL_MS) / budget));
+  const steps = Math.ceil(characters / chunk);
+  return { chunk, interval: Math.min(LOADING_B_MAX_INTERVAL_MS, Math.max(LOADING_B_MIN_INTERVAL_MS, Math.floor(budget / steps))) };
+}
+
+// The screen is built before anything else is touched, so a failure there leaves the page as it was and playWithFallback plays
+// pattern A instead. It is shown at once (the frame and a blinking caret): this is the first screen the visitor sees after the static
+// one, which is already gone, so it must not wait for fonts the way the later screens do. Only the typing waits, for the web fonts
+// the log itself needs (Share Tech Mono for the Latin, Noto Sans JP for the handles), at most LOADING_B_FONT_WAIT_MS.
+async function showOpeningB(state, model, scene) {
+  const { screen, rows, granted } = createLoadingScreenB({ step: scene.step, lines: bootLines(model) });
+  markScene(screen, scene, "b");
+  setProgress(state, scene.progress, "ACT FILE ACCESS");
+  const reduced = prefersReducedMotion() || document.body.classList.contains("showcase-neotokyo-reduced");
+  if (reduced) {
+    for (const { row, textNode, text } of rows) {
+      textNode.data = text;
+      row.hidden = false;
+    }
+    granted.hidden = false;
+  } else if (rows.length) {
+    rows[0].row.hidden = false;
+    rows[0].row.dataset.typing = "true";
+  }
+  swapScreen(state, screen);
+  if (reduced) {
+    await wait(state, LOADING_B_REDUCED_HOLD_MS);
+    return;
+  }
+  await fontsForText(state, rows.map(item => item.text).join(" "));
+  await typeBootLines(state, rows);
+  if (state.finished) return;
+  granted.hidden = false;
+  await wait(state, LOADING_B_HOLD_MS);
+}
+
+// Asks for the faces the log needs (only the unicode-range pieces that cover its characters are fetched) and waits for them, or for
+// the limit, or for a skip. The families are the ones css-next/pages/act-showcase-patterns.css gives the terminal: Share Tech Mono
+// for the Latin lines, Noto Sans JP only for what it has to draw that is not ASCII (the handles), Orbitron for ACCESS GRANTED.
+async function fontsForText(state, text) {
+  if (state.finished || !document.fonts?.load) return;
+  const loads = [
+    document.fonts.load('400 14px "Share Tech Mono"', text),
+    document.fonts.load('900 14px Orbitron', "ACCESS GRANTED")
+  ];
+  const wide = text.replace(/[\u0000-\u007f]/g, "");
+  if (wide) loads.push(document.fonts.load('400 14px "Noto Sans JP"', wide));
+  await Promise.race([Promise.allSettled(loads), wait(state, LOADING_B_FONT_WAIT_MS)]);
+}
+
+// Types the lines one after the other into their own text nodes (data, not textContent: no node is added or replaced).
+async function typeBootLines(state, rows) {
+  const total = rows.reduce((sum, item) => sum + Array.from(item.text).length, 0);
+  const { chunk, interval } = bootTypingPlan(total);
+  for (const item of rows) {
+    if (state.finished) return;
+    const characters = Array.from(item.text);
+    item.row.hidden = false;
+    item.row.dataset.typing = "true";
+    try {
+      for (let index = 0; index < characters.length && !state.finished; ) {
+        index = Math.min(characters.length, index + chunk);
+        item.textNode.data = characters.slice(0, index).join("");
+        await wait(state, interval);
+      }
+    } finally {
+      // finished, skipped or the last character typed: the whole line is shown and the caret leaves it
+      item.textNode.data = item.text;
+      delete item.row.dataset.typing;
+    }
+  }
 }
 
 async function showActTitle(state, model, scene) {

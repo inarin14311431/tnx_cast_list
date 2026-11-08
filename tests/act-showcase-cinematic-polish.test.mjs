@@ -83,7 +83,7 @@ test("ACT FILE ACCESS uses a dedicated cinematic access treatment", async () => 
   ]);
   // The builder emits the final access copy and NODE label itself; the enhancers no longer overwrite them.
   // the step number and the progress value come from the loading row of INTRO_SCENES ("01", 5)
-  assert.match(builder, /\{ frame: "loading", step: "01", progress: 5, patterns: Object\.freeze\(\{ a: showOpening \}\) \}/);
+  assert.match(builder, /\{ frame: "loading", step: "01", progress: 5, patterns: Object\.freeze\(\{ a: showOpening, b: showOpeningB \}\) \}/);
   assert.match(builder, /eyebrow: `\$\{scene\.step\} \/\/ N◎VA MUNICIPAL DATABASE`/);
   assert.match(builder, /title: "ACT FILE \/\/ ACCESS"/);
   assert.match(builder, /sub: "ESTABLISHING PUBLIC SESSION"/);

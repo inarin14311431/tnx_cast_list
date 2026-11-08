@@ -43,7 +43,7 @@ test("canonical renderer consumes centralized public showcase data", async () =>
     read("js/public-showcase-service.js")
   ]);
   assert.match(source, /loadPublicShowcase\(slug\)/);
-  assert.match(source, /createShowcaseModel\(data\)/);
+  assert.match(source, /createShowcaseModel\(data, slug\)/);
   assert.match(source, /renderPoster\(model\)/);
   assert.match(source, /model\.casts/);
   assert.match(service, /get_public_act_showcase/);
