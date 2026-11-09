@@ -161,6 +161,31 @@ body[data-page="showcase-generator.html"] .showcase-layout {
 .publish-result__links a.is-quiet { border-color: color-mix(in srgb, var(--color-border) 80%, transparent); color: var(--color-muted); background: transparent; font-size: .72rem; }
 .publish-result__links a:focus-visible, .publish-result__copy:focus-visible, .publish-result__close:focus-visible { outline: 2px solid var(--color-focus, var(--color-success)); outline-offset: 2px; }
 .publish-result__note { margin: 0; color: var(--color-muted); font-size: .68rem; line-height: 1.6; }
+/* the poster panel of that card (js/showcase-poster-panel.js): inputs, preview, save / copy / share, alt text */
+.publish-poster { display: grid; gap: 8px; }
+.publish-poster__toggle, .publish-poster__actions button, .publish-poster__alt button { display: flex; align-items: baseline; justify-content: center; gap: 8px; min-height: 40px; padding: 8px 12px; border: 1px solid color-mix(in srgb, var(--color-success) 55%, var(--color-border)); border-radius: 0; color: var(--color-text); background: color-mix(in srgb, var(--color-success) 9%, var(--color-surface)); font-size: .78rem; font-weight: 800; cursor: pointer; }
+.publish-poster__toggle small, .publish-poster__actions button small, .publish-poster__alt button small { color: var(--color-muted); font: 700 .54rem/1 var(--font-data); letter-spacing: .14em; }
+.publish-poster__toggle[aria-expanded="true"] { border-color: var(--color-success); }
+.publish-poster__actions button:disabled, .publish-poster__alt button:disabled { opacity: .45; cursor: not-allowed; }
+.publish-poster__actions button[hidden] { display: none; }
+.publish-poster__toggle:focus-visible, .publish-poster__actions button:focus-visible, .publish-poster__alt button:focus-visible, .publish-poster__fields input:focus-visible, .publish-poster__alt-text:focus-visible { outline: 2px solid var(--color-focus, var(--color-success)); outline-offset: 2px; }
+.publish-poster__panel { display: grid; gap: 12px; min-width: 0; }
+.publish-poster__panel[hidden] { display: none; }
+.publish-poster__fields { display: grid; gap: 10px; }
+.publish-poster__fields label, .publish-poster__alt label { display: grid; gap: 4px; min-width: 0; color: color-mix(in srgb, var(--color-text) 82%, var(--color-muted)); font-size: .72rem; font-weight: 800; }
+.publish-poster__label small { margin-left: 6px; color: var(--color-muted); font: 700 .54rem/1 var(--font-data); letter-spacing: .14em; }
+.publish-poster__fields input, .publish-poster__alt-text { box-sizing: border-box; width: 100%; min-width: 0; min-height: 40px; padding: 6px 8px; border: 1px solid color-mix(in srgb, var(--color-accent) 30%, var(--color-border)); border-radius: 0; color: var(--color-text); background: color-mix(in srgb, var(--color-bg) 74%, var(--color-surface)); font: 700 .74rem/1.5 var(--font-data); }
+.publish-poster__alt-text { min-height: 96px; resize: vertical; font-weight: 600; }
+.publish-poster__note, .publish-poster__hint { margin: 0; color: var(--color-muted); font-size: .68rem; font-weight: 600; line-height: 1.6; }
+.publish-poster__hint[hidden] { display: none; }
+.publish-poster__preview { display: grid; gap: 6px; }
+.publish-poster__canvas { display: block; box-sizing: border-box; width: 100%; height: auto; aspect-ratio: 16 / 9; border: 1px solid color-mix(in srgb, var(--color-success) 40%, var(--color-border)); background: var(--color-bg); }
+.publish-poster__canvas[data-state="loading"] { opacity: .55; }
+.publish-poster__status { margin: 0; min-height: 1.5em; color: var(--color-muted); font: 700 .72rem/1.5 var(--font-data); overflow-wrap: anywhere; }
+.publish-poster__status[data-state="ok"] { color: var(--color-success); }
+.publish-poster__status[data-state="error"] { color: var(--color-danger); }
+.publish-poster__actions { display: grid; gap: 6px; }
+.publish-poster__alt { display: grid; gap: 6px; }
 .showcase-publish .generator-action-note { margin: 12px 0 0; font-size: .72rem; line-height: 1.7; }
 .showcase-publish .generator-status { overflow-wrap: anywhere; }
 .publish-other { display: grid; gap: 8px; margin-top: 16px; padding-top: 14px; border-top: 1px solid color-mix(in srgb, var(--color-border) 70%, transparent); }

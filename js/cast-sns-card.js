@@ -3,7 +3,7 @@ import { getCharacter } from "./cast-data-store.js?v=f786d39c";
 import { getImageFocusX, getImageFocusY, getImageZoom } from "./image-focus.js?v=d32e5230";
 import { stripOuterQuotes } from "./cast-hero-view.js?v=e02c541d";
 import { getPublicIdParam } from "./public-id-param.js?v=87346d72";
-import { computeNameLayout, createCanvasMeasurer, approximateTextWidth, OPEN_QUOTE, CLOSE_QUOTE, READING_GAP, READING_LETTER_SPACING_EM } from "./cast-sns-name-layout.js?v=66babdd8";
+import { computeNameLayout, createCanvasMeasurer, approximateTextWidth, OPEN_QUOTE, CLOSE_QUOTE, READING_GAP, READING_LETTER_SPACING_EM } from "./cast-sns-name-layout.js?v=71a5e4e1";
 
 const FALLBACK_THEMES = {
   nova: {

@@ -108,7 +108,7 @@ async function publishDynamicShowcase(button, mode) {
     setStatus("");
     // The generator drops the manual-cast pictures this publication replaced (js/showcase-manual-image.js).
     document.dispatchEvent(new CustomEvent("tnx:showcase-published", {
-      detail: { slug, mode, actName, historyOk: castOrderSync.ok, urls: { cinematic: publicUrlOf("cinematic"), standard: publicUrlOf("standard") } }
+      detail: { slug, mode, actName, showcase: showcaseData, historyOk: castOrderSync.ok, urls: { cinematic: publicUrlOf("cinematic"), standard: publicUrlOf("standard") } }
     }));
   } catch (error) {
     console.error(error);

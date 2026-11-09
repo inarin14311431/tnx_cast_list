@@ -46,6 +46,74 @@ function shiftBox(box, delta) {
   box.centerX += delta;
 }
 
+/* One base text with its reading above it, laid out like CSS `ruby-align: space-around` (the cast view's ruby): the reading has a
+ * letter spacing of .2em and the size READING_SCALE of the base. A reading narrower than the base is spread over the whole base width
+ * with equal room around each letter (half of it at both ends); a reading wider than the base keeps its natural width and the base is
+ * centered in it (room added left and right of the base). Pure: `measure` is injected (a canvas measurer, or approximateTextWidth).
+ * Returns the unit's box ({left, width}), where the base text starts (baseX) and, when there is a reading, its letters one by one
+ * (glyphs: [{char, x}], x = left edge of each letter) so a canvas can draw them without any text-align or letter-spacing support. */
+export function computeRubyUnit({ text, reading, fontSize, measure = approximateTextWidth, left = 0 }) {
+  const base = String(text ?? "");
+  const baseWidth = base ? measure(base, fontSize, 700) : 0;
+  const readingFontSize = Math.round(fontSize * READING_SCALE * 10) / 10;
+  const readingText = String(reading ?? "").trim();
+  if (!readingText) return { left, width: baseWidth, baseX: left, baseWidth, readingFontSize, reading: null };
+  const chars = Array.from(readingText);
+  const advances = chars.map(char => measure(char, readingFontSize, 700));
+  const spacing = readingFontSize * READING_LETTER_SPACING_EM;
+  const natural = advances.reduce((sum, advance) => sum + advance, 0) + Math.max(0, chars.length - 1) * spacing;
+  const glyphs = [];
+  if (natural <= baseWidth) {
+    const room = (baseWidth - natural) / chars.length;
+    let x = left + room / 2;
+    chars.forEach((char, index) => {
+      glyphs.push({ char, x });
+      x += advances[index] + spacing + room;
+    });
+    return { left, width: baseWidth, baseX: left, baseWidth, readingFontSize, reading: { left, width: baseWidth, glyphs, spread: true } };
+  }
+  let x = left;
+  chars.forEach((char, index) => {
+    glyphs.push({ char, x });
+    x += advances[index] + spacing;
+  });
+  return {
+    left,
+    width: natural,
+    baseX: left + (natural - baseWidth) / 2,
+    baseWidth,
+    readingFontSize,
+    reading: { left, width: natural, glyphs, spread: false }
+  };
+}
+
+function computeSpaceAroundNameLayout({ handle, handleReading, name, nameReading, measure, minFontSize, maxFontSize, left, rightEdge }) {
+  const handleInner = String(handle ?? "").trim();
+  const nameText = String(name ?? "").trim() || "NO NAME";
+  const handleText = handleInner ? `${OPEN_QUOTE}${handleInner}${CLOSE_QUOTE}` : "";
+  const maxWidth = rightEdge - left;
+  const unitsAt = fontSize => {
+    const handleUnit = handleText ? computeRubyUnit({ text: handleText, reading: handleReading, fontSize, measure, left }) : null;
+    const gap = handleUnit ? fontSize * NAME_GAP_EM : 0;
+    const nameLeft = left + (handleUnit ? handleUnit.width + gap : 0);
+    const nameUnit = computeRubyUnit({ text: nameText, reading: nameReading, fontSize, measure, left: nameLeft });
+    return { handleUnit, nameUnit, total: nameLeft + nameUnit.width - left };
+  };
+  let fontSize = maxFontSize;
+  while (fontSize > minFontSize && unitsAt(fontSize).total > maxWidth) fontSize -= 1;
+  const { handleUnit, nameUnit, total } = unitsAt(fontSize);
+  return {
+    fontSize,
+    readingFontSize: nameUnit.readingFontSize,
+    handle: handleUnit && { x: handleUnit.baseX, quotedWidth: handleUnit.baseWidth, width: handleUnit.baseWidth },
+    name: { x: nameUnit.baseX, width: nameUnit.baseWidth },
+    handleReading: handleUnit?.reading ?? null,
+    nameReading: nameUnit.reading,
+    totalWidth: total,
+    fits: total <= maxWidth
+  };
+}
+
 /**
  * @param {object} options
  * @param {string} options.handle - handle text, quotes already stripped by the caller.
@@ -53,6 +121,7 @@ function shiftBox(box, delta) {
  * @param {string} options.name
  * @param {string} [options.nameReading]
  * @param {(text: string, fontSize: number, weight?: number) => number} [options.measure]
+ * @param {"center"|"space-around"} [options.readingMode]
  */
 export function computeNameLayout({
   handle,
@@ -63,8 +132,14 @@ export function computeNameLayout({
   minFontSize = MIN_NAME_FONT_SIZE,
   maxFontSize = MAX_NAME_FONT_SIZE,
   left = CARD_NAME_LEFT,
-  rightEdge = CARD_RIGHT_EDGE
+  rightEdge = CARD_RIGHT_EDGE,
+  // "center" (the SNS card): a reading is centered over its base and pushed back inside the bounds. "space-around" (the act poster):
+  // see computeRubyUnit. The default keeps every existing caller exactly as it was.
+  readingMode = "center"
 }) {
+  if (readingMode === "space-around") {
+    return computeSpaceAroundNameLayout({ handle, handleReading, name, nameReading, measure, minFontSize, maxFontSize, left, rightEdge });
+  }
   const handleInner = String(handle ?? "").trim();
   const nameText = String(name ?? "").trim() || "NO NAME";
   const maxWidth = rightEdge - left;
