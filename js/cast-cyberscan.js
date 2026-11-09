@@ -66,23 +66,57 @@
     : [['ROUTE','都市ネットへ接続'],['TRACE','対象IDを追跡'],['AUTH','アクセス権限を照合'],['SCAN','身体・経歴・技能データを抽出'],['VERIFY','データ整合性を確認']];
   const startedAt=performance.now();
   const minimumDisplayMs=fastScan?520:3600;
-  let progress=0,line=0,resolved=false;
+  let progress=0,line=0,resolved=false,concluded=false,timer=0,fallbackTimer=0;
+  const pendingTimers=new Set();
+  const later=(callback,delay)=>{const id=window.setTimeout(()=>{pendingTimers.delete(id);callback();},delay);pendingTimers.add(id);};
+
+  // A small hint at the edge of the screen while the scan runs; it goes away with the overlay.
+  const skipHint=document.createElement('p');
+  skipHint.className='cast-scan-skip';
+  skipHint.innerHTML='クリックでスキップ <small>CLICK TO SKIP</small>';
+  overlay.append(skipHint);
 
   function addLog(label,text,ok=false){const p=document.createElement('p');p.className=ok?'ok':'';p.innerHTML=`<strong>${escapeHtml(label)}</strong> // ${escapeHtml(text)}`;log.append(p);}
+  function remember(){try{sessionStorage.setItem(scanSessionKey,String(Date.now()));}catch{}}
+  // The one place the scan ends, whether it ran to the end or was skipped: stop every timer and listener, remove the overlay
+  // (the data rain stays) and tell the page. Nothing of the scan is left to touch a click or a key pressed afterwards.
+  function conclude(success,skipped){
+    if(concluded)return;concluded=true;resolved=true;
+    clearInterval(timer);clearTimeout(fallbackTimer);pendingTimers.forEach(id=>clearTimeout(id));pendingTimers.clear();
+    document.removeEventListener('click',onSkipClick,true);document.removeEventListener('keydown',onSkipKey,true);
+    overlay.remove();
+    window.dispatchEvent(new CustomEvent('tnx:cast-scan-complete',{detail:{success,fastScan,skipped}}));
+  }
   function finish(success){
     if(resolved)return;resolved=true;progress=100;bar.style.width='100%';addLog(success?'ACCESS GRANTED':'DENIED',success?(fastScan?'認証済みデータへ接続':'パーソナルデータ取得完了'):'対象データの取得に失敗',success);
-    if(success){try{sessionStorage.setItem(scanSessionKey,String(Date.now()));}catch{}}
+    if(success)remember();
     const remain=Math.max(0,minimumDisplayMs-(performance.now()-startedAt));
-    window.setTimeout(()=>{
+    later(()=>{
       overlay.classList.add('is-complete');
-      window.setTimeout(()=>{
-        overlay.remove();
-        window.dispatchEvent(new CustomEvent('tnx:cast-scan-complete',{detail:{success,fastScan}}));
-      },fastScan?260:620);
+      later(()=>conclude(success,false),fastScan?260:620);
     },remain+(fastScan?80:420));
   }
+  // Skipping: a click or tap anywhere, or Escape / Enter / Space, ends the scan at once. The click is used up here, so nothing
+  // under the overlay receives it; the matching key release is swallowed once, so a Space that skipped does not also press a button.
+  function skipScan(){
+    if(concluded)return;
+    const error=document.querySelector('#cast-error');
+    remember();
+    conclude(!(error&&!error.hidden),true);
+  }
+  function onSkipClick(event){if(concluded)return;event.preventDefault();event.stopImmediatePropagation();skipScan();}
+  function onSkipKey(event){
+    if(concluded||!['Escape','Enter',' ','Spacebar'].includes(event.key))return;
+    event.preventDefault();event.stopImmediatePropagation();
+    const key=event.key;
+    skipScan();
+    document.addEventListener('keyup',release=>{if(release.key===key){release.preventDefault();release.stopImmediatePropagation();}},{capture:true,once:true});
+  }
+  document.addEventListener('click',onSkipClick,true);
+  document.addEventListener('keydown',onSkipKey,true);
+
   addLog('LINK',fastScan?'既存の認証経路を呼び出し中…':'暗号化経路を確立中…');
-  const timer=setInterval(()=>{
+  timer=setInterval(()=>{
     const content=document.querySelector('#cast-content'),error=document.querySelector('#cast-error');
     const dataReady=content&&!content.hidden,failed=error&&!error.hidden,cap=(dataReady||failed)?100:90;
     const factor=fastScan?.42:.10;
@@ -90,6 +124,6 @@
     const threshold=fastScan?[34,72]:[14,32,50,70,88];while(line<entries.length&&progress>=threshold[line]){addLog(entries[line][0],entries[line][1],line<1);line++;}
     if(failed){clearInterval(timer);finish(false);return;}if(dataReady&&progress>=96){clearInterval(timer);finish(true);}
   },fastScan?45:130);
-  window.setTimeout(()=>{if(resolved)return;const content=document.querySelector('#cast-content'),error=document.querySelector('#cast-error');if(content&&!content.hidden){clearInterval(timer);finish(true);}else if(error&&!error.hidden){clearInterval(timer);finish(false);}},fastScan?1000:4600);
+  fallbackTimer=window.setTimeout(()=>{if(resolved)return;const content=document.querySelector('#cast-content'),error=document.querySelector('#cast-error');if(content&&!content.hidden){clearInterval(timer);finish(true);}else if(error&&!error.hidden){clearInterval(timer);finish(false);}},fastScan?1000:4600);
   function escapeHtml(value){return String(value??'').replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));}
 })();
