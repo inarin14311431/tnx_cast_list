@@ -18,17 +18,28 @@ export function otherMode(mode) {
   return normalizeMode(mode) === "standard" ? "cinematic" : "standard";
 }
 
-// 『<act title>』のアクト紹介を公開しました — with " ― <subtitle>" after the title when there is one.
-export function buildSharePostText({ actName, subtitle } = {}, hashtag = SHOWCASE_HASHTAG) {
+// 『<act title>』のアクト紹介を公開しました — with " ― <subtitle>" after the title when there is one. With the credits and the cast lines of the poster
+// (js/act-poster-text.js) the post says who plays and who runs it:
+//   『title ― subtitle』のアクト紹介を公開しました
+//   RL: … / ライター: …
+//   HO1 カブト “ハンドル” 氏名
+//   #トーキョーNOVA
+// Without them it is the first line and the hashtag only. The length is not adjusted: the person edits the post on X.
+export function buildSharePostText({ actName, subtitle, rulerName, writerName, castLines } = {}, hashtag = SHOWCASE_HASHTAG) {
   const title = String(actName ?? "").trim();
   const sub = String(subtitle ?? "").trim();
   const heading = sub ? `${title} ― ${sub}` : title;
-  return `『${heading}』のアクト紹介を公開しました\n${hashtag}`;
+  const credits = [
+    String(rulerName ?? "").trim() && `RL: ${String(rulerName).trim()}`,
+    String(writerName ?? "").trim() && `ライター: ${String(writerName).trim()}`
+  ].filter(Boolean).join(" / ");
+  const lines = (Array.isArray(castLines) ? castLines : []).map(line => String(line ?? "").trim()).filter(Boolean);
+  return [`『${heading}』のアクト紹介を公開しました`, credits, ...lines, hashtag].filter(Boolean).join("\n");
 }
 
 // The X compose screen with the post text and the public URL (no API, no login): the person edits and sends it there.
-export function buildXIntentUrl({ actName, subtitle, url } = {}, hashtag = SHOWCASE_HASHTAG) {
-  const text = buildSharePostText({ actName, subtitle }, hashtag);
+export function buildXIntentUrl({ url, ...post } = {}, hashtag = SHOWCASE_HASHTAG) {
+  const text = buildSharePostText(post, hashtag);
   return `${X_INTENT_ENDPOINT}?text=${encodeURIComponent(text)}&url=${encodeURIComponent(String(url ?? ""))}`;
 }
 

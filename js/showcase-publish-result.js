@@ -1,4 +1,4 @@
-import { buildXIntentUrl, emptyPublishedState, afterPublished, afterRestored, isRepublish, modeLabel, normalizeMode, otherMode } from "./showcase-publish-result-core.js?v=0dd71e56";
+import { buildXIntentUrl, emptyPublishedState, afterPublished, afterRestored, isRepublish, modeLabel, normalizeMode, otherMode } from "./showcase-publish-result-core.js?v=37f06130";
 
 // The card in the publish column that replaces the one-line "published" message: a success heading, the public URL with a copy button
 // and the buttons that open the page or post it to X. Published state also turns the publish buttons into "update and republish".
@@ -12,6 +12,7 @@ const publishButtons = [...document.querySelectorAll("[data-publish-mode]")];
 const COPIED_MS = 2000;
 
 let published = emptyPublishedState();
+let posterContext = null; // what the poster panel needs: the published act, its identifier and the public URL of the version on the card
 let copiedTimer = 0;
 
 for (const button of publishButtons) {
@@ -44,6 +45,8 @@ card?.addEventListener("click", event => {
     return;
   }
   if (event.target.closest("[data-result-copy]")) void copyUrl();
+  const posterToggle = event.target.closest("[data-poster-toggle]");
+  if (posterToggle) togglePoster(posterToggle);
 });
 
 function syncButtonLabels() {
@@ -62,6 +65,7 @@ function hideCard() {
   if (!card) return;
   card.hidden = true;
   card.replaceChildren();
+  posterContext = null;
   window.clearTimeout(copiedTimer);
 }
 
@@ -71,6 +75,7 @@ function renderCard(detail) {
   const other = otherMode(mode);
   const url = detail.urls[mode];
   const shareUrl = buildXIntentUrl({ actName: detail.actName || actNameField?.value, subtitle: subtitleField?.value, url });
+  posterContext = detail.showcase ? { showcase: detail.showcase, slug: detail.slug, url } : null;
   const note = detail.historyOk === false ? "公開しました。参加アクト履歴のCAST No.は更新できませんでした。" : "参加アクト履歴にも反映しました。";
 
   card.replaceChildren(
@@ -88,9 +93,44 @@ function renderCard(detail) {
       element("a", "", [text("X に投稿")], { href: shareUrl, target: "_blank", rel: "noopener", "data-result-share": "" }),
       element("a", "is-quiet", [text(`${modeLabel(other)}を開く`)], { href: detail.urls[other], target: "_blank", rel: "noopener", "data-result-open": other })
     ]),
+    ...(posterContext ? [element("div", "publish-poster", [
+      element("button", "publish-poster__toggle", [text("投稿用画像を作る "), element("small", "", [text("POSTER IMAGE")])], { type: "button", "data-poster-toggle": "", "aria-expanded": "false", "aria-controls": "publish-poster-panel" }),
+      element("div", "publish-poster__panel", [], { id: "publish-poster-panel", "data-poster-panel": "", hidden: "" })
+    ])] : []),
     element("p", "publish-result__note", [text(note)])
   );
   card.hidden = false;
+  if (posterContext) void upgradeShareLink(card.querySelector("[data-result-share]"), detail, url, posterContext);
+}
+
+// The "X に投稿" link first carries the short post (the act and the hashtag); once the poster's words are loaded it says who runs the act and who plays.
+async function upgradeShareLink(link, detail, url, context) {
+  try {
+    const [{ buildPosterModel }, { buildPosterPostUrl }] = await Promise.all([import("./act-poster-layout.js?v=b09b7150"), import("./act-poster-text.js?v=5f44ca89")]);
+    if (link && link.isConnected && posterContext === context) link.href = buildPosterPostUrl(buildPosterModel(detail.showcase), url);
+  } catch (error) {
+    console.error("The post text could not be extended.", error);
+  }
+}
+
+// The poster panel (js/showcase-poster-panel.js) is loaded the first time it is opened, so the generator page does not fetch the poster modules.
+function togglePoster(button) {
+  const panel = card?.querySelector("[data-poster-panel]");
+  if (!panel) return;
+  const opening = panel.hidden;
+  panel.hidden = !opening;
+  button.setAttribute("aria-expanded", String(opening));
+  if (!opening || panel.dataset.mounted || !posterContext) return;
+  panel.dataset.mounted = "loading";
+  panel.textContent = "読み込み中…";
+  import("./showcase-poster-panel.js?v=7ac5b129").then(module => {
+    if (posterContext) module.mountPosterPanel(panel, posterContext);
+    panel.dataset.mounted = "true";
+  }).catch(error => {
+    console.error("The poster panel could not be loaded.", error);
+    panel.textContent = "投稿用画像の画面を読み込めませんでした。ページを再読み込みしてください。";
+    delete panel.dataset.mounted;
+  });
 }
 
 async function copyUrl() {
@@ -128,3 +168,4 @@ function element(tag, className, children = [], attributes = {}) {
 }
 
 syncButtonLabels();
+
