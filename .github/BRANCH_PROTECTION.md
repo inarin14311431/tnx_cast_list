@@ -16,13 +16,14 @@ Require these checks before `main` can be updated:
 - `Regression checks / verify`
 - `Security audit / Security audit`
 - `Playwright E2E / Public and smoke E2E`
-- `Playwright E2E / Act showcase E2E`(ACT SHOWCASE に関係するPRでだけ実行。関係しないPRでは skipped になり、必須チェックでは成功扱い。ワークフロー全体を `paths` で絞ると他のチェックが未完了になるため、絞りはジョブ単位)
 - `Playwright E2E / Authenticated editor E2E`
 - `Playwright E2E / Mobile E2E`
 - `Quality gates / Verification contract parity`
 - `Quality gates / Accessibility baseline`
 - `Quality gates / Performance budget`
 - `Visual Regression / Compare reference screenshots`
+
+`Playwright E2E / Act showcase E2E` は、ACT SHOWCASE に関係するPRでだけ実行されるジョブで、**必須チェックには入っていない**(2026-11-09 に実際の ruleset と照合した。関係しないPRでは skipped になる。ワークフロー全体を `paths` で絞ると他のチェックが未完了になるため、絞りはジョブ単位)。関係するPRでは、結果を見てからマージする。
 
 The verification repository is the approved source for `quality-gates.json` and visual reference snapshots. Production CI rejects a quality-contract version mismatch.
 
