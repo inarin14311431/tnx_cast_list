@@ -2,22 +2,8 @@
 
 # CLAUDE.md
 
-このファイルはClaude Codeがセッション開始時に自動で読み込む。共通ルールは上記でimportした
-`AGENTS.md` が正本。ここに書くのはClaude Code固有の項目だけ。
-
-## モデルの使い分け
-
-定型的な1〜2ファイルの修正はSonnetで十分。広範囲の調査・設計判断が必要な場面でだけOpusに
-切り替える。
-
-## `/clear`
-
-話題が大きく変わるタイミング(例: 個別バグ修正→本番同期)では `/clear` を検討する。
-
-## CI確認
-
-`gh pr checks --watch` を1回だけ行う。失敗したら `gh run view <run-id> --log-failed | tail -n 80`
-で失敗部分だけを読む。何度もポーリングしない。
+このrepoは本番です。設計資料・作業ルールの正本は検証repo(`inarin14311431/tnx-cast-archive-test`)の `AGENTS.md` と `docs/` にあります。
+上で import した `AGENTS.md` の案内に従い、作業の前に検証repoのそれを読んでください。本番repoへの書き込みは、その都度の許可が要ります。
 
 ## 日本語で回答すること
 
