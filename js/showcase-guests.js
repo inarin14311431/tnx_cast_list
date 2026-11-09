@@ -21,27 +21,32 @@ void loadForCurrentSlug();
 
 function mountGuestPanel() {
   if (document.querySelector("#showcase-guest-panel")) return;
+  // The generator page reserves a place inside the cast section; an older page gets the panel in front of its last one.
+  const host = document.querySelector("#showcase-guest-host");
   const panels = [...document.querySelectorAll("main.showcase-layout > .showcase-panel")];
   const outputPanel = panels.at(-1);
-  if (!outputPanel) return;
+  if (!host && !outputPanel) return;
   const panel = document.createElement("section");
   panel.id = "showcase-guest-panel";
-  panel.className = "showcase-panel showcase-guest-panel";
+  panel.className = host ? "showcase-subsection showcase-guest-panel" : "showcase-panel showcase-guest-panel";
   panel.innerHTML = `
-    <header class="showcase-panel__header">
-      <div><span>04</span><h2>ゲスト <small>GUEST CAST / SUPPORTING FILES</small></h2></div>
+    <header class="${host ? "showcase-subsection__header" : "showcase-panel__header"}">
+      ${host ? '<h3 class="showcase-subsection__title">ゲスト <small>GUEST CAST / SUPPORTING FILES</small></h3>' : "<div><span>04</span><h2>ゲスト <small>GUEST CAST / SUPPORTING FILES</small></h2></div>"}
       <div class="showcase-panel__header-actions"><p><strong id="guest-count">0</strong> / ${MAX_GUESTS} SUPPORTING</p><button id="add-showcase-guest" class="manual-cast-add" type="button">ゲスト追加 <small>ADD GUEST</small></button></div>
     </header>
-    <div class="showcase-panel__body">
+    <div class="${host ? "showcase-guest-panel__content" : "showcase-panel__body"}">
       <p class="showcase-guest-panel__lead">主演キャストとは別に、アクトを彩る助演・重要人物を登録できます。ゲストはハンドアウトのアサイン対象や参加履歴には含まれません。</p>
       <div id="showcase-guests" class="showcase-guests"><p class="empty-state">ゲストは未登録です。「ゲスト追加」から登場人物を追加できます。</p></div>
     </div>`;
-  outputPanel.before(panel);
-  const outputNumber = outputPanel.querySelector(".showcase-panel__header span");
-  if (outputNumber?.textContent?.trim() === "04") outputNumber.textContent = "05";
+  if (host) host.append(panel);
+  else {
+    outputPanel.before(panel);
+    const outputNumber = outputPanel.querySelector(".showcase-panel__header span");
+    if (outputNumber?.textContent?.trim() === "04") outputNumber.textContent = "05";
+  }
   panel.querySelector("#add-showcase-guest")?.addEventListener("click", () => {
     if (guests.length >= MAX_GUESTS) return setStatus(`ゲストは最大${MAX_GUESTS}名までです。`, "error");
-    guests.push(createGuest());
+    guests.push(createGuest({ open: true }));
     dirty = true;
     renderGuests();
     invalidatePreview();
@@ -49,6 +54,12 @@ function mountGuestPanel() {
   panel.querySelector("#showcase-guests")?.addEventListener("input", onGuestInput);
   panel.querySelector("#showcase-guests")?.addEventListener("change", onGuestChange);
   panel.querySelector("#showcase-guests")?.addEventListener("click", onGuestClick);
+  // "toggle" does not bubble: listen in the capture phase to remember which cards are open across re-renders.
+  panel.querySelector("#showcase-guests")?.addEventListener("toggle", event => {
+    const card = event.target.closest?.("[data-guest-card]");
+    const guest = guests[Number(card?.dataset.guestCard)];
+    if (guest) guest.open = card.open;
+  }, true);
   renderGuests();
 }
 
@@ -65,7 +76,8 @@ function createGuest(data = {}) {
     summary: String(data.summary || ""),
     imageUrl: String(data.image_url || data.imageUrl || ""),
     storagePath: "",
-    uploading: false
+    uploading: false,
+    open: Boolean(data.open)
   };
 }
 
@@ -78,7 +90,25 @@ function renderGuests() {
     root.innerHTML = '<p class="empty-state">ゲストは未登録です。「ゲスト追加」から登場人物を追加できます。</p>';
     return;
   }
-  root.innerHTML = guests.map((guest, index) => guestEditor(guest, index)).join("");
+  root.innerHTML = guests.map((guest, index) => guestCard(guest, index)).join("");
+}
+
+// A guest is a small card (image, handle and name, persona style) that opens into the editor below it.
+function guestCard(guest, index) {
+  const image = guest.imageUrl || "./assets/placeholders/scan-failed.webp";
+  const handle = guest.handle.trim();
+  return `<details class="showcase-guest-card" data-guest-card="${index}"${guest.open ? " open" : ""}>
+    <summary>
+      <img class="showcase-guest-card__thumb" src="${escAttr(image)}" alt="" loading="lazy">
+      <span class="showcase-guest-card__text">
+        <small>GUEST ${String(index + 1).padStart(2, "0")}</small>
+        <b data-guest-summary-name>${esc(guest.name.trim() || "名前未入力のゲスト")}</b>
+        <span data-guest-summary-style>${esc([handle ? `“${handle}”` : "", guest.personaStyle].filter(Boolean).join(" / "))}</span>
+      </span>
+      <span class="showcase-guest-card__chevron" aria-hidden="true">▾</span>
+    </summary>
+    ${guestEditor(guest, index)}
+  </details>`;
 }
 
 function guestEditor(guest, index) {
@@ -117,8 +147,19 @@ function onGuestInput(event) {
   const guest = guests[Number(row.dataset.guestIndex)];
   if (!guest) return;
   guest[field.dataset.guestField] = field.value;
+  refreshGuestSummary(guest, Number(row.dataset.guestIndex));
   dirty = true;
   invalidatePreview();
+}
+
+function refreshGuestSummary(guest, index) {
+  const card = document.querySelector(`[data-guest-card="${index}"]`);
+  if (!card) return;
+  const name = card.querySelector("[data-guest-summary-name]");
+  const style = card.querySelector("[data-guest-summary-style]");
+  if (name) name.textContent = guest.name.trim() || "名前未入力のゲスト";
+  const handle = guest.handle.trim();
+  if (style) style.textContent = [handle ? `“${handle}”` : "", guest.personaStyle].filter(Boolean).join(" / ");
 }
 
 function onGuestChange(event) {
@@ -130,6 +171,7 @@ function onGuestChange(event) {
   if (field.dataset.guestField === "image") void uploadGuestImage(guest, field.files?.[0]);
   else {
     guest[field.dataset.guestField] = field.value;
+    refreshGuestSummary(guest, Number(row.dataset.guestIndex));
     dirty = true;
     invalidatePreview();
   }

@@ -34,7 +34,15 @@ mountRestorePanel();
 void initializeRestore();
 
 function mountRestorePanel() {
-  if (!elements.host || document.querySelector("#owned-showcase-restore")) return;
+  // The generator page carries the panel (the band under the header); only a page without it gets one built here.
+  const existing = document.querySelector("#owned-showcase-restore");
+  if (existing) {
+    restoreSelect = existing.querySelector("#owned-showcase-select");
+    restoreButton = existing.querySelector("#load-owned-showcase");
+    restoreStatus = existing.querySelector("#owned-showcase-status");
+    return;
+  }
+  if (!elements.host) return;
   const section = document.createElement("section");
   section.id = "owned-showcase-restore";
   section.className = "private-history-selector form-grid__wide";
@@ -121,9 +129,14 @@ async function restoreOwnedShowcase(slug) {
     if (!showcase || typeof showcase !== "object") throw new Error("保存済みのアクト紹介データを確認できませんでした。");
     if (!casts.length) throw new Error("保存済みの出演キャスト情報を確認できませんでした。");
 
+    // The generator forgets which pictures it uploaded or retired before it clears the rows (js/showcase-manual-image.js).
+    document.dispatchEvent(new CustomEvent("tnx:showcase-restore-start"));
     await clearSelections();
     restoreBasicFields(data, showcase, slug);
     const fallbackCount = await restoreCasts(casts, participants);
+
+    // The publish column learns that this act is already published (its buttons read "update and republish").
+    document.dispatchEvent(new CustomEvent("tnx:showcase-restored", { detail: { slug } }));
 
     const cleanUrl = new URL(location.href);
     cleanUrl.searchParams.delete(RESTORE_PARAM);
@@ -181,7 +194,8 @@ async function restoreCasts(casts, participants) {
 
     if (!row) {
       const previousCount = selectedRowCount();
-      elements.manualAddButton?.click();
+      // "手動で追加" opens a form now; restoring asks the generator for an empty manual row and fills it below.
+      document.dispatchEvent(new CustomEvent("tnx:showcase-add-manual-cast"));
       row = await waitFor(() => findRowByIndex(previousCount), 1200);
       if (participant) fallbackCount += 1;
       if (row) fillManualIdentity(row, savedCast);
@@ -237,6 +251,9 @@ function fillManualIdentity(row, savedCast) {
   const [gender = "", rank = ""] = getMetaValue(savedCast, "GENDER / RANK").split(" / ");
   setControl(row.querySelector('[data-field="manual-gender"]'), gender);
   setControl(row.querySelector('[data-field="manual-rank"]'), rank);
+  // The picture the cast was published with (a manual cast saved before pictures existed has the placeholder, which is left empty).
+  const imageUrl = String(savedCast.imageUrl || "").trim();
+  if (imageUrl && !/\/assets\/placeholders\/scan-failed\.webp(?:[?#].*)?$/.test(imageUrl)) setControl(row.querySelector('[data-field="manual-image-url"]'), imageUrl);
 }
 
 function fillRoleAndHandout(row, savedCast, participant) {

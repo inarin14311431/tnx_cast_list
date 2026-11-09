@@ -5,14 +5,21 @@ export function normalizeShowcaseTheme(value) {
   return ["nova", "intron", "vlad", "lutetia"].includes(theme) ? theme : "nova";
 }
 
+const THEME_PALETTES = {
+  nova: ["#02080c", "#00efff", "#ff54b5", "#61ffb1", "#edfbff", "#89afb9", "1,9,14"],
+  intron: ["#f2f2f0", "#111111", "#9b3268", "#236b49", "#111111", "#5f5f5b", "255,255,255"],
+  vlad: ["#020202", "#ff4d62", "#ff6b7c", "#d8a4aa", "#f7eeee", "#b89b9f", "22,7,10"],
+  lutetia: ["#050c18", "#6ea1ff", "#b79cff", "#8fd7ff", "#eef6ff", "#9bb1cc", "13,28,49"]
+};
+
+// The colors a theme card of the generator shows (the ground and three accents of the theme's output palette).
+export function getThemeSwatchColors(value) {
+  const [ground, first, second, third] = THEME_PALETTES[normalizeShowcaseTheme(value)];
+  return [ground, first, second, third];
+}
+
 export function getOutputThemeVariables(value) {
-  const palettes = {
-    nova: ["#02080c", "#00efff", "#ff54b5", "#61ffb1", "#edfbff", "#89afb9", "1,9,14"],
-    intron: ["#f2f2f0", "#111111", "#9b3268", "#236b49", "#111111", "#5f5f5b", "255,255,255"],
-    vlad: ["#020202", "#ff4d62", "#ff6b7c", "#d8a4aa", "#f7eeee", "#b89b9f", "22,7,10"],
-    lutetia: ["#050c18", "#6ea1ff", "#b79cff", "#8fd7ff", "#eef6ff", "#9bb1cc", "13,28,49"]
-  };
-  const [bg, cyan, pink, green, text, muted, panelRgb] = palettes[normalizeShowcaseTheme(value)];
+  const [bg, cyan, pink, green, text, muted, panelRgb] = THEME_PALETTES[normalizeShowcaseTheme(value)];
   return `:root{--showcase-bg:${bg};--cyan:${cyan};--pink:${pink};--green:${green};--text:${text};--muted:${muted};--panel:rgba(${panelRgb},.92)}`;
 }
 

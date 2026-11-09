@@ -1,4 +1,4 @@
-import { normalizeShowcaseTheme, createOutputCss } from "./showcase-output-css.js?v=7e5695e1";
+import { normalizeShowcaseTheme, createOutputCss } from "./showcase-output-css.js?v=6c2c74a1";
 import { STYLE_COLORS } from "./style-colors.js";
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=d32e5230";
 import { formatShowcaseHandle, formatShowcaseFullName } from "./showcase-display-format.js?v=728d9084";
@@ -38,7 +38,8 @@ function createOutputCastCard(item, index, baseUrl) {
     return `<span class="style" style="--style-color:${escapeAttribute(color)}">${escapeHtml(`${style.name}${style.mark}`)}</span>`;
   }).join("");
   const reading = item.manual ? "" : formatReading(character);
-  const fullName = item.manual ? character.character_name : formatFullName(character);
+  // A manual cast shows its handle in front of the name when it has one (the add form has an optional handle field).
+  const fullName = item.manual && !String(character.handle ?? "").trim() ? character.character_name : formatFullName(character);
   const nameClass = getOutputNameClass(fullName);
   const displayId = item.manual ? "ScanFailed" : item.source === "private" ? "PRIVATE" : obfuscatePublicId(character.public_id);
   const handoutRole = String(item.quote ?? "").trim();

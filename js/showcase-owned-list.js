@@ -6,7 +6,7 @@ const status = document.querySelector("#owned-showcase-status");
 
 if (section && heading && lead && select) {
   heading.innerHTML = `公開済みアクト紹介 <small>PUBLISHED SHOWCASE MANAGEMENT</small>`;
-  lead.textContent = "自分が公開したアクト紹介を一覧で管理できます。編集では保存済み内容をフォームへ復元し、削除では公開用データだけを削除します。アクト履歴と参加履歴は残ります。";
+  lead.textContent = "自分が公開したアクト紹介を一覧で管理できます。読み込むと保存済み内容を編集欄へ復元し、取り下げると公開用データだけを削除します。取り下げても、アクト履歴と参加履歴は残ります。";
   section.dataset.managementMode = "selector";
 
   const emptyState = document.createElement("div");

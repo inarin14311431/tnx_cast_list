@@ -38,7 +38,7 @@ assert.match(generatorHtml, /ネオン・グリッド \/ NEON GRID/);
 assert.match(generatorHtml, /モノクローム・ドシエ \/ DOSSIER/);
 assert.match(generatorHtml, /クリムゾン・ノワール \/ CRIMSON NOIR/);
 assert.match(generatorHtml, /オービタル・グラス \/ ORBITAL GLASS/);
-assert.match(generatorHtml, /HTML生成・スタンダード版・豪華版の3出力へ共通適用/);
+assert.match(generatorHtml, /HTML・スタンダード版・豪華版で共通です/);
 assert.match(runtime, /storage ids are intentionally kept|Storage ids are intentionally kept/i);
 assert.match(runtime, /label: "ネオン・グリッド"/);
 assert.match(runtime, /label: "モノクローム・ドシエ"/);

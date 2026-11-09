@@ -23,12 +23,16 @@
     if (!input) return;
     input.maxLength = 40;
 
+    // The generator page carries the counter; an older page gets one built here.
     let guide = document.querySelector("#act-name-length-guide");
     if (!guide) {
       guide = document.createElement("small");
       guide.id = "act-name-length-guide";
       guide.className = "showcase-title-length-guide";
       input.insertAdjacentElement("afterend", guide);
+    }
+    if (guide.dataset.bound !== "true") {
+      guide.dataset.bound = "true";
       input.addEventListener("input", updateActTitleGuide);
     }
     updateActTitleGuide();
@@ -39,7 +43,7 @@
     const guide = document.querySelector("#act-name-length-guide");
     if (!input || !guide) return;
     const length = [...input.value].length;
-    const nextText = `公開画面は1行表示。推奨24文字程度 / 最大40文字 / 現在 ${length}文字`;
+    const nextText = `${length} / 40`;
     const nextState = length <= 24 ? "safe" : length <= 32 ? "compact" : "tight";
     if (guide.textContent !== nextText) guide.textContent = nextText;
     if (guide.dataset.state !== nextState) guide.dataset.state = nextState;

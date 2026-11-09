@@ -5,9 +5,10 @@ import {
   formatSceneSelectionField,
   parseSceneSelectionField
 } from "./act-showcase-scenes.js?v=2647c951";
+import { summarizeScenes } from "./showcase-generator-summary.js?v=aa6bc728";
 
-// The scene composition choice of the generator (docs/ACT_SHOWCASE_SCENES.md section 6 #6): one <select> per scene frame that
-// can play more than one pattern. The choice lives in the hidden field #showcase-scenes (JSON, see act-showcase-scenes.js);
+// The scene composition choice of the generator (docs/ACT_SHOWCASE_SCENES.md section 6 #6): one row of buttons ("A 標準" / "B:<name>")
+// per scene frame that can play more than one pattern. The choice lives in the hidden field #showcase-scenes (JSON, see act-showcase-scenes.js);
 // publishing and restoring read and write that field only, so this module is the only place that knows about the selects.
 //
 // The controls are built from SCENE_PATTERNS, so a frame gets its select the moment a second pattern is added there. While every
@@ -44,42 +45,103 @@ export function fieldAfterChoice(fieldText, frame, pattern) {
   return formatSceneSelectionField(selection);
 }
 
+// What a pattern is called in the generator (docs/ACT_SHOWCASE_SCENES.md section 6: the name each pattern was decided under).
+// "a" is always "A 標準"; a pattern without a name here is shown as "パターン C".
+export const SCENE_PATTERN_NAMES = Object.freeze({
+  loading: Object.freeze({ b: "起動ターミナル" }),
+  title: Object.freeze({ b: "タイトルカード" }),
+  trailer: Object.freeze({ b: "縦組み" }),
+  "handout-assign": Object.freeze({ b: "ポートレート先行" }),
+  ready: Object.freeze({ b: "ポートレート中央" }),
+  finale: Object.freeze({ b: "キービジュアル" })
+});
+
+export function patternLabel(frame, pattern) {
+  const upper = String(pattern).toUpperCase();
+  if (pattern === DEFAULT_SCENE_PATTERN) return `${upper} 標準`;
+  const name = SCENE_PATTERN_NAMES[frame]?.[pattern];
+  return name ? `${upper}:${name}` : `パターン ${upper}`;
+}
+
+// The field after "すべて A に戻す": every frame the selector shows (one that can play more than "a") goes back to "a". An entry the frame
+// cannot play yet, or one of a frame without a choice, was stored by a newer script and stays.
+export function fieldAfterReset(fieldText, patterns = SCENE_PATTERNS) {
+  let text = fieldText;
+  for (const { frame, patterns: playable } of selectableFrames(patterns)) {
+    if (shownPattern(text, frame, playable) !== DEFAULT_SCENE_PATTERN) text = fieldAfterChoice(text, frame, DEFAULT_SCENE_PATTERN);
+  }
+  return text;
+}
+
 export function mountSceneSelector({ host, field, patterns = SCENE_PATTERNS, doc = host?.ownerDocument || globalThis.document } = {}) {
   if (!host || !field || !doc) return null;
   const frames = selectableFrames(patterns);
-  const selects = new Map();
+  const rows = new Map();
   host.hidden = frames.length === 0;
-  // The legend and the hidden field stay; the controls go into one container so a second mount replaces the first.
+  // The legend, the lead and the hidden field stay; the controls go into one container so a second mount replaces the first.
   let grid = [...(host.children || [])].find(child => child.dataset?.sceneSelectorGrid === "true");
   if (!grid) {
     grid = doc.createElement("div");
     grid.dataset.sceneSelectorGrid = "true";
-    grid.className = "form-grid";
+    grid.className = "scene-choices";
     host.append(grid);
   }
   grid.replaceChildren();
 
   for (const { frame, patterns: playable } of frames) {
-    const label = doc.createElement("label");
-    label.append(SCENE_FRAME_LABELS[frame] || frame);
-    const select = doc.createElement("select");
-    select.dataset.sceneFrame = frame;
+    const row = doc.createElement("div");
+    row.className = "scene-choice";
+    row.dataset.sceneChoice = frame;
+    const label = doc.createElement("span");
+    label.className = "scene-choice__label";
+    label.textContent = SCENE_FRAME_LABELS[frame] || frame;
+    const group = doc.createElement("div");
+    group.className = "scene-choice__buttons";
+    group.setAttribute("role", "group");
+    group.setAttribute("aria-label", SCENE_FRAME_LABELS[frame] || frame);
+    const buttons = [];
     for (const pattern of playable) {
-      const option = doc.createElement("option");
-      option.value = pattern;
-      option.textContent = `パターン ${pattern.toUpperCase()}`;
-      select.append(option);
+      const button = doc.createElement("button");
+      button.type = "button";
+      button.className = "scene-choice__button";
+      button.dataset.sceneFrame = frame;
+      button.dataset.scenePattern = pattern;
+      button.textContent = patternLabel(frame, pattern);
+      button.addEventListener("click", () => {
+        field.value = fieldAfterChoice(field.value, frame, pattern);
+        // The hidden field has no user event of its own: tell the page (the summary, the stale-output check) that it changed.
+        field.dispatchEvent(new (globalThis.Event || class { constructor(type) { this.type = type; } })("input", { bubbles: true }));
+      });
+      buttons.push(button);
+      group.append(button);
     }
-    select.addEventListener("change", () => {
-      field.value = fieldAfterChoice(field.value, frame, select.value);
-    });
-    label.append(select);
-    grid.append(label);
-    selects.set(frame, { select, playable });
+    row.append(label, group);
+    grid.append(row);
+    rows.set(frame, { buttons, playable });
   }
 
+  const reset = doc.createElement("button");
+  reset.type = "button";
+  reset.className = "scene-reset";
+  reset.dataset.sceneReset = "true";
+  reset.textContent = "すべて A に戻す";
+  reset.addEventListener("click", () => {
+    field.value = fieldAfterReset(field.value, patterns);
+    field.dispatchEvent(new (globalThis.Event || class { constructor(type) { this.type = type; } })("input", { bubbles: true }));
+  });
+  if (frames.length) grid.append(reset);
+
+  const summary = host.querySelector?.("[data-scene-summary]") ?? null;
   const refresh = () => {
-    for (const [frame, { select, playable }] of selects) select.value = shownPattern(field.value, frame, playable);
+    for (const [frame, { buttons, playable }] of rows) {
+      const shown = shownPattern(field.value, frame, playable);
+      for (const button of buttons) {
+        const pressed = button.dataset.scenePattern === shown;
+        button.setAttribute("aria-pressed", String(pressed));
+        button.className = pressed ? "scene-choice__button is-selected" : "scene-choice__button";
+      }
+    }
+    if (summary) summary.textContent = summarizeScenes(parseSceneSelectionField(field.value));
   };
   // Restoring an act writes the field and fires "input" on it
   field.addEventListener("input", refresh);

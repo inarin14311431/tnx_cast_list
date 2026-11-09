@@ -10,13 +10,15 @@ const presets = readFileSync(new URL("../js/showcase-background-presets.js", imp
 const picker = readFileSync(new URL("../js/showcase-background-preset-picker.js", import.meta.url), "utf8");
 const page = readFileSync(new URL("../js/act-showcase-page.js", import.meta.url), "utf8");
 const showcaseEntry = actShowcaseCssEntry();
-const css = readFileSync(new URL("../css-next/pages/showcase-background-presets.css", import.meta.url), "utf8");
+const css = readFileSync(new URL("../css-next/pages/showcase-generator-look.css", import.meta.url), "utf8");
 
 test("generator exposes the canonical background preset picker wiring", () => {
   assert.match(generatorHtml, /id="background-preset-grid"/);
   assertVersionedMatch(generatorHtml, /showcase-background-preset-picker\.js\?v=VERSION/);
-  assertVersionedMatch(entryCss, /showcase-background-presets\.css\?v=VERSION/);
-  assert.doesNotMatch(generatorHtml, /<link[^>]+showcase-background-presets\.css/);
+  // The preset styles live in the look section's stylesheet since the redesign (the old showcase-background-presets.css is gone).
+  assertVersionedMatch(entryCss, /showcase-generator-look\.css\?v=VERSION/);
+  assert.doesNotMatch(entryCss, /showcase-background-presets\.css/);
+  assert.doesNotMatch(generatorHtml, /<link[^>]+showcase-generator-look\.css/);
   assert.match(presets, /export const SHOWCASE_BACKGROUND_PRESETS/);
   assert.match(presets, /new URL\("\.\.\/assets\/showcase\/backgrounds\/", import\.meta\.url\)/);
   assert.match(presets, /url\.searchParams\.set\("v", SHOWCASE_BACKGROUND_ASSET_VERSION\)/);
@@ -46,7 +48,7 @@ test("cinematic presentation applies published background from the canonical sho
 });
 
 test("preset UI remains usable without motion", () => {
-  assert.match(css, /grid-template-columns:repeat\(5,minmax\(0,1fr\)\)/);
-  assert.match(css, /@media\(prefers-reduced-motion:reduce\)/);
+  assert.match(css, /grid-template-columns: repeat\(5, minmax\(0, 1fr\)\)/);
+  assert.match(css, /@media \(prefers-reduced-motion: reduce\)/);
   assert.doesNotMatch(css, /!important/);
 });
