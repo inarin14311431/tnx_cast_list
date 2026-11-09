@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
   <!-- modulepreload:start -->
+  <link rel="modulepreload" href="./js/showcase-owned-band.js?v=e74013f6">
   <link rel="modulepreload" href="./js/showcase-background-presets.js?v=7068197c">
   <link rel="modulepreload" href="./js/dom-escape.js?v=46402d5f">
   <link rel="modulepreload" href="./js/supabase-client.js">
@@ -13,7 +14,7 @@
   <script src="./js/theme-registry.js?v=febb3220"></script>
   <script src="./js/css-next-theme.js?v=3676f0d6"></script>
   <script src="./js/theme-scope.js?v=81f801fc"></script>
-  <link rel="stylesheet" href="./css-next/pages/showcase-entry.css?v=9c5c22d3" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/pages/showcase-entry.css?v=54d9e571" data-css-system="next">
   <link rel="stylesheet" href="./css-next/themes/index.css?v=e622f2d5" data-theme-system="1">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -25,81 +26,207 @@
   <header class="showcase-header app-header page-header">
     <a class="showcase-header__back app-back-link" href="./account.html"><span>&lt; アカウントへ</span><small>RETURN TO ACCOUNT</small></a>
     <div class="app-header__title"><p>N◎VA MUNICIPAL DATABASE</p><h1>アクト紹介生成 <small>ACT CAST SHOWCASE</small></h1></div>
-    <a class="showcase-header__archive app-header__aside" href="./index.html">キャスト一覧 <small>CAST ARCHIVE</small></a>
+    <div class="showcase-header__actions app-header__aside">
+      <button id="owned-showcase-toggle" class="showcase-header__edit" type="button" aria-expanded="false" aria-controls="owned-showcase-restore">公開済みを編集 <small>EDIT PUBLISHED</small></button>
+      <a class="showcase-header__archive" href="./index.html">キャスト一覧 <small>CAST ARCHIVE</small></a>
+    </div>
   </header>
+  <section id="owned-showcase-restore" class="showcase-owned-band" aria-labelledby="owned-showcase-restore-heading" hidden>
+    <div class="showcase-owned-band__inner">
+      <header class="private-history-selector__header">
+        <h3 id="owned-showcase-restore-heading">自分のアクト紹介を読み込む <small>OWNED SHOWCASE / EDIT RESTORE</small></h3>
+        <p>RE-EDIT</p>
+      </header>
+      <p class="private-history-selector__lead">公開済みの自分のアクト紹介を選び、アクト情報・背景・出演順・参加枠・一言・ハンドアウトを編集欄へ復元します。</p>
+      <div class="selector-controls">
+        <label>アクト紹介<select id="owned-showcase-select" disabled><option value="">読み込み中…</option></select></label>
+        <button id="load-owned-showcase" class="manual-cast-add" type="button" disabled>読み込む <small>LOAD TO FORM</small></button>
+      </div>
+      <p id="owned-showcase-status" class="generator-status">自分のアクト紹介を確認中…</p>
+    </div>
+  </section>
   <main class="showcase-layout">
-    <section class="showcase-panel">
-      <header class="showcase-panel__header"><div><span>01</span><h2>アクト情報 <small>ACT PROFILE</small></h2></div><p>GENERATED PAGE CONTROL</p></header>
-      <div class="showcase-panel__body form-grid">
-        <label>ページタイトル<input id="page-title" type="text" value="ACT CAST FILE"></label>
-        <label>アクト名／サブタイトル<input id="act-name" type="text" value="トーキョーＮ◎ＶＡ アクト参加キャスト"></label>
-        <label>紹介テーマ <small>ACT SHOWCASE THEME</small><select id="showcase-theme"><option value="nova" selected>ネオン・グリッド / NEON GRID</option><option value="intron">モノクローム・ドシエ / DOSSIER</option><option value="vlad">クリムゾン・ノワール / CRIMSON NOIR</option><option value="lutetia">オービタル・グラス / ORBITAL GLASS</option></select><small>アクト紹介専用テーマです。HTML生成・スタンダード版・豪華版の3出力へ共通適用します。</small></label>
-        <fieldset id="showcase-scene-composition" class="showcase-scene-composition form-grid__wide" hidden>
-          <legend>演出の構成 <small>SCENE COMPOSITION</small></legend>
-          <p class="showcase-scene-composition__lead">場面ごとの見せ方を選べます。選ばない場面は、従来の見せ方(パターンA)で再生されます。</p>
-          <input id="showcase-scenes" type="hidden" value="">
-        </fieldset>
-        <label>RULER名<input id="ruler-name" type="text" placeholder="例：稲荷秋"></label>
-        <label>アクト識別名<input id="publish-slug" type="text" placeholder="自動設定：act-0001"><small>履歴登録とアクト紹介の公開に共通して使用します。同じ識別名は、登録した本人だけが更新できます。</small></label>
-        <label class="form-grid__wide">アクトトレーラー <small>ACT TRAILER // プレアクトで読み上げるトレーラー</small><textarea id="intro-text" rows="8" placeholder="――それは、運命を変える夜。&#10;トーキョーN◎VAに新たなアクトが始まる。"></textarea><small>複数行の文章をそのまま貼り付けできます。入力した改行は公開ページにも保持されます。</small></label>
-        <fieldset class="showcase-background-presets form-grid__wide">
-          <legend>背景プリセット <small>ACT VISUAL / PRESET LIBRARY</small></legend>
-          <input id="background-preset" type="hidden" value="">
-          <p class="showcase-background-presets__lead">N◎VAの代表的なシチュエーションから背景を選択できます。URLまたはファイルを個別指定する場合は、下の欄で上書きできます。</p>
-          <div id="background-preset-grid" class="showcase-background-preset-grid" aria-label="アクト紹介の背景プリセット"></div>
-        </fieldset>
-        <label>背景画像URL<input id="background-url" type="url" placeholder="https://... または ./assets/citymap.png"></label>
-        <label>背景画像ファイル<input id="background-file" type="file" accept="image/*"><small>URLが入力されている場合はURLを優先します。公開時は容量上限に収まるよう自動圧縮します。</small></label>
-      </div>
-    </section>
-    <section class="showcase-panel">
-      <header class="showcase-panel__header"><div><span>02</span><h2>キャスト選択 <small>CAST SELECTOR</small></h2></div><p><strong id="selected-count">0</strong> / 6 SHOWCASE SELECTED</p></header>
-      <div class="showcase-panel__body">
-        <div class="selector-controls"><label>検索<input id="cast-search" type="search" placeholder="名前・ハンドル・PL・所属"></label><label>プレイヤー<select id="player-filter"><option value="">すべて</option></select></label><label>スタイル<select id="style-filter"><option value="">すべて</option></select></label></div>
-        <p id="library-status" class="generator-status">公開キャストを読み込み中…</p>
-        <div id="public-cast-grid" class="public-cast-grid" aria-live="polite"></div>
-        <button id="public-cast-load-more" class="cast-library-more" type="button" hidden><strong>さらに15件表示</strong><small>LOAD 15 MORE</small></button>
-        <section class="private-history-selector" aria-labelledby="private-history-heading">
-          <header class="private-history-selector__header">
-            <h3 id="private-history-heading">自分の非公開キャスト <small>OWNED PRIVATE CAST / LOCAL OUTPUT</small></h3>
-            <p><strong id="private-selected-count">0</strong> SELECTED</p>
-          </header>
-          <p class="private-history-selector__lead">公開キャストと同じ出演枠へ追加し、出演順・参加枠・一言・ハンドアウトを編集してHTMLを生成できます。非公開キャストを含むアクト紹介は公開できません。</p>
-          <p id="private-library-status" class="generator-status">自分の非公開キャストを読み込み中…</p>
-          <div id="owned-private-cast-grid" class="private-cast-grid" aria-live="polite"></div>
-          <button id="private-cast-load-more" class="cast-library-more" type="button" hidden><strong>さらに15件表示</strong><small>LOAD 15 MORE</small></button>
-          <div id="private-selection-summary" class="private-selection-summary" aria-live="polite"><span>非公開キャストは未選択です。</span><small>NO PRIVATE CAST SELECTED</small></div>
-        </section>
-      </div>
-    </section>
-    <section class="showcase-panel">
-      <header class="showcase-panel__header"><div><span>03</span><h2>出演順とハンドアウト <small>CAST ORDER / HANDOUT</small></h2></div><div class="showcase-panel__header-actions"><p>CAST 01—06</p><button id="add-manual-cast" class="manual-cast-add" type="button">手動追加 <small>ADD MANUAL CAST</small></button></div></header>
-      <div class="showcase-panel__body"><div id="selected-casts" class="selected-casts"><p class="empty-state">公開または非公開キャストを選択するか、「手動追加」からキャストを入力してください。</p></div></div>
-    </section>
-    <section class="showcase-panel">
-      <header class="showcase-panel__header"><div><span>04</span><h2>生成・公開 <small>GENERATE / PUBLISH</small></h2></div><p>ACT OUTPUT / HISTORY</p></header>
-      <div class="showcase-panel__body">
-        <div class="generator-actions">
-          <button id="generate-button" type="button">HTML生成 <small>GENERATE</small></button>
-          <button id="download-button" type="button" disabled>ダウンロード <small>DOWNLOAD</small></button>
-          <button id="copy-button" type="button" disabled>HTMLコピー <small>COPY</small></button>
-          <button id="history-button" class="is-history" type="button">履歴のみ登録 <small>HISTORY ONLY</small></button>
-          <button id="publish-button" class="is-publish" type="button" disabled hidden aria-hidden="true" tabindex="-1">アクト紹介を公開 <small>PUBLISH SHOWCASE</small></button>
-          <button id="publish-standard-button" class="is-publish" type="button" data-publish-mode="standard" disabled>スタンダード版で公開 <small>STANDARD SHOWCASE</small></button>
-          <button id="publish-cinematic-button" class="is-publish" type="button" data-publish-mode="cinematic" disabled>豪華版で公開 <small>CINEMATIC SHOWCASE</small></button>
+    <nav id="generator-steps" class="generator-steps" aria-label="作成の手順">
+      <ol>
+        <li><a href="#section-act" data-step-target="act"><b>01</b><span>アクト情報<small>ACT PROFILE</small></span><em data-step-status="act">未入力</em></a></li>
+        <li><a href="#section-cast" data-step-target="cast"><b>02</b><span>キャスト<small>CAST</small></span><em data-step-status="cast">未選択</em></a></li>
+        <li><a href="#section-look" data-step-target="look"><b>03</b><span>見せ方<small>LOOK</small></span><em data-step-status="look">—</em></a></li>
+        <li><a href="#section-publish" data-step-target="publish"><b>04</b><span>公開<small>PUBLISH</small></span><em data-step-status="publish">—</em></a></li>
+      </ol>
+    </nav>
+    <div class="showcase-flow">
+      <section id="section-act" class="showcase-panel" aria-labelledby="section-act-title">
+        <header class="showcase-panel__header"><div><span>01</span><h2 id="section-act-title">アクト情報 <small>ACT PROFILE</small></h2></div><p>GENERATED PAGE CONTROL</p></header>
+        <div class="showcase-panel__body form-grid">
+          <label class="form-grid__wide generator-title-field">アクトタイトル<input id="act-name" type="text" value="トーキョーＮ◎ＶＡ アクト参加キャスト"><small id="act-name-length-guide" class="showcase-title-length-guide">0 / 40</small><small class="generator-field-note">公開画面では1行で表示。24文字程度まで。</small></label>
+          <label class="form-grid__wide act-subtitle-field">サブタイトル <small>SUBTITLE / 任意</small><input id="act-subtitle" type="text" maxlength="120" placeholder="例：ネオンの残像" autocomplete="off"></label>
+          <div class="showcase-credit-fields form-grid__wide" data-showcase-credit-fields="true">
+            <label>RULER名 <small>任意</small><input id="ruler-name" type="text" placeholder="例：稲荷秋"></label>
+            <label data-scenario-writer-field="true">SCENARIO WRITER名 <small>任意</small><input id="scenario-writer-name" type="text" maxlength="120" placeholder="例：稲荷秋" autocomplete="off"></label>
+          </div>
+          <label class="form-grid__wide">アクトトレーラー <small>ACT TRAILER // プレアクトで読み上げるトレーラー</small><textarea id="intro-text" rows="8" placeholder="――それは、運命を変える夜。&#10;トーキョーN◎VAに新たなアクトが始まる。"></textarea><small>複数行の文章をそのまま貼り付けできます。入力した改行は公開ページにも保持されます。</small></label>
+          <details class="showcase-advanced form-grid__wide">
+            <summary>詳細設定(識別名・ページタイトル) <small>ADVANCED</small></summary>
+            <div class="form-grid">
+              <label>アクト識別名<input id="publish-slug" type="text" placeholder="自動設定：act-0001"><small>履歴登録とアクト紹介の公開に共通して使用します。同じ識別名は、登録した本人だけが更新できます。</small></label>
+              <label>ページタイトル<input id="page-title" type="text" value="" placeholder="空欄ならアクトタイトルを使います"></label>
+            </div>
+          </details>
         </div>
-        <p class="generator-action-note">HTML出力はスタンダード版と同じレイアウト・テーマで生成され、ダウンロード・コピーできます。公開は同じアクト紹介データを使い、「スタンダード版」と「豪華版」のどちらの表示で開くかを選べます。どちらも同じ公開状態を共有するため、公開データを削除すると両方のURLから閲覧できなくなります。参加履歴と経験点の対象になるのは自分が所有する登録済みキャストだけです。非公開キャストを含む場合は公開できません。</p>
-        <p id="generator-status" class="generator-status">待機中</p><iframe id="showcase-preview" class="showcase-preview" title="生成HTMLプレビュー"></iframe>
+      </section>
+      <section id="section-cast" class="showcase-panel" aria-labelledby="section-cast-title">
+        <header class="showcase-panel__header"><div><span>02</span><h2 id="section-cast-title">キャスト <small>CAST</small></h2></div><p><strong id="selected-count">0</strong> / 6 SHOWCASE SELECTED</p></header>
+        <div class="showcase-panel__body showcase-subsections">
+          <section class="showcase-subsection" aria-labelledby="cast-order-title">
+            <header class="showcase-subsection__header"><h3 id="cast-order-title" class="showcase-subsection__title">出演順 <small>CAST ORDER / HANDOUT</small></h3><p class="showcase-subsection__count"><strong id="cast-order-count">0</strong> / 6</p></header>
+            <div id="selected-casts" class="selected-casts"><p class="empty-state">下の「キャストを追加」から公開キャストか自分の非公開キャストを選ぶか、「手動で追加」からキャストを入力してください。</p></div>
+          </section>
+          <section class="showcase-subsection cast-adder" aria-labelledby="cast-add-title">
+            <h3 id="cast-add-title" class="showcase-subsection__title">キャストを追加 <small>ADD CAST</small></h3>
+            <div class="cast-source-tabs" role="tablist" aria-label="追加するキャストの種類">
+              <button id="cast-source-public" class="cast-source-tab" type="button" role="tab" data-cast-source="public" aria-selected="true" aria-controls="cast-source-panel-public">公開キャスト <small>PUBLIC</small></button>
+              <button id="cast-source-private" class="cast-source-tab" type="button" role="tab" data-cast-source="private" aria-selected="false" aria-controls="cast-source-panel-private" tabindex="-1">自分の非公開キャスト <small>OWNED PRIVATE <b id="private-selected-count">0</b></small></button>
+              <button id="add-manual-cast" class="manual-cast-add cast-adder__manual" type="button" aria-expanded="false" aria-controls="manual-cast-form">＋ 手動で追加 <small>ADD MANUAL CAST</small></button>
+            </div>
+            <form id="manual-cast-form" class="manual-cast-form" novalidate hidden>
+              <div class="manual-cast-form__layout">
+                <div class="manual-image manual-cast-form__image">
+                  <label class="manual-image__drop" data-manual-drop>
+                    <img class="manual-image__preview" alt="" hidden>
+                    <span class="manual-image__hint">画像をドロップ、またはクリックして選ぶ<small>JPEG / PNG / WebP ・ 1MB以下</small></span>
+                    <input type="file" data-manual-image-file="new" accept="image/jpeg,image/png,image/webp">
+                  </label>
+                  <button id="manual-image-clear" class="manual-image__clear" type="button" hidden>画像を外す <small>REMOVE</small></button>
+                  <label class="manual-image__url">画像URL <small>任意</small><input type="url" data-manual-new="imageUrl" placeholder="https://… (ファイルを選ぶとそのURLが入ります)" autocomplete="off"></label>
+                  <p class="manual-image__note">アップロードした画像は公開されます。キャストを外すか画像を差し替えると、アップロードしたファイルは削除されます。</p>
+                  <p id="manual-image-status" class="manual-field__note" role="status" aria-live="polite"></p>
+                </div>
+                <div class="manual-cast-form__grid">
+                  <label>ハンドル <small>任意</small><input type="text" data-manual-new="handle" placeholder="例：ブルー・モーメント" autocomplete="off"></label>
+                  <label>キャスト名<input type="text" data-manual-new="name" placeholder="キャスト名" autocomplete="off" required></label>
+                  <label>スタイル<input type="text" data-manual-new="styles" placeholder="例：カタナ◎ / カブト● / フェイト" autocomplete="off"></label>
+                  <label>PL名 <small>任意</small><input type="text" data-manual-new="player" placeholder="プレイヤー名" autocomplete="off"></label>
+                  <div class="manual-field--sheet-import manual-cast-form__wide">
+                    <label>キャラクターシート倉庫から取り込む <small>CHARACTER SHEET IMPORT</small><input type="url" data-manual-new="sheetUrl" placeholder="https://character-sheets.appspot.com/…"></label>
+                    <button id="manual-sheet-import" type="button" class="manual-cast-add">取込 <small>IMPORT</small></button>
+                    <p id="manual-sheet-import-status" class="manual-field__note" aria-live="polite">名前・スタイル・PL名・所属・年齢・性別・市民ランクを倉庫のデータで入力します。</p>
+                  </div>
+                  <details class="manual-cast-form__more manual-cast-form__wide">
+                    <summary>詳細(所属・年齢・性別・市民ランク)</summary>
+                    <div class="manual-cast-form__grid">
+                      <label>所属<input type="text" data-manual-new="affiliation" autocomplete="off"></label>
+                      <label>年齢<input type="text" data-manual-new="age" autocomplete="off"></label>
+                      <label>性別<input type="text" data-manual-new="gender" autocomplete="off"></label>
+                      <label>市民ランク<input type="text" data-manual-new="rank" autocomplete="off"></label>
+                    </div>
+                  </details>
+                </div>
+              </div>
+              <p class="manual-cast-form__note">手動で追加したキャストは、このアクト紹介の中だけで使います。参加履歴と経験点は付きません。ハンドアウトは追加したあとに出演順の行から入力できます。</p>
+              <p id="manual-cast-form-status" class="generator-status is-error" role="alert" hidden></p>
+              <div class="manual-cast-form__actions">
+                <button type="submit" class="manual-cast-add">出演順に追加 <small>ADD TO ORDER</small></button>
+                <button type="button" id="cancel-manual-cast" class="manual-cast-cancel">やめる <small>CANCEL</small></button>
+              </div>
+            </form>
+            <div class="selector-controls"><label>検索<input id="cast-search" type="search" placeholder="名前・ハンドル・PL・所属"></label><label>プレイヤー<select id="player-filter"><option value="">すべて</option></select></label><label>スタイル<select id="style-filter"><option value="">すべて</option></select></label></div>
+            <div id="cast-source-panel-public" class="cast-source-panel" role="tabpanel" aria-labelledby="cast-source-public">
+              <p id="library-status" class="generator-status">公開キャストを読み込み中…</p>
+              <div id="public-cast-grid" class="public-cast-grid" aria-live="polite"></div>
+              <button id="public-cast-load-more" class="cast-library-more" type="button" hidden><strong>さらに15件表示</strong><small>LOAD 15 MORE</small></button>
+            </div>
+            <div id="cast-source-panel-private" class="cast-source-panel" role="tabpanel" aria-labelledby="cast-source-private" hidden>
+              <p class="cast-source-panel__note">非公開キャストを含むアクト紹介は、HTMLの書き出しだけできます。公開キャストと同じ出演順に並べて、参加枠・一言・ハンドアウトを編集できます。</p>
+              <p id="private-library-status" class="generator-status">自分の非公開キャストを読み込み中…</p>
+              <div id="owned-private-cast-grid" class="private-cast-grid" aria-live="polite"></div>
+              <button id="private-cast-load-more" class="cast-library-more" type="button" hidden><strong>さらに15件表示</strong><small>LOAD 15 MORE</small></button>
+            </div>
+          </section>
+          <div id="showcase-guest-host" class="showcase-guest-host"></div>
+        </div>
+      </section>
+      <section id="section-look" class="showcase-panel" aria-labelledby="section-look-title">
+        <header class="showcase-panel__header"><div><span>03</span><h2 id="section-look-title">見せ方 <small>LOOK</small></h2></div><p>THEME / BACKGROUND / SCENES</p></header>
+        <div class="showcase-panel__body showcase-look">
+          <fieldset class="look-block look-theme">
+            <legend>紹介テーマ <small>ACT SHOWCASE THEME</small></legend>
+            <select id="showcase-theme" hidden aria-hidden="true" tabindex="-1"><option value="nova" selected>ネオン・グリッド / NEON GRID</option><option value="intron">モノクローム・ドシエ / DOSSIER</option><option value="vlad">クリムゾン・ノワール / CRIMSON NOIR</option><option value="lutetia">オービタル・グラス / ORBITAL GLASS</option></select>
+            <div class="theme-cards" role="radiogroup" aria-label="紹介テーマ">
+              <button type="button" class="theme-card" role="radio" aria-checked="true" data-theme-value="nova"><span class="theme-card__swatch" aria-hidden="true"><i></i><i></i><i></i><i></i></span><b>ネオン・グリッド</b><small>NEON GRID</small></button>
+              <button type="button" class="theme-card" role="radio" aria-checked="false" data-theme-value="intron" tabindex="-1"><span class="theme-card__swatch" aria-hidden="true"><i></i><i></i><i></i><i></i></span><b>モノクローム・ドシエ</b><small>DOSSIER</small></button>
+              <button type="button" class="theme-card" role="radio" aria-checked="false" data-theme-value="vlad" tabindex="-1"><span class="theme-card__swatch" aria-hidden="true"><i></i><i></i><i></i><i></i></span><b>クリムゾン・ノワール</b><small>CRIMSON NOIR</small></button>
+              <button type="button" class="theme-card" role="radio" aria-checked="false" data-theme-value="lutetia" tabindex="-1"><span class="theme-card__swatch" aria-hidden="true"><i></i><i></i><i></i><i></i></span><b>オービタル・グラス</b><small>ORBITAL GLASS</small></button>
+            </div>
+            <p class="look-block__note">HTML・スタンダード版・豪華版で共通です。</p>
+          </fieldset>
+          <fieldset class="look-block look-background">
+            <legend>背景 <small>BACKGROUND</small></legend>
+            <input id="background-preset" type="hidden" value="">
+            <div id="background-current" class="background-current" aria-live="polite"></div>
+            <div id="background-preset-grid" class="showcase-background-preset-grid" aria-label="アクト紹介の背景プリセット"></div>
+            <details class="look-background__custom">
+              <summary>自分の画像を使う(URL・ファイル) <small>CUSTOM IMAGE</small></summary>
+              <div class="look-background__custom-fields">
+                <label>背景画像URL<input id="background-url" type="url" placeholder="https://... または ./assets/citymap.png"></label>
+                <label>背景画像ファイル<input id="background-file" type="file" accept="image/*"><small>URLが入力されている場合はURLを優先します。公開時は容量上限に収まるよう自動圧縮します。</small></label>
+              </div>
+            </details>
+          </fieldset>
+          <details id="showcase-scene-composition" class="showcase-scene-composition look-scenes" hidden>
+            <summary><span class="look-scenes__title">演出の構成 <small>SCENE COMPOSITION</small></span><b class="look-scenes__badge">豪華版のみ</b><em class="look-scenes__summary" data-scene-summary>すべて A(標準)</em></summary>
+            <p class="showcase-scene-composition__lead">場面ごとの見せ方を選べます。選ばない場面は、従来の見せ方(パターンA)で再生されます。</p>
+            <input id="showcase-scenes" type="hidden" value="">
+          </details>
+        </div>
+      </section>
+    </div>
+    <aside id="section-publish" class="showcase-panel showcase-publish" aria-labelledby="section-publish-title">
+      <header class="showcase-panel__header"><div><span>04</span><h2 id="section-publish-title">公開 <small>PUBLISH</small></h2></div></header>
+      <div class="showcase-panel__body">
+        <ul id="publish-checklist" class="publish-checklist" aria-label="公開前の確認"></ul>
+        <p id="publish-blocker" class="publish-blocker" role="status" hidden></p>
+        <div class="publish-actions">
+          <button id="publish-cinematic-button" class="is-publish is-primary" type="button" data-publish-mode="cinematic" disabled>豪華版で公開 <small>CINEMATIC SHOWCASE</small></button>
+          <button id="publish-standard-button" class="is-publish" type="button" data-publish-mode="standard" disabled>スタンダード版で公開 <small>STANDARD SHOWCASE</small></button>
+          <button id="publish-button" class="is-publish" type="button" disabled hidden aria-hidden="true" tabindex="-1">アクト紹介を公開 <small>PUBLISH SHOWCASE</small></button>
+        </div>
+        <section id="publish-result" class="publish-result" aria-label="公開結果" hidden></section>
+        <p class="generator-action-note">どちらで公開しても、同じデータが両方の版で見られます。参加履歴と経験点は、登録済みキャストだけに付きます。</p>
+        <p id="generator-status" class="generator-status" role="status" aria-live="polite">待機中</p>
+        <div class="publish-other">
+          <h3 class="publish-other__title">ほかの操作 <small>OTHER ACTIONS</small></h3>
+          <button id="open-html-export" class="publish-other__button" type="button">HTMLを書き出す <small>EXPORT HTML</small></button>
+          <button id="history-button" class="publish-other__button is-history" type="button">履歴だけ登録 <small>HISTORY ONLY</small></button>
+        </div>
+        <dl id="publish-settings" class="publish-settings" aria-label="今の設定">
+          <div><dt>テーマ</dt><dd data-setting="theme">—</dd></div>
+          <div><dt>背景</dt><dd data-setting="background">—</dd></div>
+          <div><dt>演出</dt><dd data-setting="scenes">—</dd></div>
+        </dl>
       </div>
-    </section>
+    </aside>
   </main>
+  <dialog id="html-export-dialog" class="html-export-dialog" aria-labelledby="html-export-title">
+    <header class="html-export-dialog__header">
+      <h2 id="html-export-title">HTMLを書き出す <small>EXPORT HTML</small></h2>
+      <button id="close-html-export" class="html-export-dialog__close" type="button" aria-label="閉じる">閉じる <small>CLOSE</small></button>
+    </header>
+    <p class="html-export-dialog__lead">HTML出力はスタンダード版と同じレイアウト・テーマで生成され、ダウンロード・コピーできます。非公開キャストを含むアクト紹介は、HTMLの書き出しだけできます。</p>
+    <div class="generator-actions">
+      <button id="generate-button" type="button">HTMLを生成 <small>GENERATE</small></button>
+      <button id="download-button" type="button" disabled>ダウンロード <small>DOWNLOAD</small></button>
+      <button id="copy-button" type="button" disabled>HTMLコピー <small>COPY</small></button>
+    </div>
+    <p id="html-export-status" class="generator-status" aria-live="polite"></p>
+    <iframe id="showcase-preview" class="showcase-preview" title="生成HTMLプレビュー"></iframe>
+  </dialog>
   <script src="./js/showcase-handle-normalizer.js?v=0f416258"></script>
   <script src="./js/showcase-trailer-multiline.js?v=6c438860"></script>
-  <script type="module" src="./js/showcase-generator-loader.js?v=ab570f22"></script>
+  <script type="module" src="./js/showcase-generator-loader.js?v=5eb2f8e6"></script>
   <script type="module" src="./js/showcase-cast-pagination.js?v=ae584464"></script>
-  <script type="module" src="./js/showcase-background-preset-picker.js?v=21b58677"></script>
+  <script type="module" src="./js/showcase-background-preset-picker.js?v=339d6584"></script>
   <script type="module" src="./js/showcase-auto-slug.js?v=1186f32e"></script>
   <script src="./js/showcase-remove-label.js?v=8e4621cd"></script>
-  <script src="./js/showcase-wording.js?v=fbccd6a4"></script>
+  <script src="./js/showcase-wording.js?v=07142c54"></script>
 </body>
 </html>

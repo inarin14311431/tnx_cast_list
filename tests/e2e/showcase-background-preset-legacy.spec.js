@@ -41,7 +41,8 @@ async function openEditorWithBackground(page, background) {
 
 test("プリセットは10件で、4番目がグリーンエリア・7番目が電脳空間", async ({ page, request }) => {
   await openEditorWithBackground(page, "https://example.invalid/custom.webp");
-  const names = await page.locator("#background-preset-grid strong").allTextContents();
+  // The thumbnails carry the preset name as their title (the chosen one is shown large above them).
+  const names = await page.locator("#background-preset-grid button").evaluateAll(buttons => buttons.map(button => button.title));
   expect(names).toHaveLength(10);
   expect(names[3]).toBe("グリーンエリア");
   expect(names[6]).toBe("電脳空間");
@@ -58,6 +59,7 @@ for (const fileName of RETIRED) {
     await expect(page.locator("#background-url")).toHaveValue(savedUrl);
     await expect(page.locator("#background-preset")).toHaveValue("");
     await expect(page.locator("#background-preset-grid .is-selected")).toHaveCount(0);
+    await expect(page.locator("#background-current")).toContainText("自分の画像(URL)");
 
     // The old image is still served, so the published act keeps its background.
     const response = await request.get(savedUrl);
@@ -67,6 +69,7 @@ for (const fileName of RETIRED) {
     // Choosing a new preset still works from here.
     await page.locator("#background-preset-grid button").nth(3).click();
     await expect(page.locator("#background-preset")).toHaveValue("green-area");
+    await expect(page.locator("#background-current")).toContainText("グリーンエリア");
     await expect(page.locator("#background-url")).toHaveValue(/\/green-area\.avif\?v=/);
     await page.locator("#background-preset-grid button").nth(6).click();
     await expect(page.locator("#background-preset")).toHaveValue("cyberspace");

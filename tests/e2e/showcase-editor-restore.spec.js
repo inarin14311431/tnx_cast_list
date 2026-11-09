@@ -55,6 +55,7 @@ test("owned showcase can be restored into generator fields", async ({ page }) =>
   await page.route("**/rest/v1/rpc/get_owned_act_showcase_editor", route => fulfillJson(route, ownedShowcase));
 
   await page.goto(`/showcase-generator.html?edit=${ownedShowcase.slug}`, { waitUntil: "domcontentloaded" });
+  // A restore started from a link reports into the "published" band, which opens by itself.
 
   await expect(page.locator("#owned-showcase-restore")).toBeVisible({ timeout: 12_000 });
   await expect(page.locator("#page-title")).toHaveValue("RESTORE PAGE TITLE", { timeout: 12_000 });
@@ -93,6 +94,8 @@ test("owned showcase can be deleted while the current editor contents remain", a
   });
 
   await page.goto("/showcase-generator.html", { waitUntil: "domcontentloaded" });
+  // The management controls are in the band that "公開済みを編集" opens.
+  await page.locator("#owned-showcase-toggle").click();
   await expect(page.locator("#delete-owned-showcase")).toBeVisible({ timeout: 12_000 });
   await page.locator("#act-name").fill("削除後も残す編集中データ");
   await page.locator("#owned-showcase-select").selectOption(ownedShowcase.slug);

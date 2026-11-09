@@ -18,7 +18,7 @@ function mountDeleteButton() {
   deleteButton.className = "manual-cast-add showcase-delete-button";
   deleteButton.type = "button";
   deleteButton.disabled = true;
-  deleteButton.innerHTML = "アクト紹介を削除 <small>DELETE SHOWCASE</small>";
+  deleteButton.innerHTML = "公開を取り下げる <small>UNPUBLISH</small>";
   deleteButton.setAttribute("aria-describedby", "owned-showcase-status");
   loadButton.insertAdjacentElement("afterend", deleteButton);
 }

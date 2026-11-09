@@ -22,7 +22,9 @@ test("owned showcase restore is owner-scoped and repopulates editable generator 
     assert.ok(source.includes(selector), `missing restore field: ${selector}`);
   }
   assert.match(source, /data-public-character-id/);
-  assert.match(source, /manualAddButton\?\.click\(\)/);
+  // A manual cast is added through the generator's event (the "手動で追加" button opens a form since the redesign).
+  assert.match(source, /new CustomEvent\("tnx:showcase-add-manual-cast"\)/);
+  assert.match(await read("js/showcase-generator-v3.js"), /document\.addEventListener\("tnx:showcase-add-manual-cast"/);
   assert.ok(source.includes('[data-field="quote"]'));
   assert.ok(source.includes('[data-field="description"]'));
   assert.ok(source.includes('[data-field="tagline"]'));

@@ -6,7 +6,6 @@ const actName = document.querySelector("#act-name");
 const subtitle = mountSubtitleField(actName);
 const preview = document.querySelector("#showcase-preview");
 const generateButton = document.querySelector("#generate-button");
-const publishButtons = [...document.querySelectorAll("[data-publish-mode]")];
 let restoring = false;
 let syncAttempts = 0;
 
@@ -63,7 +62,6 @@ function cleanTrailerFieldWording() {
 function markGeneratedOutputStale() {
   if (restoring || !String(preview?.srcdoc || "").trim()) return;
   if (preview) preview.srcdoc = "";
-  publishButtons.forEach(button => { button.disabled = true; });
   const status = document.querySelector("#generator-status");
   if (status) {
     status.textContent = "サブタイトルを変更しました。HTMLを再生成してください。";

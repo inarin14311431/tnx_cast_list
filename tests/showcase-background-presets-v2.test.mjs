@@ -51,7 +51,9 @@ test("generator loads a versioned preset picker and no longer labels presets as 
   const html = await read("showcase-generator.html");
   const picker = await read("js/showcase-background-preset-picker.js");
   assertVersionedMatch(html, /showcase-background-preset-picker\.js\?v=VERSION/);
-  assert.match(html, /ACT VISUAL \/ PRESET LIBRARY/);
+  // The heading is "背景 BACKGROUND" since the redesign; the preset thumbnails sit under it.
+  assert.match(html, /<legend>背景 <small>BACKGROUND<\/small><\/legend>/);
+  assert.match(html, /id="background-preset-grid"/);
   assert.ok(!html.includes("ACT VISUAL / SUPABASE STORAGE"));
   assertVersionedMatch(picker, /showcase-background-presets\.js\?v=VERSION/);
 });

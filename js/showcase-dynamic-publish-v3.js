@@ -1,6 +1,5 @@
 import { supabase } from "./supabase-client.js";
 import { withRequestTimeout } from "./async-timeout.js?v=526a0b5a";
-import { escapeAttribute } from "./dom-escape.js?v=46402d5f";
 import { resolveCastNumber } from "./showcase-cast-number.js?v=944a948e";
 import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=0e404b6b";
 import { parseSceneSelectionField } from "./act-showcase-scenes.js?v=2647c951";
@@ -13,18 +12,16 @@ const showcaseThemeField = document.querySelector("#showcase-theme");
 const showcaseScenesField = document.querySelector("#showcase-scenes");
 const rulerField = document.querySelector("#ruler-name");
 const scenarioWriterField = document.querySelector("#scenario-writer-name");
-const legacyPublishButton = document.querySelector("#publish-button");
+const selectedCastsRoot = document.querySelector("#selected-casts");
 const publishButtons = [...document.querySelectorAll("[data-publish-mode]")];
 const MAX_SHOWCASE_BYTES = 500 * 1024;
 const TARGET_BACKGROUND_BYTES = 300 * 1024;
 let publishing = false;
 
-if (legacyPublishButton) {
-  new MutationObserver(syncPublishButtons).observe(legacyPublishButton, {
-    attributes: true,
-    attributeFilter: ["disabled"]
-  });
-}
+// The buttons need no generated HTML: a click generates it first (showcase-publish-flow.js). They are unavailable while a
+// publication or that generation runs, and when a private cast is selected (private casts can only be exported as HTML).
+if (selectedCastsRoot) new MutationObserver(syncPublishButtons).observe(selectedCastsRoot, { childList: true, subtree: true });
+new MutationObserver(syncPublishButtons).observe(document.documentElement, { attributes: true, attributeFilter: ["data-showcase-generating"] });
 preview?.addEventListener("load", syncPublishButtons);
 syncPublishButtons();
 
@@ -38,9 +35,17 @@ document.addEventListener("click", event => {
   void publishDynamicShowcase(button, mode);
 }, true);
 
+function hasPrivateCast() {
+  return Boolean(document.querySelector('#selected-casts [data-visibility="private"]'));
+}
+
 function syncPublishButtons() {
-  const unavailable = publishing || Boolean(legacyPublishButton?.disabled) || !String(preview?.srcdoc || "").trim();
-  publishButtons.forEach(button => { button.disabled = unavailable; });
+  const blockedByPrivate = hasPrivateCast();
+  const unavailable = publishing || blockedByPrivate || document.documentElement.hasAttribute("data-showcase-generating");
+  publishButtons.forEach(button => {
+    button.disabled = unavailable;
+    button.title = blockedByPrivate ? "非公開キャストを含むアクト紹介は公開できません。HTMLの書き出しだけ利用できます。" : "";
+  });
 }
 
 async function publishDynamicShowcase(button, mode) {
@@ -64,6 +69,7 @@ async function publishDynamicShowcase(button, mode) {
 
     publishing = true;
     syncPublishButtons();
+    document.dispatchEvent(new CustomEvent("tnx:showcase-publish-start"));
     setStatus(`${mode === "standard" ? "従来版" : "豪華版"}の公開用データを準備中…`);
 
     const showcaseData = await extractShowcaseData(source);
@@ -94,12 +100,16 @@ async function publishDynamicShowcase(button, mode) {
     if (!actId) throw new Error("公開したアクト紹介を確認できませんでした。");
     const castOrderSync = await syncActCastOrders(supabase, slug, collectPublicCastOrders());
 
-    const publicPath = mode === "standard"
+    // Both versions read the same data; the URL of each is built the same way as before (the card shows the published one first).
+    const publicUrlOf = version => new URL(version === "standard"
       ? `./act-showcase-standard.html?id=${encodeURIComponent(slug)}&theme=${encodeURIComponent(showcaseData.theme)}`
-      : `./act-showcase.html?id=${encodeURIComponent(slug)}&theme=${encodeURIComponent(showcaseData.theme)}`;
-    const publicUrl = new URL(publicPath, location.href).href;
-    const modeLabel = mode === "standard" ? "従来版" : "豪華版";
-    setStatus(`${modeLabel}の公開処理が完了しました。参加アクト履歴にも反映しました。${castOrderSync.ok ? "" : "（履歴のCAST No.は更新できませんでした）"} <a href="${escapeAttribute(publicUrl)}" target="_blank" rel="noopener">${modeLabel}の公開ページを開く</a>`, "success", true);
+      : `./act-showcase.html?id=${encodeURIComponent(slug)}&theme=${encodeURIComponent(showcaseData.theme)}`, location.href).href;
+    // The result is shown by the card in the publish column (js/showcase-publish-result.js), not by the status line.
+    setStatus("");
+    // The generator drops the manual-cast pictures this publication replaced (js/showcase-manual-image.js).
+    document.dispatchEvent(new CustomEvent("tnx:showcase-published", {
+      detail: { slug, mode, actName, historyOk: castOrderSync.ok, urls: { cinematic: publicUrlOf("cinematic"), standard: publicUrlOf("standard") } }
+    }));
   } catch (error) {
     console.error(error);
     setStatus(error?.message || "アクト紹介の公開に失敗しました。", "error");

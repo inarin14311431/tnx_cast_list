@@ -1,11 +1,12 @@
-import { renderShowcase, getStyles, getStyleNames, formatHandle, formatFullName, obfuscatePublicId } from "./showcase-output-html.js?v=cae9118b";
-import { normalizeCastNumber, formatCastNumber, resolveCastNumber, findDuplicateCastNumber, MAX_CAST_NUMBER } from "./showcase-cast-number.js?v=944a948e";
+import { renderShowcase, getStyleNames, formatHandle, obfuscatePublicId } from "./showcase-output-html.js?v=0214e5e5";
+import { normalizeCastNumber, formatCastNumber, resolveCastNumber, findDuplicateCastNumber } from "./showcase-cast-number.js?v=944a948e";
 import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=0e404b6b";
 import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
-import { normalizeShowcaseTheme } from "./showcase-output-css.js?v=7e5695e1";
+import { normalizeShowcaseTheme } from "./showcase-output-css.js?v=6c2c74a1";
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=a766246e";
-import { getImageObjectPosition } from "./image-focus.js?v=d32e5230";
+import { createImageLedger, manualImagePathFromUrl, removeManualImages, uploadManualImage, validateManualImage } from "./showcase-manual-image.js?v=ab40c1a2";
+import { createCastRowHtml, createLibraryCardHtml, handoutBadgeText, handoutState, isPlaceholderImage, manualImageValue, reorder } from "./showcase-cast-row.js?v=ca2cb81f";
 
 const MAX_CASTS = 6;
 const FUNCTION_NAME = "publish-showcase";
@@ -21,6 +22,7 @@ const FALLBACK_CHARACTER_COLUMNS = `
   style_1, style_1_mark, style_2, style_2_mark, style_3, style_3_mark,
   image_url, summary, visibility, updated_at
 `;
+const $ = selector => document.querySelector(selector);
 const elements = {
   pageTitle: document.querySelector("#page-title"),
   actName: document.querySelector("#act-name"),
@@ -42,6 +44,7 @@ const elements = {
   selectedCount: document.querySelector("#selected-count"),
   selectedCasts: document.querySelector("#selected-casts"),
   manualAddButton: document.querySelector("#add-manual-cast"),
+  manualForm: document.querySelector("#manual-cast-form"),
   generateButton: document.querySelector("#generate-button"),
   downloadButton: document.querySelector("#download-button"),
   copyButton: document.querySelector("#copy-button"),
@@ -58,6 +61,8 @@ let selectedCasts = [];
 let generatedHtml = "";
 let publishing = false;
 let registeringHistory = false;
+let imageLedger = createImageLedger();
+let formImagePath = "";
 
 initialize();
 
@@ -72,15 +77,36 @@ async function initialize() {
 }
 
 function bindEvents() {
-  elements.search?.addEventListener("input", renderPublicCharacters);
-  elements.playerFilter?.addEventListener("change", renderPublicCharacters);
-  elements.styleFilter?.addEventListener("change", renderPublicCharacters);
+  const renderLibraries = () => { renderPublicCharacters(); renderPrivateCharacters(); };
+  elements.search?.addEventListener("input", renderLibraries);
+  elements.playerFilter?.addEventListener("change", renderLibraries);
+  elements.styleFilter?.addEventListener("change", renderLibraries);
   elements.publicGrid?.addEventListener("click", handlePublicLibraryClick);
   elements.privateGrid?.addEventListener("click", handlePrivateLibraryClick);
   elements.selectedCasts?.addEventListener("click", handleSelectedCastClick);
   elements.selectedCasts?.addEventListener("input", handleSelectedCastInput);
   elements.selectedCasts?.addEventListener("change", handleSelectedCastInput);
-  elements.manualAddButton?.addEventListener("click", addManualCast);
+  elements.selectedCasts?.addEventListener("dragstart", handleGripDragStart);
+  elements.selectedCasts?.addEventListener("dragover", handleGripDragOver);
+  elements.selectedCasts?.addEventListener("drop", handleGripDrop);
+  elements.selectedCasts?.addEventListener("dragend", handleGripDragEnd);
+  elements.selectedCasts?.addEventListener("keydown", handleGripKeydown);
+  elements.selectedCasts?.addEventListener("change", event => { handleManualImageFileChange(event); });
+  elements.manualForm?.addEventListener("change", event => { handleManualImageFileChange(event); });
+  elements.manualForm?.querySelector('[data-manual-new="imageUrl"]')?.addEventListener("input", handleFormImageUrlInput);
+  $("#manual-image-clear")?.addEventListener("click", clearFormImage);
+  const drop = elements.manualForm?.querySelector("[data-manual-drop]");
+  drop?.addEventListener("dragover", event => { event.preventDefault(); drop.classList.add("is-over"); });
+  drop?.addEventListener("dragleave", () => drop.classList.remove("is-over"));
+  drop?.addEventListener("drop", event => { event.preventDefault(); drop.classList.remove("is-over"); const file = event.dataTransfer?.files?.[0]; if (file) void uploadFormImage(file); });
+  document.addEventListener("tnx:showcase-published", handleShowcasePublished);
+  document.addEventListener("tnx:showcase-restore-start", handleRestoreStart);
+  // "手動で追加" opens the add form; the cast is created from it ("出演順に追加"). Restoring a saved act asks for an empty one by event.
+  elements.manualAddButton?.addEventListener("click", () => setManualFormOpen(Boolean(elements.manualForm?.hidden)));
+  elements.manualForm?.addEventListener("submit", submitManualCastForm);
+  $("#cancel-manual-cast")?.addEventListener("click", () => { resetManualForm(); setManualFormOpen(false); });
+  $("#manual-sheet-import")?.addEventListener("click", () => { void importManualFormFromSheet(); });
+  document.addEventListener("tnx:showcase-add-manual-cast", () => { addManualCast({}); });
   elements.actName?.addEventListener("input", suggestSlug);
   elements.publishSlug?.addEventListener("input", () => {
     elements.publishSlug.dataset.edited = "true";
@@ -154,18 +180,22 @@ function isMissingColumnError(error) {
 }
 
 function populateFilters() {
-  const players = [...new Set(publicCharacters.map(character => character.player_name).filter(Boolean))].sort(localeCompareJa);
-  const styles = [...new Set(publicCharacters.flatMap(getStyleNames))].sort(localeCompareJa);
+  const library = [...publicCharacters, ...privateCharacters];
+  const players = [...new Set(library.map(character => character.player_name).filter(Boolean))].sort(localeCompareJa);
+  const styles = [...new Set(library.flatMap(getStyleNames))].sort(localeCompareJa);
+  const keep = { player: elements.playerFilter?.value ?? "", style: elements.styleFilter?.value ?? "" };
   if (elements.playerFilter) elements.playerFilter.innerHTML = `<option value="">すべて</option>${players.map(value => `<option value="${escapeAttribute(value)}">${escapeHtml(value)}</option>`).join("")}`;
   if (elements.styleFilter) elements.styleFilter.innerHTML = `<option value="">すべて</option>${styles.map(value => `<option value="${escapeAttribute(value)}">${escapeHtml(value)}</option>`).join("")}`;
+  if (elements.playerFilter && players.includes(keep.player)) elements.playerFilter.value = keep.player;
+  if (elements.styleFilter && styles.includes(keep.style)) elements.styleFilter.value = keep.style;
 }
 
-function renderPublicCharacters() {
-  if (!elements.publicGrid) return;
+// The search and the two filters apply to the public and to the private list alike.
+function filterLibrary(characters) {
   const keyword = normalizeSearch(elements.search?.value);
   const player = elements.playerFilter?.value ?? "";
   const style = elements.styleFilter?.value ?? "";
-  const filtered = publicCharacters.filter(character => {
+  return characters.filter(character => {
     const searchable = normalizeSearch([
       character.public_id, obfuscatePublicId(character.public_id), character.character_name, character.character_kana,
       character.handle, character.handle_kana, character.player_name,
@@ -175,50 +205,34 @@ function renderPublicCharacters() {
       (!player || character.player_name === player) &&
       (!style || getStyleNames(character).includes(style));
   });
+}
 
+function renderPublicCharacters() {
+  if (!elements.publicGrid) return;
+  const filtered = filterLibrary(publicCharacters);
   if (!filtered.length) {
     elements.publicGrid.innerHTML = `<p class="empty-state">条件に一致する公開キャストはいません。</p>`;
     return;
   }
-
   elements.publicGrid.innerHTML = filtered.map(character => createLibraryCard(character, "public")).join("");
 }
 
 function renderPrivateCharacters() {
   if (!elements.privateGrid) return;
+  updatePrivateSelectionSummary();
   if (!privateCharacters.length) {
     elements.privateGrid.innerHTML = "";
-    updatePrivateSelectionSummary();
     return;
   }
-  elements.privateGrid.innerHTML = privateCharacters.map(character => createLibraryCard(character, "private")).join("");
-  updatePrivateSelectionSummary();
+  const filtered = filterLibrary(privateCharacters);
+  elements.privateGrid.innerHTML = filtered.length
+    ? filtered.map(character => createLibraryCard(character, "private")).join("")
+    : `<p class="empty-state">条件に一致する非公開キャストはいません。</p>`;
 }
 
 function createLibraryCard(character, source) {
-  const selectedIndex = selectedCasts.findIndex(item => item.source === source && item.character.id === character.id);
-  const isSelected = selectedIndex >= 0;
-  const isDisabled = !isSelected && selectedCasts.length >= MAX_CASTS;
-  const styles = getStyles(character).map(item => `${item.name}${item.mark}`).join(" / ");
-  const handle = formatHandle(character.handle);
-  const privateLabel = source === "private" ? `<span class="private-history-card__visibility">非公開 / LOCAL OUTPUT</span>` : "";
-  const stateLabel = source === "private"
-    ? `<span class="private-history-card__state">${isSelected ? "出演枠に追加済み / SELECTED" : "出演枠へ追加 / ADD CAST"}</span>`
-    : "";
-  return `
-    <button class="cast-pick-card${source === "private" ? " private-history-card" : ""}${isSelected ? " is-selected" : ""}" type="button"
-      data-${source}-character-id="${escapeAttribute(character.id)}" aria-pressed="${isSelected}"${isDisabled ? " disabled" : ""}>
-      <img src="${escapeAttribute(character.image_thumbnail_url || character.image_url || "./assets/placeholders/scan-failed.webp")}" alt="" loading="lazy" style="object-position:${escapeAttribute(getImageObjectPosition(character.image_url))}">
-      <span class="cast-pick-card__body">
-        ${privateLabel}
-        <span class="cast-pick-card__handle"${handle ? "" : ' aria-hidden="true"'}>${escapeHtml(handle)}</span>
-        <h3>${escapeHtml(character.character_name || "名称未登録")}</h3>
-        <span class="cast-pick-card__styles">${escapeHtml(styles)}</span>
-        <span class="cast-pick-card__player">PL：${escapeHtml(character.player_name || "—")}</span>
-        ${stateLabel}
-      </span>
-      ${isSelected ? `<span class="cast-pick-card__order">CAST ${formatCastNumber(selectedCasts[selectedIndex].castNo, selectedIndex)}</span>` : ""}
-    </button>`;
+  const selected = selectedCasts.some(item => item.source === source && item.character.id === character.id);
+  return createLibraryCardHtml({ character, source, selected, disabled: !selected && selectedCasts.length >= MAX_CASTS });
 }
 
 function handlePublicLibraryClick(event) {
@@ -245,142 +259,132 @@ function toggleArchiveCast(source, characterId, library) {
       setGeneratorStatus("キャストは公開・非公開・手動追加を合わせて最大6名までです。", "error");
       return;
     }
-    selectedCasts.push({ source, manual: false, character, description: "", quote: "", castNo: "" });
+    selectedCasts.push({ source, manual: false, character, description: "", quote: "", tagline: "", castNo: "", open: false });
   }
 
   invalidateGeneratedHtml();
   renderSelections();
 }
 
-function addManualCast() {
+const MANUAL_FORM_KEYS = ["handle", "name", "styles", "player", "affiliation", "age", "gender", "rank", "sheetUrl", "imageUrl"];
+
+function manualFormField(key) {
+  return elements.manualForm?.querySelector(`[data-manual-new="${key}"]`) ?? null;
+}
+
+function readManualForm() {
+  return Object.fromEntries(MANUAL_FORM_KEYS.map(key => [key, String(manualFormField(key)?.value ?? "").trim()]));
+}
+
+function setManualFormOpen(open) {
+  if (!elements.manualForm) return;
+  elements.manualForm.hidden = !open;
+  elements.manualAddButton?.setAttribute("aria-expanded", String(open));
+  elements.manualAddButton?.classList.toggle("is-open", open);
+  if (open) manualFormField("name")?.focus();
+}
+
+// The picture the add form holds (uploaded but not yet part of a cast) goes when the form is cancelled.
+function resetManualForm({ keepImage = false } = {}) {
+  if (!keepImage) releaseImagePath(formImagePath);
+  formImagePath = "";
+  elements.manualForm?.reset();
+  renderFormImage();
+  const imageStatus = $("#manual-image-status");
+  if (imageStatus) { imageStatus.textContent = ""; imageStatus.className = "manual-field__note"; }
+  const note = $("#manual-sheet-import-status");
+  if (note) { note.textContent = DEFAULT_SHEET_NOTE; note.className = "manual-field__note"; }
+  const error = $("#manual-cast-form-status");
+  if (error) { error.hidden = true; error.textContent = ""; }
+}
+
+// Adds a manual cast to the order. `fields` are the add form's values ({} adds an empty one, which is what restoring a saved act does
+// before it fills the row). Returns the new item, or null at the limit.
+function addManualCast(fields = {}) {
   if (selectedCasts.length >= MAX_CASTS) {
     setGeneratorStatus("キャストは公開・非公開・手動追加を合わせて最大6名までです。", "error");
-    return;
+    return null;
   }
 
   const key = crypto.randomUUID?.() || `manual-${Date.now()}-${Math.random().toString(16).slice(2)}`;
   const placeholder = new URL("./assets/placeholders/scan-failed.webp", location.href).href;
-  selectedCasts.push({
+  const item = {
     source: "manual",
     manual: true,
     character: {
       id: `manual-${key}`,
       public_id: "ScanFailed",
-      character_name: "",
-      player_name: "",
-      manual_styles: "",
-      image_url: placeholder,
-      handle: "",
+      character_name: fields.name ?? "",
+      player_name: fields.player ?? "",
+      manual_styles: fields.styles ?? "",
+      image_url: fields.imageUrl || placeholder,
+      handle: fields.handle ?? "",
       handle_kana: "",
       character_kana: "",
-      affiliation: "",
-      age: "",
-      gender: "",
-      citizen_rank: ""
+      affiliation: fields.affiliation ?? "",
+      age: fields.age ?? "",
+      gender: fields.gender ?? "",
+      citizen_rank: fields.rank ?? ""
     },
+    sheetUrl: fields.sheetUrl ?? "",
+    imagePath: fields.imagePath ?? "",
     quote: "",
+    tagline: "",
     description: "",
-    castNo: ""
-  });
+    castNo: "",
+    open: true
+  };
+  selectedCasts.push(item);
 
   invalidateGeneratedHtml();
   renderSelections();
-  requestAnimationFrame(() => elements.selectedCasts?.querySelector(`[data-selected-index="${selectedCasts.length - 1}"] [data-field="manual-name"]`)?.focus());
+  return item;
+}
+
+function submitManualCastForm(event) {
+  event.preventDefault();
+  const fields = readManualForm();
+  const error = $("#manual-cast-form-status");
+  if (!fields.name) {
+    if (error) { error.textContent = "キャスト名を入力してください。"; error.hidden = false; }
+    manualFormField("name")?.focus();
+    return;
+  }
+  if (!addManualCast({ ...fields, imagePath: formImagePath })) return;
+  resetManualForm({ keepImage: true });
+  setManualFormOpen(false);
+  const index = selectedCasts.length - 1;
+  requestAnimationFrame(() => elements.selectedCasts?.querySelector(`[data-selected-index="${index}"] [data-field="description"]`)?.focus());
 }
 
 function renderSelections() {
-  if (elements.selectedCount) elements.selectedCount.textContent = String(selectedCasts.length);
-  if (elements.manualAddButton) elements.manualAddButton.disabled = selectedCasts.length >= MAX_CASTS;
+  const count = selectedCasts.length;
+  if (elements.selectedCount) elements.selectedCount.textContent = String(count);
+  const orderCount = $("#cast-order-count");
+  if (orderCount) orderCount.textContent = String(count);
+  if (elements.manualAddButton) elements.manualAddButton.disabled = count >= MAX_CASTS;
+  if (count >= MAX_CASTS) setManualFormOpen(false);
   renderPublicCharacters();
   renderPrivateCharacters();
 
   if (!elements.selectedCasts) return;
-  if (!selectedCasts.length) {
-    elements.selectedCasts.innerHTML = `<p class="empty-state">公開または非公開キャストを選択するか、「手動追加」からキャストを入力してください。</p>`;
+  if (!count) {
+    elements.selectedCasts.innerHTML = `<p class="empty-state">下の「キャストを追加」から公開キャストか自分の非公開キャストを選ぶか、「手動で追加」からキャストを入力してください。</p>`;
     updateOutputButtons();
     return;
   }
 
-  elements.selectedCasts.innerHTML = selectedCasts.map((item, index) => item.manual
-    ? createManualSelection(item, index)
-    : createArchiveSelection(item, index)
-  ).join("");
+  elements.selectedCasts.innerHTML = selectedCasts.map((item, index) => createCastRowHtml({ item, index, total: count })).join("");
   updateOutputButtons();
 }
 
-function createArchiveSelection(item, index) {
-  const character = item.character;
-  const styles = getStyles(character).map(style => `${style.name}${style.mark}`).join(" / ");
-  const isPrivate = item.source === "private";
-  return `
-    <article class="selected-cast${isPrivate ? " selected-cast--private" : ""}" data-selected-index="${index}"
-      data-character-id="${escapeAttribute(character.id)}" data-visibility="${isPrivate ? "private" : "public"}">
-      <img src="${escapeAttribute(character.image_thumbnail_url || character.image_url || "./assets/placeholders/scan-failed.webp")}" alt="" style="object-position:${escapeAttribute(getImageObjectPosition(character.image_url))}">
-      <div class="selected-cast__identity">
-        <p class="selected-cast__slot"><span data-cast-slot-label>CAST ${formatCastNumber(item.castNo, index)}</span>${isPrivate ? " // PRIVATE" : ""}</p>
-        <h3>${escapeHtml(formatFullName(character))}</h3>
-        <p>${escapeHtml(styles)}</p>
-        <p>PL：${escapeHtml(character.player_name || "—")}</p>
-        ${isPrivate ? `<p class="selected-cast__privacy">HTML生成可／GitHub Pages公開不可</p>` : ""}
-      </div>
-      <div class="selected-cast__fields">
-        ${createCastNumberField(item, index)}
-        <label>参加枠（スタイル）<select data-field="quote" required>${createHandoutRoleOptions(character, item.quote)}</select></label>
-        <label class="selected-cast__handout-field">ハンドアウト<textarea data-field="description" rows="7" placeholder="コネ：結城あや　推奨スート：スペード&#10;キミは……&#10;&#10;【ＰＳ：達成すべき目的】">${escapeHtml(item.description)}</textarea></label>
-      </div>
-      ${createSelectionActions(index)}
-    </article>`;
-}
-
-function createManualSelection(item, index) {
-  const character = item.character;
-  return `
-    <article class="selected-cast selected-cast--manual" data-selected-index="${index}" data-manual="true">
-      <img src="${escapeAttribute(character.image_url)}" alt="Scan Failed">
-      <div class="selected-cast__identity">
-        <p class="selected-cast__slot"><span data-cast-slot-label>CAST ${formatCastNumber(item.castNo, index)}</span> // MANUAL</p>
-        <h3 class="selected-cast__manual-preview-name">${escapeHtml(character.character_name || "未入力キャスト")}</h3>
-        <p class="selected-cast__manual-id">ARCHIVE ID：ScanFailed</p>
-        <p>サイト未登録キャスト</p>
-      </div>
-      <div class="selected-cast__manual-fields">
-        <div class="manual-field--sheet-import">
-          <label>キャラクターシート倉庫URL <small>CHARACTER SHEET IMPORT</small><input type="url" data-field="manual-sheet-url" value="${escapeAttribute(item.sheetUrl || "")}" placeholder="https://character-sheets.appspot.com/tnx/edit.html?key=..."></label>
-          <button type="button" class="manual-cast-add" data-action="sheet-import">取込 <small>IMPORT</small></button>
-          <p class="manual-field__note" data-sheet-import-status>名前・スタイル・PL名・所属・年齢・性別・市民ランクを倉庫のデータで上書きします。</p>
-        </div>
-        ${createCastNumberField(item, index)}
-        <label>名前<input type="text" data-field="manual-name" value="${escapeAttribute(character.character_name)}" placeholder="キャスト名" required></label>
-        <label>スタイル<input type="text" data-field="manual-styles" value="${escapeAttribute(character.manual_styles)}" placeholder="例：カタナ◎ / カブト● / フェイト"></label>
-        <label>PL名<input type="text" data-field="manual-player" value="${escapeAttribute(character.player_name)}" placeholder="プレイヤー名"></label>
-        <label>所属<input type="text" data-field="manual-affiliation" value="${escapeAttribute(character.affiliation)}"></label>
-        <label>年齢<input type="text" data-field="manual-age" value="${escapeAttribute(character.age)}"></label>
-        <label>性別<input type="text" data-field="manual-gender" value="${escapeAttribute(character.gender)}"></label>
-        <label>市民ランク<input type="text" data-field="manual-rank" value="${escapeAttribute(character.citizen_rank)}"></label>
-        <label class="manual-field--role">参加枠（スタイル）<input type="text" data-field="quote" value="${escapeAttribute(item.quote)}" placeholder="例：トーキー、共通" required></label>
-        <label class="manual-field--handout">ハンドアウト<textarea data-field="description" rows="7" placeholder="コネ、推奨スート、導入、ＰＳなどを入力">${escapeHtml(item.description)}</textarea></label>
-      </div>
-      ${createSelectionActions(index)}
-    </article>`;
-}
-
-function createCastNumberField(item, index) {
-  return `<label class="selected-cast__cast-no">CAST No<input type="number" inputmode="numeric" min="1" max="${MAX_CAST_NUMBER}" step="1" data-field="cast-no" value="${escapeAttribute(normalizeCastNumber(item.castNo))}" placeholder="自動（${index + 1}）" title="空欄の場合は出演順の番号になります"></label>`;
-}
-
-function createHandoutRoleOptions(character, selectedValue) {
-  const roles = ["共通", ...new Set(getStyleNames(character))];
-  const selected = String(selectedValue ?? "").trim();
-  if (selected && !roles.includes(selected)) roles.push(selected);
-  return `<option value="">参加枠を選択</option>${roles.map(role => `<option value="${escapeAttribute(role)}"${selected === role ? " selected" : ""}>${escapeHtml(role)}</option>`).join("")}`;
-}
-
-function createSelectionActions(index) {
-  return `<div class="selected-cast__actions">
-    <button type="button" data-action="up" aria-label="上へ"${index === 0 ? " disabled" : ""}>↑</button>
-    <button type="button" data-action="down" aria-label="下へ"${index === selectedCasts.length - 1 ? " disabled" : ""}>↓</button>
-    <button type="button" class="remove" data-action="remove">削除</button>
-  </div>`;
+function moveCast(from, to) {
+  const next = reorder(selectedCasts, from, to);
+  if (next.every((item, index) => item === selectedCasts[index])) return false;
+  selectedCasts.splice(0, selectedCasts.length, ...next);
+  invalidateGeneratedHtml();
+  renderSelections();
+  return true;
 }
 
 function handleSelectedCastClick(event) {
@@ -389,25 +393,100 @@ function handleSelectedCastClick(event) {
   if (!button || !row) return;
   const index = Number(row.dataset.selectedIndex);
   if (!Number.isInteger(index) || !selectedCasts[index]) return;
+  const action = button.dataset.action;
 
-  if (button.dataset.action === "up" && index > 0) {
-    [selectedCasts[index - 1], selectedCasts[index]] = [selectedCasts[index], selectedCasts[index - 1]];
-  } else if (button.dataset.action === "down" && index < selectedCasts.length - 1) {
-    [selectedCasts[index], selectedCasts[index + 1]] = [selectedCasts[index + 1], selectedCasts[index]];
-  } else if (button.dataset.action === "remove") {
-    selectedCasts.splice(index, 1);
-  } else if (button.dataset.action === "sheet-import" && selectedCasts[index].manual) {
-    void importManualCastFromSheet(selectedCasts[index], row, button);
-    return;
-  } else {
+  if (action === "toggle") {
+    const item = selectedCasts[index];
+    item.open = !item.open;
+    row.classList.toggle("is-open", item.open);
+    button.setAttribute("aria-expanded", String(item.open));
+    const panel = row.querySelector(".cast-row__panel");
+    if (panel) panel.hidden = !item.open;
     return;
   }
+  if (action === "up" && index > 0) {
+    moveCast(index, index - 1);
+  } else if (action === "down" && index < selectedCasts.length - 1) {
+    moveCast(index, index + 1);
+  } else if (action === "remove") {
+    const [removed] = selectedCasts.splice(index, 1);
+    releaseImagePath(removed?.imagePath);
+    invalidateGeneratedHtml();
+    renderSelections();
+  } else if (action === "manual-image-clear") {
+    setManualRowImage(row, selectedCasts[index], "", "");
+  }
+}
 
-  invalidateGeneratedHtml();
-  renderSelections();
+// ---- drag and drop (the grip of a row) and the keyboard on the grip ----
+let dragIndex = -1;
+
+function clearDropMarks() {
+  elements.selectedCasts?.querySelectorAll(".is-drop-before, .is-drop-after, .is-dragging").forEach(row => row.classList.remove("is-drop-before", "is-drop-after", "is-dragging"));
+}
+
+function dropTarget(event) {
+  const row = event.target.closest?.("[data-selected-index]");
+  if (!row) return null;
+  const index = Number(row.dataset.selectedIndex);
+  const rect = row.getBoundingClientRect();
+  return { row, index, after: event.clientY > rect.top + rect.height / 2 };
+}
+
+function handleGripDragStart(event) {
+  const grip = event.target.closest?.('[data-action="grip"]');
+  const row = grip?.closest("[data-selected-index]");
+  if (!row) return;
+  dragIndex = Number(row.dataset.selectedIndex);
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/plain", String(dragIndex));
+  event.dataTransfer.setDragImage?.(row, 24, 24);
+  row.classList.add("is-dragging");
+}
+
+function handleGripDragOver(event) {
+  if (dragIndex < 0) return;
+  const target = dropTarget(event);
+  if (!target) return;
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+  elements.selectedCasts.querySelectorAll(".is-drop-before, .is-drop-after").forEach(row => row.classList.remove("is-drop-before", "is-drop-after"));
+  target.row.classList.add(target.after ? "is-drop-after" : "is-drop-before");
+}
+
+function handleGripDrop(event) {
+  if (dragIndex < 0) return;
+  const target = dropTarget(event);
+  const from = dragIndex;
+  dragIndex = -1;
+  clearDropMarks();
+  if (!target) return;
+  event.preventDefault();
+  let to = target.index + (target.after ? 1 : 0);
+  if (from < to) to -= 1;
+  moveCast(from, to);
+}
+
+function handleGripDragEnd() {
+  dragIndex = -1;
+  clearDropMarks();
+}
+
+function handleGripKeydown(event) {
+  const grip = event.target.closest?.('[data-action="grip"]');
+  if (!grip || !["ArrowUp", "ArrowDown"].includes(event.key)) return;
+  const row = grip.closest("[data-selected-index]");
+  const index = Number(row?.dataset.selectedIndex);
+  if (!Number.isInteger(index)) return;
+  event.preventDefault();
+  const to = index + (event.key === "ArrowUp" ? -1 : 1);
+  if (moveCast(index, to)) {
+    requestAnimationFrame(() => elements.selectedCasts?.querySelector(`[data-selected-index="${Math.max(0, Math.min(selectedCasts.length - 1, to))}"] [data-action="grip"]`)?.focus());
+  }
 }
 
 const MANUAL_FIELD_KEYS = {
+  "manual-handle": "handle",
   "manual-styles": "manual_styles",
   "manual-player": "player_name",
   "manual-affiliation": "affiliation",
@@ -416,44 +495,175 @@ const MANUAL_FIELD_KEYS = {
   "manual-rank": "citizen_rank"
 };
 
-async function importManualCastFromSheet(item, row, button) {
-  const status = row.querySelector("[data-sheet-import-status]");
-  const url = row.querySelector('[data-field="manual-sheet-url"]')?.value.trim() || "";
-  const setRowStatus = (message, state = "") => {
+const DEFAULT_SHEET_NOTE = "名前・スタイル・PL名・所属・年齢・性別・市民ランクを倉庫のデータで入力します。";
+
+// The add form's "取込": the warehouse data fills the form, the writer then adds the cast to the order.
+async function importManualFormFromSheet() {
+  const button = $("#manual-sheet-import");
+  const status = $("#manual-sheet-import-status");
+  const url = String(manualFormField("sheetUrl")?.value ?? "").trim();
+  const setStatus = (message, state = "") => {
     if (!status) return;
     status.textContent = message;
     status.className = `manual-field__note${state ? ` is-${state}` : ""}`;
   };
-  button.disabled = true;
-  setRowStatus("キャラクターシート倉庫からデータを取得しています…");
+  if (button) button.disabled = true;
+  setStatus("キャラクターシート倉庫からデータを取得しています…");
   try {
     const { fetchManualCastFromSheet } = await import("./showcase-manual-sheet-import.js?v=d305c6d8");
     const fields = await fetchManualCastFromSheet(url);
-    if (!selectedCasts.includes(item)) return;
-    item.sheetUrl = url;
-    Object.assign(item.character, {
-      character_name: fields.name,
-      manual_styles: fields.styles,
-      player_name: fields.player,
-      affiliation: fields.affiliation,
-      age: fields.age,
-      gender: fields.gender,
-      citizen_rank: fields.rank
-    });
-    invalidateGeneratedHtml();
-    renderSelections();
-    const index = selectedCasts.indexOf(item);
-    const nextStatus = elements.selectedCasts?.querySelector(`[data-selected-index="${index}"] [data-sheet-import-status]`);
-    if (nextStatus) {
-      nextStatus.textContent = `「${fields.name}」を取り込みました。参加枠とハンドアウトを確認してください。`;
-      nextStatus.className = "manual-field__note is-success";
+    const values = { name: fields.name, styles: fields.styles, player: fields.player, affiliation: fields.affiliation, age: fields.age, gender: fields.gender, rank: fields.rank };
+    for (const [key, value] of Object.entries(values)) {
+      const input = manualFormField(key);
+      if (input) input.value = value ?? "";
     }
+    setStatus(`「${fields.name}」を取り込みました。内容を確認して「出演順に追加」を押してください。`, "success");
   } catch (error) {
     console.error(error);
-    setRowStatus(error?.message || "キャラクターシート倉庫から取り込めませんでした。", "error");
+    setStatus(error?.message || "キャラクターシート倉庫から取り込めませんでした。", "error");
   } finally {
-    button.disabled = false;
+    if (button) button.disabled = false;
   }
+}
+
+// ---- the picture of a manual cast (js/showcase-manual-image.js) ----
+
+// A picture that stops being used: one uploaded in this session goes at once, one a published showcase shows waits for the next publication.
+function releaseImagePath(path) {
+  const now = imageLedger.release(path);
+  if (now.length) void removeManualImages(supabase, now);
+}
+
+function setImageStatus(node, message, state = "") {
+  if (!node) return;
+  node.textContent = message;
+  node.className = `manual-field__note${state ? ` is-${state}` : ""}`;
+}
+
+function renderFormImage() {
+  const form = elements.manualForm;
+  if (!form) return;
+  const url = String(manualFormField("imageUrl")?.value ?? "").trim();
+  const preview = form.querySelector(".manual-image__preview");
+  const hint = form.querySelector(".manual-image__hint");
+  const clear = $("#manual-image-clear");
+  if (preview) { preview.hidden = !url; if (url) preview.src = url; else preview.removeAttribute("src"); }
+  if (hint) hint.hidden = Boolean(url);
+  if (clear) clear.hidden = !url;
+}
+
+async function uploadFormImage(file) {
+  const status = $("#manual-image-status");
+  const problem = validateManualImage(file);
+  if (problem) return setImageStatus(status, problem, "error");
+  try {
+    setImageStatus(status, "画像をアップロードしています…");
+    const { path, url } = await uploadManualImage(supabase, currentUser?.id, file);
+    releaseImagePath(formImagePath);
+    imageLedger.uploaded(path);
+    formImagePath = path;
+    const field = manualFormField("imageUrl");
+    if (field) field.value = url;
+    renderFormImage();
+    setImageStatus(status, "画像をアップロードしました。", "success");
+  } catch (error) {
+    console.error(error);
+    setImageStatus(status, error?.message || "画像を登録できませんでした。", "error");
+  }
+}
+
+function clearFormImage() {
+  releaseImagePath(formImagePath);
+  formImagePath = "";
+  const field = manualFormField("imageUrl");
+  if (field) field.value = "";
+  renderFormImage();
+  setImageStatus($("#manual-image-status"), "");
+}
+
+// Typing another URL in the form replaces an uploaded picture: the uploaded file is not used any more.
+function handleFormImageUrlInput() {
+  const url = String(manualFormField("imageUrl")?.value ?? "").trim();
+  if (formImagePath && !url.endsWith(formImagePath)) {
+    releaseImagePath(formImagePath);
+    formImagePath = "";
+  }
+  renderFormImage();
+}
+
+// Sets the picture URL of a manual row (an upload, a typed URL, a restore, "外す") and keeps what depends on it in step.
+function setManualRowImage(row, item, url, uploadedPath) {
+  if (!item) return;
+  const nextUrl = String(url ?? "").trim();
+  const placeholder = new URL("./assets/placeholders/scan-failed.webp", location.href).href;
+  const nextPath = uploadedPath || manualImagePathFromUrl(nextUrl, currentUser?.id);
+  if (item.imagePath && item.imagePath !== nextPath) releaseImagePath(item.imagePath);
+  if (uploadedPath) imageLedger.uploaded(uploadedPath);
+  else if (nextPath) imageLedger.known(nextPath);
+  item.imagePath = nextPath;
+  item.character.image_url = nextUrl || placeholder;
+  const shown = nextUrl || "./assets/placeholders/scan-failed.webp";
+  row.querySelector(".cast-row__thumb")?.setAttribute("src", shown);
+  row.querySelector(".manual-image__preview")?.setAttribute("src", shown);
+  const field = row.querySelector('[data-field="manual-image-url"]');
+  if (field && field.value !== nextUrl) field.value = nextUrl;
+  const clear = row.querySelector('[data-action="manual-image-clear"]');
+  if (clear) clear.hidden = !nextUrl;
+  invalidateGeneratedHtml();
+}
+
+async function uploadRowImage(row, item, file) {
+  const status = row.querySelector("[data-manual-image-status]");
+  const problem = validateManualImage(file);
+  if (problem) return setImageStatus(status, problem, "error");
+  try {
+    setImageStatus(status, "画像をアップロードしています…");
+    const { path, url } = await uploadManualImage(supabase, currentUser?.id, file);
+    if (!selectedCasts.includes(item)) { void removeManualImages(supabase, [path]); return; }
+    setManualRowImage(row, item, url, path);
+    setImageStatus(status, "画像をアップロードしました。", "success");
+  } catch (error) {
+    console.error(error);
+    setImageStatus(status, error?.message || "画像を登録できませんでした。", "error");
+  }
+}
+
+function handleManualImageFileChange(event) {
+  const input = event.target.closest?.("[data-manual-image-file]");
+  if (!input) return false;
+  const file = input.files?.[0];
+  input.value = "";
+  if (!file) return true;
+  if (input.dataset.manualImageFile === "new") { void uploadFormImage(file); return true; }
+  const row = input.closest("[data-selected-index]");
+  const item = selectedCasts[Number(row?.dataset.selectedIndex)];
+  if (row && item) void uploadRowImage(row, item, file);
+  return true;
+}
+
+// After a publication: the pictures in use are now part of the published showcase, and the ones that were replaced or removed may go.
+function handleShowcasePublished() {
+  const inUse = selectedCasts.filter(item => item.manual).map(item => item.imagePath).filter(Boolean);
+  const gone = imageLedger.published(inUse);
+  if (gone.length) void removeManualImages(supabase, gone);
+}
+
+// Restoring a saved showcase replaces everything: what was uploaded here and never published goes, and the ledger starts again from
+// the restored showcase (the rows it clears must not retire the pictures of the showcase that was open before).
+function handleRestoreStart() {
+  const { uploaded } = imageLedger.snapshot();
+  if (uploaded.length) void removeManualImages(supabase, uploaded);
+  imageLedger = createImageLedger();
+  formImagePath = "";
+}
+
+function refreshHandoutBadge(row, item) {
+  const badge = row.querySelector("[data-handout-badge]");
+  if (!badge) return;
+  const state = handoutState(item);
+  if (badge.dataset.state !== state) badge.dataset.state = state;
+  const text = handoutBadgeText(state);
+  if (badge.textContent !== text) badge.textContent = text;
 }
 
 function handleSelectedCastInput(event) {
@@ -472,16 +682,33 @@ function handleSelectedCastInput(event) {
       renderPublicCharacters();
       renderPrivateCharacters();
     }
-  } else if (field.dataset.field === "manual-sheet-url") {
-    item.sheetUrl = field.value;
-    return;
   } else if (field.dataset.field === "quote") item.quote = field.value;
-  else if (field.dataset.field === "description") item.description = field.value;
-  else if (item.manual && field.dataset.field === "manual-name") {
+  else if (field.dataset.field === "description") {
+    item.description = field.value;
+    refreshHandoutBadge(row, item);
+  } else if (field.dataset.field === "tagline") item.tagline = field.value;
+  else if (item.manual && field.dataset.field === "manual-image-url") {
+    // typed or restored: the URL decides the picture (a restored URL of this user's own file is remembered as published)
+    setManualRowImage(row, item, field.value, "");
+    return;
+  } else if (item.manual && field.dataset.field === "manual-name") {
     item.character.character_name = field.value;
     const preview = row.querySelector(".selected-cast__manual-preview-name");
     if (preview) preview.textContent = field.value.trim() || "未入力キャスト";
-  } else if (item.manual && MANUAL_FIELD_KEYS[field.dataset.field]) item.character[MANUAL_FIELD_KEYS[field.dataset.field]] = field.value;
+  } else if (item.manual && MANUAL_FIELD_KEYS[field.dataset.field]) {
+    item.character[MANUAL_FIELD_KEYS[field.dataset.field]] = field.value;
+    if (field.dataset.field === "manual-handle") {
+      const handle = row.querySelector(".cast-row__handle");
+      const text = formatHandle(field.value);
+      if (handle) { handle.textContent = text; handle.hidden = !text; }
+    } else if (field.dataset.field === "manual-styles") {
+      const styles = row.querySelector(".cast-row__styles");
+      if (styles) styles.textContent = field.value;
+    } else if (field.dataset.field === "manual-player") {
+      const player = row.querySelector(".cast-row__player");
+      if (player) player.textContent = `PL：${field.value || "—"}`;
+    }
+  } else return;
 
   invalidateGeneratedHtml();
 }
@@ -491,9 +718,11 @@ async function generateShowcase() {
     validateSelectedCasts();
     setGeneratorStatus("HTMLを生成中…");
     const background = elements.backgroundUrl?.value.trim() || await readFileAsDataUrl(elements.backgroundFile?.files?.[0]);
+    const actName = elements.actName?.value.trim() || "トーキョーＮ◎ＶＡ アクト参加キャスト";
     generatedHtml = renderShowcase({
-      title: elements.pageTitle?.value.trim() || "ACT CAST FILE",
-      actName: elements.actName?.value.trim() || "トーキョーＮ◎ＶＡ アクト参加キャスト",
+      // A blank page title falls back to the act title (a restored act keeps the page title it was saved with).
+      title: elements.pageTitle?.value.trim() || elements.actName?.value.trim() || "ACT CAST FILE",
+      actName,
       rulerName: elements.rulerName?.value.trim() || "",
       theme: normalizeShowcaseTheme(elements.showcaseTheme?.value),
       intro: elements.introText?.value.trim() || "",

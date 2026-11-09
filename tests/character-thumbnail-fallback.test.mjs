@@ -21,9 +21,14 @@ test("archive card list falls back from image_thumbnail_url to image_url and no 
   assert.match(archiveSource, /image_url, image_thumbnail_url, summary, updated_at/);
 });
 
-test("showcase generator's three per-character card renders all fall back from image_thumbnail_url to image_url", () => {
-  const matches = [...(generatorSource + outputSource).matchAll(/character\.image_thumbnail_url \|\| character\.image_url \|\| "\.\/assets\/placeholders\/scan-failed\.webp"/g)];
-  assert.equal(matches.length, 3, "expected the library picker, selected-cast preview and published output cast card to all use the fallback");
+test("showcase generator's three per-character card renders all fall back from image_thumbnail_url to image_url", async () => {
+  // The library picker and the order row share castImage() in showcase-cast-row.js; the published output cast card has its own expression.
+  const rowSource = await readFile(new URL("../js/showcase-cast-row.js", import.meta.url), "utf8");
+  assert.match(rowSource, /return character\?\.image_thumbnail_url \|\| character\?\.image_url \|\| PLACEHOLDER_IMAGE;/);
+  assert.match(rowSource, /export const PLACEHOLDER_IMAGE = "\.\/assets\/placeholders\/scan-failed\.webp";/);
+  assert.equal([...rowSource.matchAll(/escapeAttribute\([^\n]*castImage\(character\)\)/g)].length, 2, "expected the library picker and the selected-cast row to use castImage()");
+  const outputMatches = [...outputSource.matchAll(/character\.image_thumbnail_url \|\| character\.image_url \|\| "\.\/assets\/placeholders\/scan-failed\.webp"/g)];
+  assert.equal(outputMatches.length, 1, "expected the published output cast card to use the fallback");
   assert.match(generatorSource, /image_url, image_thumbnail_url, summary, age, gender, visibility, updated_at/);
 });
 

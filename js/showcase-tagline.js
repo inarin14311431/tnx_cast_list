@@ -4,19 +4,18 @@ const selectedCasts = document.querySelector("#selected-casts");
 const preview = document.querySelector("#showcase-preview");
 const downloadButton = document.querySelector("#download-button");
 const copyButton = document.querySelector("#copy-button");
-const publicGrid = document.querySelector("#public-cast-grid");
-const privateGrid = document.querySelector("#owned-private-cast-grid");
-const manualAddButton = document.querySelector("#add-manual-cast");
 const publishSlug = document.querySelector("#publish-slug");
 const generatorStatus = document.querySelector("#generator-status");
-const taglines = [];
+// The tagline of a cast lives in its row (showcase-generator-v3.js renders it; data-field="tagline" is the cast's own value), so it
+// follows the cast when the order changes. Read in the order of the rows, which is the order of the generated cards.
+function currentTaglines() {
+  if (!selectedCasts) return [];
+  return [...selectedCasts.querySelectorAll("[data-selected-index]")]
+    .sort((a, b) => Number(a.dataset.selectedIndex) - Number(b.dataset.selectedIndex))
+    .map(row => String(row.querySelector('[data-field="tagline"]')?.value ?? ""));
+}
 
 if (selectedCasts) {
-  bindLibrarySelection(publicGrid, "publicCharacterId");
-  bindLibrarySelection(privateGrid, "privateCharacterId");
-  bindSelectionActions();
-  bindTaglineInputs();
-  bindManualAddition();
   observeSelectionRendering();
   injectTaglineFields();
 }
@@ -32,66 +31,6 @@ if (preview) {
 
 bindOutputActions();
 wrapShowcasePublication();
-
-function bindLibrarySelection(grid, datasetKey) {
-  grid?.addEventListener("click", event => {
-    const card = event.target.closest(`[data-${toKebabCase(datasetKey)}]`);
-    if (!card || card.disabled) return;
-
-    if (card.getAttribute("aria-pressed") === "true") {
-      const characterId = card.dataset[datasetKey];
-      const row = [...selectedCasts.querySelectorAll("[data-selected-index]")]
-        .find(item => String(item.dataset.characterId || "") === String(characterId || ""));
-      const index = Number(row?.dataset.selectedIndex);
-      if (Number.isInteger(index) && index >= 0) taglines.splice(index, 1);
-    } else {
-      taglines.push("");
-    }
-
-    scheduleFieldInjection();
-  }, true);
-}
-
-function bindManualAddition() {
-  manualAddButton?.addEventListener("click", () => {
-    if (manualAddButton.disabled) return;
-    taglines.push("");
-    scheduleFieldInjection();
-  }, true);
-}
-
-function bindSelectionActions() {
-  selectedCasts.addEventListener("click", event => {
-    const button = event.target.closest("[data-action]");
-    const row = event.target.closest("[data-selected-index]");
-    if (!button || !row) return;
-
-    const index = Number(row.dataset.selectedIndex);
-    if (!Number.isInteger(index) || index < 0 || index >= taglines.length) return;
-
-    if (button.dataset.action === "up" && index > 0) {
-      [taglines[index - 1], taglines[index]] = [taglines[index], taglines[index - 1]];
-    } else if (button.dataset.action === "down" && index < taglines.length - 1) {
-      [taglines[index], taglines[index + 1]] = [taglines[index + 1], taglines[index]];
-    } else if (button.dataset.action === "remove") {
-      taglines.splice(index, 1);
-    }
-
-    scheduleFieldInjection();
-  }, true);
-}
-
-function bindTaglineInputs() {
-  selectedCasts.addEventListener("input", event => {
-    const field = event.target.closest('[data-field="tagline"]');
-    const row = event.target.closest("[data-selected-index]");
-    if (!field || !row) return;
-
-    const index = Number(row.dataset.selectedIndex);
-    if (!Number.isInteger(index) || index < 0) return;
-    taglines[index] = field.value;
-  }, true);
-}
 
 function observeSelectionRendering() {
   const observer = new MutationObserver(mutations => {
@@ -110,8 +49,6 @@ function injectTaglineFields() {
   selectedCasts.querySelectorAll("[data-selected-index]").forEach(row => {
     const index = Number(row.dataset.selectedIndex);
     if (!Number.isInteger(index) || index < 0) return;
-    if (taglines[index] === undefined) taglines[index] = "";
-
     let input = row.querySelector('[data-field="tagline"]');
     if (!input) {
       const manual = row.dataset.manual === "true";
@@ -131,7 +68,6 @@ function injectTaglineFields() {
       fields.insertBefore(label, handout || null);
     }
 
-    if (input.value !== taglines[index]) input.value = taglines[index];
   });
 }
 
@@ -199,6 +135,7 @@ function applyShowcaseEnhancements(source) {
   if (!source.trim()) return source;
 
   const handoutRoles = collectHandoutRoles();
+  const taglines = currentTaglines();
   const hasTaglines = taglines.some(value => String(value || "").trim());
   const hasStyleRole = handoutRoles.some(role => normalizeStyleName(role) && normalizeStyleName(role) !== "共通");
   if (!hasTaglines && !hasStyleRole) return source;
@@ -267,7 +204,7 @@ function normalizeStyleName(value) {
 
 function createSignature(handoutRoles) {
   const source = [
-    ...taglines.map(value => String(value || "").trim()),
+    ...currentTaglines().map(value => String(value || "").trim()),
     "\u241e",
     ...handoutRoles.map(value => String(value || "").trim())
   ].join("\u241f");

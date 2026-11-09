@@ -1,3 +1,6 @@
+// The band toggle must work as soon as the page is interactive (a static import runs before DOMContentLoaded).
+import "./showcase-owned-band.js?v=e74013f6";
+
 function reportRuntimeError(message) {
   const status = document.querySelector("#library-status");
   document.documentElement.dataset.showcaseGeneratorState = "error";
@@ -21,17 +24,24 @@ window.addEventListener("unhandledrejection", event => {
 
 document.documentElement.dataset.showcaseGeneratorState = "loading";
 
+// The frame around the form (step navigation, checklist, export dialog) starts loading at once, beside the core modules, so its
+// controls answer early. It only reads and shows what the core modules write; a failure here leaves the form usable.
+void import("./showcase-generator-shell.js?v=02d2d1b2").catch(error => reportOptionalModuleError("generator-shell", error));
+
 async function initializeShowcaseGenerator() {
   try {
     // Guest persistence must be registered before mode-specific publishing so
     // both standard and cinematic buttons save the same supporting-cast data.
-    await import("./showcase-generator-v3.js?v=7397b1ba");
-    await import("./showcase-act-subtitle.js?v=8e9c2652");
+    await import("./showcase-generator-v3.js?v=7d20eff3");
+    await import("./showcase-act-subtitle.js?v=501b7a5b");
     await import("./showcase-scenario-writer.js?v=e4750a02");
     await import("./showcase-dedicated-output.js?v=cdd8099e");
-    await import("./showcase-guests.js?v=f8351e3a");
+    await import("./showcase-guests.js?v=719d3234");
+    // Before the guest bridge and the publisher: a publish click generates the HTML first, then reaches them.
+    await import("./showcase-publish-flow.js?v=f06815e0");
     await import("./showcase-guest-publish-bridge.js?v=809b92f6");
-    await import("./showcase-dynamic-publish-v3.js?v=b02d8e40");
+    await import("./showcase-dynamic-publish-v3.js?v=b2a5976e");
+    await import("./showcase-publish-result.js?v=2e592ab4");
     await import("./showcase-publish-url-canonicalizer.js?v=d365d9fd");
     document.documentElement.dataset.showcaseGeneratorState = "ready";
   } catch (error) {
@@ -56,10 +66,10 @@ async function initializeShowcaseGenerator() {
 
   try {
     await import("./showcase-output-normalizer.js?v=cea76d1b");
-    await import("./showcase-scene-selector.js?v=eb72f9c7");
-    await import("./showcase-edit-restore.js?v=530ac39b");
-    await import("./showcase-delete.js?v=13064975");
-    await import("./showcase-owned-list.js?v=816b4c40");
+    await import("./showcase-scene-selector.js?v=c0f46f31");
+    await import("./showcase-edit-restore.js?v=433de797");
+    await import("./showcase-delete.js?v=3f62ca3a");
+    await import("./showcase-owned-list.js?v=71944577");
   } catch (error) {
     reportOptionalModuleError("edit-management", error);
   }
