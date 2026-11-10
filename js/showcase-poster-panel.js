@@ -2,13 +2,13 @@
 // poster, "save" / "copy" / "share" and the alt text. It is the screen side only: the DOM, the state of the buttons, the debounce and what is
 // remembered for the tab. The poster itself is drawn by js/act-poster-render.js (layout: js/act-poster-layout.js), the words come from
 // js/act-poster-text.js. Nothing is saved or sent anywhere: the picture stays in the browser until the person saves, copies or shares it.
-import { buildPosterModel, layoutPoster, defaultCatchCopy } from "./act-poster-layout.js?v=29613725";
+import { buildPosterModel, layoutPoster, defaultCatchCopy } from "./act-poster-layout.js?v=c0d97bfd";
 import {
   renderPoster, exportPosterBlob, loadPosterFonts, loadPosterImages, createPosterMeasurer, posterTexts, resolvePosterTheme
-} from "./act-poster-render.js?v=565077dd";
+} from "./act-poster-render.js?v=85b25df4";
 import {
   buildPosterAltText, buildPosterPostText, clampPosterInput, loadPosterInputs, savePosterInputs, posterFileName, POSTER_INPUT_LIMITS
-} from "./act-poster-text.js?v=e8f008c1";
+} from "./act-poster-text.js?v=e487da40";
 import { getThemeSwatchColors } from "./showcase-output-css.js?v=6c2c74a1";
 
 const DEBOUNCE_MS = 250;
