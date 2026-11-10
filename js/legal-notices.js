@@ -1,5 +1,5 @@
+import { RIGHTS_TEXT } from "./legal-rights-text.js?v=7aab3d75";
 const SOURCE_SITE_URL = "https://character-sheets.appspot.com/tnx/";
-const RIGHTS_TEXT = "(C)FarEast Amusement Research Co.,Ltd.／(C)GameField Co.,Ltd.";
 const CONTACT_EMAIL = "inarin1431@gmail.com";
 const CONTACT_X_URL = "https://x.com/inari_aki";
 
