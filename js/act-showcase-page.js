@@ -1,10 +1,10 @@
 import { getImageObjectPosition, getImageScale, getImageTransformOrigin } from "./image-focus.js?v=d32e5230";
-import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=71118b45";
+import { prepareNeoTokyoLoading, runNeoTokyoIntro } from "./act-showcase-neotokyo.js?v=912cb652";
 import { loadPublicShowcase, loadPublicShowcaseGuests, normalizeShowcaseSlug } from "./public-showcase-service.js?v=5da4463c";
 import { buildKeyStyle, buildVisualCaption } from "./act-showcase-visual-caption.js?v=47f6e034";
 import { normalizeShowcaseDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
-import { DEFAULT_SCENE_PATTERN, playWithFallback, resolveSceneComposition } from "./act-showcase-scenes.js?v=2647c951";
+import { DEFAULT_SCENE_PATTERN, playWithFallback, resolveSceneComposition } from "./act-showcase-scenes.js?v=ac403d62";
 import { normalizeReadyGuests } from "./act-showcase-ready-b.js?v=b0bf110a";
 import { showLoadError } from "./act-showcase-load-error.js?v=5fbf444f";
 import { createFinaleB } from "./act-showcase-finale-b.js?v=5a05338b";

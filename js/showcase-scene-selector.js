@@ -4,7 +4,7 @@ import {
   SCENE_PATTERNS,
   formatSceneSelectionField,
   parseSceneSelectionField
-} from "./act-showcase-scenes.js?v=2647c951";
+} from "./act-showcase-scenes.js?v=ac403d62";
 import { summarizeScenes } from "./showcase-generator-summary.js?v=aa6bc728";
 
 // The scene composition choice of the generator (docs/ACT_SHOWCASE_SCENES.md section 6 #6): one row of buttons ("A 標準" / "B:<name>")
@@ -49,7 +49,7 @@ export function fieldAfterChoice(fieldText, frame, pattern) {
 // "a" is always "A 標準"; a pattern without a name here is shown as "パターン C".
 export const SCENE_PATTERN_NAMES = Object.freeze({
   loading: Object.freeze({ b: "起動ターミナル" }),
-  title: Object.freeze({ b: "タイトルカード" }),
+  title: Object.freeze({ b: "タイトルカード", c: "シネマスコープ" }),
   trailer: Object.freeze({ b: "縦組み" }),
   "handout-assign": Object.freeze({ b: "ポートレート先行" }),
   ready: Object.freeze({ b: "ポートレート中央" }),

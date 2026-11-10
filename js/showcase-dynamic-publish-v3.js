@@ -2,7 +2,7 @@ import { supabase } from "./supabase-client.js";
 import { withRequestTimeout } from "./async-timeout.js?v=526a0b5a";
 import { resolveCastNumber } from "./showcase-cast-number.js?v=944a948e";
 import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=0e404b6b";
-import { parseSceneSelectionField } from "./act-showcase-scenes.js?v=2647c951";
+import { parseSceneSelectionField } from "./act-showcase-scenes.js?v=ac403d62";
 
 const preview = document.querySelector("#showcase-preview");
 const status = document.querySelector("#generator-status");
