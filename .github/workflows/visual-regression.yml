@@ -102,7 +102,7 @@ jobs:
       - name: Install dependencies
         run: npm install
       - name: Download the compare logs
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           pattern: visual-compare-log-*
           path: visual-compare-logs
