@@ -16,9 +16,8 @@ export const POSTER_WIDTH = 1200;
 export const POSTER_HEIGHT = 675;
 export const POSTER_MAX_CASTS = 6;
 
-// TODO 要確認: the wording of the rights line is provisional until the secondary-work guidelines of the TRPG rights office (TRPGライツ事務局)
-// have been checked (the owner decided this wording on 2026-11-09). It is the only place the wording lives (the renderer draws layout.rights.text);
-// it may say that the picture is NOT official, but never that it is official or "公認".
+// The wording of the rights line is final (confirmed by the owner on 2026-11-10). It is the only place the wording lives (the renderer draws
+// layout.rights.text), so a later change is made here alone. It may say that the picture is NOT official, but never that it is official or "公認".
 export const POSTER_RIGHTS_NOTICE = "本画像は非公式ファンツール「CAST ARCHIVE」で生成したものです。各権利者による公式の画像・サービスではありません。";
 // the copyright line, right-aligned on the same bottom row (the same string as the legal notices of the site)
 export const POSTER_COPYRIGHT_NOTICE = RIGHTS_TEXT;

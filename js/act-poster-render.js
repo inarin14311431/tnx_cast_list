@@ -8,7 +8,7 @@
 //
 // Not on it: the logo, the official fonts or illustrations, the words "official" / "公式" / "公認", the handout text, the guests.
 import { approximateTextWidth } from "./cast-sns-name-layout.js?v=71a5e4e1";
-import { POSTER_WIDTH, POSTER_HEIGHT, ROLE_BODY, ROLE_TITLE, ROLE_NUMBER } from "./act-poster-layout.js?v=29613725";
+import { POSTER_WIDTH, POSTER_HEIGHT, ROLE_BODY, ROLE_TITLE, ROLE_NUMBER } from "./act-poster-layout.js?v=c0d97bfd";
 
 export const POSTER_SCALE = 2;
 export const POSTER_MAX_PNG_BYTES = 5 * 1024 * 1024;
