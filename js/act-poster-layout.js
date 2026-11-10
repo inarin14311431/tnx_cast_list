@@ -9,6 +9,7 @@ import { computeNameLayout, computeRubyUnit, READING_GAP, READING_SCALE } from "
 import { splitCastName } from "./act-showcase-handout-fields.js?v=991c7b8e";
 import { roleForCast } from "./act-showcase-visual-caption.js?v=47f6e034";
 import { heroSubtitle, safeImageUrl } from "./act-showcase-finale-b-model.js?v=76278f9e";
+import { RIGHTS_TEXT } from "./legal-rights-text.js?v=7aab3d75";
 import { formatShowcaseHandle, normalizeShowcaseDisplayQuotes, stripOuterDisplayQuotes } from "./showcase-display-format.js?v=728d9084";
 
 export const POSTER_WIDTH = 1200;
@@ -16,8 +17,11 @@ export const POSTER_HEIGHT = 675;
 export const POSTER_MAX_CASTS = 6;
 
 // TODO 要確認: the wording of the rights line is provisional until the secondary-work guidelines of the TRPG rights office (TRPGライツ事務局)
-// have been checked. It is the only place the wording lives (the renderer draws layout.rights.text); it must not say "official" or "公認".
-export const POSTER_RIGHTS_NOTICE = "本画像は非公式ファンツール「CAST ARCHIVE」で作成した二次創作物です。";
+// have been checked (the owner decided this wording on 2026-11-09). It is the only place the wording lives (the renderer draws layout.rights.text);
+// it may say that the picture is NOT official, but never that it is official or "公認".
+export const POSTER_RIGHTS_NOTICE = "本画像は非公式ファンツール「CAST ARCHIVE」で生成したものです。各権利者による公式の画像・サービスではありません。";
+// the copyright line, right-aligned on the same bottom row (the same string as the legal notices of the site)
+export const POSTER_COPYRIGHT_NOTICE = RIGHTS_TEXT;
 export const POSTER_DEFAULT_DATE = "近日開演";
 export const POSTER_MAX_DATE_LENGTH = 24;
 export const POSTER_MAX_CATCH_LENGTH = 40;
@@ -200,11 +204,15 @@ export function buildPosterModel(showcase, { date, catchCopy, rightsNotice } = {
     catchCopy: clamp(catchCopy === undefined ? defaultCatchCopy(data) : catchCopy, POSTER_MAX_CATCH_LENGTH),
     dateText: clamp(date, POSTER_MAX_DATE_LENGTH) || POSTER_DEFAULT_DATE,
     rightsNotice: clean(rightsNotice) || POSTER_RIGHTS_NOTICE,
+    copyrightNotice: POSTER_COPYRIGHT_NOTICE,
     casts
   };
 }
 
 // ---- the layout ----------------------------------------------------------------------------------------------------------------------------
+const RIGHTS_FONT = 11;
+const RIGHTS_FLOOR_FONT = 9;
+const RIGHTS_GAP = 24; // the least space between the notice and the copyright line
 const measureWith = (measure, role) => (text, fontSize, weight = 700) => measure(text, fontSize, weight, role);
 
 // The largest size in [floor, max] at which `text` fits `maxWidth` (the floor when it never does).
@@ -457,6 +465,17 @@ export function layoutPoster(model, measure, { theme } = {}) {
     catchLine = { text: model.catchCopy, x: MARGIN_X, baseline: 512, fontSize: size, letterSpacingEm: catchLetterSpacing };
   }
 
+  // the bottom row: the notice on the left, the copyright line right-aligned; the notice shrinks (down to the floor) only when the two do not fit
+  const copyrightWidth = measure(model.copyrightNotice, RIGHTS_FONT, 700, ROLE_BODY);
+  const noticeRoom = Math.max(0, POSTER_WIDTH - MARGIN_X * 2 - copyrightWidth - RIGHTS_GAP);
+  const rights = {
+    text: model.rightsNotice,
+    x: MARGIN_X,
+    baseline: 662,
+    fontSize: fitFont(measure, model.rightsNotice, noticeRoom, RIGHTS_FONT, RIGHTS_FLOOR_FONT, 700, ROLE_BODY),
+    copyright: { text: model.copyrightNotice, right: POSTER_WIDTH - MARGIN_X, baseline: 662, fontSize: RIGHTS_FONT }
+  };
+
   return {
     width: POSTER_WIDTH,
     height: POSTER_HEIGHT,
@@ -466,6 +485,6 @@ export function layoutPoster(model, measure, { theme } = {}) {
     subtitle,
     credits: layoutCredits(model, measure),
     date,
-    rights: { text: model.rightsNotice, x: MARGIN_X, baseline: 662, fontSize: 11 }
+    rights
   };
 }

@@ -91,4 +91,4 @@
   else bind();
 })();
 
-import("./legal-notices.js?v=76f2eb51").catch(error => console.error("Failed to load legal notices", error));
+import("./legal-notices.js?v=f9e7fb1d").catch(error => console.error("Failed to load legal notices", error));

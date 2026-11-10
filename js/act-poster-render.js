@@ -8,7 +8,7 @@
 //
 // Not on it: the logo, the official fonts or illustrations, the words "official" / "公式" / "公認", the handout text, the guests.
 import { approximateTextWidth } from "./cast-sns-name-layout.js?v=71a5e4e1";
-import { POSTER_WIDTH, POSTER_HEIGHT, ROLE_BODY, ROLE_TITLE, ROLE_NUMBER } from "./act-poster-layout.js?v=b09b7150";
+import { POSTER_WIDTH, POSTER_HEIGHT, ROLE_BODY, ROLE_TITLE, ROLE_NUMBER } from "./act-poster-layout.js?v=29613725";
 
 export const POSTER_SCALE = 2;
 export const POSTER_MAX_PNG_BYTES = 5 * 1024 * 1024;
@@ -77,7 +77,7 @@ export function posterTexts(model) {
   return {
     title: model.actName,
     number: `${model.dateText}${casts.map(cast => cast.ho).join("")}0123456789.:/ SUNMOTEWHFRI`,
-    body: [model.subtitle, model.catchCopy, model.rulerName, model.writerName, model.rightsNotice, "RLWRITER“”",
+    body: [model.subtitle, model.catchCopy, model.rulerName, model.writerName, model.rightsNotice, model.copyrightNotice, "RLWRITER“”",
       ...casts.flatMap(cast => [cast.style, cast.handle, cast.name, cast.handleReading, cast.nameReading])].join("")
   };
 }
@@ -371,6 +371,7 @@ function drawTitleBlock(ctx, layout, theme) {
   if (date.sub) drawText(ctx, date.sub.text, date.right, date.sub.baseline, { size: date.sub.fontSize, weight: 700, role: ROLE_NUMBER, fill: POSTER_COLORS.gold, align: "right" });
 
   drawText(ctx, rights.text, rights.x, rights.baseline, { size: rights.fontSize, weight: 700, fill: POSTER_COLORS.rights });
+  drawText(ctx, rights.copyright.text, rights.copyright.right, rights.copyright.baseline, { size: rights.copyright.fontSize, weight: 700, fill: POSTER_COLORS.rights, align: "right" });
 }
 
 /**

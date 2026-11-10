@@ -106,7 +106,7 @@ function renderCard(detail) {
 // The "X に投稿" link first carries the short post (the act and the hashtag); once the poster's words are loaded it says who runs the act and who plays.
 async function upgradeShareLink(link, detail, url, context) {
   try {
-    const [{ buildPosterModel }, { buildPosterPostUrl }] = await Promise.all([import("./act-poster-layout.js?v=b09b7150"), import("./act-poster-text.js?v=5f44ca89")]);
+    const [{ buildPosterModel }, { buildPosterPostUrl }] = await Promise.all([import("./act-poster-layout.js?v=29613725"), import("./act-poster-text.js?v=e8f008c1")]);
     if (link && link.isConnected && posterContext === context) link.href = buildPosterPostUrl(buildPosterModel(detail.showcase), url);
   } catch (error) {
     console.error("The post text could not be extended.", error);
@@ -123,7 +123,7 @@ function togglePoster(button) {
   if (!opening || panel.dataset.mounted || !posterContext) return;
   panel.dataset.mounted = "loading";
   panel.textContent = "読み込み中…";
-  import("./showcase-poster-panel.js?v=7ac5b129").then(module => {
+  import("./showcase-poster-panel.js?v=94437c8f").then(module => {
     if (posterContext) module.mountPosterPanel(panel, posterContext);
     panel.dataset.mounted = "true";
   }).catch(error => {
