@@ -26,7 +26,7 @@ document.documentElement.dataset.showcaseGeneratorState = "loading";
 
 // The frame around the form (step navigation, checklist, export dialog) starts loading at once, beside the core modules, so its
 // controls answer early. It only reads and shows what the core modules write; a failure here leaves the form usable.
-void import("./showcase-generator-shell.js?v=02d2d1b2").catch(error => reportOptionalModuleError("generator-shell", error));
+void import("./showcase-generator-shell.js?v=65df8392").catch(error => reportOptionalModuleError("generator-shell", error));
 
 async function initializeShowcaseGenerator() {
   try {
@@ -40,7 +40,7 @@ async function initializeShowcaseGenerator() {
     // Before the guest bridge and the publisher: a publish click generates the HTML first, then reaches them.
     await import("./showcase-publish-flow.js?v=f06815e0");
     await import("./showcase-guest-publish-bridge.js?v=809b92f6");
-    await import("./showcase-dynamic-publish-v3.js?v=9a6f64fe");
+    await import("./showcase-dynamic-publish-v3.js?v=76391849");
     await import("./showcase-publish-result.js?v=148321f4");
     await import("./showcase-publish-url-canonicalizer.js?v=d365d9fd");
     document.documentElement.dataset.showcaseGeneratorState = "ready";
@@ -66,8 +66,8 @@ async function initializeShowcaseGenerator() {
 
   try {
     await import("./showcase-output-normalizer.js?v=cea76d1b");
-    await import("./showcase-scene-selector.js?v=c0f46f31");
-    await import("./showcase-edit-restore.js?v=433de797");
+    await import("./showcase-scene-selector.js?v=c50b5ce7");
+    await import("./showcase-edit-restore.js?v=19bf260c");
     await import("./showcase-delete.js?v=3f62ca3a");
     await import("./showcase-owned-list.js?v=71944577");
   } catch (error) {

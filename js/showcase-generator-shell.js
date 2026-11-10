@@ -1,6 +1,6 @@
 import { getThemeSwatchColors } from "./showcase-output-css.js?v=6c2c74a1";
 import { SHOWCASE_BACKGROUND_PRESETS } from "./showcase-background-presets.js?v=7068197c";
-import { parseSceneSelectionField } from "./act-showcase-scenes.js?v=2647c951";
+import { parseSceneSelectionField } from "./act-showcase-scenes.js?v=ac403d62";
 import { hasGeneratedOutput } from "./showcase-generation-settle.js?v=cdbb78a8";
 import {
   publishBlocker,

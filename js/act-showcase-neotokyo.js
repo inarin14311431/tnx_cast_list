@@ -1,9 +1,10 @@
 import { parseStyleLabel } from "./act-showcase-style-label.js?v=8a1b88dd";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
 import { keepCaretVisible } from "./act-showcase-caret.js?v=84d1801d";
-import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=2647c951";
+import { DEFAULT_SCENE_PATTERN, playWithFallback } from "./act-showcase-scenes.js?v=ac403d62";
 import { createTrailerScreenB } from "./act-showcase-trailer-b.js?v=dc9ea1dc";
 import { createTitleScreenB } from "./act-showcase-title-b.js?v=6f05db48";
+import { createTitleScreenC } from "./act-showcase-title-c.js?v=9ee52bf2";
 import { createLoadingScreenB, bootLines } from "./act-showcase-loading-b.js?v=e2935443";
 import { createReadyScreenB } from "./act-showcase-ready-b.js?v=b0bf110a";
 import { createAssignScreenB } from "./act-showcase-assign-b.js?v=603b1dc4";
@@ -72,7 +73,7 @@ export async function runNeoTokyoIntro({ intro, model }) {
 // start of a PC to +5 (searching) and +10 (assigned).
 export const INTRO_SCENES = Object.freeze([
   Object.freeze({ frame: "loading", step: "01", progress: 5, patterns: Object.freeze({ a: showOpening, b: showOpeningB }) }),
-  Object.freeze({ frame: "title", step: "02", progress: 18, patterns: Object.freeze({ a: showActTitle, b: showActTitleB }) }),
+  Object.freeze({ frame: "title", step: "02", progress: 18, patterns: Object.freeze({ a: showActTitle, b: showActTitleB, c: showActTitleC }) }),
   Object.freeze({ frame: "trailer", step: "03", progress: 30, patterns: Object.freeze({ a: showTrailer, b: showTrailerB }) }),
   Object.freeze({
     frame: "handout-assign",
@@ -311,6 +312,21 @@ async function showActTitleB(state, model, scene) {
     scenarioWriterName: model.scenarioWriterName
   });
   markScene(screen, scene, "b");
+  setProgress(state, scene.progress, "TITLE & CREDITS");
+  await swapScreen(state, screen, { waitForFonts: true });
+  await waitForAdvance(state, "NEXT // ACT TRAILER");
+}
+
+// Pattern C: the opening of a film (js/act-showcase-title-c.js). Built first, like B: a failure there leaves the page as it was.
+async function showActTitleC(state, model, scene) {
+  const { screen } = createTitleScreenC({
+    step: scene.step,
+    title: model.actName,
+    subtitle: model.heroSubTitle,
+    rulerName: model.rulerName,
+    scenarioWriterName: model.scenarioWriterName
+  });
+  markScene(screen, scene, "c");
   setProgress(state, scene.progress, "TITLE & CREDITS");
   await swapScreen(state, screen, { waitForFonts: true });
   await waitForAdvance(state, "NEXT // ACT TRAILER");
