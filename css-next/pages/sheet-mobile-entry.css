@@ -14,7 +14,7 @@
 @import url("./sheet-mobile-outfit.css?v=be2833d5") layer(mobile-outfit);
 @import url("./sheet-mobile-combos.css?v=71cb4ed3") layer(mobile-combos);
 @import url("./sheet-mobile-snapshots.css?v=32316f67") layer(mobile-snapshots);
-@import url("./sheet-mobile-image.css?v=6e389f50") layer(mobile-image);
+@import url("./sheet-mobile-image.css?v=ea3795a4") layer(mobile-image);
 @import url("./sheet-mobile-import.css?v=83f4f874") layer(mobile-import);
 @import url("./sheet-mobile-ux.css?v=bf09ad02") layer(mobile-ux);
 @import url("../components/character-share.css?v=7b825f0b") layer(mobile-share);
