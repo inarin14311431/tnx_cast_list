@@ -67,6 +67,7 @@ const DATE_MAIN_MAX_FONT = 96;
 const DATE_MAIN_MIN_FONT = 80;
 const DATE_SUB_FONT = 26;
 const DATE_MAX_WIDTH = 400;
+// The title's outline and shifted shadow reach about 2.5px beyond its text (TITLE_REACH in act-poster-render.js): COLUMN_GAP covers it.
 const COLUMN_GAP = 28;
 
 const clean = value => String(value ?? "").trim();
