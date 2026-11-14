@@ -10,7 +10,7 @@ if (editor) {
       import("./sheet-master-search-enhancements.js?v=c8b2fed1"),
       import("./outfit-ofc-save.js?v=b16482f2"),
       import("./outfit-ofc-master-apply.js?v=dad65b0d"),
-      import("./sheet-master-autofill.js?v=f503c5a4")
+      import("./sheet-master-autofill.js?v=bb76dfd9")
     ]);
     await import("./sheet-tsv-import.js?v=84876214");
   } finally {
