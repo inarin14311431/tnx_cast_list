@@ -1,7 +1,7 @@
 import { supabase } from "./supabase-client.js";
 import { withRequestTimeout } from "./async-timeout.js?v=526a0b5a";
 import { resolveCastNumber } from "./showcase-cast-number.js?v=944a948e";
-import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=0e404b6b";
+import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=e989578b";
 import { parseSceneSelectionField } from "./act-showcase-scenes.js?v=ac403d62";
 
 const preview = document.querySelector("#showcase-preview");
@@ -122,7 +122,9 @@ async function publishDynamicShowcase(button, mode) {
 function collectPublicCastOrders() {
   return [...document.querySelectorAll('#selected-casts [data-character-id][data-visibility="public"]')].map(row => ({
     characterId: row.dataset.characterId,
-    castOrder: resolveCastNumber(row.querySelector('[data-field="cast-no"]')?.value, Number(row.dataset.selectedIndex))
+    castOrder: resolveCastNumber(row.querySelector('[data-field="cast-no"]')?.value, Number(row.dataset.selectedIndex)),
+    // the row's 参加枠 select, which the act history keeps as participation_role
+    participationRole: String(row.querySelector('[data-field="quote"]')?.value ?? "")
   }));
 }
 

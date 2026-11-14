@@ -32,7 +32,7 @@ async function initializeShowcaseGenerator() {
   try {
     // Guest persistence must be registered before mode-specific publishing so
     // both standard and cinematic buttons save the same supporting-cast data.
-    await import("./showcase-generator-v3.js?v=13f2c42f");
+    await import("./showcase-generator-v3.js?v=d78464f1");
     await import("./showcase-act-subtitle.js?v=501b7a5b");
     await import("./showcase-scenario-writer.js?v=e4750a02");
     await import("./showcase-dedicated-output.js?v=cdd8099e");
@@ -40,8 +40,8 @@ async function initializeShowcaseGenerator() {
     // Before the guest bridge and the publisher: a publish click generates the HTML first, then reaches them.
     await import("./showcase-publish-flow.js?v=f06815e0");
     await import("./showcase-guest-publish-bridge.js?v=809b92f6");
-    await import("./showcase-dynamic-publish-v3.js?v=76391849");
-    await import("./showcase-publish-result.js?v=063a41c4");
+    await import("./showcase-dynamic-publish-v3.js?v=f883aee1");
+    await import("./showcase-publish-result.js?v=64a89fbb");
     await import("./showcase-publish-url-canonicalizer.js?v=d365d9fd");
     document.documentElement.dataset.showcaseGeneratorState = "ready";
   } catch (error) {
@@ -52,8 +52,7 @@ async function initializeShowcaseGenerator() {
 
   const optionalModules = [
     ["tagline", "./showcase-tagline.js?v=2"],
-    ["tagline-auto", "./showcase-tagline-auto.js?v=1"],
-    ["history-role", "./showcase-history-role.js?v=1"]
+    ["tagline-auto", "./showcase-tagline-auto.js?v=1"]
   ];
 
   await Promise.all(optionalModules.map(async ([name, source]) => {
