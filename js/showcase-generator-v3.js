@@ -6,7 +6,7 @@ import { normalizeShowcaseTheme } from "./showcase-output-css.js?v=6c2c74a1";
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=a766246e";
 import { createImageLedger, manualImagePathFromUrl, removeManualImages, uploadManualImage, validateManualImage } from "./showcase-manual-image.js?v=ab40c1a2";
-import { createCastRowHtml, createLibraryCardHtml, handoutBadgeText, handoutState, isPlaceholderImage, manualImageValue, reorder } from "./showcase-cast-row.js?v=ca2cb81f";
+import { createCastRowHtml, createLibraryCardHtml, handoutBadgeText, handoutState, isPlaceholderImage, manualImageValue, nextPanel, reorder } from "./showcase-cast-row.js?v=31b01e50";
 
 const MAX_CASTS = 6;
 const FUNCTION_NAME = "publish-showcase";
@@ -259,7 +259,7 @@ function toggleArchiveCast(source, characterId, library) {
       setGeneratorStatus("キャストは公開・非公開・手動追加を合わせて最大6名までです。", "error");
       return;
     }
-    selectedCasts.push({ source, manual: false, character, description: "", quote: "", tagline: "", castNo: "", open: false });
+    selectedCasts.push({ source, manual: false, character, description: "", quote: "", tagline: "", castNo: "", panel: null });
   }
 
   invalidateGeneratedHtml();
@@ -332,7 +332,8 @@ function addManualCast(fields = {}) {
     tagline: "",
     description: "",
     castNo: "",
-    open: true
+    // restoring a saved act adds an empty row and fills it: no panel opens by itself (the add form opens the handout panel, below)
+    panel: null
   };
   selectedCasts.push(item);
 
@@ -354,7 +355,28 @@ function submitManualCastForm(event) {
   resetManualForm({ keepImage: true });
   setManualFormOpen(false);
   const index = selectedCasts.length - 1;
-  requestAnimationFrame(() => elements.selectedCasts?.querySelector(`[data-selected-index="${index}"] [data-field="description"]`)?.focus());
+  // the details were typed in the form, so only the handout panel opens: scroll the row into view and start at its first field
+  openRowPanel(index, "handout");
+  const row = elements.selectedCasts?.querySelector(`[data-selected-index="${index}"]`);
+  row?.scrollIntoView({ block: "nearest" });
+  row?.querySelector('[data-field="cast-no"]')?.focus({ preventScroll: true });
+}
+
+// The one open panel of the whole list: opening a panel closes every other one (the row's other panel and the other rows').
+// The rows are updated in place, never re-rendered, so what was typed into a closed panel's fields stays where it is.
+function openRowPanel(index, panel) {
+  selectedCasts.forEach((item, at) => { item.panel = at === index ? panel : null; });
+  syncRowPanels();
+}
+
+function syncRowPanels() {
+  elements.selectedCasts?.querySelectorAll("[data-selected-index]").forEach(row => {
+    const item = selectedCasts[Number(row.dataset.selectedIndex)];
+    const open = item?.panel ?? null;
+    row.classList.toggle("is-open", Boolean(open));
+    row.querySelectorAll('[data-action="toggle"]').forEach(button => button.setAttribute("aria-expanded", String(button.dataset.panel === open)));
+    row.querySelectorAll(".cast-row__panel").forEach(panel => { panel.hidden = panel.dataset.panel !== open; });
+  });
 }
 
 function renderSelections() {
@@ -397,11 +419,12 @@ function handleSelectedCastClick(event) {
 
   if (action === "toggle") {
     const item = selectedCasts[index];
-    item.open = !item.open;
-    row.classList.toggle("is-open", item.open);
-    button.setAttribute("aria-expanded", String(item.open));
-    const panel = row.querySelector(".cast-row__panel");
-    if (panel) panel.hidden = !item.open;
+    openRowPanel(index, nextPanel(item.panel, button.dataset.panel, item.manual));
+    return;
+  }
+  if (action === "close") {
+    openRowPanel(index, null);
+    row.querySelector(".cast-row__main")?.focus();
     return;
   }
   if (action === "up" && index > 0) {
