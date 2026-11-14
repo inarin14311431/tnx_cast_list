@@ -1,6 +1,9 @@
 import { supabase } from "./supabase-client.js";
 
 const EMPTY_MARKS = new Set(["", "-", "－", "—", "―"]);
+// A new outfit row starts with these number fields at 0 (createBlankOutfit in sheet-row-factory.js), so a 0 in them means "not entered yet":
+// the autofill fills them from the master and the duplicate scoring does not count them. Every other field is empty until it is typed in.
+const ZERO_DEFAULT = Object.freeze({ zeroDefault: true });
 const MASTER_PAGE_SIZE = 1000;
 
 initialize();
@@ -142,7 +145,7 @@ function fillOutfits(index) {
     const defense = readDefenseValues(source, raw);
 
     changed += fillControl(base("purchase_value"), source.purchase_target);
-    changed += fillControl(base("experience_cost"), source.permanent_cost);
+    changed += fillControl(base("experience_cost"), source.permanent_cost, ZERO_DEFAULT);
     changed += fillControl(base("concealment"), concealmentValue);
     changed += fillControl(ofc("concealment_penalty"), concealmentPenalty);
     changed += fillControl(base("attack"), source.attack);
@@ -152,7 +155,8 @@ function fillOutfits(index) {
     changed += fillControl(ofc("parry"), source.parry);
     changed += fillControl(ofc("speed"), source.speed);
     changed += fillControl(ofc("electronic_control"), electronicValue);
-    changed += fillControl(ofc("control_value"), source.control_value);
+    // the master's control_value is the editor's 制御値 (data-o="control_modifier"; the editor has no data-ofc="control_value")
+    changed += fillControl(base("control_modifier"), source.control_value, ZERO_DEFAULT);
 
     if (category === "armor") {
       changed += fillArmorDefense(row, defense);
@@ -172,7 +176,7 @@ function fillOutfits(index) {
     changed += fillControl(ofc("tron_software"), firstPresent(raw.tron_software, raw.software, raw.soft));
     changed += fillControl(ofc("tron_support"), firstPresent(raw.tron_support, raw.support));
     changed += fillControl(ofc("tron_hardware"), firstPresent(raw.tron_hardware, raw.hardware, raw.hard));
-    changed += fillControl(ofc("cs_value"), firstPresent(raw.cs_value, raw.cs));
+    changed += fillControl(base("cs_modifier"), firstPresent(raw.cs_value, raw.cs), ZERO_DEFAULT);
     changed += fillControl(ofc("residence_entry"), residence.entry);
     changed += fillControl(ofc("residence_electric"), residence.electric);
     changed += fillControl(ofc("residence_area"), residence.area);
@@ -229,7 +233,7 @@ function chooseBestOutfitMatch(row, matches) {
   const armor = key => row.querySelector(`[data-armor-defense="${key}"]`)?.value;
   return chooseBestMatch(matches, source => scoreExistingPairs([
     [base("purchase_value"), source.purchase_target],
-    [base("experience_cost"), source.permanent_cost],
+    [zeroAsMissing(base("experience_cost")), source.permanent_cost],
     [base("concealment"), source.concealment],
     [ofc("concealment_penalty"), source.concealment_penalty],
     [base("attack"), source.attack],
@@ -260,8 +264,11 @@ function completenessScore(source) {
   return Object.values(source || {}).reduce((score, value) => score + (isMissing(value) ? 0 : 1), 0);
 }
 
-function fillControl(control, value) {
-  if (!control || !isMissing(control.value) || isMissing(value)) return 0;
+// `zeroDefault`: the field starts at 0, so a 0 in it counts as empty; and a 0 (or an empty value) from the master gives it nothing.
+function fillControl(control, value, { zeroDefault = false } = {}) {
+  if (!control || isMissing(value)) return 0;
+  if (zeroDefault && isZeroValue(value)) return 0;
+  if (!isMissing(control.value) && !(zeroDefault && isZeroValue(control.value))) return 0;
   control.value = String(value).trim();
   control.dispatchEvent(new Event("input", { bubbles: true }));
   control.dispatchEvent(new Event("change", { bubbles: true }));
@@ -340,6 +347,15 @@ function parseRawData(value) {
 
 function firstPresent(...values) {
   return values.find(value => !isMissing(value)) ?? "";
+}
+
+function isZeroValue(value) {
+  return /^[+-]?0+(?:\.0*)?$/.test(String(value ?? "").normalize("NFKC").trim());
+}
+
+// For the duplicate scoring: the 0 of a field that starts at 0 is "not entered", so it is neither a match nor a mismatch.
+function zeroAsMissing(value) {
+  return isZeroValue(value) ? "" : value;
 }
 
 function isMissing(value) {
