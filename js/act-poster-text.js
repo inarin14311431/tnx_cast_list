@@ -2,7 +2,7 @@
 // file and what is remembered of the inputs for the tab. Pure (the storage is passed in), so tests/act-poster-text.test.mjs runs it in Node.
 // The model comes from js/act-poster-layout.js buildPosterModel; the screen that uses this is js/showcase-poster-panel.js.
 import { buildSharePostText, buildXIntentUrl } from "./showcase-publish-result-core.js?v=37f06130";
-import { POSTER_MAX_DATE_LENGTH, POSTER_MAX_CATCH_LENGTH } from "./act-poster-layout.js?v=c0d97bfd";
+import { POSTER_MAX_DATE_LENGTH, POSTER_MAX_CATCH_LENGTH } from "./act-poster-layout.js?v=683febc8";
 
 export const POSTER_INPUT_LIMITS = Object.freeze({ date: POSTER_MAX_DATE_LENGTH, catchCopy: POSTER_MAX_CATCH_LENGTH });
 export const POSTER_ALT_MAX_LENGTH = 1000; // X's limit for the description of a picture

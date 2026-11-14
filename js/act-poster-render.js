@@ -8,9 +8,16 @@
 //
 // Not on it: the logo, the official fonts or illustrations, the words "official" / "公式" / "公認", the handout text, the guests.
 import { approximateTextWidth } from "./cast-sns-name-layout.js?v=71a5e4e1";
-import { POSTER_WIDTH, POSTER_HEIGHT, ROLE_BODY, ROLE_TITLE, ROLE_NUMBER } from "./act-poster-layout.js?v=c0d97bfd";
+import { POSTER_WIDTH, POSTER_HEIGHT, ROLE_BODY, ROLE_TITLE, ROLE_NUMBER } from "./act-poster-layout.js?v=683febc8";
 
 export const POSTER_SCALE = 2;
+// The title (Dela Gothic One, 900) is drawn in three steps (drawTitleBlock): a shifted shadow, an outline in the ground colour, the fill.
+// All in logical px. Nothing of it reaches further than TITLE_REACH beyond the text's box: the outline is centred on the glyph edge
+// (half its width out) and the shadow is shifted by TITLE_SHADOW_OFFSET. act-poster-layout.js keeps COLUMN_GAP (28) between the title and the date.
+export const TITLE_SHADOW_OFFSET = 2.5;
+export const TITLE_OUTLINE_WIDTH = 3;
+export const TITLE_REACH = Math.max(TITLE_SHADOW_OFFSET, TITLE_OUTLINE_WIDTH / 2);
+const TITLE_GLOW_BLUR = 10;
 export const POSTER_MAX_PNG_BYTES = 5 * 1024 * 1024;
 export const POSTER_JPEG_QUALITY = 0.9;
 export const POSTER_PLACEHOLDER_URL = new URL("../assets/placeholders/scan-failed.webp", import.meta.url).href;
@@ -334,15 +341,24 @@ function drawTitleBlock(ctx, layout, theme) {
   const { catchLine, title, subtitle, credits, date, rights } = layout;
   if (catchLine) drawSpaced(ctx, catchLine.text, catchLine.x, catchLine.baseline, { size: catchLine.fontSize, spacingEm: catchLine.letterSpacingEm, fill: POSTER_COLORS.gold });
 
-  // the title: the secondary colour shifted 3px right and down, a weak glow of the primary colour, a white-to-cyan fill from top to bottom
+  // The title, in three steps. A heavy kanji has narrow gaps inside it, and the colour of a shadow shifted by a few px showed through them, so
+  // the shadow is covered there: (1) the secondary colour shifted 2.5px right and down; (2) an outline in the ground colour (3px, round joins),
+  // which also carries the weak glow of the primary colour; (3) the white-to-cyan fill from top to bottom, with no shadow of its own.
+  // shadowBlur is in device pixels (the context's scale does not apply to it).
   ctx.save();
   ctx.font = fontOf(title.fontSize, 900, ROLE_TITLE);
   ctx.textAlign = "left";
   ctx.textBaseline = "alphabetic";
   ctx.fillStyle = theme?.secondary || POSTER_COLORS.cyan;
-  ctx.fillText(title.text, title.x + 3, title.baseline + 3);
+  ctx.fillText(title.text, title.x + TITLE_SHADOW_OFFSET, title.baseline + TITLE_SHADOW_OFFSET);
+  ctx.strokeStyle = POSTER_COLORS.ground;
+  ctx.lineWidth = TITLE_OUTLINE_WIDTH;
+  ctx.lineJoin = "round";
   ctx.shadowColor = withAlpha(theme?.primary || POSTER_COLORS.cyan, 0.45);
-  ctx.shadowBlur = 16;
+  ctx.shadowBlur = TITLE_GLOW_BLUR;
+  ctx.strokeText(title.text, title.x, title.baseline);
+  ctx.shadowColor = "transparent";
+  ctx.shadowBlur = 0;
   const fill = ctx.createLinearGradient(0, title.baseline - title.fontSize * 0.85, 0, title.baseline);
   fill.addColorStop(0, POSTER_COLORS.ink);
   fill.addColorStop(1, POSTER_COLORS.cyan);
