@@ -1,6 +1,6 @@
 import { renderShowcase, getStyleNames, formatHandle, obfuscatePublicId } from "./showcase-output-html.js?v=0214e5e5";
 import { normalizeCastNumber, formatCastNumber, resolveCastNumber, findDuplicateCastNumber } from "./showcase-cast-number.js?v=944a948e";
-import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=0e404b6b";
+import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=e989578b";
 import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
 import { normalizeShowcaseTheme } from "./showcase-output-css.js?v=6c2c74a1";
 import { supabase } from "./supabase-client.js";
@@ -831,14 +831,14 @@ async function registerHistoryOnly() {
     const castOrders = selectedCasts
       .map((item, index) => ({ item, castOrder: resolveCastNumber(item.castNo, index) }))
       .filter(({ item }) => !item.manual && item.character.id)
-      .map(({ item, castOrder }) => ({ characterId: item.character.id, castOrder }));
+      .map(({ item, castOrder }) => ({ characterId: item.character.id, castOrder, participationRole: String(item.quote ?? "") }));
     const castOrderSync = await syncActCastOrders(supabase, slug, castOrders);
 
     const privateCount = selectedCasts.filter(item => item.source === "private").length;
     const manualCount = selectedCasts.filter(item => item.manual).length;
     const privateNote = privateCount ? ` 非公開キャスト${privateCount}名を含みます。` : "";
     const manualNote = manualCount ? ` 手動追加キャスト${manualCount}名は履歴対象外です。` : "";
-    const castOrderNote = castOrderSync.ok ? "" : " 履歴のCAST No.は更新できませんでした。";
+    const castOrderNote = castOrderSync.ok ? "" : " 履歴のCAST No.と参加枠は更新できませんでした。";
     setGeneratorStatus(`GitHub Pagesへ公開せず、参加アクト履歴へ登録しました。${privateNote}${manualNote}${castOrderNote}`, "success");
   } catch (error) {
     console.error(error);

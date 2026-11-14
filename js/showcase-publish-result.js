@@ -76,7 +76,7 @@ function renderCard(detail) {
   const url = detail.urls[mode];
   const shareUrl = buildXIntentUrl({ actName: detail.actName || actNameField?.value, subtitle: subtitleField?.value, url });
   posterContext = detail.showcase ? { showcase: detail.showcase, slug: detail.slug, url } : null;
-  const note = detail.historyOk === false ? "公開しました。参加アクト履歴のCAST No.は更新できませんでした。" : "参加アクト履歴にも反映しました。";
+  const note = detail.historyOk === false ? "公開しました。参加アクト履歴のCAST No.と参加枠は更新できませんでした。" : "参加アクト履歴にも反映しました。";
 
   card.replaceChildren(
     element("div", "publish-result__head", [
