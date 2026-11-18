@@ -10,10 +10,9 @@ export function manualCastFieldsFromCanonical(canonical = {}) {
   const basic = canonical.basic || {};
   const personal = canonical.personal || {};
   const styles = canonical.styles || {};
-  const handle = String(basic.handle || "").trim();
-  const name = String(basic.character_name || "").trim();
   return {
-    name: [handle ? `“${handle}”` : "", name].filter(Boolean).join(" "),
+    handle: String(basic.handle || "").trim(),
+    name: String(basic.character_name || "").trim(),
     styles: [1, 2, 3]
       .map(slot => `${String(styles[`style_${slot}`] || "").trim()}${String(styles[`style_${slot}_mark`] || "").trim()}`)
       .filter(label => label.replace(/[◎●]/g, ""))
@@ -34,6 +33,6 @@ export async function fetchManualCastFromSheet(url) {
   ]);
   const payload = await loadCharacterSheetPayload(url);
   const fields = manualCastFieldsFromCanonical(canonicalizeCharacterSheetJsonp(payload));
-  if (!fields.name) throw new Error("キャラクターシート倉庫のデータからキャスト名を読み取れませんでした。");
+  if (!fields.name && !fields.handle) throw new Error("キャラクターシート倉庫のデータからキャスト名を読み取れませんでした。");
   return fields;
 }

@@ -1,4 +1,4 @@
-import { renderShowcase, getStyleNames, formatHandle, obfuscatePublicId } from "./showcase-output-html.js?v=0214e5e5";
+import { renderShowcase, getStyleNames, formatHandle, formatFullName, obfuscatePublicId } from "./showcase-output-html.js?v=0214e5e5";
 import { normalizeCastNumber, formatCastNumber, resolveCastNumber, findDuplicateCastNumber } from "./showcase-cast-number.js?v=944a948e";
 import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=e989578b";
 import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
@@ -533,14 +533,14 @@ async function importManualFormFromSheet() {
   if (button) button.disabled = true;
   setStatus("キャラクターシート倉庫からデータを取得しています…");
   try {
-    const { fetchManualCastFromSheet } = await import("./showcase-manual-sheet-import.js?v=d305c6d8");
+    const { fetchManualCastFromSheet } = await import("./showcase-manual-sheet-import.js?v=ae641609");
     const fields = await fetchManualCastFromSheet(url);
-    const values = { name: fields.name, styles: fields.styles, player: fields.player, affiliation: fields.affiliation, age: fields.age, gender: fields.gender, rank: fields.rank };
+    const values = { handle: fields.handle, name: fields.name, styles: fields.styles, player: fields.player, affiliation: fields.affiliation, age: fields.age, gender: fields.gender, rank: fields.rank };
     for (const [key, value] of Object.entries(values)) {
       const input = manualFormField(key);
       if (input) input.value = value ?? "";
     }
-    setStatus(`「${fields.name}」を取り込みました。内容を確認して「出演順に追加」を押してください。`, "success");
+    setStatus(`「${formatFullName({ handle: fields.handle, character_name: fields.name })}」を取り込みました。内容を確認して「出演順に追加」を押してください。`, "success");
   } catch (error) {
     console.error(error);
     setStatus(error?.message || "キャラクターシート倉庫から取り込めませんでした。", "error");
