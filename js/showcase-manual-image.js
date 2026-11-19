@@ -5,6 +5,8 @@
 
 export const MANUAL_IMAGE_BUCKET = "character-images";
 export const MANUAL_IMAGE_FOLDER = "act-manual";
+// The guests' pictures (js/showcase-guests.js). A copied showcase uploads its guests' pictures there too (js/showcase-copy-from-public.js).
+export const GUEST_IMAGE_FOLDER = "act-guests";
 export const MANUAL_IMAGE_MAX_BYTES = 1024 * 1024;
 export const MANUAL_IMAGE_TYPES = Object.freeze({ "image/jpeg": "jpg", "image/png": "png", "image/webp": "webp" });
 
@@ -16,8 +18,8 @@ export function validateManualImage(file) {
   return "";
 }
 
-export function manualImagePath(userId, file, id) {
-  return `${userId}/${MANUAL_IMAGE_FOLDER}/${id}.${MANUAL_IMAGE_TYPES[file.type] || "jpg"}`;
+export function manualImagePath(userId, file, id, folder = MANUAL_IMAGE_FOLDER) {
+  return `${userId}/${folder}/${id}.${MANUAL_IMAGE_TYPES[file.type] || "jpg"}`;
 }
 
 // The Storage path behind a public URL of this bucket, or "" when the URL is not a manual-cast picture of this user (an external URL,
@@ -34,12 +36,13 @@ export function manualImagePathFromUrl(url, userId) {
   return path.startsWith(prefix) && !path.slice(prefix.length).includes("/") && path.length > prefix.length ? path : "";
 }
 
-// Uploads the file and returns { path, url }. Throws an Error with a sentence for the writer.
-export async function uploadManualImage(supabase, userId, file, { id = crypto.randomUUID() } = {}) {
+// Uploads the file and returns { path, url }. Throws an Error with a sentence for the writer. `folder` is act-manual unless a guest's
+// picture is being copied (GUEST_IMAGE_FOLDER).
+export async function uploadManualImage(supabase, userId, file, { id = crypto.randomUUID(), folder = MANUAL_IMAGE_FOLDER } = {}) {
   const problem = validateManualImage(file);
   if (problem) throw new Error(problem);
   if (!userId) throw new Error("ログイン情報を確認できません。");
-  const path = manualImagePath(userId, file, id);
+  const path = manualImagePath(userId, file, id, folder === GUEST_IMAGE_FOLDER ? GUEST_IMAGE_FOLDER : MANUAL_IMAGE_FOLDER);
   const { error } = await supabase.storage.from(MANUAL_IMAGE_BUCKET).upload(path, file, { cacheControl: "31536000", upsert: false, contentType: file.type });
   if (error) throw new Error(`画像を登録できませんでした。${error.message ? ` ${error.message}` : ""}`);
   const { data } = supabase.storage.from(MANUAL_IMAGE_BUCKET).getPublicUrl(path);

@@ -154,7 +154,7 @@ async function restoreOwnedShowcase(slug) {
   }
 }
 
-function restoreBasicFields(data, showcase, slug) {
+export function restoreBasicFields(data, showcase, slug) {
   setField(elements.pageTitle, showcase.pageTitle || "ACT CAST FILE");
   setField(elements.actName, showcase.actName || data?.actName || slug);
   setField(elements.showcaseTheme, ["nova", "intron", "vlad", "lutetia"].includes(showcase.theme) ? showcase.theme : "nova");
@@ -210,7 +210,7 @@ async function restoreCasts(casts, participants) {
   return fallbackCount;
 }
 
-function fillCastNumber(row, slot, index) {
+export function fillCastNumber(row, slot, index) {
   const number = castNumberFromSlot(slot, index);
   setControl(row.querySelector('[data-field="cast-no"]'), number === index + 1 ? "" : String(number));
 }
@@ -220,20 +220,20 @@ function findPublicCard(characterId) {
     .find(card => String(card.dataset.publicCharacterId || "") === String(characterId));
 }
 
-function findSelectedRow(characterId) {
+export function findSelectedRow(characterId) {
   return [...(elements.selectedCasts?.querySelectorAll("[data-selected-index][data-character-id]") || [])]
     .find(row => String(row.dataset.characterId || "") === String(characterId));
 }
 
-function findRowByIndex(index) {
+export function findRowByIndex(index) {
   return elements.selectedCasts?.querySelector(`[data-selected-index="${index}"]`) || null;
 }
 
-function selectedRowCount() {
+export function selectedRowCount() {
   return elements.selectedCasts?.querySelectorAll("[data-selected-index]").length || 0;
 }
 
-async function clearSelections() {
+export async function clearSelections() {
   for (let guard = 0; guard < MAX_CASTS + 2; guard += 1) {
     const remove = elements.selectedCasts?.querySelector('[data-action="remove"]');
     if (!remove) break;
@@ -242,7 +242,7 @@ async function clearSelections() {
   }
 }
 
-function fillManualIdentity(row, savedCast) {
+export function fillManualIdentity(row, savedCast) {
   setControl(row.querySelector('[data-field="manual-name"]'), savedCast.fullName || "名称未登録");
   setControl(row.querySelector('[data-field="manual-styles"]'), (savedCast.styles || []).map(style => String(style?.label || "").trim()).filter(Boolean).join(" / "));
   setControl(row.querySelector('[data-field="manual-player"]'), getMetaValue(savedCast, "PLAYER"));
@@ -256,7 +256,7 @@ function fillManualIdentity(row, savedCast) {
   if (imageUrl && !/\/assets\/placeholders\/scan-failed\.webp(?:[?#].*)?$/.test(imageUrl)) setControl(row.querySelector('[data-field="manual-image-url"]'), imageUrl);
 }
 
-function fillRoleAndHandout(row, savedCast, participant) {
+export function fillRoleAndHandout(row, savedCast, participant) {
   const role = String(participant?.participationRole || deriveRole(savedCast)).trim();
   const roleField = row.querySelector('[data-field="quote"]');
   if (roleField) setSelectOrInput(roleField, role);
@@ -268,7 +268,7 @@ function fillRoleAndHandout(row, savedCast, participant) {
   );
 }
 
-async function fillTagline(row, value) {
+export async function fillTagline(row, value) {
   const text = stripOuterQuote(String(value || "").trim());
   const field = await waitFor(() => row.querySelector('[data-field="tagline"]'), 1800);
   if (field) setControl(field, text);
@@ -296,13 +296,13 @@ function setSelectOrInput(field, value) {
   field.dispatchEvent(new Event("change", { bubbles: true }));
 }
 
-function setField(field, value) {
+export function setField(field, value) {
   if (!field) return;
   field.value = String(value ?? "");
   dispatchInput(field);
 }
 
-function setControl(field, value) {
+export function setControl(field, value) {
   if (!field) return;
   field.value = String(value ?? "");
   dispatchInput(field);
@@ -313,14 +313,14 @@ function dispatchInput(field) {
   field.dispatchEvent(new Event("input", { bubbles: true }));
 }
 
-async function waitForGeneratorLibrary() {
+export async function waitForGeneratorLibrary() {
   await waitFor(() => {
     const text = String(elements.libraryStatus?.textContent || "");
     return text && !text.includes("読み込み中");
   }, 12000);
 }
 
-function waitFor(predicate, timeoutMs) {
+export function waitFor(predicate, timeoutMs) {
   return new Promise(resolve => {
     const started = performance.now();
     const check = () => {
