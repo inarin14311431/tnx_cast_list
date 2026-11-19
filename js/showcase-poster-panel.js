@@ -5,7 +5,7 @@
 import { buildPosterModel, layoutPoster, defaultCatchCopy } from "./act-poster-layout.js?v=683febc8";
 import {
   renderPoster, exportPosterBlob, loadPosterFonts, loadPosterImages, createPosterMeasurer, posterTexts, resolvePosterTheme
-} from "./act-poster-render.js?v=0962841b";
+} from "./act-poster-render.js?v=a9b76796";
 import {
   buildPosterAltText, buildPosterPostText, clampPosterInput, loadPosterInputs, savePosterInputs, posterFileName, POSTER_INPUT_LIMITS
 } from "./act-poster-text.js?v=eb12af79";

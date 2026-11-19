@@ -8,7 +8,7 @@
 //
 // Not on it: the logo, the official fonts or illustrations, the words "official" / "公式" / "公認", the handout text, the guests.
 import { approximateTextWidth } from "./cast-sns-name-layout.js?v=71a5e4e1";
-import { POSTER_WIDTH, POSTER_HEIGHT, ROLE_BODY, ROLE_TITLE, ROLE_NUMBER } from "./act-poster-layout.js?v=683febc8";
+import { POSTER_WIDTH, POSTER_HEIGHT, ROLE_BODY, ROLE_TITLE, ROLE_NUMBER, readableOnDark } from "./act-poster-layout.js?v=683febc8";
 
 export const POSTER_SCALE = 2;
 // The title (Dela Gothic One, 900) is drawn in three steps (drawTitleBlock): a shifted shadow, an outline in the ground colour, the fill.
@@ -368,11 +368,12 @@ function drawTitleBlock(ctx, layout, theme) {
 
   if (subtitle) drawText(ctx, subtitle.text, subtitle.x, subtitle.baseline, { size: subtitle.fontSize, weight: 700, fill: POSTER_COLORS.cyan });
 
+  // the chips sit on the dark ground like the HO tags, so a theme colour too dark to be seen there (the black of intron) is lightened the same way
   const chipColors = [theme?.primary, theme?.secondary];
   credits.items.forEach((item, index) => {
     const top = credits.baseline - credits.fontSize + 2;
     const bottom = credits.baseline + 5;
-    ctx.fillStyle = chipColors[index] || POSTER_COLORS.cyan;
+    ctx.fillStyle = readableOnDark(chipColors[index] || POSTER_COLORS.cyan);
     polygon(ctx, [{ x: item.chip.x + 6, y: top }, { x: item.chip.x + item.chip.width + 6, y: top }, { x: item.chip.x + item.chip.width, y: bottom }, { x: item.chip.x, y: bottom }]);
     ctx.fill();
     drawText(ctx, item.label, item.chip.x + item.chip.width / 2 + 3, credits.baseline - 2, { size: item.labelSize, weight: 900, fill: POSTER_COLORS.darker, align: "center" });

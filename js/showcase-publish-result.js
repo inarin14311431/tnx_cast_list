@@ -123,7 +123,7 @@ function togglePoster(button) {
   if (!opening || panel.dataset.mounted || !posterContext) return;
   panel.dataset.mounted = "loading";
   panel.textContent = "読み込み中…";
-  import("./showcase-poster-panel.js?v=7420e2c2").then(module => {
+  import("./showcase-poster-panel.js?v=81903d7f").then(module => {
     if (posterContext) module.mountPosterPanel(panel, posterContext);
     panel.dataset.mounted = "true";
   }).catch(error => {
