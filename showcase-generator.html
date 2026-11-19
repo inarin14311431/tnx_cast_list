@@ -17,7 +17,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Noto+Sans+JP:wght@700;900&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="./css-next/pages/showcase-entry.css?v=20ac120c" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/pages/showcase-entry.css?v=14227e7f" data-css-system="next">
   <link rel="stylesheet" href="./css-next/themes/index.css?v=e622f2d5" data-theme-system="1">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -46,6 +46,18 @@
         <button id="load-owned-showcase" class="manual-cast-add" type="button" disabled>読み込む <small>LOAD TO FORM</small></button>
       </div>
       <p id="owned-showcase-status" class="generator-status">自分のアクト紹介を確認中…</p>
+    </div>
+    <div class="showcase-owned-band__inner showcase-owned-band__copy">
+      <header class="private-history-selector__header">
+        <h3 id="copy-showcase-heading">公開中のアクト紹介からコピー <small>COPY PUBLIC SHOWCASE</small></h3>
+        <p>NEW DRAFT</p>
+      </header>
+      <p class="private-history-selector__lead">同じアクトの参加者が公開したアクト紹介を、自分の新しい下書きとしてコピーします。コピー元のアクト紹介・履歴・画像は変わりません。</p>
+      <div class="selector-controls">
+        <label>公開URL・アクト識別名 <small>SHOWCASE URL / ID</small><input id="copy-showcase-source" type="text" placeholder="例：https://…/act-showcase.html?id=act-0001" autocomplete="off" spellcheck="false"></label>
+        <button id="load-copy-showcase" class="manual-cast-add" type="button" disabled>読み込む <small>COPY TO NEW DRAFT</small></button>
+      </div>
+      <p id="copy-showcase-status" class="generator-status" aria-live="polite">コピーした内容は新しいアクトとして公開されます。コピー元を上書きすることはありません。</p>
     </div>
   </section>
   <main class="showcase-layout">
@@ -225,7 +237,7 @@
   </dialog>
   <script src="./js/showcase-handle-normalizer.js?v=0f416258"></script>
   <script src="./js/showcase-trailer-multiline.js?v=6c438860"></script>
-  <script type="module" src="./js/showcase-generator-loader.js?v=fc886b5f"></script>
+  <script type="module" src="./js/showcase-generator-loader.js?v=c3b07031"></script>
   <script type="module" src="./js/showcase-cast-pagination.js?v=ae584464"></script>
   <script type="module" src="./js/showcase-background-preset-picker.js?v=339d6584"></script>
   <script type="module" src="./js/showcase-auto-slug.js?v=1186f32e"></script>

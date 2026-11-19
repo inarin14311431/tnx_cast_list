@@ -18,6 +18,18 @@ let previewSyncing = false;
 mountGuestPanel();
 bindOutputBridges();
 void loadForCurrentSlug();
+// A copied showcase (js/showcase-copy-from-public.js) replaces the guests with its own: they are unsaved (dirty) until the publication
+// saves them under the new slug. A picture uploaded in this session for a guest that goes is removed, as "削除" does.
+document.addEventListener("tnx:showcase-guests-replace", event => {
+  const next = Array.isArray(event.detail?.guests) ? event.detail.guests : [];
+  const dropped = guests.map(guest => guest.storagePath).filter(Boolean);
+  if (dropped.length) void supabase.storage.from(IMAGE_BUCKET).remove(dropped);
+  guests.splice(0, guests.length, ...next.slice(0, MAX_GUESTS).map(data => ({ ...createGuest(data), storagePath: String(data.storagePath || "") })));
+  loadedSlug = normalizeSlug(slugField?.value);
+  dirty = true;
+  renderGuests();
+  invalidatePreview();
+});
 
 function mountGuestPanel() {
   if (document.querySelector("#showcase-guest-panel")) return;
@@ -294,6 +306,7 @@ async function loadForCurrentSlug() {
 }
 
 async function loadForSlug(slug) {
+  const startedDirty = dirty;
   const { data, error } = await supabase.from("act_showcase_guests")
     .select("id,sort_order,handle,name,persona_style,affiliation,gender,age,tagline,summary,image_url")
     .eq("showcase_slug", slug)
@@ -302,6 +315,8 @@ async function loadForSlug(slug) {
     console.warn("Guest cast could not be restored.", error);
     return;
   }
+  // Guests set while the request was on its way (a copied showcase) are not overwritten by the saved ones.
+  if (dirty && !startedDirty) return;
   guests.splice(0, guests.length, ...(data || []).map(createGuest));
   loadedSlug = slug;
   dirty = false;

@@ -5,7 +5,7 @@ import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
 import { normalizeShowcaseTheme } from "./showcase-output-css.js?v=6c2c74a1";
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=a766246e";
-import { createImageLedger, manualImagePathFromUrl, removeManualImages, uploadManualImage, validateManualImage } from "./showcase-manual-image.js?v=ab40c1a2";
+import { createImageLedger, manualImagePathFromUrl, removeManualImages, uploadManualImage, validateManualImage } from "./showcase-manual-image.js?v=775d7987";
 import { createCastRowHtml, createLibraryCardHtml, handoutBadgeText, handoutState, isPlaceholderImage, manualImageValue, nextPanel, reorder } from "./showcase-cast-row.js?v=31b01e50";
 
 const MAX_CASTS = 6;
@@ -107,6 +107,20 @@ function bindEvents() {
   $("#cancel-manual-cast")?.addEventListener("click", () => { resetManualForm(); setManualFormOpen(false); });
   $("#manual-sheet-import")?.addEventListener("click", () => { void importManualFormFromSheet(); });
   document.addEventListener("tnx:showcase-add-manual-cast", () => { addManualCast({}); });
+  // Copying a published showcase (js/showcase-copy-from-public.js): it reads the libraries, picks registered casts by id and hands over
+  // the pictures it uploaded for the copy, which are this session's uploads like any other (gone again if they stop being used).
+  document.addEventListener("tnx:showcase-library-request", event => {
+    if (!event.detail) return;
+    event.detail.publicCharacters = publicCharacters.slice();
+    event.detail.ownPrivateCharacters = privateCharacters.slice();
+  });
+  document.addEventListener("tnx:showcase-select-archive-cast", event => {
+    const detail = event.detail;
+    if (detail) detail.selected = selectArchiveCast(detail.source, detail.characterId);
+  });
+  document.addEventListener("tnx:showcase-copied-images", event => {
+    for (const path of event.detail?.paths || []) imageLedger.uploaded(path);
+  });
   elements.actName?.addEventListener("input", suggestSlug);
   elements.publishSlug?.addEventListener("input", () => {
     elements.publishSlug.dataset.edited = "true";
@@ -264,6 +278,19 @@ function toggleArchiveCast(source, characterId, library) {
 
   invalidateGeneratedHtml();
   renderSelections();
+}
+
+// Selects a registered cast (never toggles it off, unlike a click on its card). False when it is not in the library or at the limit.
+function selectArchiveCast(source, characterId) {
+  const library = source === "private" ? privateCharacters : publicCharacters;
+  const character = library.find(item => String(item.id) === String(characterId));
+  if (!character) return false;
+  if (selectedCasts.some(item => item.source === source && item.character.id === character.id)) return true;
+  if (selectedCasts.length >= MAX_CASTS) return false;
+  selectedCasts.push({ source, manual: false, character, description: "", quote: "", tagline: "", castNo: "", panel: null });
+  invalidateGeneratedHtml();
+  renderSelections();
+  return true;
 }
 
 const MANUAL_FORM_KEYS = ["handle", "name", "styles", "player", "affiliation", "age", "gender", "rank", "sheetUrl", "imageUrl"];

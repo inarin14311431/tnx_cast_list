@@ -32,11 +32,11 @@ async function initializeShowcaseGenerator() {
   try {
     // Guest persistence must be registered before mode-specific publishing so
     // both standard and cinematic buttons save the same supporting-cast data.
-    await import("./showcase-generator-v3.js?v=6864f28f");
+    await import("./showcase-generator-v3.js?v=50d7a217");
     await import("./showcase-act-subtitle.js?v=501b7a5b");
     await import("./showcase-scenario-writer.js?v=e4750a02");
     await import("./showcase-dedicated-output.js?v=cdd8099e");
-    await import("./showcase-guests.js?v=719d3234");
+    await import("./showcase-guests.js?v=7333133c");
     // Before the guest bridge and the publisher: a publish click generates the HTML first, then reaches them.
     await import("./showcase-publish-flow.js?v=f06815e0");
     await import("./showcase-guest-publish-bridge.js?v=809b92f6");
@@ -66,7 +66,9 @@ async function initializeShowcaseGenerator() {
   try {
     await import("./showcase-output-normalizer.js?v=cea76d1b");
     await import("./showcase-scene-selector.js?v=c50b5ce7");
-    await import("./showcase-edit-restore.js?v=19bf260c");
+    await import("./showcase-edit-restore.js?v=b18cb682");
+    // After the restore: the copy fills the rows with its helpers (the same module instance).
+    await import("./showcase-copy-from-public.js?v=c6d0787c");
     await import("./showcase-delete.js?v=3f62ca3a");
     await import("./showcase-owned-list.js?v=71944577");
   } catch (error) {
