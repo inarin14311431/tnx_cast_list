@@ -37,7 +37,7 @@ function createOutputCastCard(item, index, baseUrl) {
     const color = STYLE_COLORS.get(style.name) || "#00efff";
     return `<span class="style" style="--style-color:${escapeAttribute(color)}">${escapeHtml(`${style.name}${style.mark}`)}</span>`;
   }).join("");
-  const reading = item.manual ? "" : formatReading(character);
+  const reading = formatReading(character);
   // A manual cast shows its handle in front of the name when it has one (the add form has an optional handle field).
   const fullName = item.manual && !String(character.handle ?? "").trim() ? character.character_name : formatFullName(character);
   const nameClass = getOutputNameClass(fullName);

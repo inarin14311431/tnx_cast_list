@@ -1,6 +1,6 @@
 import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
 import { getImageObjectPosition } from "./image-focus.js?v=d32e5230";
-import { getStyles, getStyleNames, formatHandle } from "./showcase-output-html.js?v=0214e5e5";
+import { getStyles, getStyleNames, formatHandle } from "./showcase-output-html.js?v=58ec06fd";
 import { normalizeCastNumber, formatCastNumber, MAX_CAST_NUMBER } from "./showcase-cast-number.js?v=944a948e";
 
 // The markup of the generator's cast rows and candidate cards (docs/SHOWCASE_GENERATOR_REDESIGN.md, PR3). Pure string builders over
@@ -112,6 +112,8 @@ function manualIdentityFields(character) {
     <div class="cast-row__identity-fields selected-cast__manual-fields">${manualImageBlock(character)}
       ${field("manual-handle", "ハンドル", character.handle, ' placeholder="任意"')}
       ${field("manual-name", "キャスト名", character.character_name, ' placeholder="キャスト名" required')}
+      ${field("manual-handle-kana", "ハンドルの読み <small>READING</small>", character.handle_kana, ' placeholder="任意"')}
+      ${field("manual-name-kana", "名前の読み <small>READING</small>", character.character_kana, ' placeholder="任意"')}
       ${field("manual-styles", "スタイル", character.manual_styles, ' placeholder="例：カタナ◎ / カブト● / フェイト"')}
       ${field("manual-player", "PL名", character.player_name, ' placeholder="任意"')}
       <details class="cast-row__more">

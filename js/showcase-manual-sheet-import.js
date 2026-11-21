@@ -13,6 +13,8 @@ export function manualCastFieldsFromCanonical(canonical = {}) {
   return {
     handle: String(basic.handle || "").trim(),
     name: String(basic.character_name || "").trim(),
+    handleKana: String(basic.handle_kana || "").trim(),
+    nameKana: String(basic.character_kana || "").trim(),
     styles: [1, 2, 3]
       .map(slot => `${String(styles[`style_${slot}`] || "").trim()}${String(styles[`style_${slot}_mark`] || "").trim()}`)
       .filter(label => label.replace(/[◎●]/g, ""))
