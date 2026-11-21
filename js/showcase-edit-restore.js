@@ -3,6 +3,8 @@ import { requireAuth } from "./auth-state.js?v=a766246e";
 import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
 import { planShowcaseRestore } from "./showcase-restore-matching.js?v=80d34654";
 import { castNumberFromSlot } from "./showcase-cast-number.js?v=944a948e";
+import { splitSavedFullName } from "./showcase-copy-source.js?v=fcd12065";
+import { splitReading } from "./act-poster-layout.js?v=683febc8";
 import { formatSceneSelectionField } from "./act-showcase-scenes.js?v=ac403d62";
 
 const MAX_CASTS = 6;
@@ -243,7 +245,13 @@ export async function clearSelections() {
 }
 
 export function fillManualIdentity(row, savedCast) {
-  setControl(row.querySelector('[data-field="manual-name"]'), savedCast.fullName || "名称未登録");
+  // The published name is "“handle” name" and the reading "“handle reading” name reading": each goes back to its own field.
+  const { handle, name } = splitSavedFullName(savedCast.fullName);
+  const { handleReading, nameReading } = splitReading(savedCast.reading);
+  setControl(row.querySelector('[data-field="manual-handle"]'), handle);
+  setControl(row.querySelector('[data-field="manual-name"]'), name || "名称未登録");
+  setControl(row.querySelector('[data-field="manual-handle-kana"]'), handleReading);
+  setControl(row.querySelector('[data-field="manual-name-kana"]'), nameReading);
   setControl(row.querySelector('[data-field="manual-styles"]'), (savedCast.styles || []).map(style => String(style?.label || "").trim()).filter(Boolean).join(" / "));
   setControl(row.querySelector('[data-field="manual-player"]'), getMetaValue(savedCast, "PLAYER"));
   setControl(row.querySelector('[data-field="manual-affiliation"]'), getMetaValue(savedCast, "AFFILIATION"));

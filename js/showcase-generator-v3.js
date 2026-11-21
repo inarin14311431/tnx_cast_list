@@ -1,4 +1,4 @@
-import { renderShowcase, getStyleNames, formatHandle, formatFullName, obfuscatePublicId } from "./showcase-output-html.js?v=0214e5e5";
+import { renderShowcase, getStyleNames, formatHandle, formatFullName, obfuscatePublicId } from "./showcase-output-html.js?v=58ec06fd";
 import { normalizeCastNumber, formatCastNumber, resolveCastNumber, findDuplicateCastNumber } from "./showcase-cast-number.js?v=944a948e";
 import { syncActCastOrders } from "./showcase-cast-order-sync.js?v=e989578b";
 import { escapeHtml, escapeAttribute } from "./dom-escape.js?v=46402d5f";
@@ -6,7 +6,7 @@ import { normalizeShowcaseTheme } from "./showcase-output-css.js?v=6c2c74a1";
 import { supabase } from "./supabase-client.js";
 import { requireAuth } from "./auth-state.js?v=a766246e";
 import { createImageLedger, manualImagePathFromUrl, removeManualImages, uploadManualImage, validateManualImage } from "./showcase-manual-image.js?v=775d7987";
-import { createCastRowHtml, createLibraryCardHtml, handoutBadgeText, handoutState, isPlaceholderImage, manualImageValue, nextPanel, reorder } from "./showcase-cast-row.js?v=31b01e50";
+import { createCastRowHtml, createLibraryCardHtml, handoutBadgeText, handoutState, isPlaceholderImage, manualImageValue, nextPanel, reorder } from "./showcase-cast-row.js?v=70d63233";
 
 const MAX_CASTS = 6;
 const FUNCTION_NAME = "publish-showcase";
@@ -293,7 +293,7 @@ function selectArchiveCast(source, characterId) {
   return true;
 }
 
-const MANUAL_FORM_KEYS = ["handle", "name", "styles", "player", "affiliation", "age", "gender", "rank", "sheetUrl", "imageUrl"];
+const MANUAL_FORM_KEYS = ["handle", "name", "handleKana", "nameKana", "styles", "player", "affiliation", "age", "gender", "rank", "sheetUrl", "imageUrl"];
 
 function manualFormField(key) {
   return elements.manualForm?.querySelector(`[data-manual-new="${key}"]`) ?? null;
@@ -346,8 +346,8 @@ function addManualCast(fields = {}) {
       manual_styles: fields.styles ?? "",
       image_url: fields.imageUrl || placeholder,
       handle: fields.handle ?? "",
-      handle_kana: "",
-      character_kana: "",
+      handle_kana: fields.handleKana ?? "",
+      character_kana: fields.nameKana ?? "",
       affiliation: fields.affiliation ?? "",
       age: fields.age ?? "",
       gender: fields.gender ?? "",
@@ -537,6 +537,8 @@ function handleGripKeydown(event) {
 
 const MANUAL_FIELD_KEYS = {
   "manual-handle": "handle",
+  "manual-handle-kana": "handle_kana",
+  "manual-name-kana": "character_kana",
   "manual-styles": "manual_styles",
   "manual-player": "player_name",
   "manual-affiliation": "affiliation",
@@ -545,7 +547,7 @@ const MANUAL_FIELD_KEYS = {
   "manual-rank": "citizen_rank"
 };
 
-const DEFAULT_SHEET_NOTE = "名前・スタイル・PL名・所属・年齢・性別・市民ランクを倉庫のデータで入力します。";
+const DEFAULT_SHEET_NOTE = "名前・読み・スタイル・PL名・所属・年齢・性別・市民ランクを倉庫のデータで入力します。";
 
 // The add form's "取込": the warehouse data fills the form, the writer then adds the cast to the order.
 async function importManualFormFromSheet() {
@@ -560,9 +562,9 @@ async function importManualFormFromSheet() {
   if (button) button.disabled = true;
   setStatus("キャラクターシート倉庫からデータを取得しています…");
   try {
-    const { fetchManualCastFromSheet } = await import("./showcase-manual-sheet-import.js?v=ae641609");
+    const { fetchManualCastFromSheet } = await import("./showcase-manual-sheet-import.js?v=8b698bb9");
     const fields = await fetchManualCastFromSheet(url);
-    const values = { handle: fields.handle, name: fields.name, styles: fields.styles, player: fields.player, affiliation: fields.affiliation, age: fields.age, gender: fields.gender, rank: fields.rank };
+    const values = { handle: fields.handle, name: fields.name, handleKana: fields.handleKana, nameKana: fields.nameKana, styles: fields.styles, player: fields.player, affiliation: fields.affiliation, age: fields.age, gender: fields.gender, rank: fields.rank };
     for (const [key, value] of Object.entries(values)) {
       const input = manualFormField(key);
       if (input) input.value = value ?? "";

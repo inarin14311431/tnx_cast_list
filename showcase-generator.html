@@ -119,12 +119,14 @@
                 <div class="manual-cast-form__grid">
                   <label>ハンドル <small>任意</small><input type="text" data-manual-new="handle" placeholder="例：ブルー・モーメント" autocomplete="off"></label>
                   <label>キャスト名<input type="text" data-manual-new="name" placeholder="キャスト名" autocomplete="off" required></label>
+                  <label>ハンドルの読み <small>READING / 任意</small><input type="text" data-manual-new="handleKana" placeholder="例：ブルー・モーメント" autocomplete="off"></label>
+                  <label>名前の読み <small>READING / 任意</small><input type="text" data-manual-new="nameKana" placeholder="例：ヨアケ ノ ランナー" autocomplete="off"></label>
                   <label>スタイル<input type="text" data-manual-new="styles" placeholder="例：カタナ◎ / カブト● / フェイト" autocomplete="off"></label>
                   <label>PL名 <small>任意</small><input type="text" data-manual-new="player" placeholder="プレイヤー名" autocomplete="off"></label>
                   <div class="manual-field--sheet-import manual-cast-form__wide">
                     <label>キャラクターシート倉庫から取り込む <small>CHARACTER SHEET IMPORT</small><input type="url" data-manual-new="sheetUrl" placeholder="https://character-sheets.appspot.com/…"></label>
                     <button id="manual-sheet-import" type="button" class="manual-cast-add">取込 <small>IMPORT</small></button>
-                    <p id="manual-sheet-import-status" class="manual-field__note" aria-live="polite">名前・スタイル・PL名・所属・年齢・性別・市民ランクを倉庫のデータで入力します。</p>
+                    <p id="manual-sheet-import-status" class="manual-field__note" aria-live="polite">名前・読み・スタイル・PL名・所属・年齢・性別・市民ランクを倉庫のデータで入力します。</p>
                   </div>
                   <details class="manual-cast-form__more manual-cast-form__wide">
                     <summary>詳細(所属・年齢・性別・市民ランク)</summary>
@@ -237,7 +239,7 @@
   </dialog>
   <script src="./js/showcase-handle-normalizer.js?v=0f416258"></script>
   <script src="./js/showcase-trailer-multiline.js?v=6c438860"></script>
-  <script type="module" src="./js/showcase-generator-loader.js?v=c3b07031"></script>
+  <script type="module" src="./js/showcase-generator-loader.js?v=45a91ea4"></script>
   <script type="module" src="./js/showcase-cast-pagination.js?v=ae584464"></script>
   <script type="module" src="./js/showcase-background-preset-picker.js?v=339d6584"></script>
   <script type="module" src="./js/showcase-auto-slug.js?v=1186f32e"></script>

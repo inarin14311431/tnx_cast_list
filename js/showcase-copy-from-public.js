@@ -11,13 +11,13 @@ import { requireAuth } from "./auth-state.js?v=a766246e";
 import { loadPublicShowcase, loadPublicShowcaseGuests } from "./public-showcase-service.js?v=5da4463c";
 import { uploadManualImage, removeManualImages, GUEST_IMAGE_FOLDER } from "./showcase-manual-image.js?v=775d7987";
 import {
-  parseCopySource, copyDraftSlug, isCopySourceSlug, planCopiedCasts, splitSavedFullName, guestFromPublicRow, sortedGuestRows,
+  parseCopySource, copyDraftSlug, isCopySourceSlug, planCopiedCasts, guestFromPublicRow, sortedGuestRows,
   copyImageToOwnStorage, castDisplayName, isPlaceholderImage
 } from "./showcase-copy-source.js?v=fcd12065";
 import {
   restoreBasicFields, fillCastNumber, fillManualIdentity, fillRoleAndHandout, fillTagline, clearSelections, findSelectedRow,
   findRowByIndex, selectedRowCount, setControl, waitFor
-} from "./showcase-edit-restore.js?v=b18cb682";
+} from "./showcase-edit-restore.js?v=cdaae04c";
 
 const GENERIC_SUBTITLE = "CAST SHOWCASE";
 const PUBLISH_CONTROLS = "[data-publish-mode], #publish-button, #history-button";
@@ -162,9 +162,6 @@ async function addCopiedCast(entry, imageFailures) {
       return null;
     }
     fillManualIdentity(row, { ...cast, imageUrl: picture?.url || "" });
-    const { handle, name } = splitSavedFullName(cast.fullName);
-    setControl(row.querySelector('[data-field="manual-handle"]'), handle);
-    setControl(row.querySelector('[data-field="manual-name"]'), name || "名称未登録");
     if (picture?.path) document.dispatchEvent(new CustomEvent("tnx:showcase-copied-images", { detail: { paths: [picture.path] } }));
   }
   if (!row) return null;
