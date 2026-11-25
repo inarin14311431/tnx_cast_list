@@ -5,7 +5,8 @@ test("production cast transfer exposes bookmarklet tools instead of POST dialog"
 
   await expect(page.locator("html")).toHaveAttribute("data-transfer-mode", "bookmarklet");
   await expect(page.locator("#direct-transfer-button")).toHaveCount(0);
-  await expect(page.locator("#transfer-tsv-copy-button")).toBeVisible();
+  await expect(page.locator("#transfer-open-button")).toBeVisible();
+  await expect(page.locator("#transfer-tsv-copy-button")).toHaveCount(0);
   await expect(page.locator("#transfer-bookmarklet-copy-button")).toBeVisible();
   await expect(page.locator("dialog.cast-transfer-dialog")).toHaveCount(0);
 });
