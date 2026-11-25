@@ -52,6 +52,12 @@
     return true;
   }
 
+  // Written as “handle”; quotes that are already there are replaced, never doubled.
+  function quoteHandle(handle) {
+    const bare = clean(clean(handle).replace(/^["“”＂„‟〝〟]+|["“”＂„‟〝〟]+$/g, ""));
+    return bare ? `“${bare}”` : "";
+  }
+
   function joinHandleAndName(handle, name) {
     return [clean(handle), clean(name)].filter(Boolean).join(" ");
   }
@@ -64,7 +70,7 @@
     const kana = clean(base.kana);
     const handle = clean(base.handle);
     const handleKana = clean(base.handle_kana ?? base.handlekana ?? base.handleKana);
-    const displayName = joinHandleAndName(handle, name);
+    const displayName = joinHandleAndName(quoteHandle(handle), name);
     const displayKana = joinHandleAndName(handleKana, kana);
 
     if (!displayName && !displayKana) return false;
@@ -75,7 +81,11 @@
     return true;
   }
 
-  for (const delay of [50, 300, 900, 1800, 3600]) {
-    window.setTimeout(repair, delay);
-  }
+  window.TNXTransferHandleDone = Promise.all(
+    [50, 300, 900, 1800, 3600].map(delay => new Promise((resolve, reject) => {
+      window.setTimeout(() => {
+        try { resolve(repair()); } catch (error) { reject(error); }
+      }, delay);
+    }))
+  );
 })();

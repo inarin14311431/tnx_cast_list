@@ -1,7 +1,7 @@
 /* Canonical stylesheet entry for the act showcase generator. */
 @layer app, showcase-page, showcase-theme;
 
-@import url("../index.css?v=2772165f") layer(app);
+@import url("../index.css?v=f2a816b7") layer(app);
 @import url("./showcase.css?v=ef4fa406") layer(showcase-page);
 @import url("./showcase-cast-pagination.css?v=2a0d5c31") layer(showcase-page);
 @import url("./showcase-guests.css?v=0203ee7b") layer(showcase-page);

@@ -77,12 +77,11 @@ test("PC and mobile CS feed the shared helper the same inputs and save the same 
   const pc = await readFile(new URL("../js/sheet-sidebar-actions.js", import.meta.url), "utf8");
   const mobile = await readFile(new URL("../js/sheet-mobile-ability.js", import.meta.url), "utf8");
   const payload = await readFile(new URL("../js/sheet-save-payload.js", import.meta.url), "utf8");
-  // PC: ability value = #key-base + #key-mod (current + gear + manual as loaded); modifier = #cs-mod (cs_gear + cs_manual).
-  assert.match(pc, /const base = toInteger\(document\.querySelector\(`#\$\{key\}-base`\)\?\.value\);\s*const modifier = toInteger\(document\.querySelector\(`#\$\{key\}-mod`\)\?\.value\);\s*return base \+ modifier;/);
-  // Mobile: the same current + gear + manual, modifier = cs_gear + cs_manual.
-  assert.match(mobile, /return num\(character\[`\$\{key\}_base`\]\) \+ num\(character\[`\$\{key\}_gear`\]\) \+ num\(character\[`\$\{key\}_manual`\]\);/);
+  // PC: ability value = #key-base (without the ability modifier, like character-sheets); modifier = #cs-mod (cs_gear + cs_manual).
+  assert.ok(pc.includes("const abilityValue = key => toInteger(document.querySelector(`#${key}-base`)?.value);"));
+  // Mobile: the same saved base, modifier = cs_gear + cs_manual.
   assert.match(mobile, /return num\(character\.cs_gear\) \+ num\(character\.cs_manual\);/);
-  assert.match(mobile, /calculateCombatSpeed\(\{\s*reason: abilityTotal\("reason"\),\s*passion: abilityTotal\("passion"\),\s*life: abilityTotal\("life"\),\s*modifier\s*\}\)/);
+  assert.ok(mobile.replace(/\s+/g, " ").includes("calculateCombatSpeed({ reason: num(character.reason_base), passion: num(character.passion_base), life: num(character.life_base), modifier })"));
   // Saved fields: PC writes cs_base = stored base, cs_gear = modifier, cs_manual = 0, cs = cs_base + cs_gear.
   assert.match(payload, /payload\.cs_manual = 0;\s*payload\.cs = payload\.cs_base \+ payload\.cs_gear;/);
   assert.match(mobile, /character\.cs_base = cs\.storedBase;\s*character\.cs_gear = cs\.modifier;\s*character\.cs_manual = 0;\s*character\.cs = cs\.final;/);

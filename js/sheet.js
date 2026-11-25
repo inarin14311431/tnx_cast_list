@@ -34,7 +34,7 @@ import {
 import { renderStyleCards, renderAbilityCards } from "./sheet-character-renderer.js?v=ebf8c9a8";
 import { calculateStyleBaselines } from "./sheet-style-baseline.js?v=3ea20d4f";
 import { buildStylePresentation } from "./sheet-style-presentation.js?v=c3fa8b27";
-import { calculateAbilityFinals } from "./sheet-ability-calculation.js?v=6b9385e5";
+import { calculateAbilityFinals } from "./sheet-ability-calculation.js?v=a8512744";
 import { resolveStyleBaselineValue } from "./sheet-baseline-adjustment.js?v=83b0971e";
 import { buildNewCharacterSkills, appendStarterSocialConnectionRowsIfBothMissing } from "./sheet-new-character-state.js?v=1f5165b0";
 import { countGeneralSkillColumns, chooseGeneralSkillColumn } from "./sheet-general-column.js?v=ba9a0007";

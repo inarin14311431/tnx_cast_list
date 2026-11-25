@@ -1,16 +1,31 @@
 import { supabase } from "./supabase-client.js";
+import { buildTransferUrl, supportsTransferFragment, transferModeFor } from "./transfer-fragment.js?v=7897a816";
+import { transferAbilityInputs } from "./transfer-ability-inputs.js?v=5f15d46b";
 
 const FORMAT = "TNX_CAST_TRANSFER_TSV";
 const VERSION = "1";
 const BOOKMARKLET_URL = new URL("./js/tnx-transfer-bookmarklet.js?v=2", location.href).href;
 const STYLE_DETAIL_PREFIX = "@@TNX_STYLE_DETAIL_V1@@";
 const GENERAL_ORDER = ["医療","射撃","知覚","電脳","製作：","心理","自我","交渉","芸術：","運動","回避","白兵","操縦：","信用","圧力","隠密"];
+const OPEN_LABELS = {
+  loading: ["転記", "CHECKING"],
+  new: ["新規転記", "NEW SHEET"],
+  update: ["更新転記", "UPDATE SHEET"],
+  working: ["準備中…", "BUILDING DATA"],
+  success: ["倉庫を開きました", "RUN BOOKMARKLET"],
+  error: ["転記エラー", "OPEN ERROR"],
+  unavailable: ["転記不可", "UNAVAILABLE"]
+};
+const OPEN_HINTS = {
+  new: "倉庫URLが未登録のため、新しいシートを開きます。開いたページで転記BMを実行してください。",
+  update: "登録済みの倉庫シートを開きます。開いたページで転記BMを実行してください。"
+};
 
-const { transferButton, bookmarkletButton } = ensureButtons();
+const { transferButton, bookmarkletButton, openButton } = ensureButtons();
 const publicId = new URLSearchParams(location.search).get("id")?.trim() || "";
 const isSheetEditor = Boolean(document.querySelector("#character-name"));
 
-if (transferButton) initialize();
+if (bookmarkletButton) initialize();
 
 function createButton(id, className, main, sub) {
   const button = document.createElement("button");
@@ -24,32 +39,45 @@ function createButton(id, className, main, sub) {
 function ensureButtons() {
   let transfer = document.querySelector("#transfer-tsv-copy-button");
   let bookmarklet = document.querySelector("#transfer-bookmarklet-copy-button");
-  if (!transfer) transfer = createButton("transfer-tsv-copy-button", "transfer-tsv-copy-button", "転記TSV", "CAST DATA COPY");
+  const isEditor = Boolean(document.querySelector("#character-name"));
+  // TSV copy stays in the editor (unsaved input) and for browsers that cannot build the fragment.
+  const usesTsv = isEditor || !supportsTransferFragment();
+  if (!transfer && usesTsv) transfer = createButton("transfer-tsv-copy-button", "transfer-tsv-copy-button", "転記TSV", "CAST DATA COPY");
   if (!bookmarklet) bookmarklet = createButton("transfer-bookmarklet-copy-button", "transfer-bookmarklet-copy-button", "転記BM", "COPY BOOKMARKLET");
 
   const editorPanel = document.querySelector(".exp-panel");
   const headerActions = document.querySelector(".cast-header__export-actions") || document.querySelector(".cast-header__actions");
   const container = editorPanel || headerActions;
-  if (!container) return { transferButton: null, bookmarkletButton: null };
+  if (!container) return { transferButton: null, bookmarkletButton: null, openButton: null };
 
   const udonarium = container.querySelector("#udonarium-export-button");
   const cocofolia = container.querySelector("#cocofolia-copy-button");
   const anchor = udonarium || cocofolia || container.querySelector("#cast-view-button") || container.lastElementChild;
 
-  if (!transfer.isConnected) {
-    if (anchor) anchor.insertAdjacentElement("afterend", transfer);
-    else container.append(transfer);
+  const primary = usesTsv
+    ? transfer
+    : document.querySelector("#transfer-open-button")
+      || createButton("transfer-open-button", "transfer-tsv-copy-button transfer-open-button", ...OPEN_LABELS.loading);
+  if (!primary.isConnected) {
+    if (anchor) anchor.insertAdjacentElement("afterend", primary);
+    else container.append(primary);
   }
-  if (!bookmarklet.isConnected) transfer.insertAdjacentElement("afterend", bookmarklet);
+  if (!bookmarklet.isConnected) primary.insertAdjacentElement("afterend", bookmarklet);
 
-  return { transferButton: transfer, bookmarkletButton: bookmarklet };
+  return { transferButton: usesTsv ? transfer : null, bookmarkletButton: bookmarklet, openButton: usesTsv ? null : primary };
 }
 
 function initialize() {
-  transferButton.addEventListener("click", copyTransferTsv);
   bookmarkletButton?.addEventListener("click", copyBookmarklet);
-  transferButton.disabled = !publicId;
-  if (!publicId) transferButton.title = "キャストを保存すると利用できます。";
+  if (openButton) {
+    openButton.addEventListener("click", openTransfer);
+    refreshOpenButton();
+  }
+  if (transferButton) {
+    transferButton.addEventListener("click", copyTransferTsv);
+    transferButton.disabled = !publicId;
+    if (!publicId) transferButton.title = "キャストを保存すると利用できます。";
+  }
   if (bookmarkletButton) bookmarkletButton.title = "転記先サイトで実行するブックマークレットをコピーします。";
 }
 
@@ -69,6 +97,56 @@ async function copyTransferTsv() {
   }
 }
 
+function setOpenState(state, message = "") {
+  const [main, sub] = OPEN_LABELS[state];
+  openButton.dataset.copyState = state === "working" ? "copying" : ["success", "error"].includes(state) ? state : "idle";
+  openButton.disabled = ["loading", "working", "unavailable"].includes(state);
+  openButton.title = message;
+  openButton.innerHTML = `<span>${main}</span><small>${sub}</small>`;
+}
+
+async function refreshOpenButton() {
+  setOpenState("loading");
+  try {
+    const character = publicId ? await fetchCharacter(publicId) : null;
+    const mode = character ? transferModeFor(character.character_sheet_url) : null;
+    if (mode) setOpenState(mode, OPEN_HINTS[mode]);
+    else setOpenState("unavailable", character ? "倉庫URLの形式を確認してください。" : "キャストを保存すると利用できます。");
+  } catch (error) {
+    console.error(error);
+    setOpenState("unavailable", "キャストデータを確認できませんでした。再読み込みしてください。");
+  }
+}
+
+async function openTransfer() {
+  if (openButton.disabled) return;
+  // Opened synchronously so popup blockers see the click; the payload is built afterwards.
+  const opened = window.open("about:blank", "_blank");
+  if (!opened) {
+    setOpenState("error", "新しいタブを開けませんでした。ポップアップを許可してください。");
+    window.setTimeout(refreshOpenButton, 3600);
+    return;
+  }
+  opened.opener = null;
+  setOpenState("working");
+  try {
+    const bundle = await fetchBundle(publicId);
+    const url = await buildTransferUrl({
+      sheetUrl: bundle.character.character_sheet_url,
+      publicId,
+      tsv: createTransferTsv(bundle)
+    });
+    opened.location.replace(url);
+    setOpenState("success", "開いたページで転記BMを実行してください。");
+    window.setTimeout(refreshOpenButton, 2600);
+  } catch (error) {
+    console.error(error);
+    opened.close();
+    setOpenState("error", error instanceof Error ? error.message : "転記データを作成できませんでした。");
+    window.setTimeout(refreshOpenButton, 3600);
+  }
+}
+
 async function copyBookmarklet() {
   if (!bookmarkletButton) return;
   setState(bookmarkletButton, "copying", "", true);
@@ -84,13 +162,18 @@ async function copyBookmarklet() {
   }
 }
 
-async function fetchBundle(id) {
-  const { data: character, error: characterError } = await supabase
+async function fetchCharacter(id) {
+  const { data, error } = await supabase
     .from("characters")
     .select("*")
     .eq("public_id", id)
     .maybeSingle();
-  if (characterError) throw characterError;
+  if (error) throw error;
+  return data;
+}
+
+async function fetchBundle(id) {
+  const character = await fetchCharacter(id);
   if (!character) throw new Error("キャストデータを取得できませんでした。");
 
   const [{ data: skills, error: skillError }, { data: outfits, error: outfitError }] = await Promise.all([
@@ -99,7 +182,7 @@ async function fetchBundle(id) {
   ]);
   if (skillError) throw skillError;
   if (outfitError) throw outfitError;
-  return { character, skills: skills || [], outfits: (outfits || []).map(normalizeOutfit) };
+  return { character, skills: skills || [], outfits: (outfits || []).map(normalizeOutfit), abilityInputs: transferAbilityInputs(character) };
 }
 
 function value(id) {
@@ -131,6 +214,7 @@ function collectEditorBundle() {
     eyes: value("eyes"),
     hair: value("hair"),
     skin: value("skin"),
+    birthplace: value("birthplace"),
     life_path_origin: value("life-path-origin"),
     life_path_experience: value("life-path-experience"),
     life_path_encounter: value("life-path-encounter"),
@@ -144,6 +228,13 @@ function collectEditorBundle() {
     mundane_control: textNumber("mundane-control-final"),
     cs: textNumber("cs-final")
   };
+  for (const key of ["reason", "passion", "life", "mundane"]) {
+    character[`${key}_base`] = Number(value(`${key}-base`) || 0);
+    character[`${key}_gear`] = Number(value(`${key}-mod`) || 0);
+    character[`${key}_control_base`] = Number(value(`${key}-control-base`) || 0);
+    character[`${key}_control_gear`] = Number(value(`${key}-control-mod`) || 0);
+  }
+  character.cs_gear = Number(value("cs-mod") || 0);
 
   for (let index = 1; index <= 3; index += 1) {
     character[`style_${index}`] = value(`style-${index}`);
@@ -208,7 +299,7 @@ function collectEditorBundle() {
     });
   }).filter(outfit => outfit.name.trim());
 
-  return { character, skills, outfits };
+  return { character, skills, outfits, abilityInputs: transferAbilityInputs(character) };
 }
 
 function normalizeOutfit(outfit) {
@@ -317,7 +408,7 @@ function escapeCell(value) {
     .replace(/\r?\n/g, "\\n");
 }
 
-function createTransferTsv({ character, skills, outfits }) {
+function createTransferTsv({ character, skills, outfits, abilityInputs = null }) {
   if (!String(character.character_name || "").trim()) throw new Error("キャスト名が入力されていません。");
   const rows = [[FORMAT, VERSION, "section", "index", "field", "value"]];
   const add = (section, index, field, value) => rows.push([FORMAT, VERSION, section, String(index), field, escapeCell(value)]);
@@ -327,7 +418,7 @@ function createTransferTsv({ character, skills, outfits }) {
     player: character.player_name, rank: character.citizen_rank, affiliation: character.affiliation, summary: character.summary,
     profile: character.profile, age: character.age, sex: character.gender, height: character.height, weight: character.weight,
     eyes: character.eyes, hair: character.hair, skin: character.skin, lifepath_origin: character.life_path_origin,
-    lifepath_experience: character.life_path_experience, lifepath_encounter: character.life_path_encounter,
+    birthplace: character.birthplace, lifepath_experience: character.life_path_experience, lifepath_encounter: character.life_path_encounter,
     source_url: location.href.split("#")[0]
   };
   Object.entries(baseFields).forEach(([field, val]) => add("base", 0, field, val));
@@ -350,6 +441,9 @@ function createTransferTsv({ character, skills, outfits }) {
     add("ability", key, "control", control || 0);
   });
   add("ability", "cs", "value", character.cs ?? character.cs_base ?? 0);
+  for (const [key, inputs] of Object.entries(abilityInputs || {})) {
+    for (const [field, val] of Object.entries(inputs)) add("ability", key, field, val);
+  }
 
   const orderedGeneral = [...skills.filter(skill => skill.category === "general")].sort((a, b) => {
     const ai = GENERAL_ORDER.indexOf(a.name), bi = GENERAL_ORDER.indexOf(b.name);

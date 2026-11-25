@@ -1,4 +1,4 @@
-import { calculateCombatSpeed } from "./sheet-ability-calculation.js?v=6b9385e5";
+import { calculateCombatSpeed } from "./sheet-ability-calculation.js?v=a8512744";
 
 (() => {
   function initializeSheetSidebarActions() {
@@ -128,11 +128,7 @@ import { calculateCombatSpeed } from "./sheet-ability-calculation.js?v=6b9385e5"
       });
     };
 
-    const abilityValue = key => {
-      const base = toInteger(document.querySelector(`#${key}-base`)?.value);
-      const modifier = toInteger(document.querySelector(`#${key}-mod`)?.value);
-      return base + modifier;
-    };
+    const abilityValue = key => toInteger(document.querySelector(`#${key}-base`)?.value);
 
     const recalculateCs = () => {
       const storedBase = document.querySelector('#cs-base');

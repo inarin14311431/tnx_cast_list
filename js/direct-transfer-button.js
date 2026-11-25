@@ -5,6 +5,7 @@
   const DESKTOP_EXPORT_ORDER = [
     "udonarium-export-button",
     "cocofolia-copy-button",
+    "transfer-open-button",
     "transfer-tsv-copy-button",
     "transfer-bookmarklet-copy-button"
   ];
@@ -105,7 +106,7 @@
     });
     observationRoots().forEach(root => observer.observe(root, { childList: true, subtree: true }));
 
-    import("./transfer-tsv-export.js?v=d9b152b9").catch(error => {
+    import("./transfer-tsv-export.js?v=ea37be54").catch(error => {
       console.error("bookmarklet transfer adapter failed to load", error);
     });
   }

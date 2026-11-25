@@ -14,6 +14,7 @@ const explicitRuntimeRoots = new Set([
   "js/cocofolia-export.js",
   "js/udonarium-export.js",
   // tnx-transfer-bookmarklet.js injects the responsibility modules into the target site.
+  "js/tnx-transfer-base.js",
   "js/tnx-transfer-bookmarklet-fixes.js",
   "js/tnx-transfer-common.js",
   "js/tnx-transfer-social-connection.js",

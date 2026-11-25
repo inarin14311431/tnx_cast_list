@@ -1,5 +1,8 @@
 (async()=>{
   const FORMAT="TNX_CAST_TRANSFER_TSV";
+  const FRAGMENT_PREFIX="#tnxcast=";
+  const TARGET_HOST="character-sheets.appspot.com";
+  const TARGET_PATH="/tnx/edit.html";
   const STYLE_SEPARATOR_MARKER="[[STYLE_SEPARATOR]]";
   const RESOURCE_BASE=new URL(".",document.currentScript?.src||"https://inarin14311431.github.io/tnx_cast_list/js/tnx-transfer-bookmarklet.js");
   const load=src=>new Promise((resolve,reject)=>{
@@ -47,64 +50,88 @@
       .length;
   }
 
-  function installClipboardBridge(){
-    const nativeClipboard=navigator.clipboard;
-    const restore=[];
-    const bridgeReadText=async()=>String(window.__TNX_TRANSFER_TSV__||"");
-
-    const navigatorDescriptor=Object.getOwnPropertyDescriptor(navigator,"clipboard");
-    if(nativeClipboard){
-      try{
-        const shim=Object.create(nativeClipboard);
-        Object.defineProperty(shim,"readText",{configurable:true,value:bridgeReadText});
-        Object.defineProperty(navigator,"clipboard",{configurable:true,value:shim});
-        restore.push(()=>{
-          try{
-            if(navigatorDescriptor)Object.defineProperty(navigator,"clipboard",navigatorDescriptor);
-            else delete navigator.clipboard;
-          }catch{}
-        });
-        return ()=>restore.reverse().forEach(fn=>fn());
-      }catch{}
-
-      const ownDescriptor=Object.getOwnPropertyDescriptor(nativeClipboard,"readText");
-      try{
-        Object.defineProperty(nativeClipboard,"readText",{configurable:true,value:bridgeReadText});
-        restore.push(()=>{
-          try{
-            if(ownDescriptor)Object.defineProperty(nativeClipboard,"readText",ownDescriptor);
-            else delete nativeClipboard.readText;
-          }catch{}
-        });
-        return ()=>restore.reverse().forEach(fn=>fn());
-      }catch{}
-
-      const prototype=Object.getPrototypeOf(nativeClipboard);
-      const prototypeDescriptor=prototype&&Object.getOwnPropertyDescriptor(prototype,"readText");
-      if(prototype&&prototypeDescriptor){
-        try{
-          Object.defineProperty(prototype,"readText",{
-            ...prototypeDescriptor,
-            configurable:true,
-            value:bridgeReadText
-          });
-          restore.push(()=>{
-            try{Object.defineProperty(prototype,"readText",prototypeDescriptor)}catch{}
-          });
-          return ()=>restore.reverse().forEach(fn=>fn());
-        }catch{}
-      }
-    }
-
-    return ()=>{};
+  function transferError(message){
+    return Object.assign(new Error(message),{userFacing:true});
   }
 
+  // Remove the payload from the address bar before anything else can fail.
+  function takeFragment(){
+    if(!location.hash.startsWith(FRAGMENT_PREFIX))return "";
+    const fragment=location.hash;
+    try{history.replaceState(history.state,"",location.pathname+location.search)}catch{}
+    return fragment;
+  }
+
+  // Empty on the blank page that registers a new sheet.
+  function pageKey(){
+    return new URLSearchParams(location.search).get("key")||"";
+  }
+
+  async function readFragment(fragment){
+    let module;
+    try{module=await import(localResource("transfer-fragment.js"))}
+    catch{throw transferError("転記スクリプトを読み込めませんでした。入力していません。\nCAST ARCHIVEの転記ボタンから開き直してください。")}
+    let payload;
+    try{payload=await module.decodeTransferFragment(fragment)}
+    catch(error){throw transferError(`${error?.userMessage||"転記データを読み取れませんでした。"}入力していません。\nCAST ARCHIVEの転記ボタンから開き直してください。`)}
+    if(payload.key!==pageKey()){
+      throw transferError("転記データと、開いているシートが一致しません。入力していません。\nCAST ARCHIVEの転記ボタンから開き直してください。");
+    }
+    return payload.tsv;
+  }
+
+  async function readClipboardTransfer(){
+    let text="";
+    try{text=await navigator.clipboard.readText()}
+    catch{text=prompt("転記TSVを貼り付けてください。","")||""}
+    if(!text.startsWith(`${FORMAT}\t`)){
+      throw transferError("転記データがありません。CAST ARCHIVEの転記ボタンから開き直してください。");
+    }
+    const name=text.match(/^TNX_CAST_TRANSFER_TSV\t[^\t]*\tbase\t0\tname\t([^\r\n]*)/m)?.[1]||"名称不明";
+    if(!confirm(`クリップボードの転記データ「${name}」を、このシートに入力しますか？`))return null;
+    return text;
+  }
+
+  // The editor fills its form over AJAX; writing before that finishes would be overwritten.
+  async function waitForSheetLoaded(){
+    if(!pageKey()||!("originData" in window))return;
+    for(let attempt=0;attempt<150;attempt++){
+      if(window.originData!=null)return;
+      await new Promise(resolve=>setTimeout(resolve,100));
+    }
+    throw transferError("シートの読み込みが終わりません。入力していません。\nCAST ARCHIVEの転記ボタンから開き直してください。");
+  }
+
+  function showProgress(message){
+    const panel=document.createElement("div");
+    panel.id="tnx-transfer-progress";
+    panel.setAttribute("role","status");
+    panel.textContent=message;
+    panel.style.cssText="position:fixed;z-index:2147483647;top:12px;left:50%;transform:translateX(-50%);padding:10px 18px;border-radius:6px;background:CanvasText;color:Canvas;font:14px/1.5 sans-serif";
+    document.body.append(panel);
+    return panel;
+  }
+
+  // Every writer dispatches input events, so the distinct targets are the fields that were filled.
+  function trackFilledFields(){
+    const fields=new Set();
+    const onInput=event=>{
+      if(event.target instanceof Element&&event.target.matches("input,select,textarea"))fields.add(event.target);
+    };
+    document.addEventListener("input",onInput,true);
+    return {
+      stop:()=>document.removeEventListener("input",onInput,true),
+      count:()=>[...fields].filter(field=>field.isConnected&&String(field.value??"")!=="").length
+    };
+  }
+
+  // Resolves after the last delayed repair, so completion is not reported early.
   function startResponsibilityRepairs(data){
     const common=window.TNXTransferRepairCommon;
     const repairs=window.TNXTransferRepairs;
     if(!common||!repairs)throw new Error("転記補正モジュールを初期化できませんでした。");
 
-    (async()=>{
+    const exact=(async()=>{
       for(const delay of [250,700,1400,2800,5200]){
         await common.wait(delay);
         await repairs.repairSocialConnection(data);
@@ -113,55 +140,79 @@
         document.dispatchEvent(new Event("input",{bubbles:true}));
         document.dispatchEvent(new Event("change",{bubbles:true}));
       }
-    })().catch(error=>console.error("TNX exact transfer repair failed",error));
+    })();
 
-    (async()=>{
+    const general=(async()=>{
       for(const delay of [350,900,1800,3400,6000]){
         await common.wait(delay);
         await repairs.repairGeneralSkills(data);
       }
-    })().catch(error=>console.error("TNX general-skill mapping failed",error));
+    })();
 
-    for(const delay of [450,1000,2200,4500,8000,11000,12500]){
-      window.setTimeout(()=>{
-        repairs.repairStyleSeparators(data).catch(error=>console.error("TNX style-separator level-zero repair failed",error));
-      },delay);
-    }
+    const separators=[450,1000,2200,4500,8000,11000,12500].map(async delay=>{
+      await common.wait(delay);
+      await repairs.repairStyleSeparators(data);
+    });
+
+    return Promise.all([exact,general,...separators]);
   }
 
+  if(location.hostname!==TARGET_HOST||!location.pathname.endsWith(TARGET_PATH)){
+    alert("このブックマークレットはトーキョーN◎VAキャラクターシート編集画面で実行してください。");
+    return;
+  }
+  if(window.__TNX_TRANSFER_RUNNING__){
+    alert("転記中です。完了の表示が出るまでお待ちください。");
+    return;
+  }
+  window.__TNX_TRANSFER_RUNNING__=true;
+
+  let progress=null;
+  let tracker=null;
   try{
-    let transferText=String(window.__TNX_TRANSFER_TSV__||"");
-    if(!transferText){
-      try{transferText=await navigator.clipboard.readText()}
-      catch{transferText=prompt("転記TSVを貼り付けてください。","")||""}
-    }
-    if(!transferText.startsWith(`${FORMAT}\t`)){
-      throw new Error("転記TSVを取得できませんでした。先にキャスト画面の「転記TSV」を押してください。");
+    const fragment=takeFragment();
+    let transferText=fragment
+      ?await readFragment(fragment)
+      :String(window.__TNX_TRANSFER_TSV__||"")||await readClipboardTransfer();
+    if(transferText===null)return;
+    transferText=normalizeStyleSeparatorLevels(transferText);
+    if(!transferText.startsWith(`${FORMAT}\t`)||countTransferRows(transferText)<=1){
+      throw transferError("転記データに中身がありません。入力していません。\nCAST ARCHIVEの転記ボタンから開き直してください。");
     }
 
-    transferText=normalizeStyleSeparatorLevels(transferText);
-    const transferRows=countTransferRows(transferText);
-    if(transferRows<=1){
-      throw new Error("転記TSVに実データがありません。スマホ転記画面へ戻り、転記TSVをもう一度コピーしてください。");
-    }
+    progress=showProgress("転記中です。完了の表示が出るまで保存しないでください。");
+    await waitForSheetLoaded();
     window.__TNX_TRANSFER_TSV__=transferText;
 
-    const restoreClipboard=installClipboardBridge();
-    try{
-      await load("https://cdn.jsdelivr.net/gh/inarin14311431/tnx_cast_list@893d5243ca5dedd2f525f23d6a4536f96d9fd772/js/tnx-transfer-bookmarklet.js");
-      await load(localResource("tnx-transfer-bookmarklet-fixes.js"));
-      await load(localResource("tnx-transfer-common.js"));
-      await load(localResource("tnx-transfer-social-connection.js"));
-      await load(localResource("tnx-transfer-style-skills.js"));
-      await load(localResource("tnx-transfer-general-skills.js"));
-      await load(localResource("tnx-transfer-handle-repair.js"));
+    await load(localResource("tnx-transfer-base.js"));
+    await load(localResource("tnx-transfer-common.js"));
+    await load(localResource("tnx-transfer-social-connection.js"));
+    await load(localResource("tnx-transfer-style-skills.js"));
+    await load(localResource("tnx-transfer-general-skills.js"));
 
-      startResponsibilityRepairs(window.TNXTransferRepairCommon.parse(window.__TNX_TRANSFER_TSV__));
-    }finally{
-      window.setTimeout(restoreClipboard,20000);
-    }
+    tracker=trackFilledFields();
+    const results=await window.TNXTransferBase.run(transferText);
+    await load(localResource("tnx-transfer-bookmarklet-fixes.js"));
+    await load(localResource("tnx-transfer-handle-repair.js"));
+    await Promise.all([
+      window.TNXTransferFixesDone,
+      window.TNXTransferHandleDone,
+      startResponsibilityRepairs(window.TNXTransferRepairCommon.parse(transferText))
+    ]);
+
+    progress.remove();
+    const missing=results.missing?`\n（入力先が見つからなかった項目：${results.missing}件）`:"";
+    const note=pageKey()
+      ?"別のシートとして残すときは「コピーして登録」を押してください（リストに載せない状態で登録されます）。"
+      :"登録後に表示されるページのURLを、CAST ARCHIVEの倉庫URL欄に保存してください。次から更新転記になります。";
+    alert(`${tracker.count()}項目を入力しました。保存してください。\n\n${note}${missing}`);
   }catch(error){
-    console.error("TNX transfer loader failed",error);
-    alert(`転記スクリプトの読込に失敗しました。\n${error.message}`);
+    console.error("TNX transfer failed",error);
+    alert(error?.userFacing?error.message:`転記に失敗しました。保存せずに開き直してください。\n${error?.message||error}`);
+  }finally{
+    progress?.remove();
+    tracker?.stop();
+    delete window.__TNX_TRANSFER_TSV__;
+    window.__TNX_TRANSFER_RUNNING__=false;
   }
 })();

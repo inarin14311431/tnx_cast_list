@@ -23,7 +23,8 @@ function toInteger(value) {
 }
 
 // CS (combat speed), shared by the PC and mobile editors.
-// reason / passion / life are each "current + modifier" for that ability.
+// reason / passion / life are the current values without the gear modifier, like the character-sheets
+// editor; gear that changes CS itself goes into the CS modifier.
 // base: floor((reason + passion + life) / 2), shown read-only.
 // final: max(0, base + modifier).
 // storedBase: the value saved as cs_base, so that cs_base + cs_gear === final.
