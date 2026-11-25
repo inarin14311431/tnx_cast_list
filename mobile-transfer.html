@@ -4,7 +4,7 @@
   <!-- modulepreload:start -->
   <!-- modulepreload:end -->
   <script src="./js/css-next-theme.js?v=3676f0d6"></script>
-  <link rel="stylesheet" href="./css-next/index.css?v=2772165f" data-css-system="next">
+  <link rel="stylesheet" href="./css-next/index.css?v=f2a816b7" data-css-system="next">
   <link rel="stylesheet" href="./css-next/pages/mobile-transfer.css?v=c4570cbe">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,7 +29,7 @@
       <p class="mobile-transfer-intro__label">転記ガイド <small>TRANSFER GUIDE</small></p>
       <h2>キャラクターシート倉庫へ転記 <small>TRANSFER</small></h2>
       <p class="mobile-transfer-intro__lead">
-        初回にBMを登録した後は、データをコピーして倉庫でBMを実行するだけです。
+        初回にBMを登録した後は、転記ボタンで倉庫を開いてBMを実行するだけです。
       </p>
       <p id="mobile-transfer-cast" class="mobile-transfer-cast-id">CAST ID 読み込み中…</p>
     </section>
@@ -58,7 +58,7 @@
       </div>
     </section>
 
-    <section class="mobile-transfer-step mobile-transfer-step--data" aria-labelledby="mobile-transfer-step-2">
+    <section class="mobile-transfer-step mobile-transfer-step--warehouse" aria-labelledby="mobile-transfer-step-2">
       <header class="mobile-transfer-step__header">
         <span class="mobile-transfer-step__number">02</span>
         <div class="mobile-transfer-step__heading">
@@ -66,54 +66,39 @@
             <span>STEP 02</span>
             <small>転記のたびに</small>
           </div>
-          <h2 id="mobile-transfer-step-2">このキャストの転記データをコピー <small>COPY DATA</small></h2>
+          <h2 id="mobile-transfer-step-2">倉庫を開いて転記ブックマークレットを実行 <small>RUN BOOKMARKLET</small></h2>
         </div>
       </header>
       <div class="mobile-transfer-step__body">
-        <p class="mobile-transfer-step__summary">下のボタンを押すと、このキャストの最新データがコピーされます。</p>
-        <div id="mobile-transfer-tsv-slot" class="mobile-transfer-actions"></div>
-        <p id="mobile-transfer-status" class="mobile-transfer-status" aria-live="polite"></p>
-      </div>
-    </section>
-
-    <section class="mobile-transfer-step mobile-transfer-step--warehouse" aria-labelledby="mobile-transfer-step-3">
-      <header class="mobile-transfer-step__header">
-        <span class="mobile-transfer-step__number">03</span>
-        <div class="mobile-transfer-step__heading">
-          <div class="mobile-transfer-step__meta">
-            <span>STEP 03</span>
-            <small>倉庫で実行</small>
-          </div>
-          <h2 id="mobile-transfer-step-3">倉庫を開いて転記ブックマークレットを実行 <small>RUN BOOKMARKLET</small></h2>
-        </div>
-      </header>
-      <div class="mobile-transfer-step__body">
+        <p class="mobile-transfer-step__summary">倉庫URLがあるキャストは「更新転記」、ないキャストは「新規転記」になります。</p>
         <ol class="mobile-transfer-checklist">
-          <li>キャラクターシート倉庫を開く</li>
-          <li>01で作成したブックマークを実行</li>
-          <li>転記内容を確認して保存</li>
+          <li>下の転記ボタンで倉庫を開く</li>
+          <li>01で登録したブックマークを実行</li>
+          <li>完了の表示を待ち、内容を確認して保存</li>
         </ol>
-        <div class="mobile-transfer-actions">
-          <a
-            id="mobile-transfer-open"
-            class="mobile-transfer-open"
-            href="https://character-sheets.appspot.com/tnx/edit.html"
-          >
-            <span>キャラクターシート倉庫を開く</span>
-            <small>OPEN SHEETS</small>
-          </a>
+        <div id="mobile-transfer-open-slot" class="mobile-transfer-actions"></div>
+        <div id="mobile-transfer-tsv-fallback" hidden>
+          <p class="mobile-transfer-step__summary">このブラウザは転記ボタンに対応していません。転記TSVをコピーしてから倉庫を開き、01のブックマークを実行してください。</p>
+          <div id="mobile-transfer-tsv-slot" class="mobile-transfer-actions"></div>
+          <div class="mobile-transfer-actions">
+            <a id="mobile-transfer-open" class="mobile-transfer-open" href="https://character-sheets.appspot.com/tnx/edit.html">
+              <span>キャラクターシート倉庫を開く</span>
+              <small>OPEN SHEETS</small>
+            </a>
+          </div>
         </div>
+        <p id="mobile-transfer-status" class="mobile-transfer-status" aria-live="polite"></p>
       </div>
     </section>
 
     <aside class="mobile-transfer-note" aria-label="転記時の注意">
       <strong>転記が終わるまでこの画面は閉じないでください。</strong>
-      <span>STEP 03の保存が終われば閉じて構いません。</span>
+      <span>STEP 02の保存が終われば閉じて構いません。</span>
     </aside>
 
     <div id="mobile-transfer-export-host" class="exp-panel" hidden aria-hidden="true"></div>
   </main>
 
-  <script type="module" src="./js/mobile-bookmarklet-transfer.js?v=24ee1fd5"></script>
+  <script type="module" src="./js/mobile-bookmarklet-transfer.js?v=c1e1bd40"></script>
 </body>
 </html>

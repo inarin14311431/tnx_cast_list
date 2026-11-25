@@ -1,7 +1,7 @@
 import { supabase } from "./supabase-client.js";
 import { getMobileEditorContext } from "./sheet-mobile-runtime.js?v=7e020e46";
 import { STYLE_DATA, UTSUWA_ATTRIBUTES } from "./style-data.js";
-import { calculateCombatSpeed } from "./sheet-ability-calculation.js?v=6b9385e5";
+import { calculateCombatSpeed } from "./sheet-ability-calculation.js?v=a8512744";
 const ABILITIES = [
   ["reason", "理性", "REASON"],
   ["passion", "感情", "PASSION"],
@@ -79,21 +79,18 @@ function normalizeAbilityState() {
       num(character[`${key}_control_manual`]);
   }
 }
-function abilityTotal(key) {
-  return num(character[`${key}_base`]) + num(character[`${key}_gear`]) + num(character[`${key}_manual`]);
-}
 function csModifier() {
   return num(character.cs_gear) + num(character.cs_manual);
 }
 function combatSpeed(modifier = csModifier()) {
   return calculateCombatSpeed({
-    reason: abilityTotal("reason"),
-    passion: abilityTotal("passion"),
-    life: abilityTotal("life"),
+    reason: num(character.reason_base),
+    passion: num(character.passion_base),
+    life: num(character.life_base),
     modifier
   });
 }
-// Same rule as the PC editor: CS is always derived from reason/passion/life and the CS
+// Same rule as the PC editor: CS is always derived from reason/passion/life (without gear) and the CS
 // modifier, and the saved fields mean the same thing (cs_base + cs_gear === cs, cs_manual 0).
 // Returns whether the stored CS differed from the derived one.
 function applyCombatSpeed() {

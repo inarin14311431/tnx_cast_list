@@ -4,7 +4,7 @@
   cast-runtime, cast-mobile, cast-mobile-readability, cast-mobile-combos,
   cast-transfer, cast-troop-modal, cast-desktop, cast-style-table;
 
-@import url("../index.css?v=2772165f") layer(app);
+@import url("../index.css?v=f2a816b7") layer(app);
 @import url("../components/cast-troops.css?v=f6a2bbdb") layer(cast-components);
 @import url("../components/error-state.css?v=281f430f") layer(cast-components);
 @import url("../components/disclosure-chevron.css?v=90c5572a") layer(cast-components);

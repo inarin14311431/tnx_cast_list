@@ -20,7 +20,7 @@ test("PC閲覧のデータ出力ボタンは指定順で表示する", async ({ 
   const expected = [
     "udonarium-export-button",
     "cocofolia-copy-button",
-    "transfer-tsv-copy-button",
+    "transfer-open-button",
     "transfer-bookmarklet-copy-button"
   ];
   const readOrder = () => page.locator(".cast-header__export-actions > *").evaluateAll((nodes, ids) =>

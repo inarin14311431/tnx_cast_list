@@ -43,6 +43,7 @@ button:is(:hover, :focus-visible) small,
 .udonarium-export-button { --export-accent: var(--color-export-udonarium); }
 .transfer-tsv-copy-button { --export-accent: var(--color-export-tsv); }
 .transfer-bookmarklet-copy-button { --export-accent: var(--color-export-bookmarklet); }
+.transfer-open-button { --export-accent: var(--color-accent); }
 .cocofolia-copy-button::before,
 .udonarium-export-button::before,
 .transfer-tsv-copy-button::before,

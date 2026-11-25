@@ -1,7 +1,7 @@
 /* Canonical stylesheet entry for act history and the legacy combo redirect. */
 @layer app, auth-page, acts-page, experience-ticket, acts-summary;
 
-@import url("../index.css?v=2772165f") layer(app);
+@import url("../index.css?v=f2a816b7") layer(app);
 @import url("./auth.css?v=52e3fbc8") layer(auth-page);
 
 /* Act-history ownership: base/history, expanded record, spending ledger, compatibility. */

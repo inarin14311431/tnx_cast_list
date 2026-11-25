@@ -4,7 +4,7 @@
  */
 @layer app, troop-base, troop-layout, troop-dialog, troop-combo, troop-screen, troop-actions;
 
-@import url("../index.css?v=2772165f") layer(app);
+@import url("../index.css?v=f2a816b7") layer(app);
 @import url("./troops.css?v=f2d8322e") layer(troop-base);
 @import url("./troop-base.css?v=b0d773cb") layer(troop-base);
 @import url("./troop-layout.css?v=3b649f41") layer(troop-layout);

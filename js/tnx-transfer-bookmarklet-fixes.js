@@ -1,4 +1,4 @@
-(async()=>{
+window.TNXTransferFixesDone=(async()=>{
   const FORMAT="TNX_CAST_TRANSFER_TSV";
   const wait=ms=>new Promise(resolve=>setTimeout(resolve,ms));
   const frame=()=>new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
@@ -256,6 +256,43 @@
     return"";
   }
 
+  // The sheet stores persona/key as styles.pk1-3: 1=●, 2=◎, 3=◎●. Without any mark in the cast the
+  // sheet's own marks are left alone, so an update cannot erase them.
+  const PK_VALUES={"●":"1","◎":"2","◎●":"3"};
+  // styleChange() redraws the marks but also recalculates the abilities from the styles alone, which
+  // would drop the transferred totals.
+  function redrawStylesKeepingAbilities(){
+    if(typeof window.styleChange!=="function")return;
+    const kept=[];
+    for(const name of ["reason","passion","life","mundane"]){
+      for(const part of ["abl","ctl"]){
+        const control=document.getElementById(`ability.${name}.${part}`);
+        if(control)kept.push([control,control.value]);
+      }
+    }
+    const cs=document.getElementById("ability.cs");
+    if(cs)kept.push([cs,cs.value]);
+    try{window.styleChange()}
+    finally{for(const [control,value] of kept)control.value=value}
+  }
+
+  function repairStyleMarks(list){
+    const marks=list.slice(0,3).map(record=>normalizeMark(record.mark));
+    if(!marks.some(Boolean))return;
+    let changed=false;
+    for(let position=0;position<3;position++){
+      const control=document.getElementById(`styles.pk${position+1}`);
+      if(!control)continue;
+      const value=PK_VALUES[marks[position]]||"";
+      if(Number(control.value)!==Number(value)){
+        control.value=value;
+        changed=true;
+      }
+      notify(control);
+    }
+    if(changed)redrawStylesKeepingAbilities();
+  }
+
   async function repairStyles(records){
     const list=Object.keys(records||{}).sort((a,b)=>Number(a)-Number(b)).map(key=>records[key]);
     const styleIndexes=indexes("styles");
@@ -276,6 +313,7 @@
       if(persona)await setBoolean(persona,desired.includes("◎"),row,"reason");
       if(key)await setBoolean(key,desired.includes("●"),row,"passion");
     }
+    repairStyleMarks(list);
   }
 
   try{
@@ -297,5 +335,6 @@
     }
   }catch(error){
     console.error("TNX transfer fix failed",error);
+    throw error;
   }
 })();

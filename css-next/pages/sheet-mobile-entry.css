@@ -3,7 +3,7 @@
   mobile-ability, mobile-skills, mobile-outfit, mobile-combos, mobile-snapshots,
   mobile-image, mobile-import, mobile-ux, mobile-share, mobile-shell;
 
-@import url("../index.css?v=2772165f") layer(app);
+@import url("../index.css?v=f2a816b7") layer(app);
 @import url("./sheet-mobile.css?v=e4ccfd15") layer(mobile-base);
 @import url("./sheet-mobile-theme.css?v=98283bcd") layer(mobile-theme);
 @import url("./sheet-mobile-ui.css?v=d8538f5e") layer(mobile-ui);

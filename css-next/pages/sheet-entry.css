@@ -1,7 +1,7 @@
 /* Canonical stylesheet entry for the PC cast editor. */
 @layer app, sheet-components, sheet-editor, sheet-enhancements;
 
-@import url("../index.css?v=2772165f") layer(app);
+@import url("../index.css?v=f2a816b7") layer(app);
 
 @import url("../components/help.css?v=3134c87c") layer(sheet-components);
 @import url("../components/save-diagnostics.css?v=fe2f28d1") layer(sheet-components);
